@@ -1,8 +1,8 @@
 name: Aethel
-version: 1.0.2
+version: 1.0.3
 api-version: 1.20
 author: Bam6561
-main: me.dannynguyen.aethel.PluginManager
+main: me.dannynguyen.aethel.AethelPlugin
 prefix: Aethel
 website: https://linktr.ee/aethelsmp
 description: Plugin for Aethel SMP.
@@ -13,3 +13,9 @@ commands:
   ping:
     description: Displays server latency.
     usage: /ping
+  read:
+    description: Decodes an item.
+    usage: /read [fileName]
+  write:
+    description: Encodes an item.
+    usage: /write

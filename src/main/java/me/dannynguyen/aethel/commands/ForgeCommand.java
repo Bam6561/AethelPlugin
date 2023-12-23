@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.PluginManager;
+import me.dannynguyen.aethel.AethelPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * Forge is a command invocation that opens an inventory that allows the fabrication of items through clicking.
  *
  * @author Danny Nguyen
- * @version 1.0.2
+ * @version 1.0.3
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -29,7 +29,7 @@ public class ForgeCommand implements CommandExecutor {
     Inventory menu = Bukkit.createInventory(player, 54, "Forge");
     populateMenu(menu);
     player.openInventory(menu);
-    player.setMetadata("MenuOpen", new FixedMetadataValue(PluginManager.getInstance(), "Forge"));
+    player.setMetadata("Menu", new FixedMetadataValue(AethelPlugin.getInstance(), "Forge-Craft"));
     return true;
   }
 
