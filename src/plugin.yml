@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.0.3
+version: 1.0.4
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.AethelPlugin
@@ -9,7 +9,7 @@ description: Plugin for Aethel SMP.
 commands:
   forge:
     description: Opens a forge menu.
-    usage: /forge
+    usage: /forge [editor]
   ping:
     description: Displays server latency.
     usage: /ping
