@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.gui.ForgeCraft;
 import me.dannynguyen.aethel.gui.ForgeCreate;
+import me.dannynguyen.aethel.gui.ForgeMain;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * Forge is a command invocation that opens an inventory that allows the fabrication of items through clicking.
  *
  * @author Danny Nguyen
- * @version 1.0.6
+ * @version 1.0.7
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -42,7 +42,7 @@ public class Forge implements CommandExecutor {
         player.sendMessage("Insufficient permissions.");
       }
     } else {
-      player.openInventory(new ForgeCraft(player).populateView(player, 0));
+      player.openInventory(new ForgeMain(player).populateView(player, 0));
       player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
       player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
     }
@@ -56,9 +56,14 @@ public class Forge implements CommandExecutor {
    */
   private void interpretForgeMenu(String parameter, Player player) {
     switch (parameter) {
-      case "create" -> {
+      case "create", "add" -> {
         player.openInventory(new ForgeCreate(player).getDefaultView());
         player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+      }
+      case "modify", "edit" -> {
+        player.openInventory(new ForgeMain(player).populateView(player, 0));
+        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
+        player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
       }
     }
   }

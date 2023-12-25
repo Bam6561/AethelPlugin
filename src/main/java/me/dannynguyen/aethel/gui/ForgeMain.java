@@ -10,9 +10,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.io.BukkitObjectInputStream;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * ForgeCraft is a menu option under the Forge command that processes the crafting of forge items.
@@ -21,18 +28,18 @@ import java.util.List;
  * @version 1.0.6
  * @since 1.0.6
  */
-public class ForgeCraft {
+public class ForgeMain {
   private Inventory defaultView;
 
-  public ForgeCraft(Player player) {
+  public ForgeMain(Player player) {
     this.defaultView = createDefaultView(player);
   }
 
   /**
-   * Creates the default view for the Forge-Craft menu.
+   * Creates the default view for the Forge-Main menu.
    *
    * @param player interacting player
-   * @return Forge-Craft default view
+   * @return Forge-Main default view
    */
   private Inventory createDefaultView(Player player) {
     Inventory craftMenu = Bukkit.createInventory(player, 54, "Forge");
@@ -60,7 +67,7 @@ public class ForgeCraft {
   }
 
   /**
-   * Populates the default Forge-Craft menu with forge recipes loaded from memory.
+   * Populates the default Forge-Main menu with forge recipes loaded from memory.
    *
    * @param player        interacting player
    * @param pageRequested recipe page to view
@@ -76,8 +83,6 @@ public class ForgeCraft {
     int endIndexOnPage = Math.min(startIndexOnPage + 20, numberOfRecipes);
 
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), viewPageNumber));
-    Bukkit.getLogger().warning(player.getMetadata("page").get(0).asString());
-
     return createViewPage(view, forgeRecipes, startIndexOnPage, endIndexOnPage);
   }
 
@@ -130,13 +135,13 @@ public class ForgeCraft {
   }
 
   /**
-   * Creates the Forge-Craft page the player wishes to view.
+   * Creates the Forge-Main page the player wishes to view.
    *
    * @param view       items in the inventory
    * @param recipes    recipes
    * @param startIndex starting index
    * @param endIndex   ending index
-   * @return Forge-Craft menu page
+   * @return Forge-Main menu page
    */
   private Inventory createViewPage(Inventory view, ArrayList<ForgeRecipe> recipes, int startIndex, int endIndex) {
     // i = recipes index
@@ -152,8 +157,8 @@ public class ForgeCraft {
       ArrayList<ItemStack> results = forgeRecipe.getResults();
       ArrayList<ItemStack> components = forgeRecipe.getComponents();
 
-      view.setItem(j, createItemDetails(results.get(0), results, "Results"));
-      view.setItem(j + 1, createItemDetails(new ItemStack(Material.PAPER), components, "Components"));
+      view.setItem(j, createItemDetails(results.get(0), results));
+      view.setItem(j + 1, createItemDetails(new ItemStack(Material.PAPER), components));
       j++;
     }
     return view;
@@ -171,8 +176,7 @@ public class ForgeCraft {
    * @param relatedItems results or components of the forge recipe
    * @return item labelled with its results of components
    */
-  private ItemStack createItemDetails(ItemStack displayItem, ArrayList<ItemStack> relatedItems, String
-      relationType) {
+  private ItemStack createItemDetails(ItemStack displayItem, ArrayList<ItemStack> relatedItems) {
     List<String> itemDetails = new ArrayList<>();
     for (ItemStack item : relatedItems) {
       int amount = item.getAmount();
@@ -182,7 +186,6 @@ public class ForgeCraft {
 
     ItemStack finalItem = new ItemStack(displayItem.getType(), 1);
     ItemMeta meta = finalItem.getItemMeta();
-    meta.setDisplayName(relationType);
     meta.setLore(itemDetails);
     finalItem.setItemMeta(meta);
     return finalItem;
@@ -207,20 +210,111 @@ public class ForgeCraft {
    *
    * @param e inventory click event
    */
-  public void interpretCraftClick(InventoryClickEvent e) {
+  public void interpretMainClick(InventoryClickEvent e, String menuType) {
     Player player = (Player) e.getWhoClicked();
     int pageRequested = Integer.parseInt(player.getMetadata("page").get(0).asString());
     switch (e.getSlot()) {
       case 0 -> {
         player.openInventory(populateView(player, pageRequested - 1));
-        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
+        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), menuType));
       }
       case 8 -> {
         player.openInventory(populateView(player, pageRequested + 1));
-        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
+        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), menuType));
       }
+      default -> interpretMenuContextualClick(e, menuType);
     }
     e.setCancelled(true);
+  }
+
+  private void interpretMenuContextualClick(InventoryClickEvent e, String menuType) {
+    Player player = (Player) e.getWhoClicked();
+    switch (menuType) {
+      case "forge-modify" -> {
+        modifyForgeRecipe(e, readForgeRecipe(getRecipeFile(e)));
+        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+      }
+    }
+  }
+
+  private File getRecipeFile(InventoryClickEvent e) {
+    ItemStack item = e.getCurrentItem();
+    if (item != null) {
+      String itemName;
+      if (item.getItemMeta().hasDisplayName()) {
+        itemName = item.getItemMeta().getDisplayName().toLowerCase().replace(" ", "_");
+      } else {
+        itemName = item.getType().name().toLowerCase();
+      }
+      return new File(AethelPlugin.getInstance().getResourceDirectory() + "/forge/" + itemName + ".txt");
+    }
+    return null;
+  }
+
+  private ForgeRecipe readForgeRecipe(File file) {
+    ArrayList<ItemStack> results = new ArrayList<>();
+    ArrayList<ItemStack> components = new ArrayList<>();
+    int recipeDataType = 1;
+
+    try {
+      Scanner scanner = new Scanner(file);
+      scanner.nextLine(); // Skip Results line
+      while (scanner.hasNextLine()) {
+        String data = scanner.nextLine();
+
+        if (data.equals("Components")) {
+          recipeDataType++;
+          data = scanner.nextLine();
+        }
+
+        ItemStack item = decodeItem(data);
+        if (item != null) {
+          switch (recipeDataType) {
+            case 1 -> results.add(decodeItem(data));
+            case 2 -> components.add(decodeItem(data));
+          }
+        }
+      }
+      return new ForgeRecipe(results, components);
+    } catch (FileNotFoundException ex) {
+    }
+    return null;
+  }
+
+  private void modifyForgeRecipe(InventoryClickEvent e, ForgeRecipe forgeRecipe) {
+    Player player = (Player) e.getWhoClicked();
+    Inventory view = new ForgeCreate(player).getDefaultView();
+
+    ArrayList<ItemStack> results = forgeRecipe.getResults();
+    ArrayList<ItemStack> components = forgeRecipe.getComponents();
+
+    for (int i = 0; i < results.size(); i++) {
+      view.setItem(i, results.get(i));
+    }
+    for (int i = 0; i < components.size(); i++) {
+      view.setItem(i + 9, components.get(i));
+    }
+
+    player.openInventory(view);
+  }
+
+  /**
+   * Deserializes an item.
+   *
+   * @param data serialized item string
+   * @return ItemStack representing item
+   * @throws IOException            file not found
+   * @throws ClassNotFoundException item could not be decoded
+   */
+  private ItemStack decodeItem(String data) {
+    try {
+      ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+      BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
+      ItemStack item = (ItemStack) bois.readObject();
+      return item;
+    } catch (IOException | ClassNotFoundException ex) {
+      return null;
+    }
   }
 
   /**

@@ -64,7 +64,7 @@ public class ForgeCreate {
    * @param e inventory click event
    */
   public void processSaveClick(InventoryClickEvent e) {
-    ArrayList<ItemStack> view = new ArrayList<ItemStack>();
+    ArrayList<ItemStack> view = new ArrayList<>();
     Collections.addAll(view, e.getInventory().getContents());
 
     writeRecipeToFile(e, nameRecipe(view), createRecipe(view));

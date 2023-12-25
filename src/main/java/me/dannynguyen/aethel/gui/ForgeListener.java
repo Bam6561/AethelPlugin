@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -19,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @version 1.0.6
  * @since 1.0.2
  */
-public class ForgeGUI implements Listener {
+public class ForgeListener implements Listener {
   /**
    * Routes interactions between Forge menus.
    *
@@ -29,16 +30,25 @@ public class ForgeGUI implements Listener {
   public void onClick(InventoryClickEvent e) {
     Player player = (Player) e.getWhoClicked();
     if (player.hasMetadata("menu")) {
-      String menuType = player.getMetadata("menu").get(0).asString();
-      switch (menuType) {
+      String menu = player.getMetadata("menu").get(0).asString();
+      switch (menu) {
         case "forge-craft" -> {
-          ForgeCraft forgeCraft = new ForgeCraft(player);
-          forgeCraft.interpretCraftClick(e);
+          ForgeMain forgeMain = new ForgeMain(player);
+          forgeMain.interpretMainClick(e, "forge-craft");
         }
         case "forge-create" -> {
           if (e.getSlot() == 26) {
             ForgeCreate forgeCreate = new ForgeCreate(player);
             forgeCreate.processSaveClick(e);
+          }
+        }
+        case "forge-modify" -> {
+          ClickType clickType = e.getClick();
+          if (clickType.isLeftClick()) {
+            ForgeMain forgeMain = new ForgeMain(player);
+            forgeMain.interpretMainClick(e, "forge-modify");
+          } else if (clickType.isRightClick()) {
+
           }
         }
         case "forge-editor" -> readForgeEditorClick(e, player);

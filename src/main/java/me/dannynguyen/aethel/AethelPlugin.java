@@ -2,7 +2,7 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.Forge;
 import me.dannynguyen.aethel.commands.Ping;
-import me.dannynguyen.aethel.gui.ForgeGUI;
+import me.dannynguyen.aethel.gui.ForgeListener;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,7 +38,7 @@ public class AethelPlugin extends JavaPlugin {
   public void onEnable() {
     readResourceFiles(getResourceDirectory());
 
-    getServer().getPluginManager().registerEvents(new ForgeGUI(), this);
+    getServer().getPluginManager().registerEvents(new ForgeListener(), this);
 
     this.getCommand("forge").setExecutor(new Forge());
     this.getCommand("ping").setExecutor(new Ping());
