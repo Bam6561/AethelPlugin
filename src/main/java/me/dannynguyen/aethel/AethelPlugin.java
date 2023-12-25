@@ -2,8 +2,6 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.ForgeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
-import me.dannynguyen.aethel.commands.ReadCommand;
-import me.dannynguyen.aethel.commands.WriteCommand;
 import me.dannynguyen.aethel.gui.ForgeGUI;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,10 +12,12 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.0.3
+ * @version 1.0.5
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
+  private String resourceDirectory = "./plugins/Aethel";
+
   /**
    * On startup:
    * - Reads existing plugin-related data.
@@ -26,31 +26,32 @@ public class AethelPlugin extends JavaPlugin {
    */
   @Override
   public void onEnable() {
-    readResourceFiles(new File("./plugins/Aethel"));
+    readResourceFiles(getResourceDirectory());
 
     getServer().getPluginManager().registerEvents(new ForgeGUI(), this);
 
     this.getCommand("forge").setExecutor(new ForgeCommand());
     this.getCommand("ping").setExecutor(new PingCommand());
-    this.getCommand("read").setExecutor(new ReadCommand());
-    this.getCommand("write").setExecutor(new WriteCommand());
-  }
-
-  @Override
-  public void onDisable() {
   }
 
   /**
-   * Reads existing plugin-related data. Creates a data directory if one does not already exist.
-   *
-   * @param resourceDirectory directory containing plugin-related data
+   * Reads existing plugin-related data. Creates data directories if one does not already exist.
    */
-  private void readResourceFiles(File resourceDirectory) {
-    if (resourceDirectory.exists()) {
+  private void readResourceFiles(String filePath) {
+    File resourceFiles = new File(filePath);
+    if (!resourceFiles.exists()) resourceFiles.mkdir();
 
-    } else {
-      resourceDirectory.mkdir();
-    }
+    File forgeRecipes = new File(filePath + "/forge");
+    if (!forgeRecipes.exists()) forgeRecipes.mkdir();
+  }
+
+  /**
+   * Returns the file path of the plugin's resource directory.
+   *
+   * @return resource directory
+   */
+  public String getResourceDirectory() {
+    return this.resourceDirectory;
   }
 
   /**

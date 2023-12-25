@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.gui.ForgeCreate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -29,8 +30,13 @@ public class ForgeCommand implements CommandExecutor {
 
     Player player = (Player) sender;
     if (args.length == 1) {
-      if (args[0].equalsIgnoreCase("editor") && player.isOp()) {
-        player.openInventory(createEditorMenu(player));
+      if (player.isOp()) {
+        switch (args[0].toLowerCase()) {
+          case "create" -> {
+            player.openInventory(new ForgeCreate(player).getDefaultView());
+            player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+          }
+        }
       } else {
         player.sendMessage("Insufficient permissions.");
       }
@@ -38,15 +44,6 @@ public class ForgeCommand implements CommandExecutor {
       player.openInventory(createCraftMenu(player));
     }
     return true;
-  }
-
-  private Inventory createEditorMenu(Player player) {
-    Inventory editorMenu = Bukkit.createInventory(player, 9, "Forge Editor");
-    editorMenu.setItem(2, createMenuItem(Material.GREEN_CONCRETE, "Create Recipe"));
-    editorMenu.setItem(4, createMenuItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
-    editorMenu.setItem(6, createMenuItem(Material.RED_CONCRETE, "Delete Recipe"));
-    player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-editor"));
-    return editorMenu;
   }
 
   private Inventory createCraftMenu(Player player) {
