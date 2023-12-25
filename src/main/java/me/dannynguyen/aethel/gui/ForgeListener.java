@@ -17,7 +17,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeGUI is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.0.6
+ * @version 1.0.8
  * @since 1.0.2
  */
 public class ForgeListener implements Listener {
@@ -48,10 +48,10 @@ public class ForgeListener implements Listener {
             ForgeMain forgeMain = new ForgeMain(player);
             forgeMain.interpretMainClick(e, "forge-modify");
           } else if (clickType.isRightClick()) {
-
+            ForgeMain forgeMain = new ForgeMain(player);
+            forgeMain.interpretMainClick(e, "forge-delete");
           }
         }
-        case "forge-editor" -> readForgeEditorClick(e, player);
       }
     }
   }

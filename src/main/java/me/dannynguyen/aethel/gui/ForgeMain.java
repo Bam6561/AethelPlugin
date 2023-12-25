@@ -25,7 +25,7 @@ import java.util.Scanner;
  * ForgeCraft is a menu option under the Forge command that processes the crafting of forge items.
  *
  * @author Danny Nguyen
- * @version 1.0.6
+ * @version 1.0.8
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -159,7 +159,7 @@ public class ForgeMain {
 
       view.setItem(j, createItemDetails(results.get(0), results));
       view.setItem(j + 1, createItemDetails(new ItemStack(Material.PAPER), components));
-      j++;
+      j += 2;
     }
     return view;
   }
@@ -231,8 +231,19 @@ public class ForgeMain {
     Player player = (Player) e.getWhoClicked();
     switch (menuType) {
       case "forge-modify" -> {
-        modifyForgeRecipe(e, readForgeRecipe(getRecipeFile(e)));
-        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+        try {
+          modifyForgeRecipe(e, readForgeRecipe(getRecipeFile(e)));
+          player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+        } catch (NullPointerException ex) {
+        }
+      }
+      case "forge-delete" -> {
+        try {
+          File file = getRecipeFile(e);
+          file.delete();
+          player.sendMessage("File deleted.");
+        } catch (NullPointerException ex) {
+        }
       }
     }
   }
