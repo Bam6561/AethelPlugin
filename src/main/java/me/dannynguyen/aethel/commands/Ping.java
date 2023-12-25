@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
  * @version 1.0.2
  * @since 1.0.1
  */
-public class PingCommand implements CommandExecutor {
+public class Ping implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player)) {

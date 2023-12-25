@@ -18,7 +18,7 @@ import java.util.Base64;
 import java.util.Collections;
 
 /**
- * ForgeCreate is a menu option under the Forge command that handles the creation of new Forge recipes.
+ * ForgeCreate is a menu option under the Forge command that processes the creation of new forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.0.5
@@ -39,7 +39,7 @@ public class ForgeCreate {
    */
   private Inventory createDefaultView(Player player) {
     Inventory defaultView = Bukkit.createInventory(player, 27, "Forge-Create");
-    defaultView.setItem(26, createMenuItem(Material.GREEN_CONCRETE, "Save Recipe"));
+    defaultView.setItem(26, createItem(Material.GREEN_CONCRETE, "Save Recipe"));
     return defaultView;
   }
 
@@ -50,7 +50,7 @@ public class ForgeCreate {
    * @param displayName item name
    * @return named item
    */
-  private ItemStack createMenuItem(Material material, String displayName) {
+  private ItemStack createItem(Material material, String displayName) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(displayName);
@@ -118,6 +118,7 @@ public class ForgeCreate {
    *
    * @param item item to serialize
    * @return serialized item string
+   * @throws IOException item could not be encoded
    */
   private String encodeItem(ItemStack item) {
     try {
@@ -129,17 +130,18 @@ public class ForgeCreate {
       byte[] serializedItem = baos.toByteArray();
 
       return Base64.getEncoder().encodeToString(serializedItem);
-    } catch (IOException e) {
+    } catch (IOException ex) {
       return null;
     }
   }
 
   /**
-   * Writes a Forge recipe to storage.
+   * Writes a forge recipe to storage.
    *
    * @param e           inventory click event
    * @param itemName    item name
    * @param encodedItem serialized item string
+   * @throws IOException file could not be created
    */
   private void writeRecipeToFile(InventoryClickEvent e, String itemName, String encodedItem) {
     Player player = (Player) e.getWhoClicked();
@@ -150,8 +152,8 @@ public class ForgeCreate {
       player.sendMessage("Forge Recipe saved as: " + itemName);
       e.setCancelled(true);
       player.closeInventory();
-    } catch (IOException error) {
-      error.printStackTrace();
+    } catch (IOException ex) {
+      player.sendMessage("An error occurred while saving the recipe.");
     }
   }
 

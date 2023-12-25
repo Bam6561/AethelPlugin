@@ -16,7 +16,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeGUI is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.0.5
+ * @version 1.0.6
  * @since 1.0.2
  */
 public class ForgeGUI implements Listener {
@@ -31,14 +31,17 @@ public class ForgeGUI implements Listener {
     if (player.hasMetadata("menu")) {
       String menuType = player.getMetadata("menu").get(0).asString();
       switch (menuType) {
-        case "forge-craft" -> e.setCancelled(true);
-        case "forge-editor" -> readForgeEditorClick(e, player);
+        case "forge-craft" -> {
+          ForgeCraft forgeCraft = new ForgeCraft(player);
+          forgeCraft.interpretCraftClick(e);
+        }
         case "forge-create" -> {
           if (e.getSlot() == 26) {
             ForgeCreate forgeCreate = new ForgeCreate(player);
             forgeCreate.processSaveClick(e);
           }
         }
+        case "forge-editor" -> readForgeEditorClick(e, player);
       }
     }
   }
@@ -63,7 +66,7 @@ public class ForgeGUI implements Listener {
    * - Delete
    *
    * @param e      inventory click event
-   * @param player player
+   * @param player interacting player
    */
   private void readForgeEditorClick(InventoryClickEvent e, Player player) {
     switch (e.getSlot()) {
@@ -81,7 +84,7 @@ public class ForgeGUI implements Listener {
   /**
    * Creates a Forge-Modify menu.
    *
-   * @param player player
+   * @param player interacting player
    * @return Forge-Modify menu
    */
   private Inventory createModifyMenu(Player player) {
@@ -101,7 +104,7 @@ public class ForgeGUI implements Listener {
   /**
    * Creates a Forge-Delete menu.
    *
-   * @param player player
+   * @param player interacting player
    * @return Forge-Delete menu
    */
   private Inventory createDeleteMenu(Player player) {

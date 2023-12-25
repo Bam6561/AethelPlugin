@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 
 /**
- * ForgeRecipe is an object relating Forge recipe results with their components.
+ * ForgeRecipe is an object relating forge recipe results with their components.
  *
  * @author Danny Nguyen
  * @version 1.0.4
