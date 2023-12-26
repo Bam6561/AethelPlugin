@@ -1,8 +1,9 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.gui.ForgeCreate;
-import me.dannynguyen.aethel.gui.ForgeMain;
+import me.dannynguyen.aethel.inventories.forge.ForgeCreate;
+import me.dannynguyen.aethel.inventories.forge.ForgeMain;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * Forge is a command invocation that opens an inventory that allows the fabrication of items through clicking.
  *
  * @author Danny Nguyen
- * @version 1.0.7
+ * @version 1.0.9
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -37,34 +38,35 @@ public class Forge implements CommandExecutor {
     Player player = (Player) sender;
     if (args.length == 1) {
       if (player.isOp()) {
-        interpretForgeMenu(args[0].toLowerCase(), player);
+        interpretForgeRequest(args[0].toLowerCase(), player);
       } else {
-        player.sendMessage("Insufficient permissions.");
+        player.sendMessage(ChatColor.RED + "Insufficient permissions.");
       }
     } else {
-      player.openInventory(new ForgeMain(player).populateView(player, 0));
+      player.openInventory(new ForgeMain().populateView(player, 0));
       player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
       player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
     }
   }
 
   /**
-   * Either creates, modifies, or deletes a forge recipe.
+   * Either creates or modifies a recipe.
    *
    * @param parameter user input parameters
    * @param player    interacting player
    */
-  private void interpretForgeMenu(String parameter, Player player) {
+  private void interpretForgeRequest(String parameter, Player player) {
     switch (parameter) {
       case "create", "add" -> {
-        player.openInventory(new ForgeCreate(player).getDefaultView());
+        player.openInventory(new ForgeCreate().createDefaultView(player));
         player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
       }
       case "modify", "edit" -> {
-        player.openInventory(new ForgeMain(player).populateView(player, 0));
+        player.openInventory(new ForgeMain().populateView(player, 0));
         player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
         player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
       }
+      default -> player.sendMessage(ChatColor.RED + "Parameter not recognized.");
     }
   }
 }

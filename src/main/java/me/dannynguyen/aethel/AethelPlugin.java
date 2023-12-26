@@ -2,26 +2,20 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.Forge;
 import me.dannynguyen.aethel.commands.Ping;
-import me.dannynguyen.aethel.gui.ForgeListener;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import org.bukkit.inventory.ItemStack;
+import me.dannynguyen.aethel.objects.ForgeRecipeReader;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.io.BukkitObjectInputStream;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Scanner;
 
 /**
  * AethelPlugin represents the plugin an as object. Through event listeners and command executors,
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.0.6
+ * @version 1.0.9
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -38,7 +32,7 @@ public class AethelPlugin extends JavaPlugin {
   public void onEnable() {
     readResourceFiles(getResourceDirectory());
 
-    getServer().getPluginManager().registerEvents(new ForgeListener(), this);
+    getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
     this.getCommand("forge").setExecutor(new Forge());
     this.getCommand("ping").setExecutor(new Ping());
@@ -69,61 +63,7 @@ public class AethelPlugin extends JavaPlugin {
   private void readForgeRecipes(File directory) {
     File[] forgeRecipes = directory.listFiles();
     for (File file : forgeRecipes) {
-      readForgeRecipe(file);
-    }
-  }
-
-  /**
-   * Reads a forge recipe and loads it into memory.
-   *
-   * @param file forge recipe file
-   * @throws FileNotFoundException file not found
-   */
-  private void readForgeRecipe(File file) {
-    ArrayList<ItemStack> results = new ArrayList<>();
-    ArrayList<ItemStack> components = new ArrayList<>();
-    int recipeDataType = 1;
-
-    try {
-      Scanner scanner = new Scanner(file);
-      scanner.nextLine(); // Skip Results line
-      while (scanner.hasNextLine()) {
-        String data = scanner.nextLine();
-
-        if (data.equals("Components")) {
-          recipeDataType++;
-          data = scanner.nextLine();
-        }
-
-        ItemStack item = decodeItem(data);
-        if (item != null) {
-          switch (recipeDataType) {
-            case 1 -> results.add(decodeItem(data));
-            case 2 -> components.add(decodeItem(data));
-          }
-        }
-      }
-      this.forgeRecipes.add(new ForgeRecipe(results, components));
-    } catch (FileNotFoundException ex) {
-    }
-  }
-
-  /**
-   * Deserializes an item.
-   *
-   * @param data serialized item string
-   * @return ItemStack representing item
-   * @throws IOException            file not found
-   * @throws ClassNotFoundException item could not be decoded
-   */
-  private ItemStack decodeItem(String data) {
-    try {
-      ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
-      BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
-      ItemStack item = (ItemStack) bois.readObject();
-      return item;
-    } catch (IOException | ClassNotFoundException ex) {
-      return null;
+      this.forgeRecipes.add(new ForgeRecipeReader().readForgeRecipe(file));
     }
   }
 
