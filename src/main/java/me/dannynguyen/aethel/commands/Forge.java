@@ -10,11 +10,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.io.File;
+
 /**
  * Forge is a command invocation that opens an inventory that allows the fabrication of items through clicking.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.0
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -50,7 +52,7 @@ public class Forge implements CommandExecutor {
   }
 
   /**
-   * Either creates or modifies a recipe.
+   * Either creates or modifies a recipe or reloads forge recipes in memory.
    *
    * @param parameter user input parameters
    * @param player    interacting player
@@ -65,6 +67,11 @@ public class Forge implements CommandExecutor {
         player.openInventory(new ForgeMain().populateView(player, 0));
         player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
         player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+      }
+      case "reload" -> {
+        AethelPlugin aethelPlugin = AethelPlugin.getInstance();
+        aethelPlugin.readForgeRecipes(new File(aethelPlugin.getResourceDirectory() + "/forge/"));
+        player.sendMessage(ChatColor.GREEN + "[Reload] " + ChatColor.WHITE + "Forge Recipes");
       }
       default -> player.sendMessage(ChatColor.RED + "Parameter not recognized.");
     }

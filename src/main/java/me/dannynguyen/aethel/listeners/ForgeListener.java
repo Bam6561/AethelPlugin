@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.inventories.forge.ForgeCraft;
 import me.dannynguyen.aethel.inventories.forge.ForgeDelete;
 import me.dannynguyen.aethel.inventories.forge.ForgeMain;
 import me.dannynguyen.aethel.inventories.forge.ForgeModify;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.0
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -50,7 +50,8 @@ public class ForgeListener {
   private void interpretMenuContextualClick(InventoryClickEvent e, String menuType, Player player) {
     switch (menuType) {
       case "forge-craft" -> {
-        Bukkit.getLogger().warning("Craft: " + e.getCurrentItem().getType());
+        new ForgeCraft().craftRecipe(e, player);
+        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
       }
       case "forge-modify" -> interpretClickType(e, player);
     }

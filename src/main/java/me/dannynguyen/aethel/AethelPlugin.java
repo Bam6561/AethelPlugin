@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -60,7 +60,8 @@ public class AethelPlugin extends JavaPlugin {
    *
    * @param directory forge recipe directory file path
    */
-  private void readForgeRecipes(File directory) {
+  public void readForgeRecipes(File directory) {
+    this.forgeRecipes.clear();
     File[] forgeRecipes = directory.listFiles();
     for (File file : forgeRecipes) {
       this.forgeRecipes.add(new ForgeRecipeReader().readForgeRecipe(file));
