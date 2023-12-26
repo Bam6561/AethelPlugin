@@ -18,7 +18,7 @@ import java.util.List;
  * ForgeMain is a shared menu under the Forge command for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.1
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -144,8 +144,8 @@ public class ForgeMain {
       ArrayList<ItemStack> results = forgeRecipe.getResults();
       ArrayList<ItemStack> components = forgeRecipe.getComponents();
 
-      view.setItem(j, createItemDetails(results.get(0), results, false));
-      view.setItem(j + 1, createItemDetails(new ItemStack(Material.PAPER), components, true));
+      view.setItem(j, createItemDetails(results.get(0), results, "results"));
+      view.setItem(j + 1, createItemDetails(new ItemStack(Material.PAPER), components, "components"));
       j += 2;
     }
     return view;
@@ -159,12 +159,12 @@ public class ForgeMain {
    * ...
    * </p>
    *
-   * @param displayItem      item to be shown
-   * @param relatedItems     results or components of the recipe
-   * @param renameComponents components of the recipe
+   * @param displayItem  item to be shown
+   * @param relatedItems results or components of the recipe
+   * @param relationType results or components of the recipe
    * @return item labelled with its results of components
    */
-  private ItemStack createItemDetails(ItemStack displayItem, ArrayList<ItemStack> relatedItems, boolean renameComponents) {
+  private ItemStack createItemDetails(ItemStack displayItem, ArrayList<ItemStack> relatedItems, String relationType) {
     List<String> itemDetails = new ArrayList<>();
     for (ItemStack item : relatedItems) {
       int amount = item.getAmount();
@@ -174,7 +174,11 @@ public class ForgeMain {
 
     ItemStack finalItem = new ItemStack(displayItem.getType(), 1);
     ItemMeta meta = finalItem.getItemMeta();
-    if (renameComponents) meta.setDisplayName(ChatColor.RESET + "Components");
+    if (relationType.equals("results")) {
+      meta.setDisplayName(ChatColor.RESET + getItemName(displayItem));
+    } else if (relationType.equals("components")) {
+      meta.setDisplayName(ChatColor.RESET + "Components");
+    }
     meta.setLore(itemDetails);
     finalItem.setItemMeta(meta);
     return finalItem;

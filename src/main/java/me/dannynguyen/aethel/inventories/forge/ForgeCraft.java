@@ -47,11 +47,11 @@ public class ForgeCraft {
       }
     }
   }
-
+  
   /**
    * Matches the clicked item to its forge recipe.
    *
-   * @param e inventory click evnet
+   * @param e inventory click event
    * @return index of the matching item
    */
   private int getRecipeFileIndex(InventoryClickEvent e, ArrayList<ForgeRecipe> forgeRecipes) {
