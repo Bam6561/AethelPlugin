@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.0
+ * @version 1.1.2
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -35,7 +35,11 @@ public class ForgeListener {
         player.openInventory(new ForgeMain().populateView(player, pageRequested + 1));
         player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), menuType));
       }
-      default -> interpretMenuContextualClick(e, menuType, player);
+      default -> {
+        if (e.getSlot() > 8 && e.getCurrentItem() != null) {
+          interpretMenuContextualClick(e, menuType, player);
+        }
+      }
     }
     e.setCancelled(true);
   }
@@ -61,14 +65,12 @@ public class ForgeListener {
    * Either modifies or deletes a forge recipe file.
    */
   private void interpretClickType(InventoryClickEvent e, Player player) {
-    if (e.getSlot() > 8 && e.getCurrentItem() != null) {
-      ClickType clickType = e.getClick();
-      if (clickType.isLeftClick()) {
-        new ForgeModify().modifyRecipeFile(e);
-        player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
-      } else if (clickType.isRightClick()) {
-        new ForgeDelete().deleteRecipeFile(e);
-      }
+    ClickType clickType = e.getClick();
+    if (clickType.isLeftClick()) {
+      new ForgeModify().modifyRecipeFile(e);
+      player.setMetadata("menu", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+    } else if (clickType.isRightClick()) {
+      new ForgeDelete().deleteRecipeFile(e);
     }
   }
 }

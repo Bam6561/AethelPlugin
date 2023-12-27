@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * ForgeCraft is a menu option under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.0
+ * @version 1.1.2
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -36,7 +36,7 @@ public class ForgeCraft {
 
         if (checkSufficientComponents(player, components)) {
           for (ItemStack item : components) {
-            player.getInventory().removeItem(new ItemStack(item.getType(), item.getAmount()));
+            player.getInventory().removeItem(item);
           }
           for (ItemStack item : results) {
             player.getInventory().addItem(item);
@@ -47,7 +47,7 @@ public class ForgeCraft {
       }
     }
   }
-  
+
   /**
    * Matches the clicked item to its forge recipe.
    *

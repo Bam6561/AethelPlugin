@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * ForgeModify is a menu option under the Forge command that deletes forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.2
  * @since 1.0.9
  */
 public class ForgeDelete {
@@ -30,7 +30,8 @@ public class ForgeDelete {
     ForgeRecipe forgeRecipe = forgeRecipes.get(getRecipeFileIndex(e, forgeRecipes));
 
     forgeRecipe.getRecipeFile().delete();
-    player.sendMessage(ChatColor.RED + "[Delete] " + ChatColor.WHITE + forgeRecipe.getRecipeName().toLowerCase() + ".txt");
+    player.sendMessage(ChatColor.RED + "[Delete] " + ChatColor.WHITE +
+        forgeRecipe.getRecipeName().toLowerCase().replace(" ", "_") + ".txt");
   }
 
   /**
