@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.commands.Forge;
 import me.dannynguyen.aethel.commands.Ping;
 import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.objects.ForgeRecipeReader;
+import me.dannynguyen.aethel.readers.ForgeRecipeReader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

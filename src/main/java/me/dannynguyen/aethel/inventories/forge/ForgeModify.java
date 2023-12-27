@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.objects.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;

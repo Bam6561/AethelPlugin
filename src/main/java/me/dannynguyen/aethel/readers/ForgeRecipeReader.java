@@ -1,6 +1,7 @@
-package me.dannynguyen.aethel.objects;
+package me.dannynguyen.aethel.readers;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.objects.ForgeRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 

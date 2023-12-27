@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.ForgeMain;
-import me.dannynguyen.aethel.objects.ForgeRecipeReader;
+import me.dannynguyen.aethel.readers.ForgeRecipeReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

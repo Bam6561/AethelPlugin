@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.objects;
+package me.dannynguyen.aethel.readers;
 
 import org.bukkit.inventory.ItemStack;
 

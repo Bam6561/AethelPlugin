@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.objects.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
