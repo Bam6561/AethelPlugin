@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
+import me.dannynguyen.aethel.objects.ItemMetaReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.4
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -51,7 +52,7 @@ public class ForgeCraft {
    * @return index of the matching item
    */
   private int getRecipeIndex(InventoryClickEvent e, ArrayList<ForgeRecipe> forgeRecipes) {
-    String itemName = getItemName(e.getCurrentItem());
+    String itemName = new ItemMetaReader().getItemName(e.getCurrentItem());
     int matchingIndex = -1;
     for (int i = 0; i < forgeRecipes.size(); i++) {
       String recipeName = forgeRecipes.get(i).getRecipeName();
@@ -77,19 +78,5 @@ public class ForgeCraft {
       }
     }
     return true;
-  }
-
-  /**
-   * Returns either an item's renamed value or its material.
-   *
-   * @param item item
-   * @return effective item name
-   */
-  private String getItemName(ItemStack item) {
-    if (item.getItemMeta().hasDisplayName()) {
-      return item.getItemMeta().getDisplayName();
-    } else {
-      return item.getType().name();
-    }
   }
 }

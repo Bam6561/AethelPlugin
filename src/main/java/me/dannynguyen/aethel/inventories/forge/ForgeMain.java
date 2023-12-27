@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
+import me.dannynguyen.aethel.objects.ItemMetaReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ import java.util.List;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.4
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -182,34 +183,21 @@ public class ForgeMain {
   private ItemStack createResultsDisplay(ItemStack displayItem, ArrayList<ItemStack> results) {
     if (results.size() > 1) {
       List<String> recipeResults = new ArrayList<>();
+      ItemMetaReader metaReader = new ItemMetaReader();
       for (ItemStack item : results) {
         int amount = item.getAmount();
-        String itemName = getItemName(item);
+        String itemName = metaReader.getItemName(item);
         recipeResults.add(ChatColor.AQUA + "x" + amount + ChatColor.WHITE + " " + itemName);
       }
 
       ItemStack resultDisplay = new ItemStack(displayItem.getType());
       ItemMeta meta = resultDisplay.getItemMeta();
-      meta.setDisplayName(getItemName(displayItem));
+      meta.setDisplayName(metaReader.getItemName(displayItem));
       meta.setLore(recipeResults);
       resultDisplay.setItemMeta(meta);
       return resultDisplay;
     } else {
       return displayItem;
-    }
-  }
-
-  /**
-   * Returns either an item's renamed value or its material.
-   *
-   * @param item item
-   * @return item's effective name
-   */
-  private String getItemName(ItemStack item) {
-    if (item.getItemMeta().hasDisplayName()) {
-      return item.getItemMeta().getDisplayName();
-    } else {
-      return item.getType().name();
     }
   }
 }

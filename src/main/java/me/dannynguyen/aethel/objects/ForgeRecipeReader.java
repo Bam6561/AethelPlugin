@@ -16,7 +16,7 @@ import java.util.Scanner;
  * ForgeRecipeReader decodes forge recipes from storage.
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.4
  * @since 1.0.9
  */
 public class ForgeRecipeReader {
@@ -64,7 +64,7 @@ public class ForgeRecipeReader {
           }
         }
       }
-      return new ForgeRecipe(file, getItemName(results.get(0)), results, components);
+      return new ForgeRecipe(file, new ItemMetaReader().getItemName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
     }
@@ -86,20 +86,6 @@ public class ForgeRecipeReader {
       return item;
     } catch (IOException | ClassNotFoundException ex) {
       return null;
-    }
-  }
-
-  /**
-   * Returns either an item's renamed value or its material.
-   *
-   * @param item item
-   * @return effective item name
-   */
-  private String getItemName(ItemStack item) {
-    if (item.getItemMeta().hasDisplayName()) {
-      return item.getItemMeta().getDisplayName();
-    } else {
-      return item.getType().name();
     }
   }
 }

@@ -20,7 +20,7 @@ import java.util.Base64;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.4
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -31,7 +31,7 @@ public class ForgeCreate {
    * @return ForgeCreate inventory
    */
   public Inventory createInventory(Player player) {
-    String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.GREEN + " Create";
+    String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Create";
     Inventory inv = Bukkit.createInventory(player, 27, title);
     inv.setItem(25, createItem(Material.GREEN_CONCRETE, "Save Recipe"));
     inv.setItem(26, createItem(Material.ARROW, "Back"));

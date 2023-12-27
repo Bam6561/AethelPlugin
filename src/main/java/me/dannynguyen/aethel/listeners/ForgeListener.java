@@ -10,7 +10,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.4
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -24,10 +24,9 @@ public class ForgeListener {
    * @param action type of interaction
    */
   public void interpretForgeMainClick(InventoryClickEvent e, String action) {
-    int slotClicked = e.getSlot();
-    if (e.getInventory().getItem(slotClicked) != null) {
+    if (e.getCurrentItem() != null) {
       Player player = (Player) e.getWhoClicked();
-      switch (slotClicked) {
+      switch (e.getSlot()) {
         case 0 -> previousRecipePage(player, action);
         case 3 -> openForgeCreateInventory(player);
         case 4 -> openForgeModifyInventory(player);
@@ -35,8 +34,8 @@ public class ForgeListener {
         case 8 -> nextRecipePage(player, action);
         default -> interpretContextualClick(e, action, player);
       }
-      e.setCancelled(true);
     }
+    e.setCancelled(true);
   }
 
   /**
@@ -76,6 +75,7 @@ public class ForgeListener {
         e.setCancelled(true);
       }
     }
+
   }
 
   /**
