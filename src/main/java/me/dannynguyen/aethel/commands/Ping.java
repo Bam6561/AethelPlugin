@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  * Ping is a command invocation that returns the player's latency.
  *
  * @author Danny Nguyen
- * @version 1.0.2
+ * @version 1.1.3
  * @since 1.0.1
  */
 public class Ping implements CommandExecutor {
@@ -21,7 +21,7 @@ public class Ping implements CommandExecutor {
       return true;
     }
     Player player = (Player) sender;
-    player.sendMessage(ChatColor.GRAY + String.valueOf(player.getPing()) + "ms");
+    player.sendMessage("Pong! " + ChatColor.GRAY + player.getPing() + "ms");
     return true;
   }
 }

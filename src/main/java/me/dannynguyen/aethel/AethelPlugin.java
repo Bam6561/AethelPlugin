@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.1.0
+ * @version 1.1.3
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -49,48 +49,20 @@ public class AethelPlugin extends JavaPlugin {
 
     File forgeRecipeDirectory = new File(filePath + "/forge");
     if (forgeRecipeDirectory.exists()) {
-      readForgeRecipes(new File(filePath + "/forge/"));
+      new ForgeRecipeReader().loadForgeRecipes();
     } else {
       forgeRecipeDirectory.mkdir();
     }
   }
 
-  /**
-   * Reads the forge recipe directory.
-   *
-   * @param directory forge recipe directory file path
-   */
-  public void readForgeRecipes(File directory) {
-    this.forgeRecipes.clear();
-    File[] forgeRecipes = directory.listFiles();
-    for (File file : forgeRecipes) {
-      this.forgeRecipes.add(new ForgeRecipeReader().readForgeRecipe(file));
-    }
-  }
-
-  /**
-   * Returns the file path of the plugin's resource directory.
-   *
-   * @return resource directory
-   */
   public String getResourceDirectory() {
     return this.resourceDirectory;
   }
 
-  /**
-   * Returns the ForgeRecipes loaded into memory.
-   *
-   * @return arraylist containing forge recipes
-   */
   public ArrayList<ForgeRecipe> getForgeRecipes() {
     return this.forgeRecipes;
   }
 
-  /**
-   * Returns an AethelPlugin object that identifies this plugin.
-   *
-   * @return plugin
-   */
   public static AethelPlugin getInstance() {
     return getPlugin(AethelPlugin.class);
   }

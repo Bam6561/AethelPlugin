@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.objects;
 
+import me.dannynguyen.aethel.AethelPlugin;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 
@@ -15,17 +16,31 @@ import java.util.Scanner;
  * ForgeRecipeReader decodes forge recipes from storage.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.3
  * @since 1.0.9
  */
 public class ForgeRecipeReader {
   /**
-   * Reads a recipe file and loads it into memory.
+   * (Re)loads recipes into memory.
+   */
+  public void loadForgeRecipes() {
+    AethelPlugin aethelPlugin = AethelPlugin.getInstance();
+    ArrayList<ForgeRecipe> forgeRecipes = aethelPlugin.getForgeRecipes();
+    forgeRecipes.clear();
+
+    File[] forgeRecipeDirectory = new File(aethelPlugin.getResourceDirectory() + "/forge").listFiles();
+    for (File file : forgeRecipeDirectory) {
+      forgeRecipes.add(readRecipe(file));
+    }
+  }
+
+  /**
+   * Reads a recipe file.
    *
    * @param file recipe file
    * @throws FileNotFoundException file not found
    */
-  public ForgeRecipe readForgeRecipe(File file) {
+  public ForgeRecipe readRecipe(File file) {
     ArrayList<ItemStack> results = new ArrayList<>();
     ArrayList<ItemStack> components = new ArrayList<>();
     int recipeDataType = 1;
@@ -49,7 +64,6 @@ public class ForgeRecipeReader {
           }
         }
       }
-
       return new ForgeRecipe(file, getItemName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
@@ -60,7 +74,7 @@ public class ForgeRecipeReader {
    * Deserializes an item.
    *
    * @param data serialized item string
-   * @return ItemStack representing item
+   * @return item
    * @throws IOException            file not found
    * @throws ClassNotFoundException item could not be decoded
    */
@@ -81,7 +95,7 @@ public class ForgeRecipeReader {
    * @param item item
    * @return effective item name
    */
-  public String getItemName(ItemStack item) {
+  private String getItemName(ItemStack item) {
     if (item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
     } else {

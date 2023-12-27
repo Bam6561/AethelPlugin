@@ -14,28 +14,28 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 
 /**
- * ForgeCreate is a menu option under the Forge command that processes the creation of new forge recipes.
+ * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.0.9
+ * @version 1.1.3
  * @since 1.0.5
  */
 public class ForgeCreate {
   /**
-   * Creates the default view for the Forge-Create menu.
+   * Creates and names a ForgeCreate inventory.
    *
    * @param player interacting player
-   * @return Forge-Create default view
+   * @return ForgeCreate inventory
    */
-  public Inventory createDefaultView(Player player) {
-    Inventory defaultView = Bukkit.createInventory(player, 27, "Forge");
-    defaultView.setItem(26, createItem(Material.GREEN_CONCRETE, "Save Recipe"));
-    return defaultView;
+  public Inventory createInventory(Player player) {
+    String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.GREEN + " Create";
+    Inventory inv = Bukkit.createInventory(player, 27, title);
+    inv.setItem(25, createItem(Material.GREEN_CONCRETE, "Save Recipe"));
+    inv.setItem(26, createItem(Material.ARROW, "Back"));
+    return inv;
   }
 
   /**
@@ -54,41 +54,36 @@ public class ForgeCreate {
   }
 
   /**
-   * Converts the user's Forge-Create inventory into a readable view to name & save the recipe.
+   * Checks if the ForgeCreate inventory was formatted correctly before saving the recipe.
    *
    * @param e inventory click event
    */
-  public void processSaveClick(InventoryClickEvent e) {
-    ArrayList<ItemStack> view = new ArrayList<>();
-    Collections.addAll(view, e.getInventory().getContents());
-
-    String fileName = nameRecipeFile(view);
-    String encodedRecipe = encodeRecipe(view);
-
+  public void readSaveClick(InventoryClickEvent e) {
     Player player = (Player) e.getWhoClicked();
-    boolean invalidFileName = fileName == null;
-    boolean invalidRecipe = encodedRecipe == null;
-
-    if (invalidFileName) {
-      player.sendMessage(ChatColor.RED + "Recipe results cannot be empty.");
-      e.setCancelled(true);
-    } else if (invalidRecipe) {
-      player.sendMessage(ChatColor.RED + "Recipe components cannot be empty.");
-      e.setCancelled(true);
+    ItemStack[] inv = e.getInventory().getContents();
+    String fileName = nameRecipeFile(inv);
+    if (fileName != null) {
+      String encodedRecipe = encodeRecipe(inv);
+      if (encodedRecipe != null) {
+        saveRecipeToFile(e, player, fileName, encodedRecipe);
+      } else {
+        player.sendMessage(ChatColor.RED + "Recipe components cannot be empty.");
+      }
     } else {
-      saveRecipeToFile(e, fileName, encodedRecipe);
+      player.sendMessage(ChatColor.RED + "Recipe results cannot be empty.");
     }
+    e.setCancelled(true);
   }
 
   /**
    * Names a recipe by the first item in the results row.
    *
-   * @param view items in the inventory
+   * @param inv items in the inventory
    * @return name of the recipe
    */
-  private String nameRecipeFile(ArrayList<ItemStack> view) {
+  private String nameRecipeFile(ItemStack[] inv) {
     for (int i = 0; i < 9; i++) {
-      ItemStack item = view.get(i);
+      ItemStack item = inv[i];
       if (item != null) {
         if (item.getItemMeta().hasDisplayName()) {
           return item.getItemMeta().getDisplayName().toLowerCase().replace(" ", "_");
@@ -102,28 +97,30 @@ public class ForgeCreate {
 
   /**
    * Encodes the inventory by its results and components.
+   * <p>
+   * At this stage in the process, it is known the results are non-null,
+   * so the method checks if the components are non-null first.
+   * <p>
    *
-   * @param view items in the inventory
+   * @param inv items in the inventory
    * @return encoded recipe string
    */
-  private String encodeRecipe(ArrayList<ItemStack> view) {
+  private String encodeRecipe(ItemStack[] inv) {
+    StringBuilder components = new StringBuilder("Components\n");
+    for (int i = 9; i < 24; i++) {
+      ItemStack item = inv[i];
+      if (item != null) components.append(encodeItem(inv[i]) + "\n");
+    }
+
+    if (components.toString().equals("Components\n")) return null;
+
     StringBuilder results = new StringBuilder("Results\n");
     for (int i = 0; i < 9; i++) {
-      ItemStack item = view.get(i);
-      if (item != null) results.append(encodeItem(view.get(i)) + "\n");
+      ItemStack item = inv[i];
+      if (item != null) results.append(encodeItem(inv[i]) + "\n");
     }
 
-    StringBuilder components = new StringBuilder("Components\n");
-    for (int i = 9; i < 25; i++) {
-      ItemStack item = view.get(i);
-      if (item != null) components.append(encodeItem(view.get(i)) + "\n");
-    }
-
-    if (components.toString().equals("Components\n")) {
-      return null;
-    } else {
-      return results.append(components).toString();
-    }
+    return results.append(components).toString();
   }
 
   /**
@@ -139,10 +136,7 @@ public class ForgeCreate {
       BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);
       boos.writeObject(item);
       boos.flush();
-
-      byte[] encodedItem = baos.toByteArray();
-
-      return Base64.getEncoder().encodeToString(encodedItem);
+      return Base64.getEncoder().encodeToString(baos.toByteArray());
     } catch (IOException ex) {
       return null;
     }
@@ -156,15 +150,13 @@ public class ForgeCreate {
    * @param encodedItem encoded item string
    * @throws IOException file could not be created
    */
-  private void saveRecipeToFile(InventoryClickEvent e, String itemName, String encodedItem) {
-    Player player = (Player) e.getWhoClicked();
+  private void saveRecipeToFile(InventoryClickEvent e, Player player, String itemName, String encodedItem) {
     try {
-      FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResourceDirectory() + "/forge/" + itemName + ".txt");
+      FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResourceDirectory()
+          + "/forge/" + itemName + ".txt");
       fw.write(encodedItem);
       fw.close();
-      player.sendMessage(ChatColor.GREEN + "[Save] " + ChatColor.WHITE + itemName + ".txt");
-      e.setCancelled(true);
-      player.closeInventory();
+      player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + ".txt");
     } catch (IOException ex) {
       player.sendMessage(ChatColor.RED + "An error occurred while saving the recipe.");
     }

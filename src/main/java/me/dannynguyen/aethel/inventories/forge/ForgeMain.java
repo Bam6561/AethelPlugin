@@ -15,180 +15,195 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ForgeMain is a shared menu under the Forge command for crafting, modifying, and deleting forge recipes.
+ * ForgeMain is a shared inventory under the Forge command that supports
+ * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.1
+ * @version 1.1.3
  * @since 1.0.6
  */
 public class ForgeMain {
   /**
-   * Creates the default view for the Forge-Main menu.
+   * Creates and names a ForgeMain inventory.
    *
    * @param player interacting player
-   * @return Forge-Main default view
+   * @param action type of interaction
+   * @return ForgeMain inventory
    */
-  public Inventory createDefaultView(Player player) {
-    Inventory craftMenu = Bukkit.createInventory(player, 54, "Forge");
-    craftMenu.setItem(0, createItem(Material.RED_WOOL, "Previous Page"));
-    for (int i = 1; i < 8; i++) {
-      craftMenu.setItem(i, createItem(Material.BLACK_STAINED_GLASS_PANE, ""));
+  private Inventory createInventory(Player player, String action) {
+    String title = ChatColor.DARK_GRAY + "Forge";
+    switch (action) {
+      case "craft" -> title += ChatColor.BLUE + " Craft";
+      case "modify" -> title += ChatColor.YELLOW + " Modify";
+      case "delete" -> title += ChatColor.RED + " Delete";
     }
-    craftMenu.setItem(8, createItem(Material.GREEN_WOOL, "Next Page"));
-    return craftMenu;
+    Inventory inv = Bukkit.createInventory(player, 54, title);
+    switch (action) {
+      case "modify" -> {
+        inv.setItem(3, createItem(Material.GREEN_CONCRETE, "Create Recipe"));
+        inv.setItem(5, createItem(Material.RED_CONCRETE, "Delete Recipe"));
+      }
+      case "delete" -> {
+        inv.setItem(3, createItem(Material.GREEN_CONCRETE, "Create Recipe"));
+        inv.setItem(4, createItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
+      }
+    }
+    return inv;
   }
 
   /**
-   * Creates a named item.
+   * Creates and names an item.
    *
-   * @param material    item material
-   * @param displayName item name
+   * @param material material
+   * @param itemName item name
    * @return named item
    */
-  private ItemStack createItem(Material material, String displayName) {
-    ItemStack item = new ItemStack(material, 1);
+  private ItemStack createItem(Material material, String itemName) {
+    ItemStack item = new ItemStack(material);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(itemName);
     item.setItemMeta(meta);
     return item;
   }
 
   /**
-   * Populates the default Forge-Main menu with recipes loaded from memory.
+   * Determines which page of recipes to view.
    *
-   * @param player        interacting player
-   * @param pageRequested recipe page to view
+   * @param player      interacting player
+   * @param action      type of interaction
+   * @param pageRequest page to view
+   * @return ForgeMain inventory with recipes
    */
-  public Inventory populateView(Player player, int pageRequested) {
-    Inventory view = new ForgeMain().createDefaultView(player);
+  public Inventory processPageToDisplay(Player player, String action, int pageRequest) {
+    Inventory inv = new ForgeMain().createInventory(player, action);
     ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>(AethelPlugin.getInstance().getForgeRecipes());
 
     int numberOfRecipes = forgeRecipes.size();
     int numberOfPages = calculateNumberOfPages(numberOfRecipes);
-    int viewPageNumber = calculateViewPageNumber(pageRequested, numberOfPages);
-    int startIndexOnPage = calculateViewPageStartIndex(numberOfRecipes, viewPageNumber);
-    int endIndexOnPage = Math.min(startIndexOnPage + 20, numberOfRecipes);
+    int viewPageNumber = calculateViewPageNumber(pageRequest, numberOfPages);
+    int startIndex = calculateStartIndex(numberOfRecipes, viewPageNumber);
+    int endIndex = Math.min(startIndex + 45, numberOfRecipes);
+
+    // Add previous and next page buttons
+    if (viewPageNumber > 0) {
+      inv.setItem(0, createItem(Material.RED_WOOL, "Previous Page"));
+    }
+    if (numberOfPages - 1 > viewPageNumber) {
+      inv.setItem(8, createItem(Material.GREEN_WOOL, "Next Page"));
+    }
 
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), viewPageNumber));
-    return createViewPage(view, forgeRecipes, startIndexOnPage, endIndexOnPage);
+    return loadRecipesIntoInventory(inv, forgeRecipes, startIndex, endIndex);
   }
 
   /**
    * Determines how many pages of recipes exist and whether there are partially filled pages.
    *
    * @param numberOfRecipes number of recipes
-   * @return number of recipe pages
+   * @return number of pages
    */
   private int calculateNumberOfPages(int numberOfRecipes) {
-    int numberOfPages = numberOfRecipes / 20;
-    boolean partiallyFilledPage = (numberOfRecipes % 20) > 0;
-    if (partiallyFilledPage) {
-      numberOfPages += 1;
-    }
+    int numberOfPages = numberOfRecipes / 45;
+    boolean partiallyFilledPage = (numberOfRecipes % 45) > 0;
+    if (partiallyFilledPage) numberOfPages += 1;
     return numberOfPages;
   }
 
   /**
-   * Determines which page to be viewed.
+   * Determines which page is viewed.
    *
-   * @param pageRequested recipe page to view
-   * @param numberOfPages number of recipe pages
-   * @return interpreted recipe page to view
+   * @param pageRequest   page to view
+   * @param numberOfPages number of pages
+   * @return interpreted page to view
    */
-  private int calculateViewPageNumber(int pageRequested, int numberOfPages) {
-    boolean requestMoreThanTotalPages = pageRequested >= numberOfPages;
-    boolean requestNegativePageNumber = pageRequested < 0;
+  private int calculateViewPageNumber(int pageRequest, int numberOfPages) {
+    boolean requestMoreThanTotalPages = pageRequest >= numberOfPages;
+    boolean requestNegativePageNumber = pageRequest < 0;
     if (requestMoreThanTotalPages) {
-      pageRequested = numberOfPages - 1;
+      pageRequest = numberOfPages - 1;
     } else if (requestNegativePageNumber) {
-      pageRequested = 0;
+      pageRequest = 0;
     }
-    return pageRequested;
+    return pageRequest;
   }
 
   /**
-   * Determines which recipe index to begin displaying on page.
+   * Determines which recipe index to begin displaying on the page.
    *
    * @param numberOfRecipes number of recipes
-   * @param pageRequested   recipe page to view
+   * @param pageRequest     page to view
    * @return starting recipe index on page
    */
-  private int calculateViewPageStartIndex(int numberOfRecipes, int pageRequested) {
-    int startIndex = pageRequested * 20;
+  private int calculateStartIndex(int numberOfRecipes, int pageRequest) {
+    int startIndex = pageRequest * 45;
     if (startIndex == numberOfRecipes) {
-      startIndex -= 20;
+      startIndex -= 45;
     }
     return startIndex;
   }
 
   /**
-   * Creates the Forge-Main page the player wishes to view.
+   * Loads recipes into the ForgeMain inventory from memory.
    *
-   * @param view       items in the inventory
-   * @param recipes    recipes
-   * @param startIndex starting index
-   * @param endIndex   ending index
-   * @return Forge-Main menu page
+   * @param inv        inventory
+   * @param recipes    recipes loaded from memory
+   * @param startIndex starting recipe index
+   * @param endIndex   ending recipe index
+   * @return ForgeMain inventory with recipes
    */
-  private Inventory createViewPage(Inventory view, ArrayList<ForgeRecipe> recipes, int startIndex, int endIndex) {
+  private Inventory loadRecipesIntoInventory(Inventory inv, ArrayList<ForgeRecipe> recipes, int startIndex, int endIndex) {
     // i = recipes index
     // j = inventory slot index
 
-    // Skip first inventory row
+    // Recipes begin on the second row
     int j = 9;
     for (int i = startIndex; i < endIndex; i++) {
-      //Skip end inventory row slots
-      if (j == 17 || j == 26 || j == 35 || j == 44) j++;
-
       ForgeRecipe forgeRecipe = recipes.get(i);
       ArrayList<ItemStack> results = forgeRecipe.getResults();
-      ArrayList<ItemStack> components = forgeRecipe.getComponents();
 
-      view.setItem(j, createItemDetails(results.get(0), results, "results"));
-      view.setItem(j + 1, createItemDetails(new ItemStack(Material.PAPER), components, "components"));
-      j += 2;
+      inv.setItem(j, createResultsDisplay(results.get(0), results));
+      j++;
     }
-    return view;
+    return inv;
   }
 
   /**
-   * Creates expanded item details on a display item showing either the results or components of a recipe.
+   * Creates an item display for recipes with multiple results.
    * <p>
    * Format:
-   * [Amount] Material
+   * x<Amount> Item
    * ...
    * </p>
    *
-   * @param displayItem  item to be shown
-   * @param relatedItems results or components of the recipe
-   * @param relationType results or components of the recipe
-   * @return item labelled with its results of components
+   * @param displayItem item to be shown
+   * @param results     recipe results
+   * @return display item labeled with its result(s)
    */
-  private ItemStack createItemDetails(ItemStack displayItem, ArrayList<ItemStack> relatedItems, String relationType) {
-    List<String> itemDetails = new ArrayList<>();
-    for (ItemStack item : relatedItems) {
-      int amount = item.getAmount();
-      String itemName = getItemName(item);
-      itemDetails.add(ChatColor.AQUA + "x" + amount + ChatColor.WHITE + " " + itemName);
-    }
+  private ItemStack createResultsDisplay(ItemStack displayItem, ArrayList<ItemStack> results) {
+    if (results.size() > 1) {
+      List<String> recipeResults = new ArrayList<>();
+      for (ItemStack item : results) {
+        int amount = item.getAmount();
+        String itemName = getItemName(item);
+        recipeResults.add(ChatColor.AQUA + "x" + amount + ChatColor.WHITE + " " + itemName);
+      }
 
-    ItemStack finalItem = new ItemStack(displayItem.getType(), 1);
-    ItemMeta meta = finalItem.getItemMeta();
-    if (relationType.equals("results")) {
-      meta.setDisplayName(ChatColor.RESET + getItemName(displayItem));
-    } else if (relationType.equals("components")) {
-      meta.setDisplayName(ChatColor.RESET + "Components");
+      ItemStack resultDisplay = new ItemStack(displayItem.getType());
+      ItemMeta meta = resultDisplay.getItemMeta();
+      meta.setDisplayName(getItemName(displayItem));
+      meta.setLore(recipeResults);
+      resultDisplay.setItemMeta(meta);
+      return resultDisplay;
+    } else {
+      return displayItem;
     }
-    meta.setLore(itemDetails);
-    finalItem.setItemMeta(meta);
-    return finalItem;
   }
 
   /**
    * Returns either an item's renamed value or its material.
    *
    * @param item item
-   * @return effective item name
+   * @return item's effective name
    */
   private String getItemName(ItemStack item) {
     if (item.getItemMeta().hasDisplayName()) {
