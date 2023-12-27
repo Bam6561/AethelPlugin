@@ -9,18 +9,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
- * AethelPlugin represents the plugin an as object. Through event listeners and command executors,
+ * AethelPlugin represents the plugin as an object. Through event listeners and command executors,
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.5
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
   private final String resourceDirectory = "./plugins/Aethel";
   private ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>();
+  private HashMap<String, Integer> forgeRecipesIndex = new HashMap<>();
 
   /**
    * On startup:
@@ -61,6 +63,10 @@ public class AethelPlugin extends JavaPlugin {
 
   public ArrayList<ForgeRecipe> getForgeRecipes() {
     return this.forgeRecipes;
+  }
+
+  public HashMap<String, Integer> getForgeRecipesIndex() {
+    return this.forgeRecipesIndex;
   }
 
   public static AethelPlugin getInstance() {

@@ -11,13 +11,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * ForgeRecipeReader decodes forge recipes from storage.
+ * ForgeRecipeReader decodes forge recipes from storage and retrieves loaded recipes from memory.
  *
  * @author Danny Nguyen
- * @version 1.1.4
+ * @version 1.1.5
  * @since 1.0.9
  */
 public class ForgeRecipeReader {
@@ -27,11 +28,15 @@ public class ForgeRecipeReader {
   public void loadForgeRecipes() {
     AethelPlugin aethelPlugin = AethelPlugin.getInstance();
     ArrayList<ForgeRecipe> forgeRecipes = aethelPlugin.getForgeRecipes();
+    HashMap<String, Integer> forgeRecipesIndex = aethelPlugin.getForgeRecipesIndex();
     forgeRecipes.clear();
+    forgeRecipesIndex.clear();
 
     File[] forgeRecipeDirectory = new File(aethelPlugin.getResourceDirectory() + "/forge").listFiles();
-    for (File file : forgeRecipeDirectory) {
-      forgeRecipes.add(readRecipe(file));
+    for (int i = 0; i < forgeRecipeDirectory.length; i++) {
+      ForgeRecipe forgeRecipe = readRecipe(forgeRecipeDirectory[i]);
+      forgeRecipes.add(forgeRecipe);
+      forgeRecipesIndex.put(forgeRecipe.getRecipeName(), i);
     }
   }
 
@@ -39,9 +44,10 @@ public class ForgeRecipeReader {
    * Reads a recipe file.
    *
    * @param file recipe file
+   * @return decoded recipe
    * @throws FileNotFoundException file not found
    */
-  public ForgeRecipe readRecipe(File file) {
+  private ForgeRecipe readRecipe(File file) {
     ArrayList<ItemStack> results = new ArrayList<>();
     ArrayList<ItemStack> components = new ArrayList<>();
     int recipeDataType = 1;
@@ -88,5 +94,17 @@ public class ForgeRecipeReader {
     } catch (IOException | ClassNotFoundException ex) {
       return null;
     }
+  }
+
+  /**
+   * Matches the clicked item to its recipe.
+   *
+   * @param e inventory click event
+   * @return index of the matching item
+   */
+  public int getRecipeIndex(ItemStack e) {
+    String itemName = new ItemMetaReader().getItemName(e);
+    HashMap<String, Integer> forgeRecipesIndex = new HashMap<>(AethelPlugin.getInstance().getForgeRecipesIndex());
+    return forgeRecipesIndex.get(itemName);
   }
 }

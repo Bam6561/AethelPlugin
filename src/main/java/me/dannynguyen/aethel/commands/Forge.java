@@ -51,6 +51,7 @@ public class Forge implements CommandExecutor {
   /**
    * Either modifies recipes or reloads them into memory.
    *
+   * @param args   user provided parameters
    * @param player interacting player
    */
   private void interpretParameter(String[] args, Player player) {

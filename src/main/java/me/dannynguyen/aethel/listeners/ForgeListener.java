@@ -10,7 +10,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.4
+ * @version 1.1.5
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -52,11 +52,11 @@ public class ForgeListener {
         player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
       }
       case "modify" -> {
-        new ForgeModify().modifyRecipeFile(e);
+        new ForgeModify().modifyRecipeFile(e, player);
         player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
       }
       case "delete" -> {
-        new ForgeDelete().deleteRecipeFile(e);
+        new ForgeDelete().deleteRecipeFile(e, player);
         player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-delete"));
       }
     }
@@ -65,17 +65,17 @@ public class ForgeListener {
   /**
    * Either saves a recipe or goes back to the ForgeMain inventory with the intent to modify recipes.
    *
-   * @param e inventory click event
+   * @param e      inventory click event
+   * @param player interacting player
    */
-  public void interpretForgeCreateClick(InventoryClickEvent e) {
+  public void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
     switch (e.getSlot()) {
-      case 25 -> new ForgeCreate().readSaveClick(e);
+      case 25 -> new ForgeCreate().readSaveClick(e, player);
       case 26 -> {
-        openForgeModifyInventory((Player) e.getWhoClicked());
+        openForgeModifyInventory(player);
         e.setCancelled(true);
       }
     }
-
   }
 
   /**

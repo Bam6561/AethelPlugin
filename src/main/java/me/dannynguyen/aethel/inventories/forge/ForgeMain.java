@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ import java.util.List;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.4
+ * @version 1.1.5
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -39,32 +40,18 @@ public class ForgeMain {
       case "delete" -> title += ChatColor.RED + " Delete";
     }
     Inventory inv = Bukkit.createInventory(player, 54, title);
+    ItemCreator itemCreator = new ItemCreator();
     switch (action) {
       case "modify" -> {
-        inv.setItem(3, createItem(Material.GREEN_CONCRETE, "Create Recipe"));
-        inv.setItem(5, createItem(Material.RED_CONCRETE, "Delete Recipe"));
+        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
+        inv.setItem(5, itemCreator.createItem(Material.RED_CONCRETE, "Delete Recipe"));
       }
       case "delete" -> {
-        inv.setItem(3, createItem(Material.GREEN_CONCRETE, "Create Recipe"));
-        inv.setItem(4, createItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
+        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
+        inv.setItem(4, itemCreator.createItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
       }
     }
     return inv;
-  }
-
-  /**
-   * Creates and names an item.
-   *
-   * @param material material
-   * @param itemName item name
-   * @return named item
-   */
-  private ItemStack createItem(Material material, String itemName) {
-    ItemStack item = new ItemStack(material);
-    ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(itemName);
-    item.setItemMeta(meta);
-    return item;
   }
 
   /**
@@ -87,10 +74,10 @@ public class ForgeMain {
 
     // Add previous and next page buttons
     if (viewPageNumber > 0) {
-      inv.setItem(0, createItem(Material.RED_WOOL, "Previous Page"));
+      inv.setItem(0, new ItemCreator().createItem(Material.RED_WOOL, "Previous Page"));
     }
     if (numberOfPages - 1 > viewPageNumber) {
-      inv.setItem(8, createItem(Material.GREEN_WOOL, "Next Page"));
+      inv.setItem(8, new ItemCreator().createItem(Material.GREEN_WOOL, "Next Page"));
     }
 
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), viewPageNumber));
@@ -152,7 +139,8 @@ public class ForgeMain {
    * @param endIndex   ending recipe index
    * @return ForgeMain inventory with recipes
    */
-  private Inventory loadRecipesIntoInventory(Inventory inv, ArrayList<ForgeRecipe> recipes, int startIndex, int endIndex) {
+  private Inventory loadRecipesIntoInventory(Inventory inv, ArrayList<ForgeRecipe> recipes,
+                                             int startIndex, int endIndex) {
     // i = recipes index
     // j = inventory slot index
 
