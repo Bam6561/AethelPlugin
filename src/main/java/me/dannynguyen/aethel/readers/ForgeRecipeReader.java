@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.readers;
 
-import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -11,35 +10,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * ForgeRecipeReader decodes forge recipes from storage and retrieves loaded recipes from memory.
+ * ForgeRecipeReader decodes forge recipes from storage.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.1.7
  * @since 1.0.9
  */
 public class ForgeRecipeReader {
-  /**
-   * (Re)loads recipes into memory.
-   */
-  public void loadForgeRecipes() {
-    AethelPlugin aethelPlugin = AethelPlugin.getInstance();
-    ArrayList<ForgeRecipe> forgeRecipes = aethelPlugin.getForgeRecipes();
-    HashMap<String, Integer> forgeRecipesIndex = aethelPlugin.getForgeRecipesIndex();
-    forgeRecipes.clear();
-    forgeRecipesIndex.clear();
-
-    File[] forgeRecipeDirectory = new File(aethelPlugin.getResourceDirectory() + "/forge").listFiles();
-    for (int i = 0; i < forgeRecipeDirectory.length; i++) {
-      ForgeRecipe forgeRecipe = readRecipe(forgeRecipeDirectory[i]);
-      forgeRecipes.add(forgeRecipe);
-      forgeRecipesIndex.put(forgeRecipe.getRecipeName(), i);
-    }
-  }
-
   /**
    * Reads a recipe file.
    *
@@ -47,7 +27,7 @@ public class ForgeRecipeReader {
    * @return decoded recipe
    * @throws FileNotFoundException file not found
    */
-  private ForgeRecipe readRecipe(File file) {
+  public ForgeRecipe readRecipe(File file) {
     ArrayList<ItemStack> results = new ArrayList<>();
     ArrayList<ItemStack> components = new ArrayList<>();
     int recipeDataType = 1;
@@ -94,17 +74,5 @@ public class ForgeRecipeReader {
     } catch (IOException | ClassNotFoundException ex) {
       return null;
     }
-  }
-
-  /**
-   * Matches the clicked item to its recipe.
-   *
-   * @param e inventory click event
-   * @return index of the matching item
-   */
-  public int getRecipeIndex(ItemStack e) {
-    String itemName = new ItemMetaReader().getItemName(e);
-    HashMap<String, Integer> forgeRecipesIndex = new HashMap<>(AethelPlugin.getInstance().getForgeRecipesIndex());
-    return forgeRecipesIndex.get(itemName);
   }
 }

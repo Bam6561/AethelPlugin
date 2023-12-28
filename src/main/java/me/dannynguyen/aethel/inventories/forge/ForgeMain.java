@@ -21,7 +21,7 @@ import java.util.List;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.1.7
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -64,7 +64,8 @@ public class ForgeMain {
    */
   public Inventory processPageToDisplay(Player player, String action, int pageRequest) {
     Inventory inv = new ForgeMain().createInventory(player, action);
-    ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>(AethelPlugin.getInstance().getForgeRecipes());
+    ArrayList<ForgeRecipe> forgeRecipes =
+        new ArrayList<>(AethelPlugin.getInstance().getResources().getForgeRecipes());
 
     int numberOfRecipes = forgeRecipes.size();
     int numberOfPages = calculateNumberOfPages(numberOfRecipes);

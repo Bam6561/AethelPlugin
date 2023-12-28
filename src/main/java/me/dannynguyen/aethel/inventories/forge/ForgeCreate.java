@@ -20,7 +20,7 @@ import java.util.Base64;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.1.7
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -137,8 +137,8 @@ public class ForgeCreate {
    */
   private void saveRecipeToFile(Player player, String itemName, String encodedItem) {
     try {
-      FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResourceDirectory()
-          + "/forge/" + itemName + ".txt");
+      FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResources().getForgeRecipeDirectory()
+          + "/" + itemName + ".txt");
       fw.write(encodedItem);
       fw.close();
       player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + ".txt");

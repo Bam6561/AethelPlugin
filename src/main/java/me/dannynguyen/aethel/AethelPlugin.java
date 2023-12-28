@@ -3,26 +3,20 @@ package me.dannynguyen.aethel;
 import me.dannynguyen.aethel.commands.Forge;
 import me.dannynguyen.aethel.commands.Ping;
 import me.dannynguyen.aethel.listeners.InventoryListener;
-import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.readers.ForgeRecipeReader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * AethelPlugin represents the plugin as an object. Through event listeners and command executors,
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.1.7
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
-  private final String resourceDirectory = "./plugins/Aethel";
-  private ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>();
-  private HashMap<String, Integer> forgeRecipesIndex = new HashMap<>();
+  private AethelResources resources = new AethelResources();
 
   /**
    * On startup:
@@ -32,7 +26,7 @@ public class AethelPlugin extends JavaPlugin {
    */
   @Override
   public void onEnable() {
-    readResourceFiles(getResourceDirectory());
+    readResourceFiles();
 
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
@@ -42,31 +36,21 @@ public class AethelPlugin extends JavaPlugin {
 
   /**
    * Reads existing plugin-related data. Creates data directories if they do not already exist.
-   *
-   * @param filePath resource directory file path
    */
-  private void readResourceFiles(String filePath) {
-    File resourceDirectory = new File(filePath);
+  private void readResourceFiles() {
+    File resourceDirectory = new File(resources.getResourceDirectory());
     if (!resourceDirectory.exists()) resourceDirectory.mkdir();
 
-    File forgeRecipeDirectory = new File(filePath + "/forge");
+    File forgeRecipeDirectory = new File(resources.getForgeRecipeDirectory());
     if (forgeRecipeDirectory.exists()) {
-      new ForgeRecipeReader().loadForgeRecipes();
+      resources.loadForgeRecipes();
     } else {
       forgeRecipeDirectory.mkdir();
     }
   }
 
-  public String getResourceDirectory() {
-    return this.resourceDirectory;
-  }
-
-  public ArrayList<ForgeRecipe> getForgeRecipes() {
-    return this.forgeRecipes;
-  }
-
-  public HashMap<String, Integer> getForgeRecipesIndex() {
-    return this.forgeRecipesIndex;
+  public AethelResources getResources() {
+    return this.resources;
   }
 
   public static AethelPlugin getInstance() {

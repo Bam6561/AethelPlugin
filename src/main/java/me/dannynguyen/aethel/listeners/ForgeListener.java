@@ -11,7 +11,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.6
+ * @version 1.1.7
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -40,32 +40,19 @@ public class ForgeListener {
   }
 
   /**
-   * Either crafts, modifies, or deletes a recipe.
-   *
-   * @param e      inventory click event
-   * @param action interaction type
-   * @param player interacting player
-   */
-  private void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
-    switch (action) {
-      case "craft" -> new ForgeCraft().craftRecipe(e, player);
-      case "modify" -> new ForgeModify().modifyRecipe(e, player);
-      case "delete" -> new ForgeDelete().deleteRecipe(e, player);
-    }
-  }
-
-  /**
    * Either saves a recipe or goes back to the ForgeMain inventory with the intent to modify recipes.
    *
    * @param e      inventory click event
    * @param player interacting player
    */
   public void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
-    switch (e.getSlot()) {
-      case 25 -> new ForgeCreate().readSaveClick(e, player);
-      case 26 -> {
-        openForgeModifyInventory(player);
-        e.setCancelled(true);
+    if (!e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+      switch (e.getSlot()) {
+        case 25 -> new ForgeCreate().readSaveClick(e, player);
+        case 26 -> {
+          openForgeModifyInventory(player);
+          e.setCancelled(true);
+        }
       }
     }
   }
@@ -127,5 +114,21 @@ public class ForgeListener {
     player.openInventory(new ForgeMain().processPageToDisplay(player, action,
         pageRequest + 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-" + action));
+  }
+
+
+  /**
+   * Either crafts, modifies, or deletes a recipe.
+   *
+   * @param e      inventory click event
+   * @param action interaction type
+   * @param player interacting player
+   */
+  private void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
+    switch (action) {
+      case "craft" -> new ForgeCraft().craftRecipe(e, player);
+      case "modify" -> new ForgeModify().modifyRecipe(e, player);
+      case "delete" -> new ForgeDelete().deleteRecipe(e, player);
+    }
   }
 }

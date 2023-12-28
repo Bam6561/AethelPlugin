@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.ForgeMain;
-import me.dannynguyen.aethel.readers.ForgeRecipeReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.1.3
+ * @version 1.1.7
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -65,7 +64,7 @@ public class Forge implements CommandExecutor {
       }
       case "reload" -> {
         if (player.isOp()) {
-          new ForgeRecipeReader().loadForgeRecipes();
+          AethelPlugin.getInstance().getResources().loadForgeRecipes();
           player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
         } else {
           player.sendMessage(ChatColor.RED + "Insufficient permissions.");
