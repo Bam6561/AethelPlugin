@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.10
+ * @version 1.1.11
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -49,12 +49,12 @@ public class ForgeMain {
   public Inventory openRecipePage(Player player, String action, int pageRequest) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
 
-    int numberOfPages = resources.getNumberOfForgeRecipePages();
+    int numberOfPages = resources.getForgeRecipeData().getNumberOfPages();
     int pageViewed = calculatePageViewed(pageRequest, numberOfPages);
 
     // Load recipe page from memory
     Inventory inv = new ForgeMain().createInventory(player, action);
-    inv.setContents(resources.getForgeRecipePages().get(pageViewed).getContents());
+    inv.setContents(resources.getForgeRecipeData().getRecipePages().get(pageViewed).getContents());
 
     addPaginationButtons(inv, pageViewed, numberOfPages);
     addActionButtons(inv, action);

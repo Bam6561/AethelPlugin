@@ -64,7 +64,7 @@ public class Forge implements CommandExecutor {
       }
       case "reload" -> {
         if (player.isOp()) {
-          AethelPlugin.getInstance().getResources().loadForgeRecipes();
+          AethelPlugin.getInstance().getResources().getForgeRecipeData().loadRecipes();
           player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
         } else {
           player.sendMessage(ChatColor.RED + "Insufficient permissions.");

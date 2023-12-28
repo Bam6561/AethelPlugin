@@ -13,7 +13,7 @@ import java.util.Base64;
 import java.util.Scanner;
 
 /**
- * ForgeRecipeReader decodes forge recipes from storage.
+ * ForgeRecipeReader decodes forge recipes from the file system.
  *
  * @author Danny Nguyen
  * @version 1.1.8

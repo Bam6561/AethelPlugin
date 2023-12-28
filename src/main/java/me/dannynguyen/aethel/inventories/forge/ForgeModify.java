@@ -13,10 +13,10 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.ArrayList;
 
 /**
- * ForgeModify is a menu option under the Forge command that modifies forge recipes.
+ * ForgeModify is an inventory under the Forge command that modifies forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.10
+ * @version 1.1.11
  * @since 1.0.9
  */
 public class ForgeModify {
@@ -31,25 +31,34 @@ public class ForgeModify {
     try {
       // Match item to recipe
       AethelResources resources = AethelPlugin.getInstance().getResources();
-      ForgeRecipe forgeRecipe = resources.getForgeRecipesMap().
+      ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
           get(new ItemMetaReader().getItemName(e.getCurrentItem()));
 
-      // Pre-fill a ForgeCreate inventory with the recipe contents
       Inventory inv = new ForgeCreate().createInventory(player);
-      ArrayList<ItemStack> results = forgeRecipe.getResults();
-      ArrayList<ItemStack> components = forgeRecipe.getComponents();
-
-      for (int i = 0; i < results.size(); i++) {
-        inv.setItem(i, results.get(i));
-      }
-      for (int i = 0; i < components.size(); i++) {
-        inv.setItem(i + 9, components.get(i));
-      }
+      addExistingRecipeContents(recipe, inv);
 
       player.openInventory(inv);
       player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
     } catch (NullPointerException ex) {
       player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
+    }
+  }
+
+  /**
+   * Adds the recipe's existing results and components to the ForgeCreate inventory.
+   *
+   * @param recipe forge recipe
+   * @param inv    interacting inventory
+   */
+  private void addExistingRecipeContents(ForgeRecipe recipe, Inventory inv) {
+    ArrayList<ItemStack> results = recipe.getResults();
+    ArrayList<ItemStack> components = recipe.getComponents();
+
+    for (int i = 0; i < results.size(); i++) {
+      inv.setItem(i, results.get(i));
+    }
+    for (int i = 0; i < components.size(); i++) {
+      inv.setItem(i + 9, components.get(i));
     }
   }
 }

@@ -12,7 +12,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.11
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -43,7 +43,7 @@ public class AethelPlugin extends JavaPlugin {
 
     File forgeRecipeDirectory = new File(resources.getForgeRecipeDirectory());
     if (forgeRecipeDirectory.exists()) {
-      resources.loadForgeRecipes();
+      resources.getForgeRecipeData().loadRecipes();
     } else {
       forgeRecipeDirectory.mkdir();
     }

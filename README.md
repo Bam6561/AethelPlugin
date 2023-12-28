@@ -38,7 +38,7 @@ See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentat
 1. Clone the repo.
 2. Compile and build the plugin.
 3. Drag and drop `aethel.jar` into the `plugins` folder of the server.
-4. Re/start the server.
+4. (Re)start the server.
 
 <p align="right"><a href="#top">Back to Top</a></p>
 

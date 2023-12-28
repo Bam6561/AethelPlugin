@@ -13,24 +13,24 @@ import java.util.ArrayList;
  * @since 1.0.3
  */
 public class ForgeRecipe {
-  private File recipeFile;
-  private String recipeName;
+  private File file;
+  private String name;
   private ArrayList<ItemStack> results;
   private ArrayList<ItemStack> components;
 
   public ForgeRecipe(File recipeFile, String recipeName, ArrayList<ItemStack> results, ArrayList<ItemStack> components) {
-    this.recipeFile = recipeFile;
-    this.recipeName = recipeName;
+    this.file = recipeFile;
+    this.name = recipeName;
     this.results = results;
     this.components = components;
   }
 
-  public File getRecipeFile() {
-    return this.recipeFile;
+  public File getFile() {
+    return this.file;
   }
 
-  public String getRecipeName() {
-    return this.recipeName;
+  public String getName() {
+    return this.name;
   }
 
   public ArrayList<ItemStack> getResults() {

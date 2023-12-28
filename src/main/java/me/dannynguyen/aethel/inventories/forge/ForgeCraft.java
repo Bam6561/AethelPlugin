@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.10
+ * @version 1.1.11
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -29,19 +29,14 @@ public class ForgeCraft {
   public void craftRecipe(InventoryClickEvent e, Player player) {
     try {
       AethelResources resources = AethelPlugin.getInstance().getResources();
-      ForgeRecipe forgeRecipe = resources.getForgeRecipesMap().
+      ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
           get(new ItemMetaReader().getItemName(e.getCurrentItem()));
 
-      ArrayList<ItemStack> results = forgeRecipe.getResults();
-      ArrayList<ItemStack> components = forgeRecipe.getComponents();
+      ArrayList<ItemStack> results = recipe.getResults();
+      ArrayList<ItemStack> components = recipe.getComponents();
 
       if (checkSufficientComponents(player, components)) {
-        for (ItemStack item : components) {
-          player.getInventory().removeItem(item);
-        }
-        for (ItemStack item : results) {
-          player.getInventory().addItem(item);
-        }
+        processCrafting(player, components, results);
       } else {
         player.sendMessage(ChatColor.RED + "Insufficient components.");
       }
@@ -61,5 +56,26 @@ public class ForgeCraft {
       if (!player.getInventory().containsAtLeast(item, item.getAmount())) return false;
     }
     return true;
+  }
+
+  /**
+   * Removes the recipe's components and adds the results directly to the player's
+   * inventory if there's space. Otherwise, the results are dropped at the player's feet.
+   *
+   * @param player     interacting player
+   * @param components components in recipe
+   * @param results    results in recipe
+   */
+  private void processCrafting(Player player, ArrayList<ItemStack> components, ArrayList<ItemStack> results) {
+    for (ItemStack item : components) {
+      player.getInventory().removeItem(item);
+    }
+    for (ItemStack item : results) {
+      if (player.getInventory().firstEmpty() != -1) {
+        player.getInventory().addItem(item);
+      } else {
+        player.getWorld().dropItem(player.getLocation(), item);
+      }
+    }
   }
 }
