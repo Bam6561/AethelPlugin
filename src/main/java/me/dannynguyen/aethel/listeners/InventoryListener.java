@@ -35,7 +35,12 @@ public class InventoryListener implements Listener {
   }
 
   /**
-   * Removes player metadata pertaining to any open inventories.
+   * Removes player inventory metadata when an inventory is closed.
+   * <p>
+   * Since opening a new inventory while one already exists triggers
+   * the InventoryCloseEvent, always add new inventory metadata AFTER
+   * opening an inventory and not before, as it will be removed otherwise.
+   * </p>
    *
    * @param e inventory close event
    */

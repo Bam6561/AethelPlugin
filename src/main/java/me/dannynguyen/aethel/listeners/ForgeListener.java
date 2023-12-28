@@ -4,13 +4,14 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.1.6
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -24,7 +25,7 @@ public class ForgeListener {
    * @param action type of interaction
    */
   public void interpretForgeMainClick(InventoryClickEvent e, String action) {
-    if (e.getCurrentItem() != null) {
+    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       Player player = (Player) e.getWhoClicked();
       switch (e.getSlot()) {
         case 0 -> previousRecipePage(player, action);
@@ -47,18 +48,9 @@ public class ForgeListener {
    */
   private void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
-      case "craft" -> {
-        new ForgeCraft().craftRecipe(e, player);
-        player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
-      }
-      case "modify" -> {
-        new ForgeModify().modifyRecipeFile(e, player);
-        player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
-      }
-      case "delete" -> {
-        new ForgeDelete().deleteRecipeFile(e, player);
-        player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-delete"));
-      }
+      case "craft" -> new ForgeCraft().craftRecipe(e, player);
+      case "modify" -> new ForgeModify().modifyRecipe(e, player);
+      case "delete" -> new ForgeDelete().deleteRecipe(e, player);
     }
   }
 

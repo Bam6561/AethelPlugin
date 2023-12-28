@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  * ForgeModify is a menu option under the Forge command that modifies forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.1.6
  * @since 1.0.9
  */
 public class ForgeModify {
@@ -25,7 +26,7 @@ public class ForgeModify {
    * @param player interacting player
    * @throws NullPointerException recipe not found
    */
-  public void modifyRecipeFile(InventoryClickEvent e, Player player) {
+  public void modifyRecipe(InventoryClickEvent e, Player player) {
     try {
       int forgeRecipeIndex = new ForgeRecipeReader().getRecipeIndex(e.getCurrentItem());
       ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>(AethelPlugin.getInstance().getForgeRecipes());
@@ -43,7 +44,9 @@ public class ForgeModify {
       }
 
       player.openInventory(inv);
+      player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
     } catch (NullPointerException ex) {
+      player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
     }
   }
 }

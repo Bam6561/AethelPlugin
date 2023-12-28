@@ -25,7 +25,7 @@ public class ForgeDelete {
    * @param player interacting player
    * @throws NullPointerException recipe not found
    */
-  public void deleteRecipeFile(InventoryClickEvent e, Player player) {
+  public void deleteRecipe(InventoryClickEvent e, Player player) {
     try {
       int recipeFileIndex = new ForgeRecipeReader().getRecipeIndex(e.getCurrentItem());
 
