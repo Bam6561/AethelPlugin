@@ -2,12 +2,17 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemMetaReader;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 
@@ -15,32 +20,84 @@ import java.util.ArrayList;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.11
+ * @version 1.2.0
  * @since 1.1.0
  */
 public class ForgeCraft {
   /**
-   * Crafts a recipe.
+   * Creates and names a ForgeCraft inventory.
+   *
+   * @param player interacting player
+   * @return ForgeCraft inventory
+   */
+  public Inventory createInventory(Player player) {
+    String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft";
+    Inventory inv = Bukkit.createInventory(player, 27, title);
+    ItemCreator itemCreator = new ItemCreator();
+    inv.setItem(25, itemCreator.createItem(Material.GREEN_CONCRETE, "Craft Recipe"));
+    inv.setItem(26, itemCreator.createItem(Material.ARROW, "Back"));
+    return inv;
+  }
+
+  /**
+   * Expands the recipe's details to the player before crafting.
    *
    * @param e      inventory click event
    * @param player interacting player
    * @throws NullPointerException recipe not found
    */
-  public void craftRecipe(InventoryClickEvent e, Player player) {
+  public void expandRecipeDetails(InventoryClickEvent e, Player player) {
     try {
       AethelResources resources = AethelPlugin.getInstance().getResources();
       ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
           get(new ItemMetaReader().getItemName(e.getCurrentItem()));
 
-      ArrayList<ItemStack> results = recipe.getResults();
-      ArrayList<ItemStack> components = recipe.getComponents();
+      Inventory inv = createInventory(player);
+      addExistingRecipeContents(recipe, inv);
 
-      if (checkSufficientComponents(player, components)) {
-        processCrafting(player, components, results);
-      } else {
-        player.sendMessage(ChatColor.RED + "Insufficient components.");
-      }
+      player.openInventory(inv);
+      player.setMetadata("inventory",
+          new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft-confirm"));
     } catch (NullPointerException ex) {
+    }
+  }
+
+  /**
+   * Adds the recipe's existing results and components to the ForgeCreate inventory.
+   *
+   * @param recipe forge recipe
+   * @param inv    interacting inventory
+   */
+  private void addExistingRecipeContents(ForgeRecipe recipe, Inventory inv) {
+    ArrayList<ItemStack> results = recipe.getResults();
+    ArrayList<ItemStack> components = recipe.getComponents();
+
+    for (int i = 0; i < results.size(); i++) {
+      inv.setItem(i, results.get(i));
+    }
+    for (int i = 0; i < components.size(); i++) {
+      inv.setItem(i + 9, components.get(i));
+    }
+  }
+
+  /**
+   * Crafts a recipe.
+   *
+   * @param e      inventory click event
+   * @param player interacting player
+   */
+  public void craftRecipe(InventoryClickEvent e, Player player) {
+    AethelResources resources = AethelPlugin.getInstance().getResources();
+    ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
+        get(new ItemMetaReader().getItemName(e.getClickedInventory().getItem(0)));
+
+    ArrayList<ItemStack> results = recipe.getResults();
+    ArrayList<ItemStack> components = recipe.getComponents();
+
+    if (checkSufficientComponents(player, components)) {
+      processCrafting(player, components, results);
+    } else {
+      player.sendMessage(ChatColor.RED + "Insufficient components.");
     }
   }
 

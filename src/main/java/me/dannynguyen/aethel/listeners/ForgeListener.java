@@ -5,14 +5,13 @@ import me.dannynguyen.aethel.inventories.forge.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.10
+ * @version 1.2.0
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -41,21 +40,34 @@ public class ForgeListener {
   }
 
   /**
+   * Either crafts a recipe or goes back to the ForgeMain inventory with the intent to craft recipes.
+   *
+   * @param e      inventory click event
+   * @param player interacting player
+   */
+  public void interpretForgeCraftConfirmClick(InventoryClickEvent e, Player player) {
+    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+      switch (e.getSlot()) {
+        case 25 -> new ForgeCraft().craftRecipe(e, player);
+        case 26 -> openForgeCraftInventory(player);
+      }
+    }
+    e.setCancelled(true);
+  }
+
+  /**
    * Either saves a recipe or goes back to the ForgeMain inventory with the intent to modify recipes.
    *
    * @param e      inventory click event
    * @param player interacting player
    */
   public void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
-    Inventory inv = e.getClickedInventory();
-    if (inv != null) {
-      if (inv.getType().equals(InventoryType.CHEST)) {
-        switch (e.getSlot()) {
-          case 25 -> new ForgeCreate().readSaveClick(e, player);
-          case 26 -> {
-            openForgeModifyInventory(player);
-            e.setCancelled(true);
-          }
+    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+      switch (e.getSlot()) {
+        case 25 -> new ForgeCreate().readSaveClick(e, player);
+        case 26 -> {
+          openForgeModifyInventory(player);
+          e.setCancelled(true);
         }
       }
     }
@@ -130,9 +142,19 @@ public class ForgeListener {
    */
   private void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
-      case "craft" -> new ForgeCraft().craftRecipe(e, player);
+      case "craft" -> new ForgeCraft().expandRecipeDetails(e, player);
       case "modify" -> new ForgeModify().modifyRecipe(e, player);
       case "delete" -> new ForgeDelete().deleteRecipe(e, player);
     }
+  }
+
+  /**
+   * Opens a ForgeMain inventory with the intent to craft recipes.
+   *
+   * @param player interacting player
+   */
+  private void openForgeCraftInventory(Player player) {
+    player.openInventory(new ForgeMain().openRecipePage(player, "craft", player.getMetadata("page").get(0).asInt()));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
   }
 }
