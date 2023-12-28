@@ -21,6 +21,7 @@
     <li><a href="#license"> License </a></li>
     <li><a href="#contact"> Contact </a></li>
     <li><a href="#acknowledgements"> Acknowledgements </a></li>
+  </ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
@@ -43,6 +44,8 @@ See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentat
 
 <!-- USAGE -->
 ## Usage
+
+**Commands** `/command parameter(s)`
 
 <p align="right"><a href="#top">Back to Top</a></p>
 
