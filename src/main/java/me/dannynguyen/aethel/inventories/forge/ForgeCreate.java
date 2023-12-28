@@ -21,7 +21,7 @@ import java.util.Base64;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.9
+ * @version 1.1.10
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -71,8 +71,8 @@ public class ForgeCreate {
   private String nameRecipeFile(ItemStack[] inv) {
     for (int i = 0; i < 9; i++) {
       ItemStack item = inv[i];
-      ItemMeta meta = item.getItemMeta();
       if (item != null) {
+        ItemMeta meta = item.getItemMeta();
         if (meta.hasDisplayName()) {
           return meta.getDisplayName().toLowerCase().replace(" ", "_");
         } else {

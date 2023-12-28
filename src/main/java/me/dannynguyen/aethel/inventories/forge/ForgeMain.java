@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.9
+ * @version 1.1.10
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -39,41 +39,25 @@ public class ForgeMain {
 
 
   /**
-   * Determines which page of recipes to view.
+   * Loads a recipe page from memory.
    *
    * @param player      interacting player
    * @param action      type of interaction
    * @param pageRequest page to view
    * @return ForgeMain inventory with recipes
    */
-  public Inventory processPageToDisplay(Player player, String action, int pageRequest) {
+  public Inventory openRecipePage(Player player, String action, int pageRequest) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
 
     int numberOfPages = resources.getNumberOfForgeRecipePages();
     int pageViewed = calculatePageViewed(pageRequest, numberOfPages);
 
+    // Load recipe page from memory
     Inventory inv = new ForgeMain().createInventory(player, action);
     inv.setContents(resources.getForgeRecipePages().get(pageViewed).getContents());
 
-    // Add previous and next page buttons
-    if (pageViewed > 0) {
-      inv.setItem(0, new ItemCreator().createItem(Material.RED_WOOL, "Previous Page"));
-    }
-    if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, new ItemCreator().createItem(Material.GREEN_WOOL, "Next Page"));
-    }
-
-    ItemCreator itemCreator = new ItemCreator();
-    switch (action) {
-      case "modify" -> {
-        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
-        inv.setItem(5, itemCreator.createItem(Material.RED_CONCRETE, "Delete Recipe"));
-      }
-      case "delete" -> {
-        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
-        inv.setItem(4, itemCreator.createItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
-      }
-    }
+    addPaginationButtons(inv, pageViewed, numberOfPages);
+    addActionButtons(inv, action);
 
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
     return inv;
@@ -95,5 +79,41 @@ public class ForgeMain {
       pageRequest = 0;
     }
     return pageRequest;
+  }
+
+  /**
+   * Adds previous and next page buttons based on the page number.
+   *
+   * @param inv           interacting inventory
+   * @param pageViewed    page viewed
+   * @param numberOfPages number of recipe pages
+   */
+  private void addPaginationButtons(Inventory inv, int pageViewed, int numberOfPages) {
+    if (pageViewed > 0) {
+      inv.setItem(0, new ItemCreator().createItem(Material.RED_WOOL, "Previous Page"));
+    }
+    if (numberOfPages - 1 > pageViewed) {
+      inv.setItem(8, new ItemCreator().createItem(Material.GREEN_WOOL, "Next Page"));
+    }
+  }
+
+  /**
+   * Adds create, modify, and delete recipe buttons.
+   *
+   * @param inv    interacting inventory
+   * @param action type of interaction
+   */
+  private void addActionButtons(Inventory inv, String action) {
+    ItemCreator itemCreator = new ItemCreator();
+    switch (action) {
+      case "modify" -> {
+        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
+        inv.setItem(5, itemCreator.createItem(Material.RED_CONCRETE, "Delete Recipe"));
+      }
+      case "delete" -> {
+        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
+        inv.setItem(4, itemCreator.createItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
+      }
+    }
   }
 }

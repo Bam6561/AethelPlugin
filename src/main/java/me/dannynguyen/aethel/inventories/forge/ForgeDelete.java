@@ -4,6 +4,7 @@ package me.dannynguyen.aethel.inventories.forge;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
+import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  * ForgeDelete is an inventory under the Forge command that deletes forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.9
+ * @version 1.1.10
  * @since 1.0.9
  */
 public class ForgeDelete {
@@ -27,7 +28,8 @@ public class ForgeDelete {
     try {
       // Match item to recipe
       AethelResources resources = AethelPlugin.getInstance().getResources();
-      ForgeRecipe forgeRecipe = resources.getForgeRecipes().get(resources.getRecipeIndex(e.getCurrentItem()));
+      ForgeRecipe forgeRecipe = resources.getForgeRecipesMap().
+          get(new ItemMetaReader().getItemName(e.getCurrentItem()));
 
       forgeRecipe.getRecipeFile().delete();
       player.sendMessage(ChatColor.RED + "[Deleted] " + ChatColor.WHITE +

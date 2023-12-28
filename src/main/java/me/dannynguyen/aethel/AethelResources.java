@@ -16,14 +16,14 @@ import java.util.*;
  * AethelResources represents the plugin's resources loaded in memory as an object.
  *
  * @author Danny Nguyen
- * @version 1.1.9
+ * @version 1.1.10
  * @since 1.1.7
  */
 public class AethelResources {
   private String resourceDirectory = "./plugins/Aethel";
   private String forgeRecipeDirectory = resourceDirectory + "/forge";
   private ArrayList<ForgeRecipe> forgeRecipes = new ArrayList<>();
-  private HashMap<String, Integer> forgeRecipeIndices = new HashMap<>();
+  private HashMap<String, ForgeRecipe> forgeRecipesMap = new HashMap<>();
   private ArrayList<Inventory> forgeRecipePages = new ArrayList<>();
   private int numberOfForgeRecipePages = 0;
 
@@ -32,10 +32,10 @@ public class AethelResources {
    */
   public void loadForgeRecipes() {
     ArrayList<ForgeRecipe> forgeRecipes = getForgeRecipes();
-    HashMap<String, Integer> forgeRecipesIndex = getForgeRecipeIndices();
+    HashMap<String, ForgeRecipe> forgeRecipesMap = getForgeRecipesMap();
     ArrayList<Inventory> forgeRecipePages = getForgeRecipePages();
     forgeRecipes.clear();
-    forgeRecipesIndex.clear();
+    forgeRecipesMap.clear();
     forgeRecipePages.clear();
     setNumberOfForgeRecipePages(0);
 
@@ -44,21 +44,9 @@ public class AethelResources {
     for (int i = 0; i < forgeRecipeDirectory.length; i++) {
       ForgeRecipe forgeRecipe = new ForgeRecipeReader().readRecipe(forgeRecipeDirectory[i]);
       forgeRecipes.add(forgeRecipe);
-      forgeRecipesIndex.put(forgeRecipe.getRecipeName(), i);
+      forgeRecipesMap.put(forgeRecipe.getRecipeName(), forgeRecipe);
     }
     createForgeRecipePages();
-  }
-
-  /**
-   * Matches the clicked item to its recipe index.
-   *
-   * @param e inventory click event
-   * @return index of the matching item
-   */
-  public int getRecipeIndex(ItemStack e) {
-    String itemName = new ItemMetaReader().getItemName(e);
-    HashMap<String, Integer> forgeRecipesIndex = new HashMap<>(getForgeRecipeIndices());
-    return forgeRecipesIndex.get(itemName);
   }
 
   /**
@@ -150,8 +138,8 @@ public class AethelResources {
     return this.forgeRecipes;
   }
 
-  public HashMap<String, Integer> getForgeRecipeIndices() {
-    return this.forgeRecipeIndices;
+  public HashMap<String, ForgeRecipe> getForgeRecipesMap() {
+    return this.forgeRecipesMap;
   }
 
   public ArrayList<Inventory> getForgeRecipePages() {

@@ -80,7 +80,7 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeCraftInventory(Player player) {
-    player.openInventory(new ForgeMain().processPageToDisplay(player, "craft", 0));
+    player.openInventory(new ForgeMain().openRecipePage(player, "craft", 0));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
   }
 
@@ -90,7 +90,7 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeModifyInventory(Player player) {
-    player.openInventory(new ForgeMain().processPageToDisplay(player, "modify", 0));
+    player.openInventory(new ForgeMain().openRecipePage(player, "modify", 0));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
   }
 }

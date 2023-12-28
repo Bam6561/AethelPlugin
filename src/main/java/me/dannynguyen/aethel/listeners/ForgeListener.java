@@ -5,13 +5,14 @@ import me.dannynguyen.aethel.inventories.forge.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.10
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -46,12 +47,15 @@ public class ForgeListener {
    * @param player interacting player
    */
   public void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
-    if (!e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
-      switch (e.getSlot()) {
-        case 25 -> new ForgeCreate().readSaveClick(e, player);
-        case 26 -> {
-          openForgeModifyInventory(player);
-          e.setCancelled(true);
+    Inventory inv = e.getClickedInventory();
+    if (inv != null) {
+      if (inv.getType().equals(InventoryType.CHEST)) {
+        switch (e.getSlot()) {
+          case 25 -> new ForgeCreate().readSaveClick(e, player);
+          case 26 -> {
+            openForgeModifyInventory(player);
+            e.setCancelled(true);
+          }
         }
       }
     }
@@ -65,7 +69,7 @@ public class ForgeListener {
    */
   private void previousRecipePage(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(new ForgeMain().processPageToDisplay(player, action,
+    player.openInventory(new ForgeMain().openRecipePage(player, action,
         pageRequest - 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-" + action));
   }
@@ -87,7 +91,7 @@ public class ForgeListener {
    * @param player interacting player
    */
   private void openForgeModifyInventory(Player player) {
-    player.openInventory(new ForgeMain().processPageToDisplay(player, "modify",
+    player.openInventory(new ForgeMain().openRecipePage(player, "modify",
         player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
   }
@@ -98,7 +102,7 @@ public class ForgeListener {
    * @param player interacting player
    */
   private void openForgeDeleteInventory(Player player) {
-    player.openInventory(new ForgeMain().processPageToDisplay(player, "delete",
+    player.openInventory(new ForgeMain().openRecipePage(player, "delete",
         player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-delete"));
   }
@@ -111,7 +115,7 @@ public class ForgeListener {
    */
   private void nextRecipePage(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(new ForgeMain().processPageToDisplay(player, action,
+    player.openInventory(new ForgeMain().openRecipePage(player, action,
         pageRequest + 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-" + action));
   }
