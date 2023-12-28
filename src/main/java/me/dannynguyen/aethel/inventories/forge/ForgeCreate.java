@@ -20,7 +20,7 @@ import java.util.Base64;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.8
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -92,21 +92,21 @@ public class ForgeCreate {
    * @return encoded recipe string
    */
   private String encodeRecipe(ItemStack[] inv) {
-    StringBuilder components = new StringBuilder("Components\n");
+    StringBuilder components = new StringBuilder();
     for (int i = 9; i < 24; i++) {
       ItemStack item = inv[i];
-      if (item != null) components.append(encodeItem(inv[i]) + "\n");
+      if (item != null) components.append(encodeItem(inv[i]) + " ");
     }
 
-    if (components.toString().equals("Components\n")) return null;
+    if (components.toString().equals("")) return null;
 
-    StringBuilder results = new StringBuilder("Results\n");
+    StringBuilder results = new StringBuilder();
     for (int i = 0; i < 9; i++) {
       ItemStack item = inv[i];
-      if (item != null) results.append(encodeItem(inv[i]) + "\n");
+      if (item != null) results.append(encodeItem(inv[i]) + " ");
     }
 
-    return results.append(components).toString();
+    return results.append("\n" + components).toString();
   }
 
   /**

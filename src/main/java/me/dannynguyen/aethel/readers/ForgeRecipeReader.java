@@ -16,7 +16,7 @@ import java.util.Scanner;
  * ForgeRecipeReader decodes forge recipes from storage.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.8
  * @since 1.0.9
  */
 public class ForgeRecipeReader {
@@ -34,22 +34,19 @@ public class ForgeRecipeReader {
 
     try {
       Scanner scanner = new Scanner(file);
-      scanner.nextLine(); // Skip Results line
       while (scanner.hasNextLine()) {
-        String data = scanner.nextLine();
-
-        if (data.equals("Components")) {
-          recipeDataType++;
-          data = scanner.nextLine();
-        }
-
-        ItemStack item = decodeItem(data);
-        if (item != null) {
-          switch (recipeDataType) {
-            case 1 -> results.add(decodeItem(data));
-            case 2 -> components.add(decodeItem(data));
+        String line = scanner.nextLine();
+        String[] data = line.split(" ");
+        for (String encodedItem : data) {
+          ItemStack item = decodeItem(encodedItem);
+          if (item != null) {
+            switch (recipeDataType) {
+              case 1 -> results.add(item);
+              case 2 -> components.add(item);
+            }
           }
         }
+        recipeDataType++;
       }
       return new ForgeRecipe(file, new ItemMetaReader().getItemName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
