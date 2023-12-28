@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  * ForgeModify is a menu option under the Forge command that modifies forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.9
  * @since 1.0.9
  */
 public class ForgeModify {
@@ -27,11 +28,11 @@ public class ForgeModify {
    */
   public void modifyRecipe(InventoryClickEvent e, Player player) {
     try {
-      int forgeRecipeIndex = AethelPlugin.getInstance().getResources().getRecipeIndex(e.getCurrentItem());
-      ArrayList<ForgeRecipe> forgeRecipes =
-          new ArrayList<>(AethelPlugin.getInstance().getResources().getForgeRecipes());
-      ForgeRecipe forgeRecipe = forgeRecipes.get(forgeRecipeIndex);
+      // Match item to recipe
+      AethelResources resources = AethelPlugin.getInstance().getResources();
+      ForgeRecipe forgeRecipe = resources.getForgeRecipes().get(resources.getRecipeIndex(e.getCurrentItem()));
 
+      // Pre-fill a ForgeCreate inventory with the recipe contents
       Inventory inv = new ForgeCreate().createInventory(player);
       ArrayList<ItemStack> results = forgeRecipe.getResults();
       ArrayList<ItemStack> components = forgeRecipe.getComponents();

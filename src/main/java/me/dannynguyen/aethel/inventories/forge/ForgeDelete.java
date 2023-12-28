@@ -2,18 +2,17 @@ package me.dannynguyen.aethel.inventories.forge;
 
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.ArrayList;
-
 /**
  * ForgeDelete is an inventory under the Forge command that deletes forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.9
  * @since 1.0.9
  */
 public class ForgeDelete {
@@ -26,11 +25,9 @@ public class ForgeDelete {
    */
   public void deleteRecipe(InventoryClickEvent e, Player player) {
     try {
-      int recipeFileIndex = AethelPlugin.getInstance().getResources().getRecipeIndex(e.getCurrentItem());
-
-      ArrayList<ForgeRecipe> forgeRecipes =
-          new ArrayList<>(AethelPlugin.getInstance().getResources().getForgeRecipes());
-      ForgeRecipe forgeRecipe = forgeRecipes.get(recipeFileIndex);
+      // Match item to recipe
+      AethelResources resources = AethelPlugin.getInstance().getResources();
+      ForgeRecipe forgeRecipe = resources.getForgeRecipes().get(resources.getRecipeIndex(e.getCurrentItem()));
 
       forgeRecipe.getRecipeFile().delete();
       player.sendMessage(ChatColor.RED + "[Deleted] " + ChatColor.WHITE +

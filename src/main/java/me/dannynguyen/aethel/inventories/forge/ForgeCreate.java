@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +21,7 @@ import java.util.Base64;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.8
+ * @version 1.1.9
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -70,9 +71,10 @@ public class ForgeCreate {
   private String nameRecipeFile(ItemStack[] inv) {
     for (int i = 0; i < 9; i++) {
       ItemStack item = inv[i];
+      ItemMeta meta = item.getItemMeta();
       if (item != null) {
-        if (item.getItemMeta().hasDisplayName()) {
-          return item.getItemMeta().getDisplayName().toLowerCase().replace(" ", "_");
+        if (meta.hasDisplayName()) {
+          return meta.getDisplayName().toLowerCase().replace(" ", "_");
         } else {
           return item.getType().name().toLowerCase();
         }
@@ -95,7 +97,7 @@ public class ForgeCreate {
     StringBuilder components = new StringBuilder();
     for (int i = 9; i < 24; i++) {
       ItemStack item = inv[i];
-      if (item != null) components.append(encodeItem(inv[i]) + " ");
+      if (item != null) components.append(encodeItem(item) + " ");
     }
 
     if (components.toString().equals("")) return null;
@@ -103,7 +105,7 @@ public class ForgeCreate {
     StringBuilder results = new StringBuilder();
     for (int i = 0; i < 9; i++) {
       ItemStack item = inv[i];
-      if (item != null) results.append(encodeItem(inv[i]) + " ");
+      if (item != null) results.append(encodeItem(item) + " ");
     }
 
     return results.append("\n" + components).toString();
@@ -133,6 +135,7 @@ public class ForgeCreate {
    *
    * @param itemName    item name
    * @param encodedItem encoded item string
+   * @param player      interacting player
    * @throws IOException file could not be created
    */
   private void saveRecipeToFile(Player player, String itemName, String encodedItem) {

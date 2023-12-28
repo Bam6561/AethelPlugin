@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.1.9
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -26,10 +27,9 @@ public class ForgeCraft {
    */
   public void craftRecipe(InventoryClickEvent e, Player player) {
     try {
-      int recipeFileIndex = AethelPlugin.getInstance().getResources().getRecipeIndex(e.getCurrentItem());
-      ArrayList<ForgeRecipe> forgeRecipes =
-          new ArrayList<>(AethelPlugin.getInstance().getResources().getForgeRecipes());
-      ForgeRecipe forgeRecipe = forgeRecipes.get(recipeFileIndex);
+      // Match item to recipe
+      AethelResources resources = AethelPlugin.getInstance().getResources();
+      ForgeRecipe forgeRecipe = resources.getForgeRecipes().get(resources.getRecipeIndex(e.getCurrentItem()));
 
       ArrayList<ItemStack> results = forgeRecipe.getResults();
       ArrayList<ItemStack> components = forgeRecipe.getComponents();
@@ -57,9 +57,7 @@ public class ForgeCraft {
    */
   private boolean checkSufficientComponents(Player player, ArrayList<ItemStack> components) {
     for (ItemStack item : components) {
-      if (!player.getInventory().containsAtLeast(item, item.getAmount())) {
-        return false;
-      }
+      if (!player.getInventory().containsAtLeast(item, item.getAmount())) return false;
     }
     return true;
   }
