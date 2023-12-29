@@ -2,12 +2,10 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -15,12 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.0
+ * @version 1.2.1
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -33,9 +32,10 @@ public class ForgeCraft {
   public Inventory createInventory(Player player) {
     String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft";
     Inventory inv = Bukkit.createInventory(player, 27, title);
-    ItemCreator itemCreator = new ItemCreator();
-    inv.setItem(25, itemCreator.createItem(Material.GREEN_CONCRETE, "Craft Recipe"));
-    inv.setItem(26, itemCreator.createItem(Material.ARROW, "Back"));
+    HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
+        getResources().getPlayerHeadData().getHeadsMap();
+    inv.setItem(25, headsMap.get("Create Recipe"));
+    inv.setItem(26, headsMap.get("Back"));
     return inv;
   }
 
@@ -44,22 +44,18 @@ public class ForgeCraft {
    *
    * @param e      inventory click event
    * @param player interacting player
-   * @throws NullPointerException recipe not found
    */
   public void expandRecipeDetails(InventoryClickEvent e, Player player) {
-    try {
-      AethelResources resources = AethelPlugin.getInstance().getResources();
-      ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-          get(new ItemMetaReader().getItemName(e.getCurrentItem()));
+    AethelResources resources = AethelPlugin.getInstance().getResources();
+    ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
+        get(new ItemMetaReader().getItemName(e.getCurrentItem()));
 
-      Inventory inv = createInventory(player);
-      addExistingRecipeContents(recipe, inv);
+    Inventory inv = createInventory(player);
+    addExistingRecipeContents(recipe, inv);
 
-      player.openInventory(inv);
-      player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft-confirm"));
-    } catch (NullPointerException ex) {
-    }
+    player.openInventory(inv);
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft-confirm"));
   }
 
   /**

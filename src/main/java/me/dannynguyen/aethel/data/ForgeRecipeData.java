@@ -17,7 +17,7 @@ import java.util.*;
  * ForgeRecipeData contains information about forge recipes loaded in memory.
  *
  * @author Danny Nguyen
- * @version 1.1.11
+ * @version 1.2.1
  * @since 1.1.11
  */
 public class ForgeRecipeData {
@@ -114,12 +114,11 @@ public class ForgeRecipeData {
             ChatColor.WHITE + " " + metaReader.getItemName(item));
       }
 
-      ItemStack resultDisplay = new ItemStack(displayItem.getType());
-      ItemMeta meta = resultDisplay.getItemMeta();
-      meta.setDisplayName(metaReader.getItemName(displayItem));
+      ItemStack itemDisplay = displayItem.clone();
+      ItemMeta meta = itemDisplay.getItemMeta();
       meta.setLore(recipeResults);
-      resultDisplay.setItemMeta(meta);
-      return resultDisplay;
+      itemDisplay.setItemMeta(meta);
+      return itemDisplay;
     } else {
       return displayItem;
     }

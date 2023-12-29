@@ -2,20 +2,21 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import java.util.HashMap;
 
 /**
  * ForgeMain is a shared inventory under the Forge command that supports
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.11
+ * @version 1.2.1
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -90,10 +91,14 @@ public class ForgeMain {
    */
   private void addPaginationButtons(Inventory inv, int pageViewed, int numberOfPages) {
     if (pageViewed > 0) {
-      inv.setItem(0, new ItemCreator().createItem(Material.RED_WOOL, "Previous Page"));
+      HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
+          getResources().getPlayerHeadData().getHeadsMap();
+      inv.setItem(0, headsMap.get("Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, new ItemCreator().createItem(Material.GREEN_WOOL, "Next Page"));
+      HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
+          getResources().getPlayerHeadData().getHeadsMap();
+      inv.setItem(8, headsMap.get("Next Page"));
     }
   }
 
@@ -104,15 +109,18 @@ public class ForgeMain {
    * @param action type of interaction
    */
   private void addActionButtons(Inventory inv, String action) {
-    ItemCreator itemCreator = new ItemCreator();
     switch (action) {
       case "modify" -> {
-        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
-        inv.setItem(5, itemCreator.createItem(Material.RED_CONCRETE, "Delete Recipe"));
+        HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
+            getResources().getPlayerHeadData().getHeadsMap();
+        inv.setItem(3, headsMap.get("Create Recipe"));
+        inv.setItem(5, headsMap.get("Delete Recipe"));
       }
       case "delete" -> {
-        inv.setItem(3, itemCreator.createItem(Material.GREEN_CONCRETE, "Create Recipe"));
-        inv.setItem(4, itemCreator.createItem(Material.YELLOW_CONCRETE, "Modify Recipe"));
+        HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
+            getResources().getPlayerHeadData().getHeadsMap();
+        inv.setItem(3, headsMap.get("Create Recipe"));
+        inv.setItem(4, headsMap.get("Modify Recipe"));
       }
     }
   }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * ForgeModify is an inventory under the Forge command that modifies forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.11
+ * @version 1.2.1
  * @since 1.0.9
  */
 public class ForgeModify {
@@ -25,23 +25,17 @@ public class ForgeModify {
    *
    * @param e      inventory click event
    * @param player interacting player
-   * @throws NullPointerException recipe not found
    */
   public void modifyRecipe(InventoryClickEvent e, Player player) {
-    try {
-      // Match item to recipe
-      AethelResources resources = AethelPlugin.getInstance().getResources();
-      ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-          get(new ItemMetaReader().getItemName(e.getCurrentItem()));
+    AethelResources resources = AethelPlugin.getInstance().getResources();
+    ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
+        get(new ItemMetaReader().getItemName(e.getCurrentItem()));
 
-      Inventory inv = new ForgeCreate().createInventory(player);
-      addExistingRecipeContents(recipe, inv);
+    Inventory inv = new ForgeCreate().createInventory(player);
+    addExistingRecipeContents(recipe, inv);
 
-      player.openInventory(inv);
-      player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
-    } catch (NullPointerException ex) {
-      player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
-    }
+    player.openInventory(inv);
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
   }
 
   /**

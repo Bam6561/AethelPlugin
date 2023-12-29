@@ -1,10 +1,8 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -16,12 +14,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 
 /**
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.1.10
+ * @version 1.2.1
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -34,9 +33,10 @@ public class ForgeCreate {
   public Inventory createInventory(Player player) {
     String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Create";
     Inventory inv = Bukkit.createInventory(player, 27, title);
-    ItemCreator itemCreator = new ItemCreator();
-    inv.setItem(25, itemCreator.createItem(Material.GREEN_CONCRETE, "Save Recipe"));
-    inv.setItem(26, itemCreator.createItem(Material.ARROW, "Back"));
+    HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
+        getResources().getPlayerHeadData().getHeadsMap();
+    inv.setItem(25, headsMap.get("Save Recipe"));
+    inv.setItem(26, headsMap.get("Back"));
     return inv;
   }
 
