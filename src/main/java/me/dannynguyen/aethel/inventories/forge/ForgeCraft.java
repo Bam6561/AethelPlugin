@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.Bukkit;
@@ -13,13 +14,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.1
+ * @version 1.2.2
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -32,10 +32,11 @@ public class ForgeCraft {
   public Inventory createInventory(Player player) {
     String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft";
     Inventory inv = Bukkit.createInventory(player, 27, title);
-    HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
-        getResources().getPlayerHeadData().getHeadsMap();
-    inv.setItem(25, headsMap.get("Create Recipe"));
-    inv.setItem(26, headsMap.get("Back"));
+    ItemCreator itemCreator = new ItemCreator();
+    inv.setItem(25, itemCreator.
+        createPlayerHead("Crafting Table", ChatColor.AQUA + "Craft"));
+    inv.setItem(26, itemCreator.
+        createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
     return inv;
   }
 

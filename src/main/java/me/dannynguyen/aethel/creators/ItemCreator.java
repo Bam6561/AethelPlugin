@@ -1,23 +1,15 @@
 package me.dannynguyen.aethel.creators;
 
-import org.bukkit.Bukkit;
+import me.dannynguyen.aethel.AethelPlugin;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
-import org.bukkit.profile.PlayerTextures;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Base64;
-import java.util.UUID;
 
 /**
  * ItemCreator creates ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.2.1
+ * @version 1.2.2
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -37,50 +29,21 @@ public class ItemCreator {
   }
 
   /**
-   * Creates a player head with a custom texture.
+   * Creates a named player head from loaded textures.
    *
+   * @param headName    player head name
    * @param displayName item name
-   * @param textureData encoded texture
-   * @return custom texture player head
+   * @return named custom player head
    */
-  public ItemStack createPlayerHead(String displayName, String textureData) {
-    PlayerProfile profile = createProfile(getUrlFromTextureData(textureData));
-    ItemStack head = createItem(Material.PLAYER_HEAD, displayName);
-    SkullMeta meta = (SkullMeta) head.getItemMeta();
-    meta.setOwnerProfile(profile);
-    head.setItemMeta(meta);
-    return head;
-  }
-
-  /**
-   * Deserializes a url from encoded texture data.
-   *
-   * @param textureData encoded texture
-   * @return texture url
-   * @throws MalformedURLException invalid url
-   */
-  private URL getUrlFromTextureData(String textureData) {
-    String urlString = new String(Base64.getDecoder().decode(textureData));
-    URL url = null;
-    try {
-      url = new URL(urlString.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(),
-          urlString.length() - "\"}}}".length()));
-    } catch (MalformedURLException ex) {
+  public ItemStack createPlayerHead(String headName, String displayName) {
+    ItemStack item = AethelPlugin.getInstance().getResources().getPlayerHeadData().getHeadsMap().get(headName);
+    if (item != null) {
+      ItemMeta meta = item.getItemMeta();
+      meta.setDisplayName(displayName);
+      item.setItemMeta(meta);
+      return item;
+    } else {
+      return null;
     }
-    return url;
-  }
-
-  /**
-   * Creates a player profile.
-   *
-   * @param url texture url
-   * @return player profile with desired texture
-   */
-  private PlayerProfile createProfile(URL url) {
-    PlayerProfile profile = Bukkit.createPlayerProfile(UUID.fromString("58f8c6e4-8e24-4429-badc-ecf76de5bead"));
-    PlayerTextures textures = profile.getTextures();
-    textures.setSkin(url);
-    profile.setTextures(textures);
-    return profile;
   }
 }

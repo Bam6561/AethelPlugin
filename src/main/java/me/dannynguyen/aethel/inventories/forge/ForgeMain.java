@@ -2,21 +2,19 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import java.util.HashMap;
 
 /**
  * ForgeMain is a shared inventory under the Forge command that supports
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.1
+ * @version 1.2.2
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -91,14 +89,12 @@ public class ForgeMain {
    */
   private void addPaginationButtons(Inventory inv, int pageViewed, int numberOfPages) {
     if (pageViewed > 0) {
-      HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
-          getResources().getPlayerHeadData().getHeadsMap();
-      inv.setItem(0, headsMap.get("Previous Page"));
+      inv.setItem(0, new ItemCreator().
+          createPlayerHead("Red Backward", ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
-      HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
-          getResources().getPlayerHeadData().getHeadsMap();
-      inv.setItem(8, headsMap.get("Next Page"));
+      inv.setItem(8, new ItemCreator().
+          createPlayerHead("Lime Forward", ChatColor.AQUA + "Next Page"));
     }
   }
 
@@ -111,16 +107,18 @@ public class ForgeMain {
   private void addActionButtons(Inventory inv, String action) {
     switch (action) {
       case "modify" -> {
-        HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
-            getResources().getPlayerHeadData().getHeadsMap();
-        inv.setItem(3, headsMap.get("Create Recipe"));
-        inv.setItem(5, headsMap.get("Delete Recipe"));
+        ItemCreator itemCreator = new ItemCreator();
+        inv.setItem(3, itemCreator.
+            createPlayerHead("Crafting Table", ChatColor.AQUA + "Create"));
+        inv.setItem(5, itemCreator.
+            createPlayerHead("Trash Can", ChatColor.AQUA + "Delete"));
       }
       case "delete" -> {
-        HashMap<String, ItemStack> headsMap = AethelPlugin.getInstance().
-            getResources().getPlayerHeadData().getHeadsMap();
-        inv.setItem(3, headsMap.get("Create Recipe"));
-        inv.setItem(4, headsMap.get("Modify Recipe"));
+        ItemCreator itemCreator = new ItemCreator();
+        inv.setItem(3, itemCreator.
+            createPlayerHead("Crafting Table", ChatColor.AQUA + "Create"));
+        inv.setItem(4, itemCreator.
+            createPlayerHead("File Explorer", ChatColor.AQUA + "Modify"));
       }
     }
   }
