@@ -22,7 +22,7 @@ import java.util.HashMap;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.4
+ * @version 1.2.5
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -97,27 +97,11 @@ public class ForgeCraft {
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();
 
-    if (checkExactMatch(player, components)) {
-      processExactMatch(player, components, results);
-    } else if (checkMatchingType(player, components)) {
+    if (checkMatchingType(player, components)) {
       processMatchingType(player, results);
     } else {
       player.sendMessage(ChatColor.RED + "Insufficient components.");
     }
-  }
-
-  /**
-   * Determines if the player has sufficient exact matching components to craft the recipe.
-   *
-   * @param player     interacting player
-   * @param components components in recipe
-   * @return has sufficient components
-   */
-  private boolean checkExactMatch(Player player, ArrayList<ItemStack> components) {
-    for (ItemStack item : components) {
-      if (!player.getInventory().containsAtLeast(item, item.getAmount())) return false;
-    }
-    return true;
   }
 
   /**
@@ -182,13 +166,11 @@ public class ForgeCraft {
   private boolean checkSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
                                            Material reqMaterial, int reqAmount) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
-      int index = invSlot.getSlot();
-      ItemStack item = invSlot.getItem();
-      int amount = invSlot.getAmount();
-
-      if (item.getItemMeta().getPersistentDataContainer().isEmpty()) {
-        reqAmount -= amount;
-        if (checkReqAmountSatisfied(invSlot, index, reqAmount)) return true;
+      if (invSlot.getItem().getItemMeta().getPersistentDataContainer().isEmpty()) {
+        if (invSlot.getAmount() > 0) {
+          reqAmount -= invSlot.getAmount();
+          if (checkReqAmountSatisfied(invSlot, reqAmount)) return true;
+        }
       }
     }
     return false;
@@ -197,11 +179,10 @@ public class ForgeCraft {
   /**
    * Determines if the required amount of material was satisfied.
    *
-   * @param index     player inventory index
    * @param reqAmount required amount
    * @return has sufficient amounts of material
    */
-  private boolean checkReqAmountSatisfied(InventorySlot invSlot, int index, int reqAmount) {
+  private boolean checkReqAmountSatisfied(InventorySlot invSlot, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
       getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
@@ -215,21 +196,6 @@ public class ForgeCraft {
       return true;
     }
     return false;
-  }
-
-  /**
-   * Removes the recipe's components.
-   *
-   * @param player     interacting player
-   * @param components recipe components
-   * @param results    recipe results
-   */
-  private void processExactMatch(Player player, ArrayList<ItemStack> components,
-                                 ArrayList<ItemStack> results) {
-    for (ItemStack item : components) {
-      player.getInventory().removeItem(item);
-    }
-    giveItemsToPlayer(player, results);
   }
 
   /**
