@@ -16,12 +16,17 @@ import java.util.Scanner;
  * ForgeRecipeReader decodes forge recipes from the file system.
  *
  * @author Danny Nguyen
- * @version 1.1.8
+ * @version 1.2.3
  * @since 1.0.9
  */
 public class ForgeRecipeReader {
   /**
    * Reads a recipe file.
+   * <p>
+   * Data is stored in two lines of text, represented by the variable dataType.
+   * - [1] Results
+   * - [2] Components
+   * </p>
    *
    * @param file recipe file
    * @return decoded recipe
@@ -30,27 +35,41 @@ public class ForgeRecipeReader {
   public ForgeRecipe readRecipe(File file) {
     ArrayList<ItemStack> results = new ArrayList<>();
     ArrayList<ItemStack> components = new ArrayList<>();
-    int recipeDataType = 1;
+    int dataType = 1;
 
     try {
       Scanner scanner = new Scanner(file);
       while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        String[] data = line.split(" ");
-        for (String encodedItem : data) {
-          ItemStack item = decodeItem(encodedItem);
-          if (item != null) {
-            switch (recipeDataType) {
-              case 1 -> results.add(item);
-              case 2 -> components.add(item);
-            }
-          }
-        }
-        recipeDataType++;
+        readLine(scanner.nextLine(), dataType, results, components);
+        dataType++;
       }
       return new ForgeRecipe(file, new ItemMetaReader().getItemName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
+    }
+  }
+
+  /**
+   * Reads a line of text from the file and adds decoded items to the recipe.
+   * <p>
+   * Individual encoded items are separated by spaces.
+   * </p>
+   *
+   * @param line       text line
+   * @param dataType   [1] Results | [2] Components
+   * @param results    recipe results
+   * @param components recipe components
+   */
+  private void readLine(String line, int dataType, ArrayList<ItemStack> results, ArrayList<ItemStack> components) {
+    String[] data = line.split(" ");
+    for (String encodedItem : data) {
+      ItemStack item = decodeItem(encodedItem);
+      if (item != null) {
+        switch (dataType) {
+          case 1 -> results.add(item);
+          case 2 -> components.add(item);
+        }
+      }
     }
   }
 
