@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.objects.SlotAmount;
+import me.dannynguyen.aethel.objects.InventorySlot;
 import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,11 +22,12 @@ import java.util.HashMap;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.3
+ * @version 1.2.4
  * @since 1.1.0
  */
 public class ForgeCraft {
-  ArrayList<SlotAmount> slotAmounts = new ArrayList<>();
+  HashMap<Material, ArrayList<InventorySlot>> invMap = new HashMap<>();
+  ArrayList<InventorySlot> setInventory = new ArrayList<>();
 
   /**
    * Creates and names a ForgeCraft inventory.
@@ -99,7 +100,7 @@ public class ForgeCraft {
     if (checkExactMatch(player, components)) {
       processExactMatch(player, components, results);
     } else if (checkMatchingType(player, components)) {
-      processMatchingType(player, components, results);
+      processMatchingType(player, results);
     } else {
       player.sendMessage(ChatColor.RED + "Insufficient components.");
     }
@@ -128,12 +129,14 @@ public class ForgeCraft {
    */
   private boolean checkMatchingType(Player player, ArrayList<ItemStack> components) {
     Inventory inv = player.getInventory();
-    HashMap<Material, ArrayList<Integer>> invMap = mapMaterialIndices(inv);
+    setInvMap(mapMaterialIndices(inv));
 
     for (ItemStack item : components) {
       Material reqMaterial = item.getType();
-      if (invMap.containsKey(reqMaterial)) {
-        if (!checkSufficientMaterials(inv, invMap, reqMaterial, item.getAmount())) return false;
+      int reqAmount = item.getAmount();
+
+      if (getInvMap().containsKey(reqMaterial)) {
+        if (!checkSufficientMaterials(getInvMap(), reqMaterial, reqAmount)) return false;
       } else {
         return false;
       }
@@ -145,21 +148,23 @@ public class ForgeCraft {
    * Maps the player's inventory.
    *
    * @param inv player inventory
-   * @return material:indices inventory map
+   * @return material:inventory slots inventory map
    */
-  private HashMap<Material, ArrayList<Integer>> mapMaterialIndices(Inventory inv) {
-    HashMap<Material, ArrayList<Integer>> invMap = new HashMap<>();
+  private HashMap<Material, ArrayList<InventorySlot>> mapMaterialIndices(Inventory inv) {
+    HashMap<Material, ArrayList<InventorySlot>> invMap = new HashMap<>();
 
     for (int i = 0; i < 36; i++) {
+      ItemStack item = inv.getItem(i);
       if (inv.getItem(i) != null) {
-        Material material = inv.getItem(i).getType();
+        Material material = item.getType();
+        int amount = item.getAmount();
 
         if (invMap.containsKey(material)) {
-          invMap.get(material).add(i);
+          invMap.get(material).add(new InventorySlot(i, item, amount));
         } else {
-          ArrayList<Integer> indices = new ArrayList<>();
-          indices.add(i);
-          invMap.put(material, indices);
+          ArrayList<InventorySlot> invSlots = new ArrayList<>();
+          invSlots.add(new InventorySlot(i, item, amount));
+          invMap.put(material, invSlots);
         }
       }
     }
@@ -169,19 +174,21 @@ public class ForgeCraft {
   /**
    * Determines if the player has sufficient amounts of the required material.
    *
-   * @param inv         player inventory
-   * @param invMap      material:indices inventory map
+   * @param invMap      material:inventory slots inventory map
    * @param reqMaterial required material
    * @param reqAmount   required amount
    * @return has sufficient amounts of material
    */
-  private boolean checkSufficientMaterials(Inventory inv, HashMap<Material, ArrayList<Integer>> invMap,
+  private boolean checkSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
                                            Material reqMaterial, int reqAmount) {
-    for (int index : invMap.get(reqMaterial)) {
-      ItemStack invItem = inv.getItem(index);
-      if (invItem.getItemMeta().getPersistentDataContainer().isEmpty()) {
-        reqAmount -= invItem.getAmount();
-        if (checkReqAmountSatisfied(index, reqAmount)) return true;
+    for (InventorySlot invSlot : invMap.get(reqMaterial)) {
+      int index = invSlot.getSlot();
+      ItemStack item = invSlot.getItem();
+      int amount = invSlot.getAmount();
+
+      if (item.getItemMeta().getPersistentDataContainer().isEmpty()) {
+        reqAmount -= amount;
+        if (checkReqAmountSatisfied(invSlot, index, reqAmount)) return true;
       }
     }
     return false;
@@ -194,14 +201,17 @@ public class ForgeCraft {
    * @param reqAmount required amount
    * @return has sufficient amounts of material
    */
-  private boolean checkReqAmountSatisfied(int index, int reqAmount) {
+  private boolean checkReqAmountSatisfied(InventorySlot invSlot, int index, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
-      getSlotAmounts().add(new SlotAmount(index, 0));
+      invSlot.setAmount(0);
+      getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
       if (reqAmount == 0) {
         return true;
       }
     } else {
-      getSlotAmounts().add(new SlotAmount(index, Math.abs(reqAmount)));
+      int difference = Math.abs(reqAmount);
+      invSlot.setAmount(difference);
+      getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
       return true;
     }
     return false;
@@ -225,16 +235,14 @@ public class ForgeCraft {
   /**
    * Removes the recipe's components.
    *
-   * @param player     interacting player
-   * @param components recipe components
-   * @param results    recipe results
+   * @param player  interacting player
+   * @param results recipe results
    */
-  private void processMatchingType(Player player, ArrayList<ItemStack> components,
-                                   ArrayList<ItemStack> results) {
+  private void processMatchingType(Player player, ArrayList<ItemStack> results) {
     Inventory inv = player.getInventory();
-    for (SlotAmount slotAmount : getSlotAmounts()) {
-      inv.setItem(slotAmount.getSlot(),
-          new ItemStack(inv.getItem(slotAmount.getSlot()).getType(), slotAmount.getAmount()));
+    for (InventorySlot invSlot : getSetInventory()) {
+      inv.setItem(invSlot.getSlot(),
+          new ItemStack(inv.getItem(invSlot.getSlot()).getType(), invSlot.getAmount()));
     }
     giveItemsToPlayer(player, results);
   }
@@ -256,7 +264,15 @@ public class ForgeCraft {
     }
   }
 
-  private ArrayList<SlotAmount> getSlotAmounts() {
-    return this.slotAmounts;
+  private HashMap<Material, ArrayList<InventorySlot>> getInvMap() {
+    return this.invMap;
+  }
+
+  private void setInvMap(HashMap<Material, ArrayList<InventorySlot>> invMap) {
+    this.invMap = invMap;
+  }
+
+  private ArrayList<InventorySlot> getSetInventory() {
+    return this.setInventory;
   }
 }
