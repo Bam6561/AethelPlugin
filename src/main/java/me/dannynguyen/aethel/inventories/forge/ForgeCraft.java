@@ -9,11 +9,14 @@ import me.dannynguyen.aethel.readers.ItemMetaReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +25,7 @@ import java.util.HashMap;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.5
+ * @version 1.3.0
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -117,10 +120,20 @@ public class ForgeCraft {
 
     for (ItemStack item : components) {
       Material reqMaterial = item.getType();
-      int reqAmount = item.getAmount();
-
       if (getInvMap().containsKey(reqMaterial)) {
-        if (!checkSufficientMaterials(getInvMap(), reqMaterial, reqAmount)) return false;
+        int reqAmount = item.getAmount();
+
+        // Check if required component has a ForgeId tag
+        NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forgeid");
+        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+        boolean checkForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
+
+        if (!checkForgeId) {
+          if (!checkSufficientMaterials(getInvMap(), reqMaterial, reqAmount)) return false;
+        } else {
+          String reqForgeId = dataContainer.get(forgeIdKey, PersistentDataType.STRING);
+          if (!checkSufficientMaterials(getInvMap(), reqMaterial, reqAmount, forgeIdKey, reqForgeId)) return false;
+        }
       } else {
         return false;
       }
@@ -166,10 +179,36 @@ public class ForgeCraft {
   private boolean checkSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
                                            Material reqMaterial, int reqAmount) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
-      if (invSlot.getItem().getItemMeta().getPersistentDataContainer().isEmpty()) {
-        if (invSlot.getAmount() > 0) {
-          reqAmount -= invSlot.getAmount();
-          if (checkReqAmountSatisfied(invSlot, reqAmount)) return true;
+      if (invSlot.getAmount() > 0) {
+        reqAmount -= invSlot.getAmount();
+        if (checkReqAmountSatisfied(invSlot, reqAmount)) return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Determines if the player has sufficient amounts of the required material.
+   *
+   * @param invMap      material:inventory slots inventory map
+   * @param reqMaterial required material
+   * @param reqAmount   required amount
+   * @param forgeIdKey  aethel.forgeid
+   * @param reqForgeId  required ForgeId
+   * @return has sufficient amounts of material
+   */
+  private boolean checkSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
+                                           Material reqMaterial, int reqAmount,
+                                           NamespacedKey forgeIdKey, String reqForgeId) {
+    for (InventorySlot invSlot : invMap.get(reqMaterial)) {
+      PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
+
+      if (dataContainer.has(forgeIdKey, PersistentDataType.STRING)) {
+        if (dataContainer.get(forgeIdKey, PersistentDataType.STRING).equals(reqForgeId)) {
+          if (invSlot.getAmount() > 0) {
+            reqAmount -= invSlot.getAmount();
+            if (checkReqAmountSatisfied(invSlot, reqAmount)) return true;
+          }
         }
       }
     }
