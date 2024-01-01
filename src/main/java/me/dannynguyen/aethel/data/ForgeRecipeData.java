@@ -111,7 +111,7 @@ public class ForgeRecipeData {
 
       for (ItemStack item : results) {
         recipeResults.add(ChatColor.AQUA + "x" + item.getAmount() +
-            ChatColor.WHITE + " " + metaReader.getItemName(item));
+            ChatColor.WHITE + " " + metaReader.readItemName(item));
       }
 
       ItemStack itemDisplay = displayItem.clone();

@@ -29,7 +29,7 @@ public class ForgeModify {
   public void modifyRecipe(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().getItemName(e.getCurrentItem()));
+        get(new ItemMetaReader().readItemName(e.getCurrentItem()));
 
     Inventory inv = new ForgeCreate().createInventory(player);
     addExistingRecipeContents(recipe, inv);

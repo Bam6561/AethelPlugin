@@ -27,7 +27,7 @@ public class ForgeDelete {
     // Match item to recipe
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().getItemName(e.getCurrentItem()));
+        get(new ItemMetaReader().readItemName(e.getCurrentItem()));
 
     recipe.getFile().delete();
     player.sendMessage(ChatColor.RED + "[Deleted] " + ChatColor.WHITE +

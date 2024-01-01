@@ -43,7 +43,7 @@ public class ForgeRecipeReader {
         readLine(scanner.nextLine(), dataType, results, components);
         dataType++;
       }
-      return new ForgeRecipe(file, new ItemMetaReader().getItemName(results.get(0)), results, components);
+      return new ForgeRecipe(file, new ItemMetaReader().readItemName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
     }

@@ -55,7 +55,7 @@ public class ForgeCraft {
   public void expandRecipeDetails(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().getItemName(e.getCurrentItem()));
+        get(new ItemMetaReader().readItemName(e.getCurrentItem()));
 
     Inventory inv = createInventory(player);
     addExistingRecipeContents(recipe, inv);
@@ -92,7 +92,7 @@ public class ForgeCraft {
   public void craftRecipe(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().getItemName(e.getClickedInventory().getItem(0)));
+        get(new ItemMetaReader().readItemName(e.getClickedInventory().getItem(0)));
 
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();

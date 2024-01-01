@@ -33,7 +33,7 @@ public class Forge implements CommandExecutor {
   }
 
   /**
-   * Checks if the forge command request was formatted correctly before interpreting its usage.
+   * Checks if the Forge command request was formatted correctly before interpreting its usage.
    *
    * @param sender command sender
    * @param args   parameters
