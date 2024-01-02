@@ -19,13 +19,15 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.3.0
+ * @version 1.3.1
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -41,12 +43,29 @@ public class ForgeCraft {
   public Inventory createInventory(Player player) {
     String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft";
     Inventory inv = Bukkit.createInventory(player, 27, title);
+
     ItemCreator itemCreator = new ItemCreator();
+    addCraftHelp(inv);
     inv.setItem(25, itemCreator.
         createPlayerHead("Crafting Table", ChatColor.AQUA + "Craft"));
     inv.setItem(26, itemCreator.
         createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
     return inv;
+  }
+
+  /**
+   * Adds a help context to the expanded craft action.
+   *
+   * @param inv interacting inventory
+   */
+  private void addCraftHelp(Inventory inv) {
+    List<String> helpLore = Arrays.asList(
+        ChatColor.AQUA + "Rows",
+        ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
+        ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
+        ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
+    inv.setItem(8, new ItemCreator().createPlayerHead("White Question Mark",
+        ChatColor.GREEN + "Help", helpLore));
   }
 
   /**

@@ -9,12 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * ForgeMain is a shared inventory under the Forge command that supports
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.2
+ * @version 1.3.1
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -55,6 +58,11 @@ public class ForgeMain {
     Inventory inv = new ForgeMain().createInventory(player, action);
     inv.setContents(resources.getForgeRecipeData().getRecipePages().get(pageViewed).getContents());
 
+    if (action.equals("craft")) {
+      addCraftHelp(inv);
+    } else {
+      addEditorHelp(inv);
+    }
     addPaginationButtons(inv, pageViewed, numberOfPages);
     addActionButtons(inv, action);
 
@@ -78,6 +86,39 @@ public class ForgeMain {
       pageRequest = 0;
     }
     return pageRequest;
+  }
+
+  /**
+   * Adds a help context to the craft action.
+   *
+   * @param inv interacting inventory
+   */
+  private void addCraftHelp(Inventory inv) {
+    List<String> helpLore = Arrays.asList(
+        ChatColor.WHITE + "Expand a recipe to see its",
+        ChatColor.WHITE + "results and components.",
+        "",
+        ChatColor.WHITE + "Components are matched",
+        ChatColor.WHITE + "by material unless",
+        ChatColor.WHITE + "they're unique items!");
+
+    inv.setItem(4, new ItemCreator().createPlayerHead("White Question Mark",
+        ChatColor.GREEN + "Help", helpLore));
+  }
+
+  /**
+   * Adds a help context to the editor actions.
+   *
+   * @param inv interacting inventory
+   */
+  private void addEditorHelp(Inventory inv) {
+    List<String> helpLore = Arrays.asList(
+        ChatColor.WHITE + "To undo a deletion,",
+        ChatColor.WHITE + "modify the item and",
+        ChatColor.WHITE + "save it before reloading.");
+
+    inv.setItem(2, new ItemCreator().createPlayerHead("White Question Mark",
+        ChatColor.GREEN + "Help", helpLore));
   }
 
   /**

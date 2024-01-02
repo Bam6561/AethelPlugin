@@ -14,13 +14,15 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.2
+ * @version 1.3.1
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -33,12 +35,29 @@ public class ForgeCreate {
   public Inventory createInventory(Player player) {
     String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Create";
     Inventory inv = Bukkit.createInventory(player, 27, title);
+
     ItemCreator itemCreator = new ItemCreator();
+    addCreateHelp(inv);
     inv.setItem(25, itemCreator.
         createPlayerHead("Stack of Paper", ChatColor.AQUA + "Save"));
     inv.setItem(26, itemCreator.
         createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
     return inv;
+  }
+
+  /**
+   * Adds a help context to the create action.
+   *
+   * @param inv interacting inventory
+   */
+  private void addCreateHelp(Inventory inv) {
+    List<String> helpLore = Arrays.asList(
+        ChatColor.AQUA + "Rows",
+        ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
+        ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
+        ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
+    inv.setItem(8, new ItemCreator().createPlayerHead("White Question Mark",
+        ChatColor.GREEN + "Help", helpLore));
   }
 
   /**
@@ -70,7 +89,7 @@ public class ForgeCreate {
    * @return name of the recipe
    */
   private String nameRecipeFile(ItemStack[] inv) {
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
       if (item != null) {
         ItemMeta meta = item.getItemMeta();
@@ -104,7 +123,7 @@ public class ForgeCreate {
     if (components.toString().equals("")) return null;
 
     StringBuilder results = new StringBuilder();
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
       if (item != null) results.append(encodeItem(item) + " ");
     }

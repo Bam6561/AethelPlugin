@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.*;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -11,7 +12,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command invocation.
  *
  * @author Danny Nguyen
- * @version 1.2.0
+ * @version 1.3.1
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -29,8 +30,16 @@ public class ForgeListener {
       Player player = (Player) e.getWhoClicked();
       switch (e.getSlot()) {
         case 0 -> previousRecipePage(player, action);
+        case 2 -> {
+          break;
+        }
         case 3 -> openForgeCreateInventory(player);
-        case 4 -> openForgeModifyInventory(player);
+        case 4 -> {
+          String itemName = e.getCurrentItem().getItemMeta().getDisplayName();
+          if (!itemName.equals(ChatColor.GREEN + "Help")) {
+            openForgeModifyInventory(player);
+          }
+        }
         case 5 -> openForgeDeleteInventory(player);
         case 8 -> nextRecipePage(player, action);
         default -> interpretContextualClick(e, action, player);
@@ -64,6 +73,7 @@ public class ForgeListener {
   public void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
+        case 8 -> e.setCancelled(true);
         case 25 -> new ForgeCreate().readSaveClick(e, player);
         case 26 -> {
           openForgeModifyInventory(player);
