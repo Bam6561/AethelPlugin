@@ -24,7 +24,6 @@ public class ForgeDelete {
    * @param player interacting player
    */
   public void deleteRecipe(InventoryClickEvent e, Player player) {
-    // Match item to recipe
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
         get(new ItemMetaReader().readItemName(e.getCurrentItem()));

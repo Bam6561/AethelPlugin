@@ -19,8 +19,9 @@ public class ForgeListener {
   /**
    * Either:
    * - increments or decrements a recipe page
+   * - expands a recipe's details
    * - changes the interaction type
-   * - contextualizes the click
+   * - contextualizes the click to modify or delete recipes
    *
    * @param e      inventory click event
    * @param action type of interaction
@@ -30,7 +31,7 @@ public class ForgeListener {
       Player player = (Player) e.getWhoClicked();
       switch (e.getSlot()) {
         case 0 -> previousRecipePage(player, action);
-        case 2 -> {
+        case 2 -> { // Help Context
           break;
         }
         case 3 -> openForgeCreateInventory(player);

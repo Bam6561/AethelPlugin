@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.inventories.forge;
+package me.dannynguyen.aethel.inventories.aethelItem;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
@@ -13,26 +13,25 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * ForgeMain is a shared inventory under the Forge command that supports
- * pagination for crafting, modifying, and deleting forge recipes.
+ * AethelItemMain is a shared inventory under the AethelItem command that
+ * supports pagination for getting, creating, modifying, and deleting items.
  *
  * @author Danny Nguyen
  * @version 1.4.0
- * @since 1.0.6
+ * @since 1.4.0
  */
-public class ForgeMain {
+public class AethelItemMain {
   /**
-   * Creates and names a ForgeMain inventory.
+   * Creates and names an AethelItemMain inventory.
    *
    * @param player interacting player
    * @param action type of interaction
-   * @return ForgeMain inventory
+   * @return AethelItemMain inventory
    */
   private Inventory createInventory(Player player, String action) {
-    String title = ChatColor.DARK_GRAY + "Forge";
+    String title = ChatColor.DARK_GRAY + "Aethel Item";
     switch (action) {
-      case "craft" -> title += ChatColor.BLUE + " Craft";
-      case "modify" -> title += ChatColor.YELLOW + " Modify";
+      case "get" -> title += ChatColor.GREEN + " Get";
       case "delete" -> title += ChatColor.RED + " Delete";
     }
     Inventory inv = Bukkit.createInventory(player, 54, title);
@@ -40,34 +39,30 @@ public class ForgeMain {
   }
 
   /**
-   * Loads a recipe page from memory.
+   * Loads an item page from memory.
    *
    * @param player      interacting player
    * @param action      type of interaction
    * @param pageRequest page to view
-   * @return ForgeMain inventory with recipes
+   * @return AethelMain inventory with items
    */
-  public Inventory openRecipePage(Player player, String action, int pageRequest) {
-    Inventory inv = new ForgeMain().createInventory(player, action);
+  public Inventory openItemPage(Player player, String action, int pageRequest) {
+    Inventory inv = new AethelItemMain().createInventory(player, action);
 
     AethelResources resources = AethelPlugin.getInstance().getResources();
 
-    int numberOfPages = resources.getForgeRecipeData().getNumberOfPages();
+    int numberOfPages = resources.getAethelItemData().getNumberOfPages();
     int pageViewed;
     if (numberOfPages != 0) {
       pageViewed = calculatePageViewed(pageRequest, numberOfPages);
-      inv.setContents(resources.getForgeRecipeData().getRecipePages().get(pageViewed).getContents());
+      inv.setContents(resources.getAethelItemData().getItemPages().get(pageViewed).getContents());
       addPaginationButtons(inv, pageViewed, numberOfPages);
     } else {
       pageViewed = 0;
     }
 
-    if (action.equals("craft")) {
-      addCraftHelp(inv);
-    } else {
-      addEditorHelp(inv);
-    }
-    addActionButtons(inv, action);
+    addEditorHelp(inv);
+    addActionButton(inv, action);
 
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
     return inv;
@@ -92,33 +87,23 @@ public class ForgeMain {
   }
 
   /**
-   * Adds a help context to the craft action.
-   *
-   * @param inv interacting inventory
-   */
-  private void addCraftHelp(Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "Expand a recipe to see its",
-        ChatColor.WHITE + "results and components.",
-        "",
-        ChatColor.WHITE + "Components are matched",
-        ChatColor.WHITE + "by material unless",
-        ChatColor.WHITE + "they're unique items!");
-
-    inv.setItem(4, new ItemCreator().createPlayerHead("White Question Mark",
-        ChatColor.GREEN + "Help", helpLore));
-  }
-
-  /**
-   * Adds a help context to the editor actions.
+   * Adds a help context to the editor.
    *
    * @param inv interacting inventory
    */
   private void addEditorHelp(Inventory inv) {
     List<String> helpLore = Arrays.asList(
+        ChatColor.WHITE + "Place an item to",
+        ChatColor.WHITE + "the right of this",
+        ChatColor.WHITE + "slot to save it.",
+        "",
+        ChatColor.WHITE + "You can toggle between",
+        ChatColor.WHITE + "Get and Delete modes by",
+        ChatColor.WHITE + "clicking on their button.",
+        "",
         ChatColor.WHITE + "To undo a deletion,",
-        ChatColor.WHITE + "modify the item and",
-        ChatColor.WHITE + "save it before reloading.");
+        ChatColor.WHITE + "get the item and save",
+        ChatColor.WHITE + "it before reloading.");
 
     inv.setItem(2, new ItemCreator().createPlayerHead("White Question Mark",
         ChatColor.GREEN + "Help", helpLore));
@@ -143,26 +128,26 @@ public class ForgeMain {
   }
 
   /**
-   * Adds create, modify, and delete recipe buttons.
+   * Adds save, get, and delete buttons.
    *
    * @param inv    interacting inventory
    * @param action type of interaction
    */
-  private void addActionButtons(Inventory inv, String action) {
+  private void addActionButton(Inventory inv, String action) {
     switch (action) {
-      case "modify" -> {
+      case "get" -> {
         ItemCreator itemCreator = new ItemCreator();
-        inv.setItem(3, itemCreator.
-            createPlayerHead("Crafting Table", ChatColor.AQUA + "Create"));
+        inv.setItem(4, itemCreator.
+            createPlayerHead("Crafting Table", ChatColor.AQUA + "Save"));
         inv.setItem(5, itemCreator.
             createPlayerHead("Trash Can", ChatColor.AQUA + "Delete"));
       }
       case "delete" -> {
         ItemCreator itemCreator = new ItemCreator();
-        inv.setItem(3, itemCreator.
-            createPlayerHead("Crafting Table", ChatColor.AQUA + "Create"));
         inv.setItem(4, itemCreator.
-            createPlayerHead("File Explorer", ChatColor.AQUA + "Modify"));
+            createPlayerHead("Crafting Table", ChatColor.AQUA + "Save"));
+        inv.setItem(5, itemCreator.
+            createPlayerHead("Brown Backpack", ChatColor.AQUA + "Get"));
       }
     }
   }
