@@ -18,14 +18,14 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.1.7
+ * @version 1.3.2
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player)) {
-      sender.sendMessage("Only players can use this command.");
+      sender.sendMessage("Player-only command.");
       return true;
     }
     readRequest(sender, args);
@@ -36,13 +36,13 @@ public class Forge implements CommandExecutor {
    * Checks if the Forge command request was formatted correctly before interpreting its usage.
    *
    * @param sender command sender
-   * @param args   parameters
+   * @param args   user provided parameters
    */
   private void readRequest(CommandSender sender, String[] args) {
     Player player = (Player) sender;
     switch (args.length) {
       case 0 -> openForgeCraftInventory(player);
-      case 1 -> interpretParameter(args, player);
+      case 1 -> interpretParameter(player, args[0].toLowerCase());
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
     }
   }
@@ -50,11 +50,11 @@ public class Forge implements CommandExecutor {
   /**
    * Either modifies recipes or reloads them into memory.
    *
-   * @param args   user provided parameters
    * @param player interacting player
+   * @param action type of interaction
    */
-  private void interpretParameter(String[] args, Player player) {
-    switch (args[0]) {
+  private void interpretParameter(Player player, String action) {
+    switch (action) {
       case "edit" -> {
         if (player.isOp()) {
           openForgeModifyInventory(player);

@@ -17,7 +17,7 @@ public class Ping implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player)) {
-      sender.sendMessage("Only players can use this command.");
+      sender.sendMessage("Player-only command.");
       return true;
     }
     Player player = (Player) sender;

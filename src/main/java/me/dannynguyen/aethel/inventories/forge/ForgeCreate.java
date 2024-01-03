@@ -74,10 +74,10 @@ public class ForgeCreate {
       if (encodedRecipe != null) {
         saveRecipeToFile(player, fileName, encodedRecipe);
       } else {
-        player.sendMessage(ChatColor.RED + "Recipe components cannot be empty.");
+        player.sendMessage(ChatColor.RED + "Empty recipe components.");
       }
     } else {
-      player.sendMessage(ChatColor.RED + "Recipe results cannot be empty.");
+      player.sendMessage(ChatColor.RED + "Empty recipe results.");
     }
     e.setCancelled(true);
   }
@@ -86,7 +86,7 @@ public class ForgeCreate {
    * Names a recipe by the first item in the results row.
    *
    * @param inv items in the inventory
-   * @return name of the recipe
+   * @return recipe file name
    */
   private String nameRecipeFile(ItemStack[] inv) {
     for (int i = 0; i < 8; i++) {
@@ -151,11 +151,11 @@ public class ForgeCreate {
   }
 
   /**
-   * Saves a recipe file to storage.
+   * Saves a recipe file to the file system.
    *
+   * @param player      interacting player
    * @param itemName    item name
    * @param encodedItem encoded item string
-   * @param player      interacting player
    * @throws IOException file could not be created
    */
   private void saveRecipeToFile(Player player, String itemName, String encodedItem) {
@@ -166,7 +166,7 @@ public class ForgeCreate {
       fw.close();
       player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + ".txt");
     } catch (IOException ex) {
-      player.sendMessage(ChatColor.RED + "An error occurred while saving the recipe.");
+      player.sendMessage(ChatColor.RED + "Unable to save recipe.");
     }
   }
 }

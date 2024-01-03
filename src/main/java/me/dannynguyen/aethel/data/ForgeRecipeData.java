@@ -67,7 +67,7 @@ public class ForgeRecipeData {
       // Recipes begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        ArrayList<ItemStack> results = recipes.get(i).getResults();
+        ArrayList<ItemStack> results = getRecipes().get(i).getResults();
         inv.setItem(j, createResultsDisplay(results.get(0), results));
         j++;
       }
@@ -140,7 +140,7 @@ public class ForgeRecipeData {
     return this.numberOfPages;
   }
 
-  private void setNumberOfPages(int numberOfForgeRecipePages) {
-    this.numberOfPages = numberOfForgeRecipePages;
+  private void setNumberOfPages(int numberOfPages) {
+    this.numberOfPages = numberOfPages;
   }
 }

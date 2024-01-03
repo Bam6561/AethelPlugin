@@ -1,9 +1,6 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.commands.AethelTag;
-import me.dannynguyen.aethel.commands.Debug;
-import me.dannynguyen.aethel.commands.Forge;
-import me.dannynguyen.aethel.commands.Ping;
+import me.dannynguyen.aethel.commands.*;
 import me.dannynguyen.aethel.listeners.InventoryListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,7 +11,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.2.6
+ * @version 1.3.2
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -32,6 +29,7 @@ public class AethelPlugin extends JavaPlugin {
 
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
+    this.getCommand("aitem").setExecutor(new AethelItem());
     this.getCommand("atag").setExecutor(new AethelTag());
     this.getCommand("debug").setExecutor(new Debug());
     this.getCommand("forge").setExecutor(new Forge());
@@ -50,6 +48,13 @@ public class AethelPlugin extends JavaPlugin {
       resources.getForgeRecipeData().loadRecipes();
     } else {
       forgeRecipeDirectory.mkdir();
+    }
+
+    File aethelItemDirectory = new File(resources.getAethelItemDirectory());
+    if (aethelItemDirectory.exists()) {
+      resources.getAethelItemData().loadItems();
+    } else {
+      aethelItemDirectory.mkdir();
     }
 
     resources.getPlayerHeadData().loadPlayerHeads();

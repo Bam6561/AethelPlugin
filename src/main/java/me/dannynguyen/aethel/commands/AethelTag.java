@@ -19,14 +19,14 @@ import org.bukkit.persistence.PersistentDataType;
  * or deletion of Aethel plugin tags to the player's main hand item.
  *
  * @author Danny Nguyen
- * @version 1.2.6
+ * @version 1.3.2
  * @since 1.2.6
  */
 public class AethelTag implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player)) {
-      sender.sendMessage("Only players can use this command.");
+      sender.sendMessage("Player-only command.");
       return true;
     }
 
@@ -48,7 +48,7 @@ public class AethelTag implements CommandExecutor {
    * Checks if the AethelTag request was formatted correctly before interpreting its intent.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
@@ -63,7 +63,7 @@ public class AethelTag implements CommandExecutor {
       }
       case 2 -> {
         if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rm")) {
-          removeAethelTag(player, args, item);
+          removeAethelTag(player, args[1], item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
         }
@@ -98,18 +98,18 @@ public class AethelTag implements CommandExecutor {
    * Removes an Aethel tag from the item.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param tag    Aethel tag to be removed
    * @param item   item in main hand
    */
-  private void removeAethelTag(Player player, String[] args, ItemStack item) {
+  private void removeAethelTag(Player player, String tag, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + args[1]);
+    NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + tag);
 
     if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
       dataContainer.remove(namespacedKey);
       item.setItemMeta(meta);
-      player.sendMessage(ChatColor.RED + "[Removed] " + ChatColor.AQUA + args[1]);
+      player.sendMessage(ChatColor.RED + "[Removed] " + ChatColor.AQUA + tag);
     } else {
       player.sendMessage(ChatColor.RED + "Nonexistent tag.");
     }
@@ -119,7 +119,7 @@ public class AethelTag implements CommandExecutor {
    * Adds or sets an Aethel tag to the item.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    * @param item   item in main hand
    */
   private void setAethelTag(Player player, String[] args, ItemStack item) {
