@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.objects.InventorySlot;
-import me.dannynguyen.aethel.readers.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -77,7 +77,7 @@ public class ForgeCraft {
   public void expandRecipeDetails(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().readItemName(e.getCurrentItem()));
+        get(new ItemReader().readItemName(e.getCurrentItem()));
 
     Inventory inv = createInventory(player);
     addExistingRecipeContents(recipe, inv);
@@ -114,7 +114,7 @@ public class ForgeCraft {
   public void craftRecipe(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().readItemName(e.getClickedInventory().getItem(0)));
+        get(new ItemReader().readItemName(e.getClickedInventory().getItem(0)));
 
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();

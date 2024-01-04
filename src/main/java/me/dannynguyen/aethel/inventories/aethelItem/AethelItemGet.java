@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.inventories.aethelItem;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.readers.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +26,7 @@ public class AethelItemGet {
     try {
       AethelResources resources = AethelPlugin.getInstance().getResources();
       ItemStack item = resources.getAethelItemData().getItemsMap().
-          get(new ItemMetaReader().readItemName(e.getCurrentItem())).getItem();
+          get(new ItemReader().readItemName(e.getCurrentItem())).getItem();
 
       if (player.getInventory().firstEmpty() != -1) {
         player.getInventory().addItem(item);

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.readers.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -86,7 +86,7 @@ public class AethelTag implements CommandExecutor {
    * @param item   item in main hand
    */
   private void getAethelTags(Player player, ItemStack item) {
-    String response = new ItemMetaReader().readAethelTags(item);
+    String response = new ItemReader().readAethelTags(item);
     if (!response.isEmpty()) {
       player.sendMessage(response);
     } else {

@@ -2,21 +2,20 @@ package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.objects.AethelItem;
-import me.dannynguyen.aethel.readers.AethelItemReader;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * AethelItem contains information about Aethel items stored in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.0
+ * @version 1.4.1
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -39,11 +38,28 @@ public class AethelItemData {
     File[] directory = new File(AethelPlugin.getInstance().getResources().getAethelItemDirectory()).listFiles();
     Collections.sort(Arrays.asList(directory));
     for (int i = 0; i < directory.length; i++) {
-      AethelItem item = new AethelItemReader().readItem(directory[i]);
+      AethelItem item = readItemFile(directory[i]);
       items.add(item);
       itemsMap.put(item.getName(), item);
     }
     createItemPages();
+  }
+
+  /**
+   * Reads an item file.
+   *
+   * @param file
+   * @return decoded item
+   * @throws IOException file not found
+   */
+  private AethelItem readItemFile(File file) {
+    try {
+      Scanner scanner = new Scanner(file);
+      ItemStack item = new ItemReader().decodeItem(scanner.nextLine());
+      return new AethelItem(file, new ItemReader().readItemName(item), item);
+    } catch (IOException ex) {
+      return null;
+    }
   }
 
   /**

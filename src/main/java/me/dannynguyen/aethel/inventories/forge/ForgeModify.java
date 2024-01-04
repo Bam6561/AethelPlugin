@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.inventories.forge;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.readers.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -29,7 +29,7 @@ public class ForgeModify {
   public void modifyRecipe(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().readItemName(e.getCurrentItem()));
+        get(new ItemReader().readItemName(e.getCurrentItem()));
 
     Inventory inv = new ForgeCreate().createInventory(player);
     addExistingRecipeContents(recipe, inv);

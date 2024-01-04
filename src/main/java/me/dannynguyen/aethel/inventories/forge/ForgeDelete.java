@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.inventories.forge;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
-import me.dannynguyen.aethel.readers.ItemMetaReader;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,7 +26,7 @@ public class ForgeDelete {
   public void deleteRecipe(InventoryClickEvent e, Player player) {
     AethelResources resources = AethelPlugin.getInstance().getResources();
     ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemMetaReader().readItemName(e.getCurrentItem()));
+        get(new ItemReader().readItemName(e.getCurrentItem()));
 
     recipe.getFile().delete();
     player.sendMessage(ChatColor.RED + "[Deleted] " + ChatColor.WHITE +

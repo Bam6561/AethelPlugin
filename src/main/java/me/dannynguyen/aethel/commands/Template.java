@@ -6,13 +6,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * CommandTemplate does something. We just don't know what yet.
+ * Template is a starting template for commands.
+ * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.3.2
+ * @version 1.4.1
  * @since 1.2.3
  */
-public class CommandTemplate implements CommandExecutor {
+public class Template implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player)) {

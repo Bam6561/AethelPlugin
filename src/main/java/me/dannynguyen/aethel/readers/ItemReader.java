@@ -6,15 +6,22 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.io.BukkitObjectInputStream;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Base64;
 
 /**
- * ItemMetaReader reads metadata from ItemStacks.
+ * ItemReader:
+ * - decodes serialized ItemStacks
+ * - reads metadata from ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.2.6
+ * @version 1.4.1
  * @since 1.1.4
  */
-public class ItemMetaReader {
+public class ItemReader {
   /**
    * Returns either an item's renamed value or its material.
    *
@@ -48,5 +55,24 @@ public class ItemMetaReader {
       }
     }
     return aethelTags.toString();
+  }
+
+  /**
+   * Deserializes an item.
+   *
+   * @param data serialized item string
+   * @return item
+   * @throws IOException            file not found
+   * @throws ClassNotFoundException item could not be decoded
+   */
+  public ItemStack decodeItem(String data) {
+    try {
+      ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+      BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
+      ItemStack item = (ItemStack) bois.readObject();
+      return item;
+    } catch (IOException | ClassNotFoundException ex) {
+      return null;
+    }
   }
 }
