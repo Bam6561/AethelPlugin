@@ -14,8 +14,8 @@ import java.util.Base64;
 
 /**
  * ItemReader:
- * - decodes serialized ItemStacks
  * - reads metadata from ItemStacks
+ * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
  * @version 1.4.1

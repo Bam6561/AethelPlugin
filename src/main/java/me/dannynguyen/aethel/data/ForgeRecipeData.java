@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.inventories.PageCalculator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ import java.util.*;
  * ForgeRecipeData contains information about forge recipes loaded in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.1
+ * @version 1.4.2
  * @since 1.1.11
  */
 public class ForgeRecipeData {
@@ -41,7 +42,7 @@ public class ForgeRecipeData {
     File[] directory = new File(AethelPlugin.getInstance().getResources().getForgeRecipeDirectory()).listFiles();
     Collections.sort(Arrays.asList(directory));
     for (int i = 0; i < directory.length; i++) {
-      ForgeRecipe recipe = readRecipe(directory[i]);
+      ForgeRecipe recipe = readRecipeFile(directory[i]);
       recipes.add(recipe);
       recipesMap.put(recipe.getName(), recipe);
     }
@@ -60,7 +61,7 @@ public class ForgeRecipeData {
    * @return decoded recipe
    * @throws FileNotFoundException file not found
    */
-  private ForgeRecipe readRecipe(File file) {
+  private ForgeRecipe readRecipeFile(File file) {
     ArrayList<ItemStack> results = new ArrayList<>();
     ArrayList<ItemStack> components = new ArrayList<>();
     int dataType = 1;
@@ -82,7 +83,7 @@ public class ForgeRecipeData {
    */
   public void createRecipePages() {
     int numberOfRecipes = getRecipes().size();
-    int numberOfPages = calculateNumberOfPages(numberOfRecipes);
+    int numberOfPages = new PageCalculator().calculateNumberOfPages(numberOfRecipes);
     setNumberOfPages(numberOfPages);
 
     int startIndex = 0;
@@ -132,19 +133,6 @@ public class ForgeRecipeData {
         }
       }
     }
-  }
-
-  /**
-   * Determines how many pages of recipes exist and whether there are partially filled pages.
-   *
-   * @param numberOfRecipes number of recipes
-   * @return number of pages
-   */
-  private int calculateNumberOfPages(int numberOfRecipes) {
-    int numberOfPages = numberOfRecipes / 45;
-    boolean partiallyFilledPage = (numberOfRecipes % 45) > 0;
-    if (partiallyFilledPage) numberOfPages += 1;
-    return numberOfPages;
   }
 
   /**

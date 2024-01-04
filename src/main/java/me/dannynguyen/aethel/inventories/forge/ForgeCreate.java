@@ -9,20 +9,17 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.io.BukkitObjectOutputStream;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 /**
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.3.1
+ * @version 1.4.2
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -114,10 +111,12 @@ public class ForgeCreate {
    * @return encoded recipe string
    */
   private String encodeRecipe(ItemStack[] inv) {
+    ItemCreator itemCreator = new ItemCreator();
+
     StringBuilder components = new StringBuilder();
     for (int i = 9; i < 24; i++) {
       ItemStack item = inv[i];
-      if (item != null) components.append(encodeItem(item) + " ");
+      if (item != null) components.append(itemCreator.encodeItem(item) + " ");
     }
 
     if (components.toString().equals("")) return null;
@@ -125,29 +124,10 @@ public class ForgeCreate {
     StringBuilder results = new StringBuilder();
     for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
-      if (item != null) results.append(encodeItem(item) + " ");
+      if (item != null) results.append(itemCreator.encodeItem(item) + " ");
     }
 
     return results.append("\n" + components).toString();
-  }
-
-  /**
-   * Encodes an item into bytes.
-   *
-   * @param item item to encode
-   * @return encoded item string
-   * @throws IOException item could not be encoded
-   */
-  private String encodeItem(ItemStack item) {
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);
-      boos.writeObject(item);
-      boos.flush();
-      return Base64.getEncoder().encodeToString(baos.toByteArray());
-    } catch (IOException ex) {
-      return null;
-    }
   }
 
   /**

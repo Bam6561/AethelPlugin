@@ -4,14 +4,20 @@ import me.dannynguyen.aethel.AethelPlugin;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 /**
- * ItemCreator creates ItemStacks with metadata.
+ * ItemCreator:
+ * - creates ItemStacks with metadata
+ * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.3.1
+ * @version 1.4.2
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -72,7 +78,7 @@ public class ItemCreator {
    * @param headName    player head name
    * @param displayName item name
    * @param lore        item lore
-   * @return named custom player head with lore.
+   * @return named custom player head with lore
    */
   public ItemStack createPlayerHead(String headName, String displayName, List<String> lore) {
     ItemStack item = AethelPlugin.getInstance().getResources().getPlayerHeadData().getHeadsMap().get(headName);
@@ -83,6 +89,25 @@ public class ItemCreator {
       item.setItemMeta(meta);
       return item;
     } else {
+      return null;
+    }
+  }
+
+  /**
+   * Encodes an item into bytes.
+   *
+   * @param item item to encode
+   * @return encoded item string
+   * @throws IOException item could not be encoded
+   */
+  public String encodeItem(ItemStack item) {
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);
+      boos.writeObject(item);
+      boos.flush();
+      return Base64.getEncoder().encodeToString(baos.toByteArray());
+    } catch (IOException ex) {
       return null;
     }
   }

@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.inventories.aethelItem;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.inventories.PageCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ import java.util.List;
  * supports pagination for getting, creating, modifying, and deleting items.
  *
  * @author Danny Nguyen
- * @version 1.4.0
+ * @version 1.4.2
  * @since 1.4.0
  */
 public class AethelItemMain {
@@ -54,7 +55,7 @@ public class AethelItemMain {
     int numberOfPages = resources.getAethelItemData().getNumberOfPages();
     int pageViewed;
     if (numberOfPages != 0) {
-      pageViewed = calculatePageViewed(pageRequest, numberOfPages);
+      pageViewed = new PageCalculator().calculatePageViewed(pageRequest, numberOfPages);
       inv.setContents(resources.getAethelItemData().getItemPages().get(pageViewed).getContents());
       addPaginationButtons(inv, pageViewed, numberOfPages);
     } else {
@@ -66,24 +67,6 @@ public class AethelItemMain {
 
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
     return inv;
-  }
-
-  /**
-   * Determines which page is viewed.
-   *
-   * @param pageRequest   page to view
-   * @param numberOfPages number of pages
-   * @return interpreted page to view
-   */
-  private int calculatePageViewed(int pageRequest, int numberOfPages) {
-    boolean requestMoreThanTotalPages = pageRequest >= numberOfPages;
-    boolean requestNegativePageNumber = pageRequest < 0;
-    if (requestMoreThanTotalPages) {
-      pageRequest = numberOfPages - 1;
-    } else if (requestNegativePageNumber) {
-      pageRequest = 0;
-    }
-    return pageRequest;
   }
 
   /**

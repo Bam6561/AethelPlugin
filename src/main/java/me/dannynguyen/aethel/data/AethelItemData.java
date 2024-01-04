@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.inventories.PageCalculator;
 import me.dannynguyen.aethel.objects.AethelItem;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
@@ -15,7 +16,7 @@ import java.util.*;
  * AethelItem contains information about Aethel items stored in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.1
+ * @version 1.4.2
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -67,7 +68,7 @@ public class AethelItemData {
    */
   private void createItemPages() {
     int numberOfItems = getItems().size();
-    int numberOfPages = calculateNumberOfPages(numberOfItems);
+    int numberOfPages = new PageCalculator().calculateNumberOfPages(numberOfItems);
     setNumberOfPages(numberOfPages);
 
     int startIndex = 0;
@@ -90,19 +91,6 @@ public class AethelItemData {
       startIndex += 45;
       endIndex = Math.min(numberOfItems, endIndex + 45);
     }
-  }
-
-  /**
-   * Determines how many pages of items exist and whether there are partially filled pages.
-   *
-   * @param numberOfItems number of items
-   * @return number of pages
-   */
-  private int calculateNumberOfPages(int numberOfItems) {
-    int numberOfPages = numberOfItems / 45;
-    boolean partiallyFilledPage = (numberOfItems % 45) > 0;
-    if (partiallyFilledPage) numberOfPages += 1;
-    return numberOfPages;
   }
 
   public ArrayList<AethelItem> getItems() {

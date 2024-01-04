@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemListener is an inventory listener for the AethelItem command invocation.
  *
  * @author Danny Nguyen
- * @version 1.4.0
+ * @version 1.4.2
  * @since 1.4.0
  */
 public class AethelItemListener {
@@ -62,7 +62,7 @@ public class AethelItemListener {
         break;
       }
       case 4 -> new AethelItemCreate().readSaveClick(e, player);
-      case 5 -> toggleGetDeleteAction(player);
+      case 5 -> toggleGetDeleteAction(player, action);
       case 8 -> nextItemPage(player, action);
       default -> interpretContextualClick(e, action, player);
     }
@@ -87,12 +87,12 @@ public class AethelItemListener {
    * Toggles between AethelItem Get and Delete actions.
    *
    * @param player interacting player
+   * @param action type of interaction
    */
-  private void toggleGetDeleteAction(Player player) {
+  private void toggleGetDeleteAction(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    String action = player.getMetadata("inventory").get(0).asString();
 
-    if (action.equals("aethelitem-get")) {
+    if (action.equals("get")) {
       player.openInventory(new AethelItemMain().openItemPage(player, "delete", pageRequest));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-delete"));

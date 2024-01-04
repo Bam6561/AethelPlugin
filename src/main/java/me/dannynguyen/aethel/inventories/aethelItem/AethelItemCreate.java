@@ -1,23 +1,21 @@
 package me.dannynguyen.aethel.inventories.aethelItem;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.io.BukkitObjectOutputStream;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Base64;
 
 /**
  * AethelItemCreate creates Aethel Items.
  *
  * @author Danny Nguyen
- * @version 1.4.0
+ * @version 1.4.2
  * @since 1.4.0
  */
 public class AethelItemCreate {
@@ -30,7 +28,7 @@ public class AethelItemCreate {
   public void readSaveClick(InventoryClickEvent e, Player player) {
     ItemStack item = e.getClickedInventory().getItem(3);
     if (item != null) {
-      saveItemToFile(player, nameItemFile(item), encodeItem(item));
+      saveItemToFile(player, nameItemFile(item), new ItemCreator().encodeItem(item));
     } else {
       player.sendMessage(ChatColor.RED + "No item to save.");
     }
@@ -48,25 +46,6 @@ public class AethelItemCreate {
       return meta.getDisplayName().toLowerCase().replace(" ", "_");
     } else {
       return item.getType().name().toLowerCase();
-    }
-  }
-
-  /**
-   * Encodes an item into bytes.
-   *
-   * @param item item to encode
-   * @return encoded item string
-   * @throws IOException item could not be encoded
-   */
-  private String encodeItem(ItemStack item) {
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);
-      boos.writeObject(item);
-      boos.flush();
-      return Base64.getEncoder().encodeToString(baos.toByteArray());
-    } catch (IOException ex) {
-      return null;
     }
   }
 
