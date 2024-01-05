@@ -8,13 +8,14 @@ import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * AethelItemListener is an inventory listener for the AethelItem command invocation.
  *
  * @author Danny Nguyen
- * @version 1.4.2
+ * @version 1.4.4
  * @since 1.4.0
  */
 public class AethelItemListener {
@@ -29,7 +30,8 @@ public class AethelItemListener {
    * @param action type of interaction
    */
   public void readAethelItemMainClick(InventoryClickEvent e, String action) {
-    if (!e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    Inventory clickedInv = e.getClickedInventory();
+    if (clickedInv == null || !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
         interpretAethelItemMainClick(e, action);
       } else if (e.getSlot() != 3) {

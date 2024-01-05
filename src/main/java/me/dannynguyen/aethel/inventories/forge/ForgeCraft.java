@@ -27,7 +27,7 @@ import java.util.List;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.3.1
+ * @version 1.4.4
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -119,10 +119,14 @@ public class ForgeCraft {
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();
 
-    if (checkMatchingType(player, components)) {
-      processMatchingType(player, results);
+    if (!player.hasMetadata("devmode")) {
+      if (checkMatchingType(player, components)) {
+        processMatchingType(player, results);
+      } else {
+        player.sendMessage(ChatColor.RED + "Insufficient components.");
+      }
     } else {
-      player.sendMessage(ChatColor.RED + "Insufficient components.");
+      giveItemsToPlayer(player, results);
     }
   }
 
