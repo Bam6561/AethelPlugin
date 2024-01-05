@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Item;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -24,7 +25,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.5
+ * @version 1.4.6
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -71,7 +72,9 @@ public class ShowItem implements CommandExecutor {
       itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,
           new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
 
-      player.spigot().sendMessage(chatMessage);
+      for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+        onlinePlayer.spigot().sendMessage(chatMessage);
+      }
       AethelPlugin.getInstance().getResources().getShowItemData().addPastItem(item);
     } else {
       player.sendMessage(ChatColor.RED + "No main hand item.");

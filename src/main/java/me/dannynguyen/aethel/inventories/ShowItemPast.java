@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * ShowItemPast is an inventory under the Show command that shows past shared items.
  *
  * @author Danny Nguyen
- * @version 1.4.5
+ * @version 1.4.6
  * @since 1.4.5
  */
 public class ShowItemPast {
@@ -25,7 +25,7 @@ public class ShowItemPast {
    */
   public Inventory createInventory(Player player) {
     Inventory inv = Bukkit.createInventory(player, 9,
-        ChatColor.DARK_GRAY + "ShowPast");
+        ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
     addPastShownItems(inv);
     return inv;
   }
