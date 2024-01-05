@@ -16,7 +16,7 @@ import java.util.*;
  * AethelItem contains information about Aethel items stored in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.2
+ * @version 1.4.3
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -39,9 +39,11 @@ public class AethelItemData {
     File[] directory = new File(AethelPlugin.getInstance().getResources().getAethelItemDirectory()).listFiles();
     Collections.sort(Arrays.asList(directory));
     for (int i = 0; i < directory.length; i++) {
-      AethelItem item = readItemFile(directory[i]);
-      items.add(item);
-      itemsMap.put(item.getName(), item);
+      if (directory[i].getName().endsWith("_itm.txt")) {
+        AethelItem item = readItemFile(directory[i]);
+        items.add(item);
+        itemsMap.put(item.getName(), item);
+      }
     }
     createItemPages();
   }

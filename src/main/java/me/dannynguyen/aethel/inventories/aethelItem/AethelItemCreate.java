@@ -15,7 +15,7 @@ import java.io.IOException;
  * AethelItemCreate creates Aethel Items.
  *
  * @author Danny Nguyen
- * @version 1.4.2
+ * @version 1.4.3
  * @since 1.4.0
  */
 public class AethelItemCreate {
@@ -60,10 +60,10 @@ public class AethelItemCreate {
   private void saveItemToFile(Player player, String itemName, String encodedItem) {
     try {
       FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResources().getAethelItemDirectory()
-          + "/" + itemName + ".txt");
+          + "/" + itemName + "_itm.txt");
       fw.write(encodedItem);
       fw.close();
-      player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + ".txt");
+      player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + "_itm.txt");
     } catch (IOException e) {
       player.sendMessage(ChatColor.RED + "Unable to save item.");
     }

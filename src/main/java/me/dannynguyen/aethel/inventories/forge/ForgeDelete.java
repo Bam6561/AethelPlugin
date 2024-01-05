@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  * ForgeDelete is an inventory under the Forge command that deletes forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.1
+ * @version 1.4.3
  * @since 1.0.9
  */
 public class ForgeDelete {
@@ -30,6 +30,6 @@ public class ForgeDelete {
 
     recipe.getFile().delete();
     player.sendMessage(ChatColor.RED + "[Deleted] " + ChatColor.WHITE +
-        recipe.getName().toLowerCase().replace(" ", "_") + ".txt");
+        recipe.getName().toLowerCase().replace(" ", "_") + "_rcp.txt");
   }
 }
