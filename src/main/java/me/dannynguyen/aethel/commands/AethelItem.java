@@ -39,7 +39,7 @@ public class AethelItem implements CommandExecutor {
   }
 
   /**
-   * Checks if the AethelItem request was formatted correctly before interpreting its usage.
+   * Checks if the AethelItem command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
    * @param args   user provided parameters

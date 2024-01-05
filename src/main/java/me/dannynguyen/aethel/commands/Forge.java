@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.3.2
+ * @version 1.4.5
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -42,7 +42,13 @@ public class Forge implements CommandExecutor {
     Player player = (Player) sender;
     switch (args.length) {
       case 0 -> openForgeCraftInventory(player);
-      case 1 -> interpretParameter(player, args[0].toLowerCase());
+      case 1 -> {
+        if (player.isOp()) {
+          interpretParameter(player, args[0].toLowerCase());
+        } else {
+          player.sendMessage(ChatColor.RED + "Insufficient permissions.");
+        }
+      }
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
     }
   }
@@ -55,20 +61,10 @@ public class Forge implements CommandExecutor {
    */
   private void interpretParameter(Player player, String action) {
     switch (action) {
-      case "edit" -> {
-        if (player.isOp()) {
-          openForgeModifyInventory(player);
-        } else {
-          player.sendMessage(ChatColor.RED + "Insufficient permissions.");
-        }
-      }
+      case "edit" -> openForgeModifyInventory(player);
       case "reload" -> {
-        if (player.isOp()) {
-          AethelPlugin.getInstance().getResources().getForgeRecipeData().loadRecipes();
-          player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
-        } else {
-          player.sendMessage(ChatColor.RED + "Insufficient permissions.");
-        }
+        AethelPlugin.getInstance().getResources().getForgeRecipeData().loadRecipes();
+        player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
       }
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
     }

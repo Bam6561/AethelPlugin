@@ -23,6 +23,7 @@ public class DevMode implements CommandExecutor {
       sender.sendMessage("Player-only command.");
       return true;
     }
+
     Player player = (Player) sender;
     if (player.isOp()) {
       readRequest(player, args.length);
@@ -33,7 +34,7 @@ public class DevMode implements CommandExecutor {
   }
 
   /**
-   * Checks if the DevMode request was formatted correctly before toggling the setting.
+   * Checks if the DevMode command request was formatted correctly before toggling the setting.
    *
    * @param player             interacting player
    * @param numberOfParameters number of parameters
