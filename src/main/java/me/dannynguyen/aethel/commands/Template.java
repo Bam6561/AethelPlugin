@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.4.1
+ * @version 1.4.7
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
@@ -20,6 +20,30 @@ public class Template implements CommandExecutor {
       sender.sendMessage("Player-only command.");
       return true;
     }
+    Player player = (Player) sender;
+    readRequest(player, args);
     return true;
+  }
+
+  /**
+   * Checks if the command request was formatted correctly before doing something.
+   *
+   * @param player interacting player
+   * @param args   player provided parameters
+   */
+  private void readRequest(Player player, String[] args) {
+    switch (args.length) {
+
+    }
+  }
+
+  /**
+   * Either does something or another thing.
+   *
+   * @param player interacting player
+   * @param args   player provided parameters
+   */
+  private void interpretParameters(Player player, String[] args) {
+
   }
 }

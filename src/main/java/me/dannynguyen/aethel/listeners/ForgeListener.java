@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * ForgeListener is an inventory listener for the Forge command invocation.
+ * ForgeListener is an inventory listener for the Forge command.
  *
  * @author Danny Nguyen
  * @version 1.3.1

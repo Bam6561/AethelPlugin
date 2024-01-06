@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.4.6
+version: 1.4.7
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.AethelPlugin
@@ -25,3 +25,6 @@ commands:
   show:
     description: Shows main hand item to chat.
     usage: /show
+  stats:
+    description: Gets a player's statistics.
+    usage: /stats [<PlayerName>]

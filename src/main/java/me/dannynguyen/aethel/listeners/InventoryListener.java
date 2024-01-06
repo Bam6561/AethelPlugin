@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory listener.
  *
  * @author Danny Nguyen
- * @version 1.4.6
+ * @version 1.4.7
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -33,6 +33,7 @@ public class InventoryListener implements Listener {
         case "forge-create" -> new ForgeListener().interpretForgeCreateClick(e, player);
         case "forge-modify" -> new ForgeListener().interpretForgeMainClick(e, "modify");
         case "forge-delete" -> new ForgeListener().interpretForgeMainClick(e, "delete");
+        case "playerstat-profile" -> new PlayerStatListener().readPlayerStatProfileClick(e);
         case "showitem-past" -> e.setCancelled(true);
       }
     }

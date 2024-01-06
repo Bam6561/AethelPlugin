@@ -12,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * AethelItemListener is an inventory listener for the AethelItem command invocation.
+ * AethelItemListener is an inventory listener for the AethelItem command.
  *
  * @author Danny Nguyen
  * @version 1.4.4
