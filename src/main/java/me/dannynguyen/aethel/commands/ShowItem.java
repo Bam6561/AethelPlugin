@@ -66,7 +66,7 @@ public class ShowItem implements CommandExecutor {
       TextComponent chatMessage = new TextComponent(ChatColor.GREEN + "[!] ");
       TextComponent itemName = new TextComponent(ChatColor.AQUA + new ItemReader().readItemName(item) + " ");
       chatMessage.addExtra(itemName);
-      chatMessage.addExtra(ChatColor.WHITE + "[" + player.getDisplayName() + "]");
+      chatMessage.addExtra(ChatColor.WHITE + "[" + player.getName() + "]");
 
       ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
       itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,

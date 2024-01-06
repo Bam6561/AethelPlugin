@@ -60,7 +60,7 @@ public class AethelPlugin extends JavaPlugin {
     }
 
     resources.getPlayerHeadData().loadPlayerHeads();
-    resources.getPlayerStatsData().loadStats();
+    resources.getPlayerStatData().loadStats();
   }
 
   public AethelResources getResources() {

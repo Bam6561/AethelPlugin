@@ -17,7 +17,7 @@ public class AethelResources {
   private AethelItemData aethelItemData = new AethelItemData();
   private PlayerHeadData playerHeadData = new PlayerHeadData();
   private ShowItemData showItemData = new ShowItemData();
-  private PlayerStatsData playerStatsData = new PlayerStatsData();
+  private PlayerStatData playerStatData = new PlayerStatData();
 
   public String getResourceDirectory() {
     return this.resourceDirectory;
@@ -47,7 +47,7 @@ public class AethelResources {
     return this.showItemData;
   }
 
-  public PlayerStatsData getPlayerStatsData() {
-    return this.playerStatsData;
+  public PlayerStatData getPlayerStatData() {
+    return this.playerStatData;
   }
 }
