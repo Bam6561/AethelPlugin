@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.data;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.inventories.PageCalculator;
 import me.dannynguyen.aethel.objects.PlayerStatCategory;
+import me.dannynguyen.aethel.objects.PlayerStatMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,7 +16,7 @@ import java.util.*;
  * PlayerStatData contains information about player statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.9
+ * @version 1.4.10
  * @since 1.4.8
  */
 public class PlayerStatData {
@@ -28,6 +29,7 @@ public class PlayerStatData {
   }};
   private int numberOfMaterialPages = 0;
   private int numberOfEntityTypePages = 0;
+  private ArrayList<PlayerStatMessage> pastStatMessages = new ArrayList<>();
 
   /**
    * Loads PlayerStat pages into memory.
@@ -60,7 +62,12 @@ public class PlayerStatData {
    * Creates pages of materials to be used with PlayerStat.
    */
   private void createMaterialPages() {
-    List<Material> materials = Arrays.asList(Material.values());
+    ArrayList<Material> materials = new ArrayList<>();
+    for (Material material : Material.values()) {
+      if (material.isItem() && !material.isAir()) {
+        materials.add(material);
+      }
+    }
     Comparator<Material> materialComparator = Comparator.comparing(Enum::name);
     materials.sort(materialComparator);
 
@@ -81,13 +88,11 @@ public class PlayerStatData {
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
         Material material = materials.get(i);
-        if (!material.isAir()) {
-          String materialName = material.name();
-          String materialDisplayName = capitalizeProperly(materialName);
-          inv.setItem(j, itemCreator.createItem(
-              Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
-          j++;
-        }
+        String materialName = material.name();
+        String materialDisplayName = capitalizeProperly(materialName);
+        inv.setItem(j, itemCreator.createItem(
+            Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
+        j++;
       }
 
       getSubstatCategoryPages().get("Materials").add(inv);
@@ -189,6 +194,20 @@ public class PlayerStatData {
     return playerStatisticCategories;
   }
 
+  /**
+   * Ensures the number of past stats never exceeds 9 (the PlayerStatPast inventory size).
+   *
+   * @param statName stat name
+   * @param stats    associated statistics
+   */
+  public void addToPastStats(String statName, List<String> stats) {
+    ArrayList<PlayerStatMessage> pastStats = getPastStatMessages();
+    if (pastStats.size() == 9) {
+      pastStats.remove(0);
+    }
+    pastStats.add(new PlayerStatMessage(statName, stats));
+  }
+
   public ArrayList<String> getStatCategoryNames() {
     return this.statCategoryNames;
   }
@@ -207,6 +226,10 @@ public class PlayerStatData {
 
   public int getNumberOfEntityTypePages() {
     return this.numberOfEntityTypePages;
+  }
+
+  public ArrayList<PlayerStatMessage> getPastStatMessages() {
+    return this.pastStatMessages;
   }
 
   public void setNumberOfMaterialPages(int numberOfMaterialPages) {

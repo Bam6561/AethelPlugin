@@ -1,7 +1,8 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.inventories.PlayerStatMain;
+import me.dannynguyen.aethel.inventories.playerstat.PlayerStatMain;
+import me.dannynguyen.aethel.inventories.playerstat.PlayerStatPast;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,8 +39,22 @@ public class PlayerStat implements CommandExecutor {
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
       case 0 -> openPlayerStatSelf(player);
-      case 1 -> openPlayerStatOther(player, args[0]);
+      case 1 -> interpretParameter(player, args[0]);
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
+    }
+  }
+
+  /**
+   * Either opens a PlayerStatMain inventory belonging to another player or opens a PlayerStatPast inventory.
+   *
+   * @param player    interacting player
+   * @param parameter player given parameter
+   */
+  private void interpretParameter(Player player, String parameter) {
+    if (parameter.equals("past")) {
+      player.openInventory(new PlayerStatPast().createInventory(player));
+    } else {
+      openPlayerStatOther(player, parameter);
     }
   }
 

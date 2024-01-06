@@ -1,12 +1,10 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.inventories.PlayerStatMain;
+import me.dannynguyen.aethel.inventories.playerstat.PlayerStatMain;
+import me.dannynguyen.aethel.inventories.playerstat.PlayerStatSend;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Statistic;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -16,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatListener is an inventory listener for the PlayerStat command.
  *
  * @author Danny Nguyen
- * @version 1.4.9
+ * @version 1.4.10
  * @since 1.4.7
  */
 public class PlayerStatListener {
@@ -59,8 +57,9 @@ public class PlayerStatListener {
         }
         case 3, 4 -> { // Player Head
         }
+        case 5 -> returnToCategoryPage(player);
         case 8 -> nextStatPage(player);
-        default -> sendStat(e, player);
+        default -> new PlayerStatSend().sendStat(e, player);
       }
     }
     e.setCancelled(true);
@@ -80,8 +79,9 @@ public class PlayerStatListener {
         }
         case 3, 4 -> { // Player Head
         }
+        case 5 -> returnToCategoryPage(player);
         case 8 -> nextStatPage(player);
-        default -> sendSubstat(e, player);
+        default -> new PlayerStatSend().sendSubstat(e, player);
       }
     }
     e.setCancelled(true);
@@ -104,55 +104,15 @@ public class PlayerStatListener {
   }
 
   /**
-   * Sends a statistic value.
+   * Opens a PlayerStatMain inventory.
    *
-   * @param e      inventory click event
    * @param player interacting player
    */
-  private void sendStat(InventoryClickEvent e, Player player) {
-    String itemName = ChatColor.stripColor(new ItemReader().readItemName(e.getCurrentItem()));
-    Statistic stat = Statistic.valueOf(itemName.replace(" ", "_").toUpperCase());
-    player.sendMessage(ChatColor.AQUA + itemName + ": " + ChatColor.WHITE + player.getStatistic(stat));
-  }
-
-  /**
-   * Sends a substatistic value.
-   *
-   * @param e      inventory click event
-   * @param player interacting player
-   */
-  private void sendSubstat(InventoryClickEvent e, Player player) {
-    String statCategory = player.getMetadata("stat-category").get(0).asString();
-    String substatName = ChatColor.stripColor(new ItemReader().readItemName(
-        e.getCurrentItem()).replace(" ", "_").toUpperCase());
-
-    if (statCategory.equals("Entity Types")) {
-      EntityType entityType = EntityType.valueOf(substatName);
-
-      int kills = player.getStatistic(Statistic.KILL_ENTITY, entityType);
-      int deaths = player.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
-
-      player.sendMessage(ChatColor.AQUA + "[" + substatName + "] " +
-          "Killed: " + ChatColor.WHITE + kills + " " + ChatColor.AQUA +
-          "Killed By: " + ChatColor.WHITE + deaths);
-    } else {
-      Material material = Material.valueOf(substatName);
-
-      int mined = player.getStatistic(Statistic.MINE_BLOCK, material);
-      int crafted = player.getStatistic(Statistic.CRAFT_ITEM, material);
-      int used = player.getStatistic(Statistic.USE_ITEM, material);
-      int broke = player.getStatistic(Statistic.BREAK_ITEM, material);
-      int pickup = player.getStatistic(Statistic.PICKUP, material);
-      int drop = player.getStatistic(Statistic.DROP, material);
-
-      player.sendMessage(ChatColor.AQUA + "[" + substatName + "] " +
-          "Mined: " + ChatColor.WHITE + mined + " " + ChatColor.AQUA +
-          "Crafted: " + ChatColor.WHITE + crafted + " " + ChatColor.AQUA +
-          "Used: " + ChatColor.WHITE + used + " " + ChatColor.AQUA +
-          "Broke: " + ChatColor.WHITE + broke + " " + ChatColor.AQUA +
-          "Picked Up: " + ChatColor.WHITE + pickup + " " + ChatColor.AQUA +
-          "Dropped: " + ChatColor.WHITE + drop);
-    }
+  private void returnToCategoryPage(Player player) {
+    String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
+    player.openInventory(new PlayerStatMain().openPlayerStatMainPage(player, requestedPlayerName));
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
   }
 
   /**

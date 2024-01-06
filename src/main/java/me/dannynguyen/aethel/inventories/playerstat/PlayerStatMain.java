@@ -1,8 +1,9 @@
-package me.dannynguyen.aethel.inventories;
+package me.dannynguyen.aethel.inventories.playerstat;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.PlayerStatData;
+import me.dannynguyen.aethel.inventories.PageCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ import java.util.List;
  * command that contains all of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.9
+ * @version 1.4.10
  * @since 1.4.7
  */
 public class PlayerStatMain {
@@ -39,7 +40,7 @@ public class PlayerStatMain {
       inv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "PlayerStat "
           + ChatColor.DARK_PURPLE + requestedPlayerName);
     } else {
-      player.sendMessage(ChatColor.RED + requestedPlayerName + "has never played on this server.");
+      player.sendMessage(ChatColor.RED + requestedPlayerName + " has never played on this server.");
       inv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "PlayerStat "
           + ChatColor.DARK_PURPLE + player.getName());
     }
@@ -54,9 +55,12 @@ public class PlayerStatMain {
    * @return PlayerStatMain inventory with stat categories
    */
   public Inventory openPlayerStatMainPage(Player player, String requestedPlayerName) {
+    player.setMetadata("stat-category",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "Statistic Categories"));
+
     Inventory inv = createInventory(player, requestedPlayerName);
     addStatCategories(inv);
-    addProfileHelp(inv);
+    addProfileHelp(player, inv);
     addPlayerHead(player, requestedPlayerName, inv);
     return inv;
   }
@@ -98,8 +102,9 @@ public class PlayerStatMain {
       }
     }
 
-    addProfileHelp(inv);
+    addProfileHelp(player, inv);
     addPlayerHead(player, requestedPlayerName, inv);
+    addBackButton(inv);
 
     return inv;
   }
@@ -114,7 +119,7 @@ public class PlayerStatMain {
     ItemCreator itemCreator = new ItemCreator();
     for (String statCategory : AethelPlugin.getInstance().getResources().
         getPlayerStatData().getStatCategoryNames()) {
-      inv.setItem(i, itemCreator.createItem(Material.BOOKSHELF, ChatColor.WHITE + statCategory));
+      inv.setItem(i, itemCreator.createItem(Material.BOOK, ChatColor.WHITE + statCategory));
       i++;
     }
   }
@@ -122,11 +127,12 @@ public class PlayerStatMain {
   /**
    * Adds a help context to the PlayerStatMain inventory.
    *
-   * @param inv interacting inventory
+   * @param player interacting player
+   * @param inv    interacting inventory
    */
-  private void addProfileHelp(Inventory inv) {
+  private void addProfileHelp(Player player, Inventory inv) {
     List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "Placeholder text");
+        ChatColor.WHITE + player.getMetadata("stat-category").get(0).asString());
 
     inv.setItem(3, new ItemCreator().createPlayerHead("White Question Mark",
         ChatColor.GREEN + "Help", helpLore));
@@ -153,6 +159,16 @@ public class PlayerStatMain {
     }
     item.setItemMeta(meta);
     inv.setItem(4, item);
+  }
+
+  /**
+   * Returns the player to the stat categories page.
+   *
+   * @param inv interacting inventory
+   */
+  private void addBackButton(Inventory inv) {
+    inv.setItem(5, new ItemCreator().createPlayerHead("Chiseled Bookshelf",
+        ChatColor.AQUA + "Back"));
   }
 
   /**

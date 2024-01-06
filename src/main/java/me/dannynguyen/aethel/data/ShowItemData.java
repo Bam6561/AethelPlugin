@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * ShowItemData contains information about the past shown items to chat.
  *
  * @author Danny Nguyen
- * @version 1.4.5
+ * @version 1.4.10
  * @since 1.4.5
  */
 public class ShowItemData {
@@ -21,7 +21,7 @@ public class ShowItemData {
    */
   public void addPastItem(ItemStack item) {
     ArrayList<ItemStack> pastItems = getPastItems();
-    if (pastItems.size() > 9) {
+    if (pastItems.size() == 9) {
       pastItems.remove(0);
     }
     pastItems.add(item);
