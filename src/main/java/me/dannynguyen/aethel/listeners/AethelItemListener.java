@@ -61,7 +61,6 @@ public class AethelItemListener {
     switch (slotClicked) {
       case 0 -> previousItemPage(player, action);
       case 2 -> { // Help Context
-        break;
       }
       case 4 -> new AethelItemCreate().readSaveClick(e, player);
       case 5 -> toggleGetDeleteAction(player, action);

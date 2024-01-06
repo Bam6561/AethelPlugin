@@ -1,15 +1,12 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.data.AethelItemData;
-import me.dannynguyen.aethel.data.ForgeRecipeData;
-import me.dannynguyen.aethel.data.PlayerHeadData;
-import me.dannynguyen.aethel.data.ShowItemData;
+import me.dannynguyen.aethel.data.*;
 
 /**
  * AethelResources represents the plugin's resources loaded in memory as an object.
  *
  * @author Danny Nguyen
- * @version 1.4.5
+ * @version 1.4.8
  * @since 1.1.7
  */
 public class AethelResources {
@@ -20,6 +17,7 @@ public class AethelResources {
   private AethelItemData aethelItemData = new AethelItemData();
   private PlayerHeadData playerHeadData = new PlayerHeadData();
   private ShowItemData showItemData = new ShowItemData();
+  private PlayerStatsData playerStatsData = new PlayerStatsData();
 
   public String getResourceDirectory() {
     return this.resourceDirectory;
@@ -47,5 +45,9 @@ public class AethelResources {
 
   public ShowItemData getShowItemData() {
     return this.showItemData;
+  }
+
+  public PlayerStatsData getPlayerStatsData() {
+    return this.playerStatsData;
   }
 }

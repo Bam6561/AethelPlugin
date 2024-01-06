@@ -11,7 +11,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.4.7
+ * @version 1.4.8
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -60,6 +60,7 @@ public class AethelPlugin extends JavaPlugin {
     }
 
     resources.getPlayerHeadData().loadPlayerHeads();
+    resources.getPlayerStatsData().loadStats();
   }
 
   public AethelResources getResources() {

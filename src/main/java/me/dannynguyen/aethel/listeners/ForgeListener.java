@@ -32,7 +32,6 @@ public class ForgeListener {
       switch (e.getSlot()) {
         case 0 -> previousRecipePage(player, action);
         case 2 -> { // Help Context
-          break;
         }
         case 3 -> openForgeCreateInventory(player);
         case 4 -> {

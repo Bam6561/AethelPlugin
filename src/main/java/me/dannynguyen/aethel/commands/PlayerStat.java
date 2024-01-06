@@ -13,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStat is a command invocation that retrieves a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.7
+ * @version 1.4.8
  * @since 1.4.7
  */
 public class PlayerStat implements CommandExecutor {
@@ -49,7 +49,7 @@ public class PlayerStat implements CommandExecutor {
    * @param player interacting player
    */
   private void openPlayerStatProfileSelf(Player player) {
-    player.openInventory(new PlayerStatProfile().createInventory(player));
+    player.openInventory(new PlayerStatProfile().openStatPage(player, null, 0));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-profile"));
   }
@@ -60,7 +60,7 @@ public class PlayerStat implements CommandExecutor {
    * @param player interacting player
    */
   private void openPlayerStatProfileOther(Player player, String requestedPlayerName) {
-    player.openInventory(new PlayerStatProfile().createInventory(player, requestedPlayerName));
+    player.openInventory(new PlayerStatProfile().openStatPage(player, requestedPlayerName, 0));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-profile"));
   }
