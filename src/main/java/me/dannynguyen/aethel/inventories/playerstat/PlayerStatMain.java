@@ -22,7 +22,7 @@ import java.util.List;
  * command that contains all of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.10
+ * @version 1.4.11
  * @since 1.4.7
  */
 public class PlayerStatMain {
@@ -39,10 +39,14 @@ public class PlayerStatMain {
     if (requestedPlayer.hasPlayedBefore()) {
       inv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "PlayerStat "
           + ChatColor.DARK_PURPLE + requestedPlayerName);
+      player.setMetadata("stat-owner",
+          new FixedMetadataValue(AethelPlugin.getInstance(), requestedPlayerName));
     } else {
       player.sendMessage(ChatColor.RED + requestedPlayerName + " has never played on this server.");
       inv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "PlayerStat "
           + ChatColor.DARK_PURPLE + player.getName());
+      player.setMetadata("stat-owner",
+          new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
     }
     return inv;
   }
@@ -55,13 +59,10 @@ public class PlayerStatMain {
    * @return PlayerStatMain inventory with stat categories
    */
   public Inventory openPlayerStatMainPage(Player player, String requestedPlayerName) {
-    player.setMetadata("stat-category",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "Statistic Categories"));
-
     Inventory inv = createInventory(player, requestedPlayerName);
     addStatCategories(inv);
     addProfileHelp(player, inv);
-    addPlayerHead(player, requestedPlayerName, inv);
+    addPlayerHead(player, inv);
     return inv;
   }
 
@@ -80,33 +81,59 @@ public class PlayerStatMain {
 
     PlayerStatData playerStatData = AethelPlugin.getInstance().getResources().getPlayerStatData();
     switch (categoryName) {
-      case "Entity Types", "Materials" -> {
-        int numberOfPages;
-        int pageViewed = 0;
-        if (categoryName.equals("Entity Types")) {
-          numberOfPages = playerStatData.getNumberOfEntityTypePages();
-        } else {
-          numberOfPages = playerStatData.getNumberOfMaterialPages();
-        }
-        pageViewed = new PageCalculator().calculatePageViewed(pageRequest, numberOfPages);
-        inv.setContents(playerStatData.getSubstatCategoryPages().get(categoryName).get(pageViewed).getContents());
-        addPaginationButtons(inv, pageViewed, numberOfPages);
-        player.setMetadata("stat-category",
-            new FixedMetadataValue(AethelPlugin.getInstance(), categoryName));
-        player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
-      }
-      default -> {
-        inv.setContents(playerStatData.getStatCategoryPages().get(categoryName).getContents());
-        player.setMetadata("stat-category",
-            new FixedMetadataValue(AethelPlugin.getInstance(), categoryName));
-      }
+      case "Entity Types",
+          "Materials" -> loadPlayerSubstatPage(player, categoryName, pageRequest, inv, playerStatData);
+      default -> loadPlayerStatPage(player, categoryName, inv, playerStatData);
     }
 
     addProfileHelp(player, inv);
-    addPlayerHead(player, requestedPlayerName, inv);
+    addPlayerHead(player, inv);
     addBackButton(inv);
 
     return inv;
+  }
+
+  /**
+   * Loads a PlayerStat substat page from memory.
+   *
+   * @param player         interacting player
+   * @param categoryName   stat category
+   * @param pageRequest    page to view
+   * @param inv            interacting inventory
+   * @param playerStatData player stat data
+   */
+  private void loadPlayerSubstatPage(Player player, String categoryName, int pageRequest,
+                                     Inventory inv, PlayerStatData playerStatData) {
+    int numberOfPages;
+    int pageViewed;
+    if (categoryName.equals("Entity Types")) {
+      numberOfPages = playerStatData.getNumberOfEntityTypePages();
+    } else {
+      numberOfPages = playerStatData.getNumberOfMaterialPages();
+    }
+    pageViewed = new PageCalculator().calculatePageViewed(pageRequest, numberOfPages);
+
+    inv.setContents(playerStatData.getSubstatCategoryPages().get(categoryName).get(pageViewed).getContents());
+    addPaginationButtons(inv, pageViewed, numberOfPages);
+
+    player.setMetadata("stat-category",
+        new FixedMetadataValue(AethelPlugin.getInstance(), categoryName));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+  }
+
+  /**
+   * Loads a PlayerStat non substat page from memory.
+   *
+   * @param player         interacting player
+   * @param categoryName   stat category
+   * @param inv            interacting inventory
+   * @param playerStatData player stat data
+   */
+  private void loadPlayerStatPage(Player player, String categoryName,
+                                  Inventory inv, PlayerStatData playerStatData) {
+    inv.setContents(playerStatData.getStatCategoryPages().get(categoryName).getContents());
+    player.setMetadata("stat-category",
+        new FixedMetadataValue(AethelPlugin.getInstance(), categoryName));
   }
 
   /**
@@ -131,8 +158,17 @@ public class PlayerStatMain {
    * @param inv    interacting inventory
    */
   private void addProfileHelp(Player player, Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + player.getMetadata("stat-category").get(0).asString());
+    String statCategory = player.getMetadata("stat-category").get(0).asString();
+
+    List<String> helpLore;
+    if (statCategory.equals("categories")) {
+      helpLore = Arrays.asList(ChatColor.WHITE + statCategory);
+    } else {
+      helpLore = Arrays.asList(
+          ChatColor.WHITE + statCategory,
+          ChatColor.WHITE + "Shift-click any",
+          ChatColor.WHITE + "stat to share it.");
+    }
 
     inv.setItem(3, new ItemCreator().createPlayerHead("White Question Mark",
         ChatColor.GREEN + "Help", helpLore));
@@ -141,22 +177,17 @@ public class PlayerStatMain {
   /**
    * Adds the currently viewing PlayerStat owner's head.
    *
-   * @param player              interacting player
-   * @param requestedPlayerName requested player's name
-   * @param inv                 interacting inventory
+   * @param player interacting player
+   * @param inv    interacting inventory
    */
-  private void addPlayerHead(Player player, String requestedPlayerName, Inventory inv) {
+  private void addPlayerHead(Player player, Inventory inv) {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(requestedPlayerName);
-    if (requestedPlayer.hasPlayedBefore()) {
-      meta.setOwningPlayer(requestedPlayer);
-      meta.setDisplayName(ChatColor.DARK_PURPLE + requestedPlayerName);
-    } else {
-      meta.setOwningPlayer(player);
-      meta.setDisplayName(ChatColor.DARK_PURPLE + player.getName());
-    }
+    String statOwner = player.getMetadata("stat-owner").get(0).asString();
+    OfflinePlayer requestedPlayer = Bukkit.getPlayer(statOwner);
+    meta.setOwningPlayer(requestedPlayer);
+    meta.setDisplayName(ChatColor.DARK_PURPLE + statOwner);
     item.setItemMeta(meta);
     inv.setItem(4, item);
   }

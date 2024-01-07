@@ -31,8 +31,8 @@ import java.util.List;
  * @since 1.1.0
  */
 public class ForgeCraft {
-  HashMap<Material, ArrayList<InventorySlot>> invMap = new HashMap<>();
-  ArrayList<InventorySlot> setInventory = new ArrayList<>();
+  private HashMap<Material, ArrayList<InventorySlot>> invMap = new HashMap<>();
+  private ArrayList<InventorySlot> setInventory = new ArrayList<>();
 
   /**
    * Creates and names a ForgeCraft inventory.

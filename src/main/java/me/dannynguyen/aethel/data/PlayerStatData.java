@@ -16,12 +16,12 @@ import java.util.*;
  * PlayerStatData contains information about player statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.10
+ * @version 1.4.11
  * @since 1.4.8
  */
 public class PlayerStatData {
   private ArrayList<String> statCategoryNames = new ArrayList<>(Arrays.asList(
-      "Activities", "Containers", "Damage", "General", "Entity Types", "Materials", "Movement", "Interactions"));
+      "Activities", "Containers", "Damage", "Entity Types", "General", "Interactions", "Materials", "Movement"));
   private HashMap<String, Inventory> statCategoryPages = new HashMap<>();
   private HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>() {{
     put("Materials", new ArrayList<>());
@@ -44,14 +44,13 @@ public class PlayerStatData {
    * Creates pages of stat categories.
    */
   private void createStatCategoryPages() {
-    ArrayList<PlayerStatCategory> playerStatCategories = createPlayerStatisticCategories();
-
     ItemCreator itemCreator = new ItemCreator();
-    for (PlayerStatCategory playerStatCategory : playerStatCategories) {
+    for (PlayerStatCategory playerStatCategory : createPlayerStatisticCategories()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54, "PlayerStat Category Page");
       for (String statName : playerStatCategory.getStats()) {
-        inv.setItem(i, itemCreator.createItem(Material.PAPER, ChatColor.WHITE + capitalizeProperly(statName)));
+        inv.setItem(i, itemCreator.createItem(Material.PAPER,
+            ChatColor.WHITE + capitalizeProperly(statName)));
         i++;
       }
       getStatCategoryPages().put(playerStatCategory.getName(), inv);
@@ -87,14 +86,12 @@ public class PlayerStatData {
       // Stats begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        Material material = materials.get(i);
-        String materialName = material.name();
+        String materialName = materials.get(i).name();
         String materialDisplayName = capitalizeProperly(materialName);
         inv.setItem(j, itemCreator.createItem(
             Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
         j++;
       }
-
       getSubstatCategoryPages().get("Materials").add(inv);
 
       // Indices to use for the next page (if it exists)
@@ -131,7 +128,6 @@ public class PlayerStatData {
         inv.setItem(j, itemCreator.createItem(Material.PAPER, ChatColor.WHITE + entityName));
         j++;
       }
-
       getSubstatCategoryPages().get("Entity Types").add(inv);
 
       // Indices to use for the next page (if it exists)

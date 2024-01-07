@@ -15,7 +15,7 @@ import java.util.Collections;
  * and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.4.10
+ * @version 1.4.11
  * @since 1.4.10
  */
 public class PlayerStatSend {
@@ -33,11 +33,17 @@ public class PlayerStatSend {
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     String statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.YELLOW + itemName;
-    String statValueString = ChatColor.WHITE + String.valueOf(requestedPlayer.getStatistic(stat));
+    String statValueString = formatStatValue(itemName, stat, requestedPlayer);
 
-    player.sendMessage(statNameString + ": " + statValueString);
-    AethelPlugin.getInstance().getResources().getPlayerStatData().
-        addToPastStats(statNameString, Collections.singletonList(statValueString));
+    if (!e.getClick().isShiftClick()) {
+      player.sendMessage(statNameString + " " + statValueString);
+    } else {
+      for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+        onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " + statNameString + " " + statValueString);
+      }
+      AethelPlugin.getInstance().getResources().getPlayerStatData().
+          addToPastStats(statNameString, Collections.singletonList(statValueString));
+    }
   }
 
   /**
@@ -64,8 +70,8 @@ public class PlayerStatSend {
       int deaths = player.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
 
       statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
-      statValueStrings.add(ChatColor.YELLOW + "Killed: " + ChatColor.WHITE + kills);
-      statValueStrings.add(ChatColor.YELLOW + "Killed By: " + ChatColor.WHITE + deaths);
+      statValueStrings.add(ChatColor.YELLOW + "Killed " + ChatColor.WHITE + kills);
+      statValueStrings.add(ChatColor.YELLOW + "Killed By " + ChatColor.WHITE + deaths);
     } else {
       Material material = Material.valueOf(substatName);
 
@@ -77,21 +83,66 @@ public class PlayerStatSend {
       int drop = requestedPlayer.getStatistic(Statistic.DROP, material);
 
       statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
-      statValueStrings.add(ChatColor.YELLOW + "Mined: " + ChatColor.WHITE + mined);
-      statValueStrings.add(ChatColor.YELLOW + "Crafted: " + ChatColor.WHITE + crafted);
-      statValueStrings.add(ChatColor.YELLOW + "Used: " + ChatColor.WHITE + used);
-      statValueStrings.add(ChatColor.YELLOW + "Broke: " + ChatColor.WHITE + broke);
-      statValueStrings.add(ChatColor.YELLOW + "Picked Up: " + ChatColor.WHITE + pickup);
-      statValueStrings.add(ChatColor.YELLOW + "Dropped: " + ChatColor.WHITE + drop);
+      statValueStrings.add(ChatColor.YELLOW + "Mined " + ChatColor.WHITE + mined);
+      statValueStrings.add(ChatColor.YELLOW + "Crafted " + ChatColor.WHITE + crafted);
+      statValueStrings.add(ChatColor.YELLOW + "Used " + ChatColor.WHITE + used);
+      statValueStrings.add(ChatColor.YELLOW + "Broke " + ChatColor.WHITE + broke);
+      statValueStrings.add(ChatColor.YELLOW + "Picked Up " + ChatColor.WHITE + pickup);
+      statValueStrings.add(ChatColor.YELLOW + "Dropped " + ChatColor.WHITE + drop);
     }
 
-    StringBuilder message = new StringBuilder(statNameString + ":");
+    StringBuilder message = new StringBuilder(statNameString);
     for (String valueString : statValueStrings) {
       message.append(" " + valueString);
     }
 
-    player.sendMessage(message.toString());
-    AethelPlugin.getInstance().getResources().getPlayerStatData().
-        addToPastStats(statNameString, statValueStrings);
+    if (!e.getClick().isShiftClick()) {
+      player.sendMessage(message.toString());
+    } else {
+      for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+        onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " + message);
+      }
+      AethelPlugin.getInstance().getResources().getPlayerStatData().
+          addToPastStats(statNameString, statValueStrings);
+    }
+  }
+
+  /**
+   * Formats a statistic's value based on its name.
+   *
+   * @param itemName        item name
+   * @param stat            stat
+   * @param requestedPlayer requested player
+   * @return formatted statistic value
+   */
+  private String formatStatValue(String itemName, Statistic stat,
+                                 OfflinePlayer requestedPlayer) {
+    String statValueString;
+    switch (itemName) {
+      case "Play One Minute", "Time Since Death", "Time Since Rest", "Total World Time" -> statValueString =
+          ChatColor.WHITE + tickTimeConversion(Long.valueOf(requestedPlayer.getStatistic(stat)));
+      default -> {
+        if (!itemName.contains("One Cm")) {
+          statValueString =
+              ChatColor.WHITE + String.valueOf(requestedPlayer.getStatistic(stat));
+        } else {
+          statValueString =
+              ChatColor.WHITE + String.valueOf(requestedPlayer.getStatistic(stat) / 100) + " meters";
+        }
+      }
+    }
+    return statValueString;
+  }
+
+  /**
+   * Gets a time duration in ticks and converts to readable conventional time.
+   *
+   * @return conventional time duration
+   */
+  private String tickTimeConversion(long ticks) {
+    long days = ticks / 1728000L % 30;
+    long hours = ticks / 72000L % 24;
+    long minutes = ticks / 1200L % 60;
+    return (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ");
   }
 }

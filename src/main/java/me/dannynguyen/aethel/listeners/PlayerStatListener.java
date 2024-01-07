@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatListener is an inventory listener for the PlayerStat command.
  *
  * @author Danny Nguyen
- * @version 1.4.10
+ * @version 1.4.11
  * @since 1.4.7
  */
 public class PlayerStatListener {
@@ -53,9 +53,7 @@ public class PlayerStatListener {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 0 -> previousStatPage(player);
-        case 2 -> { // Help Context
-        }
-        case 3, 4 -> { // Player Head
+        case 3, 4 -> { // Player Heads
         }
         case 5 -> returnToCategoryPage(player);
         case 8 -> nextStatPage(player);
@@ -75,9 +73,7 @@ public class PlayerStatListener {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 0 -> previousStatPage(player);
-        case 2 -> { // Help Context
-        }
-        case 3, 4 -> { // Player Head
+        case 3, 4 -> { // Player Heads
         }
         case 5 -> returnToCategoryPage(player);
         case 8 -> nextStatPage(player);

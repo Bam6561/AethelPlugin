@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * ShowItemPast is an inventory under the PlayerStat command that shows past shared statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.10
+ * @version 1.4.11
  * @since 1.4.10
  */
 public class PlayerStatPast {
@@ -44,7 +44,7 @@ public class PlayerStatPast {
     int index = 0;
     ItemCreator itemCreator = new ItemCreator();
     for (PlayerStatMessage message : messages) {
-      inv.setItem(index, itemCreator.createItem(Material.BOOK, message.getStatName(), message.getStats()));
+      inv.setItem(index, itemCreator.createItem(Material.PAPER, message.getStatName(), message.getStats()));
       index++;
     }
   }

@@ -25,7 +25,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.6
+ * @version 1.4.11
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -62,18 +62,8 @@ public class ShowItem implements CommandExecutor {
   private void showItemToChat(Player player) {
     ItemStack item = player.getInventory().getItemInMainHand();
     if (item.getType() != Material.AIR) {
-      // [!] <ItemName> [PlayerName]
-      TextComponent chatMessage = new TextComponent(ChatColor.GREEN + "[!] ");
-      TextComponent itemName = new TextComponent(ChatColor.AQUA + new ItemReader().readItemName(item) + " ");
-      chatMessage.addExtra(itemName);
-      chatMessage.addExtra(ChatColor.WHITE + "[" + player.getName() + "]");
-
-      ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
-      itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,
-          new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
-
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        onlinePlayer.spigot().sendMessage(chatMessage);
+        onlinePlayer.spigot().sendMessage(createShowItemTextComponent(player, item));
       }
       AethelPlugin.getInstance().getResources().getShowItemData().addPastItem(item);
     } else {
@@ -95,5 +85,26 @@ public class ShowItem implements CommandExecutor {
     } else {
       player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
     }
+  }
+
+  /**
+   * Creates a text component with a show item hover action.
+   *
+   * @param player interacting player
+   * @param item   interacting item
+   * @return text component with hover action (item)
+   */
+  private TextComponent createShowItemTextComponent(Player player, ItemStack item) {
+    // [!] <ItemName> [PlayerName]
+    TextComponent chatMessage = new TextComponent(ChatColor.GREEN + "[!] ");
+    TextComponent itemName = new TextComponent(ChatColor.AQUA + new ItemReader().readItemName(item) + " ");
+    chatMessage.addExtra(itemName);
+    chatMessage.addExtra(ChatColor.WHITE + "[" + player.getName() + "]");
+
+    ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
+    itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,
+        new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
+
+    return chatMessage;
   }
 }

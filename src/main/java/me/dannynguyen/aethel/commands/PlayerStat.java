@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStat is a command invocation that retrieves a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.9
+ * @version 1.4.11
  * @since 1.4.7
  */
 public class PlayerStat implements CommandExecutor {
@@ -53,6 +53,8 @@ public class PlayerStat implements CommandExecutor {
   private void interpretParameter(Player player, String parameter) {
     if (parameter.equals("past")) {
       player.openInventory(new PlayerStatPast().createInventory(player));
+      player.setMetadata("inventory",
+          new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-past"));
     } else {
       openPlayerStatOther(player, parameter);
     }
@@ -67,8 +69,8 @@ public class PlayerStat implements CommandExecutor {
     player.openInventory(new PlayerStatMain().openPlayerStatMainPage(player, player.getName()));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
-    player.setMetadata("stat-owner",
-        new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
+    player.setMetadata("stat-category",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
   }
 
   /**
@@ -81,7 +83,7 @@ public class PlayerStat implements CommandExecutor {
     player.openInventory(new PlayerStatMain().openPlayerStatMainPage(player, requestedPlayerName));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
-    player.setMetadata("stat-owner",
-        new FixedMetadataValue(AethelPlugin.getInstance(), requestedPlayerName));
+    player.setMetadata("stat-category",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
   }
 }
