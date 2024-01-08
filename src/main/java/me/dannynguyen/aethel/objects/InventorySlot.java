@@ -7,12 +7,12 @@ import org.bukkit.inventory.ItemStack;
  * with the type and amount of materials it should have.
  *
  * @author Danny Nguyen
- * @version 1.2.4
+ * @version 1.4.12
  * @since 1.2.4
  */
 public class InventorySlot {
-  private int slot;
-  private ItemStack item;
+  private final int slot;
+  private final ItemStack item;
   private int amount;
 
   public InventorySlot(int slot, ItemStack item, int amount) {

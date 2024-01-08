@@ -16,12 +16,14 @@ import java.util.*;
  * PlayerStatData contains information about player statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.11
+ * @version 1.4.12
  * @since 1.4.8
  */
 public class PlayerStatData {
-  private ArrayList<String> statCategoryNames = new ArrayList<>(Arrays.asList(
-      "Activities", "Containers", "Damage", "Entity Types", "General", "Interactions", "Materials", "Movement"));
+  private final ArrayList<String> statCategoryNames = new ArrayList<>(Arrays.asList(
+      "Activities", "Containers", "Damage", "Entity Types",
+      "General", "Interactions", "Materials", "Movement"));
+
   private HashMap<String, Inventory> statCategoryPages = new HashMap<>();
   private HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>() {{
     put("Materials", new ArrayList<>());
@@ -32,7 +34,7 @@ public class PlayerStatData {
   private ArrayList<PlayerStatMessage> pastStatMessages = new ArrayList<>();
 
   /**
-   * Loads PlayerStat pages into memory.
+   * Loads player stat pages into memory.
    */
   public void loadStats() {
     createStatCategoryPages();
@@ -41,26 +43,28 @@ public class PlayerStatData {
   }
 
   /**
-   * Creates pages of stat categories.
+   * Creates category pages of non-substats.
    */
   private void createStatCategoryPages() {
-    ItemCreator itemCreator = new ItemCreator();
+    HashMap<String, Inventory> statCategoryPages = getStatCategoryPages();
     for (PlayerStatCategory playerStatCategory : createPlayerStatisticCategories()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54, "PlayerStat Category Page");
       for (String statName : playerStatCategory.getStats()) {
-        inv.setItem(i, itemCreator.createItem(Material.PAPER,
+        inv.setItem(i, ItemCreator.createItem(Material.PAPER,
             ChatColor.WHITE + capitalizeProperly(statName)));
         i++;
       }
-      getStatCategoryPages().put(playerStatCategory.getName(), inv);
+      statCategoryPages.put(playerStatCategory.getName(), inv);
     }
   }
 
   /**
-   * Creates pages of materials to be used with PlayerStat.
+   * Creates pages of materials.
    */
   private void createMaterialPages() {
+    HashMap<String, ArrayList<Inventory>> substatCategoryPages = getSubstatCategoryPages();
+
     ArrayList<Material> materials = new ArrayList<>();
     for (Material material : Material.values()) {
       if (material.isItem() && !material.isAir()) {
@@ -71,13 +75,12 @@ public class PlayerStatData {
     materials.sort(materialComparator);
 
     int numberOfMaterials = materials.size();
-    int numberOfPages = new PageCalculator().calculateNumberOfPages(numberOfMaterials);
+    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfMaterials);
     setNumberOfMaterialPages(numberOfPages);
 
     int startIndex = 0;
     int endIndex = 45;
 
-    ItemCreator itemCreator = new ItemCreator();
     for (int page = 0; page < numberOfPages; page++) {
       Inventory inv = Bukkit.createInventory(null, 54, "Player Statistic Material Page");
       // i = stat index
@@ -88,11 +91,11 @@ public class PlayerStatData {
       for (int i = startIndex; i < endIndex; i++) {
         String materialName = materials.get(i).name();
         String materialDisplayName = capitalizeProperly(materialName);
-        inv.setItem(j, itemCreator.createItem(
+        inv.setItem(j, ItemCreator.createItem(
             Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
         j++;
       }
-      getSubstatCategoryPages().get("Materials").add(inv);
+      substatCategoryPages.get("Materials").add(inv);
 
       // Indices to use for the next page (if it exists)
       startIndex += 45;
@@ -101,21 +104,22 @@ public class PlayerStatData {
   }
 
   /**
-   * Creates pages of entities to be used with PlayerStat.
+   * Creates pages of entities.
    */
   private void createEntityTypeStatPages() {
+    HashMap<String, ArrayList<Inventory>> substatCategoryPages = getSubstatCategoryPages();
+
     List<EntityType> entityTypes = Arrays.asList(EntityType.values());
     Comparator<EntityType> entityTypeComparator = Comparator.comparing(Enum::name);
     entityTypes.sort(entityTypeComparator);
 
     int numberOfEntityTypes = entityTypes.size();
-    int numberOfPages = new PageCalculator().calculateNumberOfPages(numberOfEntityTypes);
+    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfEntityTypes);
     setNumberOfEntityTypePages(numberOfPages);
 
     int startIndex = 0;
     int endIndex = 45;
 
-    ItemCreator itemCreator = new ItemCreator();
     for (int page = 0; page < numberOfPages; page++) {
       Inventory inv = Bukkit.createInventory(null, 54, "Player Statistic Entity Types Page");
       // i = stat index
@@ -125,10 +129,10 @@ public class PlayerStatData {
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
         String entityName = capitalizeProperly(entityTypes.get(i).name());
-        inv.setItem(j, itemCreator.createItem(Material.PAPER, ChatColor.WHITE + entityName));
+        inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entityName));
         j++;
       }
-      getSubstatCategoryPages().get("Entity Types").add(inv);
+      substatCategoryPages.get("Entity Types").add(inv);
 
       // Indices to use for the next page (if it exists)
       startIndex += 45;
@@ -156,7 +160,7 @@ public class PlayerStatData {
   /**
    * Categorizes player stats.
    *
-   * @return player stat categories.
+   * @return player stat categories
    */
   private ArrayList<PlayerStatCategory> createPlayerStatisticCategories() {
     ArrayList<PlayerStatCategory> playerStatisticCategories = new ArrayList<>(Arrays.asList(

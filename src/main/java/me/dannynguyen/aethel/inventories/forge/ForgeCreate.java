@@ -19,7 +19,7 @@ import java.util.List;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.3
+ * @version 1.4.12
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -29,15 +29,14 @@ public class ForgeCreate {
    * @param player interacting player
    * @return ForgeCreate inventory
    */
-  public Inventory createInventory(Player player) {
-    String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Create";
-    Inventory inv = Bukkit.createInventory(player, 27, title);
+  public static Inventory createInventory(Player player) {
+    Inventory inv = Bukkit.createInventory(player, 27,
+        ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Create");
 
-    ItemCreator itemCreator = new ItemCreator();
     addCreateHelp(inv);
-    inv.setItem(25, itemCreator.
+    inv.setItem(25, ItemCreator.
         createPlayerHead("Stack of Paper", ChatColor.AQUA + "Save"));
-    inv.setItem(26, itemCreator.
+    inv.setItem(26, ItemCreator.
         createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
     return inv;
   }
@@ -47,13 +46,13 @@ public class ForgeCreate {
    *
    * @param inv interacting inventory
    */
-  private void addCreateHelp(Inventory inv) {
+  private static void addCreateHelp(Inventory inv) {
     List<String> helpLore = Arrays.asList(
         ChatColor.AQUA + "Rows",
         ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
         ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
         ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
-    inv.setItem(8, new ItemCreator().createPlayerHead("White Question Mark",
+    inv.setItem(8, ItemCreator.createPlayerHead("White Question Mark",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -63,7 +62,7 @@ public class ForgeCreate {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void readSaveClick(InventoryClickEvent e, Player player) {
+  public static void readSaveClick(InventoryClickEvent e, Player player) {
     ItemStack[] inv = e.getInventory().getContents();
     String fileName = nameRecipeFile(inv);
     if (fileName != null) {
@@ -85,7 +84,7 @@ public class ForgeCreate {
    * @param inv items in the inventory
    * @return recipe file name
    */
-  private String nameRecipeFile(ItemStack[] inv) {
+  private static String nameRecipeFile(ItemStack[] inv) {
     for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
       if (item != null) {
@@ -110,7 +109,7 @@ public class ForgeCreate {
    * @param inv items in the inventory
    * @return encoded recipe string
    */
-  private String encodeRecipe(ItemStack[] inv) {
+  private static String encodeRecipe(ItemStack[] inv) {
     ItemCreator itemCreator = new ItemCreator();
 
     StringBuilder components = new StringBuilder();
@@ -138,7 +137,7 @@ public class ForgeCreate {
    * @param encodedItem encoded item string
    * @throws IOException file could not be created
    */
-  private void saveRecipeToFile(Player player, String itemName, String encodedItem) {
+  private static void saveRecipeToFile(Player player, String itemName, String encodedItem) {
     try {
       FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResources().getForgeRecipeDirectory()
           + "/" + itemName + "_rcp.txt");

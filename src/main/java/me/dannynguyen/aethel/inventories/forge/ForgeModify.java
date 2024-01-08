@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.entity.Player;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
  * ForgeModify is an inventory under the Forge command that modifies forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.2.1
+ * @version 1.4.12
  * @since 1.0.9
  */
 public class ForgeModify {
@@ -26,12 +25,11 @@ public class ForgeModify {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void modifyRecipe(InventoryClickEvent e, Player player) {
-    AethelResources resources = AethelPlugin.getInstance().getResources();
-    ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemReader().readItemName(e.getCurrentItem()));
+  public static void modifyRecipe(InventoryClickEvent e, Player player) {
+    ForgeRecipe recipe = AethelPlugin.getInstance().getResources().getForgeRecipeData().getRecipesMap().
+        get(ItemReader.readItemName(e.getCurrentItem()));
 
-    Inventory inv = new ForgeCreate().createInventory(player);
+    Inventory inv = ForgeCreate.createInventory(player);
     addExistingRecipeContents(recipe, inv);
 
     player.openInventory(inv);
@@ -44,7 +42,7 @@ public class ForgeModify {
    * @param recipe forge recipe
    * @param inv    interacting inventory
    */
-  private void addExistingRecipeContents(ForgeRecipe recipe, Inventory inv) {
+  private static void addExistingRecipeContents(ForgeRecipe recipe, Inventory inv) {
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();
 

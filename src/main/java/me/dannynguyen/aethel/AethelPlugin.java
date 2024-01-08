@@ -11,7 +11,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.4.8
+ * @version 1.4.12
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -42,6 +42,8 @@ public class AethelPlugin extends JavaPlugin {
    * Reads existing plugin-related data. Creates data directories if they do not already exist.
    */
   private void readResourceFiles() {
+    AethelResources resources = getResources();
+
     File resourceDirectory = new File(resources.getResourceDirectory());
     if (!resourceDirectory.exists()) resourceDirectory.mkdir();
 

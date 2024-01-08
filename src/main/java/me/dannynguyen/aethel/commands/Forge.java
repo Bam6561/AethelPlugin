@@ -14,11 +14,11 @@ import org.bukkit.metadata.FixedMetadataValue;
  * <p>
  * Additional Parameters:
  * - "edit": allows the user to create, modify, or delete forge recipes
- * - "reload": reloads forge recipes into memory
+ * - "reload", "rl": reloads forge recipes into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.5
+ * @version 1.4.12
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -33,10 +33,10 @@ public class Forge implements CommandExecutor {
   }
 
   /**
-   * Checks if the Forge command request was formatted correctly before interpreting its usage.
+   * Checks if the command request was formatted correctly before interpreting its usage.
    *
    * @param sender command sender
-   * @param args   user provided parameters
+   * @param args   player provided parameters
    */
   private void readRequest(CommandSender sender, String[] args) {
     Player player = (Player) sender;
@@ -62,7 +62,7 @@ public class Forge implements CommandExecutor {
   private void interpretParameter(Player player, String action) {
     switch (action) {
       case "edit" -> openForgeModifyInventory(player);
-      case "reload" -> {
+      case "reload", "rl" -> {
         AethelPlugin.getInstance().getResources().getForgeRecipeData().loadRecipes();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
       }
@@ -76,7 +76,7 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeCraftInventory(Player player) {
-    player.openInventory(new ForgeMain().openRecipePage(player, "craft", 0));
+    player.openInventory(ForgeMain.openRecipePage(player, "craft", 0));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
   }
 
@@ -86,7 +86,7 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeModifyInventory(Player player) {
-    player.openInventory(new ForgeMain().openRecipePage(player, "modify", 0));
+    player.openInventory(ForgeMain.openRecipePage(player, "modify", 0));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
   }
 }

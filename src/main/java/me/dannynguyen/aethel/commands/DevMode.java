@@ -34,7 +34,7 @@ public class DevMode implements CommandExecutor {
   }
 
   /**
-   * Checks if the DevMode command request was formatted correctly before toggling the setting.
+   * Checks if the command request was formatted correctly before toggling the setting.
    *
    * @param player             interacting player
    * @param numberOfParameters number of parameters
@@ -47,7 +47,7 @@ public class DevMode implements CommandExecutor {
   }
 
   /**
-   * Toggles Developer mode on or off.
+   * Toggles Developer mode on or off for the player.
    *
    * @param player interacting player
    */

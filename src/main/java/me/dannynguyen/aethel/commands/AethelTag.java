@@ -17,9 +17,14 @@ import org.bukkit.persistence.PersistentDataType;
 /**
  * AethelTag is a command invocation that allows the retrieval, addition,
  * or deletion of Aethel plugin tags to the player's main hand item.
+ * <p>
+ * - "get": reads the item's tags
+ * - "set": sets the item's tag
+ * - "remove", "rm": removes the item's tag
+ * </p>
  *
  * @author Danny Nguyen
- * @version 1.3.2
+ * @version 1.4.12
  * @since 1.2.6
  */
 public class AethelTag implements CommandExecutor {
@@ -45,10 +50,10 @@ public class AethelTag implements CommandExecutor {
   }
 
   /**
-   * Checks if the AethelTag command request was formatted correctly before interpreting its intent.
+   * Checks if the command request was formatted correctly before interpreting its intent.
    *
    * @param player interacting player
-   * @param args   user provided parameters
+   * @param args   player provided parameters
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
@@ -86,9 +91,9 @@ public class AethelTag implements CommandExecutor {
    * @param item   item in main hand
    */
   private void getAethelTags(Player player, ItemStack item) {
-    String response = new ItemReader().readAethelTags(item);
+    String response = ItemReader.readAethelTags(item);
     if (!response.isEmpty()) {
-      player.sendMessage(response);
+      player.sendMessage(ChatColor.GREEN + "[Get] " + response);
     } else {
       player.sendMessage(ChatColor.RED + "No tags found.");
     }
@@ -119,7 +124,7 @@ public class AethelTag implements CommandExecutor {
    * Adds or sets an Aethel tag to the item.
    *
    * @param player interacting player
-   * @param args   user provided parameters
+   * @param args   player provided parameters
    * @param item   item in main hand
    */
   private void setAethelTag(Player player, String[] args, ItemStack item) {

@@ -15,7 +15,7 @@ import java.util.Collections;
  * and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.4.11
+ * @version 1.4.12
  * @since 1.4.10
  */
 public class PlayerStatSend {
@@ -25,13 +25,13 @@ public class PlayerStatSend {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void sendStat(InventoryClickEvent e, Player player) {
+  public static void sendStat(InventoryClickEvent e, Player player) {
     String statOwner = player.getMetadata("stat-owner").get(0).asString();
-    String itemName = ChatColor.stripColor(new ItemReader().readItemName(e.getCurrentItem()));
-    Statistic stat = Statistic.valueOf(itemName.replace(" ", "_").toUpperCase());
-
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
+    String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
+
+    Statistic stat = Statistic.valueOf(itemName.replace(" ", "_").toUpperCase());
     String statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.YELLOW + itemName;
     String statValueString = formatStatValue(itemName, stat, requestedPlayer);
 
@@ -52,16 +52,17 @@ public class PlayerStatSend {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void sendSubstat(InventoryClickEvent e, Player player) {
+  public static void sendSubstat(InventoryClickEvent e, Player player) {
     String statOwner = player.getMetadata("stat-owner").get(0).asString();
-    String itemName = ChatColor.stripColor(new ItemReader().readItemName(e.getCurrentItem()));
-    String statCategory = player.getMetadata("stat-category").get(0).asString();
-    String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
-
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
-    String statNameString;
-    ArrayList<String> statValueStrings = new ArrayList<>();
+    String statCategory = player.getMetadata("stat-category").get(0).asString();
+
+    String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
+    String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
+
+    String statName;
+    ArrayList<String> statValues = new ArrayList<>();
 
     if (statCategory.equals("Entity Types")) {
       EntityType entityType = EntityType.valueOf(substatName);
@@ -69,9 +70,9 @@ public class PlayerStatSend {
       int kills = player.getStatistic(Statistic.KILL_ENTITY, entityType);
       int deaths = player.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
 
-      statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
-      statValueStrings.add(ChatColor.YELLOW + "Killed " + ChatColor.WHITE + kills);
-      statValueStrings.add(ChatColor.YELLOW + "Killed By " + ChatColor.WHITE + deaths);
+      statName = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
+      statValues.add(ChatColor.YELLOW + "Killed " + ChatColor.WHITE + kills);
+      statValues.add(ChatColor.YELLOW + "Killed By " + ChatColor.WHITE + deaths);
     } else {
       Material material = Material.valueOf(substatName);
 
@@ -82,29 +83,36 @@ public class PlayerStatSend {
       int pickup = requestedPlayer.getStatistic(Statistic.PICKUP, material);
       int drop = requestedPlayer.getStatistic(Statistic.DROP, material);
 
-      statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
-      statValueStrings.add(ChatColor.YELLOW + "Mined " + ChatColor.WHITE + mined);
-      statValueStrings.add(ChatColor.YELLOW + "Crafted " + ChatColor.WHITE + crafted);
-      statValueStrings.add(ChatColor.YELLOW + "Used " + ChatColor.WHITE + used);
-      statValueStrings.add(ChatColor.YELLOW + "Broke " + ChatColor.WHITE + broke);
-      statValueStrings.add(ChatColor.YELLOW + "Picked Up " + ChatColor.WHITE + pickup);
-      statValueStrings.add(ChatColor.YELLOW + "Dropped " + ChatColor.WHITE + drop);
+      statName = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
+      statValues.add(ChatColor.YELLOW + "Mined " + ChatColor.WHITE + mined);
+      statValues.add(ChatColor.YELLOW + "Crafted " + ChatColor.WHITE + crafted);
+      statValues.add(ChatColor.YELLOW + "Used " + ChatColor.WHITE + used);
+      statValues.add(ChatColor.YELLOW + "Broke " + ChatColor.WHITE + broke);
+      statValues.add(ChatColor.YELLOW + "Picked Up " + ChatColor.WHITE + pickup);
+      statValues.add(ChatColor.YELLOW + "Dropped " + ChatColor.WHITE + drop);
     }
 
-    StringBuilder message = new StringBuilder(statNameString);
-    for (String valueString : statValueStrings) {
-      message.append(" " + valueString);
+    StringBuilder message = new StringBuilder(statName);
+    for (String value : statValues) {
+      message.append(" " + value);
     }
 
     if (!e.getClick().isShiftClick()) {
       player.sendMessage(message.toString());
     } else {
-      for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " + message);
+      if (player.getName() != statOwner) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " +
+              ChatColor.DARK_PURPLE + player.getName() + ChatColor.WHITE + " -> " + message);
+        }
+      } else {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " + message);
+        }
       }
-      AethelPlugin.getInstance().getResources().getPlayerStatData().
-          addToPastStats(statNameString, statValueStrings);
     }
+    AethelPlugin.getInstance().getResources().getPlayerStatData().
+        addToPastStats(statName, statValues);
   }
 
   /**
@@ -115,11 +123,12 @@ public class PlayerStatSend {
    * @param requestedPlayer requested player
    * @return formatted statistic value
    */
-  private String formatStatValue(String itemName, Statistic stat,
-                                 OfflinePlayer requestedPlayer) {
+  private static String formatStatValue(String itemName, Statistic stat,
+                                        OfflinePlayer requestedPlayer) {
     String statValueString;
     switch (itemName) {
-      case "Play One Minute", "Time Since Death", "Time Since Rest", "Total World Time" -> statValueString =
+      case "Play One Minute", "Time Since Death",
+          "Time Since Rest", "Total World Time" -> statValueString =
           ChatColor.WHITE + tickTimeConversion(Long.valueOf(requestedPlayer.getStatistic(stat)));
       default -> {
         if (!itemName.contains("One Cm")) {
@@ -139,7 +148,7 @@ public class PlayerStatSend {
    *
    * @return conventional time duration
    */
-  private String tickTimeConversion(long ticks) {
+  private static String tickTimeConversion(long ticks) {
     long days = ticks / 1728000L % 30;
     long hours = ticks / 72000L % 24;
     long minutes = ticks / 1200L % 60;

@@ -25,7 +25,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.11
+ * @version 1.4.12
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -79,7 +79,7 @@ public class ShowItem implements CommandExecutor {
    */
   private void interpretParameter(Player player, String action) {
     if (action.equals("past")) {
-      player.openInventory(new ShowItemPast().createInventory(player));
+      player.openInventory(ShowItemPast.createInventory(player));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "showitem-past"));
     } else {
@@ -92,14 +92,14 @@ public class ShowItem implements CommandExecutor {
    *
    * @param player interacting player
    * @param item   interacting item
-   * @return text component with hover action (item)
+   * @return text component with hover action (show item)
    */
   private TextComponent createShowItemTextComponent(Player player, ItemStack item) {
     // [!] <ItemName> [PlayerName]
-    TextComponent chatMessage = new TextComponent(ChatColor.GREEN + "[!] ");
-    TextComponent itemName = new TextComponent(ChatColor.AQUA + new ItemReader().readItemName(item) + " ");
+    TextComponent chatMessage = new TextComponent(ChatColor.GREEN + "[!] "
+        + ChatColor.DARK_PURPLE + player.getName() + " ");
+    TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readItemName(item) + " ");
     chatMessage.addExtra(itemName);
-    chatMessage.addExtra(ChatColor.WHITE + "[" + player.getName() + "]");
 
     ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
     itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,

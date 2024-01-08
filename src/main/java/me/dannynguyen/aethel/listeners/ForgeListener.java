@@ -12,7 +12,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command.
  *
  * @author Danny Nguyen
- * @version 1.3.1
+ * @version 1.4.12
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -26,7 +26,7 @@ public class ForgeListener {
    * @param e      inventory click event
    * @param action type of interaction
    */
-  public void interpretForgeMainClick(InventoryClickEvent e, String action) {
+  public static void interpretForgeMainClick(InventoryClickEvent e, String action) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       Player player = (Player) e.getWhoClicked();
       switch (e.getSlot()) {
@@ -54,7 +54,7 @@ public class ForgeListener {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void interpretForgeCraftConfirmClick(InventoryClickEvent e, Player player) {
+  public static void interpretForgeCraftConfirmClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 25 -> new ForgeCraft().craftRecipe(e, player);
@@ -70,11 +70,11 @@ public class ForgeListener {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
+  public static void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 8 -> e.setCancelled(true);
-        case 25 -> new ForgeCreate().readSaveClick(e, player);
+        case 25 -> ForgeCreate.readSaveClick(e, player);
         case 26 -> {
           openForgeModifyInventory(player);
           e.setCancelled(true);
@@ -89,10 +89,9 @@ public class ForgeListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  private void previousRecipePage(Player player, String action) {
+  private static void previousRecipePage(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(new ForgeMain().openRecipePage(player, action,
-        pageRequest - 1));
+    player.openInventory(ForgeMain.openRecipePage(player, action, pageRequest - 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-" + action));
   }
 
@@ -102,8 +101,8 @@ public class ForgeListener {
    * @param player interacting player
    */
 
-  private void openForgeCreateInventory(Player player) {
-    player.openInventory(new ForgeCreate().createInventory(player));
+  private static void openForgeCreateInventory(Player player) {
+    player.openInventory(ForgeCreate.createInventory(player));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
   }
 
@@ -112,8 +111,8 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private void openForgeModifyInventory(Player player) {
-    player.openInventory(new ForgeMain().openRecipePage(player, "modify",
+  private static void openForgeModifyInventory(Player player) {
+    player.openInventory(ForgeMain.openRecipePage(player, "modify",
         player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
   }
@@ -123,8 +122,8 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private void openForgeDeleteInventory(Player player) {
-    player.openInventory(new ForgeMain().openRecipePage(player, "delete",
+  private static void openForgeDeleteInventory(Player player) {
+    player.openInventory(ForgeMain.openRecipePage(player, "delete",
         player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-delete"));
   }
@@ -135,10 +134,9 @@ public class ForgeListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  private void nextRecipePage(Player player, String action) {
+  private static void nextRecipePage(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(new ForgeMain().openRecipePage(player, action,
-        pageRequest + 1));
+    player.openInventory(ForgeMain.openRecipePage(player, action, pageRequest + 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-" + action));
   }
 
@@ -150,11 +148,11 @@ public class ForgeListener {
    * @param action interaction type
    * @param player interacting player
    */
-  private void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
+  private static void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
-      case "craft" -> new ForgeCraft().expandRecipeDetails(e, player);
-      case "modify" -> new ForgeModify().modifyRecipe(e, player);
-      case "delete" -> new ForgeDelete().deleteRecipe(e, player);
+      case "craft" -> ForgeCraft.expandRecipeDetails(e, player);
+      case "modify" -> ForgeModify.modifyRecipe(e, player);
+      case "delete" -> ForgeDelete.deleteRecipe(e, player);
     }
   }
 
@@ -163,8 +161,8 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private void openForgeCraftInventory(Player player) {
-    player.openInventory(new ForgeMain().openRecipePage(player, "craft", player.getMetadata("page").get(0).asInt()));
+  private static void openForgeCraftInventory(Player player) {
+    player.openInventory(ForgeMain.openRecipePage(player, "craft", player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));
   }
 }

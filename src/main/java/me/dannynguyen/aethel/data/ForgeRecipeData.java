@@ -18,7 +18,7 @@ import java.util.*;
  * ForgeRecipeData contains information about forge recipes loaded in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.3
+ * @version 1.4.12
  * @since 1.1.11
  */
 public class ForgeRecipeData {
@@ -41,9 +41,9 @@ public class ForgeRecipeData {
 
     File[] directory = new File(AethelPlugin.getInstance().getResources().getForgeRecipeDirectory()).listFiles();
     Collections.sort(Arrays.asList(directory));
-    for (int i = 0; i < directory.length; i++) {
-      if (directory[i].getName().endsWith("_rcp.txt")) {
-        ForgeRecipe recipe = readRecipeFile(directory[i]);
+    for (File file : directory) {
+      if (file.getName().endsWith("_rcp.txt")) {
+        ForgeRecipe recipe = readRecipeFile(file);
         recipes.add(recipe);
         recipesMap.put(recipe.getName(), recipe);
       }
@@ -74,7 +74,7 @@ public class ForgeRecipeData {
         readLine(scanner.nextLine(), dataType, results, components);
         dataType++;
       }
-      return new ForgeRecipe(file, new ItemReader().readItemName(results.get(0)), results, components);
+      return new ForgeRecipe(file, ItemReader.readItemName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
     }
@@ -84,8 +84,11 @@ public class ForgeRecipeData {
    * Creates pages of recipes.
    */
   public void createRecipePages() {
-    int numberOfRecipes = getRecipes().size();
-    int numberOfPages = new PageCalculator().calculateNumberOfPages(numberOfRecipes);
+    ArrayList<ForgeRecipe> recipes = getRecipes();
+    ArrayList<Inventory> recipePages = getRecipePages();
+
+    int numberOfRecipes = recipes.size();
+    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfRecipes);
     setNumberOfPages(numberOfPages);
 
     int startIndex = 0;
@@ -99,11 +102,11 @@ public class ForgeRecipeData {
       // Recipes begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        ArrayList<ItemStack> results = getRecipes().get(i).getResults();
+        ArrayList<ItemStack> results = recipes.get(i).getResults();
         inv.setItem(j, createResultsDisplay(results.get(0), results));
         j++;
       }
-      getRecipePages().add(inv);
+      recipePages.add(inv);
 
       // Indices to use for the next page (if it exists)
       startIndex += 45;
@@ -123,11 +126,11 @@ public class ForgeRecipeData {
    * @param results    recipe results
    * @param components recipe components
    */
-  private void readLine(String line, int dataType, ArrayList<ItemStack> results, ArrayList<ItemStack> components) {
+  private void readLine(String line, int dataType,
+                        ArrayList<ItemStack> results, ArrayList<ItemStack> components) {
     String[] data = line.split(" ");
-    ItemReader itemReader = new ItemReader();
     for (String encodedItem : data) {
-      ItemStack item = itemReader.decodeItem(encodedItem);
+      ItemStack item = ItemReader.decodeItem(encodedItem);
       if (item != null) {
         switch (dataType) {
           case 1 -> results.add(item);
@@ -152,11 +155,10 @@ public class ForgeRecipeData {
   private ItemStack createResultsDisplay(ItemStack displayItem, ArrayList<ItemStack> results) {
     if (results.size() > 1) {
       List<String> recipeResults = new ArrayList<>();
-      ItemReader itemReader = new ItemReader();
 
       for (ItemStack item : results) {
         recipeResults.add(ChatColor.AQUA + "x" + item.getAmount() +
-            ChatColor.WHITE + " " + itemReader.readItemName(item));
+            ChatColor.WHITE + " " + ItemReader.readItemName(item));
       }
 
       ItemStack itemDisplay = displayItem.clone();

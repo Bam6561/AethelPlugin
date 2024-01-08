@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.objects.InventorySlot;
@@ -27,11 +26,10 @@ import java.util.List;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.4
+ * @version 1.4.12
  * @since 1.1.0
  */
 public class ForgeCraft {
-  private HashMap<Material, ArrayList<InventorySlot>> invMap = new HashMap<>();
   private ArrayList<InventorySlot> setInventory = new ArrayList<>();
 
   /**
@@ -40,15 +38,14 @@ public class ForgeCraft {
    * @param player interacting player
    * @return ForgeCraft inventory
    */
-  public Inventory createInventory(Player player) {
-    String title = ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft";
-    Inventory inv = Bukkit.createInventory(player, 27, title);
+  public static Inventory createInventory(Player player) {
+    Inventory inv = Bukkit.createInventory(player, 27,
+        ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft");
 
-    ItemCreator itemCreator = new ItemCreator();
-    addCraftHelp(inv);
-    inv.setItem(25, itemCreator.
+    addCraftContext(inv);
+    inv.setItem(25, ItemCreator.
         createPlayerHead("Crafting Table", ChatColor.AQUA + "Craft"));
-    inv.setItem(26, itemCreator.
+    inv.setItem(26, ItemCreator.
         createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
     return inv;
   }
@@ -58,13 +55,13 @@ public class ForgeCraft {
    *
    * @param inv interacting inventory
    */
-  private void addCraftHelp(Inventory inv) {
+  private static void addCraftContext(Inventory inv) {
     List<String> helpLore = Arrays.asList(
         ChatColor.AQUA + "Rows",
         ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
         ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
         ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
-    inv.setItem(8, new ItemCreator().createPlayerHead("White Question Mark",
+    inv.setItem(8, ItemCreator.createPlayerHead("White Question Mark",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -74,10 +71,9 @@ public class ForgeCraft {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void expandRecipeDetails(InventoryClickEvent e, Player player) {
-    AethelResources resources = AethelPlugin.getInstance().getResources();
-    ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemReader().readItemName(e.getCurrentItem()));
+  public static void expandRecipeDetails(InventoryClickEvent e, Player player) {
+    ForgeRecipe recipe = AethelPlugin.getInstance().getResources().getForgeRecipeData().
+        getRecipesMap().get(ItemReader.readItemName(e.getCurrentItem()));
 
     Inventory inv = createInventory(player);
     addExistingRecipeContents(recipe, inv);
@@ -93,7 +89,7 @@ public class ForgeCraft {
    * @param recipe forge recipe
    * @param inv    interacting inventory
    */
-  private void addExistingRecipeContents(ForgeRecipe recipe, Inventory inv) {
+  private static void addExistingRecipeContents(ForgeRecipe recipe, Inventory inv) {
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();
 
@@ -112,15 +108,14 @@ public class ForgeCraft {
    * @param player interacting player
    */
   public void craftRecipe(InventoryClickEvent e, Player player) {
-    AethelResources resources = AethelPlugin.getInstance().getResources();
-    ForgeRecipe recipe = resources.getForgeRecipeData().getRecipesMap().
-        get(new ItemReader().readItemName(e.getClickedInventory().getItem(0)));
+    ForgeRecipe recipe = AethelPlugin.getInstance().getResources().getForgeRecipeData().
+        getRecipesMap().get(ItemReader.readItemName(e.getClickedInventory().getItem(0)));
 
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();
 
     if (!player.hasMetadata("devmode")) {
-      if (checkMatchingType(player, components)) {
+      if (hasMatchingType(player, components)) {
         processMatchingType(player, results);
       } else {
         player.sendMessage(ChatColor.RED + "Insufficient components.");
@@ -137,25 +132,24 @@ public class ForgeCraft {
    * @param components components in recipe
    * @return has sufficient components
    */
-  private boolean checkMatchingType(Player player, ArrayList<ItemStack> components) {
+  private boolean hasMatchingType(Player player, ArrayList<ItemStack> components) {
     Inventory inv = player.getInventory();
-    setInvMap(mapMaterialIndices(inv));
+    HashMap<Material, ArrayList<InventorySlot>> invMap = mapMaterialIndices(inv);
 
     for (ItemStack item : components) {
       Material reqMaterial = item.getType();
-      if (getInvMap().containsKey(reqMaterial)) {
+      if (invMap.containsKey(reqMaterial)) {
         int reqAmount = item.getAmount();
 
-        // Check if required component has a ForgeId tag
         NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forgeid");
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        boolean checkForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
+        boolean hasForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
 
-        if (!checkForgeId) {
-          if (!checkSufficientMaterials(getInvMap(), reqMaterial, reqAmount)) return false;
+        if (!hasForgeId) {
+          if (!hasSufficientMaterials(invMap, reqMaterial, reqAmount)) return false;
         } else {
           String reqForgeId = dataContainer.get(forgeIdKey, PersistentDataType.STRING);
-          if (!checkSufficientMaterials(getInvMap(), reqMaterial, reqAmount, forgeIdKey, reqForgeId)) return false;
+          if (!hasSufficientMaterials(invMap, reqMaterial, reqAmount, forgeIdKey, reqForgeId)) return false;
         }
       } else {
         return false;
@@ -199,12 +193,12 @@ public class ForgeCraft {
    * @param reqAmount   required amount
    * @return has sufficient amounts of material
    */
-  private boolean checkSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
-                                           Material reqMaterial, int reqAmount) {
+  private boolean hasSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
+                                         Material reqMaterial, int reqAmount) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
       if (invSlot.getAmount() > 0) {
         reqAmount -= invSlot.getAmount();
-        if (checkReqAmountSatisfied(invSlot, reqAmount)) return true;
+        if (hasReqAmountSatisfied(invSlot, reqAmount)) return true;
       }
     }
     return false;
@@ -220,18 +214,17 @@ public class ForgeCraft {
    * @param reqForgeId  required ForgeId
    * @return has sufficient amounts of material
    */
-  private boolean checkSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
-                                           Material reqMaterial, int reqAmount,
-                                           NamespacedKey forgeIdKey, String reqForgeId) {
+  private boolean hasSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
+                                         Material reqMaterial, int reqAmount,
+                                         NamespacedKey forgeIdKey, String reqForgeId) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
 
-      if (dataContainer.has(forgeIdKey, PersistentDataType.STRING)) {
-        if (dataContainer.get(forgeIdKey, PersistentDataType.STRING).equals(reqForgeId)) {
-          if (invSlot.getAmount() > 0) {
-            reqAmount -= invSlot.getAmount();
-            if (checkReqAmountSatisfied(invSlot, reqAmount)) return true;
-          }
+      if (dataContainer.has(forgeIdKey, PersistentDataType.STRING) &&
+          dataContainer.get(forgeIdKey, PersistentDataType.STRING).equals(reqForgeId)) {
+        if (invSlot.getAmount() > 0) {
+          reqAmount -= invSlot.getAmount();
+          if (hasReqAmountSatisfied(invSlot, reqAmount)) return true;
         }
       }
     }
@@ -244,7 +237,7 @@ public class ForgeCraft {
    * @param reqAmount required amount
    * @return has sufficient amounts of material
    */
-  private boolean checkReqAmountSatisfied(InventorySlot invSlot, int reqAmount) {
+  private boolean hasReqAmountSatisfied(InventorySlot invSlot, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
       getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
@@ -290,14 +283,6 @@ public class ForgeCraft {
         player.getWorld().dropItem(player.getLocation(), item);
       }
     }
-  }
-
-  private HashMap<Material, ArrayList<InventorySlot>> getInvMap() {
-    return this.invMap;
-  }
-
-  private void setInvMap(HashMap<Material, ArrayList<InventorySlot>> invMap) {
-    this.invMap = invMap;
   }
 
   private ArrayList<InventorySlot> getSetInventory() {

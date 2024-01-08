@@ -14,11 +14,11 @@ import org.bukkit.metadata.FixedMetadataValue;
  * to allow the retrieval of items through clicking.
  * <p>
  * Additional Parameters:
- * - "reload": reloads items into memory
+ * - "reload", "rl": reloads items into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.0
+ * @version 1.4.12
  * @since 1.3.2
  */
 public class AethelItem implements CommandExecutor {
@@ -42,7 +42,7 @@ public class AethelItem implements CommandExecutor {
    * Checks if the AethelItem command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
-   * @param args   user provided parameters
+   * @param args   player provided parameters
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
@@ -54,27 +54,28 @@ public class AethelItem implements CommandExecutor {
 
 
   /**
-   * Checks if the action request is "reload" before reloading items into memory.
+   * Checks if the action is "reload" before reloading items into memory.
    *
    * @param player interacting player
    * @param action type of action
    */
   private void readParameter(Player player, String action) {
-    if (action.equals("reload")) {
-      AethelPlugin.getInstance().getResources().getAethelItemData().loadItems();
-      player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Aethel Items");
-    } else {
-      player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
+    switch (action) {
+      case "reload", "rl" -> {
+        AethelPlugin.getInstance().getResources().getAethelItemData().loadItems();
+        player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Aethel Items");
+      }
+      default -> player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
     }
   }
 
   /**
-   * Opens an AethelItem inventory with the intent to get items.
+   * Opens an AethelItemMain inventory with the intent to get items.
    *
    * @param player interacting player
    */
   private void openAethelItemInventory(Player player) {
-    player.openInventory(new AethelItemMain().openItemPage(player, "get", 0));
+    player.openInventory(AethelItemMain.openItemPage(player, "get", 0));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
   }
 }

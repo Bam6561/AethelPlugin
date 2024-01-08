@@ -9,13 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
-
 /**
  * ShowItemPast is an inventory under the PlayerStat command that shows past shared statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.11
+ * @version 1.4.12
  * @since 1.4.10
  */
 public class PlayerStatPast {
@@ -25,7 +23,7 @@ public class PlayerStatPast {
    * @param player interacting player
    * @return PlayerStatPast inventory
    */
-  public Inventory createInventory(Player player) {
+  public static Inventory createInventory(Player player) {
     Inventory inv = Bukkit.createInventory(player, 9,
         ChatColor.DARK_GRAY + "PlayerStat " + ChatColor.DARK_PURPLE + "Past");
     addPastStats(inv);
@@ -37,14 +35,11 @@ public class PlayerStatPast {
    *
    * @param inv interacting inventory
    */
-  private void addPastStats(Inventory inv) {
-    ArrayList<PlayerStatMessage> messages = AethelPlugin.getInstance().
-        getResources().getPlayerStatData().getPastStatMessages();
-
+  private static void addPastStats(Inventory inv) {
     int index = 0;
-    ItemCreator itemCreator = new ItemCreator();
-    for (PlayerStatMessage message : messages) {
-      inv.setItem(index, itemCreator.createItem(Material.PAPER, message.getStatName(), message.getStats()));
+    for (PlayerStatMessage message : AethelPlugin.getInstance().
+        getResources().getPlayerStatData().getPastStatMessages()) {
+      inv.setItem(index, ItemCreator.createItem(Material.PAPER, message.getStatName(), message.getStats()));
       index++;
     }
   }

@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.inventories.aethelItem;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.data.AethelItemData;
 import me.dannynguyen.aethel.inventories.PageCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,27 +18,10 @@ import java.util.List;
  * supports pagination for getting, creating, modifying, and deleting items.
  *
  * @author Danny Nguyen
- * @version 1.4.2
+ * @version 1.4.12
  * @since 1.4.0
  */
 public class AethelItemMain {
-  /**
-   * Creates and names an AethelItemMain inventory.
-   *
-   * @param player interacting player
-   * @param action type of interaction
-   * @return AethelItemMain inventory
-   */
-  private Inventory createInventory(Player player, String action) {
-    String title = ChatColor.DARK_GRAY + "Aethel Item";
-    switch (action) {
-      case "get" -> title += ChatColor.GREEN + " Get";
-      case "delete" -> title += ChatColor.RED + " Delete";
-    }
-    Inventory inv = Bukkit.createInventory(player, 54, title);
-    return inv;
-  }
-
   /**
    * Loads an item page from memory.
    *
@@ -47,34 +30,45 @@ public class AethelItemMain {
    * @param pageRequest page to view
    * @return AethelMain inventory with items
    */
-  public Inventory openItemPage(Player player, String action, int pageRequest) {
-    Inventory inv = new AethelItemMain().createInventory(player, action);
+  public static Inventory openItemPage(Player player, String action, int pageRequest) {
+    AethelItemData itemData = AethelPlugin.getInstance().getResources().getAethelItemData();
 
-    AethelResources resources = AethelPlugin.getInstance().getResources();
-
-    int numberOfPages = resources.getAethelItemData().getNumberOfPages();
-    int pageViewed;
-    if (numberOfPages != 0) {
-      pageViewed = new PageCalculator().calculatePageViewed(pageRequest, numberOfPages);
-      inv.setContents(resources.getAethelItemData().getItemPages().get(pageViewed).getContents());
-      addPaginationButtons(inv, pageViewed, numberOfPages);
-    } else {
-      pageViewed = 0;
-    }
-
-    addEditorHelp(inv);
-    addActionButton(inv, action);
-
+    int numberOfPages = itemData.getNumberOfPages();
+    int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+
+    Inventory inv = createInventory(player, action);
+    if (numberOfPages > 0) {
+      inv.setContents(itemData.getItemPages().get(pageViewed).getContents());
+      addPageButtons(inv, numberOfPages, pageViewed);
+    }
+    addItemContext(inv);
+    addActionButton(inv, action);
     return inv;
   }
 
   /**
-   * Adds a help context to the editor.
+   * Creates and names an AethelItemMain inventory with its action.
+   *
+   * @param player interacting player
+   * @param action type of interaction
+   * @return AethelItemMain inventory
+   */
+  private static Inventory createInventory(Player player, String action) {
+    String title = ChatColor.DARK_GRAY + "Aethel Item";
+    switch (action) {
+      case "get" -> title += ChatColor.GREEN + " Get";
+      case "delete" -> title += ChatColor.RED + " Delete";
+    }
+    return Bukkit.createInventory(player, 54, title);
+  }
+
+  /**
+   * Adds a help context to the AethelItem inventory.
    *
    * @param inv interacting inventory
    */
-  private void addEditorHelp(Inventory inv) {
+  private static void addItemContext(Inventory inv) {
     List<String> helpLore = Arrays.asList(
         ChatColor.WHITE + "Place an item to",
         ChatColor.WHITE + "the right of this",
@@ -88,7 +82,7 @@ public class AethelItemMain {
         ChatColor.WHITE + "get the item and save",
         ChatColor.WHITE + "it before reloading.");
 
-    inv.setItem(2, new ItemCreator().createPlayerHead("White Question Mark",
+    inv.setItem(2, ItemCreator.createPlayerHead("White Question Mark",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -96,16 +90,16 @@ public class AethelItemMain {
    * Adds previous and next page buttons based on the page number.
    *
    * @param inv           interacting inventory
+   * @param numberOfPages number of pages
    * @param pageViewed    page viewed
-   * @param numberOfPages number of recipe pages
    */
-  private void addPaginationButtons(Inventory inv, int pageViewed, int numberOfPages) {
+  private static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
     if (pageViewed > 0) {
-      inv.setItem(0, new ItemCreator().
+      inv.setItem(0, ItemCreator.
           createPlayerHead("Red Backward", ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, new ItemCreator().
+      inv.setItem(8, ItemCreator.
           createPlayerHead("Lime Forward", ChatColor.AQUA + "Next Page"));
     }
   }
@@ -116,20 +110,18 @@ public class AethelItemMain {
    * @param inv    interacting inventory
    * @param action type of interaction
    */
-  private void addActionButton(Inventory inv, String action) {
+  private static void addActionButton(Inventory inv, String action) {
     switch (action) {
       case "get" -> {
-        ItemCreator itemCreator = new ItemCreator();
-        inv.setItem(4, itemCreator.
+        inv.setItem(4, ItemCreator.
             createPlayerHead("Crafting Table", ChatColor.AQUA + "Save"));
-        inv.setItem(5, itemCreator.
+        inv.setItem(5, ItemCreator.
             createPlayerHead("Trash Can", ChatColor.AQUA + "Delete"));
       }
       case "delete" -> {
-        ItemCreator itemCreator = new ItemCreator();
-        inv.setItem(4, itemCreator.
+        inv.setItem(4, ItemCreator.
             createPlayerHead("Crafting Table", ChatColor.AQUA + "Save"));
-        inv.setItem(5, itemCreator.
+        inv.setItem(5, ItemCreator.
             createPlayerHead("Brown Backpack", ChatColor.AQUA + "Get"));
       }
     }

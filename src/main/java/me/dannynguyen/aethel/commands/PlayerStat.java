@@ -3,7 +3,9 @@ package me.dannynguyen.aethel.commands;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.playerstat.PlayerStatMain;
 import me.dannynguyen.aethel.inventories.playerstat.PlayerStatPast;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +16,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStat is a command invocation that retrieves a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.11
+ * @version 1.4.12
  * @since 1.4.7
  */
 public class PlayerStat implements CommandExecutor {
@@ -30,8 +32,8 @@ public class PlayerStat implements CommandExecutor {
   }
 
   /**
-   * Checks if the PlayerStat command request was formatted
-   * correctly before opening a player's PlayerStat inventory.
+   * Checks if the command request was formatted correctly
+   * before opening a player's PlayerStatMain inventory.
    *
    * @param player interacting player
    * @param args   player provided parameters
@@ -52,7 +54,7 @@ public class PlayerStat implements CommandExecutor {
    */
   private void interpretParameter(Player player, String parameter) {
     if (parameter.equals("past")) {
-      player.openInventory(new PlayerStatPast().createInventory(player));
+      player.openInventory(PlayerStatPast.createInventory(player));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-past"));
     } else {
@@ -66,11 +68,13 @@ public class PlayerStat implements CommandExecutor {
    * @param player interacting player
    */
   private void openPlayerStatSelf(Player player) {
-    player.openInventory(new PlayerStatMain().openPlayerStatMainPage(player, player.getName()));
-    player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
+    player.setMetadata("stat-owner",
+        new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
     player.setMetadata("stat-category",
         new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
+    player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, player.getName()));
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
   }
 
   /**
@@ -80,10 +84,17 @@ public class PlayerStat implements CommandExecutor {
    * @param requestedPlayerName requested player's name
    */
   private void openPlayerStatOther(Player player, String requestedPlayerName) {
-    player.openInventory(new PlayerStatMain().openPlayerStatMainPage(player, requestedPlayerName));
-    player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
-    player.setMetadata("stat-category",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
+    OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(requestedPlayerName);
+    if (requestedPlayer.hasPlayedBefore()) {
+      player.setMetadata("stat-owner",
+          new FixedMetadataValue(AethelPlugin.getInstance(), requestedPlayer.getName()));
+      player.setMetadata("stat-category",
+          new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
+      player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, requestedPlayer.getName()));
+      player.setMetadata("inventory",
+          new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
+    } else {
+      player.sendMessage(ChatColor.RED + requestedPlayerName + " has never played on this server.");
+    }
   }
 }

@@ -17,7 +17,7 @@ import java.util.List;
  * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.4.2
+ * @version 1.4.12
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -28,7 +28,7 @@ public class ItemCreator {
    * @param displayName item name
    * @return named item
    */
-  public ItemStack createItem(Material material, String displayName) {
+  public static ItemStack createItem(Material material, String displayName) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(displayName);
@@ -44,7 +44,7 @@ public class ItemCreator {
    * @param lore        item lore
    * @return named item with lore
    */
-  public ItemStack createItem(Material material, String displayName, List<String> lore) {
+  public static ItemStack createItem(Material material, String displayName, List<String> lore) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(displayName);
@@ -60,7 +60,7 @@ public class ItemCreator {
    * @param displayName item name
    * @return named custom player head
    */
-  public ItemStack createPlayerHead(String headName, String displayName) {
+  public static ItemStack createPlayerHead(String headName, String displayName) {
     ItemStack item = AethelPlugin.getInstance().getResources().getPlayerHeadData().getHeadsMap().get(headName);
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
@@ -80,7 +80,7 @@ public class ItemCreator {
    * @param lore        item lore
    * @return named custom player head with lore
    */
-  public ItemStack createPlayerHead(String headName, String displayName, List<String> lore) {
+  public static ItemStack createPlayerHead(String headName, String displayName, List<String> lore) {
     ItemStack item = AethelPlugin.getInstance().getResources().getPlayerHeadData().getHeadsMap().get(headName);
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
@@ -100,7 +100,7 @@ public class ItemCreator {
    * @return encoded item string
    * @throws IOException item could not be encoded
    */
-  public String encodeItem(ItemStack item) {
+  public static String encodeItem(ItemStack item) {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);

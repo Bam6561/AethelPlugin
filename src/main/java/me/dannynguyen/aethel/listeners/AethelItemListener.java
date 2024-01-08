@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemListener is an inventory listener for the AethelItem command.
  *
  * @author Danny Nguyen
- * @version 1.4.4
+ * @version 1.4.12
  * @since 1.4.0
  */
 public class AethelItemListener {
@@ -29,7 +29,7 @@ public class AethelItemListener {
    * @param e      inventory click event
    * @param action type of interaction
    */
-  public void readAethelItemMainClick(InventoryClickEvent e, String action) {
+  public static void readAethelItemMainClick(InventoryClickEvent e, String action) {
     Inventory clickedInv = e.getClickedInventory();
     if (clickedInv == null || !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
@@ -54,7 +54,7 @@ public class AethelItemListener {
    * @param e      inventory click event
    * @param action type of interaction
    */
-  private void interpretAethelItemMainClick(InventoryClickEvent e, String action) {
+  private static void interpretAethelItemMainClick(InventoryClickEvent e, String action) {
     Player player = (Player) e.getWhoClicked();
     int slotClicked = e.getSlot();
 
@@ -62,7 +62,7 @@ public class AethelItemListener {
       case 0 -> previousItemPage(player, action);
       case 2 -> { // Help Context
       }
-      case 4 -> new AethelItemCreate().readSaveClick(e, player);
+      case 4 -> AethelItemCreate.readSaveClick(e, player);
       case 5 -> toggleGetDeleteAction(player, action);
       case 8 -> nextItemPage(player, action);
       default -> interpretContextualClick(e, action, player);
@@ -77,9 +77,9 @@ public class AethelItemListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  private void previousItemPage(Player player, String action) {
+  private static void previousItemPage(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(new AethelItemMain().openItemPage(player, action, pageRequest - 1));
+    player.openInventory(AethelItemMain.openItemPage(player, action, pageRequest - 1));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-" + action));
   }
@@ -90,15 +90,15 @@ public class AethelItemListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  private void toggleGetDeleteAction(Player player, String action) {
+  private static void toggleGetDeleteAction(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
     if (action.equals("get")) {
-      player.openInventory(new AethelItemMain().openItemPage(player, "delete", pageRequest));
+      player.openInventory(AethelItemMain.openItemPage(player, "delete", pageRequest));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-delete"));
     } else {
-      player.openInventory(new AethelItemMain().openItemPage(player, "get", pageRequest));
+      player.openInventory(AethelItemMain.openItemPage(player, "get", pageRequest));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
     }
@@ -110,9 +110,9 @@ public class AethelItemListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  private void nextItemPage(Player player, String action) {
+  private static void nextItemPage(Player player, String action) {
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(new AethelItemMain().openItemPage(player, action, pageRequest + 1));
+    player.openInventory(AethelItemMain.openItemPage(player, action, pageRequest + 1));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-" + action));
   }
@@ -124,10 +124,10 @@ public class AethelItemListener {
    * @param action interacting action
    * @param player interacting player
    */
-  private void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
+  private static void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
-      case "get" -> new AethelItemGet().getItem(e, player);
-      case "delete" -> new AethelItemDelete().deleteItem(e, player);
+      case "get" -> AethelItemGet.getItem(e, player);
+      case "delete" -> AethelItemDelete.deleteItem(e, player);
     }
   }
 }

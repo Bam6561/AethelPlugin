@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
  * AethelItemDelete is an inventory under the AethelItem command that deletes items.
  *
  * @author Danny Nguyen
- * @version 1.4.3
+ * @version 1.4.12
  * @since 1.4.0
  */
 public class AethelItemDelete {
@@ -23,11 +23,11 @@ public class AethelItemDelete {
    * @param player interacting player
    * @throws NullPointerException invalid item
    */
-  public void deleteItem(InventoryClickEvent e, Player player) {
+  public static void deleteItem(InventoryClickEvent e, Player player) {
     try {
       AethelResources resources = AethelPlugin.getInstance().getResources();
       AethelItem aethelItem = resources.getAethelItemData().getItemsMap().
-          get(new ItemReader().readItemName(e.getCurrentItem()));
+          get(ItemReader.readItemName(e.getCurrentItem()));
 
       aethelItem.getFile().delete();
       player.sendMessage(ChatColor.RED + "[Deleted] " + ChatColor.WHITE +

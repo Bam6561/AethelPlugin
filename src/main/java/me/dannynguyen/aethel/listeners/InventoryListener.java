@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory listener.
  *
  * @author Danny Nguyen
- * @version 1.4.11
+ * @version 1.4.12
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -26,17 +26,17 @@ public class InventoryListener implements Listener {
     if (player.hasMetadata("inventory")) {
       String inventory = player.getMetadata("inventory").get(0).asString();
       switch (inventory) {
-        case "aethelitem-get" -> new AethelItemListener().readAethelItemMainClick(e, "get");
-        case "aethelitem-delete" -> new AethelItemListener().readAethelItemMainClick(e, "delete");
-        case "forge-craft" -> new ForgeListener().interpretForgeMainClick(e, "craft");
-        case "forge-craft-confirm" -> new ForgeListener().interpretForgeCraftConfirmClick(e, player);
-        case "forge-create" -> new ForgeListener().interpretForgeCreateClick(e, player);
-        case "forge-modify" -> new ForgeListener().interpretForgeMainClick(e, "modify");
-        case "forge-delete" -> new ForgeListener().interpretForgeMainClick(e, "delete");
-        case "playerstat-category" -> new PlayerStatListener().readPlayerStatCategoryClick(e, player);
+        case "aethelitem-get" -> AethelItemListener.readAethelItemMainClick(e, "get");
+        case "aethelitem-delete" -> AethelItemListener.readAethelItemMainClick(e, "delete");
+        case "forge-craft" -> ForgeListener.interpretForgeMainClick(e, "craft");
+        case "forge-craft-confirm" -> ForgeListener.interpretForgeCraftConfirmClick(e, player);
+        case "forge-create" -> ForgeListener.interpretForgeCreateClick(e, player);
+        case "forge-modify" -> ForgeListener.interpretForgeMainClick(e, "modify");
+        case "forge-delete" -> ForgeListener.interpretForgeMainClick(e, "delete");
+        case "playerstat-category" -> PlayerStatListener.readPlayerStatCategoryClick(e, player);
         case "playerstat-past", "showitem-past" -> e.setCancelled(true);
-        case "playerstat-substat" -> new PlayerStatListener().readPlayerStatSubstatClick(e, player);
-        case "playerstat-stat" -> new PlayerStatListener().readPlayerStatStatClick(e, player);
+        case "playerstat-substat" -> PlayerStatListener.readPlayerStatSubstatClick(e, player);
+        case "playerstat-stat" -> PlayerStatListener.readPlayerStatStatClick(e, player);
       }
     }
   }

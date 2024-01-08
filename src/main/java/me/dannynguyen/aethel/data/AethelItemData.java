@@ -16,7 +16,7 @@ import java.util.*;
  * AethelItem contains information about Aethel items stored in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.3
+ * @version 1.4.12
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -38,9 +38,9 @@ public class AethelItemData {
 
     File[] directory = new File(AethelPlugin.getInstance().getResources().getAethelItemDirectory()).listFiles();
     Collections.sort(Arrays.asList(directory));
-    for (int i = 0; i < directory.length; i++) {
-      if (directory[i].getName().endsWith("_itm.txt")) {
-        AethelItem item = readItemFile(directory[i]);
+    for (File file : directory) {
+      if (file.getName().endsWith("_itm.txt")) {
+        AethelItem item = readItemFile(file);
         items.add(item);
         itemsMap.put(item.getName(), item);
       }
@@ -58,8 +58,8 @@ public class AethelItemData {
   private AethelItem readItemFile(File file) {
     try {
       Scanner scanner = new Scanner(file);
-      ItemStack item = new ItemReader().decodeItem(scanner.nextLine());
-      return new AethelItem(file, new ItemReader().readItemName(item), item);
+      ItemStack item = ItemReader.decodeItem(scanner.nextLine());
+      return new AethelItem(file, ItemReader.readItemName(item), item);
     } catch (IOException ex) {
       return null;
     }
@@ -69,8 +69,11 @@ public class AethelItemData {
    * Creates pages of items.
    */
   private void createItemPages() {
-    int numberOfItems = getItems().size();
-    int numberOfPages = new PageCalculator().calculateNumberOfPages(numberOfItems);
+    ArrayList<AethelItem> items = getItems();
+    ArrayList<Inventory> itemPages = getItemPages();
+
+    int numberOfItems = items.size();
+    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfItems);
     setNumberOfPages(numberOfPages);
 
     int startIndex = 0;
@@ -81,13 +84,13 @@ public class AethelItemData {
       // i = item index
       // j = inventory slot index
 
-      // Items begin  on the second row
+      // Items begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        inv.setItem(j, getItems().get(i).getItem());
+        inv.setItem(j, items.get(i).getItem());
         j++;
       }
-      getItemPages().add(inv);
+      itemPages.add(inv);
 
       // Indices to use for the next page (if it exists)
       startIndex += 45;

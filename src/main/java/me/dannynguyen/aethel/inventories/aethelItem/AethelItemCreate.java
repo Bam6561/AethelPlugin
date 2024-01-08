@@ -15,7 +15,7 @@ import java.io.IOException;
  * AethelItemCreate creates Aethel Items.
  *
  * @author Danny Nguyen
- * @version 1.4.3
+ * @version 1.4.12
  * @since 1.4.0
  */
 public class AethelItemCreate {
@@ -25,10 +25,10 @@ public class AethelItemCreate {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public void readSaveClick(InventoryClickEvent e, Player player) {
+  public static void readSaveClick(InventoryClickEvent e, Player player) {
     ItemStack item = e.getClickedInventory().getItem(3);
     if (item != null) {
-      saveItemToFile(player, nameItemFile(item), new ItemCreator().encodeItem(item));
+      saveItemToFile(player, nameItemFile(item), ItemCreator.encodeItem(item));
     } else {
       player.sendMessage(ChatColor.RED + "No item to save.");
     }
@@ -40,7 +40,7 @@ public class AethelItemCreate {
    * @param item interacting item
    * @return item file name
    */
-  private String nameItemFile(ItemStack item) {
+  private static String nameItemFile(ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     if (meta.hasDisplayName()) {
       return meta.getDisplayName().toLowerCase().replace(" ", "_");
@@ -57,7 +57,7 @@ public class AethelItemCreate {
    * @param encodedItem encoded item string
    * @throws IOException file could not be created
    */
-  private void saveItemToFile(Player player, String itemName, String encodedItem) {
+  private static void saveItemToFile(Player player, String itemName, String encodedItem) {
     try {
       FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResources().getAethelItemDirectory()
           + "/" + itemName + "_itm.txt");

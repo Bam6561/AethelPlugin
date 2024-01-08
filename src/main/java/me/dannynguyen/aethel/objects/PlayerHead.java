@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.objects;
  * PlayerHead is an enum relating player head textures with their reference name.
  *
  * @author Danny Nguyen
- * @version 1.4.10
+ * @version 1.4.12
  * @since 1.2.1
  */
 public enum PlayerHead {
@@ -19,8 +19,8 @@ public enum PlayerHead {
   BROWN_BACKPACK("Brown Backpack", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODM1MWU1MDU5ODk4MzhlMjcyODdlN2FmYmM3Zjk3ZTc5NmNhYjVmMzU5OGE3NjE2MGMxMzFjOTQwZDBjNSJ9fX0="),
   CHISELED_BOOKSHELF("Chiseled Bookshelf", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk4ODQxOWRkNWIzODZmNjk4YTk2OTEzZGIxZDk3YzI0MThlMTZkNDE2ZDdmNDM5ZDQ4YWNkNDFlM2E0MzZjZSJ9fX0=");
 
-  private String name;
-  private String textureData;
+  private final String name;
+  private final String textureData;
 
   PlayerHead(String name, String textureData) {
     this.name = name;

@@ -8,13 +8,13 @@ import java.io.File;
  * AethelItem is an object relating a custom item with its file in storage.
  *
  * @author Danny Nguyen
- * @version 1.3.2
+ * @version 1.4.12
  * @since 1.3.2
  */
 public class AethelItem {
-  private File file;
-  private String name;
-  private ItemStack item;
+  private final File file;
+  private final String name;
+  private final ItemStack item;
 
   public AethelItem(File file, String name, ItemStack item) {
     this.file = file;

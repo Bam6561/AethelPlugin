@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.inventories;
  * PageCalculator is a supporting object for double chest sized inventories with pagination.
  *
  * @author Danny Nguyen
- * @version 1.4.2
+ * @version 1.4.12
  * @since 1.4.2
  */
 public class PageCalculator {
@@ -14,7 +14,7 @@ public class PageCalculator {
    * @param numberOfItems number of items
    * @return number of pages
    */
-  public int calculateNumberOfPages(int numberOfItems) {
+  public static int calculateNumberOfPages(int numberOfItems) {
     int numberOfPages = numberOfItems / 45;
     boolean partiallyFilledPage = (numberOfItems % 45) > 0;
     if (partiallyFilledPage) numberOfPages += 1;
@@ -24,18 +24,21 @@ public class PageCalculator {
   /**
    * Determines which page is viewed.
    *
-   * @param pageRequest   page to view
    * @param numberOfPages number of pages
+   * @param pageRequest   page to view
    * @return interpreted page to view
    */
-  public int calculatePageViewed(int pageRequest, int numberOfPages) {
-    boolean requestMoreThanTotalPages = pageRequest >= numberOfPages;
-    boolean requestNegativePageNumber = pageRequest < 0;
-    if (requestMoreThanTotalPages) {
-      pageRequest = numberOfPages - 1;
-    } else if (requestNegativePageNumber) {
-      pageRequest = 0;
+  public static int calculatePageViewed(int numberOfPages, int pageRequest) {
+    if (numberOfPages > 0) {
+      boolean requestMoreThanTotalPages = pageRequest >= numberOfPages;
+      boolean requestNegativePageNumber = pageRequest < 0;
+      if (requestMoreThanTotalPages) {
+        pageRequest = numberOfPages - 1;
+      } else if (requestNegativePageNumber) {
+        pageRequest = 0;
+      }
+      return pageRequest;
     }
-    return pageRequest;
+    return 0;
   }
 }

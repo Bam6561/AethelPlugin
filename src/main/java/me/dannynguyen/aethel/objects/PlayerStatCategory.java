@@ -6,12 +6,12 @@ import java.util.ArrayList;
  * PlayerStatCategory is an object relating statistics with their category.
  *
  * @author Danny Nguyen
- * @version 1.4.9
+ * @version 1.4.12
  * @since 1.4.9
  */
 public class PlayerStatCategory {
-  private String name;
-  private ArrayList<String> stats;
+  private final String name;
+  private final ArrayList<String> stats;
 
   public PlayerStatCategory(String name, ArrayList<String> stats) {
     this.name = name;

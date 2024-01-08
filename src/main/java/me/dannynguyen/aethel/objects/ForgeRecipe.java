@@ -9,14 +9,14 @@ import java.util.ArrayList;
  * ForgeRecipe is an object relating forge recipe results with their components.
  *
  * @author Danny Nguyen
- * @version 1.1.5
+ * @version 1.4.12
  * @since 1.0.3
  */
 public class ForgeRecipe {
-  private File file;
-  private String name;
-  private ArrayList<ItemStack> results;
-  private ArrayList<ItemStack> components;
+  private final File file;
+  private final String name;
+  private final ArrayList<ItemStack> results;
+  private final ArrayList<ItemStack> components;
 
   public ForgeRecipe(File recipeFile, String recipeName, ArrayList<ItemStack> results, ArrayList<ItemStack> components) {
     this.file = recipeFile;

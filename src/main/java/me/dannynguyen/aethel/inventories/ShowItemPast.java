@@ -7,13 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-
 /**
  * ShowItemPast is an inventory under the Show command that shows past shared items.
  *
  * @author Danny Nguyen
- * @version 1.4.6
+ * @version 1.4.12
  * @since 1.4.5
  */
 public class ShowItemPast {
@@ -23,7 +21,7 @@ public class ShowItemPast {
    * @param player interacting player
    * @return ShowItemPast inventory
    */
-  public Inventory createInventory(Player player) {
+  public static Inventory createInventory(Player player) {
     Inventory inv = Bukkit.createInventory(player, 9,
         ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
     addPastShownItems(inv);
@@ -35,10 +33,9 @@ public class ShowItemPast {
    *
    * @param inv interacting inventory
    */
-  private void addPastShownItems(Inventory inv) {
-    ArrayList<ItemStack> items = AethelPlugin.getInstance().getResources().getShowItemData().getPastItems();
+  private static void addPastShownItems(Inventory inv) {
     int index = 0;
-    for (ItemStack item : items) {
+    for (ItemStack item : AethelPlugin.getInstance().getResources().getShowItemData().getPastItems()) {
       inv.setItem(index, item);
       index++;
     }
