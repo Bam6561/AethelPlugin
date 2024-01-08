@@ -11,12 +11,10 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
-  private AethelResources resources = new AethelResources();
-
   /**
    * On startup:
    * - Reads existing plugin-related data.
@@ -42,31 +40,25 @@ public class AethelPlugin extends JavaPlugin {
    * Reads existing plugin-related data. Creates data directories if they do not already exist.
    */
   private void readResourceFiles() {
-    AethelResources resources = getResources();
-
-    File resourceDirectory = new File(resources.getResourceDirectory());
+    File resourceDirectory = new File(AethelResources.resourceDirectory);
     if (!resourceDirectory.exists()) resourceDirectory.mkdir();
 
-    File forgeRecipeDirectory = new File(resources.getForgeRecipeDirectory());
+    File forgeRecipeDirectory = new File(AethelResources.forgeRecipeDirectory);
     if (forgeRecipeDirectory.exists()) {
-      resources.getForgeRecipeData().loadRecipes();
+      AethelResources.forgeRecipeData.loadRecipes();
     } else {
       forgeRecipeDirectory.mkdir();
     }
 
-    File aethelItemDirectory = new File(resources.getAethelItemDirectory());
+    File aethelItemDirectory = new File(AethelResources.aethelItemDirectory);
     if (aethelItemDirectory.exists()) {
-      resources.getAethelItemData().loadItems();
+      AethelResources.aethelItemData.loadItems();
     } else {
       aethelItemDirectory.mkdir();
     }
 
-    resources.getPlayerHeadData().loadPlayerHeads();
-    resources.getPlayerStatData().loadStats();
-  }
-
-  public AethelResources getResources() {
-    return this.resources;
+    AethelResources.playerHeadData.loadPlayerHeads();
+    AethelResources.playerStatData.loadStats();
   }
 
   public static AethelPlugin getInstance() {

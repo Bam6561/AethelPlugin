@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.forge;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +19,7 @@ import java.util.List;
  * ForgeCreate is an inventory under the Forge command that creates forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.0.5
  */
 public class ForgeCreate {
@@ -35,9 +35,9 @@ public class ForgeCreate {
 
     addCreateHelp(inv);
     inv.setItem(25, ItemCreator.
-        createPlayerHead("Stack of Paper", ChatColor.AQUA + "Save"));
+        createPlayerHead("STACK_OF_PAPER", ChatColor.AQUA + "Save"));
     inv.setItem(26, ItemCreator.
-        createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
+        createPlayerHead("GRAY_BACKWARD", ChatColor.AQUA + "Back"));
     return inv;
   }
 
@@ -52,7 +52,7 @@ public class ForgeCreate {
         ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
         ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
         ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
-    inv.setItem(8, ItemCreator.createPlayerHead("White Question Mark",
+    inv.setItem(8, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -139,7 +139,7 @@ public class ForgeCreate {
    */
   private static void saveRecipeToFile(Player player, String itemName, String encodedItem) {
     try {
-      FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResources().getForgeRecipeDirectory()
+      FileWriter fw = new FileWriter(AethelResources.forgeRecipeDirectory
           + "/" + itemName + "_rcp.txt");
       fw.write(encodedItem);
       fw.close();

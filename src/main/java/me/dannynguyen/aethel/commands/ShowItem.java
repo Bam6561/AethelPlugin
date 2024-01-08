@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.ShowItemPast;
 import me.dannynguyen.aethel.readers.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -25,7 +26,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -65,7 +66,7 @@ public class ShowItem implements CommandExecutor {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.spigot().sendMessage(createShowItemTextComponent(player, item));
       }
-      AethelPlugin.getInstance().getResources().getShowItemData().addPastItem(item);
+      AethelResources.showItemData.addPastItem(item);
     } else {
       player.sendMessage(ChatColor.RED + "No main hand item.");
     }

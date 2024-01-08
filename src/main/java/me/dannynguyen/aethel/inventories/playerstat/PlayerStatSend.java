@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.playerstat;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -15,7 +15,7 @@ import java.util.Collections;
  * and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.10
  */
 public class PlayerStatSend {
@@ -41,8 +41,7 @@ public class PlayerStatSend {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " + statNameString + " " + statValueString);
       }
-      AethelPlugin.getInstance().getResources().getPlayerStatData().
-          addToPastStats(statNameString, Collections.singletonList(statValueString));
+      AethelResources.playerStatData.addToPastStats(statNameString, Collections.singletonList(statValueString));
     }
   }
 
@@ -111,8 +110,7 @@ public class PlayerStatSend {
         }
       }
     }
-    AethelPlugin.getInstance().getResources().getPlayerStatData().
-        addToPastStats(statName, statValues);
+    AethelResources.playerStatData.addToPastStats(statName, statValues);
   }
 
   /**

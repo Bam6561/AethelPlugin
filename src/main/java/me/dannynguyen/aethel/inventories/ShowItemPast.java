@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
  * ShowItemPast is an inventory under the Show command that shows past shared items.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.5
  */
 public class ShowItemPast {
@@ -35,7 +35,7 @@ public class ShowItemPast {
    */
   private static void addPastShownItems(Inventory inv) {
     int index = 0;
-    for (ItemStack item : AethelPlugin.getInstance().getResources().getShowItemData().getPastItems()) {
+    for (ItemStack item : AethelResources.showItemData.getPastItems()) {
       inv.setItem(index, item);
       index++;
     }

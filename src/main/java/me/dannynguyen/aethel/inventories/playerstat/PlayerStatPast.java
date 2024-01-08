@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.playerstat;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.PlayerStatMessage;
 import org.bukkit.Bukkit;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
  * ShowItemPast is an inventory under the PlayerStat command that shows past shared statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.10
  */
 public class PlayerStatPast {
@@ -37,8 +37,7 @@ public class PlayerStatPast {
    */
   private static void addPastStats(Inventory inv) {
     int index = 0;
-    for (PlayerStatMessage message : AethelPlugin.getInstance().
-        getResources().getPlayerStatData().getPastStatMessages()) {
+    for (PlayerStatMessage message : AethelResources.playerStatData.getPastStatMessages()) {
       inv.setItem(index, ItemCreator.createItem(Material.PAPER, message.getStatName(), message.getStats()));
       index++;
     }

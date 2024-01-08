@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.forge.ForgeMain;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -63,7 +64,7 @@ public class Forge implements CommandExecutor {
     switch (action) {
       case "edit" -> openForgeModifyInventory(player);
       case "reload", "rl" -> {
-        AethelPlugin.getInstance().getResources().getForgeRecipeData().loadRecipes();
+        AethelResources.forgeRecipeData.loadRecipes();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
       }
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameter.");

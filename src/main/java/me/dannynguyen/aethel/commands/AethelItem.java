@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.3.2
  */
 public class AethelItem implements CommandExecutor {
@@ -62,7 +63,7 @@ public class AethelItem implements CommandExecutor {
   private void readParameter(Player player, String action) {
     switch (action) {
       case "reload", "rl" -> {
-        AethelPlugin.getInstance().getResources().getAethelItemData().loadItems();
+        AethelResources.aethelItemData.loadItems();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Aethel Items");
       }
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameter.");

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.data;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.PageCalculator;
 import me.dannynguyen.aethel.objects.AethelItem;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -16,7 +16,7 @@ import java.util.*;
  * AethelItem contains information about Aethel items stored in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -36,7 +36,7 @@ public class AethelItemData {
     itemsMap.clear();
     getItemPages().clear();
 
-    File[] directory = new File(AethelPlugin.getInstance().getResources().getAethelItemDirectory()).listFiles();
+    File[] directory = new File(AethelResources.aethelItemDirectory).listFiles();
     Collections.sort(Arrays.asList(directory));
     for (File file : directory) {
       if (file.getName().endsWith("_itm.txt")) {

@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.inventories.aethelItem;
 
-import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.entity.Player;
@@ -11,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
  * AethelItemGet gives items upon click.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.0
  */
 public class AethelItemGet {
@@ -24,8 +23,7 @@ public class AethelItemGet {
    */
   public static void getItem(InventoryClickEvent e, Player player) {
     try {
-      AethelResources resources = AethelPlugin.getInstance().getResources();
-      ItemStack item = resources.getAethelItemData().getItemsMap().
+      ItemStack item = AethelResources.aethelItemData.getItemsMap().
           get(ItemReader.readItemName(e.getCurrentItem())).getItem();
 
       if (player.getInventory().firstEmpty() != -1) {

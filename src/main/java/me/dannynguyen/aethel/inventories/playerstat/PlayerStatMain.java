@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.playerstat;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.PlayerStatData;
 import me.dannynguyen.aethel.inventories.PageCalculator;
@@ -22,7 +23,7 @@ import java.util.List;
  * command that contains all of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.7
  */
 public class PlayerStatMain {
@@ -60,8 +61,7 @@ public class PlayerStatMain {
    */
   private static void addStatCategories(Inventory inv) {
     int i = 9;
-    for (String statCategory : AethelPlugin.getInstance().getResources().
-        getPlayerStatData().getStatCategoryNames()) {
+    for (String statCategory : AethelResources.playerStatData.getStatCategoryNames()) {
       inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + statCategory));
       i++;
     }
@@ -78,7 +78,7 @@ public class PlayerStatMain {
    */
   public static Inventory openPlayerStatCategoryPage(Player player, String requestedPlayerName,
                                                      String categoryName, int pageRequest) {
-    PlayerStatData playerStatData = AethelPlugin.getInstance().getResources().getPlayerStatData();
+    PlayerStatData playerStatData = AethelResources.playerStatData;
 
     Inventory inv = createInventory(player, requestedPlayerName);
     switch (categoryName) {
@@ -145,7 +145,7 @@ public class PlayerStatMain {
           ChatColor.WHITE + "stat to share it.");
     }
 
-    inv.setItem(3, ItemCreator.createPlayerHead("White Question Mark",
+    inv.setItem(3, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -160,8 +160,8 @@ public class PlayerStatMain {
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
     String statOwner = player.getMetadata("stat-owner").get(0).asString();
-    OfflinePlayer requestedPlayer = Bukkit.getPlayer(statOwner);
-    
+    OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
+
     meta.setOwningPlayer(requestedPlayer);
     meta.setDisplayName(ChatColor.DARK_PURPLE + statOwner);
     item.setItemMeta(meta);
@@ -175,7 +175,7 @@ public class PlayerStatMain {
    * @param inv interacting inventory
    */
   private static void addBackButton(Inventory inv) {
-    inv.setItem(5, ItemCreator.createPlayerHead("Chiseled Bookshelf",
+    inv.setItem(5, ItemCreator.createPlayerHead("CHISELED_BOOKSHELF",
         ChatColor.AQUA + "Back"));
   }
 
@@ -189,11 +189,11 @@ public class PlayerStatMain {
   private static void addPageButtons(Inventory inv, int pageViewed, int numberOfPages) {
     if (pageViewed > 0) {
       inv.setItem(0, ItemCreator.
-          createPlayerHead("Red Backward", ChatColor.AQUA + "Previous Page"));
+          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
       inv.setItem(8, ItemCreator.
-          createPlayerHead("Lime Forward", ChatColor.AQUA + "Next Page"));
+          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
     }
   }
 }

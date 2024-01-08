@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.ForgeRecipeData;
 import me.dannynguyen.aethel.inventories.PageCalculator;
@@ -18,7 +19,7 @@ import java.util.List;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -31,7 +32,7 @@ public class ForgeMain {
    * @return ForgeMain inventory with recipes
    */
   public static Inventory openRecipePage(Player player, String action, int pageRequest) {
-    ForgeRecipeData recipeData = AethelPlugin.getInstance().getResources().getForgeRecipeData();
+    ForgeRecipeData recipeData = AethelResources.forgeRecipeData;
 
     int numberOfPages = recipeData.getNumberOfPages();
     int pageViewed = PageCalculator.calculatePageViewed(pageRequest, numberOfPages);
@@ -88,7 +89,7 @@ public class ForgeMain {
         ChatColor.WHITE + "by material unless",
         ChatColor.WHITE + "they're unique items!");
 
-    inv.setItem(4, ItemCreator.createPlayerHead("White Question Mark",
+    inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -103,7 +104,7 @@ public class ForgeMain {
         ChatColor.WHITE + "modify the item and",
         ChatColor.WHITE + "save it before reloading.");
 
-    inv.setItem(2, ItemCreator.createPlayerHead("White Question Mark",
+    inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -117,11 +118,11 @@ public class ForgeMain {
   private static void addPageButtons(Inventory inv, int pageViewed, int numberOfPages) {
     if (pageViewed > 0) {
       inv.setItem(0, ItemCreator.
-          createPlayerHead("Red Backward", ChatColor.AQUA + "Previous Page"));
+          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
       inv.setItem(8, ItemCreator.
-          createPlayerHead("Lime Forward", ChatColor.AQUA + "Next Page"));
+          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
     }
   }
 
@@ -132,9 +133,9 @@ public class ForgeMain {
    */
   private static void addModifyActionButtons(Inventory inv) {
     inv.setItem(3, ItemCreator.
-        createPlayerHead("Crafting Table", ChatColor.AQUA + "Create"));
+        createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
     inv.setItem(5, ItemCreator.
-        createPlayerHead("Trash Can", ChatColor.AQUA + "Delete"));
+        createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Delete"));
   }
 
 
@@ -145,8 +146,8 @@ public class ForgeMain {
    */
   private static void addDeleteActionButtons(Inventory inv) {
     inv.setItem(3, ItemCreator.
-        createPlayerHead("Crafting Table", ChatColor.AQUA + "Create"));
+        createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
     inv.setItem(4, ItemCreator.
-        createPlayerHead("File Explorer", ChatColor.AQUA + "Modify"));
+        createPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Modify"));
   }
 }

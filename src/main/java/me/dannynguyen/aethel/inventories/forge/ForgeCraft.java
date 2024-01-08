@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.objects.InventorySlot;
@@ -26,7 +27,7 @@ import java.util.List;
  * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -44,9 +45,9 @@ public class ForgeCraft {
 
     addCraftContext(inv);
     inv.setItem(25, ItemCreator.
-        createPlayerHead("Crafting Table", ChatColor.AQUA + "Craft"));
+        createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Craft"));
     inv.setItem(26, ItemCreator.
-        createPlayerHead("Gray Backward", ChatColor.AQUA + "Back"));
+        createPlayerHead("GRAY_BACKWARD", ChatColor.AQUA + "Back"));
     return inv;
   }
 
@@ -61,7 +62,7 @@ public class ForgeCraft {
         ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
         ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
         ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
-    inv.setItem(8, ItemCreator.createPlayerHead("White Question Mark",
+    inv.setItem(8, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -72,7 +73,7 @@ public class ForgeCraft {
    * @param player interacting player
    */
   public static void expandRecipeDetails(InventoryClickEvent e, Player player) {
-    ForgeRecipe recipe = AethelPlugin.getInstance().getResources().getForgeRecipeData().
+    ForgeRecipe recipe = AethelResources.forgeRecipeData.
         getRecipesMap().get(ItemReader.readItemName(e.getCurrentItem()));
 
     Inventory inv = createInventory(player);
@@ -108,7 +109,7 @@ public class ForgeCraft {
    * @param player interacting player
    */
   public void craftRecipe(InventoryClickEvent e, Player player) {
-    ForgeRecipe recipe = AethelPlugin.getInstance().getResources().getForgeRecipeData().
+    ForgeRecipe recipe = AethelResources.forgeRecipeData.
         getRecipesMap().get(ItemReader.readItemName(e.getClickedInventory().getItem(0)));
 
     ArrayList<ItemStack> results = recipe.getResults();

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.aethelItem;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.AethelItemData;
 import me.dannynguyen.aethel.inventories.PageCalculator;
@@ -18,7 +19,7 @@ import java.util.List;
  * supports pagination for getting, creating, modifying, and deleting items.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.0
  */
 public class AethelItemMain {
@@ -31,7 +32,7 @@ public class AethelItemMain {
    * @return AethelMain inventory with items
    */
   public static Inventory openItemPage(Player player, String action, int pageRequest) {
-    AethelItemData itemData = AethelPlugin.getInstance().getResources().getAethelItemData();
+    AethelItemData itemData = AethelResources.aethelItemData;
 
     int numberOfPages = itemData.getNumberOfPages();
     int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
@@ -82,7 +83,7 @@ public class AethelItemMain {
         ChatColor.WHITE + "get the item and save",
         ChatColor.WHITE + "it before reloading.");
 
-    inv.setItem(2, ItemCreator.createPlayerHead("White Question Mark",
+    inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -96,11 +97,11 @@ public class AethelItemMain {
   private static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
     if (pageViewed > 0) {
       inv.setItem(0, ItemCreator.
-          createPlayerHead("Red Backward", ChatColor.AQUA + "Previous Page"));
+          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
       inv.setItem(8, ItemCreator.
-          createPlayerHead("Lime Forward", ChatColor.AQUA + "Next Page"));
+          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
     }
   }
 
@@ -114,15 +115,15 @@ public class AethelItemMain {
     switch (action) {
       case "get" -> {
         inv.setItem(4, ItemCreator.
-            createPlayerHead("Crafting Table", ChatColor.AQUA + "Save"));
+            createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createPlayerHead("Trash Can", ChatColor.AQUA + "Delete"));
+            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Delete"));
       }
       case "delete" -> {
         inv.setItem(4, ItemCreator.
-            createPlayerHead("Crafting Table", ChatColor.AQUA + "Save"));
+            createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createPlayerHead("Brown Backpack", ChatColor.AQUA + "Get"));
+            createPlayerHead("BROWN_BACKPACK", ChatColor.AQUA + "Get"));
       }
     }
   }

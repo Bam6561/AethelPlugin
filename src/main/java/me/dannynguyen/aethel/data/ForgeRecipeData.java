@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.data;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.PageCalculator;
 import me.dannynguyen.aethel.objects.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -18,7 +18,7 @@ import java.util.*;
  * ForgeRecipeData contains information about forge recipes loaded in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.1.11
  */
 public class ForgeRecipeData {
@@ -39,7 +39,7 @@ public class ForgeRecipeData {
     getRecipePages().clear();
     setNumberOfPages(0);
 
-    File[] directory = new File(AethelPlugin.getInstance().getResources().getForgeRecipeDirectory()).listFiles();
+    File[] directory = new File(AethelResources.forgeRecipeDirectory).listFiles();
     Collections.sort(Arrays.asList(directory));
     for (File file : directory) {
       if (file.getName().endsWith("_rcp.txt")) {

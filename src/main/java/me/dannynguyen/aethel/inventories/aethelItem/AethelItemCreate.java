@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.aethelItem;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * AethelItemCreate creates Aethel Items.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.13
  * @since 1.4.0
  */
 public class AethelItemCreate {
@@ -59,7 +59,7 @@ public class AethelItemCreate {
    */
   private static void saveItemToFile(Player player, String itemName, String encodedItem) {
     try {
-      FileWriter fw = new FileWriter(AethelPlugin.getInstance().getResources().getAethelItemDirectory()
+      FileWriter fw = new FileWriter(AethelResources.aethelItemDirectory
           + "/" + itemName + "_itm.txt");
       fw.write(encodedItem);
       fw.close();
