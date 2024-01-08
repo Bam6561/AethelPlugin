@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.inventories.playerstat;
 
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.objects.PlayerStatMessage;
+import me.dannynguyen.aethel.objects.playerstat.PlayerStatMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

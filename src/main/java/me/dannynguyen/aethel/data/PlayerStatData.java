@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.inventories.PageCalculator;
-import me.dannynguyen.aethel.objects.PlayerStatCategory;
-import me.dannynguyen.aethel.objects.PlayerStatMessage;
+import me.dannynguyen.aethel.objects.playerstat.PlayerStatCategory;
+import me.dannynguyen.aethel.objects.playerstat.PlayerStatMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
