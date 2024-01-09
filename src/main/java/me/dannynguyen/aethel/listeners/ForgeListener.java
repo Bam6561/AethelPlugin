@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.*;
+import me.dannynguyen.aethel.objects.ForgeCraftOperation;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeListener is an inventory listener for the Forge command.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.4.15
  * @since 1.0.9
  */
 public class ForgeListener {
@@ -57,7 +58,7 @@ public class ForgeListener {
   public static void interpretForgeCraftConfirmClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
-        case 25 -> new ForgeCraft().craftRecipe(e, player);
+        case 25 -> new ForgeCraftOperation().craftRecipe(e, player);
         case 26 -> openForgeCraftInventory(player);
       }
     }
