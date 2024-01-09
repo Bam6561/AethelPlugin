@@ -16,7 +16,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStat is a command invocation that retrieves a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.0
  * @since 1.4.7
  */
 public class PlayerStat implements CommandExecutor {
@@ -70,8 +70,9 @@ public class PlayerStat implements CommandExecutor {
   private void openPlayerStatSelf(Player player) {
     player.setMetadata("stat-owner",
         new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
-    player.setMetadata("stat-category",
+    player.setMetadata("category",
         new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
+
     player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, player.getName()));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
@@ -88,8 +89,9 @@ public class PlayerStat implements CommandExecutor {
     if (requestedPlayer.hasPlayedBefore()) {
       player.setMetadata("stat-owner",
           new FixedMetadataValue(AethelPlugin.getInstance(), requestedPlayer.getName()));
-      player.setMetadata("stat-category",
+      player.setMetadata("category",
           new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
+
       player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, requestedPlayer.getName()));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));

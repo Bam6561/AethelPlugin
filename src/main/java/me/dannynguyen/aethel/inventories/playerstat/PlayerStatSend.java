@@ -15,7 +15,7 @@ import java.util.Collections;
  * and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.0
  * @since 1.4.10
  */
 public class PlayerStatSend {
@@ -55,7 +55,7 @@ public class PlayerStatSend {
     String statOwner = player.getMetadata("stat-owner").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
-    String statCategory = player.getMetadata("stat-category").get(0).asString();
+    String statCategory = player.getMetadata("category").get(0).asString();
 
     String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
     String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());

@@ -5,6 +5,8 @@ import me.dannynguyen.aethel.inventories.aethelItem.AethelItemCreate;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemDelete;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemGet;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
+import me.dannynguyen.aethel.readers.ItemReader;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -15,7 +17,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemListener is an inventory listener for the AethelItem command.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.0
  * @since 1.4.0
  */
 public class AethelItemListener {
@@ -27,9 +29,60 @@ public class AethelItemListener {
    * </p>
    *
    * @param e      inventory click event
+   * @param player interacting player
+   */
+  public static void readAethelItemCategoryClick(InventoryClickEvent e, Player player) {
+    Inventory clickedInv = e.getClickedInventory();
+    if (clickedInv == null || !clickedInv.getType().equals(InventoryType.PLAYER)) {
+      if (e.getCurrentItem() != null) {
+        interpretAethelItemCategoryClick(e, player);
+      } else if (e.getSlot() != 3) {
+        e.setCancelled(true);
+      }
+    } else {
+      if (e.getClick().isShiftClick()) {
+        e.setCancelled(true);
+      }
+    }
+  }
+
+
+  /**
+   * Retrieves a player's stat category page.
+   *
+   * @param e      inventory click event
+   * @param player interacting player
+   */
+  private static void interpretAethelItemCategoryClick(InventoryClickEvent e, Player player) {
+    if (e.getSlot() == 4) {
+      AethelItemCreate.readSaveClick(e, player);
+    } else if (e.getSlot() > 8) {
+      String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
+      player.setMetadata("category",
+          new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+      int pageRequest = player.getMetadata("page").get(0).asInt();
+
+      player.openInventory(AethelItemMain.openItemCategoryPage(player, "get", itemName, pageRequest));
+      player.setMetadata("inventory",
+          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
+    }
+    if (e.getSlot() != 3) {
+      e.setCancelled(true);
+    }
+  }
+
+
+  /**
+   * Checks if the player's action is allowed based on the clicked inventory.
+   * <p>
+   * - AethelItem: Prevent adding new items to the inventory outside of the intended Save Item slot.
+   * - Player: Prevent shift-clicks adding items to the AethelItem inventory.
+   * </p>
+   *
+   * @param e      inventory click event
    * @param action type of interaction
    */
-  public static void readAethelItemMainClick(InventoryClickEvent e, String action) {
+  public static void readAethelMainClick(InventoryClickEvent e, String action) {
     Inventory clickedInv = e.getClickedInventory();
     if (clickedInv == null || !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
@@ -64,6 +117,7 @@ public class AethelItemListener {
       }
       case 4 -> AethelItemCreate.readSaveClick(e, player);
       case 5 -> toggleGetDeleteAction(player, action);
+      case 6 -> returnToCategoryPage(player);
       case 8 -> nextItemPage(player, action);
       default -> interpretContextualClick(e, action, player);
     }
@@ -78,8 +132,10 @@ public class AethelItemListener {
    * @param action type of interaction
    */
   private static void previousItemPage(Player player, String action) {
+    String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(AethelItemMain.openItemPage(player, action, pageRequest - 1));
+    player.openInventory(AethelItemMain.openItemCategoryPage(player, action,
+        categoryName, pageRequest - 1));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-" + action));
   }
@@ -91,17 +147,31 @@ public class AethelItemListener {
    * @param action type of interaction
    */
   private static void toggleGetDeleteAction(Player player, String action) {
+    String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
     if (action.equals("get")) {
-      player.openInventory(AethelItemMain.openItemPage(player, "delete", pageRequest));
+      player.openInventory(AethelItemMain.openItemCategoryPage(player, "delete",
+          categoryName, pageRequest));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-delete"));
     } else {
-      player.openInventory(AethelItemMain.openItemPage(player, "get", pageRequest));
+      player.openInventory(AethelItemMain.openItemCategoryPage(player, "get",
+          categoryName, pageRequest));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
     }
+  }
+
+  /**
+   * Opens a AethelItemMain inventory.
+   *
+   * @param player interacting player
+   */
+  private static void returnToCategoryPage(Player player) {
+    player.openInventory(AethelItemMain.openItemMainPage(player, "view"));
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-category"));
   }
 
   /**
@@ -111,8 +181,10 @@ public class AethelItemListener {
    * @param action type of interaction
    */
   private static void nextItemPage(Player player, String action) {
+    String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
-    player.openInventory(AethelItemMain.openItemPage(player, action, pageRequest + 1));
+    player.openInventory(AethelItemMain.openItemCategoryPage(player, action,
+        categoryName, pageRequest + 1));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-" + action));
   }

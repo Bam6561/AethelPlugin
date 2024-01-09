@@ -72,7 +72,7 @@ public class PlayerStatMain {
    *
    * @param player              interacting player
    * @param requestedPlayerName requested player's name
-   * @param categoryName        stat category
+   * @param categoryName        category to view
    * @param pageRequest         page to view
    * @return PlayerStatMain inventory with stats
    */
@@ -96,7 +96,7 @@ public class PlayerStatMain {
    * Loads a substat category page from memory.
    *
    * @param player         interacting player
-   * @param categoryName   stat category
+   * @param categoryName   category to view
    * @param pageRequest    page to view
    * @param playerStatData player stat data
    * @param inv            interacting inventory
@@ -120,7 +120,7 @@ public class PlayerStatMain {
   /**
    * Loads a non-substat category page from memory.
    *
-   * @param categoryName   stat category
+   * @param categoryName   category to view
    * @param playerStatData player stat data
    * @param inv            interacting inventory
    */

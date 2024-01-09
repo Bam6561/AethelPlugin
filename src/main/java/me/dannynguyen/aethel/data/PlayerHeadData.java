@@ -18,11 +18,11 @@ import java.util.UUID;
  * PlayerHeadData contains information about player head textures loaded in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.0
  * @since 1.2.1
  */
 public class PlayerHeadData {
-  HashMap<String, ItemStack> headsMap = new HashMap<>();
+  private final HashMap<String, ItemStack> headsMap = new HashMap<>();
 
   /**
    * Loads player head textures into memory.

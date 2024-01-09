@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatListener is an inventory listener for the PlayerStat command.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.0
  * @since 1.4.7
  */
 public class PlayerStatListener {
@@ -38,7 +38,7 @@ public class PlayerStatListener {
           default -> player.setMetadata("inventory",
               new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-stat"));
         }
-        player.setMetadata("stat-category",
+        player.setMetadata("category",
             new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
       }
       e.setCancelled(true);
@@ -92,7 +92,7 @@ public class PlayerStatListener {
    */
   private static void previousStatPage(Player player) {
     String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
-    String categoryName = player.getMetadata("stat-category").get(0).asString();
+    String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
     player.openInventory(PlayerStatMain.
@@ -120,7 +120,7 @@ public class PlayerStatListener {
    */
   private static void nextStatPage(Player player) {
     String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
-    String categoryName = player.getMetadata("stat-category").get(0).asString();
+    String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
     player.openInventory(PlayerStatMain.

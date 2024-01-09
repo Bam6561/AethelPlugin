@@ -24,7 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.0
  * @since 1.2.6
  */
 public class AethelTag implements CommandExecutor {
@@ -57,24 +57,25 @@ public class AethelTag implements CommandExecutor {
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
+    String action = args[0].toLowerCase();
     switch (args.length) {
       case 0 -> player.sendMessage(ChatColor.RED + "No parameters provided.");
       case 1 -> {
-        if (args[0].equalsIgnoreCase("get")) {
+        if (action.equals("get")) {
           getAethelTags(player, item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
         }
       }
       case 2 -> {
-        if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rm")) {
+        if (action.equals("remove") || action.equals("rm")) {
           removeAethelTag(player, args[1], item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
         }
       }
       case 3 -> {
-        if (args[0].equalsIgnoreCase("set")) {
+        if (action.equals("set")) {
           setAethelTag(player, args, item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");

@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.0
  * @since 1.3.2
  */
 public class AethelItem implements CommandExecutor {
@@ -53,7 +53,6 @@ public class AethelItem implements CommandExecutor {
     }
   }
 
-
   /**
    * Checks if the action is "reload" before reloading items into memory.
    *
@@ -71,12 +70,13 @@ public class AethelItem implements CommandExecutor {
   }
 
   /**
-   * Opens an AethelItemMain inventory with the intent to get items.
+   * Opens an AethelItemMain inventory with the intent to view item categories.
    *
    * @param player interacting player
    */
   private void openAethelItemInventory(Player player) {
-    player.openInventory(AethelItemMain.openItemPage(player, "get", 0));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+    player.openInventory(AethelItemMain.openItemMainPage(player, "view"));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-category"));
   }
 }

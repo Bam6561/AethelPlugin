@@ -42,7 +42,7 @@ public class DevMode implements CommandExecutor {
   private void readRequest(Player player, int numberOfParameters) {
     switch (numberOfParameters) {
       case 0 -> toggleDevMode(player);
-      default -> player.sendMessage("Unrecognized parameters");
+      default -> player.sendMessage("Unrecognized parameters.");
     }
   }
 

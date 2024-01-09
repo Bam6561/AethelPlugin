@@ -16,7 +16,7 @@ import java.util.*;
  * PlayerStatData contains information about player statistics.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.0
  * @since 1.4.8
  */
 public class PlayerStatData {
@@ -24,14 +24,15 @@ public class PlayerStatData {
       "Activities", "Containers", "Damage", "Entity Types",
       "General", "Interactions", "Materials", "Movement"));
 
-  private HashMap<String, Inventory> statCategoryPages = new HashMap<>();
-  private HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>() {{
+  private final HashMap<String, Inventory> statCategoryPages = new HashMap<>();
+  private final HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>() {{
     put("Materials", new ArrayList<>());
     put("Entity Types", new ArrayList<>());
   }};
   private int numberOfMaterialPages = 0;
   private int numberOfEntityTypePages = 0;
-  private ArrayList<PlayerStatMessage> pastStatMessages = new ArrayList<>();
+
+  private final ArrayList<PlayerStatMessage> pastStatMessages = new ArrayList<>();
 
   /**
    * Loads player stat pages into memory.
@@ -43,7 +44,7 @@ public class PlayerStatData {
   }
 
   /**
-   * Creates category pages of non-substats.
+   * Creates pages of non-substats by category.
    */
   private void createStatCategoryPages() {
     HashMap<String, Inventory> statCategoryPages = getStatCategoryPages();
