@@ -12,13 +12,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * AethelItemCreate creates Aethel Items.
+ * AethelItemSave is a utility class that saves Aethel Items.
  *
  * @author Danny Nguyen
  * @version 1.4.13
  * @since 1.4.0
  */
-public class AethelItemCreate {
+public class AethelItemSave {
   /**
    * Checks if there is an item in the correct inventory slot to save.
    *

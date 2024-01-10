@@ -2,9 +2,9 @@ package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.PageCalculator;
-import me.dannynguyen.aethel.objects.AethelItem;
-import me.dannynguyen.aethel.objects.AethelItemCategory;
+import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.objects.aethelitem.AethelItem;
+import me.dannynguyen.aethel.objects.aethelitem.AethelItemCategory;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * AethelItem contains information about Aethel items stored in memory.
+ * AethelItemData stores Aethel items in memory.
  *
  * @author Danny Nguyen
  * @version 1.5.1
@@ -113,7 +113,7 @@ public class AethelItemData {
   private void createAllItemPages(ArrayList<ItemStack> allItems,
                                   HashMap<String, AethelItemCategory> itemCategoriesMap) {
     int numberOfItems = allItems.size();
-    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfItems);
+    int numberOfPages = Pagination.calculateNumberOfPages(numberOfItems);
 
     ArrayList<Inventory> pages = createItemPages(allItems, numberOfItems, numberOfPages);
 
@@ -132,7 +132,7 @@ public class AethelItemData {
                                        HashMap<String, AethelItemCategory> itemCategoriesMap) {
     for (ArrayList<ItemStack> items : categorizedItems.values()) {
       int numberOfItems = items.size();
-      int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfItems);
+      int numberOfPages = Pagination.calculateNumberOfPages(numberOfItems);
 
       ArrayList<Inventory> pages = createItemPages(items, numberOfItems, numberOfPages);
 

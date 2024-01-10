@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
- * ShowItemPast is an inventory under the Show command that shows past shared items.
+ * ShowItemPast is an inventory under the ShowItem command that shows past shared items.
  *
  * @author Danny Nguyen
  * @version 1.4.14

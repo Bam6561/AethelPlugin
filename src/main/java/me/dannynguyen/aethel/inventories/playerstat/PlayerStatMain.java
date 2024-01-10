@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.PlayerStatData;
-import me.dannynguyen.aethel.inventories.PageCalculator;
+import me.dannynguyen.aethel.inventories.Pagination;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * PlayerStatMain is a shared inventory under the PlayerStat
- * command that contains all of a player's statistics.
+ * PlayerStatMain is a shared inventory under the PlayerStat command
+ * that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
  * @version 1.4.13
@@ -74,7 +74,7 @@ public class PlayerStatMain {
    * @param requestedPlayerName requested player's name
    * @param categoryName        category to view
    * @param pageRequest         page to view
-   * @return PlayerStatMain inventory with stats
+   * @return PlayerStatMain inventory with stat values
    */
   public static Inventory openPlayerStatCategoryPage(Player player, String requestedPlayerName,
                                                      String categoryName, int pageRequest) {
@@ -86,7 +86,7 @@ public class PlayerStatMain {
           "Materials" -> loadPlayerSubstatPage(player, categoryName, pageRequest, playerStatData, inv);
       default -> loadPlayerStatPage(categoryName, playerStatData, inv);
     }
-    
+
     addStatContext(categoryName, inv);
     addOwnerHead(player, inv);
     addBackButton(inv);
@@ -110,7 +110,7 @@ public class PlayerStatMain {
     } else {
       numberOfPages = playerStatData.getNumberOfMaterialPages();
     }
-    int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
+    int pageViewed = Pagination.calculatePageViewed(numberOfPages, pageRequest);
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
     inv.setContents(playerStatData.getSubstatCategoryPages().get(categoryName).get(pageViewed).getContents());

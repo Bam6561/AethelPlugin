@@ -12,7 +12,7 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * ItemCreator:
+ * ItemCreator is a utility class that:
  * - creates ItemStacks with metadata
  * - serializes ItemStacks
  *

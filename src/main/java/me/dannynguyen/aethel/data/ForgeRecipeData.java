@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.PageCalculator;
-import me.dannynguyen.aethel.objects.ForgeRecipe;
+import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * ForgeRecipeData contains information about forge recipes loaded in memory.
+ * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
  * @version 1.5.1
@@ -88,7 +88,7 @@ public class ForgeRecipeData {
     ArrayList<Inventory> recipePages = getRecipePages();
 
     int numberOfRecipes = recipes.size();
-    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfRecipes);
+    int numberOfPages = Pagination.calculateNumberOfPages(numberOfRecipes);
     setNumberOfPages(numberOfPages);
 
     int startIndex = 0;

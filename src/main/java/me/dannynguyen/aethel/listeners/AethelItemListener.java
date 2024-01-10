@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.inventories.aethelItem.AethelItemCreate;
+import me.dannynguyen.aethel.inventories.aethelItem.AethelItemSave;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemDelete;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemGet;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
@@ -54,7 +54,7 @@ public class AethelItemListener {
    */
   private static void interpretAethelItemMainClick(InventoryClickEvent e, Player player) {
     if (e.getSlot() == 4) {
-      AethelItemCreate.readSaveClick(e, player);
+      AethelItemSave.readSaveClick(e, player);
     } else if (e.getSlot() > 8) {
       String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
       player.setMetadata("category",
@@ -115,7 +115,7 @@ public class AethelItemListener {
       case 0 -> previousItemPage(player, action);
       case 2 -> { // Help Context
       }
-      case 4 -> AethelItemCreate.readSaveClick(e, player);
+      case 4 -> AethelItemSave.readSaveClick(e, player);
       case 5 -> toggleGetDeleteAction(player, action);
       case 6 -> returnToMainPage(player);
       case 8 -> nextItemPage(player, action);

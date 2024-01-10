@@ -16,18 +16,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * ForgeCreate is an inventory under the Forge command that creates forge recipes.
+ * ForgeSave is an inventory for saving forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.4.13
  * @since 1.0.5
  */
-public class ForgeCreate {
+public class ForgeSave {
   /**
-   * Creates and names a ForgeCreate inventory.
+   * Creates and names a ForgeSave inventory.
    *
    * @param player interacting player
-   * @return ForgeCreate inventory
+   * @return ForgeSave inventory
    */
   public static Inventory createInventory(Player player) {
     Inventory inv = Bukkit.createInventory(player, 27,
@@ -57,7 +57,7 @@ public class ForgeCreate {
   }
 
   /**
-   * Checks if the ForgeCreate inventory was formatted correctly before saving the recipe.
+   * Checks if the ForgeSave inventory was formatted correctly before saving the recipe.
    *
    * @param e      inventory click event
    * @param player interacting player

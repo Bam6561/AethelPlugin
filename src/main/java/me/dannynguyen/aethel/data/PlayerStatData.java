@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.PageCalculator;
+import me.dannynguyen.aethel.inventories.Pagination;
 import me.dannynguyen.aethel.objects.playerstat.PlayerStatCategory;
-import me.dannynguyen.aethel.objects.playerstat.PlayerStatMessage;
+import me.dannynguyen.aethel.objects.playerstat.PlayerStatValues;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 
 /**
- * PlayerStatData contains information about player statistics.
+ * PlayerStatData stores player statistic names in memory.
  *
  * @author Danny Nguyen
  * @version 1.5.1
@@ -33,7 +33,7 @@ public class PlayerStatData {
   private int numberOfMaterialPages = 0;
   private int numberOfEntityTypePages = 0;
 
-  private final ArrayList<PlayerStatMessage> pastStatMessages = new ArrayList<>();
+  private final ArrayList<PlayerStatValues> pastStatValues = new ArrayList<>();
 
   /**
    * Loads player stat pages into memory.
@@ -77,7 +77,7 @@ public class PlayerStatData {
     materials.sort(materialComparator);
 
     int numberOfMaterials = materials.size();
-    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfMaterials);
+    int numberOfPages = Pagination.calculateNumberOfPages(numberOfMaterials);
     setNumberOfMaterialPages(numberOfPages);
 
     int startIndex = 0;
@@ -113,7 +113,7 @@ public class PlayerStatData {
     entityTypes.sort(entityTypeComparator);
 
     int numberOfEntityTypes = entityTypes.size();
-    int numberOfPages = PageCalculator.calculateNumberOfPages(numberOfEntityTypes);
+    int numberOfPages = Pagination.calculateNumberOfPages(numberOfEntityTypes);
     setNumberOfEntityTypePages(numberOfPages);
 
     int startIndex = 0;
@@ -193,17 +193,17 @@ public class PlayerStatData {
   }
 
   /**
-   * Ensures the number of past stats never exceeds 9 (the PlayerStatPast inventory size).
+   * Ensures the number of past stat values never exceeds 9 (the PlayerStatPast inventory size).
    *
    * @param statName stat name
    * @param stats    associated statistics
    */
   public void addToPastStats(String statName, List<String> stats) {
-    ArrayList<PlayerStatMessage> pastStats = getPastStatMessages();
-    if (pastStats.size() == 9) {
-      pastStats.remove(0);
+    ArrayList<PlayerStatValues> pastStatValues = getPastStatValues();
+    if (pastStatValues.size() == 9) {
+      pastStatValues.remove(0);
     }
-    pastStats.add(new PlayerStatMessage(statName, stats));
+    pastStatValues.add(new PlayerStatValues(statName, stats));
   }
 
   public ArrayList<String> getStatCategoryNames() {
@@ -226,8 +226,8 @@ public class PlayerStatData {
     return this.numberOfEntityTypePages;
   }
 
-  public ArrayList<PlayerStatMessage> getPastStatMessages() {
-    return this.pastStatMessages;
+  public ArrayList<PlayerStatValues> getPastStatValues() {
+    return this.pastStatValues;
   }
 
   public void setNumberOfMaterialPages(int numberOfMaterialPages) {

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Base64;
 
 /**
- * ItemReader:
+ * ItemReader is a utility class that:
  * - reads metadata from ItemStacks
  * - decodes serialized ItemStacks
  *

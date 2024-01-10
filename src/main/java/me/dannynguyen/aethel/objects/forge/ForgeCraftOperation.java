@@ -1,7 +1,8 @@
-package me.dannynguyen.aethel.objects;
+package me.dannynguyen.aethel.objects.forge;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.objects.InventorySlot;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 
 /**
  * ForgeCraftOperation is an object that determines if a player
- * has sufficient materials to craft an item from a forge recipe.
+ * has sufficient materials to craft items from a forge recipe.
  *
  * @author Danny Nguyen
  * @version 1.5.1

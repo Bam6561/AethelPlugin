@@ -1,13 +1,14 @@
 package me.dannynguyen.aethel.inventories;
 
 /**
- * PageCalculator is a supporting object for double chest sized inventories with pagination.
+ * Pagination is a utility class that supports double
+ * chest sized inventories with useful methods.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.2
  * @since 1.4.2
  */
-public class PageCalculator {
+public class Pagination {
   /**
    * Determines how many pages of items exist and whether there are partially filled pages.
    *

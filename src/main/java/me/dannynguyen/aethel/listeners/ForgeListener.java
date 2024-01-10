@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.*;
-import me.dannynguyen.aethel.objects.ForgeCraftOperation;
+import me.dannynguyen.aethel.objects.forge.ForgeCraftOperation;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -34,7 +34,7 @@ public class ForgeListener {
         case 0 -> previousRecipePage(player, action);
         case 2 -> { // Help Context
         }
-        case 3 -> openForgeCreateInventory(player);
+        case 3 -> openForgeSaveInventory(player);
         case 4 -> {
           String itemName = e.getCurrentItem().getItemMeta().getDisplayName();
           if (!itemName.equals(ChatColor.GREEN + "Help")) {
@@ -71,11 +71,11 @@ public class ForgeListener {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public static void interpretForgeCreateClick(InventoryClickEvent e, Player player) {
+  public static void interpretForgeSaveClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 8 -> e.setCancelled(true);
-        case 25 -> ForgeCreate.readSaveClick(e, player);
+        case 25 -> ForgeSave.readSaveClick(e, player);
         case 26 -> {
           openForgeModifyInventory(player);
           e.setCancelled(true);
@@ -97,14 +97,14 @@ public class ForgeListener {
   }
 
   /**
-   * Opens a ForgeCreate inventory.
+   * Opens a ForgeSave inventory.
    *
    * @param player interacting player
    */
 
-  private static void openForgeCreateInventory(Player player) {
-    player.openInventory(ForgeCreate.createInventory(player));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-create"));
+  private static void openForgeSaveInventory(Player player) {
+    player.openInventory(ForgeSave.createInventory(player));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-save"));
   }
 
   /**

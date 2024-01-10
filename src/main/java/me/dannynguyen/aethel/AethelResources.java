@@ -3,7 +3,7 @@ package me.dannynguyen.aethel;
 import me.dannynguyen.aethel.data.*;
 
 /**
- * AethelResources represents the plugin's resources loaded in memory as an object.
+ * AethelResources stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
  * @version 1.4.13

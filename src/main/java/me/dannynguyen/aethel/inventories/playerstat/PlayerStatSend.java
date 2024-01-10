@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * PlayerStatSend sends statistics to the player
- * and saves their most recent statistic lookup.
+ * PlayerStatSend is a utility class that sends statistics to
+ * the player and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
  * @version 1.5.1

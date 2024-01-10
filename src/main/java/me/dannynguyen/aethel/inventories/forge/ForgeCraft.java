@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.inventories.forge;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.objects.ForgeRecipe;
+import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * ForgeCraft is an inventory under the Forge command that crafts forge recipes.
+ * ForgeCraft is an inventory for crafting forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.4.13
@@ -77,7 +77,7 @@ public class ForgeCraft {
   }
 
   /**
-   * Adds the recipe's existing results and components to the ForgeCreate inventory.
+   * Adds the recipe's existing results and components to the ForgeSave inventory.
    *
    * @param recipe forge recipe
    * @param inv    interacting inventory

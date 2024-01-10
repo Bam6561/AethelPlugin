@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.inventories.aethelItem;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.PageCalculator;
-import me.dannynguyen.aethel.objects.AethelItemCategory;
+import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.objects.aethelitem.AethelItemCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * AethelItemMain is a shared inventory under the AethelItem command that
- * supports pagination for getting, creating, modifying, and deleting items.
+ * AethelItemMain is a shared inventory under the AethelItem command that supports
+ * categorical pagination for getting, creating, modifying, and deleting Aethel items.
  *
  * @author Danny Nguyen
  * @version 1.5.1
@@ -89,7 +89,7 @@ public class AethelItemMain {
 
     AethelItemCategory itemCategory = AethelResources.aethelItemData.getItemCategoriesMap().get(categoryName);
     int numberOfPages = itemCategory.getNumberOfPages();
-    int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
+    int pageViewed = Pagination.calculatePageViewed(numberOfPages, pageRequest);
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
     inv.setContents(itemCategory.getPages().get(pageViewed).getContents());

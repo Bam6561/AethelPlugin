@@ -1,14 +1,14 @@
 package me.dannynguyen.aethel.inventories.aethelItem;
 
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.objects.AethelItem;
+import me.dannynguyen.aethel.objects.aethelitem.AethelItem;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 /**
- * AethelItemDelete is an inventory under the AethelItem command that deletes items.
+ * AethelItemDelete is a utility class that deletes Aethel items.
  *
  * @author Danny Nguyen
  * @version 1.5.1

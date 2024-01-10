@@ -2,14 +2,14 @@ package me.dannynguyen.aethel.inventories.forge;
 
 
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.objects.ForgeRecipe;
+import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 /**
- * ForgeDelete is an inventory under the Forge command that deletes forge recipes.
+ * ForgeDelete is a utility class that deletes forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.4.13

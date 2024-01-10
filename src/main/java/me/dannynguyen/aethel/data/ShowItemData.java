@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.objects.ItemOwner;
 import java.util.ArrayList;
 
 /**
- * ShowItemData contains information about the past shown items to chat.
+ * ShowItemData stores past shown items in memory.
  *
  * @author Danny Nguyen
  * @version 1.5.0

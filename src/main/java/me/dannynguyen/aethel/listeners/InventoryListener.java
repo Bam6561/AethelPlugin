@@ -31,7 +31,7 @@ public class InventoryListener implements Listener {
         case "aethelitem-delete" -> AethelItemListener.readAethelCategoryClick(e, player, "delete");
         case "forge-craft" -> ForgeListener.interpretForgeMainClick(e, player, "craft");
         case "forge-craft-confirm" -> ForgeListener.interpretForgeCraftConfirmClick(e, player);
-        case "forge-create" -> ForgeListener.interpretForgeCreateClick(e, player);
+        case "forge-save" -> ForgeListener.interpretForgeSaveClick(e, player);
         case "forge-modify" -> ForgeListener.interpretForgeMainClick(e, player, "modify");
         case "forge-delete" -> ForgeListener.interpretForgeMainClick(e, player, "delete");
         case "playerstat-category" -> PlayerStatListener.readPlayerStatMainClick(e, player);

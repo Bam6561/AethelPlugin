@@ -7,7 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * AethelItemGet gives items upon click.
+ * AethelItemGet is a utility class that gives Aethel items.
  *
  * @author Danny Nguyen
  * @version 1.5.1

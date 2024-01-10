@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.ForgeRecipeData;
-import me.dannynguyen.aethel.inventories.PageCalculator;
+import me.dannynguyen.aethel.inventories.Pagination;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * ForgeMain is a shared inventory under the Forge command that supports
- * pagination for crafting, modifying, and deleting forge recipes.
+ * categorical pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.5.1
@@ -35,7 +35,7 @@ public class ForgeMain {
     ForgeRecipeData recipeData = AethelResources.forgeRecipeData;
 
     int numberOfPages = recipeData.getNumberOfPages();
-    int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
+    int pageViewed = Pagination.calculatePageViewed(numberOfPages, pageRequest);
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
     Inventory inv = createInventory(player, action);
