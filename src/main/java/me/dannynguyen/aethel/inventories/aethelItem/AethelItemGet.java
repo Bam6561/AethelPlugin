@@ -10,28 +10,24 @@ import org.bukkit.inventory.ItemStack;
  * AethelItemGet gives items upon click.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.1
  * @since 1.4.0
  */
 public class AethelItemGet {
   /**
-   * Gets an item.
+   * Gives an item to the player.
    *
    * @param e      inventory click event
    * @param player interacting player
-   * @throws NullPointerException invalid item
    */
   public static void getItem(InventoryClickEvent e, Player player) {
-    try {
-      ItemStack item = AethelResources.aethelItemData.getItemsMap().
-          get(ItemReader.readItemName(e.getCurrentItem())).getItem();
+    ItemStack item = AethelResources.aethelItemData.getItemsMap().
+        get(ItemReader.readItemName(e.getCurrentItem())).getItem();
 
-      if (player.getInventory().firstEmpty() != -1) {
-        player.getInventory().addItem(item);
-      } else {
-        player.getWorld().dropItem(player.getLocation(), item);
-      }
-    } catch (NullPointerException ignored) {
+    if (player.getInventory().firstEmpty() != -1) {
+      player.getInventory().addItem(item);
+    } else {
+      player.getWorld().dropItem(player.getLocation(), item);
     }
   }
 }

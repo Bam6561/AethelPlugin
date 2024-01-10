@@ -18,13 +18,13 @@ import java.util.*;
  * ForgeRecipeData contains information about forge recipes loaded in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.1
  * @since 1.1.11
  */
 public class ForgeRecipeData {
-  private ArrayList<ForgeRecipe> recipes = new ArrayList<>();
-  private HashMap<String, ForgeRecipe> recipesMap = new HashMap<>();
-  private ArrayList<Inventory> recipePages = new ArrayList<>();
+  private final ArrayList<ForgeRecipe> recipes = new ArrayList<>();
+  private final HashMap<String, ForgeRecipe> recipesMap = new HashMap<>();
+  private final ArrayList<Inventory> recipePages = new ArrayList<>();
   private int numberOfPages = 0;
 
   /**
@@ -40,7 +40,7 @@ public class ForgeRecipeData {
     setNumberOfPages(0);
 
     File[] directory = new File(AethelResources.forgeRecipeDirectory).listFiles();
-    Collections.sort(Arrays.asList(directory));
+    Arrays.sort(directory);
     for (File file : directory) {
       if (file.getName().endsWith("_rcp.txt")) {
         ForgeRecipe recipe = readRecipeFile(file);

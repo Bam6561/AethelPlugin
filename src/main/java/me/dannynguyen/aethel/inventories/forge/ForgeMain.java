@@ -19,7 +19,7 @@ import java.util.List;
  * pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.1
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -35,7 +35,7 @@ public class ForgeMain {
     ForgeRecipeData recipeData = AethelResources.forgeRecipeData;
 
     int numberOfPages = recipeData.getNumberOfPages();
-    int pageViewed = PageCalculator.calculatePageViewed(pageRequest, numberOfPages);
+    int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
     Inventory inv = createInventory(player, action);

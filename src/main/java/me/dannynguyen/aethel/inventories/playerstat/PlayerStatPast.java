@@ -36,10 +36,10 @@ public class PlayerStatPast {
    * @param inv interacting inventory
    */
   private static void addPastStats(Inventory inv) {
-    int index = 0;
+    int i = 0;
     for (PlayerStatMessage message : AethelResources.playerStatData.getPastStatMessages()) {
-      inv.setItem(index, ItemCreator.createItem(Material.PAPER, message.getStatName(), message.getStats()));
-      index++;
+      inv.setItem(i, ItemCreator.createItem(Material.PAPER, message.getStatName(), message.getStats()));
+      i++;
     }
   }
 }

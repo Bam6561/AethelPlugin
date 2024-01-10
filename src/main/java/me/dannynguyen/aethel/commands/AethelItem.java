@@ -19,18 +19,17 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.1
  * @since 1.3.2
  */
 public class AethelItem implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage("Player-only command.");
       return true;
     }
 
-    Player player = (Player) sender;
     if (player.isOp()) {
       readRequest(player, args);
     } else {

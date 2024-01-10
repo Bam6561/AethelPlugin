@@ -17,7 +17,9 @@ public class PageCalculator {
   public static int calculateNumberOfPages(int numberOfItems) {
     int numberOfPages = numberOfItems / 45;
     boolean partiallyFilledPage = (numberOfItems % 45) > 0;
-    if (partiallyFilledPage) numberOfPages += 1;
+    if (partiallyFilledPage) {
+      numberOfPages += 1;
+    }
     return numberOfPages;
   }
 

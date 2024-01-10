@@ -24,7 +24,7 @@ public class PlayerStatListener {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public static void readPlayerStatCategoryClick(InventoryClickEvent e, Player player) {
+  public static void readPlayerStatMainClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       if (e.getSlot() > 8) {
         String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
@@ -57,7 +57,7 @@ public class PlayerStatListener {
         case 0 -> previousStatPage(player);
         case 3, 4 -> { // Player Heads
         }
-        case 5 -> returnToCategoryPage(player);
+        case 5 -> returnToMainPage(player);
         case 8 -> nextStatPage(player);
         default -> PlayerStatSend.sendStat(e, player);
       }
@@ -77,7 +77,7 @@ public class PlayerStatListener {
         case 0 -> previousStatPage(player);
         case 3, 4 -> { // Player Heads
         }
-        case 5 -> returnToCategoryPage(player);
+        case 5 -> returnToMainPage(player);
         case 8 -> nextStatPage(player);
         default -> PlayerStatSend.sendSubstat(e, player);
       }
@@ -106,7 +106,7 @@ public class PlayerStatListener {
    *
    * @param player interacting player
    */
-  private static void returnToCategoryPage(Player player) {
+  private static void returnToMainPage(Player player) {
     String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
     player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, requestedPlayerName));
     player.setMetadata("inventory",

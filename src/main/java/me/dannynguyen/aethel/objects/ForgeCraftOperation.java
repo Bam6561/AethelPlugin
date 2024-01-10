@@ -21,11 +21,11 @@ import java.util.HashMap;
  * has sufficient materials to craft an item from a forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.4.15
+ * @version 1.5.1
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
-  private ArrayList<InventorySlot> setInventory = new ArrayList<>();
+  private final ArrayList<InventorySlot> setInventory = new ArrayList<>();
 
   /**
    * Crafts a recipe.
@@ -72,10 +72,14 @@ public class ForgeCraftOperation {
         boolean hasForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
 
         if (!hasForgeId) {
-          if (!hasSufficientMaterials(invMap, reqMaterial, reqAmount)) return false;
+          if (!hasSufficientMaterials(invMap, reqMaterial, reqAmount)) {
+            return false;
+          }
         } else {
           String reqForgeId = dataContainer.get(forgeIdKey, PersistentDataType.STRING);
-          if (!hasSufficientMaterials(invMap, reqMaterial, reqAmount, forgeIdKey, reqForgeId)) return false;
+          if (!hasSufficientMaterials(invMap, reqMaterial, reqAmount, forgeIdKey, reqForgeId)) {
+            return false;
+          }
         }
       } else {
         return false;
@@ -128,7 +132,9 @@ public class ForgeCraftOperation {
       if (!dataContainer.has(forgeIdKey, PersistentDataType.STRING)) {
         if (invSlot.getAmount() > 0) {
           reqAmount -= invSlot.getAmount();
-          if (hasReqAmountSatisfied(invSlot, reqAmount)) return true;
+          if (hasReqAmountSatisfied(invSlot, reqAmount)) {
+            return true;
+          }
         }
       }
     }
@@ -155,7 +161,9 @@ public class ForgeCraftOperation {
           dataContainer.get(forgeIdKey, PersistentDataType.STRING).equals(reqForgeId)) {
         if (invSlot.getAmount() > 0) {
           reqAmount -= invSlot.getAmount();
-          if (hasReqAmountSatisfied(invSlot, reqAmount)) return true;
+          if (hasReqAmountSatisfied(invSlot, reqAmount)) {
+            return true;
+          }
         }
       }
     }
@@ -172,16 +180,13 @@ public class ForgeCraftOperation {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
       getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
-      if (reqAmount == 0) {
-        return true;
-      }
+      return reqAmount == 0;
     } else {
       int difference = Math.abs(reqAmount);
       invSlot.setAmount(difference);
       getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
       return true;
     }
-    return false;
   }
 
   /**

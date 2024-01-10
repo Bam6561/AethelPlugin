@@ -86,6 +86,7 @@ public class PlayerStatMain {
           "Materials" -> loadPlayerSubstatPage(player, categoryName, pageRequest, playerStatData, inv);
       default -> loadPlayerStatPage(categoryName, playerStatData, inv);
     }
+    
     addStatContext(categoryName, inv);
     addOwnerHead(player, inv);
     addBackButton(inv);
@@ -109,12 +110,11 @@ public class PlayerStatMain {
     } else {
       numberOfPages = playerStatData.getNumberOfMaterialPages();
     }
-    int pageViewed = PageCalculator.calculatePageViewed(pageRequest, numberOfPages);
+    int pageViewed = PageCalculator.calculatePageViewed(numberOfPages, pageRequest);
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
     inv.setContents(playerStatData.getSubstatCategoryPages().get(categoryName).get(pageViewed).getContents());
     addPageButtons(inv, pageViewed, numberOfPages);
-
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
   }
 
   /**
@@ -137,7 +137,7 @@ public class PlayerStatMain {
   private static void addStatContext(String categoryName, Inventory inv) {
     List<String> helpLore;
     if (categoryName.equals("categories")) {
-      helpLore = Arrays.asList(ChatColor.WHITE + "Stat Categories");
+      helpLore = List.of(ChatColor.WHITE + "Stat Categories");
     } else {
       helpLore = Arrays.asList(
           ChatColor.WHITE + categoryName,

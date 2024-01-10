@@ -10,17 +10,16 @@ import org.bukkit.entity.Player;
  * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.4.7
+ * @version 1.5.1
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage("Player-only command.");
       return true;
     }
-    Player player = (Player) sender;
     readRequest(player, args);
     return true;
   }
@@ -33,7 +32,7 @@ public class Template implements CommandExecutor {
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
-
+      default -> interpretParameters(player, args);
     }
   }
 

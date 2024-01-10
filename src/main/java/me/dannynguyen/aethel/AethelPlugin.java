@@ -43,18 +43,18 @@ public class AethelPlugin extends JavaPlugin {
     File resourceDirectory = new File(AethelResources.resourceDirectory);
     if (!resourceDirectory.exists()) resourceDirectory.mkdir();
 
-    File forgeRecipeDirectory = new File(AethelResources.forgeRecipeDirectory);
-    if (forgeRecipeDirectory.exists()) {
-      AethelResources.forgeRecipeData.loadRecipes();
-    } else {
-      forgeRecipeDirectory.mkdir();
-    }
-
     File aethelItemDirectory = new File(AethelResources.aethelItemDirectory);
     if (aethelItemDirectory.exists()) {
       AethelResources.aethelItemData.loadItems();
     } else {
       aethelItemDirectory.mkdir();
+    }
+
+    File forgeRecipeDirectory = new File(AethelResources.forgeRecipeDirectory);
+    if (forgeRecipeDirectory.exists()) {
+      AethelResources.forgeRecipeData.loadRecipes();
+    } else {
+      forgeRecipeDirectory.mkdir();
     }
 
     AethelResources.playerHeadData.loadPlayerHeads();

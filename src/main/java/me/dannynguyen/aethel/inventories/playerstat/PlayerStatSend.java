@@ -15,7 +15,7 @@ import java.util.Collections;
  * and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.1
  * @since 1.4.10
  */
 public class PlayerStatSend {
@@ -55,51 +55,28 @@ public class PlayerStatSend {
     String statOwner = player.getMetadata("stat-owner").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
-    String statCategory = player.getMetadata("category").get(0).asString();
-
     String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
     String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
 
-    String statName;
+    String statCategory = player.getMetadata("category").get(0).asString();
     ArrayList<String> statValues = new ArrayList<>();
 
     if (statCategory.equals("Entity Types")) {
-      EntityType entityType = EntityType.valueOf(substatName);
-
-      int kills = player.getStatistic(Statistic.KILL_ENTITY, entityType);
-      int deaths = player.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
-
-      statName = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
-      statValues.add(ChatColor.YELLOW + "Killed " + ChatColor.WHITE + kills);
-      statValues.add(ChatColor.YELLOW + "Killed By " + ChatColor.WHITE + deaths);
+      loadEntityTypeSubstatValues(requestedPlayer, substatName, statValues);
     } else {
-      Material material = Material.valueOf(substatName);
-
-      int mined = requestedPlayer.getStatistic(Statistic.MINE_BLOCK, material);
-      int crafted = requestedPlayer.getStatistic(Statistic.CRAFT_ITEM, material);
-      int used = requestedPlayer.getStatistic(Statistic.USE_ITEM, material);
-      int broke = requestedPlayer.getStatistic(Statistic.BREAK_ITEM, material);
-      int pickup = requestedPlayer.getStatistic(Statistic.PICKUP, material);
-      int drop = requestedPlayer.getStatistic(Statistic.DROP, material);
-
-      statName = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
-      statValues.add(ChatColor.YELLOW + "Mined " + ChatColor.WHITE + mined);
-      statValues.add(ChatColor.YELLOW + "Crafted " + ChatColor.WHITE + crafted);
-      statValues.add(ChatColor.YELLOW + "Used " + ChatColor.WHITE + used);
-      statValues.add(ChatColor.YELLOW + "Broke " + ChatColor.WHITE + broke);
-      statValues.add(ChatColor.YELLOW + "Picked Up " + ChatColor.WHITE + pickup);
-      statValues.add(ChatColor.YELLOW + "Dropped " + ChatColor.WHITE + drop);
+      loadMaterialSubstatValues(requestedPlayer, substatName, statValues);
     }
 
+    String statName = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.GOLD + itemName;
     StringBuilder message = new StringBuilder(statName);
     for (String value : statValues) {
-      message.append(" " + value);
+      message.append(" ").append(value);
     }
 
     if (!e.getClick().isShiftClick()) {
       player.sendMessage(message.toString());
     } else {
-      if (player.getName() != statOwner) {
+      if (!player.getName().equals(statOwner)) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
           onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " +
               ChatColor.DARK_PURPLE + player.getName() + ChatColor.WHITE + " -> " + message);
@@ -127,7 +104,7 @@ public class PlayerStatSend {
     switch (itemName) {
       case "Play One Minute", "Time Since Death",
           "Time Since Rest", "Total World Time" -> statValueString =
-          ChatColor.WHITE + tickTimeConversion(Long.valueOf(requestedPlayer.getStatistic(stat)));
+          ChatColor.WHITE + tickTimeConversion(requestedPlayer.getStatistic(stat));
       default -> {
         if (!itemName.contains("One Cm")) {
           statValueString =
@@ -151,5 +128,49 @@ public class PlayerStatSend {
     long hours = ticks / 72000L % 24;
     long minutes = ticks / 1200L % 60;
     return (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ");
+  }
+
+  /**
+   * Retrieves the requested player's specific entity type substat values.
+   *
+   * @param requestedPlayer requested player
+   * @param substatName     substat's name
+   * @param statValues      substat's values
+   */
+  private static void loadEntityTypeSubstatValues(OfflinePlayer requestedPlayer, String substatName,
+                                                  ArrayList<String> statValues) {
+    EntityType entityType = EntityType.valueOf(substatName);
+
+    int kills = requestedPlayer.getStatistic(Statistic.KILL_ENTITY, entityType);
+    int deaths = requestedPlayer.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
+
+    statValues.add(ChatColor.YELLOW + "Killed " + ChatColor.WHITE + kills);
+    statValues.add(ChatColor.YELLOW + "Deaths by " + ChatColor.WHITE + deaths);
+  }
+
+  /**
+   * Retrieves the requested player's specific material substat values.
+   *
+   * @param requestedPlayer requested player
+   * @param substatName     substat's name
+   * @param statValues      substat's values
+   */
+  private static void loadMaterialSubstatValues(OfflinePlayer requestedPlayer, String substatName,
+                                                ArrayList<String> statValues) {
+    Material material = Material.valueOf(substatName);
+
+    int mined = requestedPlayer.getStatistic(Statistic.MINE_BLOCK, material);
+    int crafted = requestedPlayer.getStatistic(Statistic.CRAFT_ITEM, material);
+    int used = requestedPlayer.getStatistic(Statistic.USE_ITEM, material);
+    int broke = requestedPlayer.getStatistic(Statistic.BREAK_ITEM, material);
+    int pickedUp = requestedPlayer.getStatistic(Statistic.PICKUP, material);
+    int dropped = requestedPlayer.getStatistic(Statistic.DROP, material);
+
+    statValues.add(ChatColor.YELLOW + "Mined " + ChatColor.WHITE + mined);
+    statValues.add(ChatColor.YELLOW + "Crafted " + ChatColor.WHITE + crafted);
+    statValues.add(ChatColor.YELLOW + "Used " + ChatColor.WHITE + used);
+    statValues.add(ChatColor.YELLOW + "Broke " + ChatColor.WHITE + broke);
+    statValues.add(ChatColor.YELLOW + "Picked Up " + ChatColor.WHITE + pickedUp);
+    statValues.add(ChatColor.YELLOW + "Dropped " + ChatColor.WHITE + dropped);
   }
 }

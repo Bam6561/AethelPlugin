@@ -13,18 +13,17 @@ import org.bukkit.metadata.FixedMetadataValue;
  * to bypass different conditions for commands and interactions.
  *
  * @author Danny Nguyen
- * @version 1.4.4
+ * @version 1.5.1
  * @since 1.4.4
  */
 public class DevMode implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage("Player-only command.");
       return true;
     }
 
-    Player player = (Player) sender;
     if (player.isOp()) {
       readRequest(player, args.length);
     } else {
@@ -40,9 +39,10 @@ public class DevMode implements CommandExecutor {
    * @param numberOfParameters number of parameters
    */
   private void readRequest(Player player, int numberOfParameters) {
-    switch (numberOfParameters) {
-      case 0 -> toggleDevMode(player);
-      default -> player.sendMessage("Unrecognized parameters.");
+    if (numberOfParameters == 0) {
+      toggleDevMode(player);
+    } else {
+      player.sendMessage("Unrecognized parameters.");
     }
   }
 

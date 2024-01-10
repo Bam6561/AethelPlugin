@@ -26,18 +26,18 @@ public class InventoryListener implements Listener {
     if (player.hasMetadata("inventory")) {
       String inventory = player.getMetadata("inventory").get(0).asString();
       switch (inventory) {
-        case "aethelitem-category" -> AethelItemListener.readAethelItemCategoryClick(e, player);
-        case "aethelitem-get" -> AethelItemListener.readAethelMainClick(e, "get");
-        case "aethelitem-delete" -> AethelItemListener.readAethelMainClick(e, "delete");
-        case "forge-craft" -> ForgeListener.interpretForgeMainClick(e, "craft");
+        case "aethelitem-category" -> AethelItemListener.readAethelItemMainClick(e, player);
+        case "aethelitem-get" -> AethelItemListener.readAethelCategoryClick(e, player, "get");
+        case "aethelitem-delete" -> AethelItemListener.readAethelCategoryClick(e, player, "delete");
+        case "forge-craft" -> ForgeListener.interpretForgeMainClick(e, player, "craft");
         case "forge-craft-confirm" -> ForgeListener.interpretForgeCraftConfirmClick(e, player);
         case "forge-create" -> ForgeListener.interpretForgeCreateClick(e, player);
-        case "forge-modify" -> ForgeListener.interpretForgeMainClick(e, "modify");
-        case "forge-delete" -> ForgeListener.interpretForgeMainClick(e, "delete");
-        case "playerstat-category" -> PlayerStatListener.readPlayerStatCategoryClick(e, player);
+        case "forge-modify" -> ForgeListener.interpretForgeMainClick(e, player, "modify");
+        case "forge-delete" -> ForgeListener.interpretForgeMainClick(e, player, "delete");
+        case "playerstat-category" -> PlayerStatListener.readPlayerStatMainClick(e, player);
         case "playerstat-past", "showitem-past" -> e.setCancelled(true);
-        case "playerstat-substat" -> PlayerStatListener.readPlayerStatSubstatClick(e, player);
         case "playerstat-stat" -> PlayerStatListener.readPlayerStatStatClick(e, player);
+        case "playerstat-substat" -> PlayerStatListener.readPlayerStatSubstatClick(e, player);
       }
     }
   }

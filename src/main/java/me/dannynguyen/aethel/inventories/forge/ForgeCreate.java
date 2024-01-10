@@ -110,23 +110,27 @@ public class ForgeCreate {
    * @return encoded recipe string
    */
   private static String encodeRecipe(ItemStack[] inv) {
-    ItemCreator itemCreator = new ItemCreator();
-
     StringBuilder components = new StringBuilder();
     for (int i = 9; i < 24; i++) {
       ItemStack item = inv[i];
-      if (item != null) components.append(itemCreator.encodeItem(item) + " ");
+      if (item != null) {
+        components.append(ItemCreator.encodeItem(item)).append(" ");
+      }
     }
 
-    if (components.toString().equals("")) return null;
+    if (components.toString().equals("")) {
+      return null;
+    }
 
     StringBuilder results = new StringBuilder();
     for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
-      if (item != null) results.append(itemCreator.encodeItem(item) + " ");
+      if (item != null) {
+        results.append(ItemCreator.encodeItem(item)).append(" ");
+      }
     }
 
-    return results.append("\n" + components).toString();
+    return results.append("\n").append(components).toString();
   }
 
   /**

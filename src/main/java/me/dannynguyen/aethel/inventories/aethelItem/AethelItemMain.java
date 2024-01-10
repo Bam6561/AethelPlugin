@@ -21,7 +21,7 @@ import java.util.Set;
  * supports pagination for getting, creating, modifying, and deleting items.
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.1
  * @since 1.4.0
  */
 public class AethelItemMain {
@@ -68,8 +68,7 @@ public class AethelItemMain {
     if (!categoryNames.isEmpty()) {
       int i = 9;
       for (String categoryName : categoryNames) {
-        inv.setItem(i, ItemCreator.createItem(Material.BOOK,
-            ChatColor.WHITE + capitalizeProperly(categoryName)));
+        inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + categoryName));
         i++;
       }
     }
@@ -186,22 +185,5 @@ public class AethelItemMain {
       inv.setItem(8, ItemCreator.
           createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
     }
-  }
-
-  /**
-   * Capitalizes the first character of every word.
-   *
-   * @param phrase phrase
-   * @return proper phrase
-   */
-  private static String capitalizeProperly(String phrase) {
-    phrase = phrase.replace("_", " ");
-    String[] words = phrase.split(" ");
-
-    StringBuilder properPhrase = new StringBuilder();
-    for (String word : words) {
-      properPhrase.append(word.replace(word.substring(1), word.substring(1).toLowerCase()) + " ");
-    }
-    return properPhrase.toString().trim();
   }
 }

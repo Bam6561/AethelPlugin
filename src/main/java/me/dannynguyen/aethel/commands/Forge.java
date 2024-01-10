@@ -19,28 +19,27 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.5.1
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage("Player-only command.");
       return true;
     }
-    readRequest(sender, args);
+    readRequest(player, args);
     return true;
   }
 
   /**
    * Checks if the command request was formatted correctly before interpreting its usage.
    *
-   * @param sender command sender
+   * @param player interacting player
    * @param args   player provided parameters
    */
-  private void readRequest(CommandSender sender, String[] args) {
-    Player player = (Player) sender;
+  private void readRequest(Player player, String[] args) {
     switch (args.length) {
       case 0 -> openForgeCraftInventory(player);
       case 1 -> {

@@ -6,17 +6,10 @@ import java.util.List;
  * PlayerStatMessage is an object relating statistics with their message.
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.1
  * @since 1.4.10
  */
-public class PlayerStatMessage {
-  private final String statName;
-  private final List<String> stats;
-
-  public PlayerStatMessage(String statName, List<String> stats) {
-    this.statName = statName;
-    this.stats = stats;
-  }
+public record PlayerStatMessage(String statName, List<String> stats) {
 
   public String getStatName() {
     return this.statName;

@@ -24,18 +24,17 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.1
  * @since 1.2.6
  */
 public class AethelTag implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage("Player-only command.");
       return true;
     }
 
-    Player player = (Player) sender;
     if (player.isOp()) {
       ItemStack item = player.getInventory().getItemInMainHand();
       if (item.getType() != Material.AIR) {
@@ -57,25 +56,24 @@ public class AethelTag implements CommandExecutor {
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
-    String action = args[0].toLowerCase();
     switch (args.length) {
       case 0 -> player.sendMessage(ChatColor.RED + "No parameters provided.");
       case 1 -> {
-        if (action.equals("get")) {
+        if (args[0].equalsIgnoreCase("get")) {
           getAethelTags(player, item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
         }
       }
       case 2 -> {
-        if (action.equals("remove") || action.equals("rm")) {
+        if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rm")) {
           removeAethelTag(player, args[1], item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
         }
       }
       case 3 -> {
-        if (action.equals("set")) {
+        if (args[0].equalsIgnoreCase("set")) {
           setAethelTag(player, args, item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");

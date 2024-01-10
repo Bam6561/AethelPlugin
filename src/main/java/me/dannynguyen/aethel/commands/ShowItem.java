@@ -27,17 +27,16 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.4.14
+ * @version 1.5.1
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage("Player-only command.");
       return true;
     }
-    Player player = (Player) sender;
     readRequest(player, args);
     return true;
   }

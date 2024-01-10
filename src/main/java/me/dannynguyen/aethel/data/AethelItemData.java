@@ -15,13 +15,16 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * AethelItem contains information about Aethel items stored in memory.
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.1
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -40,28 +43,30 @@ public class AethelItemData {
 
     ArrayList<ItemStack> allItems = new ArrayList<>();
     HashMap<String, ArrayList<ItemStack>> categorizedItems = new HashMap<>();
+    NamespacedKey itemCategoryKey =
+        new NamespacedKey(AethelPlugin.getInstance(), "aethel.aitemcat");
 
     File[] directory = new File(AethelResources.aethelItemDirectory).listFiles();
-    Collections.sort(Arrays.asList(directory));
+    Arrays.sort(directory);
     for (File file : directory) {
       if (file.getName().endsWith("_itm.txt")) {
         AethelItem item = readItemFile(file);
         itemsMap.put(item.getName(), item);
         allItems.add(item.getItem());
-        categorizeItem(item.getItem(), categorizedItems);
+        categorizeItem(item.getItem(), itemCategoryKey, categorizedItems);
       }
     }
 
     if (!itemsMap.isEmpty()) {
       createAllItemPages(allItems, itemCategoriesMap);
-      createItemCategoryPages(categorizedItems, itemCategoriesMap);
+      createItemCategoryPages(itemCategoryKey, categorizedItems, itemCategoriesMap);
     }
   }
 
   /**
    * Reads an item file.
    *
-   * @param file
+   * @param file item file
    * @return decoded item
    * @throws IOException file not found
    */
@@ -79,11 +84,11 @@ public class AethelItemData {
    * Puts an item into a category if it has an item category tag.
    *
    * @param item             interacting item
+   * @param itemCategoryKey  item category tag
    * @param categorizedItems items sorted by category
    */
-  private void categorizeItem(ItemStack item, HashMap<String, ArrayList<ItemStack>> categorizedItems) {
-    NamespacedKey itemCategoryKey =
-        new NamespacedKey(AethelPlugin.getInstance(), "aethel.aitemcat");
+  private void categorizeItem(ItemStack item, NamespacedKey itemCategoryKey,
+                              HashMap<String, ArrayList<ItemStack>> categorizedItems) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
     if (dataContainer.has(itemCategoryKey, PersistentDataType.STRING)) {
@@ -92,7 +97,7 @@ public class AethelItemData {
       if (categorizedItems.containsKey(itemCategory)) {
         categorizedItems.get(itemCategory).add(item);
       } else {
-        ArrayList<ItemStack> items = new ArrayList();
+        ArrayList<ItemStack> items = new ArrayList<>();
         items.add(item);
         categorizedItems.put(itemCategory, items);
       }
@@ -112,16 +117,18 @@ public class AethelItemData {
 
     ArrayList<Inventory> pages = createItemPages(allItems, numberOfItems, numberOfPages);
 
-    itemCategoriesMap.put("all", new AethelItemCategory("all", pages, numberOfPages));
+    itemCategoriesMap.put("All", new AethelItemCategory("All", pages, numberOfPages));
   }
 
   /**
    * Creates pages of items by category.
    *
+   * @param itemCategoryKey   item category tag
    * @param categorizedItems  items sorted by category
    * @param itemCategoriesMap item category pages
    */
-  private void createItemCategoryPages(HashMap<String, ArrayList<ItemStack>> categorizedItems,
+  private void createItemCategoryPages(NamespacedKey itemCategoryKey,
+                                       HashMap<String, ArrayList<ItemStack>> categorizedItems,
                                        HashMap<String, AethelItemCategory> itemCategoriesMap) {
     for (ArrayList<ItemStack> items : categorizedItems.values()) {
       int numberOfItems = items.size();
@@ -129,8 +136,6 @@ public class AethelItemData {
 
       ArrayList<Inventory> pages = createItemPages(items, numberOfItems, numberOfPages);
 
-      NamespacedKey itemCategoryKey =
-          new NamespacedKey(AethelPlugin.getInstance(), "aethel.aitemcat");
       PersistentDataContainer dataContainer = items.get(0).getItemMeta().getPersistentDataContainer();
       String itemCategory = dataContainer.get(itemCategoryKey, PersistentDataType.STRING);
 
@@ -154,14 +159,11 @@ public class AethelItemData {
     ArrayList<Inventory> pages = new ArrayList<>();
     for (int page = 0; page < numberOfPages; page++) {
       Inventory inv = Bukkit.createInventory(null, 54, "Aethel Item Category Page");
-      // i = item index
-      // j = inventory slot index
 
-      // Items begin on the second row
-      int j = 9;
-      for (int i = startIndex; i < endIndex; i++) {
-        inv.setItem(j, items.get(i));
-        j++;
+      int invSlot = 9;
+      for (int itemIndex = startIndex; itemIndex < endIndex; itemIndex++) {
+        inv.setItem(invSlot, items.get(itemIndex));
+        invSlot++;
       }
       pages.add(inv);
 

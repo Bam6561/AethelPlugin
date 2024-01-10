@@ -18,7 +18,7 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.4.12
+ * @version 1.5.1
  * @since 1.1.4
  */
 public class ItemReader {
@@ -29,7 +29,7 @@ public class ItemReader {
    * @return effective item name
    */
   public static String readItemName(ItemStack item) {
-    if (item.getItemMeta().hasDisplayName()) {
+    if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
     } else {
       return item.getType().name();
@@ -44,14 +44,14 @@ public class ItemReader {
    */
   public static String readAethelTags(ItemStack item) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-    StringBuilder aethelTags = new StringBuilder();
 
+    StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey dataKey : dataContainer.getKeys()) {
       String keyName = dataKey.getKey();
       if (keyName.startsWith("aethel.")) {
         NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), keyName);
-        aethelTags.append(ChatColor.AQUA + keyName.substring(7) + " " + ChatColor.WHITE
-            + dataContainer.get(namespacedKey, PersistentDataType.STRING) + " ");
+        aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
+            append(dataContainer.get(namespacedKey, PersistentDataType.STRING)).append(" ");
       }
     }
     return aethelTags.toString();
@@ -69,8 +69,7 @@ public class ItemReader {
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
       BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
-      ItemStack item = (ItemStack) bois.readObject();
-      return item;
+      return (ItemStack) bois.readObject();
     } catch (IOException | ClassNotFoundException ex) {
       return null;
     }

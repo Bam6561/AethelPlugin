@@ -16,7 +16,7 @@ import java.util.*;
  * PlayerStatData contains information about player statistics.
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.1
  * @since 1.4.8
  */
 public class PlayerStatData {
@@ -29,6 +29,7 @@ public class PlayerStatData {
     put("Materials", new ArrayList<>());
     put("Entity Types", new ArrayList<>());
   }};
+
   private int numberOfMaterialPages = 0;
   private int numberOfEntityTypePages = 0;
 
@@ -48,7 +49,7 @@ public class PlayerStatData {
    */
   private void createStatCategoryPages() {
     HashMap<String, Inventory> statCategoryPages = getStatCategoryPages();
-    for (PlayerStatCategory playerStatCategory : createPlayerStatisticCategories()) {
+    for (PlayerStatCategory playerStatCategory : getPlayerStatisticCategories()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54, "PlayerStat Category Page");
       for (String statName : playerStatCategory.getStats()) {
@@ -84,17 +85,14 @@ public class PlayerStatData {
 
     for (int page = 0; page < numberOfPages; page++) {
       Inventory inv = Bukkit.createInventory(null, 54, "Player Statistic Material Page");
-      // i = stat index
-      // j = inventory slot index
 
-      // Stats begin on the second row
-      int j = 9;
-      for (int i = startIndex; i < endIndex; i++) {
-        String materialName = materials.get(i).name();
+      int invSlot = 9;
+      for (int statIndex = startIndex; statIndex < endIndex; statIndex++) {
+        String materialName = materials.get(statIndex).name();
         String materialDisplayName = capitalizeProperly(materialName);
-        inv.setItem(j, ItemCreator.createItem(
+        inv.setItem(invSlot, ItemCreator.createItem(
             Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
-        j++;
+        invSlot++;
       }
       substatCategoryPages.get("Materials").add(inv);
 
@@ -153,7 +151,7 @@ public class PlayerStatData {
 
     StringBuilder properPhrase = new StringBuilder();
     for (String word : words) {
-      properPhrase.append(word.replace(word.substring(1), word.substring(1).toLowerCase()) + " ");
+      properPhrase.append(word.replace(word.substring(1), word.substring(1).toLowerCase())).append(" ");
     }
     return properPhrase.toString().trim();
   }
@@ -163,8 +161,8 @@ public class PlayerStatData {
    *
    * @return player stat categories
    */
-  private ArrayList<PlayerStatCategory> createPlayerStatisticCategories() {
-    ArrayList<PlayerStatCategory> playerStatisticCategories = new ArrayList<>(Arrays.asList(
+  private ArrayList<PlayerStatCategory> getPlayerStatisticCategories() {
+    return new ArrayList<>(Arrays.asList(
         new PlayerStatCategory("Activities",
             new ArrayList<>(Arrays.asList("ANIMALS_BRED", "ARMOR_CLEANED", "BANNER_CLEANED",
                 "BELL_RING", "CAKE_SLICES_EATEN", "CAULDRON_FILLED", "CAULDRON_USED",
@@ -192,7 +190,6 @@ public class PlayerStatData {
                 "INTERACT_WITH_BLAST_FURNACE", "INTERACT_WITH_CAMPFIRE", "INTERACT_WITH_CARTOGRAPHY_TABLE",
                 "INTERACT_WITH_GRINDSTONE", "INTERACT_WITH_LECTERN", "INTERACT_WITH_LOOM",
                 "INTERACT_WITH_SMITHING_TABLE", "INTERACT_WITH_SMOKER", "INTERACT_WITH_STONECUTTER")))));
-    return playerStatisticCategories;
   }
 
   /**
