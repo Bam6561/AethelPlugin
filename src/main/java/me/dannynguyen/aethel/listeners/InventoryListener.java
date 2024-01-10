@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 /**
- * InventoryListener is a general usage inventory listener.
+ * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
  * @version 1.5.4

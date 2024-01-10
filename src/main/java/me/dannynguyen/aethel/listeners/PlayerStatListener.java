@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatListener is an inventory listener for the PlayerStat command.
  *
  * @author Danny Nguyen
- * @version 1.5.0
+ * @version 1.5.5
  * @since 1.4.7
  */
 public class PlayerStatListener {
@@ -27,19 +27,19 @@ public class PlayerStatListener {
   public static void readPlayerStatMainClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       if (e.getSlot() > 8) {
-        String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
+        String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
         String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
+        player.setMetadata("category",
+            new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+
         player.openInventory(PlayerStatMain.
             openPlayerStatCategoryPage(player, requestedPlayerName, itemName, 0));
-
         switch (itemName) {
           case "Entity Types", "Materials" -> player.setMetadata("inventory",
               new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-substat"));
           default -> player.setMetadata("inventory",
               new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-stat"));
         }
-        player.setMetadata("category",
-            new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
       }
       e.setCancelled(true);
     }
@@ -91,7 +91,7 @@ public class PlayerStatListener {
    * @param player interacting player
    */
   private static void previousStatPage(Player player) {
-    String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
+    String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
@@ -107,10 +107,11 @@ public class PlayerStatListener {
    * @param player interacting player
    */
   private static void returnToMainPage(Player player) {
-    String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
+    String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
     player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, requestedPlayerName));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat-category"));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 
   /**
@@ -119,7 +120,7 @@ public class PlayerStatListener {
    * @param player interacting player
    */
   private static void nextStatPage(Player player) {
-    String requestedPlayerName = player.getMetadata("stat-owner").get(0).asString();
+    String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 

@@ -63,9 +63,9 @@ public class ForgeListener {
    * @param player interacting playert
    */
   private static void returnToMainPage(Player player) {
-    player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
-    player.openInventory(ForgeMain.openForgeMainPage(player, "categories", "modify"));
+    player.openInventory(ForgeMain.openForgeMainPage(player, "modify"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-category"));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 
   /**
@@ -145,6 +145,7 @@ public class ForgeListener {
   private static void previousRecipePage(Player player, String action) {
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
+
     player.openInventory(ForgeMain.openForgeCategoryPage(player, action, categoryName,
         pageRequest - 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-" + action));
@@ -168,6 +169,7 @@ public class ForgeListener {
    */
   private static void openForgeModifyInventory(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
+
     player.openInventory(ForgeMain.openForgeCategoryPage(player, "modify",
         categoryName, player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-modify"));
@@ -180,6 +182,7 @@ public class ForgeListener {
    */
   private static void openForgeDeleteInventory(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
+
     player.openInventory(ForgeMain.openForgeCategoryPage(player, "delete",
         categoryName, player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-delete"));
@@ -223,6 +226,7 @@ public class ForgeListener {
    */
   private static void openForgeCraftInventory(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
+
     player.openInventory(ForgeMain.openForgeCategoryPage(player, "craft", categoryName,
         player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft"));

@@ -28,20 +28,15 @@ public class ForgeMain {
   /**
    * Creates a ForgeMain page containing categories.
    *
-   * @param categoryName category to view
    * @param player       interacting player
    * @param action       type of interaction
    * @return ForgeMain inventory with recipe categories
    */
-  public static Inventory openForgeMainPage(Player player, String categoryName, String action) {
+  public static Inventory openForgeMainPage(Player player, String action) {
     Inventory inv = createInventory(player, action);
     addRecipeCategories(inv);
     addForgeContext(action, inv);
-    if (categoryName.equals("categories")) {
-      addCreateButton(inv);
-    } else {
-      addActionButtons(action, inv);
-    }
+    addCreateButton(inv);
     return inv;
   }
 

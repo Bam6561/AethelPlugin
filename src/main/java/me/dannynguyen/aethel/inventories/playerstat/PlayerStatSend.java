@@ -15,7 +15,7 @@ import java.util.Collections;
  * the player and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.5.5
  * @since 1.4.10
  */
 public class PlayerStatSend {
@@ -26,7 +26,7 @@ public class PlayerStatSend {
    * @param player interacting player
    */
   public static void sendStat(InventoryClickEvent e, Player player) {
-    String statOwner = player.getMetadata("stat-owner").get(0).asString();
+    String statOwner = player.getMetadata("page-owner").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
@@ -52,7 +52,7 @@ public class PlayerStatSend {
    * @param player interacting player
    */
   public static void sendSubstat(InventoryClickEvent e, Player player) {
-    String statOwner = player.getMetadata("stat-owner").get(0).asString();
+    String statOwner = player.getMetadata("page-owner").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));

@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.5.5
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -76,12 +76,11 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeCraftInventory(Player player) {
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
     player.setMetadata("action", new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
-    player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
 
-    player.openInventory(ForgeMain.openForgeMainPage(player, "categories", "craft"));
+    player.openInventory(ForgeMain.openForgeMainPage(player, "craft"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-category"));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 
   /**
@@ -90,11 +89,10 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeModifyInventory(Player player) {
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
     player.setMetadata("action", new FixedMetadataValue(AethelPlugin.getInstance(), "modify"));
-    player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), "categories"));
 
-    player.openInventory(ForgeMain.openForgeMainPage(player, "categories", "modify"));
+    player.openInventory(ForgeMain.openForgeMainPage(player, "modify"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-category"));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 }
