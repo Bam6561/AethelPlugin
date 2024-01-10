@@ -175,6 +175,7 @@ public class AethelItemListener {
     player.openInventory(AethelItemMain.openItemMainPage(player, "view"));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-category"));
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 
   /**
