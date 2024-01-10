@@ -21,7 +21,7 @@ import java.util.Set;
  * categorical pagination for getting, creating, modifying, and deleting Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.5.4
  * @since 1.4.0
  */
 public class AethelItemMain {
@@ -36,7 +36,7 @@ public class AethelItemMain {
     Inventory inv = createInventory(player, action);
     addItemCategories(inv);
     addItemContext("categories", inv);
-    addActionButtons(inv, "view");
+    addActionButtons("view", inv);
     return inv;
   }
 
@@ -95,7 +95,7 @@ public class AethelItemMain {
     inv.setContents(itemCategory.getPages().get(pageViewed).getContents());
 
     addItemContext(categoryName, inv);
-    addActionButtons(inv, action);
+    addActionButtons(action, inv);
     Pagination.addBackButton(inv, 6);
     Pagination.addPageButtons(inv, numberOfPages, pageViewed);
     return inv;
@@ -137,10 +137,10 @@ public class AethelItemMain {
   /**
    * Adds save, get, and delete buttons.
    *
-   * @param inv    interacting inventory
    * @param action type of interaction
+   * @param inv    interacting inventory
    */
-  private static void addActionButtons(Inventory inv, String action) {
+  private static void addActionButtons(String action, Inventory inv) {
     switch (action) {
       case "get" -> {
         inv.setItem(4, ItemCreator.

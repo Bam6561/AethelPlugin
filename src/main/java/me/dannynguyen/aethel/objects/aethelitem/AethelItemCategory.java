@@ -15,14 +15,14 @@ public record AethelItemCategory(String name, ArrayList<Inventory> pages,
                                  int numberOfPages) {
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public ArrayList<Inventory> getPages() {
-    return pages;
+    return this.pages;
   }
 
   public int getNumberOfPages() {
-    return numberOfPages;
+    return this.numberOfPages;
   }
 }

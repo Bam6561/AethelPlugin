@@ -3,57 +3,44 @@ package me.dannynguyen.aethel.inventories.forge;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.data.ForgeRecipeData;
 import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ForgeMain is a shared inventory under the Forge command that supports
  * categorical pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.5.4
  * @since 1.0.6
  */
 public class ForgeMain {
   /**
-   * Loads a recipe page from memory.
+   * Creates a ForgeMain page containing categories.
    *
-   * @param player      interacting player
-   * @param action      type of interaction
-   * @param pageRequest page to view
-   * @return ForgeMain inventory with recipes
+   * @param categoryName category to view
+   * @param player       interacting player
+   * @param action       type of interaction
+   * @return ForgeMain inventory with recipe categories
    */
-  public static Inventory openRecipePage(Player player, String action, int pageRequest) {
-    ForgeRecipeData recipeData = AethelResources.forgeRecipeData;
-
-    int numberOfPages = recipeData.getNumberOfPages();
-    int pageViewed = Pagination.calculatePageViewed(numberOfPages, pageRequest);
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
-
+  public static Inventory openForgeMainPage(Player player, String categoryName, String action) {
     Inventory inv = createInventory(player, action);
-    if (numberOfPages > 0) {
-      inv.setContents(recipeData.getRecipePages().get(pageViewed).getContents());
-      Pagination.addPageButtons(inv, numberOfPages, pageViewed);
-    }
-
-    switch (action) {
-      case "craft" -> addCraftContext(inv);
-      case "modify" -> {
-        addEditorContext(inv);
-        addModifyActionButtons(inv);
-      }
-      case "delete" -> {
-        addEditorContext(inv);
-        addDeleteActionButtons(inv);
-      }
+    addRecipeCategories(inv);
+    addForgeContext(action, inv);
+    if (categoryName.equals("categories")) {
+      addCreateButton(inv);
+    } else {
+      addActionButtons(action, inv);
     }
     return inv;
   }
@@ -68,68 +55,126 @@ public class ForgeMain {
   private static Inventory createInventory(Player player, String action) {
     String title = ChatColor.DARK_GRAY + "Forge";
     switch (action) {
-      case "craft" -> title += ChatColor.BLUE + " Craft";
-      case "modify" -> title += ChatColor.YELLOW + " Modify";
-      case "delete" -> title += ChatColor.RED + " Delete";
+      case "craft" -> title += ChatColor.BLUE + " Craft " +
+          ChatColor.WHITE + player.getMetadata("category").get(0).asString();
+      case "modify" -> title += ChatColor.YELLOW + " Modify " +
+          ChatColor.WHITE + player.getMetadata("category").get(0).asString();
+      case "delete" -> title += ChatColor.RED + " Delete " +
+          ChatColor.WHITE + player.getMetadata("category").get(0).asString();
     }
     return Bukkit.createInventory(player, 54, title);
   }
 
   /**
-   * Adds a help context to the craft action.
+   * Adds recipe categories.
    *
    * @param inv interacting inventory
    */
-  private static void addCraftContext(Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "Expand a recipe to see its",
-        ChatColor.WHITE + "results and components.",
-        "",
-        ChatColor.WHITE + "Components are matched",
-        ChatColor.WHITE + "by material unless",
-        ChatColor.WHITE + "they're unique items!");
-
-    inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
-        ChatColor.GREEN + "Help", helpLore));
+  private static void addRecipeCategories(Inventory inv) {
+    Set<String> categoryNames = AethelResources.forgeRecipeData.getRecipeCategoriesMap().keySet();
+    if (!categoryNames.isEmpty()) {
+      int i = 9;
+      for (String categoryName : categoryNames) {
+        inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + categoryName));
+        i++;
+      }
+    }
   }
 
   /**
-   * Adds a help context to the editor actions.
+   * Loads a recipe category page from memory.
    *
-   * @param inv interacting inventory
+   * @param player       interacting player
+   * @param action       type of interaction
+   * @param categoryName category to view
+   * @param pageRequest  page to view
+   * @return ForgeMain inventory with recipes
    */
-  private static void addEditorContext(Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "To undo a deletion,",
-        ChatColor.WHITE + "modify the item and",
-        ChatColor.WHITE + "save it before reloading.");
+  public static Inventory openForgeCategoryPage(Player player, String action,
+                                                String categoryName, int pageRequest) {
+    Inventory inv = createInventory(player, action);
 
-    inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
-        ChatColor.GREEN + "Help", helpLore));
+    ForgeRecipeCategory recipeCategory = AethelResources.forgeRecipeData.
+        getRecipeCategoriesMap().get(categoryName);
+    int numberOfPages = recipeCategory.getNumberOfPages();
+    int pageViewed = Pagination.calculatePageViewed(numberOfPages, pageRequest);
+    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+
+    inv.setContents(recipeCategory.getPages().get(pageViewed).getContents());
+
+    addForgeContext(action, inv);
+    addActionButtons(action, inv);
+    Pagination.addBackButton(inv, 6);
+    Pagination.addPageButtons(inv, numberOfPages, pageViewed);
+    return inv;
   }
 
   /**
-   * Adds create and delete recipe buttons.
+   * Adds a help context to the ForgeMain inventory.
+   *
+   * @param action type of interaction
+   * @param inv    interacting inventory
+   */
+  private static void addForgeContext(String action, Inventory inv) {
+    List<String> helpLore;
+    switch (action) {
+      case "craft" -> {
+        helpLore = Arrays.asList(
+            ChatColor.WHITE + "Expand a recipe to see its",
+            ChatColor.WHITE + "results and components.",
+            "",
+            ChatColor.WHITE + "Components are matched",
+            ChatColor.WHITE + "by material unless",
+            ChatColor.WHITE + "they're unique items!");
+        inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+            ChatColor.GREEN + "Help", helpLore));
+      }
+      case "modify", "delete" -> {
+        helpLore = Arrays.asList(
+            ChatColor.WHITE + "To undo a deletion,",
+            ChatColor.WHITE + "modify the item and",
+            ChatColor.WHITE + "save it before reloading.");
+        inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+            ChatColor.GREEN + "Help", helpLore));
+      }
+      case "view" -> {
+        helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
+        inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+            ChatColor.GREEN + "Help", helpLore));
+      }
+    }
+  }
+
+  /**
+   * Adds the create button.
    *
    * @param inv interacting inventory
    */
-  private static void addModifyActionButtons(Inventory inv) {
+  private static void addCreateButton(Inventory inv) {
     inv.setItem(3, ItemCreator.
         createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
-    inv.setItem(5, ItemCreator.
-        createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Delete"));
   }
 
-
   /**
-   * Adds create and modify recipe buttons.
+   * Adds create, modify, and delete buttons.
    *
-   * @param inv interacting inventory
+   * @param action type of interaction
+   * @param inv    interacting inventory
    */
-  private static void addDeleteActionButtons(Inventory inv) {
-    inv.setItem(3, ItemCreator.
-        createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
-    inv.setItem(4, ItemCreator.
-        createPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Modify"));
+  private static void addActionButtons(String action, Inventory inv) {
+    switch (action) {
+      case "modify" -> {
+        inv.setItem(3, ItemCreator.
+            createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
+        inv.setItem(5, ItemCreator.
+            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Delete"));
+      }
+      case "delete" -> {
+        inv.setItem(3, ItemCreator.
+            createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
+        inv.setItem(4, ItemCreator.
+            createPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Modify"));
+      }
+    }
   }
 }

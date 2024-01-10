@@ -19,10 +19,10 @@ public class ItemOwner {
   }
 
   public String getOwner() {
-    return owner;
+    return this.owner;
   }
 
   public ItemStack getItem() {
-    return item;
+    return this.item;
   }
 }

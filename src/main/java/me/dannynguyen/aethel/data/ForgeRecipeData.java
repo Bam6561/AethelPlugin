@@ -1,14 +1,19 @@
 package me.dannynguyen.aethel.data;
 
+import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.Pagination;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
+import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,37 +23,43 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.5.4
  * @since 1.1.11
  */
 public class ForgeRecipeData {
-  private final ArrayList<ForgeRecipe> recipes = new ArrayList<>();
   private final HashMap<String, ForgeRecipe> recipesMap = new HashMap<>();
-  private final ArrayList<Inventory> recipePages = new ArrayList<>();
-  private int numberOfPages = 0;
+  private final HashMap<String, ForgeRecipeCategory> recipeCategoriesMap = new HashMap<>();
 
   /**
-   * (Re)loads forge recipes into memory.
+   * Loads forge recipes into memory.
    */
   public void loadRecipes() {
-    ArrayList<ForgeRecipe> recipes = getRecipes();
     HashMap<String, ForgeRecipe> recipesMap = getRecipesMap();
+    HashMap<String, ForgeRecipeCategory> recipeCategoriesMap = getRecipeCategoriesMap();
 
-    recipes.clear();
     recipesMap.clear();
-    getRecipePages().clear();
-    setNumberOfPages(0);
+    recipeCategoriesMap.clear();
+
+    ArrayList<ForgeRecipe> allRecipes = new ArrayList<>();
+    HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes = new HashMap<>();
+    NamespacedKey forgeCategoryKey =
+        new NamespacedKey(AethelPlugin.getInstance(), "aethel.forgecat");
 
     File[] directory = new File(AethelResources.forgeRecipeDirectory).listFiles();
     Arrays.sort(directory);
     for (File file : directory) {
       if (file.getName().endsWith("_rcp.txt")) {
         ForgeRecipe recipe = readRecipeFile(file);
-        recipes.add(recipe);
         recipesMap.put(recipe.getName(), recipe);
+        allRecipes.add(recipe);
+        categorizeRecipe(recipe, forgeCategoryKey, categorizedRecipes);
       }
     }
-    createRecipePages();
+
+    if (!recipesMap.isEmpty()) {
+      createAllRecipePages(allRecipes, recipeCategoriesMap);
+      createRecipeCategoryPages(forgeCategoryKey, categorizedRecipes, recipeCategoriesMap);
+    }
   }
 
   /**
@@ -81,41 +92,6 @@ public class ForgeRecipeData {
   }
 
   /**
-   * Creates pages of recipes.
-   */
-  public void createRecipePages() {
-    ArrayList<ForgeRecipe> recipes = getRecipes();
-    ArrayList<Inventory> recipePages = getRecipePages();
-
-    int numberOfRecipes = recipes.size();
-    int numberOfPages = Pagination.calculateNumberOfPages(numberOfRecipes);
-    setNumberOfPages(numberOfPages);
-
-    int startIndex = 0;
-    int endIndex = Math.min(numberOfRecipes, 45);
-
-    for (int page = 0; page < numberOfPages; page++) {
-      Inventory inv = Bukkit.createInventory(null, 54, "Forge Recipe Page");
-      // i = recipes index
-      // j = inventory slot index
-
-      // Recipes begin on the second row
-      int j = 9;
-      for (int i = startIndex; i < endIndex; i++) {
-        ArrayList<ItemStack> results = recipes.get(i).getResults();
-        inv.setItem(j, createResultsDisplay(results.get(0), results));
-        j++;
-      }
-      recipePages.add(inv);
-
-      // Indices to use for the next page (if it exists)
-      startIndex += 45;
-      endIndex = Math.min(numberOfRecipes, endIndex + 45);
-    }
-  }
-
-
-  /**
    * Reads a line of text from the file and adds decoded items to the recipe.
    * <p>
    * Individual encoded items are separated by spaces.
@@ -138,6 +114,104 @@ public class ForgeRecipeData {
         }
       }
     }
+  }
+
+  /**
+   * Puts a recipe into a category if its first result item has a forge category tag.
+   *
+   * @param recipe             interacting recipe
+   * @param forgeCategoryKey   forge category tag
+   * @param categorizedRecipes recipes sorted by category
+   */
+  private void categorizeRecipe(ForgeRecipe recipe, NamespacedKey forgeCategoryKey,
+                                HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes) {
+    ItemStack item = recipe.getResults().get(0);
+    PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+
+    if (dataContainer.has(forgeCategoryKey, PersistentDataType.STRING)) {
+      String recipeCategory = dataContainer.get(forgeCategoryKey, PersistentDataType.STRING);
+
+      if (categorizedRecipes.containsKey(recipeCategory)) {
+        categorizedRecipes.get(recipeCategory).add(recipe);
+      } else {
+        ArrayList<ForgeRecipe> recipes = new ArrayList<>();
+        recipes.add(recipe);
+        categorizedRecipes.put(recipeCategory, recipes);
+      }
+    }
+  }
+
+  /**
+   * Creates pages of all recipes, regardless of category.
+   *
+   * @param allRecipes          all recipes
+   * @param recipeCategoriesMap recipe category pages
+   */
+  private void createAllRecipePages(ArrayList<ForgeRecipe> allRecipes,
+                                    HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
+    int numberOfRecipes = allRecipes.size();
+    int numberOfPages = Pagination.calculateNumberOfPages(numberOfRecipes);
+
+    ArrayList<Inventory> pages = createRecipePages(allRecipes, numberOfRecipes, numberOfPages);
+
+    recipeCategoriesMap.put("All", new ForgeRecipeCategory("All", pages, numberOfPages));
+  }
+
+
+  /**
+   * Creates pages of recipes by category.
+   *
+   * @param forgeCategoryKey    forge category tag
+   * @param categorizedRecipes  recipes sorted by category
+   * @param recipeCategoriesMap recipe category pages
+   */
+  private void createRecipeCategoryPages(NamespacedKey forgeCategoryKey,
+                                         HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes,
+                                         HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
+    for (ArrayList<ForgeRecipe> recipes : categorizedRecipes.values()) {
+      int numberOfRecipes = recipes.size();
+      int numberOfPages = Pagination.calculateNumberOfPages(numberOfRecipes);
+
+      ArrayList<Inventory> pages = createRecipePages(recipes, numberOfRecipes, numberOfPages);
+
+      PersistentDataContainer dataContainer = recipes.get(0).getResults().
+          get(0).getItemMeta().getPersistentDataContainer();
+      String recipeCategory = dataContainer.get(forgeCategoryKey, PersistentDataType.STRING);
+
+      recipeCategoriesMap.put(recipeCategory, new ForgeRecipeCategory(recipeCategory, pages, numberOfPages));
+    }
+  }
+
+  /**
+   * Creates pages of recipes.
+   *
+   * @param recipes         recipes
+   * @param numberOfRecipes number of recipes
+   * @param numberOfPages   number of pages
+   * @return pages of recipes
+   */
+  private ArrayList<Inventory> createRecipePages(ArrayList<ForgeRecipe> recipes,
+                                                 int numberOfRecipes, int numberOfPages) {
+    int startIndex = 0;
+    int endIndex = Math.min(numberOfRecipes, 45);
+
+    ArrayList<Inventory> pages = new ArrayList<>();
+    for (int page = 0; page < numberOfPages; page++) {
+      Inventory inv = Bukkit.createInventory(null, 54, "Forge Recipe Category Page");
+
+      int invSlot = 9;
+      for (int itemIndex = startIndex; itemIndex < endIndex; itemIndex++) {
+        ArrayList<ItemStack> results = recipes.get(itemIndex).getResults();
+        inv.setItem(invSlot, createResultsDisplay(results.get(0), results));
+        invSlot++;
+      }
+      pages.add(inv);
+
+      // Indices to use for the next page (if it exists)
+      startIndex += 45;
+      endIndex = Math.min(numberOfRecipes, endIndex + 45);
+    }
+    return pages;
   }
 
   /**
@@ -171,23 +245,11 @@ public class ForgeRecipeData {
     }
   }
 
-  public ArrayList<ForgeRecipe> getRecipes() {
-    return this.recipes;
-  }
-
   public HashMap<String, ForgeRecipe> getRecipesMap() {
     return this.recipesMap;
   }
 
-  public ArrayList<Inventory> getRecipePages() {
-    return this.recipePages;
-  }
-
-  public int getNumberOfPages() {
-    return this.numberOfPages;
-  }
-
-  private void setNumberOfPages(int numberOfPages) {
-    this.numberOfPages = numberOfPages;
+  public HashMap<String, ForgeRecipeCategory> getRecipeCategoriesMap() {
+    return this.recipeCategoriesMap;
   }
 }
