@@ -96,8 +96,8 @@ public class AethelItemMain {
 
     addItemContext(categoryName, inv);
     addActionButtons(inv, action);
-    addBackButton(inv);
-    addPageButtons(inv, numberOfPages, pageViewed);
+    Pagination.addBackButton(inv, 6);
+    Pagination.addPageButtons(inv, numberOfPages, pageViewed);
     return inv;
   }
 
@@ -156,34 +156,6 @@ public class AethelItemMain {
       }
       case "view" -> inv.setItem(4, ItemCreator.
           createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
-    }
-  }
-
-  /**
-   * Returns the player to the stat categories page.
-   *
-   * @param inv interacting inventory
-   */
-  private static void addBackButton(Inventory inv) {
-    inv.setItem(6, ItemCreator.createPlayerHead("CHISELED_BOOKSHELF",
-        ChatColor.AQUA + "Back"));
-  }
-
-  /**
-   * Adds previous and next page buttons based on the page number.
-   *
-   * @param inv           interacting inventory
-   * @param numberOfPages number of pages
-   * @param pageViewed    page viewed
-   */
-  private static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
-    if (pageViewed > 0) {
-      inv.setItem(0, ItemCreator.
-          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
-    }
-    if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, ItemCreator.
-          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
     }
   }
 }

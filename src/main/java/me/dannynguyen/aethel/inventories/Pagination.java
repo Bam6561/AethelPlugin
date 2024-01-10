@@ -1,5 +1,9 @@
 package me.dannynguyen.aethel.inventories;
 
+import me.dannynguyen.aethel.creators.ItemCreator;
+import org.bukkit.ChatColor;
+import org.bukkit.inventory.Inventory;
+
 /**
  * Pagination is a utility class that supports double
  * chest sized inventories with useful methods.
@@ -43,5 +47,33 @@ public class Pagination {
       return pageRequest;
     }
     return 0;
+  }
+
+  /**
+   * Returns the player to the categories page.
+   *
+   * @param inv interacting inventory
+   */
+  public static void addBackButton(Inventory inv, int invSlot) {
+    inv.setItem(invSlot, ItemCreator.createPlayerHead("CHISELED_BOOKSHELF",
+        ChatColor.AQUA + "Back"));
+  }
+
+  /**
+   * Adds previous and next page buttons based on the page number.
+   *
+   * @param inv           interacting inventory
+   * @param numberOfPages number of pages
+   * @param pageViewed    page viewed
+   */
+  public static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
+    if (pageViewed > 0) {
+      inv.setItem(0, ItemCreator.
+          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
+    }
+    if (numberOfPages - 1 > pageViewed) {
+      inv.setItem(8, ItemCreator.
+          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
+    }
   }
 }

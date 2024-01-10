@@ -41,7 +41,7 @@ public class ForgeMain {
     Inventory inv = createInventory(player, action);
     if (numberOfPages > 0) {
       inv.setContents(recipeData.getRecipePages().get(pageViewed).getContents());
-      addPageButtons(inv, pageViewed, numberOfPages);
+      Pagination.addPageButtons(inv, numberOfPages, pageViewed);
     }
 
     switch (action) {
@@ -106,24 +106,6 @@ public class ForgeMain {
 
     inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
-  }
-
-  /**
-   * Adds previous and next page buttons based on the page number.
-   *
-   * @param inv           interacting inventory
-   * @param pageViewed    page viewed
-   * @param numberOfPages number of recipe pages
-   */
-  private static void addPageButtons(Inventory inv, int pageViewed, int numberOfPages) {
-    if (pageViewed > 0) {
-      inv.setItem(0, ItemCreator.
-          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
-    }
-    if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, ItemCreator.
-          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
-    }
   }
 
   /**
