@@ -21,22 +21,32 @@ import java.util.Set;
  * categorical pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.0
  * @since 1.0.6
  */
 public class ForgeMain {
   /**
    * Creates a ForgeMain page containing categories.
    *
-   * @param player       interacting player
-   * @param action       type of interaction
+   * @param player interacting player
+   * @param action type of interaction
    * @return ForgeMain inventory with recipe categories
    */
   public static Inventory openForgeMainPage(Player player, String action) {
     Inventory inv = createInventory(player, action);
     addRecipeCategories(inv);
-    addForgeContext(action, inv);
-    addCreateButton(inv);
+
+    String delayAction = player.getMetadata("delay-action").get(0).asString();
+    List<String> helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
+
+    if (delayAction.equals("craft")) {
+      inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+          ChatColor.GREEN + "Help", helpLore));
+    } else {
+      inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+          ChatColor.GREEN + "Help", helpLore));
+      addCreateButton(inv);
+    }
     return inv;
   }
 
@@ -130,11 +140,6 @@ public class ForgeMain {
             ChatColor.WHITE + "modify the item and",
             ChatColor.WHITE + "save it before reloading.");
         inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
-            ChatColor.GREEN + "Help", helpLore));
-      }
-      case "view" -> {
-        helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
-        inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
             ChatColor.GREEN + "Help", helpLore));
       }
     }

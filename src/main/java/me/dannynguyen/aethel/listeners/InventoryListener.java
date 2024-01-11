@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.0
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -30,13 +30,12 @@ public class InventoryListener implements Listener {
         case "aethelitem-get" -> AethelItemListener.readAethelCategoryClick(e, player, "get");
         case "aethelitem-delete" -> AethelItemListener.readAethelCategoryClick(e, player, "delete");
 
-        case "forge-category" -> ForgeListener.interpretForgeMainClickNew(e, player);
-        case "forge-modify" -> ForgeListener.interpretForgeCategoryClickNew(e, player, "modify");
-
-        case "forge-craft" -> ForgeListener.interpretForgeMainClick(e, player, "craft");
+        case "forge-category" -> ForgeListener.interpretForgeMainClick(e, player);
+        case "forge-craft" -> ForgeListener.interpretForgeCategoryClick(e, player, "craft");
         case "forge-craft-confirm" -> ForgeListener.interpretForgeCraftConfirmClick(e, player);
+        case "forge-modify" -> ForgeListener.interpretForgeCategoryClick(e, player, "modify");
+        case "forge-delete" -> ForgeListener.interpretForgeCategoryClick(e, player, "delete");
         case "forge-save" -> ForgeListener.interpretForgeSaveClick(e, player);
-        case "forge-delete" -> ForgeListener.interpretForgeMainClick(e, player, "delete");
 
         case "playerstat-category" -> PlayerStatListener.readPlayerStatMainClick(e, player);
         case "playerstat-past", "showitem-past" -> e.setCancelled(true);

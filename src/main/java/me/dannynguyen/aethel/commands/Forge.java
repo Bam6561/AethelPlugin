@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.5
+ * @version 1.6.0
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -76,7 +76,8 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeCraftInventory(Player player) {
-    player.setMetadata("action", new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
+    player.setMetadata("delay-action", new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
+    player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     player.openInventory(ForgeMain.openForgeMainPage(player, "craft"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-category"));
@@ -89,7 +90,8 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeModifyInventory(Player player) {
-    player.setMetadata("action", new FixedMetadataValue(AethelPlugin.getInstance(), "modify"));
+    player.setMetadata("delay-action", new FixedMetadataValue(AethelPlugin.getInstance(), "modify"));
+    player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     player.openInventory(ForgeMain.openForgeMainPage(player, "modify"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-category"));

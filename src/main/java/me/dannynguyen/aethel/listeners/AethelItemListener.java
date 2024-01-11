@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.inventories.aethelItem.AethelItemSave;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemDelete;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemGet;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
+import me.dannynguyen.aethel.inventories.aethelItem.AethelItemSave;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -57,8 +57,7 @@ public class AethelItemListener {
       AethelItemSave.readSaveClick(e, player);
     } else if (e.getSlot() > 8) {
       String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
-      player.setMetadata("category",
-          new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+      player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
       int pageRequest = player.getMetadata("page").get(0).asInt();
 
       player.openInventory(AethelItemMain.openItemCategoryPage(player, "get", itemName, pageRequest));

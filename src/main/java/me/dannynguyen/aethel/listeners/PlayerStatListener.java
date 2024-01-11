@@ -29,8 +29,7 @@ public class PlayerStatListener {
       if (e.getSlot() > 8) {
         String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
         String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
-        player.setMetadata("category",
-            new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+        player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
 
         player.openInventory(PlayerStatMain.
             openPlayerStatCategoryPage(player, requestedPlayerName, itemName, 0));
