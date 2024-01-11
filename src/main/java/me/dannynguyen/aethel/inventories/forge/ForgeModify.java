@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * ForgeModify is a utility class that modifies forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.6.1
  * @since 1.0.9
  */
 public class ForgeModify {
@@ -34,7 +34,7 @@ public class ForgeModify {
     addExistingRecipeContents(recipe, inv);
 
     player.openInventory(inv);
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge-save"));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.save"));
   }
 
   /**

@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.5
+ * @version 1.6.1
  * @since 1.3.2
  */
 public class AethelItem implements CommandExecutor {
@@ -75,7 +75,7 @@ public class AethelItem implements CommandExecutor {
    */
   private void openAethelItemInventory(Player player) {
     player.openInventory(AethelItemMain.openItemMainPage(player, "view"));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-category"));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.category"));
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 }

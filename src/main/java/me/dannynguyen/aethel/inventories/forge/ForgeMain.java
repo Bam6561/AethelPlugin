@@ -21,7 +21,7 @@ import java.util.Set;
  * categorical pagination for crafting, modifying, and deleting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.6.0
+ * @version 1.6.1
  * @since 1.0.6
  */
 public class ForgeMain {
@@ -36,10 +36,10 @@ public class ForgeMain {
     Inventory inv = createInventory(player, action);
     addRecipeCategories(inv);
 
-    String delayAction = player.getMetadata("delay-action").get(0).asString();
+    String futureAction = player.getMetadata("future-action").get(0).asString();
     List<String> helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
 
-    if (delayAction.equals("craft")) {
+    if (futureAction.equals("craft")) {
       inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Help", helpLore));
     } else {

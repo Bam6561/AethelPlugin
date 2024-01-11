@@ -27,7 +27,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.6.1
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -82,7 +82,7 @@ public class ShowItem implements CommandExecutor {
     if (action.equals("past")) {
       player.openInventory(ShowItemPast.createInventory(player));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "showitem-past"));
+          new FixedMetadataValue(AethelPlugin.getInstance(), "showitem.past"));
     } else {
       player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
     }

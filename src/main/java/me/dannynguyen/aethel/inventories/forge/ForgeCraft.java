@@ -21,7 +21,7 @@ import java.util.List;
  * ForgeCraft is an inventory for crafting forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.6.1
  * @since 1.1.0
  */
 public class ForgeCraft {
@@ -73,7 +73,7 @@ public class ForgeCraft {
 
     player.openInventory(inv);
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "forge-craft-confirm"));
+        new FixedMetadataValue(AethelPlugin.getInstance(), "forge.craft-confirm"));
   }
 
   /**

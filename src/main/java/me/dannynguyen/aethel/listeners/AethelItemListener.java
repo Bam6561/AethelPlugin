@@ -17,7 +17,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemListener is an inventory listener for the AethelItem command.
  *
  * @author Danny Nguyen
- * @version 1.5.5
+ * @version 1.6.1
  * @since 1.4.0
  */
 public class AethelItemListener {
@@ -31,11 +31,11 @@ public class AethelItemListener {
    * @param e      inventory click event
    * @param player interacting player
    */
-  public static void readAethelItemMainClick(InventoryClickEvent e, Player player) {
+  public static void readMainClick(InventoryClickEvent e, Player player) {
     Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
-        interpretAethelItemMainClick(e, player);
+        interpretMainClick(e, player);
       } else if (e.getSlot() != 3) {
         e.setCancelled(true);
       }
@@ -52,7 +52,7 @@ public class AethelItemListener {
    * @param e      inventory click event
    * @param player interacting player
    */
-  private static void interpretAethelItemMainClick(InventoryClickEvent e, Player player) {
+  private static void interpretMainClick(InventoryClickEvent e, Player player) {
     if (e.getSlot() == 4) {
       AethelItemSave.readSaveClick(e, player);
     } else if (e.getSlot() > 8) {
@@ -62,7 +62,7 @@ public class AethelItemListener {
 
       player.openInventory(AethelItemMain.openItemCategoryPage(player, "get", itemName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
+          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.get"));
     }
 
     if (e.getSlot() != 3) {
@@ -81,11 +81,11 @@ public class AethelItemListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  public static void readAethelCategoryClick(InventoryClickEvent e, Player player, String action) {
+  public static void readCategoryClick(InventoryClickEvent e, Player player, String action) {
     Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
-        interpretAethelItemCategoryClick(e, player, action);
+        interpretCategoryClick(e, player, action);
       } else if (e.getSlot() != 3) {
         e.setCancelled(true);
       }
@@ -107,7 +107,7 @@ public class AethelItemListener {
    * @param player interacting player
    * @param action type of interaction
    */
-  private static void interpretAethelItemCategoryClick(InventoryClickEvent e, Player player, String action) {
+  private static void interpretCategoryClick(InventoryClickEvent e, Player player, String action) {
     int slotClicked = e.getSlot();
 
     switch (slotClicked) {
@@ -139,7 +139,7 @@ public class AethelItemListener {
     player.openInventory(AethelItemMain.openItemCategoryPage(player, action,
         categoryName, pageRequest - 1));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-" + action));
+        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem." + action));
   }
 
   /**
@@ -156,12 +156,12 @@ public class AethelItemListener {
       player.openInventory(AethelItemMain.openItemCategoryPage(player, "delete",
           categoryName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-delete"));
+          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.delete"));
     } else {
       player.openInventory(AethelItemMain.openItemCategoryPage(player, "get",
           categoryName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-get"));
+          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.get"));
     }
   }
 
@@ -173,7 +173,7 @@ public class AethelItemListener {
   private static void returnToMainPage(Player player) {
     player.openInventory(AethelItemMain.openItemMainPage(player, "view"));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-category"));
+        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.category"));
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 
@@ -190,7 +190,7 @@ public class AethelItemListener {
     player.openInventory(AethelItemMain.openItemCategoryPage(player, action,
         categoryName, pageRequest + 1));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem-" + action));
+        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem." + action));
   }
 
   /**
