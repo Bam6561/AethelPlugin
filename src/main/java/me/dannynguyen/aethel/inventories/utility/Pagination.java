@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.inventories;
+package me.dannynguyen.aethel.inventories.utility;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
 import org.bukkit.ChatColor;

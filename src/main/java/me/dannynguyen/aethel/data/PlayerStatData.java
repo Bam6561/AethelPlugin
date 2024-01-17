@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.inventories.utility.Pagination;
 import me.dannynguyen.aethel.objects.playerstat.PlayerStatCategory;
 import me.dannynguyen.aethel.objects.playerstat.PlayerStatValues;
 import org.bukkit.Bukkit;

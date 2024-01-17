@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.objects;
+package me.dannynguyen.aethel.enums;
 
 /**
  * PlayerHead is an enum relating player head textures with their reference name.

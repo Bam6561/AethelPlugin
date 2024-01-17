@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.data;
 
-import me.dannynguyen.aethel.objects.PlayerHead;
+import me.dannynguyen.aethel.enums.PlayerHead;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

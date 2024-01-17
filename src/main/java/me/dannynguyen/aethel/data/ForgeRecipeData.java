@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.inventories.utility.Pagination;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
 import me.dannynguyen.aethel.readers.ItemReader;

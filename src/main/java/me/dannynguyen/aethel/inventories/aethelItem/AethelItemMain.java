@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.inventories.aethelItem;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.Pagination;
+import me.dannynguyen.aethel.inventories.utility.Pagination;
 import me.dannynguyen.aethel.objects.aethelitem.AethelItemCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,7 +1,8 @@
-package me.dannynguyen.aethel.inventories.forge;
+package me.dannynguyen.aethel.inventories.forge.utility;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.inventories.forge.ForgeSave;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.entity.Player;

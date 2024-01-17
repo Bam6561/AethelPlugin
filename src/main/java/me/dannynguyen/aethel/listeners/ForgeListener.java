@@ -2,6 +2,8 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.*;
+import me.dannynguyen.aethel.inventories.forge.utility.ForgeDelete;
+import me.dannynguyen.aethel.inventories.forge.utility.ForgeModify;
 import me.dannynguyen.aethel.objects.forge.ForgeCraftOperation;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;

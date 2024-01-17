@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 /**
- * ShowItemPast iis a utility class that shows past shared statistics.
+ * ShowItemPast is an inventory that shows past shared statistics.
  *
  * @author Danny Nguyen
  * @version 1.4.13

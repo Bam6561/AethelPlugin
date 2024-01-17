@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.inventories.playerstat;
+package me.dannynguyen.aethel.inventories.playerstat.utility;
 
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.readers.ItemReader;

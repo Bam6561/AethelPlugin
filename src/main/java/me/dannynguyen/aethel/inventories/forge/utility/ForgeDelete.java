@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.inventories.forge;
+package me.dannynguyen.aethel.inventories.forge.utility;
 
 
 import me.dannynguyen.aethel.AethelResources;
