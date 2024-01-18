@@ -46,7 +46,7 @@ public class AethelItem implements CommandExecutor {
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
-      case 0 -> openAethelItemInventory(player);
+      case 0 -> openAethelItem(player);
       case 1 -> readParameter(player, args[0].toLowerCase());
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
     }
@@ -73,7 +73,7 @@ public class AethelItem implements CommandExecutor {
    *
    * @param player interacting player
    */
-  private void openAethelItemInventory(Player player) {
+  private void openAethelItem(Player player) {
     player.openInventory(AethelItemMain.openItemMainPage(player, "view"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.category"));
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));

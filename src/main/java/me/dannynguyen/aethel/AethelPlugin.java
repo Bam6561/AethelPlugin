@@ -11,7 +11,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.6.3
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -29,6 +29,7 @@ public class AethelPlugin extends JavaPlugin {
 
     this.getCommand("aitem").setExecutor(new AethelItem());
     this.getCommand("atag").setExecutor(new AethelTag());
+    this.getCommand("char").setExecutor(new CharacterProfile());
     this.getCommand("dev").setExecutor(new DevMode());
     this.getCommand("forge").setExecutor(new Forge());
     this.getCommand("ping").setExecutor(new Ping());

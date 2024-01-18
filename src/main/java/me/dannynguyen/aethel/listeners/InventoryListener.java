@@ -28,15 +28,23 @@ public class InventoryListener implements Listener {
       Bukkit.getLogger().warning(player.getMetadata("inventory").get(0).asString());
       String[] invType = player.getMetadata("inventory").get(0).asString().split("\\.");
       switch (invType[0]) {
-        case "aethelitem" -> interpretAethelItemInventory(e, player, invType);
-        case "forge" -> interpretForgeInventory(e, player, invType);
-        case "playerstat" -> interpretPlayerStatInventory(e, player, invType);
+        case "aethelitem" -> interpretAethelItem(e, player, invType);
+        case "characterprofile" -> interpretCharacterProfile(e, player, invType);
+        case "forge" -> interpretForge(e, player, invType);
+        case "playerstat" -> interpretPlayerStat(e, player, invType);
         case "showitem" -> e.setCancelled(true);
       }
     }
   }
 
-  private void interpretAethelItemInventory(InventoryClickEvent e, Player player, String[] invType) {
+  /**
+   * Determines which AethelItem inventory is being interacting with.
+   *
+   * @param e       inventory click event
+   * @param player  interacting player
+   * @param invType inventory type
+   */
+  private void interpretAethelItem(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "category" -> AethelItemListener.readMainClick(e, player);
       case "delete" -> AethelItemListener.readCategoryClick(e, player, "delete");
@@ -44,7 +52,27 @@ public class InventoryListener implements Listener {
     }
   }
 
-  private void interpretForgeInventory(InventoryClickEvent e, Player player, String[] invType) {
+  /**
+   * Determines which CharacterProfile inventory is being interacting with.
+   *
+   * @param e       inventory click event
+   * @param player  interacting player
+   * @param invType inventory type
+   */
+  private void interpretCharacterProfile(InventoryClickEvent e, Player player, String[] invType) {
+    switch (invType[1]) {
+      case "sheet" -> e.setCancelled(true);
+    }
+  }
+
+  /**
+   * Determines which Forge inventory is being interacting with.
+   *
+   * @param e       inventory click event
+   * @param player  interacting player
+   * @param invType inventory type
+   */
+  private void interpretForge(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "category" -> ForgeListener.interpretMainClick(e, player);
       case "craft" -> ForgeListener.interpretCategoryClick(e, player, "craft");
@@ -55,7 +83,14 @@ public class InventoryListener implements Listener {
     }
   }
 
-  private void interpretPlayerStatInventory(InventoryClickEvent e, Player player, String[] invType) {
+  /**
+   * Determines which PlayerStat inventory is being interacting with.
+   *
+   * @param e       inventory click event
+   * @param player  interacting player
+   * @param invType inventory type
+   */
+  private void interpretPlayerStat(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "category" -> PlayerStatListener.readMainClick(e, player);
       case "past" -> e.setCancelled(true);

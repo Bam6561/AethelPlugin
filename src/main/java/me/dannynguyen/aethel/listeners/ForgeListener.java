@@ -1,7 +1,9 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.inventories.forge.*;
+import me.dannynguyen.aethel.inventories.forge.ForgeCraft;
+import me.dannynguyen.aethel.inventories.forge.ForgeMain;
+import me.dannynguyen.aethel.inventories.forge.ForgeSave;
 import me.dannynguyen.aethel.inventories.forge.utility.ForgeDelete;
 import me.dannynguyen.aethel.inventories.forge.utility.ForgeModify;
 import me.dannynguyen.aethel.objects.forge.ForgeCraftOperation;
@@ -31,7 +33,7 @@ public class ForgeListener {
       switch (e.getSlot()) {
         case 2, 4 -> { // Help Context
         }
-        case 3 -> openForgeSaveInventory(player);
+        case 3 -> openForgeSave(player);
         default -> {
           String action = player.getMetadata("future-action").get(0).asString();
           String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
@@ -64,13 +66,13 @@ public class ForgeListener {
         case 0 -> previousRecipePage(player, action);
         case 2 -> { // Help Context
         }
-        case 3 -> openForgeSaveInventory(player);
+        case 3 -> openForgeSave(player);
         case 4 -> {
           if (player.getMetadata("future-action").get(0).asString().equals("modify")) {
-            openForgeModifyInventory(player);
+            openForgeModify(player);
           }
         }
-        case 5 -> openForgeDeleteInventory(player);
+        case 5 -> openForgeDelete(player);
         case 6 -> returnToMainPage(player);
         case 8 -> nextRecipePage(player, action);
         default -> interpretContextualClick(e, action, player);
@@ -89,7 +91,7 @@ public class ForgeListener {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 25 -> new ForgeCraftOperation().craftRecipe(e, player);
-        case 26 -> openForgeCraftInventory(player);
+        case 26 -> openForgeCraft(player);
       }
     }
     e.setCancelled(true);
@@ -107,7 +109,7 @@ public class ForgeListener {
         case 8 -> e.setCancelled(true);
         case 25 -> ForgeSave.readSaveClick(e, player);
         case 26 -> {
-          openForgeModifyInventory(player);
+          openForgeModify(player);
           e.setCancelled(true);
         }
       }
@@ -134,7 +136,7 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private static void openForgeSaveInventory(Player player) {
+  private static void openForgeSave(Player player) {
     player.openInventory(ForgeSave.createInventory(player));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.save"));
   }
@@ -148,7 +150,7 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private static void openForgeModifyInventory(Player player) {
+  private static void openForgeModify(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
     if (categoryName.equals("")) {
       player.openInventory(ForgeMain.openForgeMainPage(player, "modify"));
@@ -168,7 +170,7 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private static void openForgeDeleteInventory(Player player) {
+  private static void openForgeDelete(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
 
     player.openInventory(ForgeMain.openForgeCategoryPage(player, "delete",
@@ -195,7 +197,7 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private static void openForgeCraftInventory(Player player) {
+  private static void openForgeCraft(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
 
     player.openInventory(ForgeMain.openForgeCategoryPage(player, "craft", categoryName,

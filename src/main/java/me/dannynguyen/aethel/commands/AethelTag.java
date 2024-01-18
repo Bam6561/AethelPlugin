@@ -49,7 +49,7 @@ public class AethelTag implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before interpreting its intent.
+   * Checks if the command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
    * @param args   player provided parameters

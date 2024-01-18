@@ -41,7 +41,7 @@ public class Forge implements CommandExecutor {
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
-      case 0 -> openForgeCraftInventory(player);
+      case 0 -> openForgeCraft(player);
       case 1 -> {
         if (player.isOp()) {
           interpretParameter(player, args[0].toLowerCase());
@@ -61,7 +61,7 @@ public class Forge implements CommandExecutor {
    */
   private void interpretParameter(Player player, String action) {
     switch (action) {
-      case "edit" -> openForgeModifyInventory(player);
+      case "edit" -> openForgeModify(player);
       case "reload", "rl" -> {
         AethelResources.forgeRecipeData.loadRecipes();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
@@ -75,7 +75,7 @@ public class Forge implements CommandExecutor {
    *
    * @param player interacting player
    */
-  private void openForgeCraftInventory(Player player) {
+  private void openForgeCraft(Player player) {
     player.setMetadata("future-action", new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
@@ -89,7 +89,7 @@ public class Forge implements CommandExecutor {
    *
    * @param player interacting player
    */
-  private void openForgeModifyInventory(Player player) {
+  private void openForgeModify(Player player) {
     player.setMetadata("future-action", new FixedMetadataValue(AethelPlugin.getInstance(), "modify"));
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
