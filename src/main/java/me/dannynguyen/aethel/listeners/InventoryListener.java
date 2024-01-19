@@ -25,7 +25,6 @@ public class InventoryListener implements Listener {
   public void onClick(InventoryClickEvent e) {
     Player player = (Player) e.getWhoClicked();
     if (player.hasMetadata("inventory")) {
-      Bukkit.getLogger().warning(player.getMetadata("inventory").get(0).asString());
       String[] invType = player.getMetadata("inventory").get(0).asString().split("\\.");
       switch (invType[0]) {
         case "aethelitem" -> interpretAethelItem(e, player, invType);
