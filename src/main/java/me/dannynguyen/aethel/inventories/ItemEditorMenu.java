@@ -16,7 +16,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.8
+ * @version 1.6.9
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -54,18 +54,91 @@ public class ItemEditorMenu {
   private static void addMetadataButtons(Inventory inv, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
 
+    addDisplayNameMeta(inv, item);
+    addCustomModelDataMeta(inv, meta);
+    addLoreMeta(inv, meta);
+    addUnbreakableMeta(inv, meta);
+  }
+
+  /**
+   * Adds the display name metadata button.
+   *
+   * @param inv  interacting inventory
+   * @param item interacting item
+   */
+  private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
     ItemStack displayName = ItemCreator.createItem(Material.NAME_TAG,
         ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readItemName(item)));
+    inv.setItem(9, displayName);
+  }
+
+  /**
+   * Adds the custom model data metadata button.
+   *
+   * @param inv  interacting inventory
+   * @param meta item meta
+   */
+  private static void addCustomModelDataMeta(Inventory inv, ItemMeta meta) {
     ItemStack customModelData = (!meta.hasCustomModelData() ?
         ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Custom Model Data") :
         ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Custom Model Data",
-            List.of(ChatColor.WHITE + String.valueOf(item.getItemMeta().getCustomModelData()))));
-    ItemStack lore = (!meta.hasLore() ?
-        ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Lore") :
-        ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Lore", meta.getLore()));
-
-    inv.setItem(9, displayName);
+            List.of(ChatColor.WHITE + String.valueOf(meta.getCustomModelData()))));
     inv.setItem(10, customModelData);
-    inv.setItem(11, lore);
+  }
+
+  /**
+   * Adds lore metadata buttons.
+   *
+   * @param inv  interacting inventory
+   * @param meta item meta
+   */
+  private static void addLoreMeta(Inventory inv, ItemMeta meta) {
+    ItemStack lore;
+    if (!meta.hasLore()) {
+      lore = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+          ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
+    } else {
+      List<String> loreLines = meta.getLore();
+      for (int i = 0; i < loreLines.size(); i++) {
+        loreLines.set(i, ChatColor.WHITE + "" + (i + 1) + " " + ChatColor.RESET + loreLines.get(i));
+      }
+      lore = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+          ChatColor.GREEN + "Lore", loreLines);
+    }
+
+    ItemStack setLore = ItemCreator.createItem(Material.PAPER,
+        ChatColor.AQUA + "Set Lore", List.of(ChatColor.WHITE + "Separate lines by \",, \"."));
+    ItemStack clearLore = ItemCreator.createItem(Material.PAPER,
+        ChatColor.AQUA + "Clear Lore");
+    ItemStack addLore = ItemCreator.createItem(Material.PAPER,
+        ChatColor.AQUA + "Add Lore");
+    ItemStack editLore = ItemCreator.createItem(Material.PAPER,
+        ChatColor.AQUA + "Edit Lore", List.of(ChatColor.WHITE + "Specify line, then new text."));
+    ItemStack removeLore = ItemCreator.createItem(Material.PAPER,
+        ChatColor.AQUA + "Remove Lore", List.of(ChatColor.WHITE + "Specify line."));
+
+    inv.setItem(18, lore);
+    inv.setItem(19, setLore);
+    inv.setItem(20, clearLore);
+    inv.setItem(27, addLore);
+    inv.setItem(28, editLore);
+    inv.setItem(29, removeLore);
+  }
+
+  /**
+   * Adds unbreakable toggle button.
+   *
+   * @param inv  interacting inventory
+   * @param meta item meta
+   */
+  private static void addUnbreakableMeta(Inventory inv, ItemMeta meta) {
+    String isUnbreakable;
+    if (!meta.isUnbreakable()) {
+      isUnbreakable = ChatColor.GREEN + "False";
+    } else {
+      isUnbreakable = ChatColor.RED + "True";
+    }
+    inv.setItem(34, ItemCreator.createItem(Material.BEDROCK,
+        ChatColor.AQUA + "Unbreakable", List.of(isUnbreakable)));
   }
 }

@@ -10,13 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * ItemEditorMessageListener is a message listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.8
+ * @version 1.6.9
  * @since 1.6.7
  */
 public class ItemEditorMessageListener {
@@ -58,161 +59,19 @@ public class ItemEditorMessageListener {
   }
 
   /**
-   * Checks if the lore edit request was formatted correctly before interpreting its usage.
+   * Sets the lore.
    *
    * @param e      message event
    * @param player interacting player
    * @param item   interacting item
    * @param meta   item meta
    */
-  public static void readLoreRequest(AsyncPlayerChatEvent e, Player player,
-                                     ItemStack item, ItemMeta meta) {
-    String[] input = e.getMessage().toLowerCase().split(" ");
-    if (input.length >= 2) {
-      interpretLoreAction(e, player, item, meta, input);
-    } else if (input[0].equals("-clear") || input[0].equals("-c")) {
-      clearLoreLines(player, item, meta);
-    } else {
-      player.sendMessage(ChatColor.RED + "Missing input content.");
-    }
+  public static void setLore(AsyncPlayerChatEvent e, Player player,
+                             ItemStack item, ItemMeta meta) {
+    meta.setLore(List.of(e.getMessage().split(",, ")));
+    item.setItemMeta(meta);
+    player.sendMessage(ChatColor.GREEN + "[Set Lore]");
     returnToEditorMenu(player, item);
-  }
-
-  /**
-   * Sets the lore.
-   * <p>
-   * Input Splits:
-   * - Add: action | input
-   * - Edit: action | line | input
-   * - Remove: action | line
-   * - Set: action | input
-   * </p>
-   *
-   * @param e      message event
-   * @param player interacting player
-   * @param item   interacting item
-   * @param meta   item meta
-   * @param input  user input
-   */
-  private static void interpretLoreAction(AsyncPlayerChatEvent e, Player player,
-                                          ItemStack item, ItemMeta meta, String[] input) {
-    switch (input[0]) {
-      case "-add", "-a" -> {
-        input = e.getMessage().split(" ", 2);
-        addLoreLine(player, item, meta, input[1]);
-      }
-
-      case "-edit", "-e" -> {
-        input = e.getMessage().split(" ", 3);
-        editLoreLine(player, item, meta, input);
-      }
-
-      case "-remove", "-r" -> {
-        input = e.getMessage().split(" ", 2);
-        removeLoreLine(player, item, meta, input);
-      }
-
-      case "-set", "-s" -> {
-        input = e.getMessage().split(" ", 2);
-        setLoreLines(player, item, meta, input[1]);
-      }
-
-      default -> player.sendMessage(ChatColor.RED + "Unrecognized action flag.");
-    }
-  }
-
-  /**
-   * Adds a line of lore.
-   *
-   * @param player interacting player
-   * @param item   interacting item
-   * @param meta   item meta
-   * @param input  user input
-   */
-  private static void addLoreLine(Player player, ItemStack item,
-                                  ItemMeta meta, String input) {
-    if (meta.hasLore()) {
-      List<String> lore = meta.getLore();
-      lore.add(input);
-      meta.setLore(lore);
-    } else {
-      meta.setLore(List.of(input));
-    }
-    item.setItemMeta(meta);
-    player.sendMessage(ChatColor.GREEN + "[Lore Added] " + ChatColor.WHITE + input);
-  }
-
-  /**
-   * Edits a line of lore.
-   *
-   * @param player interacting player
-   * @param item   interacting item
-   * @param meta   item meta
-   * @param input  user input
-   * @throws NumberFormatException     not a number
-   * @throws IndexOutOfBoundsException invalid index
-   */
-  private static void editLoreLine(Player player, ItemStack item,
-                                   ItemMeta meta, String[] input) {
-    try {
-      if (meta.hasLore()) {
-        List<String> lore = meta.getLore();
-        lore.set(Integer.parseInt(input[1]) - 1, input[2]);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        player.sendMessage(ChatColor.GREEN + "[Lore Edited] " + ChatColor.WHITE + input[1]);
-      } else {
-        player.sendMessage(ChatColor.RED + "No lore to edit.");
-      }
-    } catch (NumberFormatException ex) {
-      player.sendMessage(ChatColor.RED + "Invalid line number.");
-    } catch (IndexOutOfBoundsException ex) {
-      player.sendMessage(ChatColor.RED + "Line does not exist.");
-    }
-  }
-
-  /**
-   * Removes a line of lore.
-   *
-   * @param player interacting player
-   * @param item   interacting item
-   * @param meta   item meta
-   * @param input  user input
-   * @throws NumberFormatException     not a number
-   * @throws IndexOutOfBoundsException invalid index
-   */
-  private static void removeLoreLine(Player player, ItemStack item,
-                                     ItemMeta meta, String[] input) {
-    try {
-      if (meta.hasLore()) {
-        List<String> lore = meta.getLore();
-        lore.remove(Integer.parseInt(input[1]) - 1);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        player.sendMessage(ChatColor.GREEN + "[Lore Removed]");
-      } else {
-        player.sendMessage(ChatColor.RED + "No lore to remove.");
-      }
-    } catch (NumberFormatException ex) {
-      player.sendMessage(ChatColor.RED + "Invalid line number.");
-    } catch (IndexOutOfBoundsException ex) {
-      player.sendMessage(ChatColor.RED + "Line does not exist.");
-    }
-  }
-
-  /**
-   * Sets the lore.
-   *
-   * @param player interacting player
-   * @param item   interacting item
-   * @param meta   item meta
-   * @param input  user input
-   */
-  private static void setLoreLines(Player player, ItemStack item,
-                                   ItemMeta meta, String input) {
-    meta.setLore(List.of(input.split(",,")));
-    item.setItemMeta(meta);
-    player.sendMessage(ChatColor.GREEN + "[Lore Set]");
   }
 
   /**
@@ -222,16 +81,86 @@ public class ItemEditorMessageListener {
    * @param item   interacting item
    * @param meta   item meta
    */
-  private static void clearLoreLines(Player player, ItemStack item, ItemMeta meta) {
+  public static void clearLore(Player player, ItemStack item, ItemMeta meta) {
+    meta.setLore(new ArrayList<>());
+    item.setItemMeta(meta);
+    player.sendMessage(ChatColor.GREEN + "[Cleared Lore]");
+    returnToEditorMenu(player, item);
+  }
+
+  /**
+   * Adds a line of lore.
+   *
+   * @param e      message event
+   * @param player interacting player
+   * @param item   interacting item
+   * @param meta   item meta
+   */
+  public static void addLore(AsyncPlayerChatEvent e, Player player,
+                             ItemStack item, ItemMeta meta) {
     if (meta.hasLore()) {
       List<String> lore = meta.getLore();
-      lore.clear();
+      lore.add(e.getMessage());
+      meta.setLore(lore);
+    } else {
+      meta.setLore(List.of(e.getMessage()));
+    }
+    item.setItemMeta(meta);
+    player.sendMessage(ChatColor.GREEN + "[Added Lore]");
+    returnToEditorMenu(player, item);
+  }
+
+  /**
+   * Edits a line of lore.
+   *
+   * @param e      message event
+   * @param player interacting player
+   * @param item   interacting item
+   * @param meta   item meta
+   * @throws NumberFormatException     not a number
+   * @throws IndexOutOfBoundsException invalid index
+   */
+  public static void editLore(AsyncPlayerChatEvent e, Player player,
+                              ItemStack item, ItemMeta meta) {
+    String[] input = e.getMessage().split(" ", 2);
+    try {
+      List<String> lore = meta.getLore();
+      lore.set(Integer.parseInt(input[0]) - 1, input[1]);
       meta.setLore(lore);
       item.setItemMeta(meta);
-      player.sendMessage(ChatColor.GREEN + "[Lore Cleared]");
-    } else {
-      player.sendMessage(ChatColor.RED + "No lore to clear.");
+      player.sendMessage(ChatColor.GREEN + "[Edited Lore]");
+    } catch (NumberFormatException ex) {
+      player.sendMessage(ChatColor.RED + "Invalid line number.");
+    } catch (IndexOutOfBoundsException ex) {
+      player.sendMessage(ChatColor.RED + "Line does not exist.");
     }
+    returnToEditorMenu(player, item);
+  }
+
+  /**
+   * Removes a line of lore.
+   *
+   * @param e      message event
+   * @param player interacting player
+   * @param item   interacting item
+   * @param meta   item meta
+   * @throws NumberFormatException     not a number
+   * @throws IndexOutOfBoundsException invalid index
+   */
+  public static void removeLore(AsyncPlayerChatEvent e, Player player,
+                                ItemStack item, ItemMeta meta) {
+    try {
+      List<String> lore = meta.getLore();
+      lore.remove(Integer.parseInt(e.getMessage()) - 1);
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+      player.sendMessage(ChatColor.GREEN + "[Removed Lore]");
+    } catch (NumberFormatException ex) {
+      player.sendMessage(ChatColor.RED + "Invalid line number.");
+    } catch (IndexOutOfBoundsException ex) {
+      player.sendMessage(ChatColor.RED + "Line does not exist.");
+    }
+    returnToEditorMenu(player, item);
   }
 
   /**
