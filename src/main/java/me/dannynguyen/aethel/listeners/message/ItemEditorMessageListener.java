@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.message;
 
 import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.inventories.ItemEditorMenu;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

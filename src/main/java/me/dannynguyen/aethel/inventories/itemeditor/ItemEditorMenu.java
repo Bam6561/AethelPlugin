@@ -1,6 +1,7 @@
-package me.dannynguyen.aethel.inventories;
+package me.dannynguyen.aethel.inventories.itemeditor;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggle;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,7 +58,8 @@ public class ItemEditorMenu {
     addDisplayNameMeta(inv, item);
     addCustomModelDataMeta(inv, meta);
     addLoreMeta(inv, meta);
-    addUnbreakableMeta(inv, meta);
+    ItemEditorToggle.addUnbreakableMeta(inv, meta);
+    ItemEditorToggle.addItemFlagMetas(inv, meta);
   }
 
   /**
@@ -123,22 +125,5 @@ public class ItemEditorMenu {
     inv.setItem(27, addLore);
     inv.setItem(28, editLore);
     inv.setItem(29, removeLore);
-  }
-
-  /**
-   * Adds unbreakable toggle button.
-   *
-   * @param inv  interacting inventory
-   * @param meta item meta
-   */
-  private static void addUnbreakableMeta(Inventory inv, ItemMeta meta) {
-    String isUnbreakable;
-    if (!meta.isUnbreakable()) {
-      isUnbreakable = ChatColor.GREEN + "False";
-    } else {
-      isUnbreakable = ChatColor.RED + "True";
-    }
-    inv.setItem(34, ItemCreator.createItem(Material.BEDROCK,
-        ChatColor.AQUA + "Unbreakable", List.of(isUnbreakable)));
   }
 }

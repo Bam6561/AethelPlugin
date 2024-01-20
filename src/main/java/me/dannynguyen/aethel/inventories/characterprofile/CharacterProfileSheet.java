@@ -51,7 +51,7 @@ public class CharacterProfileSheet {
   }
 
   /**
-   * Adds the quests, collectibles, and settings buttons.
+   * Adds quests, collectibles, and settings buttons.
    *
    * @param player interacting player
    * @param inv    interacting inv
@@ -134,7 +134,7 @@ public class CharacterProfileSheet {
   }
 
   /**
-   * Adds the player's level and currency.
+   * Adds the player's level and currency balance..
    *
    * @param player interacting player
    * @param inv    interacting inv

@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.ItemEditorMenu;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
