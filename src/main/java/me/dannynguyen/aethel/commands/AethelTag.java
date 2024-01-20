@@ -18,13 +18,14 @@ import org.bukkit.persistence.PersistentDataType;
  * AethelTag is a command invocation that allows the retrieval, addition,
  * or deletion of Aethel plugin tags to the player's main hand item.
  * <p>
- * - "get": reads the item's tags
- * - "set": sets the item's tag
- * - "remove", "rm": removes the item's tag
+ * Additional Parameters:
+ * - "get", "g": reads the item's tags
+ * - "set", "s": sets the item's tag
+ * - "remove", "r": removes the item's tag
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.6.6
  * @since 1.2.6
  */
 public class AethelTag implements CommandExecutor {
@@ -56,24 +57,25 @@ public class AethelTag implements CommandExecutor {
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
+    String action = args[0].toLowerCase();
     switch (args.length) {
       case 0 -> player.sendMessage(ChatColor.RED + "No parameters provided.");
       case 1 -> {
-        if (args[0].equalsIgnoreCase("get")) {
+        if (action.equals("get") || action.equals("g")) {
           getAethelTags(player, item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
         }
       }
       case 2 -> {
-        if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rm")) {
+        if (action.equals("remove") || action.equals("r")) {
           removeAethelTag(player, args[1], item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
         }
       }
       case 3 -> {
-        if (args[0].equalsIgnoreCase("set")) {
+        if (action.equals("set") || action.equals("s")) {
           setAethelTag(player, args, item);
         } else {
           player.sendMessage(ChatColor.RED + "Unrecognized parameters.");

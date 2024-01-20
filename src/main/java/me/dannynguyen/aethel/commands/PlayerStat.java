@@ -14,9 +14,13 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * PlayerStat is a command invocation that retrieves a player's statistics.
+ * <p>
+ * Additional Parameters:
+ * - "past", "p": opens an inventory with the last 9 shown stats
+ * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.4.7
  */
 public class PlayerStat implements CommandExecutor {
@@ -52,7 +56,7 @@ public class PlayerStat implements CommandExecutor {
    * @param parameter player given parameter
    */
   private void interpretParameter(Player player, String parameter) {
-    if (parameter.equals("past")) {
+    if (parameter.equals("past") || parameter.equals("p")) {
       player.openInventory(PlayerStatPast.createInventory(player));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat.past"));

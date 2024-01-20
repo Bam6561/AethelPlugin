@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.*;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.inventory.InventoryListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

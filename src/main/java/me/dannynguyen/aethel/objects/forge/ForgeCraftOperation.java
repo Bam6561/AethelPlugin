@@ -22,7 +22,7 @@ import java.util.HashMap;
  * has sufficient materials to craft items from a forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.6.6
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
@@ -68,7 +68,7 @@ public class ForgeCraftOperation {
       if (invMap.containsKey(reqMaterial)) {
         int reqAmount = item.getAmount();
 
-        NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forgeid");
+        NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge_id");
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         boolean hasForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
 
@@ -127,7 +127,7 @@ public class ForgeCraftOperation {
   private boolean hasSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
                                          Material reqMaterial, int reqAmount) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
-      NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forgeid");
+      NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge_id");
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
 
       if (!dataContainer.has(forgeIdKey, PersistentDataType.STRING)) {
@@ -148,7 +148,7 @@ public class ForgeCraftOperation {
    * @param invMap      material:inventory slots inventory map
    * @param reqMaterial required material
    * @param reqAmount   required amount
-   * @param forgeIdKey  aethel.forgeid
+   * @param forgeIdKey  aethel.forge_id
    * @param reqForgeId  required ForgeId
    * @return has sufficient amounts of material
    */

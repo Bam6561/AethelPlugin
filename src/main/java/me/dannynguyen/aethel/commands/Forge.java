@@ -14,12 +14,12 @@ import org.bukkit.metadata.FixedMetadataValue;
  * Forge is a command invocation that opens an inventory to allow the fabrication of items through clicking.
  * <p>
  * Additional Parameters:
- * - "edit": allows the user to create, modify, or delete forge recipes
- * - "reload", "rl": reloads forge recipes into memory
+ * - "edit", "e": allows the user to create, modify, or delete forge recipes
+ * - "reload", "r": reloads forge recipes into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -61,8 +61,8 @@ public class Forge implements CommandExecutor {
    */
   private void interpretParameter(Player player, String action) {
     switch (action) {
-      case "edit" -> openForgeModify(player);
-      case "reload", "rl" -> {
+      case "edit", "e" -> openForgeModify(player);
+      case "reload", "r" -> {
         AethelResources.forgeRecipeData.loadRecipes();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
       }

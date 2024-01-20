@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.listeners;
+package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.playerstat.PlayerStatMain;

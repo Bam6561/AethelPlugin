@@ -15,11 +15,11 @@ import org.bukkit.metadata.FixedMetadataValue;
  * to allow the retrieval of items through clicking.
  * <p>
  * Additional Parameters:
- * - "reload", "rl": reloads items into memory
+ * - "reload", "r": reloads items into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.3.2
  */
 public class AethelItem implements CommandExecutor {
@@ -60,7 +60,7 @@ public class AethelItem implements CommandExecutor {
    */
   private void readParameter(Player player, String action) {
     switch (action) {
-      case "reload", "rl" -> {
+      case "reload", "r" -> {
         AethelResources.aethelItemData.loadItems();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Aethel Items");
       }

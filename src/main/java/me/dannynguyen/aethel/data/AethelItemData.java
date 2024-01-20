@@ -24,7 +24,7 @@ import java.util.Scanner;
  * AethelItemData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.6.6
  * @since 1.3.2
  */
 public class AethelItemData {
@@ -44,7 +44,7 @@ public class AethelItemData {
     ArrayList<ItemStack> allItems = new ArrayList<>();
     HashMap<String, ArrayList<ItemStack>> categorizedItems = new HashMap<>();
     NamespacedKey itemCategoryKey =
-        new NamespacedKey(AethelPlugin.getInstance(), "aethel.aitemcat");
+        new NamespacedKey(AethelPlugin.getInstance(), "aethel.aitem_cat");
 
     File[] directory = new File(AethelResources.aethelItemDirectory).listFiles();
     Arrays.sort(directory);

@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.6.6
  * @since 1.1.11
  */
 public class ForgeRecipeData {
@@ -43,7 +43,7 @@ public class ForgeRecipeData {
     ArrayList<ForgeRecipe> allRecipes = new ArrayList<>();
     HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes = new HashMap<>();
     NamespacedKey forgeCategoryKey =
-        new NamespacedKey(AethelPlugin.getInstance(), "aethel.forgecat");
+        new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge_cat");
 
     File[] directory = new File(AethelResources.forgeRecipeDirectory).listFiles();
     Arrays.sort(directory);

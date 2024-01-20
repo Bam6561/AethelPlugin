@@ -22,12 +22,12 @@ import org.bukkit.metadata.FixedMetadataValue;
 /**
  * ShowItem is a command invocation that shows the user's main hand item to chat.
  * <p>
- * Parameters:
- * - "past": opens an inventory with the last 9 shown items
+ * Additional Parameters:
+ * - "past", "p": opens an inventory with the last 9 shown items
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.6
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -79,7 +79,7 @@ public class ShowItem implements CommandExecutor {
    * @param action type of interaction
    */
   private void interpretParameter(Player player, String action) {
-    if (action.equals("past")) {
+    if (action.equals("past") || action.equals("p")) {
       player.openInventory(ShowItemPast.createInventory(player));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "showitem.past"));
