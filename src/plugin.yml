@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.6.6
+version: 1.6.7
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.AethelPlugin
@@ -22,6 +22,9 @@ commands:
   forge:
     description: Opens a Forge inventory.
     usage: /forge [edit|reload]
+  iedit:
+    description: Edits an item's metadata.
+    usage: /iedit
   ping:
     description: Responds with server latency.
     usage: /ping

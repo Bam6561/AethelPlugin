@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.characterprofile.CharacterProfileSheet;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,12 +34,12 @@ public class CharacterProfile implements CommandExecutor {
    * Checks if the command request was formatted correctly before opening a character sheet.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
       case 0 -> openCharacterSheet(player);
-      default -> player.sendMessage("Unrecognized parameters.");
+      default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
     }
   }
 

@@ -16,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 /**
  * AethelTag is a command invocation that allows the retrieval, addition,
- * or deletion of Aethel plugin tags to the player's main hand item.
+ * or deletion of Aethel plugin tags to the user's main hand item.
  * <p>
  * Additional Parameters:
  * - "get", "g": reads the item's tags
@@ -53,7 +53,7 @@ public class AethelTag implements CommandExecutor {
    * Checks if the command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
@@ -125,7 +125,7 @@ public class AethelTag implements CommandExecutor {
    * Adds or sets an Aethel tag to the item.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    * @param item   item in main hand
    */
   private void setAethelTag(Player player, String[] args, ItemStack item) {

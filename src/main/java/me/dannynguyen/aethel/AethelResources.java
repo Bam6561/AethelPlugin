@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.data.*;
  * AethelResources stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.6.7
  * @since 1.1.7
  */
 public class AethelResources {
@@ -15,6 +15,7 @@ public class AethelResources {
   public static final String forgeRecipeDirectory = resourceDirectory + "/forge";
 
   public static final AethelItemData aethelItemData = new AethelItemData();
+  public static final ItemEditorData itemEditorData = new ItemEditorData();
   public static final ForgeRecipeData forgeRecipeData = new ForgeRecipeData();
   public static final PlayerHeadData playerHeadData = new PlayerHeadData();
   public static final PlayerStatData playerStatData = new PlayerStatData();

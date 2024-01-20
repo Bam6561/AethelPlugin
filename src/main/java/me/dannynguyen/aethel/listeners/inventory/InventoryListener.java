@@ -29,6 +29,7 @@ public class InventoryListener implements Listener {
         case "aethelitem" -> interpretAethelItem(e, player, invType);
         case "characterprofile" -> interpretCharacterProfile(e, player, invType);
         case "forge" -> interpretForge(e, player, invType);
+        case "itemeditor" -> interpretItemEditor(e, player, invType);
         case "playerstat" -> interpretPlayerStat(e, player, invType);
         case "showitem" -> e.setCancelled(true);
       }
@@ -78,6 +79,19 @@ public class InventoryListener implements Listener {
       case "delete" -> ForgeListener.interpretCategoryClick(e, player, "delete");
       case "modify" -> ForgeListener.interpretCategoryClick(e, player, "modify");
       case "save" -> ForgeListener.interpretSaveClick(e, player);
+    }
+  }
+
+  /**
+   * Determines which ItemEditor inventory is being interacting with.
+   *
+   * @param e       inventory click event
+   * @param player  interacting player
+   * @param invType inventory type
+   */
+  private void interpretItemEditor(InventoryClickEvent e, Player player, String[] invType) {
+    switch (invType[1]) {
+      case "menu" -> ItemEditorInventoryListener.interpretMenuClick(e, player);
     }
   }
 

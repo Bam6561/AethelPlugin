@@ -42,7 +42,7 @@ public class DevMode implements CommandExecutor {
     if (numberOfParameters == 0) {
       toggleDevMode(player);
     } else {
-      player.sendMessage("Unrecognized parameters.");
+      player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
     }
   }
 

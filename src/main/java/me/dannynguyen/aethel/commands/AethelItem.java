@@ -11,8 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * AethelItem is a command invocation that opens an inventory
- * to allow the retrieval of items through clicking.
+ * AethelItem is a command invocation that allows the retrieval of items through clicking.
  * <p>
  * Additional Parameters:
  * - "reload", "r": reloads items into memory
@@ -42,7 +41,7 @@ public class AethelItem implements CommandExecutor {
    * Checks if the AethelItem command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {

@@ -45,7 +45,7 @@ public class ShowItem implements CommandExecutor {
    * Checks if the Show command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {

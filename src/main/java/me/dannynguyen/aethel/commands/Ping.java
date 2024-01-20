@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Ping is a command invocation that responds with the player's server latency.
+ * Ping is a command invocation that responds with the user's server latency.
  *
  * @author Danny Nguyen
  * @version 1.5.1

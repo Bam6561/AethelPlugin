@@ -2,6 +2,7 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.*;
 import me.dannynguyen.aethel.listeners.inventory.InventoryListener;
+import me.dannynguyen.aethel.listeners.message.MessageListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -11,7 +12,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.6.3
+ * @version 1.6.7
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -26,12 +27,14 @@ public class AethelPlugin extends JavaPlugin {
     readResourceFiles();
 
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+    getServer().getPluginManager().registerEvents(new MessageListener(), this);
 
     this.getCommand("aitem").setExecutor(new AethelItem());
     this.getCommand("atag").setExecutor(new AethelTag());
     this.getCommand("char").setExecutor(new CharacterProfile());
     this.getCommand("dev").setExecutor(new DevMode());
     this.getCommand("forge").setExecutor(new Forge());
+    this.getCommand("iedit").setExecutor(new ItemEditor());
     this.getCommand("ping").setExecutor(new Ping());
     this.getCommand("show").setExecutor(new ShowItem());
     this.getCommand("stats").setExecutor(new PlayerStat());

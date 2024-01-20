@@ -28,7 +28,7 @@ public class Template implements CommandExecutor {
    * Checks if the command request was formatted correctly before doing something.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
@@ -40,7 +40,7 @@ public class Template implements CommandExecutor {
    * Either does something or another thing.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    */
   private void interpretParameters(Player player, String[] args) {
 

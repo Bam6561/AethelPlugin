@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * Forge is a command invocation that opens an inventory to allow the fabrication of items through clicking.
+ * Forge is a command invocation that allows the fabrication of items through clicking.
  * <p>
  * Additional Parameters:
  * - "edit", "e": allows the user to create, modify, or delete forge recipes
@@ -37,7 +37,7 @@ public class Forge implements CommandExecutor {
    * Checks if the command request was formatted correctly before interpreting its usage.
    *
    * @param player interacting player
-   * @param args   player provided parameters
+   * @param args   user provided parameters
    */
   private void readRequest(Player player, String[] args) {
     switch (args.length) {
