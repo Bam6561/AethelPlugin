@@ -18,7 +18,7 @@ import java.util.Set;
 
 /**
  * AethelItemMain is a shared inventory under the AethelItem command that supports
- * categorical pagination for getting, creating, modifying, and deleting Aethel items.
+ * categorical pagination for getting, creating, editing, and removing Aethel items.
  *
  * @author Danny Nguyen
  * @version 1.5.4
@@ -52,7 +52,7 @@ public class AethelItemMain {
     switch (action) {
       case "get" -> title += ChatColor.GREEN + " Get " +
           ChatColor.WHITE + player.getMetadata("category").get(0).asString();
-      case "delete" -> title += ChatColor.RED + " Delete " +
+      case "remove" -> title += ChatColor.RED + " Remove " +
           ChatColor.WHITE + player.getMetadata("category").get(0).asString();
     }
     return Bukkit.createInventory(player, 54, title);
@@ -122,10 +122,10 @@ public class AethelItemMain {
           ChatColor.WHITE + "slot to save it.",
           "",
           ChatColor.WHITE + "You can toggle between",
-          ChatColor.WHITE + "Get and Delete modes by",
+          ChatColor.WHITE + "Get and Remove modes by",
           ChatColor.WHITE + "clicking on their button.",
           "",
-          ChatColor.WHITE + "To undo a deletion,",
+          ChatColor.WHITE + "To undo a removal,",
           ChatColor.WHITE + "get the item and save",
           ChatColor.WHITE + "it before reloading.");
     }
@@ -135,7 +135,7 @@ public class AethelItemMain {
   }
 
   /**
-   * Adds save, get, and delete buttons.
+   * Adds save, get, and remove buttons.
    *
    * @param action type of interaction
    * @param inv    interacting inventory
@@ -146,9 +146,9 @@ public class AethelItemMain {
         inv.setItem(4, ItemCreator.
             createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Delete"));
+            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Remove"));
       }
-      case "delete" -> {
+      case "remove" -> {
         inv.setItem(4, ItemCreator.
             createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.

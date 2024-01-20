@@ -4,8 +4,8 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.ForgeCraft;
 import me.dannynguyen.aethel.inventories.forge.ForgeMain;
 import me.dannynguyen.aethel.inventories.forge.ForgeSave;
-import me.dannynguyen.aethel.inventories.forge.utility.ForgeDelete;
-import me.dannynguyen.aethel.inventories.forge.utility.ForgeModify;
+import me.dannynguyen.aethel.inventories.forge.utility.ForgeEdit;
+import me.dannynguyen.aethel.inventories.forge.utility.ForgeRemove;
 import me.dannynguyen.aethel.objects.forge.ForgeCraftOperation;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
@@ -54,7 +54,7 @@ public class ForgeListener {
    * - increments or decrements a recipe page
    * - changes the interaction type
    * - opens a ForgeSave inventory
-   * - contextualizes the click to expand, modify, or delete recipes
+   * - contextualizes the click to expand, edit, or remove recipes
    *
    * @param e      inventory click event
    * @param player interacting player
@@ -68,11 +68,11 @@ public class ForgeListener {
         }
         case 3 -> openForgeSave(player);
         case 4 -> {
-          if (player.getMetadata("future-action").get(0).asString().equals("modify")) {
-            openForgeModify(player);
+          if (player.getMetadata("future-action").get(0).asString().equals("edit")) {
+            openForgeEdit(player);
           }
         }
-        case 5 -> openForgeDelete(player);
+        case 5 -> openForgeRemove(player);
         case 6 -> returnToMainPage(player);
         case 8 -> nextRecipePage(player, action);
         default -> interpretContextualClick(e, action, player);
@@ -98,7 +98,7 @@ public class ForgeListener {
   }
 
   /**
-   * Either saves a recipe or goes back to the ForgeMain inventory with the intent to modify recipes.
+   * Either saves a recipe or goes back to the ForgeMain inventory with the intent to edit recipes.
    *
    * @param e      inventory click event
    * @param player interacting player
@@ -109,7 +109,7 @@ public class ForgeListener {
         case 8 -> e.setCancelled(true);
         case 25 -> ForgeSave.readSaveClick(e, player);
         case 26 -> {
-          openForgeModify(player);
+          openForgeEdit(player);
           e.setCancelled(true);
         }
       }
@@ -142,7 +142,7 @@ public class ForgeListener {
   }
 
   /**
-   * Opens a ForgeMain inventory with the intent to modify recipes.
+   * Opens a ForgeMain inventory with the intent to edit recipes.
    * <p>
    * Since the player can either be returning to the main page or
    * a recipe category from here, both scenarios are supported.
@@ -150,32 +150,32 @@ public class ForgeListener {
    *
    * @param player interacting player
    */
-  private static void openForgeModify(Player player) {
+  private static void openForgeEdit(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
     if (categoryName.equals("")) {
-      player.openInventory(ForgeMain.openForgeMainPage(player, "modify"));
+      player.openInventory(ForgeMain.openForgeMainPage(player, "edit"));
       player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.category"));
     } else {
       categoryName = player.getMetadata("category").get(0).asString();
 
-      player.openInventory(ForgeMain.openForgeCategoryPage(player, "modify",
+      player.openInventory(ForgeMain.openForgeCategoryPage(player, "edit",
           categoryName, player.getMetadata("page").get(0).asInt()));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "forge.modify"));
+          new FixedMetadataValue(AethelPlugin.getInstance(), "forge.edit"));
     }
   }
 
   /**
-   * Opens a ForgeMain inventory with the intent to delete recipes.
+   * Opens a ForgeMain inventory with the intent to remove recipes.
    *
    * @param player interacting player
    */
-  private static void openForgeDelete(Player player) {
+  private static void openForgeRemove(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
 
-    player.openInventory(ForgeMain.openForgeCategoryPage(player, "delete",
+    player.openInventory(ForgeMain.openForgeCategoryPage(player, "remove",
         categoryName, player.getMetadata("page").get(0).asInt()));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.delete"));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.remove"));
   }
 
   /**
@@ -221,7 +221,7 @@ public class ForgeListener {
   }
 
   /**
-   * Either crafts, modifies, or deletes a recipe.
+   * Either crafts, edits, or removes a recipe.
    *
    * @param e      inventory click event
    * @param action interaction type
@@ -230,8 +230,8 @@ public class ForgeListener {
   private static void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
       case "craft" -> ForgeCraft.expandRecipeDetails(e, player);
-      case "modify" -> ForgeModify.modifyRecipe(e, player);
-      case "delete" -> ForgeDelete.deleteRecipe(e, player);
+      case "edit" -> ForgeEdit.editRecipe(e, player);
+      case "remove" -> ForgeRemove.removeRecipe(e, player);
     }
   }
 }

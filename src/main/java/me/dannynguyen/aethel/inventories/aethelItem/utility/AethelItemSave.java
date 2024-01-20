@@ -64,7 +64,7 @@ public class AethelItemSave {
       fw.write(encodedItem);
       fw.close();
       player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + "_itm.txt");
-    } catch (IOException e) {
+    } catch (IOException ex) {
       player.sendMessage(ChatColor.RED + "Unable to save item.");
     }
   }

@@ -10,7 +10,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventoryListener is an inventory listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.7
+ * @version 1.6.8
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -25,6 +25,7 @@ public class ItemEditorInventoryListener {
       switch (e.getSlot()) {
         case 9 -> awaitMessageResponse(player, "display_name");
         case 10 -> awaitMessageResponse(player, "custom_model_data");
+        case 11 -> awaitMessageResponse(player, "lore");
       }
     }
     e.setCancelled(true);

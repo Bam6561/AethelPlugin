@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.listeners.inventory;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
 import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemSave;
-import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemDelete;
+import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemRemove;
 import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemGet;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
@@ -101,7 +101,7 @@ public class AethelItemListener {
    * - increments or decrements an item page
    * - saves an item file
    * - changes the interaction type
-   * - contextualizes the click to get or delete items
+   * - contextualizes the click to get or remove items
    *
    * @param e      inventory click event
    * @param player interacting player
@@ -115,7 +115,7 @@ public class AethelItemListener {
       case 2 -> { // Help Context
       }
       case 4 -> AethelItemSave.readSaveClick(e, player);
-      case 5 -> toggleGetDeleteAction(player, action);
+      case 5 -> toggleGetRemoveAction(player, action);
       case 6 -> returnToMainPage(player);
       case 8 -> nextItemPage(player, action);
       default -> interpretContextualClick(e, action, player);
@@ -143,20 +143,20 @@ public class AethelItemListener {
   }
 
   /**
-   * Toggles between get and delete actions.
+   * Toggles between get and remove actions.
    *
    * @param player interacting player
    * @param action type of interaction
    */
-  private static void toggleGetDeleteAction(Player player, String action) {
+  private static void toggleGetRemoveAction(Player player, String action) {
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
     if (action.equals("get")) {
-      player.openInventory(AethelItemMain.openItemCategoryPage(player, "delete",
+      player.openInventory(AethelItemMain.openItemCategoryPage(player, "remove",
           categoryName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.delete"));
+          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitem.remove"));
     } else {
       player.openInventory(AethelItemMain.openItemCategoryPage(player, "get",
           categoryName, pageRequest));
@@ -194,7 +194,7 @@ public class AethelItemListener {
   }
 
   /**
-   * Either gets or deletes an item.
+   * Either gets or remove an item.
    *
    * @param e      inventory click event
    * @param action interacting action
@@ -203,7 +203,7 @@ public class AethelItemListener {
   private static void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
       case "get" -> AethelItemGet.getItem(e, player);
-      case "delete" -> AethelItemDelete.deleteItem(e, player);
+      case "remove" -> AethelItemRemove.removeItem(e, player);
     }
   }
 }

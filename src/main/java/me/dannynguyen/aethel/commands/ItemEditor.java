@@ -36,7 +36,7 @@ public class ItemEditor implements CommandExecutor {
         player.sendMessage(ChatColor.RED + "No main hand item.");
       }
     } else {
-      player.sendMessage("Insufficient permissions.");
+      player.sendMessage(ChatColor.RED + "Insufficient permissions.");
     }
     return true;
   }

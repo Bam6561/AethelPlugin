@@ -16,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 /**
  * AethelTag is a command invocation that allows the retrieval, addition,
- * or deletion of Aethel plugin tags to the user's main hand item.
+ * or removal of Aethel plugin tags to the user's main hand item.
  * <p>
  * Additional Parameters:
  * - "get", "g": reads the item's tags

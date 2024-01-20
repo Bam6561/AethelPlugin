@@ -14,20 +14,20 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.ArrayList;
 
 /**
- * ForgeModify is a utility class that modifies forge recipes.
+ * ForgeEdit is a utility class that edits forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.6.1
  * @since 1.0.9
  */
-public class ForgeModify {
+public class ForgeEdit {
   /**
-   * Modifies an existing recipe.
+   * Edits an existing recipe.
    *
    * @param e      inventory click event
    * @param player interacting player
    */
-  public static void modifyRecipe(InventoryClickEvent e, Player player) {
+  public static void editRecipe(InventoryClickEvent e, Player player) {
     ForgeRecipe recipe = AethelResources.forgeRecipeData.getRecipesMap().
         get(ItemReader.readItemName(e.getCurrentItem()));
 

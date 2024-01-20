@@ -8,12 +8,15 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 /**
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.7
+ * @version 1.6.8
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -26,7 +29,7 @@ public class ItemEditorMenu {
    */
   public static Inventory openEditorMenu(Player player, ItemStack item) {
     Inventory inv = createInventory(player, item);
-    addMetadataButtons(inv);
+    addMetadataButtons(inv, item);
     return inv;
   }
 
@@ -37,8 +40,7 @@ public class ItemEditorMenu {
    * @return ItemEditorMenu
    */
   private static Inventory createInventory(Player player, ItemStack item) {
-    Inventory inv = Bukkit.createInventory(player, 54,
-        ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.WHITE + ItemReader.readItemName(item));
+    Inventory inv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "ItemEditor");
     inv.setItem(4, item);
     return inv;
   }
@@ -46,12 +48,24 @@ public class ItemEditorMenu {
   /**
    * Adds item metadata editor buttons.
    *
-   * @param inv interacting inventory
+   * @param inv  interacting inventory
+   * @param item interacting item
    */
-  private static void addMetadataButtons(Inventory inv) {
-    inv.setItem(9, ItemCreator.createItem(Material.NAME_TAG,
-        ChatColor.AQUA + "Set Display Name"));
-    inv.setItem(10, ItemCreator.createItem(Material.RED_DYE,
-        ChatColor.AQUA + "Set Custom Model Data"));
+  private static void addMetadataButtons(Inventory inv, ItemStack item) {
+    ItemMeta meta = item.getItemMeta();
+
+    ItemStack displayName = ItemCreator.createItem(Material.NAME_TAG,
+        ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readItemName(item)));
+    ItemStack customModelData = (!meta.hasCustomModelData() ?
+        ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Custom Model Data") :
+        ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Custom Model Data",
+            List.of(ChatColor.WHITE + String.valueOf(item.getItemMeta().getCustomModelData()))));
+    ItemStack lore = (!meta.hasLore() ?
+        ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Lore") :
+        ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Lore", meta.getLore()));
+
+    inv.setItem(9, displayName);
+    inv.setItem(10, customModelData);
+    inv.setItem(11, lore);
   }
 }

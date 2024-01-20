@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * Forge is a command invocation that allows the fabrication of items through clicking.
  * <p>
  * Additional Parameters:
- * - "edit", "e": allows the user to create, modify, or delete forge recipes
+ * - "edit", "e": allows the user to create, edit, or remove forge recipes
  * - "reload", "r": reloads forge recipes into memory
  * </p>
  *
@@ -54,14 +54,14 @@ public class Forge implements CommandExecutor {
   }
 
   /**
-   * Either modifies recipes or reloads them into memory.
+   * Either edits recipes or reloads them into memory.
    *
    * @param player interacting player
    * @param action type of interaction
    */
   private void interpretParameter(Player player, String action) {
     switch (action) {
-      case "edit", "e" -> openForgeModify(player);
+      case "edit", "e" -> openForgeEdit(player);
       case "reload", "r" -> {
         AethelResources.forgeRecipeData.loadRecipes();
         player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
@@ -85,15 +85,15 @@ public class Forge implements CommandExecutor {
   }
 
   /**
-   * Opens a ForgeMain inventory with the intent to modify recipes.
+   * Opens a ForgeMain inventory with the intent to edit recipes.
    *
    * @param player interacting player
    */
-  private void openForgeModify(Player player) {
-    player.setMetadata("future-action", new FixedMetadataValue(AethelPlugin.getInstance(), "modify"));
+  private void openForgeEdit(Player player) {
+    player.setMetadata("future-action", new FixedMetadataValue(AethelPlugin.getInstance(), "edit"));
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
-    player.openInventory(ForgeMain.openForgeMainPage(player, "modify"));
+    player.openInventory(ForgeMain.openForgeMainPage(player, "edit"));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.category"));
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }

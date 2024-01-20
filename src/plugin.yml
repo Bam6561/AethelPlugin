@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.6.7
+version: 1.6.8
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.AethelPlugin
@@ -11,7 +11,7 @@ commands:
     description: Opens an AethelItem inventory.
     usage: /aitem [reload]
   atag:
-    description: Modifies Aethel plugin tags.
+    description: Edits Aethel plugin tags.
     usage: /atag [get|remove <tag>|set <tag> <data>]
   char:
     description: Opens an RPG character sheet.

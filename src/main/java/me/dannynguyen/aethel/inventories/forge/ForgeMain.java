@@ -18,7 +18,7 @@ import java.util.Set;
 
 /**
  * ForgeMain is a shared inventory under the Forge command that supports
- * categorical pagination for crafting, modifying, and deleting forge recipes.
+ * categorical pagination for crafting, editing, and removing forge recipes.
  *
  * @author Danny Nguyen
  * @version 1.6.1
@@ -62,9 +62,9 @@ public class ForgeMain {
     switch (action) {
       case "craft" -> title += ChatColor.BLUE + " Craft " +
           ChatColor.WHITE + player.getMetadata("category").get(0).asString();
-      case "modify" -> title += ChatColor.YELLOW + " Modify " +
+      case "edit" -> title += ChatColor.YELLOW + " Edit " +
           ChatColor.WHITE + player.getMetadata("category").get(0).asString();
-      case "delete" -> title += ChatColor.RED + " Delete " +
+      case "remove" -> title += ChatColor.RED + " Remove " +
           ChatColor.WHITE + player.getMetadata("category").get(0).asString();
     }
     return Bukkit.createInventory(player, 54, title);
@@ -134,10 +134,10 @@ public class ForgeMain {
         inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
             ChatColor.GREEN + "Help", helpLore));
       }
-      case "modify", "delete" -> {
+      case "edit", "remove" -> {
         helpLore = Arrays.asList(
-            ChatColor.WHITE + "To undo a deletion,",
-            ChatColor.WHITE + "modify the item and",
+            ChatColor.WHITE + "To undo a removal,",
+            ChatColor.WHITE + "edit the item and",
             ChatColor.WHITE + "save it before reloading.");
         inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
             ChatColor.GREEN + "Help", helpLore));
@@ -156,24 +156,24 @@ public class ForgeMain {
   }
 
   /**
-   * Adds create, modify, and delete buttons.
+   * Adds create, edit, and remove buttons.
    *
    * @param action type of interaction
    * @param inv    interacting inventory
    */
   private static void addActionButtons(String action, Inventory inv) {
     switch (action) {
-      case "modify" -> {
+      case "edit" -> {
         inv.setItem(3, ItemCreator.
             createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
         inv.setItem(5, ItemCreator.
-            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Delete"));
+            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Remove"));
       }
-      case "delete" -> {
+      case "remove" -> {
         inv.setItem(3, ItemCreator.
             createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
         inv.setItem(4, ItemCreator.
-            createPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Modify"));
+            createPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Edit"));
       }
     }
   }

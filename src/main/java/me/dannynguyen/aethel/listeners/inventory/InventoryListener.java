@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.6.8
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -46,8 +46,8 @@ public class InventoryListener implements Listener {
   private void interpretAethelItem(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "category" -> AethelItemListener.readMainClick(e, player);
-      case "delete" -> AethelItemListener.readCategoryClick(e, player, "delete");
       case "get" -> AethelItemListener.readCategoryClick(e, player, "get");
+      case "remove" -> AethelItemListener.readCategoryClick(e, player, "remove");
     }
   }
 
@@ -76,8 +76,8 @@ public class InventoryListener implements Listener {
       case "category" -> ForgeListener.interpretMainClick(e, player);
       case "craft" -> ForgeListener.interpretCategoryClick(e, player, "craft");
       case "craft-confirm" -> ForgeListener.interpretCraftConfirmClick(e, player);
-      case "delete" -> ForgeListener.interpretCategoryClick(e, player, "delete");
-      case "modify" -> ForgeListener.interpretCategoryClick(e, player, "modify");
+      case "edit" -> ForgeListener.interpretCategoryClick(e, player, "edit");
+      case "remove" -> ForgeListener.interpretCategoryClick(e, player, "remove");
       case "save" -> ForgeListener.interpretSaveClick(e, player);
     }
   }

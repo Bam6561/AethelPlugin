@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * MessageListener is a general usage player message listener.
  *
  * @author Danny Nguyen
- * @version 1.6.7
+ * @version 1.6.8
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -47,6 +47,7 @@ public class MessageListener implements Listener {
     switch (msgType[1]) {
       case "display_name" -> ItemEditorMessageListener.setDisplayName(e, player, item, meta);
       case "custom_model_data" -> ItemEditorMessageListener.setCustomModelData(e, player, item, meta);
+      case "lore" -> ItemEditorMessageListener.readLoreRequest(e, player, item, meta);
     }
   }
 }
