@@ -17,7 +17,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.9
+ * @version 1.6.11
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -82,8 +82,8 @@ public class ItemEditorMenu {
    */
   private static void addCustomModelDataMeta(Inventory inv, ItemMeta meta) {
     ItemStack customModelData = (!meta.hasCustomModelData() ?
-        ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Custom Model Data") :
-        ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Custom Model Data",
+        ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data") :
+        ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data",
             List.of(ChatColor.WHITE + String.valueOf(meta.getCustomModelData()))));
     inv.setItem(10, customModelData);
   }

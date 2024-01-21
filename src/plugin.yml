@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.6.10
+version: 1.6.11
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.AethelPlugin
@@ -10,27 +10,36 @@ commands:
   aitem:
     description: Opens an AethelItem inventory.
     usage: /aitem [reload]
+    aliases: [ ai ]
   atag:
     description: Edits Aethel plugin tags.
     usage: /atag [get|remove <tag>|set <tag> <data>]
+    aliases: [ at ]
   char:
     description: Opens an RPG character sheet.
     usage: /char
+    aliases: [ c ]
   dev:
     description: Developer mode.
     usage: /dev
+    aliases: [ d ]
   forge:
     description: Opens a Forge inventory.
     usage: /forge [edit|reload]
+    aliases: [ f ]
   iedit:
     description: Edits an item's metadata.
     usage: /iedit
+    aliases: [ ie ]
   ping:
     description: Responds with server latency.
     usage: /ping
+    aliases: [ p ]
   show:
     description: Shows main hand item to chat.
     usage: /show
+    aliases: [ s ]
   stats:
     description: Gets a player's statistics.
     usage: /stats [<PlayerName>]
+    aliases: [ st ]

@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventoryListener is an inventory listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.10
+ * @version 1.6.11
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -31,11 +31,17 @@ public class ItemEditorInventoryListener {
   public static void interpretMenuClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
-        case 2 -> toggleUnbreakable(e.getClickedInventory(), player);
-        case 9 -> awaitMessageResponse(player, "display_name");
-        case 10 -> awaitMessageResponse(player, "custom_model_data");
+        case 9 -> {
+          player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input display name.");
+          awaitMessageResponse(player, "display_name");
+        }
+        case 10 -> {
+          player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input custom model data value.");
+          awaitMessageResponse(player, "custom_model_data");
+        }
         case 18, 19, 20, 27, 28, 29 -> interpretLoreAction(e.getSlot(), player);
         case 36, 37, 38, 39, 45, 46, 47, 48 -> interpretItemFlagToggle(e.getSlot(), e.getClickedInventory(), player);
+        case 42 -> toggleUnbreakable(e.getClickedInventory(), player);
       }
     }
     e.setCancelled(true);
