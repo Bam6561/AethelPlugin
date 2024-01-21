@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.6.12
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -58,8 +59,9 @@ public class ItemEditorMenu {
     addDisplayNameMeta(inv, item);
     addCustomModelDataMeta(inv, meta);
     addLoreMeta(inv, meta);
-    ItemEditorToggle.addUnbreakableMeta(inv, meta);
+    addGameplayMeta(inv);
     ItemEditorToggle.addItemFlagMetas(inv, meta);
+    ItemEditorToggle.addUnbreakableMeta(inv, meta);
   }
 
   /**
@@ -125,5 +127,23 @@ public class ItemEditorMenu {
     inv.setItem(27, addLore);
     inv.setItem(28, editLore);
     inv.setItem(29, removeLore);
+  }
+
+
+  /**
+   * Adds attribute modifier, enchant, and Aethel tag metadata buttons.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addGameplayMeta(Inventory inv) {
+    ItemStack attributesItem = new ItemStack(Material.IRON_HELMET);
+    ItemMeta meta = attributesItem.getItemMeta();
+    meta.setDisplayName(ChatColor.AQUA + "Attributes");
+    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+    attributesItem.setItemMeta(meta);
+
+    inv.setItem(15, attributesItem);
+    inv.setItem(24, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchants"));
+    inv.setItem(33, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
   }
 }

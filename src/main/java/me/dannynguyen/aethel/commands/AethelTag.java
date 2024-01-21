@@ -25,7 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.6.12
  * @since 1.2.6
  */
 public class AethelTag implements CommandExecutor {
@@ -57,8 +57,12 @@ public class AethelTag implements CommandExecutor {
    * @param item   item in main hand
    */
   private void readRequest(Player player, String[] args, ItemStack item) {
-    String action = args[0].toLowerCase();
-    switch (args.length) {
+    int numberOfParameters = args.length;
+    String action = "";
+    if (numberOfParameters != 0) {
+      action = args[0].toLowerCase();
+    }
+    switch (numberOfParameters) {
       case 0 -> player.sendMessage(ChatColor.RED + "No parameters provided.");
       case 1 -> {
         if (action.equals("get") || action.equals("g")) {
@@ -117,7 +121,7 @@ public class AethelTag implements CommandExecutor {
       item.setItemMeta(meta);
       player.sendMessage(ChatColor.RED + "[Removed] " + ChatColor.AQUA + tag);
     } else {
-      player.sendMessage(ChatColor.RED + "Nonexistent tag.");
+      player.sendMessage(ChatColor.RED + "Tag does not exist.");
     }
   }
 

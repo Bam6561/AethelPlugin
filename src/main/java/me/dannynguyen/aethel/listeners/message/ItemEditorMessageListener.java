@@ -17,7 +17,7 @@ import java.util.List;
  * ItemEditorMessageListener is a message listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.9
+ * @version 1.6.12
  * @since 1.6.7
  */
 public class ItemEditorMessageListener {
@@ -31,7 +31,7 @@ public class ItemEditorMessageListener {
    */
   public static void setDisplayName(AsyncPlayerChatEvent e, Player player,
                                     ItemStack item, ItemMeta meta) {
-    meta.setDisplayName(e.getMessage());
+    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
     item.setItemMeta(meta);
     player.sendMessage(ChatColor.GREEN + "[Named] " + ChatColor.WHITE + e.getMessage());
     returnToEditorMenu(player, item);

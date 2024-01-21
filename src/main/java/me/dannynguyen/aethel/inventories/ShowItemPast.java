@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * ShowItemPast is an inventory under the ShowItem command that shows past shared items.
  *
  * @author Danny Nguyen
- * @version 1.4.14
+ * @version 1.6.12
  * @since 1.4.5
  */
 public class ShowItemPast {
@@ -39,7 +39,7 @@ public class ShowItemPast {
   private static void addPastShownItems(Inventory inv) {
     int index = 0;
     for (ItemOwner itemOwner : AethelResources.showItemData.getPastItems()) {
-      ItemStack item = itemOwner.getItem();
+      ItemStack item = itemOwner.getItem().clone();
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(ChatColor.DARK_PURPLE + itemOwner.getOwner() +
           ChatColor.WHITE + " " + ItemReader.readItemName(item));

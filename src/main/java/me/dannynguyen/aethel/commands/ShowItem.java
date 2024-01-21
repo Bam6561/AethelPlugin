@@ -27,7 +27,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.6.12
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -66,7 +66,7 @@ public class ShowItem implements CommandExecutor {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.spigot().sendMessage(createShowItemTextComponent(player, item));
       }
-      AethelResources.showItemData.addPastItem(new ItemOwner(player.getName(), item));
+      AethelResources.showItemData.addPastItem(new ItemOwner(player.getName(), item.clone()));
     } else {
       player.sendMessage(ChatColor.RED + "No main hand item.");
     }

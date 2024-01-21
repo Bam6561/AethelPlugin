@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.text.DecimalFormat;
@@ -20,7 +21,7 @@ import java.util.List;
  * shows the player's equipment and attributes within the rpg context.
  *
  * @author Danny Nguyen
- * @version 1.6.5
+ * @version 1.6.12
  * @since 1.6.3
  */
 public class CharacterProfileSheet {
@@ -47,7 +48,8 @@ public class CharacterProfileSheet {
    * @return CharacterSheet inventory
    */
   private static Inventory createInventory(Player player) {
-    return Bukkit.createInventory(player, 54, ChatColor.DARK_PURPLE + player.getName());
+    return Bukkit.createInventory(player, 54,
+        ChatColor.DARK_GRAY + "Character Profile " + ChatColor.DARK_PURPLE + player.getName());
   }
 
   /**
@@ -57,9 +59,9 @@ public class CharacterProfileSheet {
    * @param inv    interacting inv
    */
   private static void addActionButtons(Player player, Inventory inv) {
-    inv.setItem(3, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
-    inv.setItem(4, ItemCreator.createItem(Material.CHEST, ChatColor.AQUA + "Collectibles"));
-    inv.setItem(5, ItemCreator.createItem(Material.COMMAND_BLOCK, ChatColor.AQUA + "Settings"));
+    inv.setItem(25, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
+    inv.setItem(34, ItemCreator.createItem(Material.ENDER_CHEST, ChatColor.AQUA + "Collectibles"));
+    inv.setItem(43, ItemCreator.createItem(Material.COMMAND_BLOCK, ChatColor.AQUA + "Settings"));
   }
 
   /**
@@ -105,36 +107,7 @@ public class CharacterProfileSheet {
   }
 
   /**
-   * Adds status effects.
-   *
-   * @param player interacting player
-   * @param inv    interacting inventory
-   */
-  private static void addStatusEffects(Player player, Inventory inv) {
-    StringBuilder potionEffects = new StringBuilder();
-    for (PotionEffect potionEffect : player.getActivePotionEffects()) {
-      String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
-      String effectType = ChatColor.AQUA + capitalizeProperly(potionEffect.getType().getName());
-      String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" :
-          String.valueOf(potionEffect.getAmplifier() + 1));
-
-      potionEffects.append(effectDuration).append(" ").
-          append(effectType).append(" ").
-          append(effectAmplifier).append(",");
-    }
-
-    ItemStack potion = new ItemStack(Material.POTION);
-    ItemMeta meta = potion.getItemMeta();
-    meta.setDisplayName(ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Status Effects");
-    meta.setLore(List.of(potionEffects.toString().split(",")));
-    meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-    potion.setItemMeta(meta);
-
-    inv.setItem(42, potion);
-  }
-
-  /**
-   * Adds the player's level and currency balance..
+   * Adds the player's level and currency balance.
    *
    * @param player interacting player
    * @param inv    interacting inv
@@ -143,11 +116,16 @@ public class CharacterProfileSheet {
     String level = ChatColor.DARK_GREEN + "" + player.getLevel() + " LVL";
     String exp = ChatColor.GREEN + "" + player.getTotalExperience() + " EXP";
 
-    inv.setItem(49, ItemCreator.createItem(Material.NAME_TAG,
-        ChatColor.DARK_PURPLE + player.getName(),
-        List.of(level,
-            exp,
-            ChatColor.WHITE + "0 Silver")));
+    ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+    SkullMeta meta = (SkullMeta) item.getItemMeta();
+    meta.setOwningPlayer(player);
+    meta.setDisplayName(ChatColor.DARK_PURPLE + player.getName());
+    meta.setLore(List.of(level,
+        exp,
+        ChatColor.WHITE + "0 Silver"));
+    item.setItemMeta(meta);
+
+    inv.setItem(4, item);
   }
 
   /**
@@ -167,12 +145,17 @@ public class CharacterProfileSheet {
     String criticalDamage = ChatColor.DARK_GREEN +
         hundredths.format(1) + "x CRIT DMG";
 
-    inv.setItem(15, ItemCreator.createItem(Material.IRON_SWORD,
-        ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense",
-        List.of(damage,
-            attackSpeed,
-            criticalChance,
-            criticalDamage)));
+    ItemStack item = new ItemStack(Material.IRON_SWORD);
+    ItemMeta meta = item.getItemMeta();
+    meta.setDisplayName(ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense");
+    meta.setLore(List.of(damage,
+        attackSpeed,
+        criticalChance,
+        criticalDamage));
+    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+    item.setItemMeta(meta);
+
+    inv.setItem(15, item);
   }
 
   /**
@@ -202,15 +185,20 @@ public class CharacterProfileSheet {
     String dodgeChance = ChatColor.DARK_AQUA + "" +
         hundredths.format(0) + "% DODGE";
 
-    inv.setItem(24, ItemCreator.createItem(Material.SHIELD,
-        ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense",
-        List.of(maxHealth,
-            armor,
-            armorToughness,
-            speed,
-            block,
-            parryChance,
-            dodgeChance)));
+    ItemStack item = new ItemStack(Material.IRON_CHESTPLATE);
+    ItemMeta meta = item.getItemMeta();
+    meta.setDisplayName(ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense");
+    meta.setLore(List.of(maxHealth,
+        armor,
+        armorToughness,
+        speed,
+        block,
+        parryChance,
+        dodgeChance));
+    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+    item.setItemMeta(meta);
+
+    inv.setItem(24, item);
   }
 
   /**
@@ -232,13 +220,42 @@ public class CharacterProfileSheet {
     String luck = ChatColor.GREEN + "" +
         hundredths.format(player.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
 
-    inv.setItem(33, ItemCreator.createItem(Material.NETHER_STAR,
+    inv.setItem(33, ItemCreator.createItem(Material.SPYGLASS,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other",
         List.of(abilityDamage,
             abilityCooldown,
             applyStatusEffect,
             knockbackResistance,
             luck)));
+  }
+
+  /**
+   * Adds status effects.
+   *
+   * @param player interacting player
+   * @param inv    interacting inventory
+   */
+  private static void addStatusEffects(Player player, Inventory inv) {
+    StringBuilder potionEffects = new StringBuilder();
+    for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+      String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
+      String effectType = ChatColor.AQUA + capitalizeProperly(potionEffect.getType().getName());
+      String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" :
+          String.valueOf(potionEffect.getAmplifier() + 1));
+
+      potionEffects.append(effectDuration).append(" ").
+          append(effectType).append(" ").
+          append(effectAmplifier).append(",");
+    }
+
+    ItemStack item = new ItemStack(Material.POTION);
+    ItemMeta meta = item.getItemMeta();
+    meta.setDisplayName(ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Status Effects");
+    meta.setLore(List.of(potionEffects.toString().split(",")));
+    meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+    item.setItemMeta(meta);
+
+    inv.setItem(42, item);
   }
 
   /**
