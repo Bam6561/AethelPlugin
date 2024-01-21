@@ -18,7 +18,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.13
+ * @version 1.6.14
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -71,9 +71,38 @@ public class ItemEditorMenu {
    * @param item interacting item
    */
   private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
+    ItemStack formatCodes = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+        ChatColor.GREEN + "Format Codes",
+        List.of(ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
+            ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
+            ChatColor.WHITE + "&m " + ChatColor.STRIKETHROUGH + "Strike",
+            ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
+            ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
+            ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
+    ItemStack colorCodes = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+        ChatColor.GREEN + "Color Codes",
+        List.of(ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
+            ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
+            ChatColor.WHITE + "&2 " + ChatColor.DARK_GREEN + "Dark Green",
+            ChatColor.WHITE + "&3 " + ChatColor.DARK_RED + "Dark Red",
+            ChatColor.WHITE + "&4 " + ChatColor.DARK_AQUA + "Dark Aqua",
+            ChatColor.WHITE + "&5 " + ChatColor.DARK_PURPLE + "Dark Purple",
+            ChatColor.WHITE + "&6 " + ChatColor.GOLD + "Gold",
+            ChatColor.WHITE + "&7 " + ChatColor.GRAY + "Gray",
+            ChatColor.WHITE + "&8 " + ChatColor.DARK_GRAY + "Dark Gray",
+            ChatColor.WHITE + "&9 " + ChatColor.BLUE + "Blue",
+            ChatColor.WHITE + "&a " + ChatColor.GREEN + "Green",
+            ChatColor.WHITE + "&b " + ChatColor.AQUA + "Aqua",
+            ChatColor.WHITE + "&c " + ChatColor.RED + "Red",
+            ChatColor.WHITE + "&d " + ChatColor.LIGHT_PURPLE + "Light Purple",
+            ChatColor.WHITE + "&e " + ChatColor.YELLOW + "Yellow",
+            ChatColor.WHITE + "&f " + ChatColor.WHITE + "White"));
     ItemStack displayName = ItemCreator.createItem(Material.NAME_TAG,
         ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readItemName(item)));
-    inv.setItem(10, displayName);
+
+    inv.setItem(9, formatCodes);
+    inv.setItem(10, colorCodes);
+    inv.setItem(11, displayName);
   }
 
   /**
@@ -87,7 +116,7 @@ public class ItemEditorMenu {
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data") :
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data",
             List.of(ChatColor.WHITE + String.valueOf(meta.getCustomModelData()))));
-    inv.setItem(11, customModelData);
+    inv.setItem(12, customModelData);
   }
 
   /**

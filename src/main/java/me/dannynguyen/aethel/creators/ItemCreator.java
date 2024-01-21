@@ -17,7 +17,7 @@ import java.util.List;
  * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.6.14
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -61,7 +61,7 @@ public class ItemCreator {
    * @return named custom player head
    */
   public static ItemStack createPlayerHead(String headName, String displayName) {
-    ItemStack item = AethelResources.playerHeadData.getHeadsMap().get(headName);
+    ItemStack item = AethelResources.playerHeadData.getHeadsMap().get(headName).clone();
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
@@ -81,7 +81,7 @@ public class ItemCreator {
    * @return named custom player head with lore
    */
   public static ItemStack createPlayerHead(String headName, String displayName, List<String> lore) {
-    ItemStack item = AethelResources.playerHeadData.getHeadsMap().get(headName);
+    ItemStack item = AethelResources.playerHeadData.getHeadsMap().get(headName).clone();
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
