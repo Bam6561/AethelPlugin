@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventoryListener is an inventory listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.6.13
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -31,17 +31,17 @@ public class ItemEditorInventoryListener {
   public static void interpretMenuClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
-        case 9 -> {
+        case 10 -> {
           player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input display name.");
           awaitMessageResponse(player, "display_name");
         }
-        case 10 -> {
+        case 11 -> {
           player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input custom model data value.");
           awaitMessageResponse(player, "custom_model_data");
         }
-        case 18, 19, 20, 27, 28, 29 -> interpretLoreAction(e.getSlot(), player);
-        case 36, 37, 38, 39, 45, 46, 47, 48 -> interpretItemFlagToggle(e.getSlot(), e.getClickedInventory(), player);
-        case 42 -> toggleUnbreakable(e.getClickedInventory(), player);
+        case 28, 29, 30, 37, 38, 39 -> interpretLoreAction(e.getSlot(), player);
+        case 32, 33, 34, 41, 42, 43, 50, 51 -> interpretItemFlagToggle(e.getSlot(), e.getClickedInventory(), player);
+        case 52 -> toggleUnbreakable(e.getClickedInventory(), player);
       }
     }
     e.setCancelled(true);
@@ -89,19 +89,19 @@ public class ItemEditorInventoryListener {
    */
   private static void interpretLoreAction(int slotClicked, Player player) {
     switch (slotClicked) {
-      case 18 -> { // Lore Context
+      case 28 -> { // Lore Context
       }
-      case 19 -> {
+      case 29 -> {
         player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input lore to set.");
         awaitMessageResponse(player, "lore-set");
       }
-      case 20 -> readItemLore(player, "lore-clear");
-      case 27 -> {
+      case 30 -> readItemLore(player, "lore-clear");
+      case 37 -> {
         player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input lore to add.");
         awaitMessageResponse(player, "lore-add");
       }
-      case 28 -> readItemLore(player, "lore-edit");
-      case 29 -> readItemLore(player, "lore-remove");
+      case 38 -> readItemLore(player, "lore-edit");
+      case 39 -> readItemLore(player, "lore-remove");
     }
   }
 
@@ -117,14 +117,14 @@ public class ItemEditorInventoryListener {
     ItemMeta meta = item.getItemMeta();
 
     switch (slotClicked) {
-      case 36 -> toggleHideArmorTrim(inv, player, item, meta);
-      case 37 -> toggleHideAttributes(inv, player, item, meta);
-      case 38 -> toggleHideDestroys(inv, player, item, meta);
-      case 39 -> toggleHideDye(inv, player, item, meta);
-      case 45 -> toggleHideEnchants(inv, player, item, meta);
-      case 46 -> toggleHidePlacedOn(inv, player, item, meta);
-      case 47 -> toggleHidePotionEffects(inv, player, item, meta);
-      case 48 -> toggleHideUnbreakable(inv, player, item, meta);
+      case 32 -> toggleHideArmorTrim(inv, player, item, meta);
+      case 33 -> toggleHideAttributes(inv, player, item, meta);
+      case 34 -> toggleHideDestroys(inv, player, item, meta);
+      case 41 -> toggleHideDye(inv, player, item, meta);
+      case 42 -> toggleHideEnchants(inv, player, item, meta);
+      case 43 -> toggleHidePlacedOn(inv, player, item, meta);
+      case 50 -> toggleHidePotionEffects(inv, player, item, meta);
+      case 51 -> toggleHideUnbreakable(inv, player, item, meta);
     }
   }
 

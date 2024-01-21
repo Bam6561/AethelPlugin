@@ -13,7 +13,7 @@ import java.util.List;
  * ItemEditorToggle is a utility class to update the status of toggleable metadata buttons.
  *
  * @author Danny Nguyen
- * @version 1.6.11
+ * @version 1.6.13
  * @since 1.6.10
  */
 public class ItemEditorToggle {
@@ -26,7 +26,7 @@ public class ItemEditorToggle {
   public static void addUnbreakableMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.isUnbreakable();
     String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(42, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK,
+    inv.setItem(52, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK,
         ChatColor.AQUA + "Unbreakable", List.of(unbreakable)));
   }
 
@@ -56,7 +56,7 @@ public class ItemEditorToggle {
   public static void addHideArmorTrimMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM);
     String armorTrim = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(36, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(32, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Armor Trims", List.of(armorTrim)));
   }
 
@@ -69,7 +69,7 @@ public class ItemEditorToggle {
   public static void addHideAttributesMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES);
     String attributes = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(37, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(33, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Attributes", List.of(attributes)));
   }
 
@@ -82,7 +82,7 @@ public class ItemEditorToggle {
   public static void addHideDestroysMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DESTROYS);
     String destroys = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(38, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(34, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Destroys", List.of(destroys)));
   }
 
@@ -95,7 +95,7 @@ public class ItemEditorToggle {
   public static void addHideDyeMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DYE);
     String dye = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(39, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(41, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Dyes", List.of(dye)));
   }
 
@@ -108,7 +108,7 @@ public class ItemEditorToggle {
   public static void addHideEnchantsMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
     String enchants = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(45, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(42, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Enchants", List.of(enchants)));
   }
 
@@ -121,7 +121,7 @@ public class ItemEditorToggle {
   public static void addHidePlacedOnMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON);
     String placedOn = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(46, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(43, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Placed On", List.of(placedOn)));
   }
 
@@ -134,7 +134,7 @@ public class ItemEditorToggle {
   public static void addHidePotionEffectsMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS);
     String potionEffects = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(47, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(50, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
   }
 
@@ -147,7 +147,7 @@ public class ItemEditorToggle {
   public static void addHideUnbreakableMeta(Inventory inv, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE);
     String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    inv.setItem(48, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
+    inv.setItem(51, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE,
         ChatColor.AQUA + "Hide Unbreakable", List.of(unbreakable)));
   }
 }

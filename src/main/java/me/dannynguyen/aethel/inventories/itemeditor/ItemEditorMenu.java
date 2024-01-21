@@ -18,7 +18,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.12
+ * @version 1.6.13
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -73,7 +73,7 @@ public class ItemEditorMenu {
   private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
     ItemStack displayName = ItemCreator.createItem(Material.NAME_TAG,
         ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readItemName(item)));
-    inv.setItem(9, displayName);
+    inv.setItem(10, displayName);
   }
 
   /**
@@ -87,7 +87,7 @@ public class ItemEditorMenu {
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data") :
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data",
             List.of(ChatColor.WHITE + String.valueOf(meta.getCustomModelData()))));
-    inv.setItem(10, customModelData);
+    inv.setItem(11, customModelData);
   }
 
   /**
@@ -121,12 +121,12 @@ public class ItemEditorMenu {
     ItemStack removeLore = ItemCreator.createItem(Material.PAPER,
         ChatColor.AQUA + "Remove Lore", List.of(ChatColor.WHITE + "Specify line."));
 
-    inv.setItem(18, lore);
-    inv.setItem(19, setLore);
-    inv.setItem(20, clearLore);
-    inv.setItem(27, addLore);
-    inv.setItem(28, editLore);
-    inv.setItem(29, removeLore);
+    inv.setItem(28, lore);
+    inv.setItem(29, setLore);
+    inv.setItem(30, clearLore);
+    inv.setItem(37, addLore);
+    inv.setItem(38, editLore);
+    inv.setItem(39, removeLore);
   }
 
 
@@ -142,8 +142,8 @@ public class ItemEditorMenu {
     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
     attributesItem.setItemMeta(meta);
 
-    inv.setItem(15, attributesItem);
-    inv.setItem(24, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchants"));
-    inv.setItem(33, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
+    inv.setItem(14, attributesItem);
+    inv.setItem(15, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchants"));
+    inv.setItem(16, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
   }
 }

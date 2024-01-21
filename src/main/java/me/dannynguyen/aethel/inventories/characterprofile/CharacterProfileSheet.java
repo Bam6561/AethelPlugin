@@ -33,7 +33,7 @@ public class CharacterProfileSheet {
    */
   public static Inventory openCharacterSheet(Player player) {
     Inventory inv = createInventory(player);
-    addActionButtons(player, inv);
+    addActionButtons(inv);
     addEquipment(player, inv);
     addAttributes(player, inv);
     addStatusEffects(player, inv);
@@ -49,16 +49,15 @@ public class CharacterProfileSheet {
    */
   private static Inventory createInventory(Player player) {
     return Bukkit.createInventory(player, 54,
-        ChatColor.DARK_GRAY + "Character Profile " + ChatColor.DARK_PURPLE + player.getName());
+        ChatColor.DARK_GRAY + "Character " + ChatColor.DARK_PURPLE + player.getName());
   }
 
   /**
    * Adds quests, collectibles, and settings buttons.
    *
-   * @param player interacting player
-   * @param inv    interacting inv
+   * @param inv interacting inv
    */
-  private static void addActionButtons(Player player, Inventory inv) {
+  private static void addActionButtons(Inventory inv) {
     inv.setItem(25, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
     inv.setItem(34, ItemCreator.createItem(Material.ENDER_CHEST, ChatColor.AQUA + "Collectibles"));
     inv.setItem(43, ItemCreator.createItem(Material.COMMAND_BLOCK, ChatColor.AQUA + "Settings"));

@@ -17,7 +17,7 @@ import java.util.List;
  * ItemEditorMessageListener is a message listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.12
+ * @version 1.6.13
  * @since 1.6.7
  */
 public class ItemEditorMessageListener {
@@ -172,8 +172,10 @@ public class ItemEditorMessageListener {
   private static void returnToEditorMenu(Player player, ItemStack item) {
     player.removeMetadata("message", AethelPlugin.getInstance());
     Bukkit.getScheduler().runTask(AethelPlugin.getInstance(),
-        () -> player.openInventory(ItemEditorMenu.openEditorMenu(player, item)));
-    player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+        () -> {
+          player.openInventory(ItemEditorMenu.openEditorMenu(player, item));
+          player.setMetadata("inventory",
+              new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+        });
   }
 }
