@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorEnchants;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorTags;
 import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggle;
@@ -20,7 +21,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventoryListener is an inventory listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.15
+ * @version 1.6.16
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -41,7 +42,8 @@ public class ItemEditorInventoryListener {
           player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input custom model data value.");
           awaitMessageResponse(player, "custom_model_data");
         }
-        case 16 -> openTagsInventory(player);
+        case 15 -> openEnchantsMenu(player);
+        case 16 -> openTagsMenu(player);
         case 28, 29, 30, 37, 38, 39 -> interpretLoreAction(e.getSlot(), player);
         case 32, 33, 34, 41, 42, 43, 50, 51 -> interpretItemFlagToggle(e.getSlot(), e.getClickedInventory(), player);
         case 52 -> toggleUnbreakable(e.getClickedInventory(), player);
@@ -59,15 +61,40 @@ public class ItemEditorInventoryListener {
   public static void interpretTagsClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
-        case 4 -> { // Item
+        case 2, 4 -> { // Context, Item
         }
         case 6 -> returnToEditorMenu(player);
         default -> {
           String aethelTag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
           player.sendMessage(ChatColor.GOLD + "[!] " +
               ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + " value.");
-          player.setMetadata("edit", new FixedMetadataValue(AethelPlugin.getInstance(), aethelTag));
+          player.setMetadata("input", new FixedMetadataValue(AethelPlugin.getInstance(), aethelTag));
           awaitMessageResponse(player, "tags");
+        }
+      }
+    }
+    e.setCancelled(true);
+  }
+
+  /**
+   * Edits an item's enchant.
+   *
+   * @param e      inventory click event
+   * @param player interacting player
+   */
+  public static void interpretEnchantsClick(InventoryClickEvent e, Player player) {
+    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+      switch (e.getSlot()) {
+        case 2, 4 -> { // Context, Item
+        }
+        case 6 -> returnToEditorMenu(player);
+        default -> {
+          String enchant = ChatColor.stripColor(e.getCurrentItem().
+              getItemMeta().getDisplayName().replace(" ", "_").toLowerCase());
+          player.sendMessage(ChatColor.GOLD + "[!] " +
+              ChatColor.WHITE + "Input " + ChatColor.AQUA + enchant + ChatColor.WHITE + " value.");
+          player.setMetadata("input", new FixedMetadataValue(AethelPlugin.getInstance(), enchant));
+          awaitMessageResponse(player, "enchants");
         }
       }
     }
@@ -359,7 +386,19 @@ public class ItemEditorInventoryListener {
   private static void returnToEditorMenu(Player player) {
     player.openInventory(ItemEditorMenu.openEditorMenu(player,
         AethelResources.itemEditorData.getEditedItemMap().get(player)));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+  }
+
+  /**
+   * Opens a ItemEditorEnchants inventory.
+   *
+   * @param player interacting player
+   */
+  private static void openEnchantsMenu(Player player) {
+    player.openInventory(ItemEditorEnchants.openEnchantsMenu(player));
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.enchants"));
   }
 
   /**
@@ -367,8 +406,9 @@ public class ItemEditorInventoryListener {
    *
    * @param player interacting player
    */
-  private static void openTagsInventory(Player player) {
-    player.openInventory(ItemEditorTags.openInventory(player));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.tags"));
+  private static void openTagsMenu(Player player) {
+    player.openInventory(ItemEditorTags.openTagsMenu(player));
+    player.setMetadata("inventory",
+        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.tags"));
   }
 }

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.inventories.characterprofile;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.formatters.TextFormatter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ import java.util.List;
  * shows the player's equipment and attributes within the rpg context.
  *
  * @author Danny Nguyen
- * @version 1.6.12
+ * @version 1.6.16
  * @since 1.6.3
  */
 public class CharacterProfileSheet {
@@ -238,7 +239,7 @@ public class CharacterProfileSheet {
     StringBuilder potionEffects = new StringBuilder();
     for (PotionEffect potionEffect : player.getActivePotionEffects()) {
       String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
-      String effectType = ChatColor.AQUA + capitalizeProperly(potionEffect.getType().getName());
+      String effectType = ChatColor.AQUA + TextFormatter.capitalizeProperly(potionEffect.getType().getName());
       String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" :
           String.valueOf(potionEffect.getAmplifier() + 1));
 
@@ -255,23 +256,6 @@ public class CharacterProfileSheet {
     item.setItemMeta(meta);
 
     inv.setItem(42, item);
-  }
-
-  /**
-   * Capitalizes the first character of every word.
-   *
-   * @param phrase phrase
-   * @return proper phrase
-   */
-  private static String capitalizeProperly(String phrase) {
-    phrase = phrase.replace("_", " ");
-    String[] words = phrase.split(" ");
-
-    StringBuilder properPhrase = new StringBuilder();
-    for (String word : words) {
-      properPhrase.append(word.replace(word.substring(1), word.substring(1).toLowerCase())).append(" ");
-    }
-    return properPhrase.toString().trim();
   }
 
   /**

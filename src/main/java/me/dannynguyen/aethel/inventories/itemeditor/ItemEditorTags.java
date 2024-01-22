@@ -16,21 +16,29 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * ItemEditorTags is an inventory under the ItemEditor command that edits Aethel tags.
+ * ItemEditorTags is an inventory under the ItemEditor command that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.6.15
+ * @version 1.6.16
  * @since 1.6.15
  */
 public class ItemEditorTags {
-  public static Inventory openInventory(Player player) {
+  /**
+   * Opens an ItemEditorTags inventory with Aethel tags.
+   *
+   * @param player interacting player
+   * @return ItemEditorTags inventory with Aethel tags
+   */
+  public static Inventory openTagsMenu(Player player) {
     ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
     Inventory inv = createInventory(player, item);
-    Pagination.addBackButton(inv, 6);
     addAethelTags(inv, player);
+    addTagsContext(inv);
+    Pagination.addBackButton(inv, 6);
     return inv;
   }
 
@@ -71,5 +79,17 @@ public class ItemEditorTags {
               List.of(ChatColor.WHITE + dataContainer.get(aethelTagKey, PersistentDataType.STRING))));
       invSlot++;
     }
+  }
+
+  /**
+   * Adds a help context to the Aethel Tags editor.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addTagsContext(Inventory inv) {
+    List<String> helpLore = Arrays.asList(
+        ChatColor.WHITE + "To remove a tag, input \"-\".");
+    inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+        ChatColor.GREEN + "Help", helpLore));
   }
 }

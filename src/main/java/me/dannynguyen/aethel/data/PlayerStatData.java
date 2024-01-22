@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.formatters.TextFormatter;
 import me.dannynguyen.aethel.inventories.utility.Pagination;
 import me.dannynguyen.aethel.objects.playerstat.PlayerStatCategory;
 import me.dannynguyen.aethel.objects.playerstat.PlayerStatValues;
@@ -16,7 +17,7 @@ import java.util.*;
  * PlayerStatData stores player statistic names in memory.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.6.16
  * @since 1.4.8
  */
 public class PlayerStatData {
@@ -54,7 +55,7 @@ public class PlayerStatData {
       Inventory inv = Bukkit.createInventory(null, 54, "PlayerStat Category Page");
       for (String statName : playerStatCategory.getStats()) {
         inv.setItem(i, ItemCreator.createItem(Material.PAPER,
-            ChatColor.WHITE + capitalizeProperly(statName)));
+            ChatColor.WHITE + TextFormatter.capitalizeProperly(statName)));
         i++;
       }
       statCategoryPages.put(playerStatCategory.getName(), inv);
@@ -89,7 +90,7 @@ public class PlayerStatData {
       int invSlot = 9;
       for (int statIndex = startIndex; statIndex < endIndex; statIndex++) {
         String materialName = materials.get(statIndex).name();
-        String materialDisplayName = capitalizeProperly(materialName);
+        String materialDisplayName = TextFormatter.capitalizeProperly(materialName);
         inv.setItem(invSlot, ItemCreator.createItem(
             Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
         invSlot++;
@@ -127,7 +128,7 @@ public class PlayerStatData {
       // Stats begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        String entityName = capitalizeProperly(entityTypes.get(i).name());
+        String entityName = TextFormatter.capitalizeProperly(entityTypes.get(i).name());
         inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entityName));
         j++;
       }
@@ -137,23 +138,6 @@ public class PlayerStatData {
       startIndex += 45;
       endIndex = Math.min(numberOfEntityTypes, endIndex + 45);
     }
-  }
-
-  /**
-   * Capitalizes the first character of every word.
-   *
-   * @param phrase phrase
-   * @return proper phrase
-   */
-  private String capitalizeProperly(String phrase) {
-    phrase = phrase.replace("_", " ");
-    String[] words = phrase.split(" ");
-
-    StringBuilder properPhrase = new StringBuilder();
-    for (String word : words) {
-      properPhrase.append(word.replace(word.substring(1), word.substring(1).toLowerCase())).append(" ");
-    }
-    return properPhrase.toString().trim();
   }
 
   /**
