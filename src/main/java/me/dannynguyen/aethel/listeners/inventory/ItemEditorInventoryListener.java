@@ -2,6 +2,8 @@ package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorTags;
 import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggle;
 import me.dannynguyen.aethel.listeners.message.ItemEditorMessageListener;
 import org.bukkit.ChatColor;
@@ -18,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventoryListener is an inventory listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.14
+ * @version 1.6.15
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -39,6 +41,7 @@ public class ItemEditorInventoryListener {
           player.sendMessage(ChatColor.GOLD + "[!] " + ChatColor.WHITE + "Input custom model data value.");
           awaitMessageResponse(player, "custom_model_data");
         }
+        case 16 -> openTagsInventory(player);
         case 28, 29, 30, 37, 38, 39 -> interpretLoreAction(e.getSlot(), player);
         case 32, 33, 34, 41, 42, 43, 50, 51 -> interpretItemFlagToggle(e.getSlot(), e.getClickedInventory(), player);
         case 52 -> toggleUnbreakable(e.getClickedInventory(), player);
@@ -48,25 +51,27 @@ public class ItemEditorInventoryListener {
   }
 
   /**
-   * Toggles an item's ability to be broken.
+   * Edits an item's Aethel tag.
    *
-   * @param inv    interacting inventory
+   * @param e      inventory click event
    * @param player interacting player
    */
-  private static void toggleUnbreakable(Inventory inv, Player player) {
-    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
-    ItemMeta meta = item.getItemMeta();
-
-    if (!meta.isUnbreakable()) {
-      meta.setUnbreakable(true);
-      player.sendMessage(ChatColor.GREEN + "[Unbreakable]");
-    } else {
-      meta.setUnbreakable(false);
-      player.sendMessage(ChatColor.RED + "[Unbreakable]");
+  public static void interpretTagsClick(InventoryClickEvent e, Player player) {
+    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+      switch (e.getSlot()) {
+        case 4 -> { // Item
+        }
+        case 6 -> returnToEditorMenu(player);
+        default -> {
+          String aethelTag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+          player.sendMessage(ChatColor.GOLD + "[!] " +
+              ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + " value.");
+          player.setMetadata("edit", new FixedMetadataValue(AethelPlugin.getInstance(), aethelTag));
+          awaitMessageResponse(player, "tags");
+        }
+      }
     }
-    item.setItemMeta(meta);
-
-    ItemEditorToggle.addUnbreakableMeta(inv, meta);
+    e.setCancelled(true);
   }
 
   /**
@@ -126,6 +131,28 @@ public class ItemEditorInventoryListener {
       case 50 -> toggleHidePotionEffects(inv, player, item, meta);
       case 51 -> toggleHideUnbreakable(inv, player, item, meta);
     }
+  }
+
+  /**
+   * Toggles an item's ability to be broken.
+   *
+   * @param inv    interacting inventory
+   * @param player interacting player
+   */
+  private static void toggleUnbreakable(Inventory inv, Player player) {
+    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+    ItemMeta meta = item.getItemMeta();
+
+    if (!meta.isUnbreakable()) {
+      meta.setUnbreakable(true);
+      player.sendMessage(ChatColor.GREEN + "[Unbreakable]");
+    } else {
+      meta.setUnbreakable(false);
+      player.sendMessage(ChatColor.RED + "[Unbreakable]");
+    }
+    item.setItemMeta(meta);
+
+    ItemEditorToggle.addUnbreakableMeta(inv, meta);
   }
 
   /**
@@ -322,5 +349,26 @@ public class ItemEditorInventoryListener {
     item.setItemMeta(meta);
 
     ItemEditorToggle.addHideUnbreakableMeta(inv, meta);
+  }
+
+  /**
+   * Opens a ItemEditorMenu.
+   *
+   * @param player interacting player
+   */
+  private static void returnToEditorMenu(Player player) {
+    player.openInventory(ItemEditorMenu.openEditorMenu(player,
+        AethelResources.itemEditorData.getEditedItemMap().get(player)));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+  }
+
+  /**
+   * Opens a ItemEditorTags inventory.
+   *
+   * @param player interacting player
+   */
+  private static void openTagsInventory(Player player) {
+    player.openInventory(ItemEditorTags.openInventory(player));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.tags"));
   }
 }

@@ -2,13 +2,17 @@ package me.dannynguyen.aethel.listeners.message;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorTags;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +21,7 @@ import java.util.List;
  * ItemEditorMessageListener is a message listener for the ItemEditor command.
  *
  * @author Danny Nguyen
- * @version 1.6.13
+ * @version 1.6.15
  * @since 1.6.7
  */
 public class ItemEditorMessageListener {
@@ -161,6 +165,44 @@ public class ItemEditorMessageListener {
       player.sendMessage(ChatColor.RED + "Line does not exist.");
     }
     returnToEditorMenu(player, item);
+  }
+
+  /**
+   * Removes a line of lore.
+   *
+   * @param e      message event
+   * @param player interacting player
+   * @param item   interacting item
+   * @param meta   item meta
+   * @throws NumberFormatException     not a number
+   * @throws IndexOutOfBoundsException invalid index
+   */
+  public static void setTag(AsyncPlayerChatEvent e, Player player,
+                            ItemStack item, ItemMeta meta) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    String editTag = player.getMetadata("edit").get(0).asString();
+    NamespacedKey aethelTagKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + editTag);
+
+    if (!e.getMessage().equals("-")) {
+      dataContainer.set(aethelTagKey, PersistentDataType.STRING, e.getMessage());
+      item.setItemMeta(meta);
+      player.sendMessage(ChatColor.GREEN + "[Set " + editTag + "]");
+    } else {
+      dataContainer.remove(aethelTagKey);
+      item.setItemMeta(meta);
+      player.sendMessage(ChatColor.RED + "[Removed " + editTag + "]");
+    }
+    Bukkit.getScheduler().runTask(AethelPlugin.getInstance(), () -> openTagsInventory(player));
+  }
+
+  /**
+   * Opens a ItemEditorTags inventory.
+   *
+   * @param player interacting player
+   */
+  private static void openTagsInventory(Player player) {
+    player.openInventory(ItemEditorTags.openInventory(player));
+    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.tags"));
   }
 
   /**

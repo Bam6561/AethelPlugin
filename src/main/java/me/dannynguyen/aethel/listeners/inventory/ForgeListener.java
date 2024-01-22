@@ -181,7 +181,7 @@ public class ForgeListener {
   /**
    * Opens a ForgeMain inventory with the future action in mind.
    *
-   * @param player interacting playert
+   * @param player interacting player
    */
   private static void returnToMainPage(Player player) {
     String action = player.getMetadata("future-action").get(0).asString();

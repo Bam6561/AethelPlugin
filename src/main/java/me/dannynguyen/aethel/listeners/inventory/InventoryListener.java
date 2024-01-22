@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
- * @version 1.6.8
+ * @version 1.6.15
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -92,6 +92,7 @@ public class InventoryListener implements Listener {
   private void interpretItemEditor(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "menu" -> ItemEditorInventoryListener.interpretMenuClick(e, player);
+      case "tags" -> ItemEditorInventoryListener.interpretTagsClick(e, player);
     }
   }
 
