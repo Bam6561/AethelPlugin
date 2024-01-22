@@ -1,6 +1,8 @@
 package me.dannynguyen.aethel.listeners.message;
 
 import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageCosmetic;
+import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageGameplay;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * MessageListener is a general usage player message listener.
  *
  * @author Danny Nguyen
- * @version 1.6.16
+ * @version 1.7.0
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -45,14 +47,15 @@ public class MessageListener implements Listener {
     ItemMeta meta = item.getItemMeta();
 
     switch (msgType[1]) {
-      case "display_name" -> ItemEditorMessageListener.setDisplayName(e, player, item, meta);
-      case "custom_model_data" -> ItemEditorMessageListener.setCustomModelData(e, player, item, meta);
-      case "lore-set" -> ItemEditorMessageListener.setLore(e, player, item, meta);
-      case "lore-add" -> ItemEditorMessageListener.addLore(e, player, item, meta);
-      case "lore-edit" -> ItemEditorMessageListener.editLore(e, player, item, meta);
-      case "lore-remove" -> ItemEditorMessageListener.removeLore(e, player, item, meta);
-      case "enchants" -> ItemEditorMessageListener.setEnchant(e, player, item);
-      case "tags" -> ItemEditorMessageListener.setTag(e, player, item, meta);
+      case "display_name" -> ItemEditorMessageCosmetic.setDisplayName(e, player, item, meta);
+      case "custom_model_data" -> ItemEditorMessageCosmetic.setCustomModelData(e, player, item, meta);
+      case "lore-set" -> ItemEditorMessageCosmetic.setLore(e, player, item, meta);
+      case "lore-add" -> ItemEditorMessageCosmetic.addLore(e, player, item, meta);
+      case "lore-edit" -> ItemEditorMessageCosmetic.editLore(e, player, item, meta);
+      case "lore-remove" -> ItemEditorMessageCosmetic.removeLore(e, player, item, meta);
+      case "attributes" -> ItemEditorMessageGameplay.setAttribute(e, player, item);
+      case "enchants" -> ItemEditorMessageGameplay.setEnchant(e, player, item);
+      case "tags" -> ItemEditorMessageGameplay.setTag(e, player, item, meta);
     }
   }
 }

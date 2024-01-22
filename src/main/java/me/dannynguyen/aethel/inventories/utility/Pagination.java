@@ -55,7 +55,7 @@ public class Pagination {
    * @param inv interacting inventory
    */
   public static void addBackButton(Inventory inv, int invSlot) {
-    inv.setItem(invSlot, ItemCreator.createPlayerHead("CHISELED_BOOKSHELF",
+    inv.setItem(invSlot, ItemCreator.createLoadedPlayerHead("CHISELED_BOOKSHELF",
         ChatColor.AQUA + "Back"));
   }
 
@@ -69,11 +69,11 @@ public class Pagination {
   public static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
     if (pageViewed > 0) {
       inv.setItem(0, ItemCreator.
-          createPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
+          createLoadedPlayerHead("RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
       inv.setItem(8, ItemCreator.
-          createPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
+          createLoadedPlayerHead("LIME_FORWARD", ChatColor.AQUA + "Next Page"));
     }
   }
 }

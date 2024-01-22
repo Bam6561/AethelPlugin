@@ -145,7 +145,7 @@ public class PlayerStatMain {
           ChatColor.WHITE + "stat to share it.");
     }
 
-    inv.setItem(3, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(3, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 

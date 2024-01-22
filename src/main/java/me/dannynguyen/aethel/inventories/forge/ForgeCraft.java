@@ -37,9 +37,9 @@ public class ForgeCraft {
 
     addCraftContext(inv);
     inv.setItem(25, ItemCreator.
-        createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Craft"));
+        createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Craft"));
     inv.setItem(26, ItemCreator.
-        createPlayerHead("GRAY_BACKWARD", ChatColor.AQUA + "Back"));
+        createLoadedPlayerHead("GRAY_BACKWARD", ChatColor.AQUA + "Back"));
     return inv;
   }
 
@@ -54,7 +54,7 @@ public class ForgeCraft {
         ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
         ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
         ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
-    inv.setItem(8, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(8, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 

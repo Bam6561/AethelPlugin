@@ -1,6 +1,8 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryMenu;
+import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryGameplay;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +13,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
- * @version 1.6.16
+ * @version 1.7.0
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -45,9 +47,9 @@ public class InventoryListener implements Listener {
    */
   private void interpretAethelItem(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "category" -> AethelItemListener.readMainClick(e, player);
-      case "get" -> AethelItemListener.readCategoryClick(e, player, "get");
-      case "remove" -> AethelItemListener.readCategoryClick(e, player, "remove");
+      case "category" -> AethelItemInventory.readMainClick(e, player);
+      case "get" -> AethelItemInventory.readCategoryClick(e, player, "get");
+      case "remove" -> AethelItemInventory.readCategoryClick(e, player, "remove");
     }
   }
 
@@ -73,12 +75,12 @@ public class InventoryListener implements Listener {
    */
   private void interpretForge(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "category" -> ForgeListener.interpretMainClick(e, player);
-      case "craft" -> ForgeListener.interpretCategoryClick(e, player, "craft");
-      case "craft-confirm" -> ForgeListener.interpretCraftConfirmClick(e, player);
-      case "edit" -> ForgeListener.interpretCategoryClick(e, player, "edit");
-      case "remove" -> ForgeListener.interpretCategoryClick(e, player, "remove");
-      case "save" -> ForgeListener.interpretSaveClick(e, player);
+      case "category" -> ForgeInventory.interpretMainClick(e, player);
+      case "craft" -> ForgeInventory.interpretCategoryClick(e, player, "craft");
+      case "craft-confirm" -> ForgeInventory.interpretCraftConfirmClick(e, player);
+      case "edit" -> ForgeInventory.interpretCategoryClick(e, player, "edit");
+      case "remove" -> ForgeInventory.interpretCategoryClick(e, player, "remove");
+      case "save" -> ForgeInventory.interpretSaveClick(e, player);
     }
   }
 
@@ -91,9 +93,10 @@ public class InventoryListener implements Listener {
    */
   private void interpretItemEditor(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "menu" -> ItemEditorInventoryListener.interpretMenuClick(e, player);
-      case "enchants" -> ItemEditorInventoryListener.interpretEnchantsClick(e, player);
-      case "tags" -> ItemEditorInventoryListener.interpretTagsClick(e, player);
+      case "menu" -> ItemEditorInventoryMenu.interpretMenuClick(e, player);
+      case "attributes" -> ItemEditorInventoryGameplay.interpretAttributesClick(e, player);
+      case "enchants" -> ItemEditorInventoryGameplay.interpretEnchantsClick(e, player);
+      case "tags" -> ItemEditorInventoryGameplay.interpretTagsClick(e, player);
     }
   }
 
@@ -106,10 +109,10 @@ public class InventoryListener implements Listener {
    */
   private void interpretPlayerStat(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "category" -> PlayerStatListener.readMainClick(e, player);
+      case "category" -> PlayerStatInventory.readMainClick(e, player);
       case "past" -> e.setCancelled(true);
-      case "stat" -> PlayerStatListener.readStatClick(e, player);
-      case "substat" -> PlayerStatListener.readSubstatClick(e, player);
+      case "stat" -> PlayerStatInventory.readStatClick(e, player);
+      case "substat" -> PlayerStatInventory.readSubstatClick(e, player);
     }
   }
 

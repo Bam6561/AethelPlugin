@@ -40,10 +40,10 @@ public class ForgeMain {
     List<String> helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
 
     if (futureAction.equals("craft")) {
-      inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+      inv.setItem(4, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Help", helpLore));
     } else {
-      inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+      inv.setItem(2, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Help", helpLore));
       addCreateButton(inv);
     }
@@ -131,7 +131,7 @@ public class ForgeMain {
             ChatColor.WHITE + "Components are matched",
             ChatColor.WHITE + "by material unless",
             ChatColor.WHITE + "they're unique items!");
-        inv.setItem(4, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+        inv.setItem(4, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
             ChatColor.GREEN + "Help", helpLore));
       }
       case "edit", "remove" -> {
@@ -139,7 +139,7 @@ public class ForgeMain {
             ChatColor.WHITE + "To undo a removal,",
             ChatColor.WHITE + "edit the item and",
             ChatColor.WHITE + "save it before reloading.");
-        inv.setItem(2, ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+        inv.setItem(2, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
             ChatColor.GREEN + "Help", helpLore));
       }
     }
@@ -152,7 +152,7 @@ public class ForgeMain {
    */
   private static void addCreateButton(Inventory inv) {
     inv.setItem(3, ItemCreator.
-        createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
+        createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
   }
 
   /**
@@ -165,15 +165,15 @@ public class ForgeMain {
     switch (action) {
       case "edit" -> {
         inv.setItem(3, ItemCreator.
-            createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
+            createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
         inv.setItem(5, ItemCreator.
-            createPlayerHead("TRASH_CAN", ChatColor.AQUA + "Remove"));
+            createLoadedPlayerHead("TRASH_CAN", ChatColor.AQUA + "Remove"));
       }
       case "remove" -> {
         inv.setItem(3, ItemCreator.
-            createPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
+            createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Create"));
         inv.setItem(4, ItemCreator.
-            createPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Edit"));
+            createLoadedPlayerHead("FILE_EXPLORER", ChatColor.AQUA + "Edit"));
       }
     }
   }

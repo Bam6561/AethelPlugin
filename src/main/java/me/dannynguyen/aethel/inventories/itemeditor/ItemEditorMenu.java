@@ -18,7 +18,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.6.14
+ * @version 1.7.0
  * @since 1.6.7
  */
 public class ItemEditorMenu {
@@ -71,7 +71,7 @@ public class ItemEditorMenu {
    * @param item interacting item
    */
   private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
-    ItemStack formatCodes = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+    ItemStack formatCodes = ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Format Codes",
         List.of(ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
             ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
@@ -79,7 +79,7 @@ public class ItemEditorMenu {
             ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
             ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
             ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
-    ItemStack colorCodes = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+    ItemStack colorCodes = ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Color Codes",
         List.of(ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
             ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
@@ -128,14 +128,14 @@ public class ItemEditorMenu {
   private static void addLoreMeta(Inventory inv, ItemMeta meta) {
     ItemStack lore;
     if (!meta.hasLore()) {
-      lore = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+      lore = ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
     } else {
       List<String> loreLines = meta.getLore();
       for (int i = 0; i < loreLines.size(); i++) {
         loreLines.set(i, ChatColor.WHITE + "" + (i + 1) + " " + ChatColor.RESET + loreLines.get(i));
       }
-      lore = ItemCreator.createPlayerHead("WHITE_QUESTION_MARK",
+      lore = ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Lore", loreLines);
     }
 
@@ -160,18 +160,13 @@ public class ItemEditorMenu {
 
 
   /**
-   * Adds attribute modifier, enchant, and Aethel tag metadata buttons.
+   * Adds attributes, enchants, and Aethel tags metadata buttons.
    *
    * @param inv interacting inventory
    */
   private static void addGameplayMeta(Inventory inv) {
-    ItemStack attributesItem = new ItemStack(Material.IRON_HELMET);
-    ItemMeta meta = attributesItem.getItemMeta();
-    meta.setDisplayName(ChatColor.AQUA + "Attributes");
-    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-    attributesItem.setItemMeta(meta);
-
-    inv.setItem(14, attributesItem);
+    inv.setItem(14, ItemCreator.createItem(Material.IRON_HELMET,
+        ChatColor.AQUA + "Attributes", ItemFlag.HIDE_ATTRIBUTES));
     inv.setItem(15, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchants"));
     inv.setItem(16, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
   }

@@ -11,13 +11,13 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * PlayerStatListener is an inventory listener for the PlayerStat command.
+ * PlayerStatInventory is an inventory listener for the PlayerStat command.
  *
  * @author Danny Nguyen
  * @version 1.6.1
  * @since 1.4.7
  */
-public class PlayerStatListener {
+public class PlayerStatInventory {
   /**
    * Retrieves a player's stat category page.
    *

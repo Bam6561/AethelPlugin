@@ -15,13 +15,13 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * ForgeListener is an inventory listener for the Forge command.
+ * ForgeInventory is an inventory listener for the Forge command.
  *
  * @author Danny Nguyen
  * @version 1.6.1
  * @since 1.0.9
  */
-public class ForgeListener {
+public class ForgeInventory {
   /**
    * Opens a recipe category page.
    *

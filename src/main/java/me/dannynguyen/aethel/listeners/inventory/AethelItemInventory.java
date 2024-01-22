@@ -2,9 +2,9 @@ package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.aethelItem.AethelItemMain;
-import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemSave;
-import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemRemove;
 import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemGet;
+import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemRemove;
+import me.dannynguyen.aethel.inventories.aethelItem.utility.AethelItemSave;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,13 +14,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * AethelItemListener is an inventory listener for the AethelItem command.
+ * AethelItemInventory is an inventory listener for the AethelItem command.
  *
  * @author Danny Nguyen
  * @version 1.6.1
  * @since 1.4.0
  */
-public class AethelItemListener {
+public class AethelItemInventory {
   /**
    * Checks if the player's action is allowed based on the clicked inventory.
    * <p>
