@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * command pertaining to its gameplay-related metadata inventories.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.1
  * @since 1.7.0
  */
 public class ItemEditorInventoryGameplay {
@@ -101,8 +101,15 @@ public class ItemEditorInventoryGameplay {
    */
   private static void readAttribute(InventoryClickEvent e, Player player) {
     String attributeName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    String attribute = attributeName.replace(" ", "_").toUpperCase();
-
+    String attribute = "";
+    switch (attributeName) {
+      case "Attack Damage", "Attack Speed", "Max Health", "Armor", "Armor Toughness",
+          "Movement Speed", "Knockback Resistance", "Luck" -> attribute = "GENERIC_"
+          + attributeName.replace(" ", "_").toUpperCase();
+      case "Critical Chance", "Critical Damage", "Block", "Parry",
+          "Dodge", "Ability Damage", "Ability Cooldown", "Apply Status" -> attribute = "aethel.attribute."
+          + attributeName.replace(" ", "_").toLowerCase();
+    }
     player.sendMessage(ChatColor.GOLD + "[!] " +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
 

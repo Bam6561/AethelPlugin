@@ -61,7 +61,7 @@ public class AethelPlugin extends JavaPlugin {
       forgeRecipeDirectory.mkdir();
     }
 
-    AethelResources.itemEditorData.loadSortedData();
+    AethelResources.itemEditorData.loadAttributesEnchants();
     AethelResources.playerHeadData.loadPlayerHeads();
     AethelResources.playerStatData.loadStats();
   }

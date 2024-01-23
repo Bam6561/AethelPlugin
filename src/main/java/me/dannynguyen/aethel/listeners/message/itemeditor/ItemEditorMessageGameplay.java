@@ -26,7 +26,7 @@ import java.util.UUID;
  * ItemEditorEditCosmetic is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.1
  * @since 1.7.0
  */
 public class ItemEditorMessageGameplay {
@@ -40,24 +40,11 @@ public class ItemEditorMessageGameplay {
    */
   public static void setAttribute(AsyncPlayerChatEvent e, Player player, ItemStack item) {
     ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
-    Attribute attribute = Attribute.valueOf(player.getMetadata("input").get(0).asString());
-    EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(
-        player.getMetadata("slot").get(0).asString().toUpperCase());
-
-    try {
-      AttributeModifier attributeModifier = new AttributeModifier(
-          UUID.randomUUID(), "attribute",
-          Double.parseDouble(e.getMessage()),
-          AttributeModifier.Operation.ADD_NUMBER,
-          equipmentSlot);
-
-      if (!e.getMessage().equals("0")) {
-        setAttributeModifier(player, item, meta, attribute, attributeModifier);
-      } else {
-        removeAttributeModifier(player, item, meta, attribute, equipmentSlot);
-      }
-    } catch (NumberFormatException ex) {
-      player.sendMessage(ChatColor.RED + "Invalid value.");
+    String input = player.getMetadata("input").get(0).asString();
+    if (!input.contains("aethel.")) {
+      setMinecraftAttribute(e, player, item, meta, input);
+    } else {
+      setAethelAttribute(e, player, item, meta, input);
     }
     Bukkit.getScheduler().runTask(AethelPlugin.getInstance(), () -> returnToAttributesMenu(player));
   }
@@ -111,6 +98,74 @@ public class ItemEditorMessageGameplay {
   }
 
   /**
+   * Sets a Minecraft attribute.
+   *
+   * @param e      message event
+   * @param player interacting player
+   * @param item   interacting item
+   * @param meta   item meta
+   * @param input  attribute derived from inventory click
+   * @throws NumberFormatException not a number
+   */
+  private static void setMinecraftAttribute(AsyncPlayerChatEvent e,
+                                            Player player, ItemStack item,
+                                            ItemMeta meta, String input) {
+    Attribute attribute = Attribute.valueOf(input);
+    EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(
+        player.getMetadata("slot").get(0).asString().toUpperCase());
+    try {
+      AttributeModifier attributeModifier = new AttributeModifier(
+          UUID.randomUUID(), "attribute",
+          Double.parseDouble(e.getMessage()),
+          AttributeModifier.Operation.ADD_NUMBER,
+          equipmentSlot);
+
+      if (!e.getMessage().equals("0")) {
+        setMinecraftAttributeModifier(player, item, meta, attribute, attributeModifier, equipmentSlot);
+      } else {
+        removeMinecraftAttributeModifier(player, item, meta, attribute, equipmentSlot);
+      }
+    } catch (NumberFormatException ex) {
+      player.sendMessage(ChatColor.RED + "Invalid value.");
+    }
+  }
+
+  /**
+   * Sets an Aethel attribute.
+   *
+   * @param e      message event
+   * @param player interacting player
+   * @param item   interacting item
+   * @param meta   item meta
+   * @param input  attribute derived from inventory click
+   * @throws NumberFormatException not a number
+   */
+  private static void setAethelAttribute(AsyncPlayerChatEvent e,
+                                         Player player, ItemStack item,
+                                         ItemMeta meta, String input) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    String equipmentSlot = player.getMetadata("slot").get(0).asString();
+    NamespacedKey aethelAttribute =
+        new NamespacedKey(AethelPlugin.getInstance(), input + "." + equipmentSlot);
+    try {
+      String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
+      if (!e.getMessage().equals("0")) {
+        dataContainer.set(aethelAttribute, PersistentDataType.STRING, attributeValue);
+        item.setItemMeta(meta);
+        player.sendMessage(ChatColor.GREEN +
+            "[Set " + TextFormatter.capitalizeProperly(input.substring(17)) + "]");
+      } else {
+        dataContainer.remove(aethelAttribute);
+        item.setItemMeta(meta);
+        player.sendMessage(ChatColor.GREEN +
+            "[Removed " + TextFormatter.capitalizeProperly(input.substring(17)) + "]");
+      }
+    } catch (NumberFormatException ex) {
+      player.sendMessage(ChatColor.RED + "Invalid value.");
+    }
+  }
+
+  /**
    * Sets an item's attribute modifier based on the equipment slot mode.
    *
    * @param player            interacting player
@@ -119,13 +174,15 @@ public class ItemEditorMessageGameplay {
    * @param attribute         attribute
    * @param attributeModifier attribute modifier
    */
-  private static void setAttributeModifier(Player player, ItemStack item, ItemMeta meta,
-                                           Attribute attribute, AttributeModifier attributeModifier) {
+  private static void setMinecraftAttributeModifier(Player player, ItemStack item, ItemMeta meta,
+                                                    Attribute attribute, AttributeModifier attributeModifier,
+                                                    EquipmentSlot equipmentSlot) {
+    removeExistingAttributeModifiers(meta, attribute, equipmentSlot);
     meta.addAttributeModifier(attribute, attributeModifier);
     item.setItemMeta(meta);
     player.sendMessage(
         ChatColor.GREEN + "[Set " +
-            TextFormatter.capitalizeProperly(attribute.getKey().getKey(), ".") + "]");
+            TextFormatter.capitalizeProperly(attribute.getKey().getKey(), ".").substring(8) + "]");
   }
 
   /**
@@ -137,16 +194,30 @@ public class ItemEditorMessageGameplay {
    * @param attribute     attribute
    * @param equipmentSlot equipment slot
    */
-  private static void removeAttributeModifier(Player player, ItemStack item, ItemMeta meta,
-                                              Attribute attribute, EquipmentSlot equipmentSlot) {
-    for (AttributeModifier setAttributeModifier : meta.getAttributeModifiers().get(attribute)) {
-      if (setAttributeModifier.getSlot().equals(equipmentSlot)) {
-        meta.removeAttributeModifier(attribute, setAttributeModifier);
+  private static void removeMinecraftAttributeModifier(Player player, ItemStack item, ItemMeta meta,
+                                                       Attribute attribute, EquipmentSlot equipmentSlot) {
+    removeExistingAttributeModifiers(meta, attribute, equipmentSlot);
+    item.setItemMeta(meta);
+    player.sendMessage(ChatColor.RED + "[Removed " +
+        TextFormatter.capitalizeProperly(attribute.getKey().getKey(), ".").substring(8) + "]");
+  }
+
+  /**
+   * Removes existing attribute modifiers in the same slot.
+   *
+   * @param meta          item meta
+   * @param attribute     attribute
+   * @param equipmentSlot equipment slot
+   */
+  private static void removeExistingAttributeModifiers(ItemMeta meta, Attribute attribute,
+                                                       EquipmentSlot equipmentSlot) {
+    if (meta.getAttributeModifiers() != null) {
+      for (AttributeModifier setAttributeModifier : meta.getAttributeModifiers().get(attribute)) {
+        if (setAttributeModifier.getSlot().equals(equipmentSlot)) {
+          meta.removeAttributeModifier(attribute, setAttributeModifier);
+        }
       }
     }
-    item.setItemMeta(meta);
-    player.sendMessage(ChatColor.RED +
-        "[Removed " + TextFormatter.capitalizeProperly(attribute.getKey().getKey(), ".") + "]");
   }
 
   /**
