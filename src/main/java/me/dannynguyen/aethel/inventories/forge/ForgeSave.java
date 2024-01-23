@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.inventories.forge;
 
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.formatters.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ import java.util.List;
  * ForgeSave is an inventory for saving forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.7.2
  * @since 1.0.5
  */
 public class ForgeSave {
@@ -136,18 +137,19 @@ public class ForgeSave {
   /**
    * Saves a recipe file to the file system.
    *
-   * @param player      interacting player
-   * @param itemName    item name
-   * @param encodedItem encoded item string
+   * @param player        interacting player
+   * @param fileName      file name
+   * @param encodedRecipe encoded recipe string
    * @throws IOException file could not be created
    */
-  private static void saveRecipeToFile(Player player, String itemName, String encodedItem) {
+  private static void saveRecipeToFile(Player player, String fileName, String encodedRecipe) {
     try {
       FileWriter fw = new FileWriter(AethelResources.forgeRecipeDirectory
-          + "/" + itemName + "_rcp.txt");
-      fw.write(encodedItem);
+          + "/" + fileName + "_rcp.txt");
+      fw.write(encodedRecipe);
       fw.close();
-      player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + "_rcp.txt");
+      player.sendMessage(ChatColor.GREEN + "[Saved Recipe] " +
+          ChatColor.WHITE + TextFormatter.capitalizeProperly(fileName));
     } catch (IOException ex) {
       player.sendMessage(ChatColor.RED + "Unable to save recipe.");
     }

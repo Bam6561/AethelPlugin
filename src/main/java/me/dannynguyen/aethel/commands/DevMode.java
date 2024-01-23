@@ -54,10 +54,10 @@ public class DevMode implements CommandExecutor {
   private void toggleDevMode(Player player) {
     if (!player.hasMetadata("devmode")) {
       player.setMetadata("devmode", new FixedMetadataValue(AethelPlugin.getInstance(), "on"));
-      player.sendMessage(ChatColor.GREEN + "[Dev Mode] " + ChatColor.WHITE + "On");
+      player.sendMessage(ChatColor.GREEN + "[Dev Mode On]");
     } else {
       player.removeMetadata("devmode", AethelPlugin.getInstance());
-      player.sendMessage(ChatColor.RED + "[Dev Mode] " + ChatColor.WHITE + "Off");
+      player.sendMessage(ChatColor.RED + "[Dev Mode Off]");
     }
   }
 }

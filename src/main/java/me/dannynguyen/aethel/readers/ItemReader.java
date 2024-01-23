@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.readers;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.formatters.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +19,7 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.7.2
  * @since 1.1.4
  */
 public class ItemReader {
@@ -32,7 +33,7 @@ public class ItemReader {
     if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
     } else {
-      return item.getType().name();
+      return TextFormatter.capitalizeProperly(item.getType().name());
     }
   }
 

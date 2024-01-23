@@ -109,10 +109,10 @@ public class ItemEditorInventoryMenu {
 
     if (!meta.isUnbreakable()) {
       meta.setUnbreakable(true);
-      player.sendMessage(ChatColor.GREEN + "[Unbreakable]");
+      player.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
     } else {
       meta.setUnbreakable(false);
-      player.sendMessage(ChatColor.RED + "[Unbreakable]");
+      player.sendMessage(ChatColor.RED + "[Set Unbreakable]");
     }
     item.setItemMeta(meta);
 

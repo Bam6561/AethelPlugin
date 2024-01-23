@@ -64,7 +64,7 @@ public class Forge implements CommandExecutor {
       case "edit", "e" -> openForgeEdit(player);
       case "reload", "r" -> {
         AethelResources.forgeRecipeData.loadRecipes();
-        player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Forge Recipes");
+        player.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
       }
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
     }

@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * handles shared actions across ItemEditor's inventories.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.2
  * @since 1.7.0
  */
 public class ItemEditorInventoryMenuAction {
@@ -36,6 +36,10 @@ public class ItemEditorInventoryMenuAction {
    * @param player interacting player
    */
   public static void openAttributesMenu(Player player) {
+    if (player.hasMetadata("message")) {
+      player.removeMetadata("message", AethelPlugin.getInstance());
+    }
+
     player.setMetadata("slot", new FixedMetadataValue(AethelPlugin.getInstance(), "head"));
 
     player.openInventory(ItemEditorAttributes.openAttributesMenu(player, "Head"));
@@ -49,6 +53,10 @@ public class ItemEditorInventoryMenuAction {
    * @param player interacting player
    */
   public static void openEnchantsMenu(Player player) {
+    if (player.hasMetadata("message")) {
+      player.removeMetadata("message", AethelPlugin.getInstance());
+    }
+
     player.openInventory(ItemEditorEnchants.openEnchantsMenu(player));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.enchants"));
@@ -60,6 +68,10 @@ public class ItemEditorInventoryMenuAction {
    * @param player interacting player
    */
   public static void openTagsMenu(Player player) {
+    if (player.hasMetadata("message")) {
+      player.removeMetadata("message", AethelPlugin.getInstance());
+    }
+
     player.openInventory(ItemEditorTags.openTagsMenu(player));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.tags"));

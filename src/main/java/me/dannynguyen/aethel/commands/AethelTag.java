@@ -98,7 +98,7 @@ public class AethelTag implements CommandExecutor {
   private void getAethelTags(Player player, ItemStack item) {
     String response = ItemReader.readAethelTags(item);
     if (!response.isEmpty()) {
-      player.sendMessage(ChatColor.GREEN + "[Get] " + response);
+      player.sendMessage(ChatColor.GREEN + "[Get Tags] " + response);
     } else {
       player.sendMessage(ChatColor.RED + "No tags found.");
     }
@@ -119,7 +119,7 @@ public class AethelTag implements CommandExecutor {
     if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
       dataContainer.remove(namespacedKey);
       item.setItemMeta(meta);
-      player.sendMessage(ChatColor.RED + "[Removed] " + ChatColor.AQUA + tag);
+      player.sendMessage(ChatColor.RED + "[Removed Tag] " + ChatColor.AQUA + tag);
     } else {
       player.sendMessage(ChatColor.RED + "Tag does not exist.");
     }
@@ -137,7 +137,7 @@ public class AethelTag implements CommandExecutor {
     NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + args[1]);
     meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, args[2]);
     item.setItemMeta(meta);
-    player.sendMessage(ChatColor.GREEN + "[Set] "
+    player.sendMessage(ChatColor.GREEN + "[Set Tag] "
         + ChatColor.AQUA + args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
   }
 }

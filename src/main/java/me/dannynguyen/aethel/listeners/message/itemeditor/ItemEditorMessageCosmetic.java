@@ -33,7 +33,7 @@ public class ItemEditorMessageCosmetic {
                                     ItemStack item, ItemMeta meta) {
     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
     item.setItemMeta(meta);
-    player.sendMessage(ChatColor.GREEN + "[Named] " + ChatColor.WHITE + e.getMessage());
+    player.sendMessage(ChatColor.GREEN + "[Named Item] " + ChatColor.WHITE + e.getMessage());
     openMainMenu(player, item);
   }
 
@@ -51,7 +51,7 @@ public class ItemEditorMessageCosmetic {
     try {
       meta.setCustomModelData(Integer.parseInt(e.getMessage()));
       item.setItemMeta(meta);
-      player.sendMessage(ChatColor.GREEN + "[Custom Model Data] " + ChatColor.WHITE + e.getMessage());
+      player.sendMessage(ChatColor.GREEN + "[Set Custom Model Data] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
       player.sendMessage(ChatColor.RED + "Invalid custom model data.");
     }

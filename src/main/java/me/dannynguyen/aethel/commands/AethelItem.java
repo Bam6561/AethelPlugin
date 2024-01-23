@@ -61,7 +61,7 @@ public class AethelItem implements CommandExecutor {
     switch (action) {
       case "reload", "r" -> {
         AethelResources.aethelItemData.loadItems();
-        player.sendMessage(ChatColor.GREEN + "[Reloaded] " + ChatColor.WHITE + "Aethel Items");
+        player.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
       }
       default -> player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
     }

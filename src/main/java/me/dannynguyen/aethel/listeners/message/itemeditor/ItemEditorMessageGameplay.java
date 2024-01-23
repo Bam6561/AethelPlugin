@@ -26,7 +26,7 @@ import java.util.UUID;
  * ItemEditorEditCosmetic is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.1
+ * @version 1.7.2
  * @since 1.7.0
  */
 public class ItemEditorMessageGameplay {
@@ -157,7 +157,7 @@ public class ItemEditorMessageGameplay {
       } else {
         dataContainer.remove(aethelAttribute);
         item.setItemMeta(meta);
-        player.sendMessage(ChatColor.GREEN +
+        player.sendMessage(ChatColor.RED +
             "[Removed " + TextFormatter.capitalizeProperly(input.substring(17)) + "]");
       }
     } catch (NumberFormatException ex) {
@@ -251,6 +251,8 @@ public class ItemEditorMessageGameplay {
    * @param player interacting player
    */
   private static void returnToAttributesMenu(Player player) {
+    player.removeMetadata("message", AethelPlugin.getInstance());
+
     player.openInventory(ItemEditorAttributes.
         openAttributesMenu(player, player.getMetadata("slot").get(0).asString()));
     player.setMetadata("inventory",

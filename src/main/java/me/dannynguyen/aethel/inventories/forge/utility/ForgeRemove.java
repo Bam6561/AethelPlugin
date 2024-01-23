@@ -27,7 +27,6 @@ public class ForgeRemove {
         getRecipesMap().get(ItemReader.readItemName(e.getCurrentItem()));
 
     recipe.getFile().delete();
-    player.sendMessage(ChatColor.RED + "[Removed] " + ChatColor.WHITE +
-        recipe.getName().toLowerCase().replace(" ", "_") + "_rcp.txt");
+    player.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());
   }
 }

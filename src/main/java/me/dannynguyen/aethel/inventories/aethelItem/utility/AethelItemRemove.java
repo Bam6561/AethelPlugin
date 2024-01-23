@@ -26,7 +26,6 @@ public class AethelItemRemove {
         get(ItemReader.readItemName(e.getCurrentItem()));
 
     aethelItem.getFile().delete();
-    player.sendMessage(ChatColor.RED + "[Removed] " + ChatColor.WHITE +
-        aethelItem.getName().toLowerCase().replace(" ", "_") + "_itm.txt");
+    player.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + aethelItem.getName());
   }
 }

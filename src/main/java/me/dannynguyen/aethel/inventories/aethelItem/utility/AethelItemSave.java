@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.inventories.aethelItem.utility;
 
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
+import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,7 +16,7 @@ import java.io.IOException;
  * AethelItemSave is a utility class that saves Aethel Items.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.7.2
  * @since 1.4.0
  */
 public class AethelItemSave {
@@ -28,11 +29,32 @@ public class AethelItemSave {
   public static void readSaveClick(InventoryClickEvent e, Player player) {
     ItemStack item = e.getClickedInventory().getItem(3);
     if (item != null) {
-      saveItemToFile(player, nameItemFile(item), ItemCreator.encodeItem(item));
+      saveItemToFile(player, item);
     } else {
       player.sendMessage(ChatColor.RED + "No item to save.");
     }
   }
+
+  /**
+   * Saves an item file to the file system.
+   *
+   * @param player interacting player
+   * @param item   interacting item
+   * @throws IOException file could not be created
+   */
+  private static void saveItemToFile(Player player, ItemStack item) {
+    try {
+      FileWriter fw = new FileWriter(AethelResources.aethelItemDirectory
+          + "/" + nameItemFile(item) + "_itm.txt");
+      fw.write(ItemCreator.encodeItem(item));
+      fw.close();
+      player.sendMessage(ChatColor.GREEN + "[Saved Aethel Item] "
+          + ChatColor.WHITE + ItemReader.readItemName(item));
+    } catch (IOException ex) {
+      player.sendMessage(ChatColor.RED + "Unable to save item.");
+    }
+  }
+
 
   /**
    * Names an item file by either its display name or material.
@@ -46,26 +68,6 @@ public class AethelItemSave {
       return meta.getDisplayName().toLowerCase().replace(" ", "_");
     } else {
       return item.getType().name().toLowerCase();
-    }
-  }
-
-  /**
-   * Saves an item file to the file system.
-   *
-   * @param player      interacting player
-   * @param itemName    item name
-   * @param encodedItem encoded item string
-   * @throws IOException file could not be created
-   */
-  private static void saveItemToFile(Player player, String itemName, String encodedItem) {
-    try {
-      FileWriter fw = new FileWriter(AethelResources.aethelItemDirectory
-          + "/" + itemName + "_itm.txt");
-      fw.write(encodedItem);
-      fw.close();
-      player.sendMessage(ChatColor.GREEN + "[Saved] " + ChatColor.WHITE + itemName + "_itm.txt");
-    } catch (IOException ex) {
-      player.sendMessage(ChatColor.RED + "Unable to save item.");
     }
   }
 }
