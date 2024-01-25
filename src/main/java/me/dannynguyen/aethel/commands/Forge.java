@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.3
  * @since 1.0.2
  */
 public class Forge implements CommandExecutor {
@@ -76,7 +76,7 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeCraft(Player player) {
-    player.setMetadata("future-action", new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
+    player.setMetadata("future", new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     player.openInventory(ForgeMain.openForgeMainPage(player, "craft"));
@@ -90,7 +90,7 @@ public class Forge implements CommandExecutor {
    * @param player interacting player
    */
   private void openForgeEdit(Player player) {
-    player.setMetadata("future-action", new FixedMetadataValue(AethelPlugin.getInstance(), "edit"));
+    player.setMetadata("future", new FixedMetadataValue(AethelPlugin.getInstance(), "edit"));
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     player.openInventory(ForgeMain.openForgeMainPage(player, "edit"));

@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeInventory is an inventory listener for the Forge command.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.7.3
  * @since 1.0.9
  */
 public class ForgeInventory {
@@ -35,7 +35,7 @@ public class ForgeInventory {
         }
         case 3 -> openForgeSave(player);
         default -> {
-          String action = player.getMetadata("future-action").get(0).asString();
+          String action = player.getMetadata("future").get(0).asString();
           String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
           player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
           int pageRequest = player.getMetadata("page").get(0).asInt();
@@ -68,7 +68,7 @@ public class ForgeInventory {
         }
         case 3 -> openForgeSave(player);
         case 4 -> {
-          if (player.getMetadata("future-action").get(0).asString().equals("edit")) {
+          if (player.getMetadata("future").get(0).asString().equals("edit")) {
             openForgeEdit(player);
           }
         }
@@ -184,7 +184,7 @@ public class ForgeInventory {
    * @param player interacting player
    */
   private static void returnToMainPage(Player player) {
-    String action = player.getMetadata("future-action").get(0).asString();
+    String action = player.getMetadata("future").get(0).asString();
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     player.openInventory(ForgeMain.openForgeMainPage(player, action));

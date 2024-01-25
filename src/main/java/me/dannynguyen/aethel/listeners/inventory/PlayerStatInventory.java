@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatInventory is an inventory listener for the PlayerStat command.
  *
  * @author Danny Nguyen
- * @version 1.6.1
+ * @version 1.7.3
  * @since 1.4.7
  */
 public class PlayerStatInventory {
@@ -27,7 +27,7 @@ public class PlayerStatInventory {
   public static void readMainClick(InventoryClickEvent e, Player player) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       if (e.getSlot() > 8) {
-        String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
+        String requestedPlayerName = player.getMetadata("player").get(0).asString();
         String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
         player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
 
@@ -90,7 +90,7 @@ public class PlayerStatInventory {
    * @param player interacting player
    */
   private static void previousStatPage(Player player) {
-    String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
+    String requestedPlayerName = player.getMetadata("player").get(0).asString();
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
@@ -106,7 +106,7 @@ public class PlayerStatInventory {
    * @param player interacting player
    */
   private static void returnToMainPage(Player player) {
-    String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
+    String requestedPlayerName = player.getMetadata("player").get(0).asString();
     player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, requestedPlayerName));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstat.category"));
@@ -119,7 +119,7 @@ public class PlayerStatInventory {
    * @param player interacting player
    */
   private static void nextStatPage(Player player) {
-    String requestedPlayerName = player.getMetadata("page-owner").get(0).asString();
+    String requestedPlayerName = player.getMetadata("player").get(0).asString();
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 

@@ -23,7 +23,7 @@ import java.util.List;
  * that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.5.5
+ * @version 1.7.3
  * @since 1.4.7
  */
 public class PlayerStatMain {
@@ -159,7 +159,7 @@ public class PlayerStatMain {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = player.getMetadata("page-owner").get(0).asString();
+    String statOwner = player.getMetadata("player").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     meta.setOwningPlayer(requestedPlayer);

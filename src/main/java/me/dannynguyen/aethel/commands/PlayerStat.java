@@ -20,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.6
+ * @version 1.7.3
  * @since 1.4.7
  */
 public class PlayerStat implements CommandExecutor {
@@ -71,7 +71,7 @@ public class PlayerStat implements CommandExecutor {
    * @param player interacting player
    */
   private void openPlayerStatSelf(Player player) {
-    player.setMetadata("page-owner",
+    player.setMetadata("player",
         new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
 
     player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, player.getName()));
@@ -88,7 +88,7 @@ public class PlayerStat implements CommandExecutor {
   private void openPlayerStatOther(Player player, String requestedPlayerName) {
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(requestedPlayerName);
     if (requestedPlayer.hasPlayedBefore()) {
-      player.setMetadata("page-owner",
+      player.setMetadata("player",
           new FixedMetadataValue(AethelPlugin.getInstance(), requestedPlayer.getName()));
 
       player.openInventory(PlayerStatMain.openPlayerStatMainPage(player, requestedPlayer.getName()));

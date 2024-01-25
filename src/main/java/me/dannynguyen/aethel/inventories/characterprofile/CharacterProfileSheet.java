@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.potion.PotionEffect;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
  * shows the player's equipment and attributes within the rpg context.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.3
  * @since 1.6.3
  */
 public class CharacterProfileSheet {
@@ -208,22 +209,19 @@ public class CharacterProfileSheet {
    * @param inv    interacting inventory
    */
   private static void addStatusEffects(Player player, Inventory inv) {
-    StringBuilder potionEffects = new StringBuilder();
+    ArrayList<String> lore = new ArrayList<>();
     for (PotionEffect potionEffect : player.getActivePotionEffects()) {
       String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
       String effectType = ChatColor.AQUA + TextFormatter.capitalizeProperly(potionEffect.getType().getName());
       String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" :
           String.valueOf(potionEffect.getAmplifier() + 1));
 
-      potionEffects.append(effectDuration).append(" ").
-          append(effectType).append(" ").
-          append(effectAmplifier).append(",");
+      lore.add(effectDuration + " " + effectType + " " + effectAmplifier);
     }
 
     inv.setItem(42, ItemCreator.createItem(Material.POTION,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Status Effects",
-        List.of(potionEffects.toString().split(",")),
-        ItemFlag.HIDE_POTION_EFFECTS));
+        lore, ItemFlag.HIDE_POTION_EFFECTS));
   }
 
   /**

@@ -26,7 +26,7 @@ import java.util.UUID;
  * ItemEditorEditCosmetic is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.3
  * @since 1.7.0
  */
 public class ItemEditorMessageGameplay {
@@ -40,7 +40,7 @@ public class ItemEditorMessageGameplay {
    */
   public static void setAttribute(AsyncPlayerChatEvent e, Player player, ItemStack item) {
     ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
-    String input = player.getMetadata("input").get(0).asString();
+    String input = player.getMetadata("type").get(0).asString();
     if (!input.contains("aethel.")) {
       setMinecraftAttribute(e, player, item, meta, input);
     } else {
@@ -57,7 +57,7 @@ public class ItemEditorMessageGameplay {
    * @param item   interacting item
    */
   public static void setEnchant(AsyncPlayerChatEvent e, Player player, ItemStack item) {
-    NamespacedKey enchant = NamespacedKey.minecraft(player.getMetadata("input").get(0).asString());
+    NamespacedKey enchant = NamespacedKey.minecraft(player.getMetadata("type").get(0).asString());
 
     if (!e.getMessage().equals("0")) {
       setEnchantLevel(e, player, item, enchant);
@@ -81,7 +81,7 @@ public class ItemEditorMessageGameplay {
   public static void setTag(AsyncPlayerChatEvent e, Player player,
                             ItemStack item, ItemMeta meta) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String editTag = player.getMetadata("input").get(0).asString();
+    String editTag = player.getMetadata("type").get(0).asString();
     NamespacedKey aethelTagKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + editTag);
 
     if (!e.getMessage().equals("-")) {
