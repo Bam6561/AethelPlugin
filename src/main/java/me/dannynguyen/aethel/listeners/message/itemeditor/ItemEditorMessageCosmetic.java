@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ItemEditorEditCosmetic is a utility class that edits an item's cosmetic-related metadata.
+ * ItemEditorMessageCosmetic is a utility class that edits an item's cosmetic-related metadata.
  *
  * @author Danny Nguyen
  * @version 1.7.0

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory.itemeditor.utility;
 
-import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggle;
+import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggles;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -34,7 +34,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHideArmorTrimMeta(inv, meta);
+    ItemEditorToggles.addHideArmorTrimMeta(inv, meta);
   }
 
   /**
@@ -55,7 +55,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHideAttributesMeta(inv, meta);
+    ItemEditorToggles.addHideAttributesMeta(inv, meta);
   }
 
   /**
@@ -76,7 +76,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHideDestroysMeta(inv, meta);
+    ItemEditorToggles.addHideDestroysMeta(inv, meta);
   }
 
   /**
@@ -97,7 +97,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHideDyeMeta(inv, meta);
+    ItemEditorToggles.addHideDyeMeta(inv, meta);
   }
 
   /**
@@ -118,7 +118,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHideEnchantsMeta(inv, meta);
+    ItemEditorToggles.addHideEnchantsMeta(inv, meta);
   }
 
   /**
@@ -139,7 +139,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHidePlacedOnMeta(inv, meta);
+    ItemEditorToggles.addHidePlacedOnMeta(inv, meta);
   }
 
   /**
@@ -160,7 +160,7 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHidePotionEffectsMeta(inv, meta);
+    ItemEditorToggles.addHidePotionEffectsMeta(inv, meta);
   }
 
   /**
@@ -181,6 +181,6 @@ public class ItemEditorInventoryItemFlags {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addHideUnbreakableMeta(inv, meta);
+    ItemEditorToggles.addHideUnbreakableMeta(inv, meta);
   }
 }

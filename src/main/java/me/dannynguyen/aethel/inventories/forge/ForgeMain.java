@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.inventories.forge;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.utility.Pagination;
+import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -102,15 +102,15 @@ public class ForgeMain {
     ForgeRecipeCategory recipeCategory = AethelResources.forgeRecipeData.
         getRecipeCategoriesMap().get(categoryName);
     int numberOfPages = recipeCategory.getNumberOfPages();
-    int pageViewed = Pagination.calculatePageViewed(numberOfPages, pageRequest);
+    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
     inv.setContents(recipeCategory.getPages().get(pageViewed).getContents());
 
     addForgeContext(action, inv);
     addActionButtons(action, inv);
-    Pagination.addBackButton(inv, 6);
-    Pagination.addPageButtons(inv, numberOfPages, pageViewed);
+    InventoryPages.addBackButton(inv, 6);
+    InventoryPages.addPageButtons(inv, numberOfPages, pageViewed);
     return inv;
   }
 

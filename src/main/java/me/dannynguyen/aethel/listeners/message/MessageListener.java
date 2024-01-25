@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners.message;
 
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageCosmetic;
-import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageGameplay;
+import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageFunctional;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,9 +53,9 @@ public class MessageListener implements Listener {
       case "lore-add" -> ItemEditorMessageCosmetic.addLore(e, player, item, meta);
       case "lore-edit" -> ItemEditorMessageCosmetic.editLore(e, player, item, meta);
       case "lore-remove" -> ItemEditorMessageCosmetic.removeLore(e, player, item, meta);
-      case "attributes" -> ItemEditorMessageGameplay.setAttribute(e, player, item);
-      case "enchants" -> ItemEditorMessageGameplay.setEnchant(e, player, item);
-      case "tags" -> ItemEditorMessageGameplay.setTag(e, player, item, meta);
+      case "attributes" -> ItemEditorMessageFunctional.setAttribute(e, player, item);
+      case "enchants" -> ItemEditorMessageFunctional.setEnchant(e, player, item);
+      case "tags" -> ItemEditorMessageFunctional.setTag(e, player, item, meta);
     }
   }
 }

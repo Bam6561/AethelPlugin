@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.7.3
+version: 1.7.4
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.AethelPlugin
@@ -7,39 +7,39 @@ prefix: Aethel
 website: https://linktr.ee/aethelsmp
 description: Plugin for Aethel SMP.
 commands:
-  aitem:
-    description: Opens an AethelItem inventory.
-    usage: /aitem [reload]
-    aliases: [ ai ]
-  atag:
+  aethelitems:
+    description: Opens an AethelItems inventory.
+    usage: /aethelitems [reload]
+    aliases: [ ai, aitem ]
+  aetheltags:
     description: Edits Aethel plugin tags.
-    usage: /atag [get|remove <tag>|set <tag> <data>]
-    aliases: [ at ]
-  char:
+    usage: /aetheltag [get|remove <tag>|set <tag> <data>]
+    aliases: [ at, atag ]
+  character:
     description: Opens an RPG character sheet.
     usage: /char
-    aliases: [ c ]
-  dev:
+    aliases: [ c, char ]
+  developermode:
     description: Developer mode.
     usage: /dev
-    aliases: [ d ]
+    aliases: [ dm, dev ]
   forge:
     description: Opens a Forge inventory.
     usage: /forge [edit|reload]
     aliases: [ f ]
-  iedit:
+  itemeditor:
     description: Edits an item's metadata.
     usage: /iedit
-    aliases: [ ie ]
+    aliases: [ ie, iedit ]
   ping:
     description: Responds with server latency.
     usage: /ping
     aliases: [ p ]
-  show:
+  showitem:
     description: Shows main hand item to chat.
     usage: /show
-    aliases: [ s ]
-  stats:
+    aliases: [ si, show ]
+  playerstats:
     description: Gets a player's statistics.
     usage: /stats [<PlayerName>]
-    aliases: [ st ]
+    aliases: [ ps, stats ]

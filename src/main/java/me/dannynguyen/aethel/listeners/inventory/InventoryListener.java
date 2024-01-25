@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryFunctional;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryMenu;
-import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryGameplay;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,11 +28,11 @@ public class InventoryListener implements Listener {
     if (player.hasMetadata("inventory")) {
       String[] invType = player.getMetadata("inventory").get(0).asString().split("\\.");
       switch (invType[0]) {
-        case "aethelitem" -> interpretAethelItem(e, player, invType);
-        case "characterprofile" -> interpretCharacterProfile(e, player, invType);
+        case "aethelitems" -> interpretAethelItems(e, player, invType);
+        case "character" -> interpretCharacter(e, player, invType);
         case "forge" -> interpretForge(e, player, invType);
         case "itemeditor" -> interpretItemEditor(e, player, invType);
-        case "playerstat" -> interpretPlayerStat(e, player, invType);
+        case "playerstats" -> interpretPlayerStats(e, player, invType);
         case "showitem" -> e.setCancelled(true);
       }
     }
@@ -45,22 +45,22 @@ public class InventoryListener implements Listener {
    * @param player  interacting player
    * @param invType inventory type
    */
-  private void interpretAethelItem(InventoryClickEvent e, Player player, String[] invType) {
+  private void interpretAethelItems(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "category" -> AethelItemInventory.readMainClick(e, player);
-      case "get" -> AethelItemInventory.readCategoryClick(e, player, "get");
-      case "remove" -> AethelItemInventory.readCategoryClick(e, player, "remove");
+      case "category" -> AethelItemsInventory.readMainClick(e, player);
+      case "get" -> AethelItemsInventory.readCategoryClick(e, player, "get");
+      case "remove" -> AethelItemsInventory.readCategoryClick(e, player, "remove");
     }
   }
 
   /**
-   * Determines which CharacterProfile inventory is being interacting with.
+   * Determines which Character inventory is being interacting with.
    *
    * @param e       inventory click event
    * @param player  interacting player
    * @param invType inventory type
    */
-  private void interpretCharacterProfile(InventoryClickEvent e, Player player, String[] invType) {
+  private void interpretCharacter(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "sheet" -> e.setCancelled(true);
     }
@@ -94,25 +94,25 @@ public class InventoryListener implements Listener {
   private void interpretItemEditor(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
       case "menu" -> ItemEditorInventoryMenu.interpretMenuClick(e, player);
-      case "attributes" -> ItemEditorInventoryGameplay.interpretAttributesClick(e, player);
-      case "enchants" -> ItemEditorInventoryGameplay.interpretEnchantsClick(e, player);
-      case "tags" -> ItemEditorInventoryGameplay.interpretTagsClick(e, player);
+      case "attributes" -> ItemEditorInventoryFunctional.interpretAttributesClick(e, player);
+      case "enchants" -> ItemEditorInventoryFunctional.interpretEnchantsClick(e, player);
+      case "tags" -> ItemEditorInventoryFunctional.interpretTagsClick(e, player);
     }
   }
 
   /**
-   * Determines which PlayerStat inventory is being interacting with.
+   * Determines which PlayerStats inventory is being interacting with.
    *
    * @param e       inventory click event
    * @param player  interacting player
    * @param invType inventory type
    */
-  private void interpretPlayerStat(InventoryClickEvent e, Player player, String[] invType) {
+  private void interpretPlayerStats(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "category" -> PlayerStatInventory.readMainClick(e, player);
+      case "category" -> PlayerStatsInventory.readMainClick(e, player);
       case "past" -> e.setCancelled(true);
-      case "stat" -> PlayerStatInventory.readStatClick(e, player);
-      case "substat" -> PlayerStatInventory.readSubstatClick(e, player);
+      case "stat" -> PlayerStatsInventory.readStatClick(e, player);
+      case "substat" -> PlayerStatsInventory.readSubstatClick(e, player);
     }
   }
 

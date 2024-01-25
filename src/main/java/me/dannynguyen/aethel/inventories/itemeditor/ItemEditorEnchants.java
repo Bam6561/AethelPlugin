@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.inventories.itemeditor;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.formatters.TextFormatter;
-import me.dannynguyen.aethel.inventories.utility.Pagination;
+import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class ItemEditorEnchants {
     Inventory inv = createInventory(player, item);
     addEnchants(inv, player);
     addEnchantsContext(inv);
-    Pagination.addBackButton(inv, 6);
+    InventoryPages.addBackButton(inv, 6);
     return inv;
   }
 

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.inventory.itemeditor;
 
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggle;
+import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggles;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.utility.ItemEditorInventoryItemFlags;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.utility.ItemEditorInventoryMenuAction;
 import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageCosmetic;
@@ -116,7 +116,7 @@ public class ItemEditorInventoryMenu {
     }
     item.setItemMeta(meta);
 
-    ItemEditorToggle.addUnbreakableMeta(inv, meta);
+    ItemEditorToggles.addUnbreakableMeta(inv, meta);
   }
 
   /**

@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.formatters.TextFormatter;
-import me.dannynguyen.aethel.inventories.utility.Pagination;
+import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -43,7 +43,7 @@ public class ItemEditorAttributes {
     addAttributes(inv, player);
     addAttributesContext(inv);
     addEquipmentSlotButtons(inv);
-    Pagination.addBackButton(inv, 2);
+    InventoryPages.addBackButton(inv, 2);
     return inv;
   }
 

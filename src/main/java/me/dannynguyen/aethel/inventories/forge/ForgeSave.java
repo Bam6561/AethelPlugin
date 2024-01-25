@@ -144,7 +144,7 @@ public class ForgeSave {
    */
   private static void saveRecipeToFile(Player player, String fileName, String encodedRecipe) {
     try {
-      FileWriter fw = new FileWriter(AethelResources.forgeRecipeDirectory
+      FileWriter fw = new FileWriter(AethelResources.forgeRecipesDirectory
           + "/" + fileName + "_rcp.txt");
       fw.write(encodedRecipe);
       fw.close();

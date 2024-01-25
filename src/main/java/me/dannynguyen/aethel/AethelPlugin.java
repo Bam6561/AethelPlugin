@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel;
 
+import me.dannynguyen.aethel.commands.Character;
 import me.dannynguyen.aethel.commands.*;
 import me.dannynguyen.aethel.listeners.inventory.InventoryListener;
 import me.dannynguyen.aethel.listeners.message.MessageListener;
@@ -12,7 +13,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.4
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -29,15 +30,15 @@ public class AethelPlugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     getServer().getPluginManager().registerEvents(new MessageListener(), this);
 
-    this.getCommand("aitem").setExecutor(new AethelItem());
-    this.getCommand("atag").setExecutor(new AethelTag());
-    this.getCommand("char").setExecutor(new CharacterProfile());
-    this.getCommand("dev").setExecutor(new DevMode());
+    this.getCommand("aethelitems").setExecutor(new AethelItems());
+    this.getCommand("aetheltags").setExecutor(new AethelTags());
+    this.getCommand("character").setExecutor(new Character());
+    this.getCommand("developermode").setExecutor(new DeveloperMode());
     this.getCommand("forge").setExecutor(new Forge());
-    this.getCommand("iedit").setExecutor(new ItemEditor());
+    this.getCommand("itemeditor").setExecutor(new ItemEditor());
     this.getCommand("ping").setExecutor(new Ping());
-    this.getCommand("show").setExecutor(new ShowItem());
-    this.getCommand("stats").setExecutor(new PlayerStat());
+    this.getCommand("showitem").setExecutor(new ShowItem());
+    this.getCommand("playerstats").setExecutor(new PlayerStats());
   }
 
   /**
@@ -47,14 +48,14 @@ public class AethelPlugin extends JavaPlugin {
     File resourceDirectory = new File(AethelResources.resourceDirectory);
     if (!resourceDirectory.exists()) resourceDirectory.mkdir();
 
-    File aethelItemDirectory = new File(AethelResources.aethelItemDirectory);
-    if (aethelItemDirectory.exists()) {
-      AethelResources.aethelItemData.loadItems();
+    File aethelItemsDirectory = new File(AethelResources.aethelItemsDirectory);
+    if (aethelItemsDirectory.exists()) {
+      AethelResources.aethelItemsData.loadItems();
     } else {
-      aethelItemDirectory.mkdir();
+      aethelItemsDirectory.mkdir();
     }
 
-    File forgeRecipeDirectory = new File(AethelResources.forgeRecipeDirectory);
+    File forgeRecipeDirectory = new File(AethelResources.forgeRecipesDirectory);
     if (forgeRecipeDirectory.exists()) {
       AethelResources.forgeRecipeData.loadRecipes();
     } else {
@@ -62,8 +63,8 @@ public class AethelPlugin extends JavaPlugin {
     }
 
     AethelResources.itemEditorData.loadAttributesEnchants();
-    AethelResources.playerHeadData.loadPlayerHeads();
-    AethelResources.playerStatData.loadStats();
+    AethelResources.loadedPlayerHeadData.loadPlayerHeads();
+    AethelResources.playerStatsData.loadStats();
   }
 
   public static AethelPlugin getInstance() {

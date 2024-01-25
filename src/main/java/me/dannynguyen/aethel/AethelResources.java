@@ -11,13 +11,13 @@ import me.dannynguyen.aethel.data.*;
  */
 public class AethelResources {
   public static final String resourceDirectory = "./plugins/Aethel";
-  public static final String aethelItemDirectory = resourceDirectory + "/aitem";
-  public static final String forgeRecipeDirectory = resourceDirectory + "/forge";
+  public static final String aethelItemsDirectory = resourceDirectory + "/aitem";
+  public static final String forgeRecipesDirectory = resourceDirectory + "/forge";
 
-  public static final AethelItemData aethelItemData = new AethelItemData();
+  public static final AethelItemsData aethelItemsData = new AethelItemsData();
   public static final ItemEditorData itemEditorData = new ItemEditorData();
   public static final ForgeRecipeData forgeRecipeData = new ForgeRecipeData();
-  public static final PlayerHeadData playerHeadData = new PlayerHeadData();
-  public static final PlayerStatData playerStatData = new PlayerStatData();
+  public static final LoadedPlayerHeadData loadedPlayerHeadData = new LoadedPlayerHeadData();
+  public static final PlayerStatsData playerStatsData = new PlayerStatsData();
   public static final ShowItemData showItemData = new ShowItemData();
 }

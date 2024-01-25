@@ -134,7 +134,7 @@ public class ItemCreator {
    * @return named custom player head
    */
   public static ItemStack createLoadedPlayerHead(String headName, String displayName) {
-    ItemStack item = AethelResources.playerHeadData.getHeadsMap().get(headName).clone();
+    ItemStack item = AethelResources.loadedPlayerHeadData.getHeadsMap().get(headName).clone();
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
@@ -154,7 +154,7 @@ public class ItemCreator {
    * @return named custom player head with lore
    */
   public static ItemStack createLoadedPlayerHead(String headName, String displayName, List<String> lore) {
-    ItemStack item = AethelResources.playerHeadData.getHeadsMap().get(headName).clone();
+    ItemStack item = AethelResources.loadedPlayerHeadData.getHeadsMap().get(headName).clone();
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);

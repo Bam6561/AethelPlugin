@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.data;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.utility.Pagination;
+import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -45,7 +45,7 @@ public class ForgeRecipeData {
     NamespacedKey forgeCategoryKey =
         new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge.category");
 
-    File[] directory = new File(AethelResources.forgeRecipeDirectory).listFiles();
+    File[] directory = new File(AethelResources.forgeRecipesDirectory).listFiles();
     Arrays.sort(directory);
     for (File file : directory) {
       if (file.getName().endsWith("_rcp.txt")) {
@@ -150,7 +150,7 @@ public class ForgeRecipeData {
   private void createAllRecipePages(ArrayList<ForgeRecipe> allRecipes,
                                     HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
     int numberOfRecipes = allRecipes.size();
-    int numberOfPages = Pagination.calculateNumberOfPages(numberOfRecipes);
+    int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
 
     ArrayList<Inventory> pages = createRecipePages(allRecipes, numberOfRecipes, numberOfPages);
 
@@ -170,7 +170,7 @@ public class ForgeRecipeData {
                                          HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
     for (ArrayList<ForgeRecipe> recipes : categorizedRecipes.values()) {
       int numberOfRecipes = recipes.size();
-      int numberOfPages = Pagination.calculateNumberOfPages(numberOfRecipes);
+      int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
 
       ArrayList<Inventory> pages = createRecipePages(recipes, numberOfRecipes, numberOfPages);
 

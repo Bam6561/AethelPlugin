@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.inventories.itemeditor;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggle;
+import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggles;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,8 +60,8 @@ public class ItemEditorMenu {
     addCustomModelDataMeta(inv, meta);
     addLoreMeta(inv, meta);
     addGameplayMeta(inv);
-    ItemEditorToggle.addItemFlagMetas(inv, meta);
-    ItemEditorToggle.addUnbreakableMeta(inv, meta);
+    ItemEditorToggles.addItemFlagMetas(inv, meta);
+    ItemEditorToggles.addUnbreakableMeta(inv, meta);
   }
 
   /**
