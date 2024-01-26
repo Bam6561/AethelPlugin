@@ -36,7 +36,7 @@ public class ItemEditorToggles {
    * @param inv  interacting inventory
    * @param meta item meta
    */
-  public static void addItemFlagMetas(Inventory inv, ItemMeta meta) {
+  public static void addItemFlagsMeta(Inventory inv, ItemMeta meta) {
     addHideArmorTrimMeta(inv, meta);
     addHideAttributesMeta(inv, meta);
     addHideDestroysMeta(inv, meta);

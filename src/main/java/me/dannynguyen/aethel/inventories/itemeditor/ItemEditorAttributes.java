@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.formatters.TextFormatter;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
+import me.dannynguyen.aethel.objects.itemeditor.AethelAttribute;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,13 +22,14 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * ItemEditorAttributes is an inventory under the ItemEditor command that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.7.1
+ * @version 1.7.5
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -78,9 +80,17 @@ public class ItemEditorAttributes {
    * @param player interacting player
    */
   private static void addAttributes(Inventory inv, Player player) {
-    addAttributeCategory(inv, player, "offense", 19);
-    addAttributeCategory(inv, player, "defense", 28);
-    addAttributeCategory(inv, player, "other", 37);
+    ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    Multimap<Attribute, AttributeModifier> metaAttributes = meta.getAttributeModifiers();
+    HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap = mapAethelAttributes(dataContainer);
+
+    addAttributeCategory(inv, dataContainer, metaAttributes,
+        aethelAttributesMap, "offense", 19);
+    addAttributeCategory(inv, dataContainer, metaAttributes,
+        aethelAttributesMap, "defense", 28);
+    addAttributeCategory(inv, dataContainer, metaAttributes,
+        aethelAttributesMap, "other", 37);
   }
 
   /**
@@ -108,12 +118,52 @@ public class ItemEditorAttributes {
    * @param inv interacting inventory
    */
   private static void addEquipmentSlotButtons(Inventory inv) {
-    inv.setItem(3, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head"));
-    inv.setItem(4, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest"));
-    inv.setItem(5, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs"));
-    inv.setItem(6, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet"));
-    inv.setItem(7, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Hand"));
-    inv.setItem(8, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand"));
+    inv.setItem(3, ItemCreator.createItem(Material.IRON_HELMET,
+        ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
+    inv.setItem(4, ItemCreator.createItem(Material.IRON_CHESTPLATE,
+        ChatColor.AQUA + "Chest", ItemFlag.HIDE_ATTRIBUTES));
+    inv.setItem(5, ItemCreator.createItem(Material.IRON_LEGGINGS,
+        ChatColor.AQUA + "Legs", ItemFlag.HIDE_ATTRIBUTES));
+    inv.setItem(6, ItemCreator.createItem(Material.IRON_BOOTS,
+        ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
+    inv.setItem(7, ItemCreator.createItem(Material.IRON_SWORD,
+        ChatColor.AQUA + "Hand", ItemFlag.HIDE_ATTRIBUTES));
+    inv.setItem(8, ItemCreator.createItem(Material.SHIELD,
+        ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
+  }
+
+  /**
+   * Maps an item's Aethel attributes.
+   *
+   * @param dataContainer item's persistent data
+   * @return item's Aethel attributes map
+   */
+  private static HashMap<String, ArrayList<AethelAttribute>> mapAethelAttributes(PersistentDataContainer dataContainer) {
+    NamespacedKey attributesKey =
+        new NamespacedKey(AethelPlugin.getInstance(), "aethel.attribute.list");
+    boolean hasAttributes = dataContainer.has(attributesKey, PersistentDataType.STRING);
+
+    if (hasAttributes) {
+      HashMap<String, ArrayList<AethelAttribute>> attributesMap = new HashMap<>();
+      ArrayList<String> attributes = new ArrayList<>(Arrays.asList(
+          dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+
+      for (String attribute : attributes) {
+        String attributeType = attribute.substring(0, attribute.indexOf("."));
+        String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
+
+        if (attributesMap.containsKey(attributeType)) {
+          attributesMap.get(attributeType).add(new AethelAttribute(attributeType, attributeSlot));
+        } else {
+          ArrayList<AethelAttribute> attributeModifiers = new ArrayList();
+          attributeModifiers.add(new AethelAttribute(attributeType, attributeSlot));
+          attributesMap.put(attributeType, attributeModifiers);
+        }
+      }
+      return attributesMap;
+    } else {
+      return new HashMap<>();
+    }
   }
 
   /**
@@ -124,27 +174,40 @@ public class ItemEditorAttributes {
    * - Custom (Aethel)
    * </p>
    *
-   * @param inv      interacting inventory
-   * @param player   interacting player
-   * @param category attribute category
-   * @param invSlot  inventory slot
+   * @param inv                 interacting inventory
+   * @param dataContainer       item's persistent tags
+   * @param metaAttributes      attribute modifiers
+   * @param aethelAttributesMap Aethel attributes map
+   * @param category            attribute category
+   * @param invSlot             inventory slot
    */
-  private static void addAttributeCategory(Inventory inv, Player player,
+  private static void addAttributeCategory(Inventory inv, PersistentDataContainer dataContainer,
+                                           Multimap<Attribute, AttributeModifier> metaAttributes,
+                                           HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap,
                                            String category, int invSlot) {
-    ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
-    Multimap<Attribute, AttributeModifier> metaAttributes = meta.getAttributeModifiers();
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-
-    for (String attributeName : AethelResources.itemEditorData.getAttributesMap().get(category)) {
-      switch (attributeName) {
-        case "Attack Damage", "Attack Speed", "Max Health", "Armor",
-            "Armor Toughness", "Movement Speed", "Knockback Resistance",
-            "Luck" -> addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
-        case "Critical Chance", "Critical Damage", "Block",
-            "Parry", "Dodge", "Ability Damage", "Ability Cooldown",
-            "Apply Status" -> createAethelAttribute(inv, dataContainer, attributeName, invSlot);
+    if (!aethelAttributesMap.isEmpty()) {
+      // Read both Minecraft & Aethel attributes
+      for (String attributeName : AethelResources.itemEditorData.getAttributesMap().get(category)) {
+        switch (attributeName) {
+          case "Attack Damage", "Attack Speed", "Max Health", "Armor",
+              "Armor Toughness", "Movement Speed", "Knockback Resistance",
+              "Luck" -> addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
+          default -> createAethelAttribute(inv, dataContainer, aethelAttributesMap, attributeName, invSlot);
+        }
+        invSlot++;
       }
-      invSlot++;
+    } else {
+      // Read Minecraft attributes only
+      for (String attributeName : AethelResources.itemEditorData.getAttributesMap().get(category)) {
+        switch (attributeName) {
+          case "Attack Damage", "Attack Speed", "Max Health", "Armor",
+              "Armor Toughness", "Movement Speed", "Knockback Resistance",
+              "Luck" -> addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
+          default -> inv.setItem(invSlot,
+              ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
+        }
+        invSlot++;
+      }
     }
   }
 
@@ -181,35 +244,31 @@ public class ItemEditorAttributes {
   /**
    * Adds an Aethel attribute.
    *
-   * @param inv           interacting inventory
-   * @param dataContainer item's persistent tags
-   * @param attributeName attribute name
-   * @param invSlot       inventory slot
+   * @param inv                 interacting inventory
+   * @param dataContainer       item's persistent tags
+   * @param aethelAttributesMap Aethel attributes map
+   * @param attributeName       attribute name
+   * @param invSlot             inventory slot
    */
   private static void createAethelAttribute(Inventory inv,
                                             PersistentDataContainer dataContainer,
+                                            HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap,
                                             String attributeName, int invSlot) {
-    ArrayList<String> lore = new ArrayList<>();
-    ArrayList<String> slotTypes = new ArrayList<>(
-        Arrays.asList("head", "chest", "legs", "feet", "hand", "off_hand"));
-
-    for (int i = 0; i < slotTypes.size(); i++) {
-      NamespacedKey attributeKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.attribute."
-          + attributeName.toLowerCase().replace(" ", "_") + "." + slotTypes.get(i));
-
-      boolean enabled = dataContainer.has(attributeKey, PersistentDataType.STRING);
-      if (enabled) {
+    String attributeMapKey = attributeName.toLowerCase().replace(" ", "_");
+    boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
+    if (enabled) {
+      ArrayList<String> lore = new ArrayList<>();
+      for (AethelAttribute aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
+        NamespacedKey attributeKey = new NamespacedKey(AethelPlugin.getInstance(),
+            "aethel.attribute." + aethelAttribute.getType() + "." + aethelAttribute.getSlot());
         String attributeValue = dataContainer.get(attributeKey, PersistentDataType.STRING);
-        lore.add(ChatColor.WHITE + TextFormatter.capitalizeProperly(slotTypes.get(i)) + ": " + attributeValue);
+        lore.add(ChatColor.WHITE + TextFormatter.capitalizeProperly(aethelAttribute.getSlot()) + ": " + attributeValue);
       }
-    }
-
-    if (lore.isEmpty()) {
-      inv.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME,
-          ChatColor.AQUA + attributeName));
-    } else {
       inv.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME,
           ChatColor.AQUA + attributeName, lore));
+    } else {
+      inv.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME,
+          ChatColor.AQUA + attributeName));
     }
   }
 }

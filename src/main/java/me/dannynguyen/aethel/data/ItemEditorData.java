@@ -12,13 +12,13 @@ import static java.util.Comparator.comparing;
  * ItemEditorData stores items currently being edited into memory.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.5
  * @since 1.6.7
  */
 public class ItemEditorData {
   private final HashMap<Player, ItemStack> editedItemMap = new HashMap<>();
   private final ArrayList<String> aethelTags = new ArrayList<>(
-      Arrays.asList("aitem.category", "forge.category", "forge.id"));
+      Arrays.asList("aethelitem.category", "forge.category", "forge.id"));
   private final HashMap<String, ArrayList<String>> attributesMap = new HashMap<>();
   private final List<Enchantment> enchants = new ArrayList<>(Arrays.asList(Enchantment.values()));
 

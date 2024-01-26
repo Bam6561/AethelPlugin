@@ -60,7 +60,7 @@ public class ItemEditorMenu {
     addCustomModelDataMeta(inv, meta);
     addLoreMeta(inv, meta);
     addGameplayMeta(inv);
-    ItemEditorToggles.addItemFlagMetas(inv, meta);
+    ItemEditorToggles.addItemFlagsMeta(inv, meta);
     ItemEditorToggles.addUnbreakableMeta(inv, meta);
   }
 

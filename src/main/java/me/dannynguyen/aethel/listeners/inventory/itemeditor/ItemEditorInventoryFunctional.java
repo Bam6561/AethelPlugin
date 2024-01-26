@@ -11,11 +11,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * ItemEditorInventoryFunctiona; is an inventory listener for the ItemEditor
+ * ItemEditorInventoryFunctional is an inventory listener for the ItemEditor
  * command pertaining to its gameplay-related metadata inventories.
  *
  * @author Danny Nguyen
- * @version 1.7.1
+ * @version 1.7.5
  * @since 1.7.0
  */
 public class ItemEditorInventoryFunctional {
@@ -113,7 +113,7 @@ public class ItemEditorInventoryFunctional {
     player.sendMessage(ChatColor.GOLD + "[!] " +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
 
-    player.setMetadata("input", new FixedMetadataValue(AethelPlugin.getInstance(), attribute));
+    player.setMetadata("type", new FixedMetadataValue(AethelPlugin.getInstance(), attribute));
     ItemEditorInventoryMenuAction.awaitMessageResponse(player, "attributes");
   }
 
@@ -131,7 +131,7 @@ public class ItemEditorInventoryFunctional {
         + ChatColor.WHITE + "Input " + ChatColor.AQUA
         + TextFormatter.capitalizeProperly(enchant) + ChatColor.WHITE + " value.");
 
-    player.setMetadata("input", new FixedMetadataValue(AethelPlugin.getInstance(), enchant));
+    player.setMetadata("type", new FixedMetadataValue(AethelPlugin.getInstance(), enchant));
     ItemEditorInventoryMenuAction.awaitMessageResponse(player, "enchants");
   }
 
@@ -147,7 +147,7 @@ public class ItemEditorInventoryFunctional {
     player.sendMessage(ChatColor.GOLD + "[!] " +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + ChatColor.WHITE + " value.");
 
-    player.setMetadata("input", new FixedMetadataValue(AethelPlugin.getInstance(), aethelTag));
+    player.setMetadata("type", new FixedMetadataValue(AethelPlugin.getInstance(), aethelTag));
     ItemEditorInventoryMenuAction.awaitMessageResponse(player, "tags");
   }
 }
