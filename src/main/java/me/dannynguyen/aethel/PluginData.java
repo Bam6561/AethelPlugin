@@ -3,13 +3,13 @@ package me.dannynguyen.aethel;
 import me.dannynguyen.aethel.data.*;
 
 /**
- * AethelResources stores the plugin's resources in memory.
+ * PluginData stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
  * @version 1.6.7
  * @since 1.1.7
  */
-public class AethelResources {
+public class PluginData {
   public static final String resourceDirectory = "./plugins/Aethel";
   public static final String aethelItemsDirectory = resourceDirectory + "/aitem";
   public static final String forgeRecipesDirectory = resourceDirectory + "/forge";

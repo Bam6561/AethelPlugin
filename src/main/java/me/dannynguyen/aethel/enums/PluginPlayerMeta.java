@@ -38,6 +38,4 @@ public class PluginPlayerMeta {
       this.value = value;
     }
   }
-
-
 }

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.data;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.1.11
  */
 public class ForgeRecipeData {
@@ -34,31 +34,30 @@ public class ForgeRecipeData {
    * Loads forge recipes into memory.
    */
   public void loadRecipes() {
-    HashMap<String, ForgeRecipe> recipesMap = getRecipesMap();
-    HashMap<String, ForgeRecipeCategory> recipeCategoriesMap = getRecipeCategoriesMap();
+    File[] directory = new File(PluginData.forgeRecipesDirectory).listFiles();
+    if (directory.length > 0) {
+      Arrays.sort(directory);
 
-    recipesMap.clear();
-    recipeCategoriesMap.clear();
+      recipesMap.clear();
+      recipeCategoriesMap.clear();
 
-    ArrayList<ForgeRecipe> allRecipes = new ArrayList<>();
-    HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes = new HashMap<>();
-    NamespacedKey forgeCategoryKey =
-        new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge.category");
+      ArrayList<ForgeRecipe> allRecipes = new ArrayList<>();
+      HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes = new HashMap<>();
+      NamespacedKey categoryKey = PluginNamespacedKey.FORGE_CATEGORY.namespacedKey;
 
-    File[] directory = new File(AethelResources.forgeRecipesDirectory).listFiles();
-    Arrays.sort(directory);
-    for (File file : directory) {
-      if (file.getName().endsWith("_rcp.txt")) {
-        ForgeRecipe recipe = readRecipeFile(file);
-        recipesMap.put(recipe.getName(), recipe);
-        allRecipes.add(recipe);
-        categorizeRecipe(recipe, forgeCategoryKey, categorizedRecipes);
+      for (File file : directory) {
+        if (file.getName().endsWith("_rcp.txt")) {
+          ForgeRecipe recipe = readRecipeFile(file);
+          recipesMap.put(recipe.getName(), recipe);
+          allRecipes.add(recipe);
+          categorizeRecipe(recipe, categoryKey, sortedRecipes);
+        }
       }
-    }
 
-    if (!recipesMap.isEmpty()) {
-      createAllRecipePages(allRecipes, recipeCategoriesMap);
-      createRecipeCategoryPages(forgeCategoryKey, categorizedRecipes, recipeCategoriesMap);
+      if (!recipesMap.isEmpty()) {
+        createAllRecipePages(allRecipes, recipeCategoriesMap);
+        createRecipeCategoryPages(categoryKey, sortedRecipes, recipeCategoriesMap);
+      }
     }
   }
 
@@ -85,7 +84,7 @@ public class ForgeRecipeData {
         readLine(scanner.nextLine(), dataType, results, components);
         dataType++;
       }
-      return new ForgeRecipe(file, ItemReader.readItemName(results.get(0)), results, components);
+      return new ForgeRecipe(file, ItemReader.readName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
     }
@@ -119,24 +118,24 @@ public class ForgeRecipeData {
   /**
    * Puts a recipe into a category if its first result item has a forge category tag.
    *
-   * @param recipe             interacting recipe
-   * @param forgeCategoryKey   forge category tag
-   * @param categorizedRecipes recipes sorted by category
+   * @param recipe        interacting recipe
+   * @param categoryKey   forge category tag
+   * @param sortedRecipes recipes sorted by category
    */
-  private void categorizeRecipe(ForgeRecipe recipe, NamespacedKey forgeCategoryKey,
-                                HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes) {
+  private void categorizeRecipe(ForgeRecipe recipe, NamespacedKey categoryKey,
+                                HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes) {
     ItemStack item = recipe.getResults().get(0);
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
-    if (dataContainer.has(forgeCategoryKey, PersistentDataType.STRING)) {
-      String recipeCategory = dataContainer.get(forgeCategoryKey, PersistentDataType.STRING);
+    if (dataContainer.has(categoryKey, PersistentDataType.STRING)) {
+      String recipeCategory = dataContainer.get(categoryKey, PersistentDataType.STRING);
 
-      if (categorizedRecipes.containsKey(recipeCategory)) {
-        categorizedRecipes.get(recipeCategory).add(recipe);
+      if (sortedRecipes.containsKey(recipeCategory)) {
+        sortedRecipes.get(recipeCategory).add(recipe);
       } else {
         ArrayList<ForgeRecipe> recipes = new ArrayList<>();
         recipes.add(recipe);
-        categorizedRecipes.put(recipeCategory, recipes);
+        sortedRecipes.put(recipeCategory, recipes);
       }
     }
   }
@@ -162,13 +161,13 @@ public class ForgeRecipeData {
    * Creates pages of recipes by category.
    *
    * @param forgeCategoryKey    forge category tag
-   * @param categorizedRecipes  recipes sorted by category
+   * @param sortedRecipes       recipes sorted by category
    * @param recipeCategoriesMap recipe category pages
    */
   private void createRecipeCategoryPages(NamespacedKey forgeCategoryKey,
-                                         HashMap<String, ArrayList<ForgeRecipe>> categorizedRecipes,
+                                         HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes,
                                          HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
-    for (ArrayList<ForgeRecipe> recipes : categorizedRecipes.values()) {
+    for (ArrayList<ForgeRecipe> recipes : sortedRecipes.values()) {
       int numberOfRecipes = recipes.size();
       int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
 
@@ -228,16 +227,16 @@ public class ForgeRecipeData {
    */
   private ItemStack createResultsDisplay(ItemStack displayItem, ArrayList<ItemStack> results) {
     if (results.size() > 1) {
-      List<String> recipeResults = new ArrayList<>();
+      List<String> resultsLore = new ArrayList<>();
 
       for (ItemStack item : results) {
-        recipeResults.add(ChatColor.AQUA + "x" + item.getAmount() +
-            ChatColor.WHITE + " " + ItemReader.readItemName(item));
+        resultsLore.add(ChatColor.AQUA + "x" + item.getAmount() +
+            ChatColor.WHITE + " " + ItemReader.readName(item));
       }
 
       ItemStack itemDisplay = displayItem.clone();
       ItemMeta meta = itemDisplay.getItemMeta();
-      meta.setLore(recipeResults);
+      meta.setLore(resultsLore);
       itemDisplay.setItemMeta(meta);
       return itemDisplay;
     } else {

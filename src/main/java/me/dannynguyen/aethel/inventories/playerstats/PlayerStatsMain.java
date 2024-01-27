@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.inventories.playerstats;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.PlayerStatsData;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
@@ -61,7 +61,7 @@ public class PlayerStatsMain {
    */
   private static void addStatCategories(Inventory inv) {
     int i = 9;
-    for (String statCategory : AethelResources.playerStatsData.getStatCategoryNames()) {
+    for (String statCategory : PluginData.playerStatsData.getStatCategoryNames()) {
       inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + statCategory));
       i++;
     }
@@ -78,7 +78,7 @@ public class PlayerStatsMain {
    */
   public static Inventory openPlayerStatsCategoryPage(Player player, String requestedPlayerName,
                                                       String categoryName, int pageRequest) {
-    PlayerStatsData playerStatsData = AethelResources.playerStatsData;
+    PlayerStatsData playerStatsData = PluginData.playerStatsData;
 
     Inventory inv = createInventory(player, requestedPlayerName);
     switch (categoryName) {
@@ -111,7 +111,7 @@ public class PlayerStatsMain {
       numberOfPages = playerStatsData.getNumberOfMaterialPages();
     }
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+    player.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     inv.setContents(playerStatsData.getSubstatCategoryPages().get(categoryName).get(pageViewed).getContents());
     InventoryPages.addPageButtons(inv, numberOfPages, pageViewed);

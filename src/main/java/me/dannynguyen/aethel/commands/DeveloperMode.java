@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
@@ -57,10 +57,10 @@ public class DeveloperMode implements CommandExecutor {
   private void toggleDeveloperMode(Player user) {
     if (!user.hasMetadata(PluginPlayerMeta.Container.DEVELOPER.name)) {
       user.setMetadata(PluginPlayerMeta.Container.DEVELOPER.name,
-          new FixedMetadataValue(AethelPlugin.getInstance(), "on"));
+          new FixedMetadataValue(Plugin.getInstance(), "on"));
       user.sendMessage(PluginMessage.DEVELOPERMODE_ON.message);
     } else {
-      user.removeMetadata(PluginPlayerMeta.Container.DEVELOPER.name, AethelPlugin.getInstance());
+      user.removeMetadata(PluginPlayerMeta.Container.DEVELOPER.name, Plugin.getInstance());
       user.sendMessage(PluginMessage.DEVELOPERMODE_OFF.message);
     }
   }

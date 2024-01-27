@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.message.itemeditor;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -171,12 +171,12 @@ public class ItemEditorMessageCosmetic {
    * @param item   interacting item
    */
   private static void openMainMenu(Player player, ItemStack item) {
-    player.removeMetadata("message", AethelPlugin.getInstance());
-    Bukkit.getScheduler().runTask(AethelPlugin.getInstance(),
+    player.removeMetadata("message", Plugin.getInstance());
+    Bukkit.getScheduler().runTask(Plugin.getInstance(),
         () -> {
           player.openInventory(ItemEditorI.openCosmeticMenu(player, item));
           player.setMetadata("inventory",
-              new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+              new FixedMetadataValue(Plugin.getInstance(), "itemeditor.menu"));
         });
   }
 }

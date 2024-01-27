@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.inventories.forge.ForgeCraft;
 import me.dannynguyen.aethel.inventories.forge.ForgeI;
 import me.dannynguyen.aethel.inventories.forge.ForgeSave;
@@ -36,13 +36,13 @@ public class ForgeInventory {
         case 3 -> openForgeSave(player);
         default -> {
           String action = player.getMetadata("future").get(0).asString();
-          String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
-          player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+          String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+          player.setMetadata("category", new FixedMetadataValue(Plugin.getInstance(), itemName));
           int pageRequest = player.getMetadata("page").get(0).asInt();
 
           player.openInventory(ForgeI.openForgeCategoryPage(player, action, itemName, pageRequest));
           player.setMetadata("inventory",
-              new FixedMetadataValue(AethelPlugin.getInstance(), "forge." + action));
+              new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
         }
       }
     }
@@ -128,7 +128,7 @@ public class ForgeInventory {
 
     player.openInventory(ForgeI.openForgeCategoryPage(player, action, categoryName,
         pageRequest - 1));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge." + action));
+    player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
   }
 
   /**
@@ -138,7 +138,7 @@ public class ForgeInventory {
    */
   private static void openForgeSave(Player player) {
     player.openInventory(ForgeSave.createInventory(player));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.save"));
+    player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge.save"));
   }
 
   /**
@@ -154,14 +154,14 @@ public class ForgeInventory {
     String categoryName = player.getMetadata("category").get(0).asString();
     if (categoryName.equals("")) {
       player.openInventory(ForgeI.openMainMenu(player, "edit"));
-      player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.category"));
+      player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge.category"));
     } else {
       categoryName = player.getMetadata("category").get(0).asString();
 
       player.openInventory(ForgeI.openForgeCategoryPage(player, "edit",
           categoryName, player.getMetadata("page").get(0).asInt()));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "forge.edit"));
+          new FixedMetadataValue(Plugin.getInstance(), "forge.edit"));
     }
   }
 
@@ -175,7 +175,7 @@ public class ForgeInventory {
 
     player.openInventory(ForgeI.openForgeCategoryPage(player, "remove",
         categoryName, player.getMetadata("page").get(0).asInt()));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.remove"));
+    player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge.remove"));
   }
 
   /**
@@ -185,11 +185,11 @@ public class ForgeInventory {
    */
   private static void returnToMainPage(Player player) {
     String action = player.getMetadata("future").get(0).asString();
-    player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
+    player.setMetadata("category", new FixedMetadataValue(Plugin.getInstance(), ""));
 
     player.openInventory(ForgeI.openMainMenu(player, action));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.category"));
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+    player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge.category"));
+    player.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -202,7 +202,7 @@ public class ForgeInventory {
 
     player.openInventory(ForgeI.openForgeCategoryPage(player, "craft", categoryName,
         player.getMetadata("page").get(0).asInt()));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.craft"));
+    player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge.craft"));
   }
 
   /**
@@ -217,7 +217,7 @@ public class ForgeInventory {
 
     player.openInventory(ForgeI.openForgeCategoryPage(player, action, categoryName,
         pageRequest + 1));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge." + action));
+    player.setMetadata("inventory", new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
   }
 
   /**

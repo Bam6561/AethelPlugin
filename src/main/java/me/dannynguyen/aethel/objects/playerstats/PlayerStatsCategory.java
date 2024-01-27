@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.objects.playerstats;
 import java.util.ArrayList;
 
 /**
- * PlayerStatsCategory is an object relating statistics with their category.
+ * PlayerStatsCategory is an object relating player statistics with their category.
  *
  * @author Danny Nguyen
  * @version 1.5.1

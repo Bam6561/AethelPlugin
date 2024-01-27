@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.forge;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.formatters.TextFormatter;
 import org.bukkit.Bukkit;
@@ -144,12 +144,12 @@ public class ForgeSave {
    */
   private static void saveRecipeToFile(Player player, String fileName, String encodedRecipe) {
     try {
-      FileWriter fw = new FileWriter(AethelResources.forgeRecipesDirectory
+      FileWriter fw = new FileWriter(PluginData.forgeRecipesDirectory
           + "/" + fileName + "_rcp.txt");
       fw.write(encodedRecipe);
       fw.close();
       player.sendMessage(ChatColor.GREEN + "[Saved Recipe] " +
-          ChatColor.WHITE + TextFormatter.capitalizeProperly(fileName));
+          ChatColor.WHITE + TextFormatter.capitalizePhrase(fileName));
     } catch (IOException ex) {
       player.sendMessage(ChatColor.RED + "Unable to save recipe.");
     }

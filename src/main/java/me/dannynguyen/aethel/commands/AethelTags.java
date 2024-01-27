@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -116,7 +116,7 @@ public class AethelTags implements CommandExecutor {
   private void removeAethelTag(Player user, String tag, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + tag);
+    NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tag);
 
     if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
       dataContainer.remove(namespacedKey);
@@ -134,7 +134,7 @@ public class AethelTags implements CommandExecutor {
    */
   private void setAethelTag(Player user, String[] args, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
-    NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + args[1]);
+    NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + args[1]);
     meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, args[2]);
     item.setItemMeta(meta);
     user.sendMessage(PluginMessage.AETHELTAGS_SET_TAG.message + ChatColor.AQUA +

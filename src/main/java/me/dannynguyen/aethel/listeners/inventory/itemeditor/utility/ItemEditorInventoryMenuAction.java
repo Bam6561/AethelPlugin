@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.inventory.itemeditor.utility;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorAttributes;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorEnchants;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorI;
@@ -27,7 +27,7 @@ public class ItemEditorInventoryMenuAction {
   public static void awaitMessageResponse(Player player, String metadata) {
     player.closeInventory();
     player.setMetadata("message",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor." + metadata));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor." + metadata));
   }
 
   /**
@@ -37,14 +37,14 @@ public class ItemEditorInventoryMenuAction {
    */
   public static void openAttributesMenu(Player player) {
     if (player.hasMetadata("message")) {
-      player.removeMetadata("message", AethelPlugin.getInstance());
+      player.removeMetadata("message", Plugin.getInstance());
     }
 
-    player.setMetadata("slot", new FixedMetadataValue(AethelPlugin.getInstance(), "head"));
+    player.setMetadata("slot", new FixedMetadataValue(Plugin.getInstance(), "head"));
 
     player.openInventory(ItemEditorAttributes.openAttributesMenu(player, "Head"));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.attributes"));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor.attributes"));
   }
 
   /**
@@ -54,12 +54,12 @@ public class ItemEditorInventoryMenuAction {
    */
   public static void openEnchantsMenu(Player player) {
     if (player.hasMetadata("message")) {
-      player.removeMetadata("message", AethelPlugin.getInstance());
+      player.removeMetadata("message", Plugin.getInstance());
     }
 
     player.openInventory(ItemEditorEnchants.openEnchantsMenu(player));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.enchants"));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor.enchants"));
   }
 
   /**
@@ -69,12 +69,12 @@ public class ItemEditorInventoryMenuAction {
    */
   public static void openTagsMenu(Player player) {
     if (player.hasMetadata("message")) {
-      player.removeMetadata("message", AethelPlugin.getInstance());
+      player.removeMetadata("message", Plugin.getInstance());
     }
 
     player.openInventory(ItemEditorTags.openTagsMenu(player));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.tags"));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor.tags"));
   }
 
 
@@ -85,8 +85,8 @@ public class ItemEditorInventoryMenuAction {
    */
   public static void returnToMainMenu(Player player) {
     player.openInventory(ItemEditorI.openCosmeticMenu(player,
-        AethelResources.itemEditorData.getEditedItemMap().get(player)));
+        PluginData.itemEditorData.getEditedItemMap().get(player)));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor.menu"));
   }
 }

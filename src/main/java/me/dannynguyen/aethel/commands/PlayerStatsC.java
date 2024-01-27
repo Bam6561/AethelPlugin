@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -26,7 +26,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @version 1.7.7
  * @since 1.4.7
  */
-public class PlayerStats implements CommandExecutor {
+public class PlayerStatsC implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -67,7 +67,7 @@ public class PlayerStats implements CommandExecutor {
     if (parameter.equals("past") || parameter.equals("p")) {
       user.openInventory(PlayerStatsPast.createInventory(user));
       user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-          new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_PAST.value));
+          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_PAST.value));
     } else {
       openPlayerStatsOther(user, parameter);
     }
@@ -80,11 +80,11 @@ public class PlayerStats implements CommandExecutor {
    */
   private void openPlayerStatsSelf(Player user) {
     user.setMetadata(PluginPlayerMeta.Container.PLAYER.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), user.getName()));
+        new FixedMetadataValue(Plugin.getInstance(), user.getName()));
 
     user.openInventory(PlayerStatsMain.openMainMenu(user, user.getName()));
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_CATEGORY.value));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_CATEGORY.value));
   }
 
   /**
@@ -97,11 +97,11 @@ public class PlayerStats implements CommandExecutor {
     OfflinePlayer player = Bukkit.getOfflinePlayer(requestedPlayer);
     if (player.hasPlayedBefore()) {
       user.setMetadata(PluginPlayerMeta.Container.PLAYER.name,
-          new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
+          new FixedMetadataValue(Plugin.getInstance(), player.getName()));
 
       user.openInventory(PlayerStatsMain.openMainMenu(user, player.getName()));
       user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-          new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_CATEGORY.value));
+          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_CATEGORY.value));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

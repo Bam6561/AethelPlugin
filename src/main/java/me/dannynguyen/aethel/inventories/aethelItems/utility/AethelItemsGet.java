@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.aethelItems.utility;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,8 +21,8 @@ public class AethelItemsGet {
    * @param player interacting player
    */
   public static void getItem(InventoryClickEvent e, Player player) {
-    ItemStack item = AethelResources.aethelItemsData.getItemsMap().
-        get(ItemReader.readItemName(e.getCurrentItem())).getItem();
+    ItemStack item = PluginData.aethelItemsData.getItemsMap().
+        get(ItemReader.readName(e.getCurrentItem())).getItem();
 
     if (player.getInventory().firstEmpty() != -1) {
       player.getInventory().addItem(item);

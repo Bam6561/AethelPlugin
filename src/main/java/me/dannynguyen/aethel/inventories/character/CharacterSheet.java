@@ -212,7 +212,7 @@ public class CharacterSheet {
     ArrayList<String> lore = new ArrayList<>();
     for (PotionEffect potionEffect : player.getActivePotionEffects()) {
       String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
-      String effectType = ChatColor.AQUA + TextFormatter.capitalizeProperly(potionEffect.getType().getName());
+      String effectType = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
       String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" :
           String.valueOf(potionEffect.getAmplifier() + 1));
 

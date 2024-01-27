@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.playerstats.utility;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -29,7 +29,7 @@ public class PlayerStatsSend {
     String statOwner = player.getMetadata("player").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
-    String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
+    String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
 
     Statistic stat = Statistic.valueOf(itemName.replace(" ", "_").toUpperCase());
     String statNameString = ChatColor.DARK_PURPLE + statOwner + " " + ChatColor.YELLOW + itemName;
@@ -41,7 +41,7 @@ public class PlayerStatsSend {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.sendMessage(ChatColor.GREEN + "[!] " + statNameString + " " + statValueString);
       }
-      AethelResources.playerStatsData.addToPastStats(statNameString, Collections.singletonList(statValueString));
+      PluginData.playerStatsData.addToPastStats(statNameString, Collections.singletonList(statValueString));
     }
   }
 
@@ -55,7 +55,7 @@ public class PlayerStatsSend {
     String statOwner = player.getMetadata("player").get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
-    String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
+    String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
 
     String statCategory = player.getMetadata("category").get(0).asString();
@@ -87,7 +87,7 @@ public class PlayerStatsSend {
         }
       }
     }
-    AethelResources.playerStatsData.addToPastStats(statName, statValues);
+    PluginData.playerStatsData.addToPastStats(statName, statValues);
   }
 
   /**

@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.readers;
 
-import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.formatters.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -19,21 +18,21 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.7.2
+ * @version 1.7.8
  * @since 1.1.4
  */
 public class ItemReader {
   /**
-   * Returns either an item's renamed value or its material.
+   * Returns either an item's display name or its material.
    *
    * @param item interacting item
    * @return effective item name
    */
-  public static String readItemName(ItemStack item) {
+  public static String readName(ItemStack item) {
     if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
     } else {
-      return TextFormatter.capitalizeProperly(item.getType().name());
+      return TextFormatter.capitalizePhrase(item.getType().name());
     }
   }
 
@@ -47,12 +46,11 @@ public class ItemReader {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
     StringBuilder aethelTags = new StringBuilder();
-    for (NamespacedKey dataKey : dataContainer.getKeys()) {
-      String keyName = dataKey.getKey();
+    for (NamespacedKey key : dataContainer.getKeys()) {
+      String keyName = key.getKey();
       if (keyName.startsWith("aethel.")) {
-        NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), keyName);
         aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
-            append(dataContainer.get(namespacedKey, PersistentDataType.STRING)).append(" ");
+            append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
       }
     }
     return aethelTags.toString();

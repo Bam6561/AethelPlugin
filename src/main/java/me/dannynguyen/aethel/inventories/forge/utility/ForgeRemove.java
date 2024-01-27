@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge.utility;
 
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
@@ -23,8 +23,8 @@ public class ForgeRemove {
    * @param player interacting player
    */
   public static void removeRecipe(InventoryClickEvent e, Player player) {
-    ForgeRecipe recipe = AethelResources.forgeRecipeData.
-        getRecipesMap().get(ItemReader.readItemName(e.getCurrentItem()));
+    ForgeRecipe recipe = PluginData.forgeRecipeData.
+        getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
 
     recipe.getFile().delete();
     player.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());

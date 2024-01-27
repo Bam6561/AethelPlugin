@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.aethelItems.utility;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.objects.aethelitems.AethelItem;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
@@ -22,8 +22,8 @@ public class AethelItemsRemove {
    * @param player interacting player
    */
   public static void removeItem(InventoryClickEvent e, Player player) {
-    AethelItem aethelItem = AethelResources.aethelItemsData.getItemsMap().
-        get(ItemReader.readItemName(e.getCurrentItem()));
+    AethelItem aethelItem = PluginData.aethelItemsData.getItemsMap().
+        get(ItemReader.readName(e.getCurrentItem()));
 
     aethelItem.getFile().delete();
     player.sendMessage(ChatColor.RED + "[Removed Aethel Item] "

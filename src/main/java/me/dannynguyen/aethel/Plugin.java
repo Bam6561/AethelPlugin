@@ -9,14 +9,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 
 /**
- * AethelPlugin represents the plugin as an object. Through event listeners and command executors,
+ * Plugin represents the plugin as an object. Through event listeners and command executors,
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.8
  * @since 1.0.0
  */
-public class AethelPlugin extends JavaPlugin {
+public class Plugin extends JavaPlugin {
   /**
    * On startup:
    * - Reads existing plugin-related data.
@@ -25,7 +25,7 @@ public class AethelPlugin extends JavaPlugin {
    */
   @Override
   public void onEnable() {
-    readResourceFiles();
+    loadResources();
 
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     getServer().getPluginManager().registerEvents(new MessageListener(), this);
@@ -35,39 +35,39 @@ public class AethelPlugin extends JavaPlugin {
     this.getCommand("character").setExecutor(new Character());
     this.getCommand("developermode").setExecutor(new DeveloperMode());
     this.getCommand("forge").setExecutor(new ForgeC());
-    this.getCommand("itemeditor").setExecutor(new ItemEditor());
+    this.getCommand("itemeditor").setExecutor(new ItemEditorC());
     this.getCommand("ping").setExecutor(new Ping());
     this.getCommand("showitem").setExecutor(new ShowItem());
-    this.getCommand("playerstats").setExecutor(new PlayerStats());
+    this.getCommand("playerstats").setExecutor(new PlayerStatsC());
   }
 
   /**
-   * Reads existing plugin-related data. Creates data directories if they do not already exist.
+   * Loads existing plugin-related data. Creates data directories if they do not already exist.
    */
-  private void readResourceFiles() {
-    File resourceDirectory = new File(AethelResources.resourceDirectory);
+  private void loadResources() {
+    File resourceDirectory = new File(PluginData.resourceDirectory);
     if (!resourceDirectory.exists()) resourceDirectory.mkdir();
 
-    File aethelItemsDirectory = new File(AethelResources.aethelItemsDirectory);
+    File aethelItemsDirectory = new File(PluginData.aethelItemsDirectory);
     if (aethelItemsDirectory.exists()) {
-      AethelResources.aethelItemsData.loadItems();
+      PluginData.aethelItemsData.loadItems();
     } else {
       aethelItemsDirectory.mkdir();
     }
 
-    File forgeRecipeDirectory = new File(AethelResources.forgeRecipesDirectory);
+    File forgeRecipeDirectory = new File(PluginData.forgeRecipesDirectory);
     if (forgeRecipeDirectory.exists()) {
-      AethelResources.forgeRecipeData.loadRecipes();
+      PluginData.forgeRecipeData.loadRecipes();
     } else {
       forgeRecipeDirectory.mkdir();
     }
 
-    AethelResources.itemEditorData.loadAttributesEnchants();
-    AethelResources.loadedPlayerHeadData.loadPlayerHeads();
-    AethelResources.playerStatsData.loadStats();
+    PluginData.itemEditorData.loadAttributesEnchants();
+    PluginData.loadedPlayerHeadData.loadPlayerHeads();
+    PluginData.playerStatsData.loadStats();
   }
 
-  public static AethelPlugin getInstance() {
-    return getPlugin(AethelPlugin.class);
+  public static Plugin getInstance() {
+    return getPlugin(Plugin.class);
   }
 }

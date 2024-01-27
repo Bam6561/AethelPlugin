@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory.itemeditor;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.formatters.TextFormatter;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorAttributes;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.utility.ItemEditorInventoryMenuAction;
@@ -86,11 +86,11 @@ public class ItemEditorInventoryFunctional {
    * @param equipmentSlot interacting equipment slot.
    */
   private static void setEquipmentSlotMode(Player player, String equipmentSlot) {
-    player.setMetadata("slot", new FixedMetadataValue(AethelPlugin.getInstance(), equipmentSlot));
+    player.setMetadata("slot", new FixedMetadataValue(Plugin.getInstance(), equipmentSlot));
 
     player.openInventory(ItemEditorAttributes.openAttributesMenu(player, equipmentSlot));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.attributes"));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor.attributes"));
   }
 
   /**
@@ -113,7 +113,7 @@ public class ItemEditorInventoryFunctional {
     player.sendMessage(ChatColor.GOLD + "[!] " +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
 
-    player.setMetadata("type", new FixedMetadataValue(AethelPlugin.getInstance(), attribute));
+    player.setMetadata("type", new FixedMetadataValue(Plugin.getInstance(), attribute));
     ItemEditorInventoryMenuAction.awaitMessageResponse(player, "attributes");
   }
 
@@ -129,9 +129,9 @@ public class ItemEditorInventoryFunctional {
 
     player.sendMessage(ChatColor.GOLD + "[!] "
         + ChatColor.WHITE + "Input " + ChatColor.AQUA
-        + TextFormatter.capitalizeProperly(enchant) + ChatColor.WHITE + " value.");
+        + TextFormatter.capitalizePhrase(enchant) + ChatColor.WHITE + " value.");
 
-    player.setMetadata("type", new FixedMetadataValue(AethelPlugin.getInstance(), enchant));
+    player.setMetadata("type", new FixedMetadataValue(Plugin.getInstance(), enchant));
     ItemEditorInventoryMenuAction.awaitMessageResponse(player, "enchants");
   }
 
@@ -147,7 +147,7 @@ public class ItemEditorInventoryFunctional {
     player.sendMessage(ChatColor.GOLD + "[!] " +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + ChatColor.WHITE + " value.");
 
-    player.setMetadata("type", new FixedMetadataValue(AethelPlugin.getInstance(), aethelTag));
+    player.setMetadata("type", new FixedMetadataValue(Plugin.getInstance(), aethelTag));
     ItemEditorInventoryMenuAction.awaitMessageResponse(player, "tags");
   }
 }

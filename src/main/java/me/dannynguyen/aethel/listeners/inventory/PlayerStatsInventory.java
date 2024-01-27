@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.inventories.playerstats.PlayerStatsMain;
 import me.dannynguyen.aethel.inventories.playerstats.utility.PlayerStatsSend;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -28,16 +28,16 @@ public class PlayerStatsInventory {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       if (e.getSlot() > 8) {
         String requestedPlayerName = player.getMetadata("player").get(0).asString();
-        String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
-        player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+        String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+        player.setMetadata("category", new FixedMetadataValue(Plugin.getInstance(), itemName));
 
         player.openInventory(PlayerStatsMain.
             openPlayerStatsCategoryPage(player, requestedPlayerName, itemName, 0));
         switch (itemName) {
           case "Entity Types", "Materials" -> player.setMetadata("inventory",
-              new FixedMetadataValue(AethelPlugin.getInstance(), "playerstats.substat"));
+              new FixedMetadataValue(Plugin.getInstance(), "playerstats.substat"));
           default -> player.setMetadata("inventory",
-              new FixedMetadataValue(AethelPlugin.getInstance(), "playerstats.stat"));
+              new FixedMetadataValue(Plugin.getInstance(), "playerstats.stat"));
         }
       }
       e.setCancelled(true);
@@ -97,7 +97,7 @@ public class PlayerStatsInventory {
     player.openInventory(PlayerStatsMain.
         openPlayerStatsCategoryPage(player, requestedPlayerName, categoryName, pageRequest - 1));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstats.substat"));
+        new FixedMetadataValue(Plugin.getInstance(), "playerstats.substat"));
   }
 
   /**
@@ -109,8 +109,8 @@ public class PlayerStatsInventory {
     String requestedPlayerName = player.getMetadata("player").get(0).asString();
     player.openInventory(PlayerStatsMain.openMainMenu(player, requestedPlayerName));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstats.category"));
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+        new FixedMetadataValue(Plugin.getInstance(), "playerstats.category"));
+    player.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -126,6 +126,6 @@ public class PlayerStatsInventory {
     player.openInventory(PlayerStatsMain.
         openPlayerStatsCategoryPage(player, requestedPlayerName, categoryName, pageRequest + 1));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "playerstats.substat"));
+        new FixedMetadataValue(Plugin.getInstance(), "playerstats.substat"));
   }
 }

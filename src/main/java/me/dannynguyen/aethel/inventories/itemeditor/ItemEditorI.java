@@ -98,7 +98,7 @@ public class ItemEditorI {
             ChatColor.WHITE + "&e " + ChatColor.YELLOW + "Yellow",
             ChatColor.WHITE + "&f " + ChatColor.WHITE + "White"));
     ItemStack displayName = ItemCreator.createItem(Material.NAME_TAG,
-        ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readItemName(item)));
+        ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readName(item)));
 
     inv.setItem(9, formatCodes);
     inv.setItem(10, colorCodes);

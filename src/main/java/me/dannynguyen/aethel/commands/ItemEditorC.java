@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorI;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -22,7 +22,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @version 1.7.7
  * @since 1.6.7
  */
-public class ItemEditor implements CommandExecutor {
+public class ItemEditorC implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -64,10 +64,10 @@ public class ItemEditor implements CommandExecutor {
    * @param item interacting item
    */
   private void openCosmeticMenu(Player user, ItemStack item) {
-    AethelResources.itemEditorData.getEditedItemMap().put(user, item);
+    PluginData.itemEditorData.getEditedItemMap().put(user, item);
 
     user.openInventory(ItemEditorI.openCosmeticMenu(user, item));
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.ITEMEDITOR_MENU.value));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.ITEMEDITOR_MENU.value));
   }
 }

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.message.itemeditor;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.formatters.TextFormatter;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorAttributes;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.utility.ItemEditorInventoryMenuAction;
@@ -41,14 +41,14 @@ public class ItemEditorMessageFunctional {
    * @throws NumberFormatException not a number
    */
   public static void setAttribute(AsyncPlayerChatEvent e, Player player, ItemStack item) {
-    ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
+    ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(player).getItemMeta();
     String type = player.getMetadata("type").get(0).asString();
     if (!type.contains("aethel.")) {
       setMinecraftAttribute(e, player, item, meta, type);
     } else {
       setAethelAttribute(e, player, item, meta, type);
     }
-    Bukkit.getScheduler().runTask(AethelPlugin.getInstance(), () -> returnToAttributesMenu(player));
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> returnToAttributesMenu(player));
   }
 
   /**
@@ -66,9 +66,9 @@ public class ItemEditorMessageFunctional {
     } else {
       item.removeEnchantment(Enchantment.getByKey(enchant));
       player.sendMessage(
-          ChatColor.RED + "[Removed " + TextFormatter.capitalizeProperly(enchant.getKey()) + "]");
+          ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
     }
-    Bukkit.getScheduler().runTask(AethelPlugin.getInstance(),
+    Bukkit.getScheduler().runTask(Plugin.getInstance(),
         () -> ItemEditorInventoryMenuAction.openEnchantsMenu(player));
   }
 
@@ -84,7 +84,7 @@ public class ItemEditorMessageFunctional {
                             ItemStack item, ItemMeta meta) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     String tagType = player.getMetadata("type").get(0).asString();
-    NamespacedKey aethelTagKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + tagType);
+    NamespacedKey aethelTagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tagType);
 
     if (!e.getMessage().equals("-")) {
       dataContainer.set(aethelTagKey, PersistentDataType.STRING, e.getMessage());
@@ -94,7 +94,7 @@ public class ItemEditorMessageFunctional {
       player.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    Bukkit.getScheduler().runTask(AethelPlugin.getInstance(), () ->
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () ->
         ItemEditorInventoryMenuAction.openTagsMenu(player));
   }
 
@@ -148,11 +148,11 @@ public class ItemEditorMessageFunctional {
                                          ItemMeta meta, String type) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey attributesKey =
-        new NamespacedKey(AethelPlugin.getInstance(), "aethel.attribute.list");
+        new NamespacedKey(Plugin.getInstance(), "aethel.attribute.list");
 
     String equipmentSlot = player.getMetadata("slot").get(0).asString();
     String attributeName = type + "." + equipmentSlot;
-    NamespacedKey attributeKey = new NamespacedKey(AethelPlugin.getInstance(), attributeName);
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attributeName);
 
     // Remove "aethel.attribute."
     attributeName = attributeName.substring(17);
@@ -188,7 +188,7 @@ public class ItemEditorMessageFunctional {
     meta.addAttributeModifier(attribute, attributeModifier);
     player.sendMessage(
         ChatColor.GREEN + "[Set " +
-            TextFormatter.capitalizeProperly(attribute.getKey().getKey(), ".").substring(8) + "]");
+            TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
   }
 
   /**
@@ -204,7 +204,7 @@ public class ItemEditorMessageFunctional {
                                                        Attribute attribute, EquipmentSlot equipmentSlot) {
     removeExistingAttributeModifiers(meta, attribute, equipmentSlot);
     player.sendMessage(ChatColor.RED + "[Removed " +
-        TextFormatter.capitalizeProperly(attribute.getKey().getKey(), ".").substring(8) + "]");
+        TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
   }
 
   /**
@@ -241,7 +241,7 @@ public class ItemEditorMessageFunctional {
 
     dataContainer.set(attributeKey, PersistentDataType.STRING, attributeValue);
     player.sendMessage(ChatColor.GREEN +
-        "[Set " + TextFormatter.capitalizeProperly(type.substring(17)) + "]");
+        "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }
 
   /**
@@ -275,7 +275,7 @@ public class ItemEditorMessageFunctional {
     }
     dataContainer.remove(attributeKey);
     player.sendMessage(ChatColor.RED +
-        "[Removed " + TextFormatter.capitalizeProperly(type.substring(17)) + "]");
+        "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }
 
   /**
@@ -294,7 +294,7 @@ public class ItemEditorMessageFunctional {
       if (level > 0 && level < 32768) {
         item.addUnsafeEnchantment(Enchantment.getByKey(enchant), level);
         player.sendMessage(
-            ChatColor.GREEN + "[Set " + TextFormatter.capitalizeProperly(enchant.getKey()) + "]");
+            ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
       } else {
         player.sendMessage(ChatColor.RED + "Specify a level between 0 - 32767.");
       }
@@ -327,11 +327,11 @@ public class ItemEditorMessageFunctional {
    * @param player interacting player
    */
   private static void returnToAttributesMenu(Player player) {
-    player.removeMetadata("message", AethelPlugin.getInstance());
+    player.removeMetadata("message", Plugin.getInstance());
 
     player.openInventory(ItemEditorAttributes.
         openAttributesMenu(player, player.getMetadata("slot").get(0).asString()));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.attributes"));
+        new FixedMetadataValue(Plugin.getInstance(), "itemeditor.attributes"));
   }
 }

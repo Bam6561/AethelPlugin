@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipeCategory;
@@ -76,7 +76,7 @@ public class ForgeI {
    * @param inv interacting inventory
    */
   private static void addRecipeCategories(Inventory inv) {
-    Set<String> categoryNames = AethelResources.forgeRecipeData.getRecipeCategoriesMap().keySet();
+    Set<String> categoryNames = PluginData.forgeRecipeData.getRecipeCategoriesMap().keySet();
     if (!categoryNames.isEmpty()) {
       int i = 9;
       for (String categoryName : categoryNames) {
@@ -99,11 +99,11 @@ public class ForgeI {
                                                 String categoryName, int pageRequest) {
     Inventory inv = createInventory(player, action);
 
-    ForgeRecipeCategory recipeCategory = AethelResources.forgeRecipeData.
+    ForgeRecipeCategory recipeCategory = PluginData.forgeRecipeData.
         getRecipeCategoriesMap().get(categoryName);
     int numberOfPages = recipeCategory.getNumberOfPages();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+    player.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     inv.setContents(recipeCategory.getPages().get(pageViewed).getContents());
 

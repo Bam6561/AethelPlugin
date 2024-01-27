@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.inventories.aethelItems.AethelItemsI;
 import me.dannynguyen.aethel.inventories.aethelItems.utility.AethelItemSave;
 import me.dannynguyen.aethel.inventories.aethelItems.utility.AethelItemsGet;
@@ -56,13 +56,13 @@ public class AethelItemsInventory {
     if (e.getSlot() == 4) {
       AethelItemSave.readSaveClick(e, player);
     } else if (e.getSlot() > 8) {
-      String itemName = ChatColor.stripColor(ItemReader.readItemName(e.getCurrentItem()));
-      player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
+      String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+      player.setMetadata("category", new FixedMetadataValue(Plugin.getInstance(), itemName));
       int pageRequest = player.getMetadata("page").get(0).asInt();
 
       player.openInventory(AethelItemsI.openCategoryPage(player, "get", itemName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitems.get"));
+          new FixedMetadataValue(Plugin.getInstance(), "aethelitems.get"));
     }
 
     if (e.getSlot() != 3) {
@@ -139,7 +139,7 @@ public class AethelItemsInventory {
     player.openInventory(AethelItemsI.openCategoryPage(player, action,
         categoryName, pageRequest - 1));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitems." + action));
+        new FixedMetadataValue(Plugin.getInstance(), "aethelitems." + action));
   }
 
   /**
@@ -156,12 +156,12 @@ public class AethelItemsInventory {
       player.openInventory(AethelItemsI.openCategoryPage(player, "remove",
           categoryName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitems.remove"));
+          new FixedMetadataValue(Plugin.getInstance(), "aethelitems.remove"));
     } else {
       player.openInventory(AethelItemsI.openCategoryPage(player, "get",
           categoryName, pageRequest));
       player.setMetadata("inventory",
-          new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitems.get"));
+          new FixedMetadataValue(Plugin.getInstance(), "aethelitems.get"));
     }
   }
 
@@ -173,8 +173,8 @@ public class AethelItemsInventory {
   private static void returnToMainPage(Player player) {
     player.openInventory(AethelItemsI.openMainMenu(player, "view"));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitems.category"));
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+        new FixedMetadataValue(Plugin.getInstance(), "aethelitems.category"));
+    player.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -190,7 +190,7 @@ public class AethelItemsInventory {
     player.openInventory(AethelItemsI.openCategoryPage(player, action,
         categoryName, pageRequest + 1));
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "aethelitems." + action));
+        new FixedMetadataValue(Plugin.getInstance(), "aethelitems." + action));
   }
 
   /**

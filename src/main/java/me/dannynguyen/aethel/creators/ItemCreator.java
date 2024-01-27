@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.creators;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,6 +12,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.8
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -64,7 +65,7 @@ public class ItemCreator {
    * @param displayName item name
    * @param lore        item lore
    * @param itemFlag    item flag
-   * @return named item with an item flag disabled
+   * @return named item with an item flag
    */
   public static ItemStack createItem(Material material, String displayName,
                                      List<String> lore, ItemFlag itemFlag) {
@@ -129,32 +130,33 @@ public class ItemCreator {
   /**
    * Creates a named player head from loaded textures.
    *
-   * @param headName    player head name
+   * @param texture     player head texture name
    * @param displayName item name
    * @return named custom player head
    */
-  public static ItemStack createLoadedPlayerHead(String headName, String displayName) {
-    ItemStack item = AethelResources.loadedPlayerHeadData.getHeadsMap().get(headName).clone();
+  public static ItemStack createLoadedPlayerHead(String texture, String displayName) {
+    ItemStack item = PluginData.loadedPlayerHeadData.getHeadsMap().get(texture).clone();
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
       item.setItemMeta(meta);
       return item;
     } else {
-      return null;
+      return createItem(Material.BARRIER, ChatColor.RED + "[!] Error",
+          Arrays.asList(ChatColor.RED + "Invalid texture."));
     }
   }
 
   /**
    * Creates a named player head from loaded textures with lore.
    *
-   * @param headName    player head name
+   * @param texture     player head texture name
    * @param displayName item name
    * @param lore        item lore
    * @return named custom player head with lore
    */
-  public static ItemStack createLoadedPlayerHead(String headName, String displayName, List<String> lore) {
-    ItemStack item = AethelResources.loadedPlayerHeadData.getHeadsMap().get(headName).clone();
+  public static ItemStack createLoadedPlayerHead(String texture, String displayName, List<String> lore) {
+    ItemStack item = PluginData.loadedPlayerHeadData.getHeadsMap().get(texture).clone();
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
@@ -162,7 +164,8 @@ public class ItemCreator {
       item.setItemMeta(meta);
       return item;
     } else {
-      return null;
+      return createItem(Material.BARRIER, ChatColor.RED + "[!] Error",
+          Arrays.asList(ChatColor.RED + "Invalid texture."));
     }
   }
 

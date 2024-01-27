@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -74,7 +74,7 @@ public class ShowItem implements CommandExecutor {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.spigot().sendMessage(createShowItemTextComponent(user, item));
       }
-      AethelResources.showItemData.addPastItem(new ItemOwner(user.getName(), item.clone()));
+      PluginData.showItemData.addPastItem(new ItemOwner(user.getName(), item.clone()));
     } else {
       user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.message);
     }
@@ -90,7 +90,7 @@ public class ShowItem implements CommandExecutor {
     if (action.equals("past") || action.equals("p")) {
       user.openInventory(ShowItemPast.createInventory(user));
       user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-          new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.SHOWITEM_PAST.value));
+          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.SHOWITEM_PAST.value));
     } else {
       user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
     }
@@ -107,7 +107,7 @@ public class ShowItem implements CommandExecutor {
     // [!] <ItemName> [PlayerName]
     TextComponent message = new TextComponent(ChatColor.GREEN + "[!] "
         + ChatColor.DARK_PURPLE + player.getName() + " ");
-    TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readItemName(item) + " ");
+    TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readName(item) + " ");
     message.addExtra(itemName);
 
     ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());

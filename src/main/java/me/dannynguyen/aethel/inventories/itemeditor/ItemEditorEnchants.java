@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.itemeditor;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.formatters.TextFormatter;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
@@ -32,7 +32,7 @@ public class ItemEditorEnchants {
    * @return ItemEditorEnchants inventory with enchants
    */
   public static Inventory openEnchantsMenu(Player player) {
-    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(player);
     Inventory inv = createInventory(player, item);
     addEnchants(inv, player);
     addEnchantsContext(inv);
@@ -61,12 +61,12 @@ public class ItemEditorEnchants {
    * @param player interacting player
    */
   private static void addEnchants(Inventory inv, Player player) {
-    ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
+    ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(player).getItemMeta();
     Map<Enchantment, Integer> metaEnchants = meta.getEnchants();
 
     int invSlot = 9;
-    for (Enchantment enchant : AethelResources.itemEditorData.getEnchants()) {
-      String enchantName = ChatColor.AQUA + TextFormatter.capitalizeProperly(enchant.getKey().getKey());
+    for (Enchantment enchant : PluginData.itemEditorData.getEnchants()) {
+      String enchantName = ChatColor.AQUA + TextFormatter.capitalizePhrase(enchant.getKey().getKey());
 
       boolean disabled = metaEnchants.get(enchant) == null;
       inv.setItem(invSlot, disabled ?

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.objects.ItemOwner;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
@@ -38,11 +38,11 @@ public class ShowItemPast {
    */
   private static void addPastShownItems(Inventory inv) {
     int index = 0;
-    for (ItemOwner itemOwner : AethelResources.showItemData.getPastItems()) {
+    for (ItemOwner itemOwner : PluginData.showItemData.getPastItems()) {
       ItemStack item = itemOwner.getItem().clone();
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(ChatColor.DARK_PURPLE + itemOwner.getOwner() +
-          ChatColor.WHITE + " " + ItemReader.readItemName(item));
+          ChatColor.WHITE + " " + ItemReader.readName(item));
       item.setItemMeta(meta);
       inv.setItem(index, item);
       index++;

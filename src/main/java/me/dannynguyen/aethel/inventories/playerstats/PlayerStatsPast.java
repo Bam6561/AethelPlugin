@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.playerstats;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.playerstats.PlayerStatsValues;
 import org.bukkit.Bukkit;
@@ -37,7 +37,7 @@ public class PlayerStatsPast {
    */
   private static void addPastStats(Inventory inv) {
     int i = 0;
-    for (PlayerStatsValues statValue : AethelResources.playerStatsData.getPastStatsValues()) {
+    for (PlayerStatsValues statValue : PluginData.playerStatsData.getPastStatsValues()) {
       inv.setItem(i, ItemCreator.createItem(Material.PAPER, statValue.getName(), statValue.getValues()));
       i++;
     }

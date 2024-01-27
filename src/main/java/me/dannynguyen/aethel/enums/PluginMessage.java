@@ -26,7 +26,8 @@ public enum PluginMessage {
   AETHELTAGS_SET_TAG(ChatColor.GREEN + "[Set Tag] "),
   DEVELOPERMODE_ON(ChatColor.GREEN + "[Developer Mode On]"),
   DEVELOPERMODE_OFF(ChatColor.RED + "[Developer Mode Off]"),
-  FORGE_RELOAD(ChatColor.GREEN + "[Reloaded Forge Recipes]");
+  FORGE_RELOAD(ChatColor.GREEN + "[Reloaded Forge Recipes]"),
+  FORGE_CRAFT_INSUFFICIENT_COMPONENTS(ChatColor.RED + "Insufficient components.");
 
   public final String message;
 

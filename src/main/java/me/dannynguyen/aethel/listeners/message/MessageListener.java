@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.message;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageCosmetic;
 import me.dannynguyen.aethel.listeners.message.itemeditor.ItemEditorMessageFunctional;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class MessageListener implements Listener {
    * @param msgType message type
    */
   private void interpretItemEditor(AsyncPlayerChatEvent e, Player player, String[] msgType) {
-    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(player);
     ItemMeta meta = item.getItemMeta();
 
     switch (msgType[1]) {

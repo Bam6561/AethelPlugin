@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.inventories.forge;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.objects.forge.ForgeRecipe;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -65,15 +65,15 @@ public class ForgeCraft {
    * @param player interacting player
    */
   public static void expandRecipeDetails(InventoryClickEvent e, Player player) {
-    ForgeRecipe recipe = AethelResources.forgeRecipeData.
-        getRecipesMap().get(ItemReader.readItemName(e.getCurrentItem()));
+    ForgeRecipe recipe = PluginData.forgeRecipeData.
+        getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
 
     Inventory inv = createInventory(player);
     addExistingRecipeContents(recipe, inv);
 
     player.openInventory(inv);
     player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "forge.craft-confirm"));
+        new FixedMetadataValue(Plugin.getInstance(), "forge.craft-confirm"));
   }
 
   /**

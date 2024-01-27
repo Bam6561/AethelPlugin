@@ -1,10 +1,11 @@
 package me.dannynguyen.aethel.objects.forge;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.objects.InventorySlot;
 import me.dannynguyen.aethel.readers.ItemReader;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -18,11 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * ForgeCraftOperation is an object that determines if a player
- * has sufficient materials to craft items from a forge recipe.
+ * ForgeCraftOperation is an object that determines if the user
+ * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.8
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
@@ -31,44 +32,43 @@ public class ForgeCraftOperation {
   /**
    * Crafts a recipe.
    *
-   * @param e      inventory click event
-   * @param player interacting player
+   * @param e    inventory click event
+   * @param user user
    */
-  public void craftRecipe(InventoryClickEvent e, Player player) {
-    ForgeRecipe recipe = AethelResources.forgeRecipeData.
-        getRecipesMap().get(ItemReader.readItemName(e.getClickedInventory().getItem(0)));
+  public void craftRecipe(InventoryClickEvent e, Player user) {
+    ForgeRecipe recipe = PluginData.forgeRecipeData.
+        getRecipesMap().get(ItemReader.readName(e.getClickedInventory().getItem(0)));
 
     ArrayList<ItemStack> results = recipe.getResults();
     ArrayList<ItemStack> components = recipe.getComponents();
 
-    if (!player.hasMetadata("developer")) {
-      if (hasMatchingType(player, components)) {
-        processMatchingType(player, results);
+    if (!user.hasMetadata(PluginPlayerMeta.Container.DEVELOPER.name)) {
+      if (hasMatchingType(user, components)) {
+        processMatchingType(user, results);
       } else {
-        player.sendMessage(ChatColor.RED + "Insufficient components.");
+        user.sendMessage(PluginMessage.FORGE_CRAFT_INSUFFICIENT_COMPONENTS.message);
       }
     } else {
-      giveItemsToPlayer(player, results);
+      giveItemsToPlayer(user, results);
     }
   }
 
   /**
-   * Determines if the player has sufficient matching type components to craft the recipe.
+   * Determines if the user has sufficient matching type components to craft the recipe.
    *
-   * @param player     interacting player
-   * @param components components in recipe
+   * @param user       user
+   * @param components recipe components
    * @return has sufficient components
    */
-  private boolean hasMatchingType(Player player, ArrayList<ItemStack> components) {
-    Inventory inv = player.getInventory();
-    HashMap<Material, ArrayList<InventorySlot>> invMap = mapMaterialIndices(inv);
+  private boolean hasMatchingType(Player user, ArrayList<ItemStack> components) {
+    HashMap<Material, ArrayList<InventorySlot>> invMap = mapMaterialIndices(user.getInventory());
 
     for (ItemStack item : components) {
       Material reqMaterial = item.getType();
       if (invMap.containsKey(reqMaterial)) {
         int reqAmount = item.getAmount();
 
-        NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge.id");
+        NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.namespacedKey;
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         boolean hasForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
 
@@ -90,9 +90,9 @@ public class ForgeCraftOperation {
   }
 
   /**
-   * Maps the player's inventory.
+   * Maps the user's inventory.
    *
-   * @param inv player inventory
+   * @param inv user inventory
    * @return material:inventory slots inventory map
    */
   private HashMap<Material, ArrayList<InventorySlot>> mapMaterialIndices(Inventory inv) {
@@ -117,7 +117,7 @@ public class ForgeCraftOperation {
   }
 
   /**
-   * Determines if the player has sufficient amounts of the required material.
+   * Determines if the user has sufficient amounts of the required material.
    *
    * @param invMap      material:inventory slots inventory map
    * @param reqMaterial required material
@@ -126,8 +126,9 @@ public class ForgeCraftOperation {
    */
   private boolean hasSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
                                          Material reqMaterial, int reqAmount) {
+    NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.namespacedKey;
+
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
-      NamespacedKey forgeIdKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel.forge.id");
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
 
       if (!dataContainer.has(forgeIdKey, PersistentDataType.STRING)) {
@@ -143,7 +144,7 @@ public class ForgeCraftOperation {
   }
 
   /**
-   * Determines if the player has sufficient amounts of the required material.
+   * Determines if the user has sufficient amounts of the required material.
    *
    * @param invMap      material:inventory slots inventory map
    * @param reqMaterial required material
@@ -191,33 +192,33 @@ public class ForgeCraftOperation {
   }
 
   /**
-   * Removes the recipe's components.
+   * Removes the recipe's components from the user's inventory and gives the recipe's results.
    *
-   * @param player  interacting player
+   * @param user    user
    * @param results recipe results
    */
-  private void processMatchingType(Player player, ArrayList<ItemStack> results) {
-    Inventory inv = player.getInventory();
+  private void processMatchingType(Player user, ArrayList<ItemStack> results) {
+    Inventory inv = user.getInventory();
     for (InventorySlot invSlot : getSetInventory()) {
       inv.setItem(invSlot.getSlot(),
           new ItemStack(inv.getItem(invSlot.getSlot()).getType(), invSlot.getAmount()));
     }
-    giveItemsToPlayer(player, results);
+    giveItemsToPlayer(user, results);
   }
 
   /**
    * Adds the results directly to the player's inventory if there's space.
-   * Otherwise, the results are dropped at the player's feet.
+   * Otherwise, the results are dropped at the user's feet.
    *
-   * @param player  interacting player
+   * @param user    user
    * @param results recipe results
    */
-  private void giveItemsToPlayer(Player player, ArrayList<ItemStack> results) {
+  private void giveItemsToPlayer(Player user, ArrayList<ItemStack> results) {
     for (ItemStack item : results) {
-      if (player.getInventory().firstEmpty() != -1) {
-        player.getInventory().addItem(item);
+      if (user.getInventory().firstEmpty() != -1) {
+        user.getInventory().addItem(item);
       } else {
-        player.getWorld().dropItem(player.getLocation(), item);
+        user.getWorld().dropItem(user.getLocation(), item);
       }
     }
   }

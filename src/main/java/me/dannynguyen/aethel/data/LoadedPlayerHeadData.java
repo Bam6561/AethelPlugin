@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.data;
 
-import me.dannynguyen.aethel.enums.LoadedPlayerHead;
+import me.dannynguyen.aethel.enums.PlayerHeadTexture;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,10 +15,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * PlayerHeadData stores player head textures in memory.
+ * LoadedPlayerHeadData stores player head textures in memory.
  *
  * @author Danny Nguyen
- * @version 1.5.1
+ * @version 1.7.8
  * @since 1.2.1
  */
 public class LoadedPlayerHeadData {
@@ -28,9 +28,8 @@ public class LoadedPlayerHeadData {
    * Loads player head textures into memory.
    */
   public void loadPlayerHeads() {
-    HashMap<String, ItemStack> headsMap = getHeadsMap();
-    for (LoadedPlayerHead loadedHead : LoadedPlayerHead.values()) {
-      headsMap.put(loadedHead.name(), createPlayerHead(loadedHead.getTextureData()));
+    for (PlayerHeadTexture loadedHead : PlayerHeadTexture.values()) {
+      headsMap.put(loadedHead.name(), createPlayerHead(loadedHead.texture));
     }
   }
 

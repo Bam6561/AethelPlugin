@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.data;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.objects.aethelitems.AethelItem;
 import me.dannynguyen.aethel.objects.aethelitems.AethelItemsCategory;
@@ -24,7 +24,7 @@ import java.util.Scanner;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.5
+ * @version 1.7.8
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -35,31 +35,30 @@ public class AethelItemsData {
    * Loads Aethel items into memory.
    */
   public void loadItems() {
-    HashMap<String, AethelItem> itemsMap = getItemsMap();
-    HashMap<String, AethelItemsCategory> itemCategoriesMap = getItemCategoriesMap();
+    File[] directory = new File(PluginData.aethelItemsDirectory).listFiles();
+    if (directory.length > 0) {
+      Arrays.sort(directory);
 
-    itemsMap.clear();
-    itemCategoriesMap.clear();
+      itemsMap.clear();
+      itemCategoriesMap.clear();
 
-    ArrayList<ItemStack> allItems = new ArrayList<>();
-    HashMap<String, ArrayList<ItemStack>> categorizedItems = new HashMap<>();
-    NamespacedKey itemCategoryKey =
-        new NamespacedKey(AethelPlugin.getInstance(), "aethel.aethelitem.category");
+      ArrayList<ItemStack> allItems = new ArrayList<>();
+      HashMap<String, ArrayList<ItemStack>> sortedItems = new HashMap<>();
+      NamespacedKey categoryKey = PluginNamespacedKey.AETHELITEM_CATEGORY.namespacedKey;
 
-    File[] directory = new File(AethelResources.aethelItemsDirectory).listFiles();
-    Arrays.sort(directory);
-    for (File file : directory) {
-      if (file.getName().endsWith("_itm.txt")) {
-        AethelItem item = readItemFile(file);
-        itemsMap.put(item.getName(), item);
-        allItems.add(item.getItem());
-        categorizeItem(item.getItem(), itemCategoryKey, categorizedItems);
+      for (File file : directory) {
+        if (file.getName().endsWith("_itm.txt")) {
+          AethelItem item = readItemFile(file);
+          itemsMap.put(item.getName(), item);
+          allItems.add(item.getItem());
+          sortItem(item.getItem(), categoryKey, sortedItems);
+        }
       }
-    }
 
-    if (!itemsMap.isEmpty()) {
-      createAllItemPages(allItems, itemCategoriesMap);
-      createItemCategoryPages(itemCategoryKey, categorizedItems, itemCategoriesMap);
+      if (!itemsMap.isEmpty()) {
+        createAllItemPages(allItems, itemCategoriesMap);
+        createItemCategoryPages(categoryKey, sortedItems, itemCategoriesMap);
+      }
     }
   }
 
@@ -74,7 +73,7 @@ public class AethelItemsData {
     try {
       Scanner scanner = new Scanner(file);
       ItemStack item = ItemReader.decodeItem(scanner.nextLine());
-      return new AethelItem(file, ItemReader.readItemName(item), item);
+      return new AethelItem(file, ItemReader.readName(item), item);
     } catch (IOException ex) {
       return null;
     }
@@ -83,23 +82,23 @@ public class AethelItemsData {
   /**
    * Puts an item into a category if it has an item category tag.
    *
-   * @param item             interacting item
-   * @param itemCategoryKey  item category tag
-   * @param categorizedItems items sorted by category
+   * @param item        interacting item
+   * @param categoryKey item category tag
+   * @param sortedItems items sorted by category
    */
-  private void categorizeItem(ItemStack item, NamespacedKey itemCategoryKey,
-                              HashMap<String, ArrayList<ItemStack>> categorizedItems) {
+  private void sortItem(ItemStack item, NamespacedKey categoryKey,
+                        HashMap<String, ArrayList<ItemStack>> sortedItems) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
-    if (dataContainer.has(itemCategoryKey, PersistentDataType.STRING)) {
-      String itemCategory = dataContainer.get(itemCategoryKey, PersistentDataType.STRING);
+    if (dataContainer.has(categoryKey, PersistentDataType.STRING)) {
+      String itemCategory = dataContainer.get(categoryKey, PersistentDataType.STRING);
 
-      if (categorizedItems.containsKey(itemCategory)) {
-        categorizedItems.get(itemCategory).add(item);
+      if (sortedItems.containsKey(itemCategory)) {
+        sortedItems.get(itemCategory).add(item);
       } else {
-        ArrayList<ItemStack> items = new ArrayList<>();
-        items.add(item);
-        categorizedItems.put(itemCategory, items);
+        ArrayList<ItemStack> newItemCategory = new ArrayList<>();
+        newItemCategory.add(item);
+        sortedItems.put(itemCategory, newItemCategory);
       }
     }
   }
@@ -123,21 +122,21 @@ public class AethelItemsData {
   /**
    * Creates pages of items by category.
    *
-   * @param itemCategoryKey   item category tag
-   * @param categorizedItems  items sorted by category
+   * @param categoryKey       item category tag
+   * @param sortedItems       items sorted by category
    * @param itemCategoriesMap item category pages
    */
-  private void createItemCategoryPages(NamespacedKey itemCategoryKey,
-                                       HashMap<String, ArrayList<ItemStack>> categorizedItems,
+  private void createItemCategoryPages(NamespacedKey categoryKey,
+                                       HashMap<String, ArrayList<ItemStack>> sortedItems,
                                        HashMap<String, AethelItemsCategory> itemCategoriesMap) {
-    for (ArrayList<ItemStack> items : categorizedItems.values()) {
+    for (ArrayList<ItemStack> items : sortedItems.values()) {
       int numberOfItems = items.size();
       int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfItems);
 
       ArrayList<Inventory> pages = createItemPages(items, numberOfItems, numberOfPages);
 
       PersistentDataContainer dataContainer = items.get(0).getItemMeta().getPersistentDataContainer();
-      String itemCategory = dataContainer.get(itemCategoryKey, PersistentDataType.STRING);
+      String itemCategory = dataContainer.get(categoryKey, PersistentDataType.STRING);
 
       itemCategoriesMap.put(itemCategory, new AethelItemsCategory(itemCategory, pages, numberOfPages));
     }

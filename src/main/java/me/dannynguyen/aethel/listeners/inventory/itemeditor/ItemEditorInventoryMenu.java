@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory.itemeditor;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.inventories.itemeditor.utility.ItemEditorToggles;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.utility.ItemEditorInventoryItemFlags;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.utility.ItemEditorInventoryMenuAction;
@@ -82,7 +82,7 @@ public class ItemEditorInventoryMenu {
    * @param player      interacting player
    */
   private static void interpretItemFlagToggle(int slotClicked, Inventory inv, Player player) {
-    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(player);
     ItemMeta meta = item.getItemMeta();
 
     switch (slotClicked) {
@@ -104,7 +104,7 @@ public class ItemEditorInventoryMenu {
    * @param player interacting player
    */
   private static void toggleUnbreakable(Inventory inv, Player player) {
-    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(player);
     ItemMeta meta = item.getItemMeta();
 
     if (!meta.isUnbreakable()) {
@@ -126,11 +126,11 @@ public class ItemEditorInventoryMenu {
    * @param action interaction type
    */
   private static void readItemLore(Player player, String action) {
-    ItemMeta meta = AethelResources.itemEditorData.getEditedItemMap().get(player).getItemMeta();
+    ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(player).getItemMeta();
     if (meta.hasLore()) {
       switch (action) {
         case "lore-clear" -> {
-          ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+          ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(player);
           ItemEditorMessageCosmetic.clearLore(player, item, item.getItemMeta());
         }
         case "lore-edit" -> {

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.inventories.aethelItems.utility;
 
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
@@ -44,12 +44,12 @@ public class AethelItemSave {
    */
   private static void saveItemToFile(Player player, ItemStack item) {
     try {
-      FileWriter fw = new FileWriter(AethelResources.aethelItemsDirectory
+      FileWriter fw = new FileWriter(PluginData.aethelItemsDirectory
           + "/" + nameItemFile(item) + "_itm.txt");
       fw.write(ItemCreator.encodeItem(item));
       fw.close();
       player.sendMessage(ChatColor.GREEN + "[Saved Aethel Item] "
-          + ChatColor.WHITE + ItemReader.readItemName(item));
+          + ChatColor.WHITE + ItemReader.readName(item));
     } catch (IOException ex) {
       player.sendMessage(ChatColor.RED + "Unable to save item.");
     }

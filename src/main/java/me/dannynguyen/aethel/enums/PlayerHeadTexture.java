@@ -1,13 +1,13 @@
 package me.dannynguyen.aethel.enums;
 
 /**
- * PlayerHead is an enum relating player head textures with their reference name.
+ * PlayerHeadTexture is an enum containing custom player head textures.
  *
  * @author Danny Nguyen
- * @version 1.4.13
+ * @version 1.7.8
  * @since 1.2.1
  */
-public enum LoadedPlayerHead {
+public enum PlayerHeadTexture {
   RED_BACKWARD("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWRmNWMyZjg5M2JkM2Y4OWNhNDA3MDNkZWQzZTQyZGQwZmJkYmE2ZjY3NjhjODc4OWFmZGZmMWZhNzhiZjYifX19"),
   LIME_FORWARD("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjUyN2ViYWU5ZjE1MzE1NGE3ZWQ0OWM4OGMwMmI1YTlhOWNhN2NiMTYxOGQ5OTE0YTNkOWRmOGNjYjNjODQifX19"),
   GRAY_BACKWARD("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQxMzNmNmFjM2JlMmUyNDk5YTc4NGVmYWRjZmZmZWI5YWNlMDI1YzM2NDZhZGE2N2YzNDE0ZTVlZjMzOTQifX19"),
@@ -19,13 +19,9 @@ public enum LoadedPlayerHead {
   BROWN_BACKPACK("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODM1MWU1MDU5ODk4MzhlMjcyODdlN2FmYmM3Zjk3ZTc5NmNhYjVmMzU5OGE3NjE2MGMxMzFjOTQwZDBjNSJ9fX0="),
   CHISELED_BOOKSHELF("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk4ODQxOWRkNWIzODZmNjk4YTk2OTEzZGIxZDk3YzI0MThlMTZkNDE2ZDdmNDM5ZDQ4YWNkNDFlM2E0MzZjZSJ9fX0=");
 
-  private final String textureData;
+  public final String texture;
 
-  LoadedPlayerHead(String textureData) {
-    this.textureData = textureData;
-  }
-
-  public String getTextureData() {
-    return this.textureData;
+  PlayerHeadTexture(String texture) {
+    this.texture = texture;
   }
 }

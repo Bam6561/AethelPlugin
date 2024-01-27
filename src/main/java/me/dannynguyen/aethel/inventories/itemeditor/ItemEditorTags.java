@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.inventories.itemeditor;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.data.ItemEditorData;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
@@ -23,7 +22,7 @@ import java.util.List;
  * ItemEditorTags is an inventory under the ItemEditor command that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.6.16
+ * @version 1.7.8
  * @since 1.6.15
  */
 public class ItemEditorTags {
@@ -34,7 +33,7 @@ public class ItemEditorTags {
    * @return ItemEditorTags inventory with Aethel tags
    */
   public static Inventory openTagsMenu(Player player) {
-    ItemStack item = AethelResources.itemEditorData.getEditedItemMap().get(player);
+    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(player);
     Inventory inv = createInventory(player, item);
     addAethelTags(inv, player);
     addTagsContext(inv);
@@ -63,20 +62,19 @@ public class ItemEditorTags {
    * @param player interacting player
    */
   private static void addAethelTags(Inventory inv, Player player) {
-    ItemEditorData itemEditorData = AethelResources.itemEditorData;
-    ArrayList<String> aethelTags = itemEditorData.getAethelTags();
-    PersistentDataContainer dataContainer = AethelResources.itemEditorData.
+    ItemEditorData itemEditorData = PluginData.itemEditorData;
+    ArrayList<NamespacedKey> aethelTags = itemEditorData.getAethelTags();
+    PersistentDataContainer dataContainer = PluginData.itemEditorData.
         getEditedItemMap().get(player).getItemMeta().getPersistentDataContainer();
 
     int invSlot = 9;
-    for (String tag : aethelTags) {
-      NamespacedKey aethelTagKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + tag);
-      boolean disabled = !dataContainer.has(aethelTagKey, PersistentDataType.STRING);
+    for (NamespacedKey tag : aethelTags) {
+      boolean disabled = !dataContainer.has(tag, PersistentDataType.STRING);
 
       inv.setItem(invSlot, disabled ?
-          ItemCreator.createItem(Material.ENDER_PEARL, ChatColor.AQUA + tag) :
-          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag,
-              List.of(ChatColor.WHITE + dataContainer.get(aethelTagKey, PersistentDataType.STRING))));
+          ItemCreator.createItem(Material.ENDER_PEARL, ChatColor.AQUA + tag.getKey().substring(7)) :
+          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag.getKey().substring(7),
+              List.of(ChatColor.WHITE + dataContainer.get(tag, PersistentDataType.STRING))));
       invSlot++;
     }
   }

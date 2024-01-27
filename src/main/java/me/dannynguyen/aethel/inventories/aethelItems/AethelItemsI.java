@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.inventories.aethelItems;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.objects.aethelitems.AethelItemsCategory;
@@ -64,7 +64,7 @@ public class AethelItemsI {
    * @param inv interacting inventory
    */
   private static void addCategories(Inventory inv) {
-    Set<String> categories = AethelResources.aethelItemsData.getItemCategoriesMap().keySet();
+    Set<String> categories = PluginData.aethelItemsData.getItemCategoriesMap().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {
@@ -87,10 +87,10 @@ public class AethelItemsI {
                                            String category, int requestedPage) {
     Inventory inv = createInventory(user, action);
 
-    AethelItemsCategory loadedCategory = AethelResources.aethelItemsData.getItemCategoriesMap().get(category);
+    AethelItemsCategory loadedCategory = PluginData.aethelItemsData.getItemCategoriesMap().get(category);
     int numberOfPages = loadedCategory.getNumberOfPages();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+    user.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     inv.setContents(loadedCategory.getPages().get(pageViewed).getContents());
 

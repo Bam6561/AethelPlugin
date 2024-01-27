@@ -17,7 +17,7 @@ import java.util.*;
  * PlayerStatsData stores player statistic names in memory.
  *
  * @author Danny Nguyen
- * @version 1.6.16
+ * @version 1.7.8
  * @since 1.4.8
  */
 public class PlayerStatsData {
@@ -49,13 +49,12 @@ public class PlayerStatsData {
    * Creates pages of non-substats by category.
    */
   private void createStatCategoryPages() {
-    HashMap<String, Inventory> statCategoryPages = getStatCategoryPages();
     for (PlayerStatsCategory playerStatsCategory : getPlayerStatsCategories()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54, "PlayerStats Category Page");
       for (String statName : playerStatsCategory.getStats()) {
         inv.setItem(i, ItemCreator.createItem(Material.PAPER,
-            ChatColor.WHITE + TextFormatter.capitalizeProperly(statName)));
+            ChatColor.WHITE + TextFormatter.capitalizePhrase(statName)));
         i++;
       }
       statCategoryPages.put(playerStatsCategory.getName(), inv);
@@ -66,8 +65,6 @@ public class PlayerStatsData {
    * Creates pages of materials.
    */
   private void createMaterialPages() {
-    HashMap<String, ArrayList<Inventory>> substatCategoryPages = getSubstatCategoryPages();
-
     ArrayList<Material> materials = new ArrayList<>();
     for (Material material : Material.values()) {
       if (material.isItem() && !material.isAir()) {
@@ -90,7 +87,7 @@ public class PlayerStatsData {
       int invSlot = 9;
       for (int statIndex = startIndex; statIndex < endIndex; statIndex++) {
         String materialName = materials.get(statIndex).name();
-        String materialDisplayName = TextFormatter.capitalizeProperly(materialName);
+        String materialDisplayName = TextFormatter.capitalizePhrase(materialName);
         inv.setItem(invSlot, ItemCreator.createItem(
             Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
         invSlot++;
@@ -128,7 +125,7 @@ public class PlayerStatsData {
       // Stats begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        String entityName = TextFormatter.capitalizeProperly(entityTypes.get(i).name());
+        String entityName = TextFormatter.capitalizePhrase(entityTypes.get(i).name());
         inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entityName));
         j++;
       }
@@ -183,11 +180,10 @@ public class PlayerStatsData {
    * @param stats    associated statistics
    */
   public void addToPastStats(String statName, List<String> stats) {
-    ArrayList<PlayerStatsValues> pastStatValues = getPastStatsValues();
-    if (pastStatValues.size() == 9) {
-      pastStatValues.remove(0);
+    if (pastStatsValues.size() == 9) {
+      pastStatsValues.remove(0);
     }
-    pastStatValues.add(new PlayerStatsValues(statName, stats));
+    pastStatsValues.add(new PlayerStatsValues(statName, stats));
   }
 
   public ArrayList<String> getStatCategoryNames() {

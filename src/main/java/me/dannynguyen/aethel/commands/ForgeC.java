@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * ForgeC is a command invocation that allows the user to fabricate items through clicking.
+ * Forge is a command invocation that allows the user to fabricate items through clicking.
  * <p>
  * Additional Parameters:
  * - "edit", "e": allows the user to create, edit, or remove forge recipes
@@ -72,7 +72,7 @@ public class ForgeC implements CommandExecutor {
       }
       case "reload", "r" -> {
         if (user.hasPermission(PluginPermission.FORGE_EDITOR.permission)) {
-          AethelResources.forgeRecipeData.loadRecipes();
+          PluginData.forgeRecipeData.loadRecipes();
           user.sendMessage(PluginMessage.FORGE_RELOAD.message);
         } else {
           user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
@@ -89,16 +89,16 @@ public class ForgeC implements CommandExecutor {
    */
   private void openCraftingMenu(Player user) {
     user.setMetadata(PluginPlayerMeta.Container.FUTURE.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
+        new FixedMetadataValue(Plugin.getInstance(), "craft"));
     user.setMetadata(PluginPlayerMeta.Container.CATEGORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), ""));
+        new FixedMetadataValue(Plugin.getInstance(), ""));
 
     user.openInventory(ForgeI.openMainMenu(user, "craft"));
 
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.FORGE_CATEGORY.value));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.FORGE_CATEGORY.value));
     user.setMetadata(PluginPlayerMeta.Container.PAGE.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+        new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -108,15 +108,15 @@ public class ForgeC implements CommandExecutor {
    */
   private void openEditorMenu(Player user) {
     user.setMetadata(PluginPlayerMeta.Container.FUTURE.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), "edit"));
+        new FixedMetadataValue(Plugin.getInstance(), "edit"));
     user.setMetadata(PluginPlayerMeta.Container.CATEGORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), ""));
+        new FixedMetadataValue(Plugin.getInstance(), ""));
 
     user.openInventory(ForgeI.openMainMenu(user, "edit"));
 
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.FORGE_CATEGORY.value));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.FORGE_CATEGORY.value));
     user.setMetadata(PluginPlayerMeta.Container.PAGE.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+        new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 }

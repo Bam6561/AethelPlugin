@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
-import me.dannynguyen.aethel.AethelResources;
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * AethelItemsC is a command invocation that allows the user to obtain items through clicking.
+ * AethelItems is a command invocation that allows the user to obtain items through clicking.
  * <p>
  * Additional Parameters:
  * - "reload", "r": reloads items into memory
@@ -62,7 +62,7 @@ public class AethelItemsC implements CommandExecutor {
   private void readParameter(Player user, String action) {
     switch (action) {
       case "reload", "r" -> {
-        AethelResources.aethelItemsData.loadItems();
+        PluginData.aethelItemsData.loadItems();
         user.sendMessage(PluginMessage.AETHELITEMS_RELOAD.message);
       }
       default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
@@ -77,7 +77,7 @@ public class AethelItemsC implements CommandExecutor {
   private void openMainMenu(Player user) {
     user.openInventory(AethelItemsI.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.AETHELITEMS_CATEGORY.value));
-    user.setMetadata(PluginPlayerMeta.Container.PAGE.name, new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.AETHELITEMS_CATEGORY.value));
+    user.setMetadata(PluginPlayerMeta.Container.PAGE.name, new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 }

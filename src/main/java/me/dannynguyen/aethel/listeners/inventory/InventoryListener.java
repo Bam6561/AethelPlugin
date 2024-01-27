@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryFunctional;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryMenu;
 import org.bukkit.entity.Player;
@@ -130,7 +130,7 @@ public class InventoryListener implements Listener {
   public void onClose(InventoryCloseEvent e) {
     Player player = (Player) e.getPlayer();
     if (player.hasMetadata("inventory")) {
-      player.removeMetadata("inventory", AethelPlugin.getInstance());
+      player.removeMetadata("inventory", Plugin.getInstance());
     }
   }
 }

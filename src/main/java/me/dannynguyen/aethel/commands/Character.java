@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
@@ -58,6 +58,6 @@ public class Character implements CommandExecutor {
   private void openCharacterSheet(Player user) {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.CHARACTER_SHEET.value));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.CHARACTER_SHEET.value));
   }
 }

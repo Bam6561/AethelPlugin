@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.data;
 
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,13 +14,15 @@ import static java.util.Comparator.comparing;
  * ItemEditorData stores items currently being edited into memory.
  *
  * @author Danny Nguyen
- * @version 1.7.5
+ * @version 1.7.8
  * @since 1.6.7
  */
 public class ItemEditorData {
   private final HashMap<Player, ItemStack> editedItemMap = new HashMap<>();
-  private final ArrayList<String> aethelTags = new ArrayList<>(
-      Arrays.asList("aethelitem.category", "forge.category", "forge.id"));
+  private final ArrayList<NamespacedKey> aethelTags = new ArrayList<>(
+      Arrays.asList(PluginNamespacedKey.AETHELITEM_CATEGORY.namespacedKey,
+          PluginNamespacedKey.FORGE_CATEGORY.namespacedKey,
+          PluginNamespacedKey.FORGE_ID.namespacedKey));
   private final HashMap<String, ArrayList<String>> attributesMap = new HashMap<>();
   private final List<Enchantment> enchants = new ArrayList<>(Arrays.asList(Enchantment.values()));
 
@@ -57,7 +61,7 @@ public class ItemEditorData {
     return this.editedItemMap;
   }
 
-  public ArrayList<String> getAethelTags() {
+  public ArrayList<NamespacedKey> getAethelTags() {
     return this.aethelTags;
   }
 
