@@ -21,7 +21,7 @@ import java.util.List;
  * @version 1.7.0
  * @since 1.6.7
  */
-public class ItemEditorMenu {
+public class ItemEditorI {
   /**
    * Opens an ItemEditorMenu with metadata fields.
    *
@@ -29,7 +29,7 @@ public class ItemEditorMenu {
    * @param item   interacting item
    * @return ItemEditorMenu with metadata fields
    */
-  public static Inventory openEditorMenu(Player player, ItemStack item) {
+  public static Inventory openCosmeticMenu(Player player, ItemStack item) {
     Inventory inv = createInventory(player, item);
     addMetadataButtons(inv, item);
     return inv;

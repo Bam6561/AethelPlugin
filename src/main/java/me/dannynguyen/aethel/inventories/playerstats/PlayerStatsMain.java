@@ -34,7 +34,7 @@ public class PlayerStatsMain {
    * @param requestedPlayerName requested player's name
    * @return PlayerStatsMain inventory with stat categories
    */
-  public static Inventory openPlayerStatsMainPage(Player player, String requestedPlayerName) {
+  public static Inventory openMainMenu(Player player, String requestedPlayerName) {
     Inventory inv = createInventory(player, requestedPlayerName);
     addStatCategories(inv);
     addStatContext("categories", inv);

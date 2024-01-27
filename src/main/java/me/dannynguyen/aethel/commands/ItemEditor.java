@@ -2,8 +2,10 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
-import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
-import org.bukkit.ChatColor;
+import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.enums.PluginMetadata;
+import me.dannynguyen.aethel.enums.PluginPermission;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorI;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,56 +16,58 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * ItemEditor is a command invocation that allows
- * editing of the user's main hand item's metadata.
+ * user to edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.6.7
+ * @version 1.7.6
  * @since 1.6.7
  */
 public class ItemEditor implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player player)) {
-      sender.sendMessage("Player-only command.");
+    if (!(sender instanceof Player user)) {
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
-    if (player.isOp()) {
-      ItemStack item = player.getInventory().getItemInMainHand();
+    if (user.hasPermission(PluginPermission.ITEMEDITOR.permission)) {
+      ItemStack item = user.getInventory().getItemInMainHand();
       if (item.getType() != Material.AIR) {
-        readRequest(player, args, item);
+        readRequest(user, args, item);
       } else {
-        player.sendMessage(ChatColor.RED + "No main hand item.");
+        user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.message);
       }
     } else {
-      player.sendMessage(ChatColor.RED + "Insufficient permissions.");
+      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening an item editor menu.
+   * Checks if the command request was formatted correctly before opening an Item Editor cosmetic menu.
    *
-   * @param player interacting player
-   * @param args   user provided parameters
-   * @param item   interacting item
+   * @param user user
+   * @param args user provided parameters
+   * @param item interacting item
    */
-  private void readRequest(Player player, String[] args, ItemStack item) {
+  private void readRequest(Player user, String[] args, ItemStack item) {
     switch (args.length) {
-      case 0 -> openEditorMenu(player, item);
-      default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
+      case 0 -> openCosmeticMenu(user, item);
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
   /**
-   * Opens an ItemEditorMenu inventory.
+   * Opens an ItemEditor cosmetic menu.
    *
-   * @param player interacting player
-   * @param item   interacting item
+   * @param user user
+   * @param item interacting item
    */
-  private void openEditorMenu(Player player, ItemStack item) {
-    AethelResources.itemEditorData.getEditedItemMap().put(player, item);
-    player.openInventory(ItemEditorMenu.openEditorMenu(player, item));
-    player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));
+  private void openCosmeticMenu(Player user, ItemStack item) {
+    AethelResources.itemEditorData.getEditedItemMap().put(user, item);
+
+    user.openInventory(ItemEditorI.openCosmeticMenu(user, item));
+    user.setMetadata(PluginMetadata.INVENTORY.data,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.ITEMEDITOR_MENU.data));
   }
 }

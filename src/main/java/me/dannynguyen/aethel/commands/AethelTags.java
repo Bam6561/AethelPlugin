@@ -1,6 +1,8 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,8 +17,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 /**
- * AethelTags is a command invocation that allows the retrieval, addition,
- * or removal of Aethel plugin tags to the user's main hand item.
+ * AethelTags is a command invocation that allows the user to
+ * retrieve, set, or remove Aethel tags to their main hand item.
  * <p>
  * Additional Parameters:
  * - "get", "g": reads the item's tags
@@ -25,26 +27,26 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.12
+ * @version 1.7.6
  * @since 1.2.6
  */
 public class AethelTags implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player player)) {
-      sender.sendMessage("Player-only command.");
+    if (!(sender instanceof Player user)) {
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
-    if (player.isOp()) {
-      ItemStack item = player.getInventory().getItemInMainHand();
+    if (user.hasPermission(PluginPermission.AETHELTAGS.permission)) {
+      ItemStack item = user.getInventory().getItemInMainHand();
       if (item.getType() != Material.AIR) {
-        readRequest(player, args, item);
+        readRequest(user, args, item);
       } else {
-        player.sendMessage(ChatColor.RED + "No main hand item.");
+        user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.message);
       }
     } else {
-      player.sendMessage(ChatColor.RED + "Insufficient permissions.");
+      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
@@ -52,66 +54,66 @@ public class AethelTags implements CommandExecutor {
   /**
    * Checks if the command request was formatted correctly before interpreting its usage.
    *
-   * @param player interacting player
-   * @param args   user provided parameters
-   * @param item   item in main hand
+   * @param user user
+   * @param args user provided parameters
+   * @param item main hand item
    */
-  private void readRequest(Player player, String[] args, ItemStack item) {
+  private void readRequest(Player user, String[] args, ItemStack item) {
     int numberOfParameters = args.length;
     String action = "";
     if (numberOfParameters != 0) {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
-      case 0 -> player.sendMessage(ChatColor.RED + "No parameters provided.");
+      case 0 -> user.sendMessage(PluginMessage.NO_PARAMETERS_PROVIDED.message);
       case 1 -> {
         if (action.equals("get") || action.equals("g")) {
-          getAethelTags(player, item);
+          getAethelTags(user, item);
         } else {
-          player.sendMessage(ChatColor.RED + "Unrecognized parameter.");
+          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
         }
       }
       case 2 -> {
         if (action.equals("remove") || action.equals("r")) {
-          removeAethelTag(player, args[1], item);
+          removeAethelTag(user, args[1], item);
         } else {
-          player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
+          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
         }
       }
       case 3 -> {
         if (action.equals("set") || action.equals("s")) {
-          setAethelTag(player, args, item);
+          setAethelTag(user, args, item);
         } else {
-          player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
+          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
         }
       }
-      default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
   /**
    * Responds with the item's Aethel tags.
    *
-   * @param player interacting player
-   * @param item   item in main hand
+   * @param user user
+   * @param item main hand item
    */
-  private void getAethelTags(Player player, ItemStack item) {
+  private void getAethelTags(Player user, ItemStack item) {
     String response = ItemReader.readAethelTags(item);
     if (!response.isEmpty()) {
-      player.sendMessage(ChatColor.GREEN + "[Get Tags] " + response);
+      user.sendMessage(PluginMessage.AETHELTAGS_GET_TAGS.message + response);
     } else {
-      player.sendMessage(ChatColor.RED + "No tags found.");
+      user.sendMessage(PluginMessage.AETHELTAGS_NO_TAGS_FOUND.message);
     }
   }
 
   /**
    * Removes an Aethel tag from the item.
    *
-   * @param player interacting player
-   * @param tag    Aethel tag to be removed
-   * @param item   item in main hand
+   * @param user user
+   * @param tag  Aethel tag to be removed
+   * @param item main hand item
    */
-  private void removeAethelTag(Player player, String tag, ItemStack item) {
+  private void removeAethelTag(Player user, String tag, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + tag);
@@ -119,25 +121,23 @@ public class AethelTags implements CommandExecutor {
     if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
       dataContainer.remove(namespacedKey);
       item.setItemMeta(meta);
-      player.sendMessage(ChatColor.RED + "[Removed Tag] " + ChatColor.AQUA + tag);
-    } else {
-      player.sendMessage(ChatColor.RED + "Tag does not exist.");
     }
+    user.sendMessage(PluginMessage.AETHELTAGS_REMOVED_TAG.message + ChatColor.AQUA + tag);
   }
 
   /**
-   * Adds or sets an Aethel tag to the item.
+   * Sets the item's Aethel tag.
    *
-   * @param player interacting player
-   * @param args   user provided parameters
-   * @param item   item in main hand
+   * @param user user
+   * @param args user provided parameters
+   * @param item main hand item
    */
-  private void setAethelTag(Player player, String[] args, ItemStack item) {
+  private void setAethelTag(Player user, String[] args, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     NamespacedKey namespacedKey = new NamespacedKey(AethelPlugin.getInstance(), "aethel." + args[1]);
     meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, args[2]);
     item.setItemMeta(meta);
-    player.sendMessage(ChatColor.GREEN + "[Set Tag] "
-        + ChatColor.AQUA + args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
+    user.sendMessage(PluginMessage.AETHELTAGS_SET_TAG.message + ChatColor.AQUA +
+        args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
   }
 }

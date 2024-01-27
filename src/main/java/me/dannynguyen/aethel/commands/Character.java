@@ -1,8 +1,10 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
+import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.enums.PluginMetadata;
+import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.inventories.character.CharacterSheet;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,47 +12,52 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * Character is a command invocation that opens the player's RPG character sheet.
+ * Character is a command invocation that opens a player's RPG character sheet.
  * <p>
  * From the character sheet, the player can also access their quests, collectibles, and settings.
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.6.3
+ * @version 1.7.6
  * @since 1.6.3
  */
 public class Character implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player player)) {
-      sender.sendMessage("Player-only command.");
+    if (!(sender instanceof Player user)) {
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
       return true;
     }
-    readRequest(player, args);
+
+    if (user.hasPermission(PluginPermission.CHARACTER.permission)) {
+      readRequest(user, args);
+    } else {
+      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+    }
     return true;
   }
 
   /**
    * Checks if the command request was formatted correctly before opening a character sheet.
    *
-   * @param player interacting player
-   * @param args   user provided parameters
+   * @param user user
+   * @param args user provided parameters
    */
-  private void readRequest(Player player, String[] args) {
+  private void readRequest(Player user, String[] args) {
     switch (args.length) {
-      case 0 -> openCharacterSheet(player);
-      default -> player.sendMessage(ChatColor.RED + "Unrecognized parameters.");
+      case 0 -> openCharacterSheet(user);
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
   /**
-   * Opens the player's character sheet.
+   * Opens the user's character sheet.
    *
-   * @param player interacting player
+   * @param user user
    */
-  private void openCharacterSheet(Player player) {
-    player.openInventory(CharacterSheet.openCharacterSheet(player));
-    player.setMetadata("inventory",
-        new FixedMetadataValue(AethelPlugin.getInstance(), "character.sheet"));
+  private void openCharacterSheet(Player user) {
+    user.openInventory(CharacterSheet.openCharacterSheet(user));
+    user.setMetadata(PluginMetadata.INVENTORY.data,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.CHARACTER_SHEET.data));
   }
 }

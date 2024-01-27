@@ -13,7 +13,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.4
+ * @version 1.7.6
  * @since 1.0.0
  */
 public class AethelPlugin extends JavaPlugin {
@@ -30,11 +30,11 @@ public class AethelPlugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     getServer().getPluginManager().registerEvents(new MessageListener(), this);
 
-    this.getCommand("aethelitems").setExecutor(new AethelItems());
+    this.getCommand("aethelitems").setExecutor(new AethelItemsC());
     this.getCommand("aetheltags").setExecutor(new AethelTags());
     this.getCommand("character").setExecutor(new Character());
     this.getCommand("developermode").setExecutor(new DeveloperMode());
-    this.getCommand("forge").setExecutor(new Forge());
+    this.getCommand("forge").setExecutor(new ForgeC());
     this.getCommand("itemeditor").setExecutor(new ItemEditor());
     this.getCommand("ping").setExecutor(new Ping());
     this.getCommand("showitem").setExecutor(new ShowItem());

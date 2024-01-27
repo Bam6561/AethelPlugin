@@ -17,45 +17,45 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * AethelItemsMain is a shared inventory under the AethelItem command that supports
- * categorical pagination for getting, creating, editing, and removing Aethel items.
+ * AethelItemsI is an inventory under the AethelItems command that supports
+ * categorical pagination for obtaining, creating, editing, and removing Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.7.6
  * @since 1.4.0
  */
-public class AethelItemsMain {
+public class AethelItemsI {
   /**
-   * Creates an AethelItemsMain page containing categories.
+   * Creates an AethelItems main menu with its buttons and item categories.
    *
-   * @param player interacting player
+   * @param user   user
    * @param action type of interaction
-   * @return AethelItemsMain inventory with item categories
+   * @return AethelItems main menu with item categories
    */
-  public static Inventory openItemMainPage(Player player, String action) {
-    Inventory inv = createInventory(player, action);
-    addItemCategories(inv);
-    addItemContext("categories", inv);
-    addActionButtons("view", inv);
+  public static Inventory openMainMenu(Player user, String action) {
+    Inventory inv = createInventory(user, action);
+    addCategories(inv);
+    addContext("categories", inv);
+    addActions("view", inv);
     return inv;
   }
 
   /**
-   * Creates and names an AethelItemsMain inventory with its action.
+   * Creates and names an AethelItems inventory with its action.
    *
-   * @param player interacting player
+   * @param user   user
    * @param action type of interaction
-   * @return AethelItemsMain inventory
+   * @return AethelItems inventory
    */
-  private static Inventory createInventory(Player player, String action) {
-    String title = ChatColor.DARK_GRAY + "Aethel Item";
+  private static Inventory createInventory(Player user, String action) {
+    String title = ChatColor.DARK_GRAY + "Aethel Items";
     switch (action) {
       case "get" -> title += ChatColor.GREEN + " Get " +
-          ChatColor.WHITE + player.getMetadata("category").get(0).asString();
+          ChatColor.WHITE + user.getMetadata("category").get(0).asString();
       case "remove" -> title += ChatColor.RED + " Remove " +
-          ChatColor.WHITE + player.getMetadata("category").get(0).asString();
+          ChatColor.WHITE + user.getMetadata("category").get(0).asString();
     }
-    return Bukkit.createInventory(player, 54, title);
+    return Bukkit.createInventory(user, 54, title);
   }
 
   /**
@@ -63,12 +63,12 @@ public class AethelItemsMain {
    *
    * @param inv interacting inventory
    */
-  private static void addItemCategories(Inventory inv) {
-    Set<String> categoryNames = AethelResources.aethelItemsData.getItemCategoriesMap().keySet();
-    if (!categoryNames.isEmpty()) {
+  private static void addCategories(Inventory inv) {
+    Set<String> categories = AethelResources.aethelItemsData.getItemCategoriesMap().keySet();
+    if (!categories.isEmpty()) {
       int i = 9;
-      for (String categoryName : categoryNames) {
-        inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + categoryName));
+      for (String category : categories) {
+        inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category));
         i++;
       }
     }
@@ -77,25 +77,25 @@ public class AethelItemsMain {
   /**
    * Loads an item category page from memory.
    *
-   * @param player       interacting player
-   * @param action       type of interaction
-   * @param categoryName category to view
-   * @param pageRequest  page to view
-   * @return AethelMain inventory with items
+   * @param user          user
+   * @param action        type of interaction
+   * @param category      category name
+   * @param requestedPage requested page
+   * @return AethelItems main menu with item categories
    */
-  public static Inventory openItemCategoryPage(Player player, String action,
-                                               String categoryName, int pageRequest) {
-    Inventory inv = createInventory(player, action);
+  public static Inventory openCategoryPage(Player user, String action,
+                                           String category, int requestedPage) {
+    Inventory inv = createInventory(user, action);
 
-    AethelItemsCategory itemCategory = AethelResources.aethelItemsData.getItemCategoriesMap().get(categoryName);
-    int numberOfPages = itemCategory.getNumberOfPages();
-    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
-    player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
+    AethelItemsCategory loadedCategory = AethelResources.aethelItemsData.getItemCategoriesMap().get(category);
+    int numberOfPages = loadedCategory.getNumberOfPages();
+    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
+    user.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), pageViewed));
 
-    inv.setContents(itemCategory.getPages().get(pageViewed).getContents());
+    inv.setContents(loadedCategory.getPages().get(pageViewed).getContents());
 
-    addItemContext(categoryName, inv);
-    addActionButtons(action, inv);
+    addContext(category, inv);
+    addActions(action, inv);
     InventoryPages.addBackButton(inv, 6);
     InventoryPages.addPageButtons(inv, numberOfPages, pageViewed);
     return inv;
@@ -104,12 +104,12 @@ public class AethelItemsMain {
   /**
    * Adds a help context to the AethelItem inventory.
    *
-   * @param categoryName category to view
-   * @param inv          interacting inventory
+   * @param category requested category
+   * @param inv      interacting inventory
    */
-  private static void addItemContext(String categoryName, Inventory inv) {
+  private static void addContext(String category, Inventory inv) {
     List<String> helpLore;
-    if (categoryName.equals("categories")) {
+    if (category.equals("categories")) {
       helpLore = Arrays.asList(ChatColor.WHITE + "Item Categories",
           "",
           ChatColor.WHITE + "Place an item to",
@@ -135,12 +135,12 @@ public class AethelItemsMain {
   }
 
   /**
-   * Adds save, get, and remove buttons.
+   * Adds save, get, and remove actions.
    *
    * @param action type of interaction
    * @param inv    interacting inventory
    */
-  private static void addActionButtons(String action, Inventory inv) {
+  private static void addActions(String action, Inventory inv) {
     switch (action) {
       case "get" -> {
         inv.setItem(4, ItemCreator.

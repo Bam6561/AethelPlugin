@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorAttributes;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorEnchants;
-import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorMenu;
+import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorI;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorTags;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -84,7 +84,7 @@ public class ItemEditorInventoryMenuAction {
    * @param player interacting player
    */
   public static void returnToMainMenu(Player player) {
-    player.openInventory(ItemEditorMenu.openEditorMenu(player,
+    player.openInventory(ItemEditorI.openCosmeticMenu(player,
         AethelResources.itemEditorData.getEditedItemMap().get(player)));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "itemeditor.menu"));

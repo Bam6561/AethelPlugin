@@ -107,7 +107,7 @@ public class PlayerStatsInventory {
    */
   private static void returnToMainPage(Player player) {
     String requestedPlayerName = player.getMetadata("player").get(0).asString();
-    player.openInventory(PlayerStatsMain.openPlayerStatsMainPage(player, requestedPlayerName));
+    player.openInventory(PlayerStatsMain.openMainMenu(player, requestedPlayerName));
     player.setMetadata("inventory",
         new FixedMetadataValue(AethelPlugin.getInstance(), "playerstats.category"));
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));

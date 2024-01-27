@@ -24,7 +24,7 @@ import java.util.Set;
  * @version 1.7.3
  * @since 1.0.6
  */
-public class ForgeMain {
+public class ForgeI {
   /**
    * Creates a ForgeMain page containing categories.
    *
@@ -32,7 +32,7 @@ public class ForgeMain {
    * @param action type of interaction
    * @return ForgeMain inventory with recipe categories
    */
-  public static Inventory openForgeMainPage(Player player, String action) {
+  public static Inventory openMainMenu(Player player, String action) {
     Inventory inv = createInventory(player, action);
     addRecipeCategories(inv);
 

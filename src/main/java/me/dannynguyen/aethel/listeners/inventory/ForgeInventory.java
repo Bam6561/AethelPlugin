@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.inventories.forge.ForgeCraft;
-import me.dannynguyen.aethel.inventories.forge.ForgeMain;
+import me.dannynguyen.aethel.inventories.forge.ForgeI;
 import me.dannynguyen.aethel.inventories.forge.ForgeSave;
 import me.dannynguyen.aethel.inventories.forge.utility.ForgeEdit;
 import me.dannynguyen.aethel.inventories.forge.utility.ForgeRemove;
@@ -40,7 +40,7 @@ public class ForgeInventory {
           player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), itemName));
           int pageRequest = player.getMetadata("page").get(0).asInt();
 
-          player.openInventory(ForgeMain.openForgeCategoryPage(player, action, itemName, pageRequest));
+          player.openInventory(ForgeI.openForgeCategoryPage(player, action, itemName, pageRequest));
           player.setMetadata("inventory",
               new FixedMetadataValue(AethelPlugin.getInstance(), "forge." + action));
         }
@@ -126,7 +126,7 @@ public class ForgeInventory {
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
-    player.openInventory(ForgeMain.openForgeCategoryPage(player, action, categoryName,
+    player.openInventory(ForgeI.openForgeCategoryPage(player, action, categoryName,
         pageRequest - 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge." + action));
   }
@@ -153,12 +153,12 @@ public class ForgeInventory {
   private static void openForgeEdit(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
     if (categoryName.equals("")) {
-      player.openInventory(ForgeMain.openForgeMainPage(player, "edit"));
+      player.openInventory(ForgeI.openMainMenu(player, "edit"));
       player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.category"));
     } else {
       categoryName = player.getMetadata("category").get(0).asString();
 
-      player.openInventory(ForgeMain.openForgeCategoryPage(player, "edit",
+      player.openInventory(ForgeI.openForgeCategoryPage(player, "edit",
           categoryName, player.getMetadata("page").get(0).asInt()));
       player.setMetadata("inventory",
           new FixedMetadataValue(AethelPlugin.getInstance(), "forge.edit"));
@@ -173,7 +173,7 @@ public class ForgeInventory {
   private static void openForgeRemove(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
 
-    player.openInventory(ForgeMain.openForgeCategoryPage(player, "remove",
+    player.openInventory(ForgeI.openForgeCategoryPage(player, "remove",
         categoryName, player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.remove"));
   }
@@ -187,7 +187,7 @@ public class ForgeInventory {
     String action = player.getMetadata("future").get(0).asString();
     player.setMetadata("category", new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
-    player.openInventory(ForgeMain.openForgeMainPage(player, action));
+    player.openInventory(ForgeI.openMainMenu(player, action));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.category"));
     player.setMetadata("page", new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
@@ -200,7 +200,7 @@ public class ForgeInventory {
   private static void openForgeCraft(Player player) {
     String categoryName = player.getMetadata("category").get(0).asString();
 
-    player.openInventory(ForgeMain.openForgeCategoryPage(player, "craft", categoryName,
+    player.openInventory(ForgeI.openForgeCategoryPage(player, "craft", categoryName,
         player.getMetadata("page").get(0).asInt()));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge.craft"));
   }
@@ -215,7 +215,7 @@ public class ForgeInventory {
     String categoryName = player.getMetadata("category").get(0).asString();
     int pageRequest = player.getMetadata("page").get(0).asInt();
 
-    player.openInventory(ForgeMain.openForgeCategoryPage(player, action, categoryName,
+    player.openInventory(ForgeI.openForgeCategoryPage(player, action, categoryName,
         pageRequest + 1));
     player.setMetadata("inventory", new FixedMetadataValue(AethelPlugin.getInstance(), "forge." + action));
   }
