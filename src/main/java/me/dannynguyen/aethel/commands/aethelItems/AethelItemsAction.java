@@ -1,9 +1,9 @@
-package me.dannynguyen.aethel.inventories.aethelItems;
+package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.objects.aethelitems.AethelItem;
+import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,13 +15,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * AethelItems is a utility class that saves, gives, and removes Aethel items.
+ * AethelItemsAction is a utility class that saves, gives, and removes Aethel items.
  *
  * @author Danny Nguyen
  * @version 1.7.9
  * @since 1.7.9
  */
-public class AethelItemsA {
+public class AethelItemsAction {
   /**
    * Checks if there is an item in the correct inventory slot to save.
    *

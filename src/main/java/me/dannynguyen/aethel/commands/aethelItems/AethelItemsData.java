@@ -1,10 +1,10 @@
-package me.dannynguyen.aethel.data;
+package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
-import me.dannynguyen.aethel.objects.aethelitems.AethelItem;
-import me.dannynguyen.aethel.objects.aethelitems.AethelItemsCategory;
+import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
+import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;

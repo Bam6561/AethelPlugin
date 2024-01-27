@@ -1,10 +1,9 @@
-package me.dannynguyen.aethel.commands;
+package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
-import me.dannynguyen.aethel.inventories.character.CharacterSheet;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @version 1.7.9
  * @since 1.6.3
  */
-public class Character implements CommandExecutor {
+public class CharacterCommand implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {

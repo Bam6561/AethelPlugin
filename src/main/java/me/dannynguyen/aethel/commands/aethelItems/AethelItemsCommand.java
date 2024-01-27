@@ -1,11 +1,10 @@
-package me.dannynguyen.aethel.commands;
+package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.inventories.aethelItems.AethelItemsI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * AethelItems is a command invocation that allows the user to obtain items through clicking.
+ * AethelItemsCommand is a command invocation that allows the user to obtain items through clicking.
  * <p>
  * Additional Parameters:
  * - "reload", "r": reloads items into memory
@@ -23,7 +22,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @version 1.7.9
  * @since 1.3.2
  */
-public class AethelItemsC implements CommandExecutor {
+public class AethelItemsCommand implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -75,7 +74,7 @@ public class AethelItemsC implements CommandExecutor {
    * @param user user
    */
   private void openMainMenu(Player user) {
-    user.openInventory(AethelItemsI.openMainMenu(user, "view"));
+    user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.AETHELITEMS_CATEGORY.value));
     user.setMetadata(PluginPlayerMeta.Container.PAGE.name, new FixedMetadataValue(Plugin.getInstance(), "0"));

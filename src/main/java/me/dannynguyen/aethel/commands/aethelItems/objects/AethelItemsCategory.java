@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.objects.aethelitems;
+package me.dannynguyen.aethel.commands.aethelItems.objects;
 
 import org.bukkit.inventory.Inventory;
 

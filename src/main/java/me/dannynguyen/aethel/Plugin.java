@@ -1,7 +1,8 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.commands.Character;
+import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.*;
+import me.dannynguyen.aethel.commands.aethelItems.AethelItemsCommand;
 import me.dannynguyen.aethel.listeners.inventory.InventoryListener;
 import me.dannynguyen.aethel.listeners.message.MessageListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,7 +14,7 @@ import java.io.File;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.10
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -30,9 +31,9 @@ public class Plugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     getServer().getPluginManager().registerEvents(new MessageListener(), this);
 
-    this.getCommand("aethelitems").setExecutor(new AethelItemsC());
+    this.getCommand("aethelitems").setExecutor(new AethelItemsCommand());
     this.getCommand("aetheltags").setExecutor(new AethelTags());
-    this.getCommand("character").setExecutor(new Character());
+    this.getCommand("character").setExecutor(new CharacterCommand());
     this.getCommand("developermode").setExecutor(new DeveloperMode());
     this.getCommand("forge").setExecutor(new ForgeC());
     this.getCommand("itemeditor").setExecutor(new ItemEditorC());

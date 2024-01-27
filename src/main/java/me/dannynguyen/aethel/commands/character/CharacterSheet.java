@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.inventories.character;
+package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.formatters.TextFormatter;
@@ -16,39 +16,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CharacterSheet is an inventory under the Character command that
- * shows the player's equipment and attributes within the rpg context.
+ * CharacterSheet is an inventory that shows the user's
+ * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.7.3
+ * @version 1.7.10
  * @since 1.6.3
  */
 public class CharacterSheet {
   /**
    * Creates a CharacterSheet with its equipment and attributes.
    *
-   * @param player interacting player
+   * @param user user
    * @return CharacterSheet with equipment and attributes
    */
-  public static Inventory openCharacterSheet(Player player) {
-    Inventory inv = createInventory(player);
+  public static Inventory openCharacterSheet(Player user) {
+    Inventory inv = createInventory(user);
     addActionButtons(inv);
-    addEquipment(player, inv);
-    addAttributes(player, inv);
-    addStatusEffects(player, inv);
-    addExtras(player, inv);
+    addEquipment(user, inv);
+    addAttributes(user, inv);
+    addStatusEffects(user, inv);
+    addExtras(user, inv);
     return inv;
   }
 
   /**
-   * Creates and names a CharacterSheet inventory to its player.
+   * Creates and names a CharacterSheet inventory to its user.
    *
-   * @param player interacting player
+   * @param user user
    * @return CharacterSheet inventory
    */
-  private static Inventory createInventory(Player player) {
-    return Bukkit.createInventory(player, 54,
-        ChatColor.DARK_GRAY + "Character " + ChatColor.DARK_PURPLE + player.getName());
+  private static Inventory createInventory(Player user) {
+    return Bukkit.createInventory(user, 54,
+        ChatColor.DARK_GRAY + "Character " + ChatColor.DARK_PURPLE + user.getName());
   }
 
   /**
@@ -63,12 +63,12 @@ public class CharacterSheet {
   }
 
   /**
-   * Adds the player's equipped items.
+   * Adds the user's equipped items.
    *
-   * @param player interacting player
-   * @param inv    interacting inv
+   * @param user user
+   * @param inv  interacting inv
    */
-  private static void addEquipment(Player player, Inventory inv) {
+  private static void addEquipment(Player user, Inventory inv) {
     inv.setItem(9, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.WHITE + "Equipment",
         List.of(ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | "
@@ -76,21 +76,21 @@ public class CharacterSheet {
             ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
             ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
             ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring")));
-    inv.setItem(10, player.getInventory().getHelmet());
-    inv.setItem(19, player.getInventory().getChestplate());
-    inv.setItem(28, player.getInventory().getLeggings());
-    inv.setItem(37, player.getInventory().getBoots());
-    inv.setItem(11, player.getInventory().getItemInMainHand());
-    inv.setItem(12, player.getInventory().getItemInOffHand());
+    inv.setItem(10, user.getInventory().getHelmet());
+    inv.setItem(19, user.getInventory().getChestplate());
+    inv.setItem(28, user.getInventory().getLeggings());
+    inv.setItem(37, user.getInventory().getBoots());
+    inv.setItem(11, user.getInventory().getItemInMainHand());
+    inv.setItem(12, user.getInventory().getItemInOffHand());
   }
 
   /**
-   * Adds the player's attributes.
+   * Adds the user's attributes.
    *
-   * @param player interacting player
-   * @param inv    interacting inv
+   * @param user user
+   * @param inv  interacting inv
    */
-  private static void addAttributes(Player player, Inventory inv) {
+  private static void addAttributes(Player user, Inventory inv) {
     DecimalFormat tenths = new DecimalFormat();
     DecimalFormat hundredths = new DecimalFormat();
     DecimalFormat thousandths = new DecimalFormat();
@@ -99,35 +99,35 @@ public class CharacterSheet {
     hundredths.setMaximumFractionDigits(2);
     thousandths.setMaximumFractionDigits(3);
 
-    addOffenseAttributes(player, inv, hundredths);
-    addDefenseAttributes(player, inv, tenths, hundredths, thousandths);
-    addOtherAttributes(player, inv, hundredths);
+    addOffenseAttributes(user, inv, hundredths);
+    addDefenseAttributes(user, inv, tenths, hundredths, thousandths);
+    addOtherAttributes(user, inv, hundredths);
   }
 
   /**
-   * Adds the player's level and currency balance.
+   * Adds the user's level and currency balance.
    *
-   * @param player interacting player
-   * @param inv    interacting inv
+   * @param user user
+   * @param inv  interacting inv
    */
-  private static void addExtras(Player player, Inventory inv) {
-    String level = ChatColor.DARK_GREEN + "" + player.getLevel() + " LVL";
-    String exp = ChatColor.GREEN + "" + player.getTotalExperience() + " EXP";
-    inv.setItem(4, ItemCreator.createPlayerHead(player, List.of(level, exp, ChatColor.WHITE + "0 Silver")));
+  private static void addExtras(Player user, Inventory inv) {
+    String level = ChatColor.DARK_GREEN + "" + user.getLevel() + " LVL";
+    String exp = ChatColor.GREEN + "" + user.getTotalExperience() + " EXP";
+    inv.setItem(4, ItemCreator.createPlayerHead(user, List.of(level, exp, ChatColor.WHITE + "0 Silver")));
   }
 
   /**
-   * Adds the player's offense attributes.
+   * Adds the user's offense attributes.
    *
-   * @param player     interacting player
+   * @param user       interacting user
    * @param inv        interacting inventory
    * @param hundredths 0.00
    */
-  private static void addOffenseAttributes(Player player, Inventory inv, DecimalFormat hundredths) {
+  private static void addOffenseAttributes(Player user, Inventory inv, DecimalFormat hundredths) {
     String damage = ChatColor.RED + "" +
-        hundredths.format(player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " DMG";
+        hundredths.format(user.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " DMG";
     String attackSpeed = ChatColor.GOLD +
-        hundredths.format(player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
+        hundredths.format(user.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
     String criticalChance = ChatColor.GREEN +
         hundredths.format(0) + "% CRIT";
     String criticalDamage = ChatColor.DARK_GREEN +
@@ -141,25 +141,25 @@ public class CharacterSheet {
   }
 
   /**
-   * Adds the player's defense attributes.
+   * Adds the user's defense attributes.
    *
-   * @param player      interacting player
+   * @param user        interacting user
    * @param inv         interacting inventory
    * @param tenths      0.0
    * @param hundredths  0.00
    * @param thousandths 0.000
    */
-  private static void addDefenseAttributes(Player player, Inventory inv,
+  private static void addDefenseAttributes(Player user, Inventory inv,
                                            DecimalFormat tenths, DecimalFormat hundredths,
                                            DecimalFormat thousandths) {
     String maxHealth = ChatColor.WHITE + "" +
-        (int) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + " MAX HP";
+        (int) user.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + " MAX HP";
     String armor = ChatColor.GRAY + "" +
-        tenths.format(player.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
+        tenths.format(user.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
     String armorToughness = ChatColor.GRAY + "" +
-        tenths.format(player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
+        tenths.format(user.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
     String speed = ChatColor.AQUA + "" +
-        thousandths.format(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPD";
+        thousandths.format(user.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPD";
     String block = ChatColor.BLUE + "" +
         "0" + " BLOCK";
     String parryChance = ChatColor.RED + "" +
@@ -175,13 +175,13 @@ public class CharacterSheet {
   }
 
   /**
-   * Adds the player's other attributes.
+   * Adds the user's other attributes.
    *
-   * @param player     interacting player
+   * @param user       interacting user
    * @param inv        interacting inventory
    * @param hundredths 0.00
    */
-  private static void addOtherAttributes(Player player, Inventory inv, DecimalFormat hundredths) {
+  private static void addOtherAttributes(Player user, Inventory inv, DecimalFormat hundredths) {
     String abilityDamage = ChatColor.LIGHT_PURPLE + "" +
         hundredths.format(1) + "x ABILITY DMG";
     String abilityCooldown = ChatColor.DARK_PURPLE + "-" +
@@ -189,9 +189,9 @@ public class CharacterSheet {
     String applyStatusEffect = ChatColor.YELLOW + "" +
         hundredths.format(0) + "% APPLY STATUS";
     String knockbackResistance = ChatColor.GRAY + "" +
-        hundredths.format(player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST";
+        hundredths.format(user.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST";
     String luck = ChatColor.GREEN + "" +
-        hundredths.format(player.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
+        hundredths.format(user.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
 
     inv.setItem(33, ItemCreator.createItem(Material.SPYGLASS,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other",
@@ -205,12 +205,12 @@ public class CharacterSheet {
   /**
    * Adds status effects.
    *
-   * @param player interacting player
-   * @param inv    interacting inventory
+   * @param user user
+   * @param inv  interacting inventory
    */
-  private static void addStatusEffects(Player player, Inventory inv) {
+  private static void addStatusEffects(Player user, Inventory inv) {
     ArrayList<String> lore = new ArrayList<>();
-    for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+    for (PotionEffect potionEffect : user.getActivePotionEffects()) {
       String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
       String effectType = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
       String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" :

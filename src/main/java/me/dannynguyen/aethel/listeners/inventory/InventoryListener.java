@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.commands.aethelItems.AethelItemsInventoryListener;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryFunctional;
 import me.dannynguyen.aethel.listeners.inventory.itemeditor.ItemEditorInventoryMenu;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.10
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -47,9 +48,9 @@ public class InventoryListener implements Listener {
    */
   private void interpretAethelItems(InventoryClickEvent e, Player player, String[] invType) {
     switch (invType[1]) {
-      case "category" -> AethelItemsInventory.readMainClick(e, player);
-      case "get" -> AethelItemsInventory.readCategoryClick(e, player, "get");
-      case "remove" -> AethelItemsInventory.readCategoryClick(e, player, "remove");
+      case "category" -> AethelItemsInventoryListener.readMainClick(e, player);
+      case "get" -> AethelItemsInventoryListener.readCategoryClick(e, player, "get");
+      case "remove" -> AethelItemsInventoryListener.readCategoryClick(e, player, "remove");
     }
   }
 

@@ -1,10 +1,10 @@
-package me.dannynguyen.aethel.inventories.aethelItems;
+package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.creators.ItemCreator;
 import me.dannynguyen.aethel.inventories.utility.InventoryPages;
-import me.dannynguyen.aethel.objects.aethelitems.AethelItemsCategory;
+import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * AethelItems is an inventory under the AethelItems command that supports
- * categorical pagination for obtaining, creating, editing, and removing Aethel items.
+ * AethelItemsInventory is an inventory that supports categorical
+ * pagination for obtaining, creating, editing, and removing Aethel items.
  *
  * @author Danny Nguyen
  * @version 1.7.6
  * @since 1.4.0
  */
-public class AethelItemsI {
+public class AethelItemsInventory {
   /**
    * Creates an AethelItems main menu with its buttons and item categories.
    *
