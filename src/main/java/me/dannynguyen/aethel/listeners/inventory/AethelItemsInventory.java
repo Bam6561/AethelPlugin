@@ -1,10 +1,8 @@
 package me.dannynguyen.aethel.listeners.inventory;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.inventories.aethelItems.AethelItemsA;
 import me.dannynguyen.aethel.inventories.aethelItems.AethelItemsI;
-import me.dannynguyen.aethel.inventories.aethelItems.utility.AethelItemSave;
-import me.dannynguyen.aethel.inventories.aethelItems.utility.AethelItemsGet;
-import me.dannynguyen.aethel.inventories.aethelItems.utility.AethelItemsRemove;
 import me.dannynguyen.aethel.readers.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -54,7 +52,7 @@ public class AethelItemsInventory {
    */
   private static void interpretMainClick(InventoryClickEvent e, Player player) {
     if (e.getSlot() == 4) {
-      AethelItemSave.readSaveClick(e, player);
+      AethelItemsA.readSaveClick(e, player);
     } else if (e.getSlot() > 8) {
       String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
       player.setMetadata("category", new FixedMetadataValue(Plugin.getInstance(), itemName));
@@ -114,7 +112,7 @@ public class AethelItemsInventory {
       case 0 -> previousItemPage(player, action);
       case 2 -> { // Help Context
       }
-      case 4 -> AethelItemSave.readSaveClick(e, player);
+      case 4 -> AethelItemsA.readSaveClick(e, player);
       case 5 -> toggleGetRemoveAction(player, action);
       case 6 -> returnToMainPage(player);
       case 8 -> nextItemPage(player, action);
@@ -202,8 +200,8 @@ public class AethelItemsInventory {
    */
   private static void interpretContextualClick(InventoryClickEvent e, String action, Player player) {
     switch (action) {
-      case "get" -> AethelItemsGet.getItem(e, player);
-      case "remove" -> AethelItemsRemove.removeItem(e, player);
+      case "get" -> AethelItemsA.getItem(e, player);
+      case "remove" -> AethelItemsA.removeItem(e, player);
     }
   }
 }

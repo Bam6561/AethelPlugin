@@ -23,7 +23,7 @@ import java.util.HashMap;
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.9
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
@@ -46,7 +46,7 @@ public class ForgeCraftOperation {
       if (hasMatchingType(user, components)) {
         processMatchingType(user, results);
       } else {
-        user.sendMessage(PluginMessage.FORGE_CRAFT_INSUFFICIENT_COMPONENTS.message);
+        user.sendMessage(PluginMessage.Failure.FORGE_CRAFT_INSUFFICIENT_COMPONENTS.message);
       }
     } else {
       giveItemsToPlayer(user, results);

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * AethelItemsI is an inventory under the AethelItems command that supports
+ * AethelItems is an inventory under the AethelItems command that supports
  * categorical pagination for obtaining, creating, editing, and removing Aethel items.
  *
  * @author Danny Nguyen

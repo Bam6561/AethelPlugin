@@ -30,21 +30,21 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.7
+ * @version 1.7.9
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
     if (user.hasPermission(PluginPermission.SHOWITEM.permission)) {
       readRequest(user, args);
     } else {
-      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
@@ -59,7 +59,7 @@ public class ShowItem implements CommandExecutor {
     switch (args.length) {
       case 0 -> showItem(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
@@ -76,7 +76,7 @@ public class ShowItem implements CommandExecutor {
       }
       PluginData.showItemData.addPastItem(new ItemOwner(user.getName(), item.clone()));
     } else {
-      user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.message);
+      user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
     }
   }
 
@@ -92,7 +92,7 @@ public class ShowItem implements CommandExecutor {
       user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
           new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.SHOWITEM_PAST.value));
     } else {
-      user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
+      user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }
   }
 

@@ -15,21 +15,21 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.7.7
+ * @version 1.7.9
  * @since 1.4.6
  */
 public class DeveloperMode implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
     if (user.hasPermission(PluginPermission.DEVELOPERMODE.permission)) {
       readRequest(user, args);
     } else {
-      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
@@ -45,7 +45,7 @@ public class DeveloperMode implements CommandExecutor {
     if (numberOfParameters == 0) {
       toggleDeveloperMode(user);
     } else {
-      user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+      user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
@@ -58,10 +58,10 @@ public class DeveloperMode implements CommandExecutor {
     if (!user.hasMetadata(PluginPlayerMeta.Container.DEVELOPER.name)) {
       user.setMetadata(PluginPlayerMeta.Container.DEVELOPER.name,
           new FixedMetadataValue(Plugin.getInstance(), "on"));
-      user.sendMessage(PluginMessage.DEVELOPERMODE_ON.message);
+      user.sendMessage(PluginMessage.Success.DEVELOPERMODE_ON.message);
     } else {
       user.removeMetadata(PluginPlayerMeta.Container.DEVELOPER.name, Plugin.getInstance());
-      user.sendMessage(PluginMessage.DEVELOPERMODE_OFF.message);
+      user.sendMessage(PluginMessage.Success.DEVELOPERMODE_OFF.message);
     }
   }
 }

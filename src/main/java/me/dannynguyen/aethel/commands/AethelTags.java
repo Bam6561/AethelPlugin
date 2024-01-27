@@ -27,14 +27,14 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.9
  * @since 1.2.6
  */
 public class AethelTags implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
@@ -43,10 +43,10 @@ public class AethelTags implements CommandExecutor {
       if (item.getType() != Material.AIR) {
         readRequest(user, args, item);
       } else {
-        user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.message);
+        user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
       }
     } else {
-      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
@@ -65,29 +65,29 @@ public class AethelTags implements CommandExecutor {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(PluginMessage.NO_PARAMETERS_PROVIDED.message);
+      case 0 -> user.sendMessage(PluginMessage.Failure.NO_PARAMETERS_PROVIDED.message);
       case 1 -> {
         if (action.equals("get") || action.equals("g")) {
           getAethelTags(user, item);
         } else {
-          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
+          user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
         }
       }
       case 2 -> {
         if (action.equals("remove") || action.equals("r")) {
           removeAethelTag(user, args[1], item);
         } else {
-          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+          user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
         }
       }
       case 3 -> {
         if (action.equals("set") || action.equals("s")) {
           setAethelTag(user, args, item);
         } else {
-          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+          user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
         }
       }
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
@@ -100,9 +100,9 @@ public class AethelTags implements CommandExecutor {
   private void getAethelTags(Player user, ItemStack item) {
     String response = ItemReader.readAethelTags(item);
     if (!response.isEmpty()) {
-      user.sendMessage(PluginMessage.AETHELTAGS_GET_TAGS.message + response);
+      user.sendMessage(PluginMessage.Success.AETHELTAGS_GET_TAGS.message + response);
     } else {
-      user.sendMessage(PluginMessage.AETHELTAGS_NO_TAGS_FOUND.message);
+      user.sendMessage(PluginMessage.Failure.AETHELTAGS_NO_TAGS.message);
     }
   }
 
@@ -122,7 +122,7 @@ public class AethelTags implements CommandExecutor {
       dataContainer.remove(namespacedKey);
       item.setItemMeta(meta);
     }
-    user.sendMessage(PluginMessage.AETHELTAGS_REMOVED_TAG.message + ChatColor.AQUA + tag);
+    user.sendMessage(PluginMessage.Success.AETHELTAGS_REMOVED_TAG.message + ChatColor.AQUA + tag);
   }
 
   /**
@@ -137,7 +137,7 @@ public class AethelTags implements CommandExecutor {
     NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + args[1]);
     meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, args[2]);
     item.setItemMeta(meta);
-    user.sendMessage(PluginMessage.AETHELTAGS_SET_TAG.message + ChatColor.AQUA +
+    user.sendMessage(PluginMessage.Success.AETHELTAGS_SET_TAG.message + ChatColor.AQUA +
         args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
   }
 }

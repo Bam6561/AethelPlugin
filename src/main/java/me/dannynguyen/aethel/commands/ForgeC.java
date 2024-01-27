@@ -21,21 +21,21 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.7
+ * @version 1.7.9
  * @since 1.0.2
  */
 public class ForgeC implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
     if (user.hasPermission(PluginPermission.FORGE.permission)) {
       readRequest(user, args);
     } else {
-      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
@@ -51,7 +51,7 @@ public class ForgeC implements CommandExecutor {
     switch (args.length) {
       case 0 -> openCraftingMenu(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
@@ -67,18 +67,18 @@ public class ForgeC implements CommandExecutor {
         if (user.hasPermission(PluginPermission.FORGE_EDITOR.permission)) {
           openEditorMenu(user);
         } else {
-          user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+          user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
         }
       }
       case "reload", "r" -> {
         if (user.hasPermission(PluginPermission.FORGE_EDITOR.permission)) {
           PluginData.forgeRecipeData.loadRecipes();
-          user.sendMessage(PluginMessage.FORGE_RELOAD.message);
+          user.sendMessage(PluginMessage.Success.FORGE_RELOAD.message);
         } else {
-          user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+          user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
         }
       }
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
+      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }
   }
 

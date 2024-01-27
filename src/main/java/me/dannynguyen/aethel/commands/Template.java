@@ -12,21 +12,21 @@ import org.bukkit.entity.Player;
  * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.9
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
     if (user.hasPermission(PluginPermission.TEMPLATE.permission)) {
       readRequest(user, args);
     } else {
-      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }

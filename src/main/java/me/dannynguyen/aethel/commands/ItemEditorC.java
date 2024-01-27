@@ -19,14 +19,14 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.7
+ * @version 1.7.9
  * @since 1.6.7
  */
 public class ItemEditorC implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
       return true;
     }
 
@@ -35,10 +35,10 @@ public class ItemEditorC implements CommandExecutor {
       if (item.getType() != Material.AIR) {
         readRequest(user, args, item);
       } else {
-        user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.message);
+        user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
       }
     } else {
-      user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.message);
+      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
     }
     return true;
   }
@@ -53,7 +53,7 @@ public class ItemEditorC implements CommandExecutor {
   private void readRequest(Player user, String[] args, ItemStack item) {
     switch (args.length) {
       case 0 -> openCosmeticMenu(user, item);
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
