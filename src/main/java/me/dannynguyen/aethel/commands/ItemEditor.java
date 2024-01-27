@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.inventories.itemeditor.ItemEditorI;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.6.7
  */
 public class ItemEditor implements CommandExecutor {
@@ -67,7 +67,7 @@ public class ItemEditor implements CommandExecutor {
     AethelResources.itemEditorData.getEditedItemMap().put(user, item);
 
     user.openInventory(ItemEditorI.openCosmeticMenu(user, item));
-    user.setMetadata(PluginMetadata.INVENTORY.data,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.ITEMEDITOR_MENU.data));
+    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.ITEMEDITOR_MENU.value));
   }
 }

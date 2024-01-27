@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.commands;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
 import me.dannynguyen.aethel.enums.PluginPermission;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.inventories.aethelItems.AethelItemsI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.3.2
  */
 public class AethelItemsC implements CommandExecutor {
@@ -76,8 +76,8 @@ public class AethelItemsC implements CommandExecutor {
    */
   private void openMainMenu(Player user) {
     user.openInventory(AethelItemsI.openMainMenu(user, "view"));
-    user.setMetadata(PluginMetadata.INVENTORY.data,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.AETHELITEMS_CATEGORY.data));
-    user.setMetadata(PluginMetadata.PAGE.data, new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
+    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.AETHELITEMS_CATEGORY.value));
+    user.setMetadata(PluginPlayerMeta.Container.PAGE.name, new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 }

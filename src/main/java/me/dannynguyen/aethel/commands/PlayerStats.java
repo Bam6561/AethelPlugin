@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
 import me.dannynguyen.aethel.enums.PluginPermission;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.inventories.playerstats.PlayerStatsMain;
 import me.dannynguyen.aethel.inventories.playerstats.PlayerStatsPast;
 import org.bukkit.Bukkit;
@@ -23,7 +23,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.4.7
  */
 public class PlayerStats implements CommandExecutor {
@@ -66,8 +66,8 @@ public class PlayerStats implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("past") || parameter.equals("p")) {
       user.openInventory(PlayerStatsPast.createInventory(user));
-      user.setMetadata(PluginMetadata.INVENTORY.data,
-          new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.PLAYERSTATS_PAST.data));
+      user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+          new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_PAST.value));
     } else {
       openPlayerStatsOther(user, parameter);
     }
@@ -79,12 +79,12 @@ public class PlayerStats implements CommandExecutor {
    * @param user interacting player
    */
   private void openPlayerStatsSelf(Player user) {
-    user.setMetadata(PluginMetadata.PLAYER.data,
+    user.setMetadata(PluginPlayerMeta.Container.PLAYER.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), user.getName()));
 
     user.openInventory(PlayerStatsMain.openMainMenu(user, user.getName()));
-    user.setMetadata(PluginMetadata.INVENTORY.data,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.PLAYERSTATS_CATEGORY.data));
+    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_CATEGORY.value));
   }
 
   /**
@@ -96,12 +96,12 @@ public class PlayerStats implements CommandExecutor {
   private void openPlayerStatsOther(Player user, String requestedPlayer) {
     OfflinePlayer player = Bukkit.getOfflinePlayer(requestedPlayer);
     if (player.hasPlayedBefore()) {
-      user.setMetadata(PluginMetadata.PLAYER.data,
+      user.setMetadata(PluginPlayerMeta.Container.PLAYER.name,
           new FixedMetadataValue(AethelPlugin.getInstance(), player.getName()));
 
       user.openInventory(PlayerStatsMain.openMainMenu(user, player.getName()));
-      user.setMetadata(PluginMetadata.INVENTORY.data,
-          new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.PLAYERSTATS_CATEGORY.data));
+      user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+          new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.PLAYERSTATS_CATEGORY.value));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

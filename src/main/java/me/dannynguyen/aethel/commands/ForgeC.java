@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.commands;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
 import me.dannynguyen.aethel.enums.PluginPermission;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.inventories.forge.ForgeI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +21,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.0.2
  */
 public class ForgeC implements CommandExecutor {
@@ -88,16 +88,16 @@ public class ForgeC implements CommandExecutor {
    * @param user interacting player
    */
   private void openCraftingMenu(Player user) {
-    user.setMetadata(PluginMetadata.FUTURE.data,
+    user.setMetadata(PluginPlayerMeta.Container.FUTURE.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), "craft"));
-    user.setMetadata(PluginMetadata.CATEGORY.data,
+    user.setMetadata(PluginPlayerMeta.Container.CATEGORY.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     user.openInventory(ForgeI.openMainMenu(user, "craft"));
 
-    user.setMetadata(PluginMetadata.INVENTORY.data,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.FORGE_CATEGORY));
-    user.setMetadata(PluginMetadata.PAGE.data,
+    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.FORGE_CATEGORY.value));
+    user.setMetadata(PluginPlayerMeta.Container.PAGE.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 
@@ -107,16 +107,16 @@ public class ForgeC implements CommandExecutor {
    * @param user interacting player
    */
   private void openEditorMenu(Player user) {
-    user.setMetadata(PluginMetadata.FUTURE.data,
+    user.setMetadata(PluginPlayerMeta.Container.FUTURE.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), "edit"));
-    user.setMetadata(PluginMetadata.CATEGORY.data,
+    user.setMetadata(PluginPlayerMeta.Container.CATEGORY.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), ""));
 
     user.openInventory(ForgeI.openMainMenu(user, "edit"));
 
-    user.setMetadata(PluginMetadata.INVENTORY.data,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.FORGE_CATEGORY));
-    user.setMetadata(PluginMetadata.PAGE.data,
+    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.FORGE_CATEGORY.value));
+    user.setMetadata(PluginPlayerMeta.Container.PAGE.name,
         new FixedMetadataValue(AethelPlugin.getInstance(), "0"));
   }
 }

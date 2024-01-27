@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.commands;
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.AethelResources;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
 import me.dannynguyen.aethel.enums.PluginPermission;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.inventories.ShowItemPast;
 import me.dannynguyen.aethel.objects.ItemOwner;
 import me.dannynguyen.aethel.readers.ItemReader;
@@ -30,7 +30,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.4.5
  */
 public class ShowItem implements CommandExecutor {
@@ -89,8 +89,8 @@ public class ShowItem implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("past") || action.equals("p")) {
       user.openInventory(ShowItemPast.createInventory(user));
-      user.setMetadata(PluginMetadata.INVENTORY.data,
-          new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.SHOWITEM_PAST.data));
+      user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+          new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.SHOWITEM_PAST.value));
     } else {
       user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.message);
     }

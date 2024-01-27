@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.inventories.character.CharacterSheet;
 import org.bukkit.command.Command;
@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.6.3
  */
 public class Character implements CommandExecutor {
@@ -57,7 +57,7 @@ public class Character implements CommandExecutor {
    */
   private void openCharacterSheet(Player user) {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
-    user.setMetadata(PluginMetadata.INVENTORY.data,
-        new FixedMetadataValue(AethelPlugin.getInstance(), PluginMetadata.CHARACTER_SHEET.data));
+    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
+        new FixedMetadataValue(AethelPlugin.getInstance(), PluginPlayerMeta.Value.CHARACTER_SHEET.value));
   }
 }

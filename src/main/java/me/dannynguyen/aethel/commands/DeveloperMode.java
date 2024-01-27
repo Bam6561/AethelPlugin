@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.AethelPlugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginMetadata;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.7.6
+ * @version 1.7.7
  * @since 1.4.6
  */
 public class DeveloperMode implements CommandExecutor {
@@ -55,12 +55,12 @@ public class DeveloperMode implements CommandExecutor {
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    if (!user.hasMetadata(PluginMetadata.DEVELOPER.data)) {
-      user.setMetadata(PluginMetadata.DEVELOPER.data,
+    if (!user.hasMetadata(PluginPlayerMeta.Container.DEVELOPER.name)) {
+      user.setMetadata(PluginPlayerMeta.Container.DEVELOPER.name,
           new FixedMetadataValue(AethelPlugin.getInstance(), "on"));
       user.sendMessage(PluginMessage.DEVELOPERMODE_ON.message);
     } else {
-      user.removeMetadata(PluginMetadata.DEVELOPER.data, AethelPlugin.getInstance());
+      user.removeMetadata(PluginPlayerMeta.Container.DEVELOPER.name, AethelPlugin.getInstance());
       user.sendMessage(PluginMessage.DEVELOPERMODE_OFF.message);
     }
   }
