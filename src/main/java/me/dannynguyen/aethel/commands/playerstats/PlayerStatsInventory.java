@@ -145,7 +145,7 @@ public class PlayerStatsInventory {
           ChatColor.WHITE + "stat to share it.");
     }
 
-    inv.setItem(3, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    inv.setItem(3, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 

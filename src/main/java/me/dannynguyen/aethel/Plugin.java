@@ -17,13 +17,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * Plugin represents the plugin as an object. Through event listeners and command executors,
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.11
+ * @version 1.7.12
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -56,6 +57,8 @@ public class Plugin extends JavaPlugin {
    */
   private void loadResources() {
     long start;
+    long end;
+    Logger log = Bukkit.getLogger();
 
     File resourceDirectory = PluginDirectory.RESOURCES.filePath;
     if (!resourceDirectory.exists()) {
@@ -66,8 +69,8 @@ public class Plugin extends JavaPlugin {
     if (aethelItemsDirectory.exists()) {
       start = System.nanoTime();
       PluginData.aethelItemsData.loadItems();
-      Bukkit.getLogger().warning(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message +
-          (Double.parseDouble(String.valueOf(System.nanoTime() - start)) / 1000000) + "ms");
+      end = System.nanoTime();
+      log.warning(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message + convertToMs(start, end));
     } else {
       aethelItemsDirectory.mkdir();
     }
@@ -76,26 +79,32 @@ public class Plugin extends JavaPlugin {
     if (forgeDirectory.exists()) {
       start = System.nanoTime();
       PluginData.forgeData.loadRecipes();
-      Bukkit.getLogger().warning(PluginMessage.Success.PLUGIN_LOAD_FORGE.message +
-          (Double.parseDouble(String.valueOf(System.nanoTime() - start)) / 1000000) + "ms");
+      end = System.nanoTime();
+      log.warning(PluginMessage.Success.PLUGIN_LOAD_FORGE.message + convertToMs(start, end));
     } else {
       forgeDirectory.mkdir();
     }
 
     start = System.nanoTime();
     PluginData.itemEditorData.loadAttributesEnchants();
-    Bukkit.getLogger().warning(PluginMessage.Success.PLUGIN_LOAD_ITEMEDITOR.message +
-        (Double.parseDouble(String.valueOf(System.nanoTime() - start)) / 1000000) + "ms");
-
-    start = System.nanoTime();
-    PluginData.playerHeadTexture.loadPlayerHeads();
-    Bukkit.getLogger().warning(PluginMessage.Success.PLUGIN_LOAD_PLAYERHEADTEXTURES.message +
-        (Double.parseDouble(String.valueOf(System.nanoTime() - start)) / 1000000) + "ms");
+    end = System.nanoTime();
+    log.warning(PluginMessage.Success.PLUGIN_LOAD_ITEMEDITOR.message + convertToMs(start, end));
 
     start = System.nanoTime();
     PluginData.playerStatsData.loadStats();
-    Bukkit.getLogger().warning(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message +
-        (Double.parseDouble(String.valueOf(System.nanoTime() - start)) / 1000000) + "ms");
+    end = System.nanoTime();
+    log.warning(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message + convertToMs(start, end));
+  }
+
+  /**
+   * Converts the time duration of a process in nanoseconds to milliseconds.
+   *
+   * @param start start time
+   * @param end   end time
+   * @return milliseconds elapsed
+   */
+  private static String convertToMs(long start, long end) {
+    return (Double.parseDouble(String.valueOf(end - start)) / 1000000) + "ms";
   }
 
   public static Plugin getInstance() {

@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
  * PluginMessage is an enum collection containing the plugin's commonly sent messages.
  *
  * @author Danny Nguyen
- * @version 1.7.11
+ * @version 1.7.12
  * @since 1.7.6
  */
 public class PluginMessage {
@@ -17,7 +17,6 @@ public class PluginMessage {
     PLUGIN_LOAD_AETHELITEMS("[Aethel] Loaded Aethel Items:"),
     PLUGIN_LOAD_FORGE("[Aethel] Loaded Forge Recipes: "),
     PLUGIN_LOAD_ITEMEDITOR("[Aethel] Loaded Item Editor: "),
-    PLUGIN_LOAD_PLAYERHEADTEXTURES("[Aethel] Loaded Player Head Textures: "),
     PLUGIN_LOAD_PLAYERSTATS("[Aethel] Loaded Player Stats: "),
 
     NOTIFICATION_GLOBAL(ChatColor.GREEN + "[!] "),
@@ -71,6 +70,11 @@ public class PluginMessage {
    * Sent on failure.
    */
   public enum Failure {
+    PLUGIN_INVALID_PLAYER_HEAD_TEXTURE("[Aethel] Invalid player head texture: "),
+    PLUGIN_INVALID_TEXTURE(ChatColor.RED + "Invalid texture."),
+
+    NOTIFICATION_ERROR(ChatColor.RED + "[!] Error"),
+
     PLAYER_ONLY_COMMAND(ChatColor.RED + "Player-only command."),
     INSUFFICIENT_PERMISSION(ChatColor.RED + "Insufficient permission."),
     NO_PARAMETERS(ChatColor.RED + "No parameters provided."),

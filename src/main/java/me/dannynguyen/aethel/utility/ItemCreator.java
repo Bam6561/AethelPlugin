@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.utility;
 
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginMessage;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +12,6 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.7.11
+ * @version 1.7.12
  * @since 1.1.5
  */
 public final class ItemCreator {
@@ -133,33 +132,31 @@ public final class ItemCreator {
   /**
    * Creates a named player head from loaded textures.
    *
-   * @param texture     player head texture name
+   * @param item        interacting item
    * @param displayName item name
    * @return named player head texture
    */
-  public static ItemStack createPlayerHeadTexture(String texture, String displayName) {
-    ItemStack item = PluginData.playerHeadTexture.getHeadsMap().get(texture).clone();
+  public static ItemStack createPluginPlayerHead(ItemStack item, String displayName) {
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
       item.setItemMeta(meta);
       return item;
     } else {
-      return createItem(Material.BARRIER, ChatColor.RED + "[!] Error",
-          Arrays.asList(ChatColor.RED + "Invalid texture."));
+      return createItem(Material.BARRIER, PluginMessage.Failure.NOTIFICATION_ERROR.message,
+          List.of(PluginMessage.Failure.PLUGIN_INVALID_TEXTURE.message));
     }
   }
 
   /**
    * Creates a named player head from loaded textures with lore.
    *
-   * @param texture     player head texture name
+   * @param item        interacting item
    * @param displayName item name
    * @param lore        item lore
    * @return named player head texture with lore
    */
-  public static ItemStack createPlayerHeadTexture(String texture, String displayName, List<String> lore) {
-    ItemStack item = PluginData.playerHeadTexture.getHeadsMap().get(texture).clone();
+  public static ItemStack createPluginPlayerHead(ItemStack item, String displayName, List<String> lore) {
     if (item != null) {
       ItemMeta meta = item.getItemMeta();
       meta.setDisplayName(displayName);
@@ -167,8 +164,8 @@ public final class ItemCreator {
       item.setItemMeta(meta);
       return item;
     } else {
-      return createItem(Material.BARRIER, ChatColor.RED + "[!] Error",
-          Arrays.asList(ChatColor.RED + "Invalid texture."));
+      return createItem(Material.BARRIER, PluginMessage.Failure.NOTIFICATION_ERROR.message,
+          List.of(PluginMessage.Failure.PLUGIN_INVALID_TEXTURE.message));
     }
   }
 

@@ -86,7 +86,7 @@ public class ItemEditorTags {
   private static void addTagsContext(Inventory inv) {
     List<String> helpLore = Arrays.asList(
         ChatColor.WHITE + "To remove a tag, input \"-\".");
-    inv.setItem(2, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    inv.setItem(2, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 }

@@ -70,7 +70,7 @@ public class ItemEditorI {
    * @param item interacting item
    */
   private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
-    ItemStack formatCodes = ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    ItemStack formatCodes = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Format Codes",
         List.of(ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
             ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
@@ -78,7 +78,7 @@ public class ItemEditorI {
             ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
             ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
             ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
-    ItemStack colorCodes = ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    ItemStack colorCodes = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Color Codes",
         List.of(ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
             ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
@@ -127,14 +127,14 @@ public class ItemEditorI {
   private static void addLoreMeta(Inventory inv, ItemMeta meta) {
     ItemStack lore;
     if (!meta.hasLore()) {
-      lore = ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+      lore = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
     } else {
       List<String> loreLines = meta.getLore();
       for (int i = 0; i < loreLines.size(); i++) {
         loreLines.set(i, ChatColor.WHITE + "" + (i + 1) + " " + ChatColor.RESET + loreLines.get(i));
       }
-      lore = ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+      lore = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
           ChatColor.GREEN + "Lore", loreLines);
     }
 

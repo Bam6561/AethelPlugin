@@ -131,7 +131,7 @@ public class AethelItemsInventory {
           ChatColor.WHITE + "it before reloading.");
     }
 
-    inv.setItem(2, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    inv.setItem(2, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -145,18 +145,18 @@ public class AethelItemsInventory {
     switch (action) {
       case "get" -> {
         inv.setItem(4, ItemCreator.
-            createPlayerHeadTexture("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
+            createPluginPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createPlayerHeadTexture("TRASH_CAN", ChatColor.AQUA + "Remove"));
+            createPluginPlayerHead("TRASH_CAN", ChatColor.AQUA + "Remove"));
       }
       case "remove" -> {
         inv.setItem(4, ItemCreator.
-            createPlayerHeadTexture("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
+            createPluginPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createPlayerHeadTexture("BROWN_BACKPACK", ChatColor.AQUA + "Get"));
+            createPluginPlayerHead("BROWN_BACKPACK", ChatColor.AQUA + "Get"));
       }
       case "view" -> inv.setItem(4, ItemCreator.
-          createPlayerHeadTexture("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
+          createPluginPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
     }
   }
 }

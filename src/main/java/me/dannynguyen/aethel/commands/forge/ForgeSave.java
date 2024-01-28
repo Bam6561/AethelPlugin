@@ -37,9 +37,9 @@ public class ForgeSave {
 
     addCreateHelp(inv);
     inv.setItem(25, ItemCreator.
-        createPlayerHeadTexture("STACK_OF_PAPER", ChatColor.AQUA + "Save"));
+        createPluginPlayerHead("STACK_OF_PAPER", ChatColor.AQUA + "Save"));
     inv.setItem(26, ItemCreator.
-        createPlayerHeadTexture("GRAY_BACKWARD", ChatColor.AQUA + "Back"));
+        createPluginPlayerHead("GRAY_BACKWARD", ChatColor.AQUA + "Back"));
     return inv;
   }
 
@@ -54,7 +54,7 @@ public class ForgeSave {
         ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
         ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
         ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components");
-    inv.setItem(8, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    inv.setItem(8, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 

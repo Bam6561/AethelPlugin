@@ -102,7 +102,7 @@ public class ItemEditorAttributes {
     List<String> helpLore = Arrays.asList(
         ChatColor.WHITE + "To remove a attribute, input \"0\".");
 
-    inv.setItem(0, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    inv.setItem(0, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
     inv.setItem(18, ItemCreator.createItem(Material.IRON_SWORD,
         ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));

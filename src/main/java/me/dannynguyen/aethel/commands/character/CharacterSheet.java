@@ -69,7 +69,7 @@ public class CharacterSheet {
    * @param inv  interacting inv
    */
   private static void addEquipment(Player user, Inventory inv) {
-    inv.setItem(9, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
+    inv.setItem(9, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
         ChatColor.WHITE + "Equipment",
         List.of(ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | "
                 + ChatColor.GRAY + "Main Hand" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",

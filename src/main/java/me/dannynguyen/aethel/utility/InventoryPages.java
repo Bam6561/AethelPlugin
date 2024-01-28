@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.utility;
 
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 
@@ -8,7 +9,7 @@ import org.bukkit.inventory.Inventory;
  * double chest sized inventories with useful methods.
  *
  * @author Danny Nguyen
- * @version 1.7.11
+ * @version 1.7.12
  * @since 1.4.2
  */
 public final class InventoryPages {
@@ -54,8 +55,8 @@ public final class InventoryPages {
    * @param inv interacting inventory
    */
   public static void addBackButton(Inventory inv, int invSlot) {
-    inv.setItem(invSlot, ItemCreator.createPlayerHeadTexture(
-        "CHISELED_BOOKSHELF", ChatColor.AQUA + "Back"));
+    inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(
+        PluginPlayerHead.CHISELED_BOOKSHELF.head, ChatColor.AQUA + "Back"));
   }
 
   /**
@@ -67,13 +68,13 @@ public final class InventoryPages {
    */
   public static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
     if (pageViewed > 0) {
-      inv.setItem(0, ItemCreator.createPlayerHeadTexture(
-          "RED_BACKWARD", ChatColor.AQUA + "Previous Page"));
+      inv.setItem(0, ItemCreator.createPluginPlayerHead(
+          PluginPlayerHead.BACKWARD_RED.head, ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
       inv.setItem(8, ItemCreator.
-          createPlayerHeadTexture(
-              "LIME_FORWARD", ChatColor.AQUA + "Next Page"));
+          createPluginPlayerHead(
+              PluginPlayerHead.FORWARD_LIME.head, ChatColor.AQUA + "Next Page"));
     }
   }
 }
