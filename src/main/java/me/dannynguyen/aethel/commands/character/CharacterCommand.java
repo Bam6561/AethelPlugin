@@ -56,7 +56,7 @@ public class CharacterCommand implements CommandExecutor {
    */
   private void openCharacterSheet(Player user) {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
-    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.CHARACTER_SHEET.value));
+    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.CHARACTER_SHEET.inventory));
   }
 }

@@ -5,7 +5,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.ArrayList;
 
 /**
- * AethelItemsCategory is an object that relates Aethel items with their category pages.
+ * AethelItemsCategory is an object that relates Aethel items with their category and page number.
  *
  * @author Danny Nguyen
  * @version 1.5.1

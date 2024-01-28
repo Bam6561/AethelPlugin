@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.formatters.TextFormatter;
+import me.dannynguyen.aethel.utility.ItemCreator;
+import me.dannynguyen.aethel.utility.TextFormatter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -69,7 +69,7 @@ public class CharacterSheet {
    * @param inv  interacting inv
    */
   private static void addEquipment(Player user, Inventory inv) {
-    inv.setItem(9, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(9, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
         ChatColor.WHITE + "Equipment",
         List.of(ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | "
                 + ChatColor.GRAY + "Main Hand" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",

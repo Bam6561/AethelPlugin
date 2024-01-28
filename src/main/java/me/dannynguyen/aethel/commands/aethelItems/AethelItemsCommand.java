@@ -75,8 +75,9 @@ public class AethelItemsCommand implements CommandExecutor {
    */
   private void openMainMenu(Player user) {
     user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
-    user.setMetadata(PluginPlayerMeta.Container.INVENTORY.name,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Value.AETHELITEMS_CATEGORY.value));
-    user.setMetadata(PluginPlayerMeta.Container.PAGE.name, new FixedMetadataValue(Plugin.getInstance(), "0"));
+    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_CATEGORY.inventory));
+    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+        new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 }

@@ -2,9 +2,10 @@ package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.inventories.utility.InventoryPages;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.utility.InventoryPages;
+import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -51,9 +52,9 @@ public class AethelItemsInventory {
     String title = ChatColor.DARK_GRAY + "Aethel Items";
     switch (action) {
       case "get" -> title += ChatColor.GREEN + " Get " +
-          ChatColor.WHITE + user.getMetadata("category").get(0).asString();
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
       case "remove" -> title += ChatColor.RED + " Remove " +
-          ChatColor.WHITE + user.getMetadata("category").get(0).asString();
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
     }
     return Bukkit.createInventory(user, 54, title);
   }
@@ -90,7 +91,7 @@ public class AethelItemsInventory {
     AethelItemsCategory loadedCategory = PluginData.aethelItemsData.getItemCategoriesMap().get(category);
     int numberOfPages = loadedCategory.getNumberOfPages();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata("page", new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace, new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     inv.setContents(loadedCategory.getPages().get(pageViewed).getContents());
 
@@ -130,7 +131,7 @@ public class AethelItemsInventory {
           ChatColor.WHITE + "it before reloading.");
     }
 
-    inv.setItem(2, ItemCreator.createLoadedPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(2, ItemCreator.createPlayerHeadTexture("WHITE_QUESTION_MARK",
         ChatColor.GREEN + "Help", helpLore));
   }
 
@@ -144,18 +145,18 @@ public class AethelItemsInventory {
     switch (action) {
       case "get" -> {
         inv.setItem(4, ItemCreator.
-            createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
+            createPlayerHeadTexture("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createLoadedPlayerHead("TRASH_CAN", ChatColor.AQUA + "Remove"));
+            createPlayerHeadTexture("TRASH_CAN", ChatColor.AQUA + "Remove"));
       }
       case "remove" -> {
         inv.setItem(4, ItemCreator.
-            createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
+            createPlayerHeadTexture("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
         inv.setItem(5, ItemCreator.
-            createLoadedPlayerHead("BROWN_BACKPACK", ChatColor.AQUA + "Get"));
+            createPlayerHeadTexture("BROWN_BACKPACK", ChatColor.AQUA + "Get"));
       }
       case "view" -> inv.setItem(4, ItemCreator.
-          createLoadedPlayerHead("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
+          createPlayerHeadTexture("CRAFTING_TABLE", ChatColor.AQUA + "Save"));
     }
   }
 }

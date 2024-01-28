@@ -2,10 +2,10 @@ package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.inventories.utility.InventoryPages;
+import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
-import me.dannynguyen.aethel.readers.ItemReader;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
@@ -35,7 +35,7 @@ public class AethelItemsData {
    * Loads Aethel items into memory.
    */
   public void loadItems() {
-    File[] directory = new File(PluginData.aethelItemsDirectory).listFiles();
+    File[] directory = new File(PluginData.aethelItems).listFiles();
     if (directory.length > 0) {
       Arrays.sort(directory);
 

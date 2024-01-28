@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.creators.ItemCreator;
-import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
-import me.dannynguyen.aethel.readers.ItemReader;
+import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.utility.ItemCreator;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -38,35 +38,35 @@ public class AethelItemsAction {
   }
 
   /**
-   * Gives an item to the player.
+   * Gives an item to the user.
    *
-   * @param e      inventory click event
-   * @param player interacting player
+   * @param e    inventory click event
+   * @param user user
    */
-  public static void getItem(InventoryClickEvent e, Player player) {
+  public static void getItem(InventoryClickEvent e, Player user) {
     ItemStack item = PluginData.aethelItemsData.getItemsMap().
         get(ItemReader.readName(e.getCurrentItem())).getItem();
 
-    if (player.getInventory().firstEmpty() != -1) {
-      player.getInventory().addItem(item);
+    if (user.getInventory().firstEmpty() != -1) {
+      user.getInventory().addItem(item);
     } else {
-      player.getWorld().dropItem(player.getLocation(), item);
+      user.getWorld().dropItem(user.getLocation(), item);
     }
   }
 
   /**
    * Removes an existing item.
    *
-   * @param e      inventory click event
-   * @param player interacting player
+   * @param e    inventory click event
+   * @param user user
    */
-  public static void removeItem(InventoryClickEvent e, Player player) {
+  public static void removeItem(InventoryClickEvent e, Player user) {
     AethelItem aethelItem = PluginData.aethelItemsData.getItemsMap().
         get(ItemReader.readName(e.getCurrentItem()));
 
     aethelItem.getFile().delete();
-    player.sendMessage(ChatColor.RED + "[Removed Aethel Item] "
-        + ChatColor.WHITE + aethelItem.getName());
+    user.sendMessage(PluginMessage.Success.AETHELITEMS_REMOVE.message +
+        ChatColor.WHITE + aethelItem.getName());
   }
 
   /**
@@ -78,7 +78,7 @@ public class AethelItemsAction {
    */
   private static void saveItemToFile(Player user, ItemStack item) {
     try {
-      FileWriter fw = new FileWriter(PluginData.aethelItemsDirectory
+      FileWriter fw = new FileWriter(PluginData.aethelItems
           + "/" + nameItemFile(item) + "_itm.txt");
       fw.write(ItemCreator.encodeItem(item));
       fw.close();
