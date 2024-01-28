@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
  * PluginMessage is an enum collection containing the plugin's messages.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.0
  * @since 1.7.6
  */
 public class PluginMessage {
@@ -14,9 +14,8 @@ public class PluginMessage {
    * Sent on success.
    */
   public enum Success {
-    PLUGIN_LOAD_AETHELITEMS("[Aethel] Loaded Aethel Items:"),
+    PLUGIN_LOAD_AETHELITEMS("[Aethel] Loaded Aethel Items: "),
     PLUGIN_LOAD_FORGE("[Aethel] Loaded Forge Recipes: "),
-    PLUGIN_LOAD_ITEMEDITOR("[Aethel] Loaded Item Editor: "),
     PLUGIN_LOAD_PLAYERSTATS("[Aethel] Loaded Player Stats: "),
 
     NOTIFICATION_GLOBAL(ChatColor.GREEN + "[!] "),
@@ -57,7 +56,14 @@ public class PluginMessage {
     ITEMEDITOR_DISABLE_HIDE_POTION_EFFECTS(ChatColor.RED + "[Hide Potion Effects]"),
     ITEMEDITOR_DISABLE_HIDE_UNBREAKABLE(ChatColor.RED + "[Hide Unbreakable]"),
     ITEMEDITOR_ENABLE_UNBREAKABLE(ChatColor.GREEN + "[Set Unbreakable]"),
-    ITEMEDITOR_DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]");
+    ITEMEDITOR_DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]"),
+    ITEMEDITOR_INPUT_DISPLAY_NAME(ChatColor.WHITE + "Input display name."),
+    ITEMEDITOR_INPUT_CUSTOMMODELDATA(ChatColor.WHITE + "Input custom model data value."),
+    ITEMEDITOR_INPUT_SET_LORE(ChatColor.WHITE + "Input lore to set."),
+    ITEMEDITOR_INPUT_ADD_LORE(ChatColor.WHITE + "Input lore to add."),
+    ITEMEDITOR_INPUT_EDIT_LORE(ChatColor.WHITE + "Input line number and lore to edit."),
+    ITEMEDITOR_INPUT_REMOVE_LORE(ChatColor.WHITE + "Input line number to remove.");
+
 
     public final String message;
 

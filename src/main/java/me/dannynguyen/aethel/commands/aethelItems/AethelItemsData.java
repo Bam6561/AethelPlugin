@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.aethelItems;
 
-import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
-import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
+import me.dannynguyen.aethel.commands.aethelItems.object.AethelItem;
+import me.dannynguyen.aethel.commands.aethelItems.object.AethelItemsCategory;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -24,7 +24,7 @@ import java.util.Scanner;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -36,7 +36,7 @@ public class AethelItemsData {
    */
   public void loadItems() {
     File[] directory = PluginDirectory.AETHELITEMS.file.listFiles();
-    if (directory.length > 0) {
+    if (directory != null) {
       Arrays.sort(directory);
 
       itemsMap.clear();

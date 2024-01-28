@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.7.13
+version: 1.8.0
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -17,11 +17,11 @@ commands:
     aliases: [ at, atag ]
   character:
     description: Opens an RPG character sheet.
-    usage: /char
+    usage: /character
     aliases: [ c, char ]
   developermode:
     description: Developer mode.
-    usage: /dev
+    usage: /developermode
     aliases: [ dm, dev ]
   forge:
     description: Opens a Forge inventory.
@@ -29,7 +29,7 @@ commands:
     aliases: [ f ]
   itemeditor:
     description: Edits an item's metadata.
-    usage: /iedit
+    usage: /itemeditor
     aliases: [ ie, iedit ]
   ping:
     description: Responds with server latency.
@@ -37,7 +37,7 @@ commands:
     aliases: [ p ]
   showitem:
     description: Shows main hand item to chat.
-    usage: /show
+    usage: /showitem
     aliases: [ si, show ]
   playerstats:
     description: Gets a player's statistics.

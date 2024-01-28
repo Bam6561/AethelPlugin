@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.showitem;
 
-import me.dannynguyen.aethel.commands.showitem.objects.ItemOwner;
+import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
 
 import java.util.ArrayList;
 

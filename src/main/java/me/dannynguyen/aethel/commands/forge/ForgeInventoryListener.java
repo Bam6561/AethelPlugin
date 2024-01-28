@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.commands.forge.objects.ForgeCraftOperation;
+import me.dannynguyen.aethel.commands.forge.object.ForgeCraftOperation;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
@@ -79,7 +79,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Either crafts a recipe or goes back to the Forge inventory with the intent to craft recipes.
+   * Either crafts a recipe or goes back to the Forge category page with the intent to craft recipes.
    *
    * @param e    inventory click event
    * @param user user
@@ -95,7 +95,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Either saves a recipe or goes back to the Forge inventory with the intent to edit recipes.
+   * Either saves a recipe or goes back to the Forge category pagewith the intent to edit recipes.
    *
    * @param e    inventory click event
    * @param user user
@@ -130,7 +130,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Opens a Forge inventory with the intent to edit recipes.
+   * Opens a ForgeSave menu with the intent to edit recipes.
    * <p>
    * Since the user can either be returning to the main page or
    * a recipe category from here, both scenarios are supported.
@@ -155,7 +155,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Opens a Forge inventory with the intent to remove recipes.
+   * Opens a Forge menu with the intent to remove recipes.
    *
    * @param user user
    */
@@ -169,7 +169,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Opens a Forge inventory with the future action in mind.
+   * Opens a Forge main menu with the future action in mind.
    *
    * @param user user
    */
@@ -186,7 +186,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Opens a Forge inventory with the intent to craft recipes.
+   * Opens a ForgeCraft menu with the intent to craft recipes.
    *
    * @param user user
    */

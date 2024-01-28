@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.playerstats;
 
-import me.dannynguyen.aethel.commands.playerstats.objects.PlayerStatsCategory;
-import me.dannynguyen.aethel.commands.playerstats.objects.PlayerStatsValues;
-import me.dannynguyen.aethel.enums.PluginValues;
+import me.dannynguyen.aethel.commands.playerstats.object.PlayerStatsCategory;
+import me.dannynguyen.aethel.commands.playerstats.object.PlayerStatsValues;
+import me.dannynguyen.aethel.enums.PluginConstant;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -12,13 +12,15 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * PlayerStatsData stores player statistic names in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.4.8
  */
 public class PlayerStatsData {
@@ -46,7 +48,7 @@ public class PlayerStatsData {
    * Creates pages of non-substats by category.
    */
   private void createStatCategoryPages() {
-    for (PlayerStatsCategory playerStatsCategory : PluginValues.PlayerStatsCategories) {
+    for (PlayerStatsCategory playerStatsCategory : PluginConstant.playerStatsCategories) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54, "PlayerStats Category Page");
       for (String statName : playerStatsCategory.getStats()) {
@@ -62,15 +64,7 @@ public class PlayerStatsData {
    * Creates pages of materials.
    */
   private void createMaterialPages() {
-    ArrayList<Material> materials = new ArrayList<>();
-    for (Material material : Material.values()) {
-      if (material.isItem() && !material.isAir()) {
-        materials.add(material);
-      }
-    }
-    Comparator<Material> materialComparator = Comparator.comparing(Enum::name);
-    materials.sort(materialComparator);
-
+    ArrayList<Material> materials = PluginConstant.sortedMaterials;
     int numberOfMaterials = materials.size();
     int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfMaterials);
     setNumberOfMaterialPages(numberOfPages);
@@ -101,12 +95,7 @@ public class PlayerStatsData {
    * Creates pages of entities.
    */
   private void createEntityTypeStatPages() {
-    HashMap<String, ArrayList<Inventory>> substatCategoryPages = getSubstatCategoryPages();
-
-    List<EntityType> entityTypes = Arrays.asList(EntityType.values());
-    Comparator<EntityType> entityTypeComparator = Comparator.comparing(Enum::name);
-    entityTypes.sort(entityTypeComparator);
-
+    ArrayList<EntityType> entityTypes = PluginConstant.sortedEntityTypes;
     int numberOfEntityTypes = entityTypes.size();
     int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfEntityTypes);
     setNumberOfEntityTypePages(numberOfPages);

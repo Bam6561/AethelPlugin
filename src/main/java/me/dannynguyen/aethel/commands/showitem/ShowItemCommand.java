@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.showitem.objects.ItemOwner;
+import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -29,7 +29,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.0
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -87,7 +87,7 @@ public class ShowItemCommand implements CommandExecutor {
    */
   private void interpretParameter(Player user, String action) {
     if (action.equals("past") || action.equals("p")) {
-      user.openInventory(ShowItemPast.createInventory(user));
+      user.openInventory(ShowItemPast.openInventory(user));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
           new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.SHOWITEM_PAST.inventory));
     } else {

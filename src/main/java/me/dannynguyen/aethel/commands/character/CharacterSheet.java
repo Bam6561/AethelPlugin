@@ -116,7 +116,7 @@ public class CharacterSheet {
   /**
    * Adds the user's offense attributes.
    *
-   * @param user       interacting user
+   * @param user       user
    * @param inv        interacting inventory
    * @param hundredths 0.00
    */
@@ -139,7 +139,7 @@ public class CharacterSheet {
   /**
    * Adds the user's defense attributes.
    *
-   * @param user        interacting user
+   * @param user        user
    * @param inv         interacting inventory
    * @param tenths      0.0
    * @param hundredths  0.00
@@ -172,7 +172,7 @@ public class CharacterSheet {
   /**
    * Adds the user's other attributes.
    *
-   * @param user       interacting user
+   * @param user       user
    * @param inv        interacting inventory
    * @param hundredths 0.00
    */

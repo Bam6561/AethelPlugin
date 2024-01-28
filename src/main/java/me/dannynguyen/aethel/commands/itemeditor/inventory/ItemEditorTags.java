@@ -1,9 +1,11 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginConstant;
+import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
-import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.InventoryPages;
+import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,28 +17,27 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * ItemEditorTags is an inventory under the ItemEditor command that edits an item's Aethel tags.
+ * ItemEditorTags is an inventory that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.6.15
  */
 public class ItemEditorTags {
   /**
-   * Opens an ItemEditorTags inventory with Aethel tags.
+   * Opens an ItemEditorTags menu with Aethel tags.
    *
-   * @param user interacting user
-   * @return ItemEditorTags inventory with Aethel tags
+   * @param user user
+   * @return ItemEditorTags menu
    */
   public static Inventory openTagsMenu(Player user) {
     ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
     Inventory inv = createInventory(user, item);
     addAethelTags(inv, user);
-    addTagsContext(inv);
+    addContext(inv);
     InventoryPages.addBackButton(inv, 6);
     return inv;
   }
@@ -44,8 +45,8 @@ public class ItemEditorTags {
   /**
    * Creates and names an ItemEditorTags inventory.
    *
-   * @param user interacting user
-   * @param item   interacting item
+   * @param user user
+   * @param item interacting item
    * @return ItemEditorTags inventory
    */
   private static Inventory createInventory(Player user, ItemStack item) {
@@ -58,12 +59,11 @@ public class ItemEditorTags {
   /**
    * Adds built-in Aethel tags.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
+   * @param inv  interacting inventory
+   * @param user user
    */
   private static void addAethelTags(Inventory inv, Player user) {
-    ItemEditorData itemEditorData = PluginData.itemEditorData;
-    ArrayList<NamespacedKey> aethelTags = itemEditorData.getAethelTags();
+    ArrayList<NamespacedKey> aethelTags = PluginConstant.aethelTags;
     PersistentDataContainer dataContainer = PluginData.itemEditorData.
         getEditedItemMap().get(user).getItemMeta().getPersistentDataContainer();
 
@@ -84,10 +84,8 @@ public class ItemEditorTags {
    *
    * @param inv interacting inventory
    */
-  private static void addTagsContext(Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "To remove a tag, input \"-\".");
+  private static void addContext(Inventory inv) {
     inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", helpLore));
+        ChatColor.GREEN + "Help", PluginContext.ITEMEDITOR_TAGS.context));
   }
 }

@@ -30,11 +30,11 @@ import java.util.List;
  */
 public class PlayerStatsInventory {
   /**
-   * Creates a PlayerStats page containing stat categories.
+   * Creates a PlayerStats main menu containing stat categories.
    *
    * @param user                user
    * @param requestedPlayerName requested player's name
-   * @return PlayerStats inventory with stat categories
+   * @return PlayerStats main menu
    */
   public static Inventory openMainMenu(Player user, String requestedPlayerName) {
     Inventory inv = createInventory(user, requestedPlayerName);
@@ -63,7 +63,7 @@ public class PlayerStatsInventory {
    */
   private static void addCategories(Inventory inv) {
     int i = 9;
-    for (String statCategory : PluginList.PLAYERSTATS_STAT_CATEGORY_NAMES.list) {
+    for (String statCategory : PluginList.PLAYERSTAT_CATEGORY_NAMES.list) {
       inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + statCategory));
       i++;
     }
@@ -76,7 +76,7 @@ public class PlayerStatsInventory {
    * @param requestedPlayerName requested player's name
    * @param categoryName        category to view
    * @param pageRequest         page to view
-   * @return PlayerStats inventory with stat values
+   * @return PlayerStats category page
    */
   public static Inventory openCategoryPage(Player user, String requestedPlayerName,
                                            String categoryName, int pageRequest) {

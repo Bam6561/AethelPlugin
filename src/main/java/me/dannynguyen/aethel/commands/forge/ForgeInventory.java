@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.forge.objects.ForgeRecipeCategory;
+import me.dannynguyen.aethel.commands.forge.object.ForgeRecipeCategory;
 import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -32,7 +32,7 @@ public class ForgeInventory {
    *
    * @param user   user
    * @param action type of interaction
-   * @return Forge inventory with recipe categories
+   * @return Forge main menu
    */
   public static Inventory openMainMenu(Player user, String action) {
     Inventory inv = createInventory(user, action);
@@ -95,7 +95,7 @@ public class ForgeInventory {
    * @param action            type of interaction
    * @param requestedCategory requested category
    * @param pageRequest       page to view
-   * @return Forge inventory with recipes
+   * @return Forge category page
    */
   public static Inventory openForgeCategoryPage(Player user, String action,
                                                 String requestedCategory, int pageRequest) {

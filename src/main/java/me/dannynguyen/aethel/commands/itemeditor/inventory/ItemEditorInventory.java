@@ -1,5 +1,7 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
+import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorToggles;
+import me.dannynguyen.aethel.enums.PluginList;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -15,31 +17,32 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 /**
- * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
+ * ItemEditorInventory is an inventory that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.6.7
  */
-public class ItemEditorI {
+public class ItemEditorInventory {
   /**
-   * Opens an ItemEditorMenu with metadata fields.
+   * Opens an ItemEditor menu with metadata fields.
    *
-   * @param user interacting user
-   * @param item   interacting item
-   * @return ItemEditorMenu with metadata fields
+   * @param user user
+   * @param item interacting item
+   * @return ItemEditor main menu
    */
-  public static Inventory openCosmeticMenu(Player user, ItemStack item) {
+  public static Inventory openMainMenu(Player user, ItemStack item) {
     Inventory inv = createInventory(user, item);
-    addMetadataButtons(inv, item);
+    addActions(inv, item);
+    addContexts(inv);
     return inv;
   }
 
   /**
-   * Creates and names an ItemEditorMenu inventory to the item.
+   * Creates and names an ItemEditor inventory to the item and adds the item being edited.
    *
-   * @param user interacting user
-   * @return ItemEditorMenu
+   * @param user user
+   * @return ItemEditor inventory
    */
   private static Inventory createInventory(Player user, ItemStack item) {
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor");
@@ -53,15 +56,29 @@ public class ItemEditorI {
    * @param inv  interacting inventory
    * @param item interacting item
    */
-  private static void addMetadataButtons(Inventory inv, ItemStack item) {
+  private static void addActions(Inventory inv, ItemStack item) {
     ItemMeta meta = item.getItemMeta();
-
-    addDisplayNameMeta(inv, item);
-    addCustomModelDataMeta(inv, meta);
-    addLoreMeta(inv, meta);
-    addGameplayMeta(inv);
+    addDisplayNameAction(inv, item);
+    addCustomModelDataAction(inv, meta);
+    addLoreActions(inv, meta);
+    addGameplayActions(inv);
     ItemEditorToggles.addItemFlagsMeta(inv, meta);
     ItemEditorToggles.addUnbreakableMeta(inv, meta);
+  }
+
+  /**
+   * Adds help contexts to the ItemEditor inventory.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addContexts(Inventory inv) {
+    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+        ChatColor.GREEN + "Format Codes", PluginList.SPIGOT_FORMAT_CODES.list);
+    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+        ChatColor.GREEN + "Color Codes", PluginList.SPIGOT_COLOR_CODES.list);
+
+    inv.setItem(9, formatCodes);
+    inv.setItem(10, colorCodes);
   }
 
   /**
@@ -70,38 +87,9 @@ public class ItemEditorI {
    * @param inv  interacting inventory
    * @param item interacting item
    */
-  private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
-    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Format Codes",
-        List.of(ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
-            ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
-            ChatColor.WHITE + "&m " + ChatColor.STRIKETHROUGH + "Strike",
-            ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
-            ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
-            ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
-    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Color Codes",
-        List.of(ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
-            ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
-            ChatColor.WHITE + "&2 " + ChatColor.DARK_GREEN + "Dark Green",
-            ChatColor.WHITE + "&3 " + ChatColor.DARK_RED + "Dark Red",
-            ChatColor.WHITE + "&4 " + ChatColor.DARK_AQUA + "Dark Aqua",
-            ChatColor.WHITE + "&5 " + ChatColor.DARK_PURPLE + "Dark Purple",
-            ChatColor.WHITE + "&6 " + ChatColor.GOLD + "Gold",
-            ChatColor.WHITE + "&7 " + ChatColor.GRAY + "Gray",
-            ChatColor.WHITE + "&8 " + ChatColor.DARK_GRAY + "Dark Gray",
-            ChatColor.WHITE + "&9 " + ChatColor.BLUE + "Blue",
-            ChatColor.WHITE + "&a " + ChatColor.GREEN + "Green",
-            ChatColor.WHITE + "&b " + ChatColor.AQUA + "Aqua",
-            ChatColor.WHITE + "&c " + ChatColor.RED + "Red",
-            ChatColor.WHITE + "&d " + ChatColor.LIGHT_PURPLE + "Light Purple",
-            ChatColor.WHITE + "&e " + ChatColor.YELLOW + "Yellow",
-            ChatColor.WHITE + "&f " + ChatColor.WHITE + "White"));
+  private static void addDisplayNameAction(Inventory inv, ItemStack item) {
     ItemStack displayName = ItemCreator.createItem(Material.NAME_TAG,
         ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readName(item)));
-
-    inv.setItem(9, formatCodes);
-    inv.setItem(10, colorCodes);
     inv.setItem(11, displayName);
   }
 
@@ -111,7 +99,7 @@ public class ItemEditorI {
    * @param inv  interacting inventory
    * @param meta item meta
    */
-  private static void addCustomModelDataMeta(Inventory inv, ItemMeta meta) {
+  private static void addCustomModelDataAction(Inventory inv, ItemMeta meta) {
     ItemStack customModelData = (!meta.hasCustomModelData() ?
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data") :
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data",
@@ -125,7 +113,7 @@ public class ItemEditorI {
    * @param inv  interacting inventory
    * @param meta item meta
    */
-  private static void addLoreMeta(Inventory inv, ItemMeta meta) {
+  private static void addLoreActions(Inventory inv, ItemMeta meta) {
     ItemStack lore;
     if (!meta.hasLore()) {
       lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
@@ -164,7 +152,7 @@ public class ItemEditorI {
    *
    * @param inv interacting inventory
    */
-  private static void addGameplayMeta(Inventory inv) {
+  private static void addGameplayActions(Inventory inv) {
     inv.setItem(14, ItemCreator.createItem(Material.IRON_HELMET,
         ChatColor.AQUA + "Attributes", ItemFlag.HIDE_ATTRIBUTES));
     inv.setItem(15, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchants"));

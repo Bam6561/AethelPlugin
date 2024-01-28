@@ -1,6 +1,7 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.listener;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorInventory;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import org.bukkit.Bukkit;
@@ -18,15 +19,15 @@ import java.util.List;
  * ItemEditorMessageCosmetic is a utility class that edits an item's cosmetic-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.7.0
  */
-public class ItemEditorMessageCosmetic {
+public class ItemEditorMessageListenerCosmetic {
   /**
    * Sets the item's display name.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    */
@@ -42,7 +43,7 @@ public class ItemEditorMessageCosmetic {
    * Sets the item's custom model data.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    * @throws NumberFormatException not an integer
@@ -52,7 +53,8 @@ public class ItemEditorMessageCosmetic {
     try {
       meta.setCustomModelData(Integer.parseInt(e.getMessage()));
       item.setItemMeta(meta);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_SET_CUSTOMMODELDATA.message + ChatColor.WHITE + e.getMessage());
+      user.sendMessage(PluginMessage.Success.ITEMEDITOR_SET_CUSTOMMODELDATA.message +
+          ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_CUSTOMMODELDATA.message);
     }
@@ -63,7 +65,7 @@ public class ItemEditorMessageCosmetic {
    * Sets the lore.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    */
@@ -78,7 +80,7 @@ public class ItemEditorMessageCosmetic {
   /**
    * Clears the lore.
    *
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    */
@@ -93,7 +95,7 @@ public class ItemEditorMessageCosmetic {
    * Adds a line of lore.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    */
@@ -115,7 +117,7 @@ public class ItemEditorMessageCosmetic {
    * Edits a line of lore.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    * @throws NumberFormatException     not a number
@@ -142,7 +144,7 @@ public class ItemEditorMessageCosmetic {
    * Removes a line of lore.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    * @throws NumberFormatException     not a number
@@ -168,16 +170,17 @@ public class ItemEditorMessageCosmetic {
   /**
    * Returns to the editor menu.
    *
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    */
   private static void openMainMenu(Player user, ItemStack item) {
-    user.removeMetadata("message", Plugin.getInstance());
+    user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
     Bukkit.getScheduler().runTask(Plugin.getInstance(),
         () -> {
-          user.openInventory(ItemEditorI.openCosmeticMenu(user, item));
+          user.openInventory(ItemEditorInventory.openMainMenu(user, item));
           user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-              new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.ITEMEDITOR_COSMETICS.inventory));
+              new FixedMetadataValue(Plugin.getInstance(),
+                  PluginPlayerMeta.Inventory.ITEMEDITOR_COSMETICS.inventory));
         });
   }
 }

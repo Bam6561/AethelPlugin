@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorInventory;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -14,11 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * ItemEditor is a command invocation that allows
+ * ItemEditor is a command invocation that allows the
  * user to edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.0
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -51,21 +52,21 @@ public class ItemEditorCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args, ItemStack item) {
     switch (args.length) {
-      case 0 -> openCosmeticMenu(user, item);
+      case 0 -> openMainMenu(user, item);
       default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
   /**
-   * Opens an ItemEditor cosmetic menu.
+   * Opens an ItemEditor main menu.
    *
    * @param user user
    * @param item interacting item
    */
-  private void openCosmeticMenu(Player user, ItemStack item) {
+  private void openMainMenu(Player user, ItemStack item) {
     PluginData.itemEditorData.getEditedItemMap().put(user, item);
 
-    user.openInventory(ItemEditorI.openCosmeticMenu(user, item));
+    user.openInventory(ItemEditorInventory.openMainMenu(user, item));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.ITEMEDITOR_COSMETICS.inventory));
   }

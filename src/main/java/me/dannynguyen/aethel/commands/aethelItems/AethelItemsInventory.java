@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
+import me.dannynguyen.aethel.commands.aethelItems.object.AethelItemsCategory;
 import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -32,7 +32,7 @@ public class AethelItemsInventory {
    *
    * @param user   user
    * @param action type of interaction
-   * @return AethelItems main menu with item categories
+   * @return AethelItems main menu
    */
   public static Inventory openMainMenu(Player user, String action) {
     Inventory inv = createInventory(user, action);
@@ -83,7 +83,7 @@ public class AethelItemsInventory {
    * @param action            type of interaction
    * @param requestedCategory requested category
    * @param requestedPage     requested page
-   * @return AethelItems main menu with item categories
+   * @return AethelItems category page
    */
   public static Inventory openCategoryPage(Player user, String action,
                                            String requestedCategory, int requestedPage) {

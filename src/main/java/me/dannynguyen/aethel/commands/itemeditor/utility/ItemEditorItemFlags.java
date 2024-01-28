@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.utility;
 
 import me.dannynguyen.aethel.enums.PluginMessage;
 import org.bukkit.entity.Player;
@@ -8,20 +8,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
- * ItemEditorInventoryItemFlags is a utility class that toggles an item's item flags.
+ * ItemEditorItemFlags is a utility class that toggles an item's item flags.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.8.0
  * @since 1.7.0
  */
-public class ItemEditorInventoryItemFlags {
+public class ItemEditorItemFlags {
   /**
    * Toggles an item's hide armor trim flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHideArmorTrim(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM)) {
@@ -39,10 +39,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide attributes flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHideAttributes(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
@@ -60,10 +60,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide destroys flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHideDestroys(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
@@ -81,10 +81,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide dye flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHideDye(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_DYE)) {
@@ -102,10 +102,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide enchants flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHideEnchants(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
@@ -123,10 +123,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide placed on flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHidePlacedOn(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
@@ -144,10 +144,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide potion effects flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHidePotionEffects(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS)) {
@@ -165,10 +165,10 @@ public class ItemEditorInventoryItemFlags {
   /**
    * Toggles an item's hide unbreakable flag.
    *
-   * @param inv    interacting inventory
-   * @param user interacting user
-   * @param item   interacting item
-   * @param meta   item meta
+   * @param inv  interacting inventory
+   * @param user user
+   * @param item interacting item
+   * @param meta item meta
    */
   public static void toggleHideUnbreakable(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)) {

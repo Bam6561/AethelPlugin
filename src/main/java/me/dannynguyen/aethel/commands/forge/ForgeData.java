@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.commands.forge.objects.ForgeRecipe;
-import me.dannynguyen.aethel.commands.forge.objects.ForgeRecipeCategory;
+import me.dannynguyen.aethel.commands.forge.object.ForgeRecipe;
+import me.dannynguyen.aethel.commands.forge.object.ForgeRecipeCategory;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.1.11
  */
 public class ForgeData {
@@ -35,7 +35,7 @@ public class ForgeData {
    */
   public void loadRecipes() {
     File[] directory = PluginDirectory.FORGE.file.listFiles();
-    if (directory.length > 0) {
+    if (directory != null) {
       Arrays.sort(directory);
 
       recipesMap.clear();

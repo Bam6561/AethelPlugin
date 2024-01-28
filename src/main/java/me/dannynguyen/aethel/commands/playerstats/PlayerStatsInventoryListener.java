@@ -13,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatsInventoryListener is an inventory listener for the PlayerStats inventory.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.4.7
  */
 public class PlayerStatsInventoryListener {
@@ -43,8 +43,8 @@ public class PlayerStatsInventoryListener {
                   PluginPlayerMeta.Inventory.PLAYERSTATS_STAT.inventory));
         }
       }
-      e.setCancelled(true);
     }
+    e.setCancelled(true);
   }
 
   /**

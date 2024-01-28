@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.forge.objects;
+package me.dannynguyen.aethel.commands.forge.object;
 
 import org.bukkit.inventory.ItemStack;
 

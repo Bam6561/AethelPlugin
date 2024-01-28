@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstats;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.playerstats.objects.PlayerStatsValues;
+import me.dannynguyen.aethel.commands.playerstats.object.PlayerStatsValues;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,7 +20,7 @@ public class PlayerStatsPast {
   /**
    * Creates and names a PlayerStatsPast inventory.
    *
-   * @param user interacting user
+   * @param user user
    * @return PlayerStatsPast inventory
    */
   public static Inventory createInventory(Player user) {

@@ -1,9 +1,12 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.itemeditor.objects.AethelAttribute;
+import me.dannynguyen.aethel.commands.itemeditor.object.AethelAttribute;
+import me.dannynguyen.aethel.enums.PluginConstant;
+import me.dannynguyen.aethel.enums.PluginContext;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -22,48 +25,44 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * ItemEditorAttributes is an inventory under the ItemEditor command that edits an item's attributes.
+ * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
   /**
-   * Opens an ItemEditorAttributes inventory with attributes.
+   * Opens an ItemEditorAttributes menu with attributes.
    *
-   * @param user   interacting user
+   * @param user   user
    * @param action type of interaction
-   * @return ItemEditorAttributes inventory with attributes
+   * @return ItemEditorAttributes menu
    */
   public static Inventory openAttributesMenu(Player user, String action) {
     Inventory inv = createInventory(user, action);
     addAttributes(inv, user);
-    addAttributesContext(inv);
-    addEquipmentSlotButtons(inv);
+    addContext(inv);
+    addActions(inv);
     InventoryPages.addBackButton(inv, 2);
     return inv;
   }
 
   /**
-   * Creates and names an ItemEditorAttributes inventory.
+   * Creates and names an ItemEditorAttributes
+   * inventory with its action and item being edited.
    *
-   * @param user   interacting user
+   * @param user   user
    * @param action type of interaction
    * @return ItemEditorAttributes inventory
    */
   private static Inventory createInventory(Player user, String action) {
     switch (action) {
-      case "head" -> action = "Head";
-      case "chest" -> action = "Chest";
-      case "legs" -> action = "Feet";
-      case "feet" -> action = "Legs";
-      case "hand" -> action = "Hand";
+      case "head", "chest", "legs", "feet", "hand" -> action = TextFormatter.capitalizeWord(action);
       case "off_hand" -> action = "Off Hand";
     }
     Inventory inv = Bukkit.createInventory(user, 54,
@@ -78,20 +77,17 @@ public class ItemEditorAttributes {
    * Adds attributes.
    *
    * @param inv  interacting inventory
-   * @param user interacting user
+   * @param user user
    */
   private static void addAttributes(Inventory inv, Player user) {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     Multimap<Attribute, AttributeModifier> metaAttributes = meta.getAttributeModifiers();
-    HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap = mapAethelAttributes(dataContainer);
+    HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap = mapAttributes(dataContainer);
 
-    addAttributeCategory(inv, dataContainer, metaAttributes,
-        aethelAttributesMap, "offense", 19);
-    addAttributeCategory(inv, dataContainer, metaAttributes,
-        aethelAttributesMap, "defense", 28);
-    addAttributeCategory(inv, dataContainer, metaAttributes,
-        aethelAttributesMap, "other", 37);
+    addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "offense", 19);
+    addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "defense", 28);
+    addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "other", 37);
   }
 
   /**
@@ -99,9 +95,8 @@ public class ItemEditorAttributes {
    *
    * @param inv interacting inventory
    */
-  private static void addAttributesContext(Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "To remove a attribute, input \"0\".");
+  private static void addContext(Inventory inv) {
+    List<String> helpLore = PluginContext.ITEMEDITOR_ATTRIBUTES.context;
 
     inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Help", helpLore));
@@ -118,7 +113,7 @@ public class ItemEditorAttributes {
    *
    * @param inv interacting inventory
    */
-  private static void addEquipmentSlotButtons(Inventory inv) {
+  private static void addActions(Inventory inv) {
     inv.setItem(3, ItemCreator.createItem(Material.IRON_HELMET,
         ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
     inv.setItem(4, ItemCreator.createItem(Material.IRON_CHESTPLATE,
@@ -139,15 +134,14 @@ public class ItemEditorAttributes {
    * @param dataContainer item's persistent data
    * @return item's Aethel attributes map
    */
-  private static HashMap<String, ArrayList<AethelAttribute>> mapAethelAttributes(PersistentDataContainer dataContainer) {
-    NamespacedKey attributesKey =
-        new NamespacedKey(Plugin.getInstance(), "aethel.attribute.list");
-    boolean hasAttributes = dataContainer.has(attributesKey, PersistentDataType.STRING);
+  private static HashMap<String, ArrayList<AethelAttribute>> mapAttributes(PersistentDataContainer dataContainer) {
+    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+    boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {
       HashMap<String, ArrayList<AethelAttribute>> attributesMap = new HashMap<>();
-      ArrayList<String> attributes = new ArrayList<>(Arrays.asList(
-          dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+      ArrayList<String> attributes = new ArrayList<>(List.of(
+          dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
 
       for (String attribute : attributes) {
         String attributeType = attribute.substring(0, attribute.indexOf("."));
@@ -186,26 +180,22 @@ public class ItemEditorAttributes {
                                            Multimap<Attribute, AttributeModifier> metaAttributes,
                                            HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap,
                                            String category, int invSlot) {
-    if (!aethelAttributesMap.isEmpty()) {
-      // Read both Minecraft & Aethel attributes
-      for (String attributeName : PluginData.itemEditorData.getAttributesMap().get(category)) {
-        switch (attributeName) {
-          case "Attack Damage", "Attack Speed", "Max Health", "Armor",
-              "Armor Toughness", "Movement Speed", "Knockback Resistance",
-              "Luck" -> addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
-          default -> createAethelAttribute(inv, dataContainer, aethelAttributesMap, attributeName, invSlot);
+    if (!aethelAttributesMap.isEmpty()) { // Read both Minecraft & Aethel attributes
+      for (String attributeName : PluginConstant.attributesMap.get(category)) {
+        if (PluginConstant.minecraftAttributes.contains(category)) {
+          addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
+        } else {
+          createAethelAttribute(inv, dataContainer, aethelAttributesMap, attributeName, invSlot);
         }
         invSlot++;
       }
-    } else {
-      // Read Minecraft attributes only
-      for (String attributeName : PluginData.itemEditorData.getAttributesMap().get(category)) {
-        switch (attributeName) {
-          case "Attack Damage", "Attack Speed", "Max Health", "Armor",
-              "Armor Toughness", "Movement Speed", "Knockback Resistance",
-              "Luck" -> addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
-          default -> inv.setItem(invSlot,
-              ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
+    } else {  // Read Minecraft attributes only
+      for (String attributeName : PluginConstant.attributesMap.get(category)) {
+        if (PluginConstant.minecraftAttributes.contains(category)) {
+          addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
+        } else {
+          inv.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME,
+              ChatColor.AQUA + attributeName));
         }
         invSlot++;
       }
@@ -213,7 +203,7 @@ public class ItemEditorAttributes {
   }
 
   /**
-   * Adds a Minecraft attribute.
+   * Adds a Minecraft attribute with its slot attribute modifiers.
    *
    * @param inv            interacting inventory
    * @param metaAttributes item's attributes
@@ -243,7 +233,7 @@ public class ItemEditorAttributes {
   }
 
   /**
-   * Adds an Aethel attribute.
+   * Adds an Aethel attribute with its slot attribute modifiers.
    *
    * @param inv                 interacting inventory
    * @param dataContainer       item's persistent tags
@@ -257,13 +247,15 @@ public class ItemEditorAttributes {
                                             String attributeName, int invSlot) {
     String attributeMapKey = attributeName.toLowerCase().replace(" ", "_");
     boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
+
     if (enabled) {
       ArrayList<String> lore = new ArrayList<>();
       for (AethelAttribute aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
         NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(),
             "aethel.attribute." + aethelAttribute.getType() + "." + aethelAttribute.getSlot());
         String attributeValue = dataContainer.get(attributeKey, PersistentDataType.STRING);
-        lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(aethelAttribute.getSlot()) + ": " + attributeValue);
+        lore.add(ChatColor.WHITE +
+            TextFormatter.capitalizePhrase(aethelAttribute.getSlot()) + ": " + attributeValue);
       }
       inv.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME,
           ChatColor.AQUA + attributeName, lore));

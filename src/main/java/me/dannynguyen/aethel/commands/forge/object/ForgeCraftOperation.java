@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.forge.objects;
+package me.dannynguyen.aethel.commands.forge.object;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
@@ -22,11 +22,11 @@ import java.util.HashMap;
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
-  private final ArrayList<InventorySlot> setInventory = new ArrayList<>();
+  private final ArrayList<InventorySlot> postCraftInventorySlotsToUpdate = new ArrayList<>();
 
   /**
    * Crafts a recipe.
@@ -180,12 +180,12 @@ public class ForgeCraftOperation {
   private boolean hasReqAmountSatisfied(InventorySlot invSlot, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
-      setInventory.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
+      postCraftInventorySlotsToUpdate.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
       return reqAmount == 0;
     } else {
       int difference = Math.abs(reqAmount);
       invSlot.setAmount(difference);
-      setInventory.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
+      postCraftInventorySlotsToUpdate.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
       return true;
     }
   }
@@ -198,9 +198,12 @@ public class ForgeCraftOperation {
    */
   private void processMatchingType(Player user, ArrayList<ItemStack> results) {
     Inventory inv = user.getInventory();
-    for (InventorySlot invSlot : setInventory) {
-      inv.setItem(invSlot.getSlot(),
-          new ItemStack(inv.getItem(invSlot.getSlot()).getType(), invSlot.getAmount()));
+    for (InventorySlot invSlot : postCraftInventorySlotsToUpdate) {
+      int slotNumber = invSlot.getSlot();
+      ItemStack item = invSlot.getItem();
+      item.setAmount(invSlot.getAmount());
+
+      inv.setItem(slotNumber, item);
     }
     giveItemsToPlayer(user, results);
   }

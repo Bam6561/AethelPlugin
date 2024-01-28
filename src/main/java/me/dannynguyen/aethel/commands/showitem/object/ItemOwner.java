@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.showitem.objects;
+package me.dannynguyen.aethel.commands.showitem.object;
 
 import org.bukkit.inventory.ItemStack;
 

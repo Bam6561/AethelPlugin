@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.playerstats.objects;
+package me.dannynguyen.aethel.commands.playerstats.object;
 
 import java.util.ArrayList;
 

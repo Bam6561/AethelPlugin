@@ -1,6 +1,8 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginConstant;
+import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -14,29 +16,28 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
- * ItemEditorEnchants is an inventory under the ItemEditor command that edits an item's enchantments.
+ * ItemEditorEnchants is an inventory that edits an item's enchantments.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.6.16
  */
 public class ItemEditorEnchants {
   /**
-   * Opens an ItemEditorEnchants inventory with enchants.
+   * Opens an ItemEditorEnchants menu.
    *
-   * @param user interacting user
-   * @return ItemEditorEnchants inventory with enchants
+   * @param user user
+   * @return ItemEditorEnchants menu
    */
-  public static Inventory openEnchantsMenu(Player user) {
+  public static Inventory openMenu(Player user) {
     ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
     Inventory inv = createInventory(user, item);
     addEnchants(inv, user);
-    addEnchantsContext(inv);
+    addContext(inv);
     InventoryPages.addBackButton(inv, 6);
     return inv;
   }
@@ -44,7 +45,7 @@ public class ItemEditorEnchants {
   /**
    * Creates and names an ItemEditorEnchants inventory.
    *
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @return ItemEditorEnchants inventory
    */
@@ -59,14 +60,14 @@ public class ItemEditorEnchants {
    * Adds enchants.
    *
    * @param inv  interacting inventory
-   * @param user interacting user
+   * @param user user
    */
   private static void addEnchants(Inventory inv, Player user) {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
     Map<Enchantment, Integer> metaEnchants = meta.getEnchants();
 
     int invSlot = 9;
-    for (Enchantment enchant : PluginData.itemEditorData.getEnchants()) {
+    for (Enchantment enchant : PluginConstant.sortedEnchantments) {
       String enchantName = ChatColor.AQUA + TextFormatter.capitalizePhrase(enchant.getKey().getKey());
 
       boolean disabled = metaEnchants.get(enchant) == null;
@@ -83,10 +84,8 @@ public class ItemEditorEnchants {
    *
    * @param inv interacting inventory
    */
-  private static void addEnchantsContext(Inventory inv) {
-    List<String> helpLore = Arrays.asList(
-        ChatColor.WHITE + "To remove an enchant, input \"0\".");
+  private static void addContext(Inventory inv) {
     inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", helpLore));
+        ChatColor.GREEN + "Help", PluginContext.ITEMEDITOR_ENCHANTS.context));
   }
 }

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
+import me.dannynguyen.aethel.commands.aethelItems.object.AethelItem;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemCreator;

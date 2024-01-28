@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.itemeditor.objects;
+package me.dannynguyen.aethel.commands.itemeditor.object;
 
 /**
  * AethelAttribute is an object that relates an Aethel attribute to its value.

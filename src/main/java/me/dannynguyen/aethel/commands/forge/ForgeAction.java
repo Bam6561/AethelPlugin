@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.forge.objects.ForgeRecipe;
+import me.dannynguyen.aethel.commands.forge.object.ForgeRecipe;
 import me.dannynguyen.aethel.enums.*;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * - removes recipes
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.7.13
  */
 public class ForgeAction {
@@ -42,10 +42,11 @@ public class ForgeAction {
     ForgeRecipe recipe = PluginData.forgeData.
         getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
 
-    Inventory inv = createCraftInventory(user);
+    String invType = "craft";
+    Inventory inv = createInventory(user, invType);
     addRecipeContents(recipe, inv);
-    addCraftContext(inv);
-    addCraftActions(inv);
+    addContext(inv, invType);
+    addActions(inv, invType);
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
@@ -62,10 +63,11 @@ public class ForgeAction {
     ForgeRecipe recipe = PluginData.forgeData.
         getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
 
-    Inventory inv = createSaveInventory(user);
+    String invType = "save";
+    Inventory inv = createInventory(user, invType);
     addRecipeContents(recipe, inv);
-    addSaveContext(inv);
-    addSaveActions(inv);
+    addContext(inv, invType);
+    addActions(inv, invType);
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
@@ -79,9 +81,10 @@ public class ForgeAction {
    * @return ForgeSave inventory
    */
   public static void openForgeSaveInventory(Player user) {
-    Inventory inv = createSaveInventory(user);
-    addSaveContext(inv);
-    addSaveActions(inv);
+    String invType = "save";
+    Inventory inv = createInventory(user, invType);
+    addContext(inv, invType);
+    addActions(inv, invType);
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
@@ -125,25 +128,20 @@ public class ForgeAction {
   }
 
   /**
-   * Creates and names a ForgeCraft inventory.
+   * Creates and names a ForgeCraft or ForgeSave inventory.
    *
-   * @param user user
-   * @return ForgeCraft inventory
+   * @param user    user
+   * @param invType inventory type
+   * @return ForgeCraft or ForgeSave inventory
    */
-  private static Inventory createCraftInventory(Player user) {
-    return Bukkit.createInventory(user, 27,
-        ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft");
-  }
-
-  /**
-   * Creates and names a ForgeSave inventory.
-   *
-   * @param user user
-   * @return ForgeSave inventory
-   */
-  private static Inventory createSaveInventory(Player user) {
-    return Bukkit.createInventory(user, 27,
-        ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Save");
+  private static Inventory createInventory(Player user, String invType) {
+    if (invType.equals("craft")) {
+      return Bukkit.createInventory(user, 27,
+          ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft");
+    } else {
+      return Bukkit.createInventory(user, 27,
+          ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Save");
+    }
   }
 
   /**
@@ -165,47 +163,39 @@ public class ForgeAction {
   }
 
   /**
-   * Adds a help context to the expanded craft action.
+   * Adds a help context to the expanded craft or save action.
    *
-   * @param inv interacting inventory
+   * @param inv     interacting inventory
+   * @param invType inventory type
    */
-  private static void addCraftContext(Inventory inv) {
-    inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", PluginContext.FORGE_EXPANDED_CRAFT.context));
+  private static void addContext(Inventory inv, String invType) {
+    if (invType.equals("craft")) {
+      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+          ChatColor.GREEN + "Help", PluginContext.FORGE_EXPANDED_CRAFT.context));
+    } else {
+      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+          ChatColor.GREEN + "Help", PluginContext.FORGE_SAVE.context));
+    }
   }
 
   /**
-   * Adds a help context to the save action.
+   * Adds craft or save and back buttons.
    *
-   * @param inv interacting inventory
+   * @param inv     interacting inventory
+   * @param invType inventory type
    */
-  private static void addSaveContext(Inventory inv) {
-    inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", PluginContext.FORGE_SAVE.context));
-  }
-
-  /**
-   * Adds craft and back buttons.
-   *
-   * @param inv interacting inventory
-   */
-  private static void addCraftActions(Inventory inv) {
-    inv.setItem(25, ItemCreator.
-        createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Craft"));
-    inv.setItem(26, ItemCreator.
-        createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
-  }
-
-  /**
-   * Adds save and back buttons.
-   *
-   * @param inv interacting inventory
-   */
-  private static void addSaveActions(Inventory inv) {
-    inv.setItem(25, ItemCreator.
-        createPluginPlayerHead(PluginPlayerHead.STACK_OF_PAPER.head, ChatColor.AQUA + "Save"));
-    inv.setItem(26, ItemCreator.
-        createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
+  private static void addActions(Inventory inv, String invType) {
+    if (invType.equals("craft")) {
+      inv.setItem(25, ItemCreator.
+          createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Craft"));
+      inv.setItem(26, ItemCreator.
+          createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
+    } else {
+      inv.setItem(25, ItemCreator.
+          createPluginPlayerHead(PluginPlayerHead.STACK_OF_PAPER.head, ChatColor.AQUA + "Save"));
+      inv.setItem(26, ItemCreator.
+          createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
+    }
   }
 
   /**

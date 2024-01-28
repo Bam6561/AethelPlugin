@@ -17,7 +17,7 @@ import java.util.Collections;
  * the player and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.4.10
  */
 public class PlayerStatsSend {
@@ -41,7 +41,7 @@ public class PlayerStatsSend {
       user.sendMessage(statNameString + " " + statValueString);
     } else {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        onlinePlayer.sendMessage(PluginMessage.Success.NOTIFICATION_GLOBAL
+        onlinePlayer.sendMessage(PluginMessage.Success.NOTIFICATION_GLOBAL.message
             + statNameString + " " + statValueString);
       }
       PluginData.playerStatsData.addToPastStats(statNameString, Collections.singletonList(statValueString));

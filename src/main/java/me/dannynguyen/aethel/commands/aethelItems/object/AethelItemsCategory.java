@@ -1,17 +1,17 @@
-package me.dannynguyen.aethel.commands.forge.objects;
+package me.dannynguyen.aethel.commands.aethelItems.object;
 
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 
 /**
- * ForgeRecipeCategory is an object that relates forge recipes with their category and page number.
+ * AethelItemsCategory is an object that relates Aethel items with their category and page number.
  *
  * @author Danny Nguyen
- * @version 1.7.13
- * @since 1.5.4
+ * @version 1.5.1
+ * @since 1.5.0
  */
-public record ForgeRecipeCategory(String name, ArrayList<Inventory> pages,
+public record AethelItemsCategory(String name, ArrayList<Inventory> pages,
                                   int numberOfPages) {
 
   public String getName() {

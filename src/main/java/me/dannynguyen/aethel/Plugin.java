@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
 /**
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -56,9 +57,12 @@ public class Plugin extends JavaPlugin {
    * Loads existing plugin-related data. Creates data directories if they do not already exist.
    */
   private void loadResources() {
+    Logger log = Bukkit.getLogger();
     long start;
     long finish;
-    Logger log = Bukkit.getLogger();
+
+    DecimalFormat hundredths = new DecimalFormat();
+    hundredths.setMaximumFractionDigits(2);
 
     File resourceDirectory = PluginDirectory.RESOURCES.file;
     if (!resourceDirectory.exists()) {
@@ -70,7 +74,8 @@ public class Plugin extends JavaPlugin {
       start = System.nanoTime();
       PluginData.aethelItemsData.loadItems();
       finish = System.nanoTime();
-      log.warning(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message + convertToMs(start, finish));
+      log.info(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message +
+          convertToMs(hundredths, start, finish));
     } else {
       aethelItemsDirectory.mkdir();
     }
@@ -80,20 +85,17 @@ public class Plugin extends JavaPlugin {
       start = System.nanoTime();
       PluginData.forgeData.loadRecipes();
       finish = System.nanoTime();
-      log.warning(PluginMessage.Success.PLUGIN_LOAD_FORGE.message + convertToMs(start, finish));
+      log.info(PluginMessage.Success.PLUGIN_LOAD_FORGE.message +
+          convertToMs(hundredths, start, finish));
     } else {
       forgeDirectory.mkdir();
     }
 
     start = System.nanoTime();
-    PluginData.itemEditorData.loadAttributesEnchants();
-    finish = System.nanoTime();
-    log.warning(PluginMessage.Success.PLUGIN_LOAD_ITEMEDITOR.message + convertToMs(start, finish));
-
-    start = System.nanoTime();
     PluginData.playerStatsData.loadStats();
     finish = System.nanoTime();
-    log.warning(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message + convertToMs(start, finish));
+    log.info(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message +
+        convertToMs(hundredths, start, finish));
   }
 
   /**
@@ -103,8 +105,8 @@ public class Plugin extends JavaPlugin {
    * @param finish finish time
    * @return milliseconds elapsed
    */
-  private static String convertToMs(long start, long finish) {
-    return (Double.parseDouble(String.valueOf(finish - start)) / 1000000) + "ms";
+  private static String convertToMs(DecimalFormat dc, long start, long finish) {
+    return dc.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
   }
 
   public static Plugin getInstance() {

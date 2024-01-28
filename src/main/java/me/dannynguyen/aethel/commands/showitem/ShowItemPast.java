@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.showitem.objects.ItemOwner;
+import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * ShowItemPast is an inventory that shows past shared items.
  *
  * @author Danny Nguyen
- * @version 1.6.13
+ * @version 1.8.0
  * @since 1.4.5
  */
 public class ShowItemPast {
@@ -24,11 +24,21 @@ public class ShowItemPast {
    * @param user user
    * @return ShowItemPast inventory
    */
-  public static Inventory createInventory(Player user) {
-    Inventory inv = Bukkit.createInventory(user, 9,
-        ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
+  public static Inventory openInventory(Player user) {
+    Inventory inv = createInventory(user);
     addPastShownItems(inv);
     return inv;
+  }
+
+  /**
+   * Creates and names a ShowItemPast inventory.
+   *
+   * @param user user
+   * @return ShowItemPast inventory
+   */
+  private static Inventory createInventory(Player user) {
+    return Bukkit.createInventory(user, 9,
+        ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
   }
 
   /**

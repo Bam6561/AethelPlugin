@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemsInventoryListener is an inventory listener for the AethelItems inventory.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.0
  * @since 1.4.0
  */
 public class AethelItemsInventoryListener {
@@ -61,7 +61,7 @@ public class AethelItemsInventoryListener {
 
       user.openInventory(AethelItemsInventory.openCategoryPage(user, "get", itemName, pageRequest));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_GET));
+          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_GET.inventory));
     }
 
     if (e.getSlot() != 3) {
@@ -172,7 +172,7 @@ public class AethelItemsInventoryListener {
   private static void returnToMainMenu(Player user) {
     user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_CATEGORY));
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace, new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 

@@ -1,8 +1,11 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.commands.itemeditor.listener;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorAttributes;
+import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorAction;
 import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
@@ -28,15 +31,15 @@ import java.util.UUID;
  * ItemEditorMessageFunctional is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.5
+ * @version 1.8.0
  * @since 1.7.0
  */
-public class ItemEditorMessageFunctional {
+public class ItemEditorMessageListenerGameplay {
   /**
    * Sets or removes an item's attribute modifier.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @throws NumberFormatException not a number
    */
@@ -55,11 +58,12 @@ public class ItemEditorMessageFunctional {
    * Sets or removes an item's enchant.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    */
   public static void setEnchant(AsyncPlayerChatEvent e, Player user, ItemStack item) {
-    NamespacedKey enchant = NamespacedKey.minecraft(user.getMetadata(PluginPlayerMeta.Namespace.TYPE.namespace).get(0).asString());
+    NamespacedKey enchant = NamespacedKey.minecraft(user.getMetadata(
+        PluginPlayerMeta.Namespace.TYPE.namespace).get(0).asString());
 
     if (!e.getMessage().equals("0")) {
       setEnchantLevel(e, user, item, enchant);
@@ -69,14 +73,14 @@ public class ItemEditorMessageFunctional {
           ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(),
-        () -> ItemEditorInventoryMenuAction.openEnchantsMenu(user));
+        () -> ItemEditorAction.openEnchantsMenu(user));
   }
 
   /**
    * Sets or removes an item's Aethel tag.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    */
@@ -95,14 +99,14 @@ public class ItemEditorMessageFunctional {
     }
     item.setItemMeta(meta);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () ->
-        ItemEditorInventoryMenuAction.openTagsMenu(user));
+        ItemEditorAction.openTagsMenu(user));
   }
 
   /**
    * Sets a Minecraft attribute.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    * @param type attribute derived from inventory click
@@ -137,7 +141,7 @@ public class ItemEditorMessageFunctional {
    * Sets an Aethel attribute.
    *
    * @param e    message event
-   * @param user interacting user
+   * @param user user
    * @param item interacting item
    * @param meta item meta
    * @param type attribute derived from inventory click
@@ -147,8 +151,7 @@ public class ItemEditorMessageFunctional {
                                          Player user, ItemStack item,
                                          ItemMeta meta, String type) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey attributesKey =
-        new NamespacedKey(Plugin.getInstance(), "aethel.attribute.list");
+    NamespacedKey attributesKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
 
     String equipmentSlot = user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString();
     String attributeName = type + "." + equipmentSlot;
@@ -175,7 +178,7 @@ public class ItemEditorMessageFunctional {
   /**
    * Sets an item's attribute modifier based on the equipment slot mode.
    *
-   * @param user              interacting user
+   * @param user              user
    * @param item              interacting item
    * @param meta              item's meta
    * @param attribute         attribute
@@ -194,7 +197,7 @@ public class ItemEditorMessageFunctional {
   /**
    * Removes an item's attribute modifier based on the equipment slot mode.
    *
-   * @param user          interacting user
+   * @param user          user
    * @param item          interacting item
    * @param meta          item's meta
    * @param attribute     attribute
@@ -210,7 +213,7 @@ public class ItemEditorMessageFunctional {
   /**
    * Sets an item's Aethel attribute modifier based on the equipment slot mode.
    *
-   * @param user           interacting user
+   * @param user           user
    * @param type           attribute derived from inventory click
    * @param dataContainer  item's persistent tags
    * @param attributesKey  attributes list key
@@ -247,7 +250,7 @@ public class ItemEditorMessageFunctional {
   /**
    * Removes an item's Aethel attribute modifier based on the equipment slot mode.
    *
-   * @param user          interacting user
+   * @param user          user
    * @param type          attribute derived from inventory click
    * @param dataContainer item's persistent tags
    * @param attributesKey attributes list key
@@ -282,7 +285,7 @@ public class ItemEditorMessageFunctional {
    * Sets an item's enchant level.
    *
    * @param e       message event
-   * @param user    interacting user
+   * @param user    user
    * @param item    interacting item
    * @param enchant enchant type
    * @throws NumberFormatException not a number
@@ -324,14 +327,16 @@ public class ItemEditorMessageFunctional {
   /**
    * Opens a ItemEditorAttributes inventory.
    *
-   * @param user interacting user
+   * @param user user
    */
   private static void returnToAttributesMenu(Player user) {
-    user.removeMetadata("message", Plugin.getInstance());
+    user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
 
     user.openInventory(ItemEditorAttributes.
-        openAttributesMenu(user, user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString()));
+        openAttributesMenu(user,
+            user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+        new FixedMetadataValue(Plugin.getInstance(),
+            PluginPlayerMeta.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
   }
 }
