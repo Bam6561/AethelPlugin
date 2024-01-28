@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
+import me.dannynguyen.aethel.enums.PluginContext;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import net.md_5.bungee.api.ChatColor;
@@ -20,7 +22,7 @@ import java.util.List;
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.7.10
+ * @version 1.7.13
  * @since 1.6.3
  */
 public class CharacterSheet {
@@ -69,13 +71,8 @@ public class CharacterSheet {
    * @param inv  interacting inv
    */
   private static void addEquipment(Player user, Inventory inv) {
-    inv.setItem(9, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
-        ChatColor.WHITE + "Equipment",
-        List.of(ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | "
-                + ChatColor.GRAY + "Main Hand" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
-            ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
-            ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
-            ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring")));
+    inv.setItem(9, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+        ChatColor.WHITE + "Equipment", PluginContext.CHARACTER_EQUIPMENT.context));
     inv.setItem(10, user.getInventory().getHelmet());
     inv.setItem(19, user.getInventory().getChestplate());
     inv.setItem(28, user.getInventory().getLeggings());
@@ -133,8 +130,7 @@ public class CharacterSheet {
     String criticalDamage = ChatColor.DARK_GREEN +
         hundredths.format(1) + "x CRIT DMG";
 
-    inv.setItem(15, ItemCreator.createItem(
-        Material.IRON_SWORD,
+    inv.setItem(15, ItemCreator.createItem(Material.IRON_SWORD,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense",
         List.of(damage, attackSpeed, criticalChance, criticalDamage),
         ItemFlag.HIDE_ATTRIBUTES));
@@ -167,8 +163,7 @@ public class CharacterSheet {
     String dodgeChance = ChatColor.DARK_AQUA + "" +
         hundredths.format(0) + "% DODGE";
 
-    inv.setItem(24, ItemCreator.createItem(
-        Material.IRON_CHESTPLATE,
+    inv.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense",
         List.of(maxHealth, armor, armorToughness, speed, block, parryChance, dodgeChance),
         ItemFlag.HIDE_ATTRIBUTES));

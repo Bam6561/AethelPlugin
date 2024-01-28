@@ -6,18 +6,10 @@ import org.bukkit.inventory.ItemStack;
  * ItemOwner is an object that relates an item with its owner.
  *
  * @author Danny Nguyen
- * @version 1.4.14
+ * @version 1.7.13
  * @since 1.4.14
  */
-public class ItemOwner {
-  private final String owner;
-  private final ItemStack item;
-
-  public ItemOwner(String owner, ItemStack pastItem) {
-    this.owner = owner;
-    this.item = pastItem;
-  }
-
+public record ItemOwner(String owner, ItemStack item) {
   public String getOwner() {
     return this.owner;
   }

@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
+import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -18,7 +19,7 @@ import java.io.IOException;
  * AethelItemsAction is a utility class that saves, gives, and removes Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.13
  * @since 1.7.9
  */
 public class AethelItemsAction {
@@ -78,7 +79,7 @@ public class AethelItemsAction {
    */
   private static void saveItemToFile(Player user, ItemStack item) {
     try {
-      FileWriter fw = new FileWriter(PluginData.aethelItems
+      FileWriter fw = new FileWriter(PluginDirectory.AETHELITEMS.file.getPath()
           + "/" + nameItemFile(item) + "_itm.txt");
       fw.write(ItemCreator.encodeItem(item));
       fw.close();

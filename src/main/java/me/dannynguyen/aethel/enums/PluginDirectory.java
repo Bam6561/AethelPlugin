@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.enums;
 import java.io.File;
 
 /**
- * PluginDirectory is an enum containing file paths to the plugin's resource directories.
+ * PluginDirectory is an enum containing the plugin's resource directories.
  *
  * @author Danny Nguyen
  * @version 1.7.11
@@ -14,9 +14,9 @@ public enum PluginDirectory {
   AETHELITEMS(new File(RESOURCES + "/aitem")),
   FORGE(new File(RESOURCES + "/forge"));
 
-  public File filePath;
+  public final File file;
 
-  PluginDirectory(File filePath) {
-    this.filePath = filePath;
+  PluginDirectory(File file) {
+    this.file = file;
   }
 }

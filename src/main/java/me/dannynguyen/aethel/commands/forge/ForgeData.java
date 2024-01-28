@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.13
  * @since 1.1.11
  */
 public class ForgeData {
@@ -34,7 +34,7 @@ public class ForgeData {
    * Loads forge recipes into memory.
    */
   public void loadRecipes() {
-    File[] directory = PluginDirectory.FORGE.filePath.listFiles();
+    File[] directory = PluginDirectory.FORGE.file.listFiles();
     if (directory.length > 0) {
       Arrays.sort(directory);
 
@@ -50,7 +50,7 @@ public class ForgeData {
           ForgeRecipe recipe = readRecipeFile(file);
           recipesMap.put(recipe.getName(), recipe);
           allRecipes.add(recipe);
-          categorizeRecipe(recipe, categoryKey, sortedRecipes);
+          sortRecipes(recipe, categoryKey, sortedRecipes);
         }
       }
 
@@ -122,8 +122,8 @@ public class ForgeData {
    * @param categoryKey   forge category tag
    * @param sortedRecipes recipes sorted by category
    */
-  private void categorizeRecipe(ForgeRecipe recipe, NamespacedKey categoryKey,
-                                HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes) {
+  private void sortRecipes(ForgeRecipe recipe, NamespacedKey categoryKey,
+                           HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes) {
     ItemStack item = recipe.getResults().get(0);
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
@@ -228,17 +228,16 @@ public class ForgeData {
   private ItemStack createResultsDisplay(ItemStack displayItem, ArrayList<ItemStack> results) {
     if (results.size() > 1) {
       List<String> resultsLore = new ArrayList<>();
-
       for (ItemStack item : results) {
         resultsLore.add(ChatColor.AQUA + "x" + item.getAmount() +
             ChatColor.WHITE + " " + ItemReader.readName(item));
       }
 
-      ItemStack itemDisplay = displayItem.clone();
-      ItemMeta meta = itemDisplay.getItemMeta();
+      ItemStack item = displayItem.clone();
+      ItemMeta meta = item.getItemMeta();
       meta.setLore(resultsLore);
-      itemDisplay.setItemMeta(meta);
-      return itemDisplay;
+      item.setItemMeta(meta);
+      return item;
     } else {
       return displayItem;
     }

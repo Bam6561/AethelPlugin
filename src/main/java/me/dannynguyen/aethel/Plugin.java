@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.7.13
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -57,54 +57,54 @@ public class Plugin extends JavaPlugin {
    */
   private void loadResources() {
     long start;
-    long end;
+    long finish;
     Logger log = Bukkit.getLogger();
 
-    File resourceDirectory = PluginDirectory.RESOURCES.filePath;
+    File resourceDirectory = PluginDirectory.RESOURCES.file;
     if (!resourceDirectory.exists()) {
       resourceDirectory.mkdir();
     }
 
-    File aethelItemsDirectory = PluginDirectory.AETHELITEMS.filePath;
+    File aethelItemsDirectory = PluginDirectory.AETHELITEMS.file;
     if (aethelItemsDirectory.exists()) {
       start = System.nanoTime();
       PluginData.aethelItemsData.loadItems();
-      end = System.nanoTime();
-      log.warning(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message + convertToMs(start, end));
+      finish = System.nanoTime();
+      log.warning(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message + convertToMs(start, finish));
     } else {
       aethelItemsDirectory.mkdir();
     }
 
-    File forgeDirectory = PluginDirectory.FORGE.filePath;
+    File forgeDirectory = PluginDirectory.FORGE.file;
     if (forgeDirectory.exists()) {
       start = System.nanoTime();
       PluginData.forgeData.loadRecipes();
-      end = System.nanoTime();
-      log.warning(PluginMessage.Success.PLUGIN_LOAD_FORGE.message + convertToMs(start, end));
+      finish = System.nanoTime();
+      log.warning(PluginMessage.Success.PLUGIN_LOAD_FORGE.message + convertToMs(start, finish));
     } else {
       forgeDirectory.mkdir();
     }
 
     start = System.nanoTime();
     PluginData.itemEditorData.loadAttributesEnchants();
-    end = System.nanoTime();
-    log.warning(PluginMessage.Success.PLUGIN_LOAD_ITEMEDITOR.message + convertToMs(start, end));
+    finish = System.nanoTime();
+    log.warning(PluginMessage.Success.PLUGIN_LOAD_ITEMEDITOR.message + convertToMs(start, finish));
 
     start = System.nanoTime();
     PluginData.playerStatsData.loadStats();
-    end = System.nanoTime();
-    log.warning(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message + convertToMs(start, end));
+    finish = System.nanoTime();
+    log.warning(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message + convertToMs(start, finish));
   }
 
   /**
    * Converts the time duration of a process in nanoseconds to milliseconds.
    *
-   * @param start start time
-   * @param end   end time
+   * @param start  start time
+   * @param finish finish time
    * @return milliseconds elapsed
    */
-  private static String convertToMs(long start, long end) {
-    return (Double.parseDouble(String.valueOf(end - start)) / 1000000) + "ms";
+  private static String convertToMs(long start, long finish) {
+    return (Double.parseDouble(String.valueOf(finish - start)) / 1000000) + "ms";
   }
 
   public static Plugin getInstance() {

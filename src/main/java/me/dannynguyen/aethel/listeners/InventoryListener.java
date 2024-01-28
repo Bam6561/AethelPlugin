@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelItems.AethelItemsInventoryListener;
-import me.dannynguyen.aethel.commands.forge.ForgeInventory;
+import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryFunctional;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryMenu;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsInventoryListener;
@@ -80,12 +80,12 @@ public class InventoryListener implements Listener {
    */
   private void interpretForge(InventoryClickEvent e, Player user, String[] invType) {
     switch (invType[1]) {
-      case "category" -> ForgeInventory.interpretMainClick(e, user);
-      case "craft" -> ForgeInventory.interpretCategoryClick(e, user, "craft");
-      case "craft-confirm" -> ForgeInventory.interpretCraftConfirmClick(e, user);
-      case "edit" -> ForgeInventory.interpretCategoryClick(e, user, "edit");
-      case "remove" -> ForgeInventory.interpretCategoryClick(e, user, "remove");
-      case "save" -> ForgeInventory.interpretSaveClick(e, user);
+      case "category" -> ForgeInventoryListener.interpretMainClick(e, user);
+      case "craft" -> ForgeInventoryListener.interpretCategoryClick(e, user, "craft");
+      case "craft-confirm" -> ForgeInventoryListener.interpretCraftConfirmClick(e, user);
+      case "edit" -> ForgeInventoryListener.interpretCategoryClick(e, user, "edit");
+      case "remove" -> ForgeInventoryListener.interpretCategoryClick(e, user, "remove");
+      case "save" -> ForgeInventoryListener.interpretSaveClick(e, user);
     }
   }
 

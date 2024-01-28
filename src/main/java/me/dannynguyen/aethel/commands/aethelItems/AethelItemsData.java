@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.aethelItems;
 
-import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItem;
 import me.dannynguyen.aethel.commands.aethelItems.objects.AethelItemsCategory;
+import me.dannynguyen.aethel.enums.PluginDirectory;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -24,7 +24,7 @@ import java.util.Scanner;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.13
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -35,7 +35,7 @@ public class AethelItemsData {
    * Loads Aethel items into memory.
    */
   public void loadItems() {
-    File[] directory = new File(PluginData.aethelItems).listFiles();
+    File[] directory = PluginDirectory.AETHELITEMS.file.listFiles();
     if (directory.length > 0) {
       Arrays.sort(directory);
 
@@ -51,7 +51,7 @@ public class AethelItemsData {
           AethelItem item = readItemFile(file);
           itemsMap.put(item.getName(), item);
           allItems.add(item.getItem());
-          sortItem(item.getItem(), categoryKey, sortedItems);
+          sortItems(item.getItem(), categoryKey, sortedItems);
         }
       }
 
@@ -86,8 +86,8 @@ public class AethelItemsData {
    * @param categoryKey item category tag
    * @param sortedItems items sorted by category
    */
-  private void sortItem(ItemStack item, NamespacedKey categoryKey,
-                        HashMap<String, ArrayList<ItemStack>> sortedItems) {
+  private void sortItems(ItemStack item, NamespacedKey categoryKey,
+                         HashMap<String, ArrayList<ItemStack>> sortedItems) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
     if (dataContainer.has(categoryKey, PersistentDataType.STRING)) {

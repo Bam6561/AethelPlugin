@@ -11,10 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
- * ShowItemPast is an inventory under the ShowItem command that shows past shared items.
+ * ShowItemPast is an inventory that shows past shared items.
  *
  * @author Danny Nguyen
- * @version 1.6.12
+ * @version 1.6.13
  * @since 1.4.5
  */
 public class ShowItemPast {
@@ -39,10 +39,10 @@ public class ShowItemPast {
   private static void addPastShownItems(Inventory inv) {
     int index = 0;
     for (ItemOwner itemOwner : PluginData.showItemData.getPastItems()) {
+      String owner = itemOwner.getOwner();
       ItemStack item = itemOwner.getItem().clone();
       ItemMeta meta = item.getItemMeta();
-      meta.setDisplayName(ChatColor.DARK_PURPLE + itemOwner.getOwner() +
-          ChatColor.WHITE + " " + ItemReader.readName(item));
+      meta.setDisplayName(ChatColor.DARK_PURPLE + owner + ChatColor.WHITE + " " + ItemReader.readName(item));
       item.setItemMeta(meta);
       inv.setItem(index, item);
       index++;

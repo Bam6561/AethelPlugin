@@ -22,7 +22,7 @@ import java.util.HashMap;
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.13
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
@@ -180,12 +180,12 @@ public class ForgeCraftOperation {
   private boolean hasReqAmountSatisfied(InventorySlot invSlot, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
-      getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
+      setInventory.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
       return reqAmount == 0;
     } else {
       int difference = Math.abs(reqAmount);
       invSlot.setAmount(difference);
-      getSetInventory().add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
+      setInventory.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
       return true;
     }
   }
@@ -198,7 +198,7 @@ public class ForgeCraftOperation {
    */
   private void processMatchingType(Player user, ArrayList<ItemStack> results) {
     Inventory inv = user.getInventory();
-    for (InventorySlot invSlot : getSetInventory()) {
+    for (InventorySlot invSlot : setInventory) {
       inv.setItem(invSlot.getSlot(),
           new ItemStack(inv.getItem(invSlot.getSlot()).getType(), invSlot.getAmount()));
     }
@@ -220,9 +220,5 @@ public class ForgeCraftOperation {
         user.getWorld().dropItem(user.getLocation(), item);
       }
     }
-  }
-
-  private ArrayList<InventorySlot> getSetInventory() {
-    return this.setInventory;
   }
 }

@@ -13,7 +13,7 @@ import java.util.Base64;
 import java.util.UUID;
 
 /**
- * PluginPlayerHead is an enum containing player head textures.
+ * PluginPlayerHead is an enum containing the plugin's player heads.
  *
  * @author Danny Nguyen
  * @version 1.7.12
@@ -31,7 +31,7 @@ public enum PluginPlayerHead {
   STACK_OF_PAPER(createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDgwNjQ0MGY1NTg4NjQ5NDdkYzA5MzI2NTAwNmVhODBkNzE0NTI0NDQyYjhhMDA5MDZmMmZiMDc1MDc3Y2ViMyJ9fX0=")),
   TRASH_CAN(createPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmUwZmQxMDE5OWU4ZTRmY2RhYmNhZTRmODVjODU5MTgxMjdhN2M1NTUzYWQyMzVmMDFjNTZkMThiYjk0NzBkMyJ9fX0="));
 
-  public ItemStack head;
+  public final ItemStack head;
 
   PluginPlayerHead(ItemStack head) {
     this.head = head;

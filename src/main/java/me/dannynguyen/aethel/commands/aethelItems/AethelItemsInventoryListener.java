@@ -7,13 +7,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * AethelItemsInventoryListener is an inventory listener for the AethelItems inventory.
  *
  * @author Danny Nguyen
- * @version 1.7.10
+ * @version 1.7.13
  * @since 1.4.0
  */
 public class AethelItemsInventoryListener {
@@ -29,7 +30,7 @@ public class AethelItemsInventoryListener {
    * @param user user
    */
   public static void readMainClick(InventoryClickEvent e, Player user) {
-    org.bukkit.inventory.Inventory clickedInv = e.getClickedInventory();
+    Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
         interpretMainClick(e, user);
@@ -80,7 +81,7 @@ public class AethelItemsInventoryListener {
    * @param action type of interaction
    */
   public static void readCategoryClick(InventoryClickEvent e, Player user, String action) {
-    org.bukkit.inventory.Inventory clickedInv = e.getClickedInventory();
+    Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
       if (e.getCurrentItem() != null) {
         interpretCategoryClick(e, user, action);
@@ -113,8 +114,8 @@ public class AethelItemsInventoryListener {
       case 2 -> { // Help Context
       }
       case 4 -> AethelItemsAction.readSaveClick(e, user);
-      case 5 -> toggleGetRemoveAction(user, action);
-      case 6 -> returnToMainPage(user);
+      case 5 -> toggleAction(user, action);
+      case 6 -> returnToMainMenu(user);
       case 8 -> nextItemPage(user, action);
       default -> interpretContextualClick(e, action, user);
     }
@@ -146,7 +147,7 @@ public class AethelItemsInventoryListener {
    * @param user   user
    * @param action type of interaction
    */
-  private static void toggleGetRemoveAction(Player user, String action) {
+  private static void toggleAction(Player user, String action) {
     String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
     int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
 
@@ -168,7 +169,7 @@ public class AethelItemsInventoryListener {
    *
    * @param user user
    */
-  private static void returnToMainPage(Player user) {
+  private static void returnToMainMenu(Player user) {
     user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_CATEGORY));

@@ -13,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatsInventoryListener is an inventory listener for the PlayerStats inventory.
  *
  * @author Danny Nguyen
- * @version 1.7.3
+ * @version 1.7.13
  * @since 1.4.7
  */
 public class PlayerStatsInventoryListener {
@@ -26,17 +26,21 @@ public class PlayerStatsInventoryListener {
   public static void readMainClick(InventoryClickEvent e, Player user) {
     if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       if (e.getSlot() > 8) {
-        String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
+        String requestedPlayerName = user.getMetadata(
+            PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
         String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-        user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace, new FixedMetadataValue(Plugin.getInstance(), itemName));
+        user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
+            new FixedMetadataValue(Plugin.getInstance(), itemName));
 
-        user.openInventory(PlayerStatsMain.
-            openPlayerStatsCategoryPage(user, requestedPlayerName, itemName, 0));
+        user.openInventory(PlayerStatsInventory.
+            openCategoryPage(user, requestedPlayerName, itemName, 0));
         switch (itemName) {
           case "Entity Types", "Materials" -> user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-              new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+              new FixedMetadataValue(Plugin.getInstance(),
+                  PluginPlayerMeta.Inventory.PLAYERSTATS_SUBSTAT.inventory));
           default -> user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-              new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_STAT.inventory));
+              new FixedMetadataValue(Plugin.getInstance(),
+                  PluginPlayerMeta.Inventory.PLAYERSTATS_STAT.inventory));
         }
       }
       e.setCancelled(true);
@@ -93,20 +97,21 @@ public class PlayerStatsInventoryListener {
     String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
     int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
 
-    user.openInventory(PlayerStatsMain.
-        openPlayerStatsCategoryPage(user, requestedPlayerName, categoryName, pageRequest - 1));
+    user.openInventory(PlayerStatsInventory.
+        openCategoryPage(user, requestedPlayerName, categoryName, pageRequest - 1));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+        new FixedMetadataValue(Plugin.getInstance(),
+            PluginPlayerMeta.Inventory.PLAYERSTATS_SUBSTAT.inventory));
   }
 
   /**
-   * Opens a PlayerStatsMain inventory.
+   * Opens a PlayerStats inventory.
    *
    * @param user user
    */
   private static void returnToMainPage(Player user) {
     String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
-    user.openInventory(PlayerStatsMain.openMainMenu(user, requestedPlayerName));
+    user.openInventory(PlayerStatsInventory.openMainMenu(user, requestedPlayerName));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
@@ -123,8 +128,8 @@ public class PlayerStatsInventoryListener {
     String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
     int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
 
-    user.openInventory(PlayerStatsMain.
-        openPlayerStatsCategoryPage(user, requestedPlayerName, categoryName, pageRequest + 1));
+    user.openInventory(PlayerStatsInventory.
+        openCategoryPage(user, requestedPlayerName, categoryName, pageRequest + 1));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_SUBSTAT.inventory));
   }

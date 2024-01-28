@@ -1,0 +1,286 @@
+package me.dannynguyen.aethel.commands.forge;
+
+import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.commands.forge.objects.ForgeRecipe;
+import me.dannynguyen.aethel.enums.*;
+import me.dannynguyen.aethel.utility.ItemCreator;
+import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.utility.TextFormatter;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+/**
+ * ForgeAction is a utility class that:
+ * - expands recipes' details
+ * - saves new recipes
+ * - edits recipes
+ * - removes recipes
+ *
+ * @author Danny Nguyen
+ * @version 1.7.13
+ * @since 1.7.13
+ */
+public class ForgeAction {
+  /**
+   * Expands the recipe's details to the user before crafting.
+   *
+   * @param e    inventory click event
+   * @param user user
+   */
+  public static void craftRecipeDetails(InventoryClickEvent e, Player user) {
+    ForgeRecipe recipe = PluginData.forgeData.
+        getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
+
+    Inventory inv = createCraftInventory(user);
+    addRecipeContents(recipe, inv);
+    addCraftContext(inv);
+    addCraftActions(inv);
+
+    user.openInventory(inv);
+    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CRAFT_CONFIRM.inventory));
+  }
+
+  /**
+   * Expands the recipe's details to the user before crafting.
+   *
+   * @param e    inventory click event
+   * @param user user
+   */
+  public static void editRecipeDetails(InventoryClickEvent e, Player user) {
+    ForgeRecipe recipe = PluginData.forgeData.
+        getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
+
+    Inventory inv = createSaveInventory(user);
+    addRecipeContents(recipe, inv);
+    addSaveContext(inv);
+    addSaveActions(inv);
+
+    user.openInventory(inv);
+    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_SAVE.inventory));
+  }
+
+  /**
+   * Opens a ForgeSave inventory.
+   *
+   * @param user user
+   * @return ForgeSave inventory
+   */
+  public static void openForgeSaveInventory(Player user) {
+    Inventory inv = createSaveInventory(user);
+    addSaveContext(inv);
+    addSaveActions(inv);
+
+    user.openInventory(inv);
+    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_SAVE.inventory));
+  }
+
+  /**
+   * Removes an existing recipe.
+   *
+   * @param e    inventory click event
+   * @param user user
+   */
+  public static void removeRecipe(InventoryClickEvent e, Player user) {
+    ForgeRecipe recipe = PluginData.forgeData.
+        getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
+
+    recipe.getFile().delete();
+    user.sendMessage(PluginMessage.Success.FORGE_REMOVE.message + ChatColor.WHITE + recipe.getName());
+  }
+
+  /**
+   * Checks if the Forge recipe's details were formatted correctly before saving the recipe.
+   *
+   * @param e    inventory click event
+   * @param user user
+   */
+  public static void readSaveClick(InventoryClickEvent e, Player user) {
+    ItemStack[] inv = e.getInventory().getContents();
+    String fileName = nameRecipeFile(inv);
+    if (fileName != null) {
+      String encodedRecipe = encodeRecipe(inv);
+      if (encodedRecipe != null) {
+        saveRecipeToFile(user, fileName, encodedRecipe);
+      } else {
+        user.sendMessage(PluginMessage.Failure.FORGE_SAVE_NO_COMPONENTS.message);
+      }
+    } else {
+      user.sendMessage(PluginMessage.Failure.FORGE_SAVE_NO_RESULTS.message);
+    }
+    e.setCancelled(true);
+  }
+
+  /**
+   * Creates and names a ForgeCraft inventory.
+   *
+   * @param user user
+   * @return ForgeCraft inventory
+   */
+  private static Inventory createCraftInventory(Player user) {
+    return Bukkit.createInventory(user, 27,
+        ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft");
+  }
+
+  /**
+   * Creates and names a ForgeSave inventory.
+   *
+   * @param user user
+   * @return ForgeSave inventory
+   */
+  private static Inventory createSaveInventory(Player user) {
+    return Bukkit.createInventory(user, 27,
+        ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Save");
+  }
+
+  /**
+   * Adds the recipe's results and components to the inventory.
+   *
+   * @param recipe forge recipe
+   * @param inv    interacting inventory
+   */
+  private static void addRecipeContents(ForgeRecipe recipe, Inventory inv) {
+    ArrayList<ItemStack> results = recipe.getResults();
+    ArrayList<ItemStack> components = recipe.getComponents();
+
+    for (int i = 0; i < results.size(); i++) {
+      inv.setItem(i, results.get(i));
+    }
+    for (int i = 0; i < components.size(); i++) {
+      inv.setItem(i + 9, components.get(i));
+    }
+  }
+
+  /**
+   * Adds a help context to the expanded craft action.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addCraftContext(Inventory inv) {
+    inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+        ChatColor.GREEN + "Help", PluginContext.FORGE_EXPANDED_CRAFT.context));
+  }
+
+  /**
+   * Adds a help context to the save action.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addSaveContext(Inventory inv) {
+    inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+        ChatColor.GREEN + "Help", PluginContext.FORGE_SAVE.context));
+  }
+
+  /**
+   * Adds craft and back buttons.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addCraftActions(Inventory inv) {
+    inv.setItem(25, ItemCreator.
+        createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Craft"));
+    inv.setItem(26, ItemCreator.
+        createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
+  }
+
+  /**
+   * Adds save and back buttons.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addSaveActions(Inventory inv) {
+    inv.setItem(25, ItemCreator.
+        createPluginPlayerHead(PluginPlayerHead.STACK_OF_PAPER.head, ChatColor.AQUA + "Save"));
+    inv.setItem(26, ItemCreator.
+        createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
+  }
+
+  /**
+   * Names a recipe by the first item in the results row.
+   *
+   * @param inv items in the inventory
+   * @return recipe file name
+   */
+  private static String nameRecipeFile(ItemStack[] inv) {
+    for (int i = 0; i < 8; i++) {
+      ItemStack item = inv[i];
+      if (item != null) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta.hasDisplayName()) {
+          return meta.getDisplayName().toLowerCase().replace(" ", "_");
+        } else {
+          return item.getType().name().toLowerCase();
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Encodes the inventory by its results and components.
+   * <p>
+   * At this stage in the process, it is known the results are non-null,
+   * so the method checks if the components are non-null first.
+   * <p>
+   *
+   * @param inv items in the inventory
+   * @return encoded recipe string
+   */
+  private static String encodeRecipe(ItemStack[] inv) {
+    StringBuilder components = new StringBuilder();
+    for (int i = 9; i < 24; i++) {
+      ItemStack item = inv[i];
+      if (item != null) {
+        components.append(ItemCreator.encodeItem(item)).append(" ");
+      }
+    }
+
+    if (components.toString().equals("")) {
+      return null;
+    }
+
+    StringBuilder results = new StringBuilder();
+    for (int i = 0; i < 8; i++) {
+      ItemStack item = inv[i];
+      if (item != null) {
+        results.append(ItemCreator.encodeItem(item)).append(" ");
+      }
+    }
+
+    return results.append("\n").append(components).toString();
+  }
+
+  /**
+   * Saves a recipe file to the file system.
+   *
+   * @param user          user
+   * @param fileName      file name
+   * @param encodedRecipe encoded recipe string
+   * @throws IOException file could not be created
+   */
+  private static void saveRecipeToFile(Player user, String fileName, String encodedRecipe) {
+    try {
+      FileWriter fw = new FileWriter(PluginDirectory.FORGE.file.getPath()
+          + "/" + fileName + "_rcp.txt");
+      fw.write(encodedRecipe);
+      fw.close();
+      user.sendMessage(PluginMessage.Success.FORGE_SAVE.message +
+          ChatColor.WHITE + TextFormatter.capitalizePhrase(fileName));
+    } catch (IOException ex) {
+      user.sendMessage(PluginMessage.Failure.FORGE_SAVE_FAILED.message);
+    }
+  }
+}

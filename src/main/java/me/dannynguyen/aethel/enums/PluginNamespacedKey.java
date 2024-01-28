@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import org.bukkit.NamespacedKey;
 
 /**
- * PluginNamespacedKey is an enum containing the plugin's commonly used namespaced keys.
+ * PluginNamespacedKey is an enum containing the plugin's namespaced keys.
  *
  * @author Danny Nguyen
  * @version 1.7.8

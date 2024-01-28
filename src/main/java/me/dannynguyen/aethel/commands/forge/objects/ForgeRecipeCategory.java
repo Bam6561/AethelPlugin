@@ -5,22 +5,14 @@ import org.bukkit.inventory.Inventory;
 import java.util.ArrayList;
 
 /**
- * ForgeRecipeCategory is an object that relates forge recipes with their category pages.
+ * ForgeRecipeCategory is an object that relates forge recipes with their category and page number.
  *
  * @author Danny Nguyen
- * @version 1.5.4
+ * @version 1.7.13
  * @since 1.5.4
  */
-public class ForgeRecipeCategory {
-  private final String name;
-  private final ArrayList<Inventory> pages;
-  private final int numberOfPages;
-
-  public ForgeRecipeCategory(String name, ArrayList<Inventory> pages, int numberOfPages) {
-    this.name = name;
-    this.pages = pages;
-    this.numberOfPages = numberOfPages;
-  }
+public record ForgeRecipeCategory(String name, ArrayList<Inventory> pages,
+                                  int numberOfPages) {
 
   public String getName() {
     return this.name;

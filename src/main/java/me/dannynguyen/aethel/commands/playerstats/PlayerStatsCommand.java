@@ -56,7 +56,7 @@ public class PlayerStatsCommand implements CommandExecutor {
   }
 
   /**
-   * Either opens a PlayerStats main menu belonging to another player or opens a PlayerStatsPast menu.
+   * Either opens a PlayerStats main menu belonging to another player or opens a PlayerStatsPast inventory.
    *
    * @param user      user
    * @param parameter player given parameter
@@ -72,7 +72,7 @@ public class PlayerStatsCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a PlayerStats menu.
+   * Opens a PlayerStats main menu.
    *
    * @param user user
    */
@@ -86,7 +86,7 @@ public class PlayerStatsCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a PlayerStats menu belonging to another player.
+   * Opens a PlayerStats main menu belonging to another player.
    *
    * @param user            user
    * @param requestedPlayer requested player's name

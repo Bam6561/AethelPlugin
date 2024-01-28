@@ -3,10 +3,11 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.commands.itemeditor.objects.AethelAttribute;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.commands.itemeditor.objects.AethelAttribute;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,14 +30,14 @@ import java.util.List;
  * ItemEditorAttributes is an inventory under the ItemEditor command that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.7.5
+ * @version 1.7.13
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
   /**
    * Opens an ItemEditorAttributes inventory with attributes.
    *
-   * @param user interacting user
+   * @param user   interacting user
    * @param action type of interaction
    * @return ItemEditorAttributes inventory with attributes
    */
@@ -52,7 +53,7 @@ public class ItemEditorAttributes {
   /**
    * Creates and names an ItemEditorAttributes inventory.
    *
-   * @param user interacting user
+   * @param user   interacting user
    * @param action type of interaction
    * @return ItemEditorAttributes inventory
    */
@@ -76,7 +77,7 @@ public class ItemEditorAttributes {
   /**
    * Adds attributes.
    *
-   * @param inv    interacting inventory
+   * @param inv  interacting inventory
    * @param user interacting user
    */
   private static void addAttributes(Inventory inv, Player user) {
@@ -102,7 +103,7 @@ public class ItemEditorAttributes {
     List<String> helpLore = Arrays.asList(
         ChatColor.WHITE + "To remove a attribute, input \"0\".");
 
-    inv.setItem(0, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Help", helpLore));
     inv.setItem(18, ItemCreator.createItem(Material.IRON_SWORD,
         ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));

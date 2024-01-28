@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.user.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -19,7 +18,7 @@ import java.util.List;
  * ItemEditorMessageCosmetic is a utility class that edits an item's cosmetic-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.13
  * @since 1.7.0
  */
 public class ItemEditorMessageCosmetic {

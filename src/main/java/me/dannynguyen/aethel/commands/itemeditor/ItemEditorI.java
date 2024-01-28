@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ import java.util.List;
  * ItemEditorMenu is an inventory under the ItemEditor command that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.7.0
+ * @version 1.7.13
  * @since 1.6.7
  */
 public class ItemEditorI {
@@ -70,7 +71,7 @@ public class ItemEditorI {
    * @param item interacting item
    */
   private static void addDisplayNameMeta(Inventory inv, ItemStack item) {
-    ItemStack formatCodes = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Format Codes",
         List.of(ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
             ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
@@ -78,7 +79,7 @@ public class ItemEditorI {
             ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
             ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
             ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
-    ItemStack colorCodes = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Color Codes",
         List.of(ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
             ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
@@ -127,14 +128,14 @@ public class ItemEditorI {
   private static void addLoreMeta(Inventory inv, ItemMeta meta) {
     ItemStack lore;
     if (!meta.hasLore()) {
-      lore = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+      lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
           ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
     } else {
       List<String> loreLines = meta.getLore();
       for (int i = 0; i < loreLines.size(); i++) {
         loreLines.set(i, ChatColor.WHITE + "" + (i + 1) + " " + ChatColor.RESET + loreLines.get(i));
       }
-      lore = ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+      lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
           ChatColor.GREEN + "Lore", loreLines);
     }
 

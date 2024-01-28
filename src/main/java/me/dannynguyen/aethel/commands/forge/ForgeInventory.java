@@ -1,242 +1,174 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.commands.forge.objects.ForgeCraftOperation;
+import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.commands.forge.objects.ForgeRecipeCategory;
+import me.dannynguyen.aethel.enums.PluginContext;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.utility.InventoryPages;
+import me.dannynguyen.aethel.utility.ItemCreator;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.List;
+import java.util.Set;
+
 /**
- * ForgeInventory is an inventory listener for the Forge command.
+ * Forge is a shared inventory that supports categorical
+ * pagination for crafting, editing, and removing forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.7.3
- * @since 1.0.9
+ * @version 1.7.13
+ * @since 1.0.6
  */
 public class ForgeInventory {
   /**
-   * Opens a recipe category page.
-   *
-   * @param e    inventory click event
-   * @param user user
-   */
-  public static void interpretMainClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
-      switch (e.getSlot()) {
-        case 2, 4 -> { // Help Context
-        }
-        case 3 -> openForgeSave(user);
-        default -> {
-          String action = user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString();
-          String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-          user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace, new FixedMetadataValue(Plugin.getInstance(), itemName));
-          int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
-
-          user.openInventory(ForgeI.openForgeCategoryPage(user, action, itemName, pageRequest));
-          user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-              new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
-        }
-      }
-    }
-    e.setCancelled(true);
-  }
-
-  /**
-   * Either:
-   * - increments or decrements a recipe page
-   * - changes the interaction type
-   * - opens a ForgeSave inventory
-   * - contextualizes the click to expand, edit, or remove recipes
-   *
-   * @param e      inventory click event
-   * @param user   user
-   * @param action type of interaction
-   */
-  public static void interpretCategoryClick(InventoryClickEvent e, Player user, String action) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
-      switch (e.getSlot()) {
-        case 0 -> previousRecipePage(user, action);
-        case 2 -> { // Help Context
-        }
-        case 3 -> openForgeSave(user);
-        case 4 -> {
-          if (user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString().equals("edit")) {
-            openForgeEdit(user);
-          }
-        }
-        case 5 -> openForgeRemove(user);
-        case 6 -> returnToMainPage(user);
-        case 8 -> nextRecipePage(user, action);
-        default -> interpretContextualClick(e, action, user);
-      }
-    }
-    e.setCancelled(true);
-  }
-
-  /**
-   * Either crafts a recipe or goes back to the ForgeMain inventory with the intent to craft recipes.
-   *
-   * @param e    inventory click event
-   * @param user user
-   */
-  public static void interpretCraftConfirmClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
-      switch (e.getSlot()) {
-        case 25 -> new ForgeCraftOperation().craftRecipe(e, user);
-        case 26 -> openForgeCraft(user);
-      }
-    }
-    e.setCancelled(true);
-  }
-
-  /**
-   * Either saves a recipe or goes back to the ForgeMain inventory with the intent to edit recipes.
-   *
-   * @param e    inventory click event
-   * @param user user
-   */
-  public static void interpretSaveClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
-      switch (e.getSlot()) {
-        case 8 -> e.setCancelled(true);
-        case 25 -> ForgeSave.readSaveClick(e, user);
-        case 26 -> {
-          openForgeEdit(user);
-          e.setCancelled(true);
-        }
-      }
-    }
-  }
-
-  /**
-   * Opens the previous recipe page.
+   * Creates a Forge main menu containing categories.
    *
    * @param user   user
    * @param action type of interaction
+   * @return Forge inventory with recipe categories
    */
-  private static void previousRecipePage(Player user, String action) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
+  public static Inventory openMainMenu(Player user, String action) {
+    Inventory inv = createInventory(user, action);
+    addRecipeCategories(inv);
 
-    user.openInventory(ForgeI.openForgeCategoryPage(user, action, categoryName,
-        pageRequest - 1));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
-  }
+    String futureAction = user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString();
+    List<String> helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
 
-  /**
-   * Opens a ForgeSave inventory.
-   *
-   * @param user user
-   */
-  private static void openForgeSave(Player user) {
-    user.openInventory(ForgeSave.createInventory(user));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_SAVE.inventory));
-  }
-
-  /**
-   * Opens a ForgeMain inventory with the intent to edit recipes.
-   * <p>
-   * Since the user can either be returning to the main page or
-   * a recipe category from here, both scenarios are supported.
-   * </p>
-   *
-   * @param user user
-   */
-  private static void openForgeEdit(Player user) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    if (categoryName.equals("")) {
-      user.openInventory(ForgeI.openMainMenu(user, "edit"));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
+    if (futureAction.equals("craft")) {
+      inv.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+          ChatColor.GREEN + "Help", helpLore));
     } else {
-      categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+      inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+          ChatColor.GREEN + "Help", helpLore));
+      addCreateButton(inv);
+    }
+    return inv;
+  }
 
-      user.openInventory(ForgeI.openForgeCategoryPage(user, "edit",
-          categoryName, user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_EDIT.inventory));
+  /**
+   * Creates and names a Forge inventory with its action.
+   *
+   * @param user   user
+   * @param action type of interaction
+   * @return Forge inventory
+   */
+  private static Inventory createInventory(Player user, String action) {
+    String title = ChatColor.DARK_GRAY + "Forge";
+    switch (action) {
+      case "craft" -> title += ChatColor.BLUE + " Craft " +
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+      case "edit" -> title += ChatColor.YELLOW + " Edit " +
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+      case "remove" -> title += ChatColor.RED + " Remove " +
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+    }
+    return Bukkit.createInventory(user, 54, title);
+  }
+
+  /**
+   * Adds recipe categories.
+   *
+   * @param inv interacting inventory
+   */
+  private static void addRecipeCategories(Inventory inv) {
+    Set<String> categoryNames = PluginData.forgeData.getRecipeCategoriesMap().keySet();
+    if (!categoryNames.isEmpty()) {
+      int i = 9;
+      for (String categoryName : categoryNames) {
+        inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + categoryName));
+        i++;
+      }
     }
   }
 
   /**
-   * Opens a ForgeMain inventory with the intent to remove recipes.
+   * Loads a recipe category page from memory.
    *
-   * @param user user
+   * @param user              user
+   * @param action            type of interaction
+   * @param requestedCategory requested category
+   * @param pageRequest       page to view
+   * @return Forge inventory with recipes
    */
-  private static void openForgeRemove(Player user) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+  public static Inventory openForgeCategoryPage(Player user, String action,
+                                                String requestedCategory, int pageRequest) {
+    Inventory inv = createInventory(user, action);
 
-    user.openInventory(ForgeI.openForgeCategoryPage(user, "remove",
-        categoryName, user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_REMOVE.inventory));
-  }
-
-  /**
-   * Opens a ForgeMain inventory with the future action in mind.
-   *
-   * @param user user
-   */
-  private static void returnToMainPage(Player user) {
-    String action = user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString();
-    user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), ""));
-
-    user.openInventory(ForgeI.openMainMenu(user, action));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
+    ForgeRecipeCategory category = PluginData.forgeData.
+        getRecipeCategoriesMap().get(requestedCategory);
+    int numberOfPages = category.getNumberOfPages();
+    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), "0"));
+        new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+
+    inv.setContents(category.getPages().get(pageViewed).getContents());
+
+    addContext(action, inv);
+    addActions(action, inv);
+    InventoryPages.addBackButton(inv, 6);
+    InventoryPages.addPageButtons(inv, numberOfPages, pageViewed);
+    return inv;
   }
 
   /**
-   * Opens a ForgeMain inventory with the intent to craft recipes.
+   * Adds a help context to the Forge inventory.
    *
-   * @param user user
-   */
-  private static void openForgeCraft(Player user) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-
-    user.openInventory(ForgeI.openForgeCategoryPage(user, "craft", categoryName,
-        user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CRAFT.inventory));
-  }
-
-  /**
-   * Opens the next recipe page.
-   *
-   * @param user   user
    * @param action type of interaction
+   * @param inv    interacting inventory
    */
-  private static void nextRecipePage(Player user, String action) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
-
-    user.openInventory(ForgeI.openForgeCategoryPage(user, action, categoryName,
-        pageRequest + 1));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
+  private static void addContext(String action, Inventory inv) {
+    List<String> helpLore;
+    switch (action) {
+      case "craft" -> {
+        helpLore = PluginContext.FORGE_CRAFT.context;
+        inv.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+            ChatColor.GREEN + "Help", helpLore));
+      }
+      case "edit", "remove" -> {
+        helpLore = PluginContext.FORGE_EDITOR.context;
+        inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+            ChatColor.GREEN + "Help", helpLore));
+      }
+    }
   }
 
   /**
-   * Either crafts, edits, or removes a recipe.
+   * Adds the create button.
    *
-   * @param e      inventory click event
-   * @param action interaction type
-   * @param user   user
+   * @param inv interacting inventory
    */
-  private static void interpretContextualClick(InventoryClickEvent e, String action, Player user) {
+  private static void addCreateButton(Inventory inv) {
+    inv.setItem(3, ItemCreator.
+        createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
+  }
+
+  /**
+   * Adds create, edit, and remove buttons.
+   *
+   * @param action type of interaction
+   * @param inv    interacting inventory
+   */
+  private static void addActions(String action, Inventory inv) {
     switch (action) {
-      case "craft" -> ForgeCraft.expandRecipeDetails(e, user);
-      case "edit" -> ForgeEdit.editRecipe(e, user);
-      case "remove" -> ForgeRemove.removeRecipe(e, user);
+      case "edit" -> {
+        inv.setItem(3, ItemCreator.
+            createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
+        inv.setItem(5, ItemCreator.
+            createPluginPlayerHead(PluginPlayerHead.TRASH_CAN.head, ChatColor.AQUA + "Remove"));
+      }
+      case "remove" -> {
+        inv.setItem(3, ItemCreator.
+            createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
+        inv.setItem(4, ItemCreator.
+            createPluginPlayerHead(PluginPlayerHead.FILE_EXPLORER.head, ChatColor.AQUA + "Edit"));
+      }
     }
   }
 }

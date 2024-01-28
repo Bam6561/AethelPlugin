@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ import java.util.List;
  * ItemEditorTags is an inventory under the ItemEditor command that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.7.8
+ * @version 1.7.13
  * @since 1.6.15
  */
 public class ItemEditorTags {
@@ -86,7 +87,7 @@ public class ItemEditorTags {
   private static void addTagsContext(Inventory inv) {
     List<String> helpLore = Arrays.asList(
         ChatColor.WHITE + "To remove a tag, input \"-\".");
-    inv.setItem(2, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Help", helpLore));
   }
 }

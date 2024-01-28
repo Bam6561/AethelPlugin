@@ -17,7 +17,7 @@ import java.util.Collections;
  * the player and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.7.3
+ * @version 1.7.13
  * @since 1.4.10
  */
 public class PlayerStatsSend {
@@ -61,7 +61,7 @@ public class PlayerStatsSend {
     String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
 
-    String statCategory = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.name).get(0).asString();
+    String statCategory = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
     ArrayList<String> statValues = new ArrayList<>();
 
     if (statCategory.equals("Entity Types")) {
@@ -130,7 +130,8 @@ public class PlayerStatsSend {
     long days = ticks / 1728000L % 30;
     long hours = ticks / 72000L % 24;
     long minutes = ticks / 1200L % 60;
-    return (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ");
+    return (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") +
+        (minutes == 0 ? "" : minutes + "m ");
   }
 
   /**

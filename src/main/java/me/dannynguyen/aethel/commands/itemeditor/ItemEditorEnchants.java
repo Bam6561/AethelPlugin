@@ -1,9 +1,10 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
-import me.dannynguyen.aethel.utility.InventoryPages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ import java.util.Map;
  * ItemEditorEnchants is an inventory under the ItemEditor command that edits an item's enchantments.
  *
  * @author Danny Nguyen
- * @version 1.6.16
+ * @version 1.7.13
  * @since 1.6.16
  */
 public class ItemEditorEnchants {
@@ -44,7 +45,7 @@ public class ItemEditorEnchants {
    * Creates and names an ItemEditorEnchants inventory.
    *
    * @param user interacting user
-   * @param item   interacting item
+   * @param item interacting item
    * @return ItemEditorEnchants inventory
    */
   private static Inventory createInventory(Player user, ItemStack item) {
@@ -57,7 +58,7 @@ public class ItemEditorEnchants {
   /**
    * Adds enchants.
    *
-   * @param inv    interacting inventory
+   * @param inv  interacting inventory
    * @param user interacting user
    */
   private static void addEnchants(Inventory inv, Player user) {
@@ -85,7 +86,7 @@ public class ItemEditorEnchants {
   private static void addEnchantsContext(Inventory inv) {
     List<String> helpLore = Arrays.asList(
         ChatColor.WHITE + "To remove an enchant, input \"0\".");
-    inv.setItem(2, ItemCreator.createPluginPlayerHead("WHITE_QUESTION_MARK",
+    inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Help", helpLore));
   }
 }

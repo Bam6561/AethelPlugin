@@ -20,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.7.13
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -92,7 +92,7 @@ public class ForgeCommand implements CommandExecutor {
     user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), ""));
 
-    user.openInventory(ForgeI.openMainMenu(user, "craft"));
+    user.openInventory(ForgeInventory.openMainMenu(user, "craft"));
 
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
@@ -111,7 +111,7 @@ public class ForgeCommand implements CommandExecutor {
     user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), ""));
 
-    user.openInventory(ForgeI.openMainMenu(user, "edit"));
+    user.openInventory(ForgeInventory.openMainMenu(user, "edit"));
 
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
