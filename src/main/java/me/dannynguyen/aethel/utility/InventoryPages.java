@@ -9,10 +9,10 @@ import org.bukkit.inventory.Inventory;
  * double chest sized inventories with useful methods.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.1
  * @since 1.4.2
  */
-public final class InventoryPages {
+public class InventoryPages {
   private InventoryPages() {
   }
 

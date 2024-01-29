@@ -32,7 +32,7 @@ import java.util.List;
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -181,7 +181,7 @@ public class ItemEditorAttributes {
                                            HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap,
                                            String category, int invSlot) {
     if (!aethelAttributesMap.isEmpty()) { // Read both Minecraft & Aethel attributes
-      for (String attributeName : PluginConstant.attributesMap.get(category)) {
+      for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
         if (PluginConstant.minecraftAttributes.contains(category)) {
           addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
         } else {
@@ -190,7 +190,7 @@ public class ItemEditorAttributes {
         invSlot++;
       }
     } else {  // Read Minecraft attributes only
-      for (String attributeName : PluginConstant.attributesMap.get(category)) {
+      for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
         if (PluginConstant.minecraftAttributes.contains(category)) {
           addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
         } else {

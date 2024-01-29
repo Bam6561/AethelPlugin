@@ -24,14 +24,14 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * ItemEditorMessageFunctional is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.0
  */
 public class ItemEditorMessageListenerGameplay {
@@ -228,7 +228,7 @@ public class ItemEditorMessageListenerGameplay {
                                                  String attributeValue) {
     if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
       ArrayList<String> attributes = new ArrayList<>(
-          Arrays.asList(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+          List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
 
       StringBuilder newAttributes = new StringBuilder();
       for (String attribute : attributes) {
@@ -262,7 +262,7 @@ public class ItemEditorMessageListenerGameplay {
                                                     NamespacedKey attributesKey,
                                                     String attributeName, NamespacedKey attributeKey) {
     ArrayList<String> attributes = new ArrayList<>(
-        Arrays.asList(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+        List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
 
     StringBuilder newAttributes = new StringBuilder();
     for (String attribute : attributes) {

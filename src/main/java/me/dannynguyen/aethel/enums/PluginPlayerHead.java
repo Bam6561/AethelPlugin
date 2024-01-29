@@ -57,7 +57,6 @@ public enum PluginPlayerHead {
    *
    * @param textureData encoded texture
    * @return texture url
-   * @throws MalformedURLException invalid url
    */
   private static URL getUrlFromTextureData(String textureData) {
     String urlString = new String(Base64.getDecoder().decode(textureData));

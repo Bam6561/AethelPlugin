@@ -8,7 +8,7 @@ import java.util.List;
  * PluginContext is an enum containing the plugin's help contexts.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.13
  */
 public enum PluginContext {
@@ -29,8 +29,8 @@ public enum PluginContext {
       ChatColor.WHITE + "get the item and save",
       ChatColor.WHITE + "it before reloading.")),
   CHARACTER_EQUIPMENT(List.of(
-      ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | "
-          + ChatColor.GRAY + "Main Hand" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
+      ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Main Hand"
+          + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
       ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
       ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
       ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring")),
@@ -61,8 +61,7 @@ public enum PluginContext {
   PLAYERSTATS_CATEGORIES(List.of(ChatColor.WHITE + "Stat Categories")),
   PLAYERSTATS_SHARE_STAT(List.of(
       ChatColor.WHITE + "Shift-click any",
-      ChatColor.WHITE + "stat to share it.")),
-  ;
+      ChatColor.WHITE + "stat to share it."));
 
   public final List<String> context;
 

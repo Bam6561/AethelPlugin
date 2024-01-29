@@ -14,49 +14,33 @@ import static java.util.Comparator.comparing;
  * PluginConstant is an enum-like storage containing various constants.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.13
  */
 public class PluginConstant {
-  public static final ArrayList<NamespacedKey> aethelTags = new ArrayList<>(List.of(
+  public static final NamespacedKey[] aethelTags = {
       PluginNamespacedKey.AETHELITEM_CATEGORY.namespacedKey,
       PluginNamespacedKey.FORGE_CATEGORY.namespacedKey,
-      PluginNamespacedKey.FORGE_ID.namespacedKey));
-  public static final HashMap<String, ArrayList<String>> attributesMap = new HashMap<>() {{
-    put("offense", new ArrayList<>(PluginList.AETHEL_ATTRIBUTE_OFFENSE.list));
-    put("defense", new ArrayList<>(PluginList.AETHEL_ATTRIBUTE_DEFENSE.list));
-    put("other", new ArrayList<>(PluginList.AETHEL_ATTRIBUTE_OTHER.list));
-  }};
-  public static final HashSet<String> minecraftAttributes = new HashSet<>(loadMinecraftAttributes());
-  public static final List<Enchantment> sortedEnchantments = new ArrayList<>(sortEnchantments());
-  public static final ArrayList<EntityType> sortedEntityTypes = new ArrayList<>(sortEntityTypes());
-  public static final ArrayList<Material> sortedMaterials = new ArrayList<>(sortMaterials());
-  public static final ArrayList<PlayerStatsCategory> playerStatsCategories = new ArrayList<>(List.of(
-      new PlayerStatsCategory("Activities",
-          new ArrayList<>(PluginList.PLAYERSTAT_CATEGORY_ACTIVITIES.list)),
-      new PlayerStatsCategory("Containers",
-          new ArrayList<>(PluginList.PLAYERSTAT_CATEGORY_CONTAINERS.list)),
-      new PlayerStatsCategory("Damage",
-          new ArrayList<>(PluginList.PLAYERSTAT_CATEGORY_DAMAGE.list)),
-      new PlayerStatsCategory("General",
-          new ArrayList<>(PluginList.PLAYERSTAT_CATEGORY_GENERAL.list)),
-      new PlayerStatsCategory("Movement",
-          new ArrayList<>(PluginList.PLAYERSTAT_CATEGORY_MOVEMENT.list)),
-      new PlayerStatsCategory("Interactions",
-          new ArrayList<>(PluginList.PLAYERSTAT_CATEGORY_INTERACTIONS.list))));
+      PluginNamespacedKey.FORGE_ID.namespacedKey};
 
-  /**
-   * Adds minecraft attributes to a HashSet.
-   *
-   * @return minecraft attributes
-   */
-  private static HashSet<String> loadMinecraftAttributes() {
-    HashSet<String> minecraftAttributes = new HashSet<>();
-    for (String attribute : PluginList.MINECRAFT_ATTRIBUTES.list) {
-      minecraftAttributes.add(attribute);
-    }
-    return minecraftAttributes;
-  }
+  public static final Map<String, List<String>> aethelAttributesMap = Map.of(
+      "offense", PluginList.AETHEL_ATTRIBUTE_OFFENSE.list,
+      "defense", PluginList.AETHEL_ATTRIBUTE_DEFENSE.list,
+      "other", PluginList.AETHEL_ATTRIBUTE_OTHER.list);
+
+  public static final Set<String> minecraftAttributes = new HashSet<>(PluginList.MINECRAFT_ATTRIBUTES.list);
+
+  public static final List<Enchantment> sortedEnchantments = sortEnchantments();
+  public static final List<EntityType> sortedEntityTypes = sortEntityTypes();
+  public static final List<Material> sortedMaterials = sortMaterials();
+
+  public static final List<PlayerStatsCategory> playerStatsCategories = List.of(
+      new PlayerStatsCategory("Activities", PluginList.PLAYERSTAT_CATEGORY_ACTIVITIES.list),
+      new PlayerStatsCategory("Containers", PluginList.PLAYERSTAT_CATEGORY_CONTAINERS.list),
+      new PlayerStatsCategory("Damage", PluginList.PLAYERSTAT_CATEGORY_DAMAGE.list),
+      new PlayerStatsCategory("General", PluginList.PLAYERSTAT_CATEGORY_GENERAL.list),
+      new PlayerStatsCategory("Movement", PluginList.PLAYERSTAT_CATEGORY_MOVEMENT.list),
+      new PlayerStatsCategory("Interactions", PluginList.PLAYERSTAT_CATEGORY_INTERACTIONS.list));
 
   /**
    * Sorts enchantments by name.
@@ -64,7 +48,7 @@ public class PluginConstant {
    * @return sorted enchantments
    */
   private static List<Enchantment> sortEnchantments() {
-    List<Enchantment> enchantments = new ArrayList<>(List.of(Enchantment.values()));
+    List<Enchantment> enchantments = Arrays.asList(Enchantment.values());
     Comparator<Enchantment> enchantmentComparator = comparing(e -> e.getKey().getKey());
     enchantments.sort(enchantmentComparator);
     return enchantments;
@@ -76,7 +60,7 @@ public class PluginConstant {
    * @return sorted materials
    */
   private static List<Material> sortMaterials() {
-    ArrayList<Material> materials = new ArrayList<>();
+    List<Material> materials = new ArrayList<>();
     for (Material material : Material.values()) {
       if (material.isItem() && !material.isAir()) {
         materials.add(material);
@@ -93,7 +77,7 @@ public class PluginConstant {
    * @return sorted entity types
    */
   private static List<EntityType> sortEntityTypes() {
-    ArrayList<EntityType> entityTypes = new ArrayList<>(List.of(EntityType.values()));
+    List<EntityType> entityTypes = Arrays.asList(EntityType.values());
     Comparator<EntityType> entityTypeComparator = Comparator.comparing(Enum::name);
     entityTypes.sort(entityTypeComparator);
     return entityTypes;

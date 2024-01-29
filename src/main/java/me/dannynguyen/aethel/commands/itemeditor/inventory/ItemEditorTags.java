@@ -16,14 +16,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * ItemEditorTags is an inventory that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.6.15
  */
 public class ItemEditorTags {
@@ -63,12 +62,11 @@ public class ItemEditorTags {
    * @param user user
    */
   private static void addAethelTags(Inventory inv, Player user) {
-    ArrayList<NamespacedKey> aethelTags = PluginConstant.aethelTags;
     PersistentDataContainer dataContainer = PluginData.itemEditorData.
         getEditedItemMap().get(user).getItemMeta().getPersistentDataContainer();
 
     int invSlot = 9;
-    for (NamespacedKey tag : aethelTags) {
+    for (NamespacedKey tag : PluginConstant.aethelTags) {
       boolean disabled = !dataContainer.has(tag, PersistentDataType.STRING);
 
       inv.setItem(invSlot, disabled ?

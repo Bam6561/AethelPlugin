@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * - removes recipes
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.13
  */
 public class ForgeAction {
@@ -114,9 +114,9 @@ public class ForgeAction {
   public static void readSaveClick(InventoryClickEvent e, Player user) {
     ItemStack[] inv = e.getInventory().getContents();
     String fileName = nameRecipeFile(inv);
-    if (fileName != null) {
+    if (!fileName.equals("")) {
       String encodedRecipe = encodeRecipe(inv);
-      if (encodedRecipe != null) {
+      if (encodedRecipe.equals("")) {
         saveRecipeToFile(user, fileName, encodedRecipe);
       } else {
         user.sendMessage(PluginMessage.Failure.FORGE_SAVE_NO_COMPONENTS.message);
@@ -216,7 +216,7 @@ public class ForgeAction {
         }
       }
     }
-    return null;
+    return "";
   }
 
   /**
@@ -239,7 +239,7 @@ public class ForgeAction {
     }
 
     if (components.toString().equals("")) {
-      return null;
+      return "";
     }
 
     StringBuilder results = new StringBuilder();

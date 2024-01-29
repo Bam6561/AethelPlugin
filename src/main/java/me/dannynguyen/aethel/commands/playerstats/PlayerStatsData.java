@@ -15,20 +15,20 @@ import org.bukkit.inventory.Inventory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * PlayerStatsData stores player statistic names in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.4.8
  */
 public class PlayerStatsData {
   private final HashMap<String, Inventory> statCategoryPages = new HashMap<>();
-  private final HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>() {{
-    put("Materials", new ArrayList<>());
-    put("Entity Types", new ArrayList<>());
-  }};
+  private final HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>(Map.of(
+      "Materials", new ArrayList<>(),
+      "Entity Types", new ArrayList<>()));
 
   private int numberOfMaterialPages = 0;
   private int numberOfEntityTypePages = 0;
@@ -64,7 +64,7 @@ public class PlayerStatsData {
    * Creates pages of materials.
    */
   private void createMaterialPages() {
-    ArrayList<Material> materials = PluginConstant.sortedMaterials;
+    List<Material> materials = PluginConstant.sortedMaterials;
     int numberOfMaterials = materials.size();
     int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfMaterials);
     setNumberOfMaterialPages(numberOfPages);
@@ -95,7 +95,7 @@ public class PlayerStatsData {
    * Creates pages of entities.
    */
   private void createEntityTypeStatPages() {
-    ArrayList<EntityType> entityTypes = PluginConstant.sortedEntityTypes;
+    List<EntityType> entityTypes = PluginConstant.sortedEntityTypes;
     int numberOfEntityTypes = entityTypes.size();
     int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfEntityTypes);
     setNumberOfEntityTypePages(numberOfPages);

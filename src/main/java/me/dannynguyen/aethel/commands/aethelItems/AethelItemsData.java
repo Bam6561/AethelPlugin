@@ -14,6 +14,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ import java.util.Scanner;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -74,7 +75,7 @@ public class AethelItemsData {
       Scanner scanner = new Scanner(file);
       ItemStack item = ItemReader.decodeItem(scanner.nextLine());
       return new AethelItem(file, ItemReader.readName(item), item);
-    } catch (IOException ex) {
+    } catch (FileNotFoundException ex) {
       return null;
     }
   }

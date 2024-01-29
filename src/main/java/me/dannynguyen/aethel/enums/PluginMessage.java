@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
  * PluginMessage is an enum collection containing the plugin's messages.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.1
  * @since 1.7.6
  */
 public class PluginMessage {
@@ -64,7 +64,6 @@ public class PluginMessage {
     ITEMEDITOR_INPUT_EDIT_LORE(ChatColor.WHITE + "Input line number and lore to edit."),
     ITEMEDITOR_INPUT_REMOVE_LORE(ChatColor.WHITE + "Input line number to remove.");
 
-
     public final String message;
 
     Success(String message) {
@@ -76,10 +75,12 @@ public class PluginMessage {
    * Sent on failure.
    */
   public enum Failure {
+    PLUGIN_INVALID_ITEM_FILE("[Aethel] Invalid item file: "),
+    PLUGIN_INVALID_FORGE_RECIPE_FILE("[Aethel] Invalid forge recipe file: "),
     PLUGIN_INVALID_PLAYER_HEAD_TEXTURE("[Aethel] Invalid player head texture: "),
-    PLUGIN_INVALID_TEXTURE(ChatColor.RED + "Invalid texture."),
 
     NOTIFICATION_ERROR(ChatColor.RED + "[!] Error"),
+    INVALID_TEXTURE(ChatColor.RED + "Invalid texture."),
 
     PLAYER_ONLY_COMMAND(ChatColor.RED + "Player-only command."),
     INSUFFICIENT_PERMISSION(ChatColor.RED + "Insufficient permission."),

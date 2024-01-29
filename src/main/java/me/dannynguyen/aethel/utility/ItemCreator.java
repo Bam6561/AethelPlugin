@@ -21,10 +21,10 @@ import java.util.List;
  * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.1
  * @since 1.1.5
  */
-public final class ItemCreator {
+public class ItemCreator {
   private ItemCreator() {
   }
 
@@ -144,7 +144,7 @@ public final class ItemCreator {
       return item;
     } else {
       return createItem(Material.BARRIER, PluginMessage.Failure.NOTIFICATION_ERROR.message,
-          List.of(PluginMessage.Failure.PLUGIN_INVALID_TEXTURE.message));
+          List.of(PluginMessage.Failure.INVALID_TEXTURE.message));
     }
   }
 
@@ -165,7 +165,7 @@ public final class ItemCreator {
       return item;
     } else {
       return createItem(Material.BARRIER, PluginMessage.Failure.NOTIFICATION_ERROR.message,
-          List.of(PluginMessage.Failure.PLUGIN_INVALID_TEXTURE.message));
+          List.of(PluginMessage.Failure.INVALID_TEXTURE.message));
     }
   }
 
