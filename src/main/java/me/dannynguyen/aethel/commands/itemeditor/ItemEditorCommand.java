@@ -19,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.2
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -51,9 +51,10 @@ public class ItemEditorCommand implements CommandExecutor {
    * @param item interacting item
    */
   private void readRequest(Player user, String[] args, ItemStack item) {
-    switch (args.length) {
-      case 0 -> openMainMenu(user, item);
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+    if (args.length == 0) {
+      openMainMenu(user, item);
+    } else {
+      user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 

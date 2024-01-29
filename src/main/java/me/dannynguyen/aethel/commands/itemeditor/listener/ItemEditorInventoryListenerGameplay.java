@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditor command pertaining to its gameplay-related metadata inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.2
  * @since 1.7.0
  */
 public class ItemEditorInventoryListenerGameplay {
@@ -122,7 +122,7 @@ public class ItemEditorInventoryListenerGameplay {
   }
 
   /**
-   * Determines the enchant to be set and prompts the user for an input.
+   * Determines the enchantment to be set and prompts the user for an input.
    *
    * @param e    inventory click event
    * @param user user

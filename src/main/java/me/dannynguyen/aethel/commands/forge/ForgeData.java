@@ -23,12 +23,12 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.2
  * @since 1.1.11
  */
 public class ForgeData {
-  private final HashMap<String, ForgeRecipe> recipesMap = new HashMap<>();
-  private final HashMap<String, ForgeRecipeCategory> recipeCategoriesMap = new HashMap<>();
+  private final Map<String, ForgeRecipe> recipesMap = new HashMap<>();
+  private final Map<String, ForgeRecipeCategory> recipeCategoriesMap = new HashMap<>();
 
   /**
    * Loads forge recipes into memory.
@@ -41,8 +41,8 @@ public class ForgeData {
       recipesMap.clear();
       recipeCategoriesMap.clear();
 
-      ArrayList<ForgeRecipe> allRecipes = new ArrayList<>();
-      HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes = new HashMap<>();
+      List<ForgeRecipe> allRecipes = new ArrayList<>();
+      Map<String, List<ForgeRecipe>> sortedRecipes = new HashMap<>();
       NamespacedKey categoryKey = PluginNamespacedKey.FORGE_CATEGORY.namespacedKey;
 
       for (File file : directory) {
@@ -74,8 +74,8 @@ public class ForgeData {
    * @throws FileNotFoundException file not found
    */
   private ForgeRecipe readRecipeFile(File file) {
-    ArrayList<ItemStack> results = new ArrayList<>();
-    ArrayList<ItemStack> components = new ArrayList<>();
+    List<ItemStack> results = new ArrayList<>();
+    List<ItemStack> components = new ArrayList<>();
     int dataType = 1;
 
     try {
@@ -102,7 +102,7 @@ public class ForgeData {
    * @param components recipe components
    */
   private void readLine(String line, int dataType,
-                        ArrayList<ItemStack> results, ArrayList<ItemStack> components) {
+                        List<ItemStack> results, List<ItemStack> components) {
     String[] data = line.split(" ");
     for (String encodedItem : data) {
       ItemStack item = ItemReader.decodeItem(encodedItem);
@@ -123,7 +123,7 @@ public class ForgeData {
    * @param sortedRecipes recipes sorted by category
    */
   private void sortRecipes(ForgeRecipe recipe, NamespacedKey categoryKey,
-                           HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes) {
+                           Map<String, List<ForgeRecipe>> sortedRecipes) {
     ItemStack item = recipe.getResults().get(0);
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
@@ -133,7 +133,7 @@ public class ForgeData {
       if (sortedRecipes.containsKey(recipeCategory)) {
         sortedRecipes.get(recipeCategory).add(recipe);
       } else {
-        ArrayList<ForgeRecipe> recipes = new ArrayList<>();
+        List<ForgeRecipe> recipes = new ArrayList<>();
         recipes.add(recipe);
         sortedRecipes.put(recipeCategory, recipes);
       }
@@ -146,12 +146,12 @@ public class ForgeData {
    * @param allRecipes          all recipes
    * @param recipeCategoriesMap recipe category pages
    */
-  private void createAllRecipePages(ArrayList<ForgeRecipe> allRecipes,
-                                    HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
+  private void createAllRecipePages(List<ForgeRecipe> allRecipes,
+                                    Map<String, ForgeRecipeCategory> recipeCategoriesMap) {
     int numberOfRecipes = allRecipes.size();
     int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
 
-    ArrayList<Inventory> pages = createRecipePages(allRecipes, numberOfRecipes, numberOfPages);
+    List<Inventory> pages = createRecipePages(allRecipes, numberOfRecipes, numberOfPages);
 
     recipeCategoriesMap.put("All", new ForgeRecipeCategory("All", pages, numberOfPages));
   }
@@ -165,13 +165,13 @@ public class ForgeData {
    * @param recipeCategoriesMap recipe category pages
    */
   private void createRecipeCategoryPages(NamespacedKey forgeCategoryKey,
-                                         HashMap<String, ArrayList<ForgeRecipe>> sortedRecipes,
-                                         HashMap<String, ForgeRecipeCategory> recipeCategoriesMap) {
-    for (ArrayList<ForgeRecipe> recipes : sortedRecipes.values()) {
+                                         Map<String, List<ForgeRecipe>> sortedRecipes,
+                                         Map<String, ForgeRecipeCategory> recipeCategoriesMap) {
+    for (List<ForgeRecipe> recipes : sortedRecipes.values()) {
       int numberOfRecipes = recipes.size();
       int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
 
-      ArrayList<Inventory> pages = createRecipePages(recipes, numberOfRecipes, numberOfPages);
+      List<Inventory> pages = createRecipePages(recipes, numberOfRecipes, numberOfPages);
 
       PersistentDataContainer dataContainer = recipes.get(0).getResults().
           get(0).getItemMeta().getPersistentDataContainer();
@@ -189,18 +189,18 @@ public class ForgeData {
    * @param numberOfPages   number of pages
    * @return pages of recipes
    */
-  private ArrayList<Inventory> createRecipePages(ArrayList<ForgeRecipe> recipes,
-                                                 int numberOfRecipes, int numberOfPages) {
+  private List<Inventory> createRecipePages(List<ForgeRecipe> recipes,
+                                            int numberOfRecipes, int numberOfPages) {
     int startIndex = 0;
     int endIndex = Math.min(numberOfRecipes, 45);
 
-    ArrayList<Inventory> pages = new ArrayList<>();
+    List<Inventory> pages = new ArrayList<>();
     for (int page = 0; page < numberOfPages; page++) {
       Inventory inv = Bukkit.createInventory(null, 54, "Forge Recipe Category Page");
 
       int invSlot = 9;
       for (int itemIndex = startIndex; itemIndex < endIndex; itemIndex++) {
-        ArrayList<ItemStack> results = recipes.get(itemIndex).getResults();
+        List<ItemStack> results = recipes.get(itemIndex).getResults();
         inv.setItem(invSlot, createResultsDisplay(results.get(0), results));
         invSlot++;
       }
@@ -225,7 +225,7 @@ public class ForgeData {
    * @param results     recipe results
    * @return display item labeled with its result(s)
    */
-  private ItemStack createResultsDisplay(ItemStack displayItem, ArrayList<ItemStack> results) {
+  private ItemStack createResultsDisplay(ItemStack displayItem, List<ItemStack> results) {
     if (results.size() > 1) {
       List<String> resultsLore = new ArrayList<>();
       for (ItemStack item : results) {
@@ -243,11 +243,11 @@ public class ForgeData {
     }
   }
 
-  public HashMap<String, ForgeRecipe> getRecipesMap() {
+  public Map<String, ForgeRecipe> getRecipesMap() {
     return this.recipesMap;
   }
 
-  public HashMap<String, ForgeRecipeCategory> getRecipeCategoriesMap() {
+  public Map<String, ForgeRecipeCategory> getRecipeCategoriesMap() {
     return this.recipeCategoriesMap;
   }
 }

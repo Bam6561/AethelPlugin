@@ -31,7 +31,7 @@ import java.util.UUID;
  * ItemEditorMessageFunctional is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.0
  * @since 1.7.0
  */
 public class ItemEditorMessageListenerGameplay {
@@ -127,9 +127,9 @@ public class ItemEditorMessageListenerGameplay {
           equipmentSlot);
 
       if (!e.getMessage().equals("0")) {
-        setMinecraftAttributeModifier(user, item, meta, attribute, attributeModifier, equipmentSlot);
+        setMinecraftAttributeModifier(user, meta, attribute, attributeModifier, equipmentSlot);
       } else {
-        removeMinecraftAttributeModifier(user, item, meta, attribute, equipmentSlot);
+        removeMinecraftAttributeModifier(user, meta, attribute, equipmentSlot);
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
@@ -179,12 +179,11 @@ public class ItemEditorMessageListenerGameplay {
    * Sets an item's attribute modifier based on the equipment slot mode.
    *
    * @param user              user
-   * @param item              interacting item
    * @param meta              item's meta
    * @param attribute         attribute
    * @param attributeModifier attribute modifier
    */
-  private static void setMinecraftAttributeModifier(Player user, ItemStack item, ItemMeta meta,
+  private static void setMinecraftAttributeModifier(Player user, ItemMeta meta,
                                                     Attribute attribute, AttributeModifier attributeModifier,
                                                     EquipmentSlot equipmentSlot) {
     removeExistingAttributeModifiers(meta, attribute, equipmentSlot);
@@ -198,12 +197,11 @@ public class ItemEditorMessageListenerGameplay {
    * Removes an item's attribute modifier based on the equipment slot mode.
    *
    * @param user          user
-   * @param item          interacting item
    * @param meta          item's meta
    * @param attribute     attribute
    * @param equipmentSlot equipment slot
    */
-  private static void removeMinecraftAttributeModifier(Player user, ItemStack item, ItemMeta meta,
+  private static void removeMinecraftAttributeModifier(Player user, ItemMeta meta,
                                                        Attribute attribute, EquipmentSlot equipmentSlot) {
     removeExistingAttributeModifiers(meta, attribute, equipmentSlot);
     user.sendMessage(ChatColor.RED + "[Removed " +
@@ -227,13 +225,13 @@ public class ItemEditorMessageListenerGameplay {
                                                  String attributeName, NamespacedKey attributeKey,
                                                  String attributeValue) {
     if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
-      ArrayList<String> attributes = new ArrayList<>(
+      List<String> attributes = new ArrayList<>(
           List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
 
       StringBuilder newAttributes = new StringBuilder();
       for (String attribute : attributes) {
         if (!attribute.equals(attributeName)) {
-          newAttributes.append(attribute + " ");
+          newAttributes.append(attribute).append(" ");
         }
       }
 
@@ -261,13 +259,13 @@ public class ItemEditorMessageListenerGameplay {
                                                     PersistentDataContainer dataContainer,
                                                     NamespacedKey attributesKey,
                                                     String attributeName, NamespacedKey attributeKey) {
-    ArrayList<String> attributes = new ArrayList<>(
+    List<String> attributes = new ArrayList<>(
         List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
 
     StringBuilder newAttributes = new StringBuilder();
     for (String attribute : attributes) {
       if (!attribute.equals(attributeName)) {
-        newAttributes.append(attribute + " ");
+        newAttributes.append(attribute).append(" ");
       }
     }
 

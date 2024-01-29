@@ -21,19 +21,19 @@ import java.util.Map;
  * PlayerStatsData stores player statistic names in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.2
  * @since 1.4.8
  */
 public class PlayerStatsData {
-  private final HashMap<String, Inventory> statCategoryPages = new HashMap<>();
-  private final HashMap<String, ArrayList<Inventory>> substatCategoryPages = new HashMap<>(Map.of(
+  private final Map<String, Inventory> statCategoryPages = new HashMap<>();
+  private final Map<String, List<Inventory>> substatCategoryPages = new HashMap<>(Map.of(
       "Materials", new ArrayList<>(),
       "Entity Types", new ArrayList<>()));
 
   private int numberOfMaterialPages = 0;
   private int numberOfEntityTypePages = 0;
 
-  private final ArrayList<PlayerStatsValues> pastStatsValues = new ArrayList<>();
+  private final List<PlayerStatsValues> pastStatsValues = new ArrayList<>();
 
   /**
    * Loads player stat pages into memory.
@@ -136,11 +136,11 @@ public class PlayerStatsData {
     pastStatsValues.add(new PlayerStatsValues(statName, stats));
   }
 
-  public HashMap<String, Inventory> getStatCategoryPages() {
+  public Map<String, Inventory> getStatCategoryPages() {
     return this.statCategoryPages;
   }
 
-  public HashMap<String, ArrayList<Inventory>> getSubstatCategoryPages() {
+  public Map<String, List<Inventory>> getSubstatCategoryPages() {
     return this.substatCategoryPages;
   }
 
@@ -152,7 +152,7 @@ public class PlayerStatsData {
     return this.numberOfEntityTypePages;
   }
 
-  public ArrayList<PlayerStatsValues> getPastStatsValues() {
+  public List<PlayerStatsValues> getPastStatsValues() {
     return this.pastStatsValues;
   }
 

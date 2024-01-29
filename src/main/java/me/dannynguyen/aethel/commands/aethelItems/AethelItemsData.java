@@ -16,21 +16,18 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.2
  * @since 1.3.2
  */
 public class AethelItemsData {
-  private final HashMap<String, AethelItem> itemsMap = new HashMap<>();
-  private final HashMap<String, AethelItemsCategory> itemCategoriesMap = new HashMap<>();
+  private final Map<String, AethelItem> itemsMap = new HashMap<>();
+  private final Map<String, AethelItemsCategory> itemCategoriesMap = new HashMap<>();
 
   /**
    * Loads Aethel items into memory.
@@ -43,8 +40,8 @@ public class AethelItemsData {
       itemsMap.clear();
       itemCategoriesMap.clear();
 
-      ArrayList<ItemStack> allItems = new ArrayList<>();
-      HashMap<String, ArrayList<ItemStack>> sortedItems = new HashMap<>();
+      List<ItemStack> allItems = new ArrayList<>();
+      Map<String, List<ItemStack>> sortedItems = new HashMap<>();
       NamespacedKey categoryKey = PluginNamespacedKey.AETHELITEM_CATEGORY.namespacedKey;
 
       for (File file : directory) {
@@ -88,7 +85,7 @@ public class AethelItemsData {
    * @param sortedItems items sorted by category
    */
   private void sortItems(ItemStack item, NamespacedKey categoryKey,
-                         HashMap<String, ArrayList<ItemStack>> sortedItems) {
+                         Map<String, List<ItemStack>> sortedItems) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
     if (dataContainer.has(categoryKey, PersistentDataType.STRING)) {
@@ -97,7 +94,7 @@ public class AethelItemsData {
       if (sortedItems.containsKey(itemCategory)) {
         sortedItems.get(itemCategory).add(item);
       } else {
-        ArrayList<ItemStack> newItemCategory = new ArrayList<>();
+        List<ItemStack> newItemCategory = new ArrayList<>();
         newItemCategory.add(item);
         sortedItems.put(itemCategory, newItemCategory);
       }
@@ -110,12 +107,12 @@ public class AethelItemsData {
    * @param allItems          all items
    * @param itemCategoriesMap item category pages
    */
-  private void createAllItemPages(ArrayList<ItemStack> allItems,
-                                  HashMap<String, AethelItemsCategory> itemCategoriesMap) {
+  private void createAllItemPages(List<ItemStack> allItems,
+                                  Map<String, AethelItemsCategory> itemCategoriesMap) {
     int numberOfItems = allItems.size();
     int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfItems);
 
-    ArrayList<Inventory> pages = createItemPages(allItems, numberOfItems, numberOfPages);
+    List<Inventory> pages = createItemPages(allItems, numberOfItems, numberOfPages);
 
     itemCategoriesMap.put("All", new AethelItemsCategory("All", pages, numberOfPages));
   }
@@ -128,13 +125,13 @@ public class AethelItemsData {
    * @param itemCategoriesMap item category pages
    */
   private void createItemCategoryPages(NamespacedKey categoryKey,
-                                       HashMap<String, ArrayList<ItemStack>> sortedItems,
-                                       HashMap<String, AethelItemsCategory> itemCategoriesMap) {
-    for (ArrayList<ItemStack> items : sortedItems.values()) {
+                                       Map<String, List<ItemStack>> sortedItems,
+                                       Map<String, AethelItemsCategory> itemCategoriesMap) {
+    for (List<ItemStack> items : sortedItems.values()) {
       int numberOfItems = items.size();
       int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfItems);
 
-      ArrayList<Inventory> pages = createItemPages(items, numberOfItems, numberOfPages);
+      List<Inventory> pages = createItemPages(items, numberOfItems, numberOfPages);
 
       PersistentDataContainer dataContainer = items.get(0).getItemMeta().getPersistentDataContainer();
       String itemCategory = dataContainer.get(categoryKey, PersistentDataType.STRING);
@@ -151,12 +148,12 @@ public class AethelItemsData {
    * @param numberOfPages number of pages
    * @return pages of items
    */
-  private ArrayList<Inventory> createItemPages(ArrayList<ItemStack> items,
-                                               int numberOfItems, int numberOfPages) {
+  private List<Inventory> createItemPages(List<ItemStack> items,
+                                          int numberOfItems, int numberOfPages) {
     int startIndex = 0;
     int endIndex = Math.min(numberOfItems, 45);
 
-    ArrayList<Inventory> pages = new ArrayList<>();
+    List<Inventory> pages = new ArrayList<>();
     for (int page = 0; page < numberOfPages; page++) {
       Inventory inv = Bukkit.createInventory(null, 54, "Aethel Item Category Page");
 
@@ -174,11 +171,11 @@ public class AethelItemsData {
     return pages;
   }
 
-  public HashMap<String, AethelItem> getItemsMap() {
+  public Map<String, AethelItem> getItemsMap() {
     return this.itemsMap;
   }
 
-  public HashMap<String, AethelItemsCategory> getItemCategoriesMap() {
+  public Map<String, AethelItemsCategory> getItemCategoriesMap() {
     return this.itemCategoriesMap;
   }
 }

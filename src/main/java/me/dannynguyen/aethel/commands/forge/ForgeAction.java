@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ForgeAction is a utility class that:
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * - removes recipes
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.2
  * @since 1.7.13
  */
 public class ForgeAction {
@@ -78,7 +78,6 @@ public class ForgeAction {
    * Opens a ForgeSave inventory.
    *
    * @param user user
-   * @return ForgeSave inventory
    */
   public static void openForgeSaveInventory(Player user) {
     String invType = "save";
@@ -151,8 +150,8 @@ public class ForgeAction {
    * @param inv    interacting inventory
    */
   private static void addRecipeContents(ForgeRecipe recipe, Inventory inv) {
-    ArrayList<ItemStack> results = recipe.getResults();
-    ArrayList<ItemStack> components = recipe.getComponents();
+    List<ItemStack> results = recipe.getResults();
+    List<ItemStack> components = recipe.getComponents();
 
     for (int i = 0; i < results.size(); i++) {
       inv.setItem(i, results.get(i));
@@ -188,14 +187,12 @@ public class ForgeAction {
     if (invType.equals("craft")) {
       inv.setItem(25, ItemCreator.
           createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Craft"));
-      inv.setItem(26, ItemCreator.
-          createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
     } else {
       inv.setItem(25, ItemCreator.
           createPluginPlayerHead(PluginPlayerHead.STACK_OF_PAPER.head, ChatColor.AQUA + "Save"));
-      inv.setItem(26, ItemCreator.
-          createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
     }
+    inv.setItem(26, ItemCreator.
+        createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
   }
 
   /**

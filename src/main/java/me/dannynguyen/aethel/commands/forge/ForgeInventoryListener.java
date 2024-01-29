@@ -95,7 +95,7 @@ public class ForgeInventoryListener {
   }
 
   /**
-   * Either saves a recipe or goes back to the Forge category pagewith the intent to edit recipes.
+   * Either saves a recipe or goes back to the Forge category page with the intent to edit recipes.
    *
    * @param e    inventory click event
    * @param user user

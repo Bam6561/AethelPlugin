@@ -22,7 +22,7 @@ import java.util.List;
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.2
  * @since 1.6.3
  */
 public class CharacterSheet {
@@ -204,7 +204,7 @@ public class CharacterSheet {
    * @param inv  interacting inventory
    */
   private static void addStatusEffects(Player user, Inventory inv) {
-    ArrayList<String> lore = new ArrayList<>();
+    List<String> lore = new ArrayList<>();
     for (PotionEffect potionEffect : user.getActivePotionEffects()) {
       String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
       String effectType = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());

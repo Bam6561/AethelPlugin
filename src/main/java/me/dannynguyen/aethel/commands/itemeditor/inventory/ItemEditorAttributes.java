@@ -27,12 +27,13 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.2
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -83,7 +84,7 @@ public class ItemEditorAttributes {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     Multimap<Attribute, AttributeModifier> metaAttributes = meta.getAttributeModifiers();
-    HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap = mapAttributes(dataContainer);
+    Map<String, List<AethelAttribute>> aethelAttributesMap = mapAttributes(dataContainer);
 
     addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "offense", 19);
     addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "defense", 28);
@@ -134,13 +135,13 @@ public class ItemEditorAttributes {
    * @param dataContainer item's persistent data
    * @return item's Aethel attributes map
    */
-  private static HashMap<String, ArrayList<AethelAttribute>> mapAttributes(PersistentDataContainer dataContainer) {
+  private static Map<String, List<AethelAttribute>> mapAttributes(PersistentDataContainer dataContainer) {
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {
-      HashMap<String, ArrayList<AethelAttribute>> attributesMap = new HashMap<>();
-      ArrayList<String> attributes = new ArrayList<>(List.of(
+      Map<String, List<AethelAttribute>> attributesMap = new HashMap<>();
+      List<String> attributes = new ArrayList<>(List.of(
           dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
 
       for (String attribute : attributes) {
@@ -150,9 +151,8 @@ public class ItemEditorAttributes {
         if (attributesMap.containsKey(attributeType)) {
           attributesMap.get(attributeType).add(new AethelAttribute(attributeType, attributeSlot));
         } else {
-          ArrayList<AethelAttribute> attributeModifiers = new ArrayList();
-          attributeModifiers.add(new AethelAttribute(attributeType, attributeSlot));
-          attributesMap.put(attributeType, attributeModifiers);
+          attributesMap.put(attributeType,
+              new ArrayList<>(List.of(new AethelAttribute(attributeType, attributeSlot))));
         }
       }
       return attributesMap;
@@ -178,7 +178,7 @@ public class ItemEditorAttributes {
    */
   private static void addAttributeCategory(Inventory inv, PersistentDataContainer dataContainer,
                                            Multimap<Attribute, AttributeModifier> metaAttributes,
-                                           HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap,
+                                           Map<String, List<AethelAttribute>> aethelAttributesMap,
                                            String category, int invSlot) {
     if (!aethelAttributesMap.isEmpty()) { // Read both Minecraft & Aethel attributes
       for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
@@ -221,7 +221,7 @@ public class ItemEditorAttributes {
       inv.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME,
           ChatColor.AQUA + attributeName));
     } else {
-      ArrayList<String> lore = new ArrayList<>();
+      List<String> lore = new ArrayList<>();
       for (AttributeModifier attributeModifier : metaAttributes.get(attribute)) {
         lore.add(ChatColor.WHITE + "" +
             TextFormatter.capitalizePhrase(attributeModifier.getSlot().name()) +
@@ -243,13 +243,13 @@ public class ItemEditorAttributes {
    */
   private static void createAethelAttribute(Inventory inv,
                                             PersistentDataContainer dataContainer,
-                                            HashMap<String, ArrayList<AethelAttribute>> aethelAttributesMap,
+                                            Map<String, List<AethelAttribute>> aethelAttributesMap,
                                             String attributeName, int invSlot) {
     String attributeMapKey = attributeName.toLowerCase().replace(" ", "_");
     boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
 
     if (enabled) {
-      ArrayList<String> lore = new ArrayList<>();
+      List<String> lore = new ArrayList<>();
       for (AethelAttribute aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
         NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(),
             "aethel.attribute." + aethelAttribute.getType() + "." + aethelAttribute.getSlot());

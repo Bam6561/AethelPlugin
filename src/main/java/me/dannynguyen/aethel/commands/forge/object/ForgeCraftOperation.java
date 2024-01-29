@@ -16,17 +16,19 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ForgeCraftOperation is an object that determines if the user
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.2
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
-  private final ArrayList<InventorySlot> postCraftInventorySlotsToUpdate = new ArrayList<>();
+  private final List<InventorySlot> postCraftInventorySlotsToUpdate = new ArrayList<>();
 
   /**
    * Crafts a recipe.
@@ -38,8 +40,8 @@ public class ForgeCraftOperation {
     ForgeRecipe recipe = PluginData.forgeData.
         getRecipesMap().get(ItemReader.readName(e.getClickedInventory().getItem(0)));
 
-    ArrayList<ItemStack> results = recipe.getResults();
-    ArrayList<ItemStack> components = recipe.getComponents();
+    List<ItemStack> results = recipe.getResults();
+    List<ItemStack> components = recipe.getComponents();
 
     if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) {
       if (hasMatchingType(user, components)) {
@@ -59,8 +61,8 @@ public class ForgeCraftOperation {
    * @param components recipe components
    * @return has sufficient components
    */
-  private boolean hasMatchingType(Player user, ArrayList<ItemStack> components) {
-    HashMap<Material, ArrayList<InventorySlot>> invMap = mapMaterialIndices(user.getInventory());
+  private boolean hasMatchingType(Player user, List<ItemStack> components) {
+    Map<Material, List<InventorySlot>> invMap = mapMaterialIndices(user.getInventory());
 
     for (ItemStack item : components) {
       Material reqMaterial = item.getType();
@@ -94,8 +96,8 @@ public class ForgeCraftOperation {
    * @param inv user inventory
    * @return material:inventory slots inventory map
    */
-  private HashMap<Material, ArrayList<InventorySlot>> mapMaterialIndices(Inventory inv) {
-    HashMap<Material, ArrayList<InventorySlot>> invMap = new HashMap<>();
+  private Map<Material, List<InventorySlot>> mapMaterialIndices(Inventory inv) {
+    Map<Material, List<InventorySlot>> invMap = new HashMap<>();
 
     for (int i = 0; i < 36; i++) {
       ItemStack item = inv.getItem(i);
@@ -106,7 +108,7 @@ public class ForgeCraftOperation {
         if (invMap.containsKey(material)) {
           invMap.get(material).add(new InventorySlot(i, item, amount));
         } else {
-          ArrayList<InventorySlot> invSlots = new ArrayList<>();
+          List<InventorySlot> invSlots = new ArrayList<>();
           invSlots.add(new InventorySlot(i, item, amount));
           invMap.put(material, invSlots);
         }
@@ -123,7 +125,7 @@ public class ForgeCraftOperation {
    * @param reqAmount   required amount
    * @return has sufficient amounts of material
    */
-  private boolean hasSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
+  private boolean hasSufficientMaterials(Map<Material, List<InventorySlot>> invMap,
                                          Material reqMaterial, int reqAmount) {
     NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.namespacedKey;
 
@@ -152,7 +154,7 @@ public class ForgeCraftOperation {
    * @param reqForgeId  required ForgeId
    * @return has sufficient amounts of material
    */
-  private boolean hasSufficientMaterials(HashMap<Material, ArrayList<InventorySlot>> invMap,
+  private boolean hasSufficientMaterials(Map<Material, List<InventorySlot>> invMap,
                                          Material reqMaterial, int reqAmount,
                                          NamespacedKey forgeIdKey, String reqForgeId) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
@@ -196,7 +198,7 @@ public class ForgeCraftOperation {
    * @param user    user
    * @param results recipe results
    */
-  private void processMatchingType(Player user, ArrayList<ItemStack> results) {
+  private void processMatchingType(Player user, List<ItemStack> results) {
     Inventory inv = user.getInventory();
     for (InventorySlot invSlot : postCraftInventorySlotsToUpdate) {
       int slotNumber = invSlot.getSlot();
@@ -215,7 +217,7 @@ public class ForgeCraftOperation {
    * @param user    user
    * @param results recipe results
    */
-  private void giveItemsToPlayer(Player user, ArrayList<ItemStack> results) {
+  private void giveItemsToPlayer(Player user, List<ItemStack> results) {
     for (ItemStack item : results) {
       if (user.getInventory().firstEmpty() != -1) {
         user.getInventory().addItem(item);

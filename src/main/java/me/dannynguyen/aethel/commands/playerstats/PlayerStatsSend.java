@@ -11,13 +11,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * PlayerStatsSend is a utility class that sends statistics to
  * the player and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.2
  * @since 1.4.10
  */
 public class PlayerStatsSend {
@@ -62,7 +63,7 @@ public class PlayerStatsSend {
     String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
 
     String statCategory = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    ArrayList<String> statValues = new ArrayList<>();
+    List<String> statValues = new ArrayList<>();
 
     if (statCategory.equals("Entity Types")) {
       loadEntityTypeSubstatValues(requestedPlayer, substatName, statValues);
@@ -138,11 +139,11 @@ public class PlayerStatsSend {
    * Retrieves the requested player's specific entity type substat values.
    *
    * @param requestedPlayer requested player
-   * @param substatName     substat's name
-   * @param statValues      substat's values
+   * @param substatName     substat name
+   * @param statValues      substat values
    */
   private static void loadEntityTypeSubstatValues(OfflinePlayer requestedPlayer, String substatName,
-                                                  ArrayList<String> statValues) {
+                                                  List<String> statValues) {
     EntityType entityType = EntityType.valueOf(substatName);
 
     int kills = requestedPlayer.getStatistic(Statistic.KILL_ENTITY, entityType);
@@ -156,11 +157,11 @@ public class PlayerStatsSend {
    * Retrieves the requested player's specific material substat values.
    *
    * @param requestedPlayer requested player
-   * @param substatName     substat's name
-   * @param statValues      substat's values
+   * @param substatName     substat name
+   * @param statValues      substat values
    */
   private static void loadMaterialSubstatValues(OfflinePlayer requestedPlayer, String substatName,
-                                                ArrayList<String> statValues) {
+                                                List<String> statValues) {
     Material material = Material.valueOf(substatName);
 
     int mined = requestedPlayer.getStatistic(Statistic.MINE_BLOCK, material);

@@ -52,7 +52,7 @@ public class ItemEditorInventoryListener {
   }
 
   /**
-   * Either sets, clears, adds, edits, or removes lore.
+   * Either sets, clears, add, edits, or removes lore.
    *
    * @param slotClicked slot clicked
    * @param user        user
