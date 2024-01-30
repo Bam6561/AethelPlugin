@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
 import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorToggles;
-import me.dannynguyen.aethel.enums.PluginList;
+import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -20,7 +20,7 @@ import java.util.List;
  * ItemEditorInventory is an inventory that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.3
  * @since 1.6.7
  */
 public class ItemEditorInventory {
@@ -73,9 +73,9 @@ public class ItemEditorInventory {
    */
   private static void addContexts(Inventory inv) {
     ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Format Codes", PluginList.SPIGOT_FORMAT_CODES.list);
+        ChatColor.GREEN + "Format Codes", PluginContext.SPIGOT_FORMAT_CODES.context);
     ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Color Codes", PluginList.SPIGOT_COLOR_CODES.list);
+        ChatColor.GREEN + "Color Codes", PluginContext.SPIGOT_COLOR_CODES.context);
 
     inv.setItem(9, formatCodes);
     inv.setItem(10, colorCodes);

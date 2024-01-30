@@ -28,7 +28,7 @@ import java.util.List;
  * - removes recipes
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.3
  * @since 1.7.13
  */
 public class ForgeAction {
@@ -115,7 +115,7 @@ public class ForgeAction {
     String fileName = nameRecipeFile(inv);
     if (!fileName.equals("")) {
       String encodedRecipe = encodeRecipe(inv);
-      if (encodedRecipe.equals("")) {
+      if (!encodedRecipe.equals("")) {
         saveRecipeToFile(user, fileName, encodedRecipe);
       } else {
         user.sendMessage(PluginMessage.Failure.FORGE_SAVE_NO_COMPONENTS.message);

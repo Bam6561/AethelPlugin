@@ -22,7 +22,7 @@ import java.util.*;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.3
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -47,9 +47,11 @@ public class AethelItemsData {
       for (File file : directory) {
         if (file.getName().endsWith("_itm.txt")) {
           AethelItem item = readItemFile(file);
-          itemsMap.put(item.getName(), item);
-          allItems.add(item.getItem());
-          sortItems(item.getItem(), categoryKey, sortedItems);
+          if (item != null) {
+            itemsMap.put(item.getName(), item);
+            allItems.add(item.getItem());
+            sortItems(item.getItem(), categoryKey, sortedItems);
+          }
         }
       }
 
@@ -70,8 +72,12 @@ public class AethelItemsData {
   private AethelItem readItemFile(File file) {
     try {
       Scanner scanner = new Scanner(file);
-      ItemStack item = ItemReader.decodeItem(scanner.nextLine());
-      return new AethelItem(file, ItemReader.readName(item), item);
+      ItemStack item = ItemReader.decodeItem(scanner.nextLine(), "aethelitems");
+      if (item != null) {
+        return new AethelItem(file, ItemReader.readName(item), item);
+      } else {
+        return null;
+      }
     } catch (FileNotFoundException ex) {
       return null;
     }

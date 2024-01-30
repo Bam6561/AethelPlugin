@@ -8,10 +8,35 @@ import java.util.List;
  * PluginContext is an enum containing the plugin's help contexts.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.3
  * @since 1.7.13
  */
 public enum PluginContext {
+  SPIGOT_FORMAT_CODES(List.of(
+      ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
+      ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
+      ChatColor.WHITE + "&m " + ChatColor.STRIKETHROUGH + "Strike",
+      ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
+      ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
+      ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset")),
+  SPIGOT_COLOR_CODES(List.of(
+      ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
+      ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
+      ChatColor.WHITE + "&2 " + ChatColor.DARK_GREEN + "Dark Green",
+      ChatColor.WHITE + "&3 " + ChatColor.DARK_RED + "Dark Red",
+      ChatColor.WHITE + "&4 " + ChatColor.DARK_AQUA + "Dark Aqua",
+      ChatColor.WHITE + "&5 " + ChatColor.DARK_PURPLE + "Dark Purple",
+      ChatColor.WHITE + "&6 " + ChatColor.GOLD + "Gold",
+      ChatColor.WHITE + "&7 " + ChatColor.GRAY + "Gray",
+      ChatColor.WHITE + "&8 " + ChatColor.DARK_GRAY + "Dark Gray",
+      ChatColor.WHITE + "&9 " + ChatColor.BLUE + "Blue",
+      ChatColor.WHITE + "&a " + ChatColor.GREEN + "Green",
+      ChatColor.WHITE + "&b " + ChatColor.AQUA + "Aqua",
+      ChatColor.WHITE + "&c " + ChatColor.RED + "Red",
+      ChatColor.WHITE + "&d " + ChatColor.LIGHT_PURPLE + "Light Purple",
+      ChatColor.WHITE + "&e " + ChatColor.YELLOW + "Yellow",
+      ChatColor.WHITE + "&f " + ChatColor.WHITE + "White")),
+
   AETHELITEM_CATEGORIES(List.of(
       ChatColor.WHITE + "Place an item to",
       ChatColor.WHITE + "the right of this",

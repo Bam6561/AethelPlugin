@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.3
  * @since 1.1.11
  */
 public class ForgeData {
@@ -48,9 +48,11 @@ public class ForgeData {
       for (File file : directory) {
         if (file.getName().endsWith("_rcp.txt")) {
           ForgeRecipe recipe = readRecipeFile(file);
-          recipesMap.put(recipe.getName(), recipe);
-          allRecipes.add(recipe);
-          sortRecipes(recipe, categoryKey, sortedRecipes);
+          if (recipe != null) {
+            recipesMap.put(recipe.getName(), recipe);
+            allRecipes.add(recipe);
+            sortRecipes(recipe, categoryKey, sortedRecipes);
+          }
         }
       }
 
@@ -76,40 +78,50 @@ public class ForgeData {
   private ForgeRecipe readRecipeFile(File file) {
     List<ItemStack> results = new ArrayList<>();
     List<ItemStack> components = new ArrayList<>();
-    int dataType = 1;
 
     try {
       Scanner scanner = new Scanner(file);
-      while (scanner.hasNextLine()) {
-        readLine(scanner.nextLine(), dataType, results, components);
-        dataType++;
+      String[] lines = new String[2];
+      lines[0] = scanner.nextLine();
+      lines[1] = scanner.nextLine();
+      scanner.close();
+
+      readLines(lines, results, components);
+      if (!results.isEmpty()) {
+        return new ForgeRecipe(file, ItemReader.readName(results.get(0)), results, components);
+      } else {
+        return null;
       }
-      return new ForgeRecipe(file, ItemReader.readName(results.get(0)), results, components);
     } catch (FileNotFoundException ex) {
       return null;
     }
   }
 
   /**
-   * Reads a line of text from the file and adds decoded items to the recipe.
+   * Reads lines of text from the file and adds decoded items to the recipe.
    * <p>
    * Individual encoded items are separated by spaces.
    * </p>
    *
-   * @param line       text line
-   * @param dataType   [1] Results | [2] Components
+   * @param lines      text lines
    * @param results    recipe results
    * @param components recipe components
    */
-  private void readLine(String line, int dataType,
-                        List<ItemStack> results, List<ItemStack> components) {
-    String[] data = line.split(" ");
-    for (String encodedItem : data) {
-      ItemStack item = ItemReader.decodeItem(encodedItem);
-      if (item != null) {
-        switch (dataType) {
-          case 1 -> results.add(item);
-          case 2 -> components.add(item);
+  private void readLines(String[] lines, List<ItemStack> results, List<ItemStack> components) {
+    int dataType = 1;
+    for (String line : lines) {
+      String[] data = line.split(" ");
+      for (String encodedItem : data) {
+        ItemStack item = ItemReader.decodeItem(encodedItem, "forge");
+        if (item != null) {
+          switch (dataType) {
+            case 1 -> results.add(item);
+            case 2 -> components.add(item);
+          }
+          dataType++;
+        } else {
+          results.clear();
+          return;
         }
       }
     }

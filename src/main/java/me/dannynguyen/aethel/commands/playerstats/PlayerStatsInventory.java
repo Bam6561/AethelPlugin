@@ -2,10 +2,7 @@ package me.dannynguyen.aethel.commands.playerstats;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginContext;
-import me.dannynguyen.aethel.enums.PluginList;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.enums.*;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -25,7 +22,7 @@ import java.util.List;
  * supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.3
  * @since 1.4.7
  */
 public class PlayerStatsInventory {
@@ -63,7 +60,7 @@ public class PlayerStatsInventory {
    */
   private static void addCategories(Inventory inv) {
     int i = 9;
-    for (String statCategory : PluginList.PLAYERSTAT_CATEGORY_NAMES.list) {
+    for (String statCategory : PluginArray.PLAYERSTAT_CATEGORY_NAMES.array) {
       inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + statCategory));
       i++;
     }

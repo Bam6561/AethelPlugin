@@ -1,21 +1,19 @@
 package me.dannynguyen.aethel.commands.playerstats.object;
 
-import java.util.List;
-
 /**
  * PlayerStatsCategory is an object relating player statistics with their category.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.3
  * @since 1.4.9
  */
-public record PlayerStatsCategory(String name, List<String> stats) {
+public record PlayerStatsCategory(String name, String[] stats) {
 
   public String getName() {
     return this.name;
   }
 
-  public List<String> getStats() {
+  public String[] getStats() {
     return this.stats;
   }
 }

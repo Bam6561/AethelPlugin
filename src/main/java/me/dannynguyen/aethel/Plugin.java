@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.3
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -60,9 +60,10 @@ public class Plugin extends JavaPlugin {
     Logger log = Bukkit.getLogger();
     long start;
     long finish;
-
     DecimalFormat hundredths = new DecimalFormat();
     hundredths.setMaximumFractionDigits(2);
+
+    log.info(PluginMessage.Success.PLUGIN_LOAD_RESOURCES.message);
 
     File resourceDirectory = PluginDirectory.RESOURCES.file;
     if (!resourceDirectory.exists()) {

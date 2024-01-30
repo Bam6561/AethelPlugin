@@ -11,10 +11,10 @@ import java.util.*;
 import static java.util.Comparator.comparing;
 
 /**
- * PluginConstant is an enum-like storage containing various constants.
+ * PluginConstant is an enum-like storage containing various data type constants.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.3
  * @since 1.7.13
  */
 public class PluginConstant {
@@ -23,24 +23,24 @@ public class PluginConstant {
       PluginNamespacedKey.FORGE_CATEGORY.namespacedKey,
       PluginNamespacedKey.FORGE_ID.namespacedKey};
 
-  public static final Map<String, List<String>> aethelAttributesMap = Map.of(
-      "offense", PluginList.AETHEL_ATTRIBUTE_OFFENSE.list,
-      "defense", PluginList.AETHEL_ATTRIBUTE_DEFENSE.list,
-      "other", PluginList.AETHEL_ATTRIBUTE_OTHER.list);
+  public static final Map<String, String[]> aethelAttributesMap = Map.of(
+      "offense", PluginArray.AETHEL_ATTRIBUTE_OFFENSE.array,
+      "defense", PluginArray.AETHEL_ATTRIBUTE_DEFENSE.array,
+      "other", PluginArray.AETHEL_ATTRIBUTE_OTHER.array);
 
-  public static final Set<String> minecraftAttributes = new HashSet<>(PluginList.MINECRAFT_ATTRIBUTES.list);
+  public static final Set<String> minecraftAttributes = Set.of(PluginArray.MINECRAFT_ATTRIBUTES.array);
 
   public static final List<Enchantment> sortedEnchantments = sortEnchantments();
   public static final List<EntityType> sortedEntityTypes = sortEntityTypes();
   public static final List<Material> sortedMaterials = sortMaterials();
 
-  public static final List<PlayerStatsCategory> playerStatsCategories = List.of(
-      new PlayerStatsCategory("Activities", PluginList.PLAYERSTAT_CATEGORY_ACTIVITIES.list),
-      new PlayerStatsCategory("Containers", PluginList.PLAYERSTAT_CATEGORY_CONTAINERS.list),
-      new PlayerStatsCategory("Damage", PluginList.PLAYERSTAT_CATEGORY_DAMAGE.list),
-      new PlayerStatsCategory("General", PluginList.PLAYERSTAT_CATEGORY_GENERAL.list),
-      new PlayerStatsCategory("Movement", PluginList.PLAYERSTAT_CATEGORY_MOVEMENT.list),
-      new PlayerStatsCategory("Interactions", PluginList.PLAYERSTAT_CATEGORY_INTERACTIONS.list));
+  public static final PlayerStatsCategory[] playerStatsCategories = new PlayerStatsCategory[]{
+      new PlayerStatsCategory("Activities", PluginArray.PLAYERSTAT_CATEGORY_ACTIVITIES.array),
+      new PlayerStatsCategory("Containers", PluginArray.PLAYERSTAT_CATEGORY_CONTAINERS.array),
+      new PlayerStatsCategory("Damage", PluginArray.PLAYERSTAT_CATEGORY_DAMAGE.array),
+      new PlayerStatsCategory("General", PluginArray.PLAYERSTAT_CATEGORY_GENERAL.array),
+      new PlayerStatsCategory("Movement", PluginArray.PLAYERSTAT_CATEGORY_MOVEMENT.array),
+      new PlayerStatsCategory("Interactions", PluginArray.PLAYERSTAT_CATEGORY_INTERACTIONS.array)};
 
   /**
    * Sorts enchantments by name.
@@ -72,7 +72,7 @@ public class PluginConstant {
   }
 
   /**
-   * Sorts entity types
+   * Sorts entity types.
    *
    * @return sorted entity types
    */

@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.utility;
 
+import me.dannynguyen.aethel.enums.PluginMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +19,7 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.3
  * @since 1.1.4
  */
 public class ItemReader {
@@ -61,17 +63,26 @@ public class ItemReader {
   /**
    * Deserializes an item.
    *
-   * @param data serialized item string
+   * @param data   serialized item string
+   * @param action type of interaction
    * @return item
    * @throws IOException            file not found
    * @throws ClassNotFoundException item could not be decoded
    */
-  public static ItemStack decodeItem(String data) {
+  public static ItemStack decodeItem(String data, String action) {
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
       BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
       return (ItemStack) bois.readObject();
     } catch (IOException | ClassNotFoundException ex) {
+      switch (action) {
+        case "aethelitems" -> Bukkit.getLogger().warning(
+            PluginMessage.Failure.PLUGIN_INVALID_AETHEL_ITEM_FILE.message + data);
+        case "forge" -> Bukkit.getLogger().warning(
+            PluginMessage.Failure.PLUGIN_INVALID_FORGE_RECIPE_FILE.message + data);
+        default -> Bukkit.getLogger().warning(
+            PluginMessage.Failure.PLUGIN_INVALID_GENERIC_ITEM_DATA.message + data);
+      }
       return null;
     }
   }
