@@ -3,8 +3,9 @@ package me.dannynguyen.aethel.commands.aethelItems;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,10 +20,31 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.4
  * @since 1.3.2
  */
 public class AethelItemsCommand implements CommandExecutor {
+  public enum Permission {
+    AETHELITEMS("aethel.aethelitems");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    RELOAD(ChatColor.GREEN + "[Reloaded Aethel Items]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -30,7 +52,7 @@ public class AethelItemsCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.AETHELITEMS.permission)) {
+    if (user.hasPermission(Permission.AETHELITEMS.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
@@ -62,7 +84,7 @@ public class AethelItemsCommand implements CommandExecutor {
     switch (action) {
       case "reload", "r" -> {
         PluginData.aethelItemsData.loadItems();
-        user.sendMessage(PluginMessage.Success.AETHELITEMS_RELOAD.message);
+        user.sendMessage(Success.RELOAD.message);
       }
       default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }
@@ -76,7 +98,7 @@ public class AethelItemsCommand implements CommandExecutor {
   private void openMainMenu(Player user) {
     user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }

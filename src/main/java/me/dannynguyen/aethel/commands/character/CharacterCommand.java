@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,10 +17,20 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.4
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
+  public enum Permission {
+    CHARACTER("aethel.character");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -28,7 +38,7 @@ public class CharacterCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.CHARACTER.permission)) {
+    if (user.hasPermission(Permission.CHARACTER.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
@@ -57,6 +67,6 @@ public class CharacterCommand implements CommandExecutor {
   private void openCharacterSheet(Player user) {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.CHARACTER_SHEET.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.CHARACTER_SHEET.inventory));
   }
 }

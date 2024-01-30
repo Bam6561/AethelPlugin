@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,10 +26,42 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.4
  * @since 1.2.6
  */
 public class AethelTagsCommand implements CommandExecutor {
+  public enum Permission {
+    AETHELTAGS("aethel.aetheltags");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    GET_TAGS(ChatColor.GREEN + "[Get Tags] "),
+    SET_TAG(ChatColor.GREEN + "[Set Tag] "),
+    REMOVE_TAG(ChatColor.RED + "[Removed Tag] ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_TAGS(ChatColor.RED + "No tags found.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -38,7 +69,7 @@ public class AethelTagsCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.AETHELTAGS.permission)) {
+    if (user.hasPermission(Permission.AETHELTAGS.permission)) {
       ItemStack item = user.getInventory().getItemInMainHand();
       if (item.getType() != Material.AIR) {
         readRequest(user, args, item);
@@ -100,9 +131,9 @@ public class AethelTagsCommand implements CommandExecutor {
   private void getAethelTags(Player user, ItemStack item) {
     String response = ItemReader.readAethelTags(item);
     if (!response.isEmpty()) {
-      user.sendMessage(PluginMessage.Success.AETHELTAGS_GET.message + response);
+      user.sendMessage(Success.GET_TAGS.message + response);
     } else {
-      user.sendMessage(PluginMessage.Failure.AETHELTAGS_NO_TAGS.message);
+      user.sendMessage(Failure.NO_TAGS.message);
     }
   }
 
@@ -122,7 +153,7 @@ public class AethelTagsCommand implements CommandExecutor {
       dataContainer.remove(namespacedKey);
       item.setItemMeta(meta);
     }
-    user.sendMessage(PluginMessage.Success.AETHELTAGS_REMOVE.message + ChatColor.AQUA + tag);
+    user.sendMessage(Success.REMOVE_TAG.message + ChatColor.AQUA + tag);
   }
 
   /**
@@ -137,7 +168,7 @@ public class AethelTagsCommand implements CommandExecutor {
     NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + args[1]);
     meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, args[2]);
     item.setItemMeta(meta);
-    user.sendMessage(PluginMessage.Success.AETHELTAGS_SET.message + ChatColor.AQUA +
+    user.sendMessage(Success.SET_TAG.message + ChatColor.AQUA +
         args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
   }
 }

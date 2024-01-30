@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.commands.playerstats;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -21,10 +21,20 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.4
  * @since 1.4.7
  */
 public class PlayerStatsCommand implements CommandExecutor {
+  public enum Permission {
+    PLAYERSTATS("aethel.playerstats");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -32,7 +42,7 @@ public class PlayerStatsCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.PLAYERSTATS.permission)) {
+    if (user.hasPermission(Permission.PLAYERSTATS.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
@@ -65,7 +75,7 @@ public class PlayerStatsCommand implements CommandExecutor {
     if (parameter.equals("past") || parameter.equals("p")) {
       user.openInventory(PlayerStatsPast.createInventory(user));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_PAST.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_PAST.inventory));
     } else {
       openPlayerStatsOther(user, parameter);
     }
@@ -82,7 +92,7 @@ public class PlayerStatsCommand implements CommandExecutor {
 
     user.openInventory(PlayerStatsInventory.openMainMenu(user, user.getName()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
   }
 
   /**
@@ -99,7 +109,7 @@ public class PlayerStatsCommand implements CommandExecutor {
 
       user.openInventory(PlayerStatsInventory.openMainMenu(user, player.getName()));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.PLAYERSTATS_CATEGORY.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemsInventoryListener is an inventory listener for the AethelItems inventory.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.4.0
  */
 public class AethelItemsInventoryListener {
@@ -61,7 +62,7 @@ public class AethelItemsInventoryListener {
 
       user.openInventory(AethelItemsInventory.openCategoryPage(user, "get", itemName, pageRequest));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_GET.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_GET.inventory));
     }
 
     if (e.getSlot() != 3) {
@@ -155,12 +156,12 @@ public class AethelItemsInventoryListener {
       user.openInventory(AethelItemsInventory.openCategoryPage(user, "remove",
           categoryName, pageRequest));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_REMOVE.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_REMOVE.inventory));
     } else {
       user.openInventory(AethelItemsInventory.openCategoryPage(user, "get",
           categoryName, pageRequest));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_GET.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_GET.inventory));
     }
   }
 
@@ -172,7 +173,7 @@ public class AethelItemsInventoryListener {
   private static void returnToMainMenu(Player user) {
     user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.AETHELITEMS_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace, new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 

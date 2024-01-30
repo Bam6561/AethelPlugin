@@ -1,8 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginConstant;
-import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -16,17 +14,33 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Comparator.comparing;
 
 /**
  * ItemEditorEnchants is an inventory that edits an item's enchantments.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.6.16
  */
 public class ItemEditorEnchants {
+  private static final List<Enchantment> sortedEnchantments = sortEnchantments();
+
+  private enum Context {
+    ENCHANTS(List.of(ChatColor.WHITE + "To remove an enchant, input \"0\"."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Opens an ItemEditorEnchants menu.
    *
@@ -67,7 +81,7 @@ public class ItemEditorEnchants {
     Map<Enchantment, Integer> metaEnchants = meta.getEnchants();
 
     int invSlot = 9;
-    for (Enchantment enchant : PluginConstant.sortedEnchantments) {
+    for (Enchantment enchant : sortedEnchantments) {
       String enchantName = ChatColor.AQUA + TextFormatter.capitalizePhrase(enchant.getKey().getKey());
 
       boolean disabled = metaEnchants.get(enchant) == null;
@@ -86,6 +100,18 @@ public class ItemEditorEnchants {
    */
   private static void addContext(Inventory inv) {
     inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", PluginContext.ITEMEDITOR_ENCHANTS.context));
+        ChatColor.GREEN + "Help", Context.ENCHANTS.context));
+  }
+
+  /**
+   * Sorts enchantments by name.
+   *
+   * @return sorted enchantments
+   */
+  private static List<Enchantment> sortEnchantments() {
+    List<Enchantment> enchantments = Arrays.asList(Enchantment.values());
+    Comparator<Enchantment> enchantmentComparator = comparing(e -> e.getKey().getKey());
+    enchantments.sort(enchantmentComparator);
+    return enchantments;
   }
 }

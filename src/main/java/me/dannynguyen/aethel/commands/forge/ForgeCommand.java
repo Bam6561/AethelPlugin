@@ -3,8 +3,9 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,10 +21,31 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.4
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
+  public enum Permission {
+    FORGE("aethel.forge"),
+    FORGE_EDITOR("aethel.forge.editor");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    RELOAD(ChatColor.GREEN + "[Reloaded Forge Recipes]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -31,7 +53,7 @@ public class ForgeCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.FORGE.permission)) {
+    if (user.hasPermission(Permission.FORGE.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
@@ -63,16 +85,16 @@ public class ForgeCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     switch (action) {
       case "edit", "e" -> {
-        if (user.hasPermission(PluginPermission.FORGE_EDITOR.permission)) {
+        if (user.hasPermission(Permission.FORGE_EDITOR.permission)) {
           openEditorMenu(user);
         } else {
           user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
         }
       }
       case "reload", "r" -> {
-        if (user.hasPermission(PluginPermission.FORGE_EDITOR.permission)) {
+        if (user.hasPermission(Permission.FORGE_EDITOR.permission)) {
           PluginData.forgeData.loadRecipes();
-          user.sendMessage(PluginMessage.Success.FORGE_RELOAD.message);
+          user.sendMessage(Success.RELOAD.message);
         } else {
           user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
         }
@@ -95,7 +117,7 @@ public class ForgeCommand implements CommandExecutor {
     user.openInventory(ForgeInventory.openMainMenu(user, "craft"));
 
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
@@ -114,7 +136,7 @@ public class ForgeCommand implements CommandExecutor {
     user.openInventory(ForgeInventory.openMainMenu(user, "edit"));
 
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }

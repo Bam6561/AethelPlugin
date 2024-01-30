@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.utility;
 
-import me.dannynguyen.aethel.enums.PluginMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -19,11 +18,23 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.4
  * @since 1.1.4
  */
 public class ItemReader {
   private ItemReader() {
+  }
+
+  private enum Failure {
+    INVALID_GENERIC_ITEM_DATA("[Aethel] Invalid item data: "),
+    INVALID_AETHEL_ITEM_FILE("[Aethel] Invalid item file: "),
+    INVALID_FORGE_RECIPE_FILE("[Aethel] Invalid forge recipe file: ");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 
   /**
@@ -77,11 +88,11 @@ public class ItemReader {
     } catch (IOException | ClassNotFoundException ex) {
       switch (action) {
         case "aethelitems" -> Bukkit.getLogger().warning(
-            PluginMessage.Failure.PLUGIN_INVALID_AETHEL_ITEM_FILE.message + data);
+            Failure.INVALID_AETHEL_ITEM_FILE.message + data);
         case "forge" -> Bukkit.getLogger().warning(
-            PluginMessage.Failure.PLUGIN_INVALID_FORGE_RECIPE_FILE.message + data);
+            Failure.INVALID_FORGE_RECIPE_FILE.message + data);
         default -> Bukkit.getLogger().warning(
-            PluginMessage.Failure.PLUGIN_INVALID_GENERIC_ITEM_DATA.message + data);
+            Failure.INVALID_GENERIC_ITEM_DATA.message + data);
       }
       return null;
     }

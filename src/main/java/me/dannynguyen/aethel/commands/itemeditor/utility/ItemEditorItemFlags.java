@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor.utility;
 
-import me.dannynguyen.aethel.enums.PluginMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -11,10 +11,35 @@ import org.bukkit.inventory.meta.ItemMeta;
  * ItemEditorItemFlags is a utility class that toggles an item's item flags.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.7.0
  */
 public class ItemEditorItemFlags {
+  private enum Success {
+    ENABLE_HIDE_ARMOR_TRIM(ChatColor.GREEN + "[Hide Armor Trim]"),
+    ENABLE_HIDE_ATTRIBUTES(ChatColor.GREEN + "[Hide Attributes]"),
+    ENABLE_HIDE_DESTROYS(ChatColor.GREEN + "[Hide Destroys]"),
+    ENABLE_HIDE_DYE(ChatColor.GREEN + "[Hide Dye]"),
+    ENABLE_HIDE_ENCHANTS(ChatColor.GREEN + "[Hide Enchants]"),
+    ENABLE_HIDE_PLACED_ON(ChatColor.GREEN + "[Hide Placed On]"),
+    ENABLE_HIDE_POTION_EFFECTS(ChatColor.GREEN + "[Hide Potion Effects]"),
+    ENABLE_HIDE_UNBREAKABLE(ChatColor.GREEN + "[Hide Unbreakable]"),
+    DISABLE_HIDE_ARMOR_TRIM(ChatColor.RED + "[Hide Armor Trim]"),
+    DISABLE_HIDE_ATTRIBUTES(ChatColor.RED + "[Hide Attributes]"),
+    DISABLE_HIDE_DESTROYS(ChatColor.RED + "[Hide Destroys]"),
+    DISABLE_HIDE_DYE(ChatColor.RED + "[Hide Dye]"),
+    DISABLE_HIDE_ENCHANTS(ChatColor.RED + "[Hide Enchants]"),
+    DISABLE_HIDE_PLACED_ON(ChatColor.RED + "[Hide Placed On]"),
+    DISABLE_HIDE_POTION_EFFECTS(ChatColor.RED + "[Hide Potion Effects]"),
+    DISABLE_HIDE_UNBREAKABLE(ChatColor.RED + "[Hide Unbreakable]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * Toggles an item's hide armor trim flag.
    *
@@ -26,10 +51,10 @@ public class ItemEditorItemFlags {
   public static void toggleHideArmorTrim(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM)) {
       meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_ARMOR_TRIM.message);
+      user.sendMessage(Success.ENABLE_HIDE_ARMOR_TRIM.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_ARMOR_TRIM.message);
+      user.sendMessage(Success.DISABLE_HIDE_ARMOR_TRIM.message);
     }
     item.setItemMeta(meta);
 
@@ -47,10 +72,10 @@ public class ItemEditorItemFlags {
   public static void toggleHideAttributes(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
       meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_ATTRIBUTES.message);
+      user.sendMessage(Success.ENABLE_HIDE_ATTRIBUTES.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_ATTRIBUTES.message);
+      user.sendMessage(Success.DISABLE_HIDE_ATTRIBUTES.message);
     }
     item.setItemMeta(meta);
 
@@ -68,10 +93,10 @@ public class ItemEditorItemFlags {
   public static void toggleHideDestroys(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
       meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_DESTROYS.message);
+      user.sendMessage(Success.ENABLE_HIDE_DESTROYS.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_DESTROYS);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_DESTROYS.message);
+      user.sendMessage(Success.DISABLE_HIDE_DESTROYS.message);
     }
     item.setItemMeta(meta);
 
@@ -89,10 +114,10 @@ public class ItemEditorItemFlags {
   public static void toggleHideDye(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_DYE)) {
       meta.addItemFlags(ItemFlag.HIDE_DYE);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_DYE.message);
+      user.sendMessage(Success.ENABLE_HIDE_DYE.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_DYE);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_DYE.message);
+      user.sendMessage(Success.DISABLE_HIDE_DYE.message);
     }
     item.setItemMeta(meta);
 
@@ -110,10 +135,10 @@ public class ItemEditorItemFlags {
   public static void toggleHideEnchants(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
       meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_ENCHANTS.message);
+      user.sendMessage(Success.ENABLE_HIDE_ENCHANTS.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_ENCHANTS.message);
+      user.sendMessage(Success.DISABLE_HIDE_ENCHANTS.message);
     }
     item.setItemMeta(meta);
 
@@ -131,10 +156,10 @@ public class ItemEditorItemFlags {
   public static void toggleHidePlacedOn(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
       meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_PLACED_ON.message);
+      user.sendMessage(Success.ENABLE_HIDE_PLACED_ON.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_PLACED_ON);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_PLACED_ON.message);
+      user.sendMessage(Success.DISABLE_HIDE_PLACED_ON.message);
     }
     item.setItemMeta(meta);
 
@@ -152,10 +177,10 @@ public class ItemEditorItemFlags {
   public static void toggleHidePotionEffects(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS)) {
       meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_POTION_EFFECTS.message);
+      user.sendMessage(Success.ENABLE_HIDE_POTION_EFFECTS.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_POTION_EFFECTS.message);
+      user.sendMessage(Success.DISABLE_HIDE_POTION_EFFECTS.message);
     }
     item.setItemMeta(meta);
 
@@ -173,10 +198,10 @@ public class ItemEditorItemFlags {
   public static void toggleHideUnbreakable(Inventory inv, Player user, ItemStack item, ItemMeta meta) {
     if (!meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)) {
       meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_HIDE_UNBREAKABLE.message);
+      user.sendMessage(Success.ENABLE_HIDE_UNBREAKABLE.message);
     } else {
       meta.removeItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_HIDE_UNBREAKABLE.message);
+      user.sendMessage(Success.DISABLE_HIDE_UNBREAKABLE.message);
     }
     item.setItemMeta(meta);
 

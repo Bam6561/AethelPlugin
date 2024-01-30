@@ -4,9 +4,9 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorAttributes;
 import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorAction;
-import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,10 +31,21 @@ import java.util.UUID;
  * ItemEditorMessageFunctional is a utility class that edits an item's gameplay-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.7.0
  */
 public class ItemEditorMessageListenerGameplay {
+  private enum Failure {
+    INVALID_VALUE(ChatColor.RED + "Invalid value."),
+    INVALID_ENCHANT_LEVEL(ChatColor.RED + "Specify a level between 0 - 32767.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * Sets or removes an item's attribute modifier.
    *
@@ -133,7 +144,7 @@ public class ItemEditorMessageListenerGameplay {
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_VALUE.message);
+      user.sendMessage(Failure.INVALID_VALUE.message);
     }
   }
 
@@ -171,7 +182,7 @@ public class ItemEditorMessageListenerGameplay {
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_VALUE.message);
+      user.sendMessage(Failure.INVALID_VALUE.message);
     }
   }
 
@@ -297,10 +308,10 @@ public class ItemEditorMessageListenerGameplay {
         user.sendMessage(ChatColor.GREEN + "[Set " +
             TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
       } else {
-        user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_ENCHANT_LEVEL.message);
+        user.sendMessage(Failure.INVALID_ENCHANT_LEVEL.message);
       }
     } catch (NumberFormatException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_VALUE.message);
+      user.sendMessage(Failure.INVALID_VALUE.message);
     }
   }
 
@@ -335,6 +346,6 @@ public class ItemEditorMessageListenerGameplay {
             user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
-            PluginPlayerMeta.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
   }
 }

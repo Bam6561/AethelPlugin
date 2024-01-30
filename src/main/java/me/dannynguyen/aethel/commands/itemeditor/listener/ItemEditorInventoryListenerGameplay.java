@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorAction;
 import me.dannynguyen.aethel.enums.PluginConstant;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditor command pertaining to its gameplay-related metadata inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.4
  * @since 1.7.0
  */
 public class ItemEditorInventoryListenerGameplay {
@@ -95,7 +96,7 @@ public class ItemEditorInventoryListenerGameplay {
     user.openInventory(ItemEditorAttributes.openAttributesMenu(user, equipmentSlot));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
-            PluginPlayerMeta.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
   }
 
   /**

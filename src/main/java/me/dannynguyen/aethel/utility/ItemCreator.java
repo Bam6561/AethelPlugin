@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.utility;
 
-import me.dannynguyen.aethel.enums.PluginMessage;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +20,7 @@ import java.util.List;
  * - serializes ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.4
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -132,41 +131,33 @@ public class ItemCreator {
   /**
    * Creates a named player head from loaded textures.
    *
-   * @param item        interacting item
+   * @param head        interacting player head
    * @param displayName item name
    * @return named player head texture
    */
-  public static ItemStack createPluginPlayerHead(ItemStack item, String displayName) {
-    if (item != null) {
-      ItemMeta meta = item.getItemMeta();
-      meta.setDisplayName(displayName);
-      item.setItemMeta(meta);
-      return item;
-    } else {
-      return createItem(Material.BARRIER, PluginMessage.Failure.NOTIFICATION_ERROR.message,
-          List.of(PluginMessage.Failure.INVALID_TEXTURE.message));
-    }
+  public static ItemStack createPluginPlayerHead(ItemStack head, String displayName) {
+    ItemStack item = head.clone();
+    ItemMeta meta = item.getItemMeta();
+    meta.setDisplayName(displayName);
+    item.setItemMeta(meta);
+    return item;
   }
 
   /**
    * Creates a named player head from loaded textures with lore.
    *
-   * @param item        interacting item
+   * @param head        interacting player head
    * @param displayName item name
    * @param lore        item lore
    * @return named player head texture with lore
    */
-  public static ItemStack createPluginPlayerHead(ItemStack item, String displayName, List<String> lore) {
-    if (item != null) {
-      ItemMeta meta = item.getItemMeta();
-      meta.setDisplayName(displayName);
-      meta.setLore(lore);
-      item.setItemMeta(meta);
-      return item;
-    } else {
-      return createItem(Material.BARRIER, PluginMessage.Failure.NOTIFICATION_ERROR.message,
-          List.of(PluginMessage.Failure.INVALID_TEXTURE.message));
-    }
+  public static ItemStack createPluginPlayerHead(ItemStack head, String displayName, List<String> lore) {
+    ItemStack item = head.clone();
+    ItemMeta meta = item.getItemMeta();
+    meta.setDisplayName(displayName);
+    meta.setLore(lore);
+    item.setItemMeta(meta);
+    return item;
   }
 
   /**

@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.itemeditor.inventory;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginConstant;
-import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -22,10 +21,20 @@ import java.util.List;
  * ItemEditorTags is an inventory that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.8.4
  * @since 1.6.15
  */
 public class ItemEditorTags {
+  private enum Context {
+    TAGS(List.of(ChatColor.WHITE + "To remove a tag, input \"-\"."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Opens an ItemEditorTags menu with Aethel tags.
    *
@@ -84,6 +93,6 @@ public class ItemEditorTags {
    */
   private static void addContext(Inventory inv) {
     inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", PluginContext.ITEMEDITOR_TAGS.context));
+        ChatColor.GREEN + "Help", Context.TAGS.context));
   }
 }

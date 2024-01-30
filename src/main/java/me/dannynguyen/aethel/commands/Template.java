@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,10 +11,40 @@ import org.bukkit.entity.Player;
  * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.4
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
+  public enum Permission {
+    TEMPLATE("");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    TEMPLATE("");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    TEMPLATE("");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -23,7 +52,7 @@ public class Template implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.TEMPLATE.permission)) {
+    if (user.hasPermission(Permission.TEMPLATE.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);

@@ -3,7 +3,10 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.forge.object.ForgeRecipe;
-import me.dannynguyen.aethel.enums.*;
+import me.dannynguyen.aethel.enums.PluginDirectory;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -28,10 +31,47 @@ import java.util.List;
  * - removes recipes
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.4
  * @since 1.7.13
  */
 public class ForgeAction {
+  private enum Success {
+    SAVE_RECIPE(ChatColor.GREEN + "[Saved Recipe] "),
+    REMOVE_RECIPE(ChatColor.RED + "[Removed Recipe] ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_RECIPE_COMPONENTS(ChatColor.RED + "No recipe components."),
+    NO_RECIPE_RESULTS(ChatColor.RED + "No recipe results."),
+    UNABLE_TO_SAVE(ChatColor.RED + "Unable to save recipe.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Context {
+    EXPANDED_CRAFT(List.of(
+        ChatColor.AQUA + "Rows",
+        ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
+        ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
+        ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components"));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Expands the recipe's details to the user before crafting.
    *
@@ -45,12 +85,12 @@ public class ForgeAction {
     String invType = "craft";
     Inventory inv = createInventory(user, invType);
     addRecipeContents(recipe, inv);
-    addContext(inv, invType);
+    addContext(inv);
     addActions(inv, invType);
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CRAFT_CONFIRM.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CRAFT_CONFIRM.inventory));
   }
 
   /**
@@ -66,12 +106,12 @@ public class ForgeAction {
     String invType = "save";
     Inventory inv = createInventory(user, invType);
     addRecipeContents(recipe, inv);
-    addContext(inv, invType);
+    addContext(inv);
     addActions(inv, invType);
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_SAVE.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_SAVE.inventory));
   }
 
   /**
@@ -82,12 +122,12 @@ public class ForgeAction {
   public static void openForgeSaveInventory(Player user) {
     String invType = "save";
     Inventory inv = createInventory(user, invType);
-    addContext(inv, invType);
+    addContext(inv);
     addActions(inv, invType);
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_SAVE.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_SAVE.inventory));
   }
 
   /**
@@ -101,7 +141,7 @@ public class ForgeAction {
         getRecipesMap().get(ItemReader.readName(e.getCurrentItem()));
 
     recipe.getFile().delete();
-    user.sendMessage(PluginMessage.Success.FORGE_REMOVE.message + ChatColor.WHITE + recipe.getName());
+    user.sendMessage(Success.REMOVE_RECIPE.message + ChatColor.WHITE + recipe.getName());
   }
 
   /**
@@ -118,10 +158,10 @@ public class ForgeAction {
       if (!encodedRecipe.equals("")) {
         saveRecipeToFile(user, fileName, encodedRecipe);
       } else {
-        user.sendMessage(PluginMessage.Failure.FORGE_SAVE_NO_COMPONENTS.message);
+        user.sendMessage(Failure.NO_RECIPE_COMPONENTS.message);
       }
     } else {
-      user.sendMessage(PluginMessage.Failure.FORGE_SAVE_NO_RESULTS.message);
+      user.sendMessage(Failure.NO_RECIPE_RESULTS.message);
     }
     e.setCancelled(true);
   }
@@ -164,17 +204,11 @@ public class ForgeAction {
   /**
    * Adds a help context to the expanded craft or save action.
    *
-   * @param inv     interacting inventory
-   * @param invType inventory type
+   * @param inv interacting inventory
    */
-  private static void addContext(Inventory inv, String invType) {
-    if (invType.equals("craft")) {
-      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-          ChatColor.GREEN + "Help", PluginContext.FORGE_EXPANDED_CRAFT.context));
-    } else {
-      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-          ChatColor.GREEN + "Help", PluginContext.FORGE_SAVE.context));
-    }
+  private static void addContext(Inventory inv) {
+    inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+        ChatColor.GREEN + "Help", Context.EXPANDED_CRAFT.context));
   }
 
   /**
@@ -264,10 +298,9 @@ public class ForgeAction {
           + "/" + fileName + "_rcp.txt");
       fw.write(encodedRecipe);
       fw.close();
-      user.sendMessage(PluginMessage.Success.FORGE_SAVE.message +
-          ChatColor.WHITE + TextFormatter.capitalizePhrase(fileName));
+      user.sendMessage(Success.SAVE_RECIPE.message + ChatColor.WHITE + TextFormatter.capitalizePhrase(fileName));
     } catch (IOException ex) {
-      user.sendMessage(PluginMessage.Failure.FORGE_SAVE_FAILED.message);
+      user.sendMessage(Failure.UNABLE_TO_SAVE.message);
     }
   }
 }

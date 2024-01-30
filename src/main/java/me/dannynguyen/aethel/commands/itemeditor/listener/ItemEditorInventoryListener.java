@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorAction;
 import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorItemFlags;
 import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorToggles;
 import me.dannynguyen.aethel.enums.PluginMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -17,10 +18,37 @@ import org.bukkit.inventory.meta.ItemMeta;
  * the ItemEditor command pertaining to its main menu.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
+  private enum Success {
+    ENABLE_UNBREAKABLE(ChatColor.GREEN + "[Set Unbreakable]"),
+    DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]"),
+    INPUT_DISPLAY_NAME(ChatColor.WHITE + "Input display name."),
+    INPUT_CUSTOMMODELDATA(ChatColor.WHITE + "Input custom model data value."),
+    INPUT_SET_LORE(ChatColor.WHITE + "Input lore to set."),
+    INPUT_ADD_LORE(ChatColor.WHITE + "Input lore to add."),
+    INPUT_EDIT_LORE(ChatColor.WHITE + "Input line number and lore to edit."),
+    INPUT_REMOVE_LORE(ChatColor.WHITE + "Input line number to remove.");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_ITEM_LORE(ChatColor.RED + "Item has no lore.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * Edits an item's metadata field.
    *
@@ -32,12 +60,12 @@ public class ItemEditorInventoryListener {
       switch (e.getSlot()) {
         case 11 -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-              PluginMessage.Success.ITEMEDITOR_INPUT_DISPLAY_NAME.message);
+              Success.INPUT_DISPLAY_NAME.message);
           ItemEditorAction.awaitMessageResponse(user, "display_name");
         }
         case 12 -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-              PluginMessage.Success.ITEMEDITOR_INPUT_CUSTOMMODELDATA.message);
+              Success.INPUT_CUSTOMMODELDATA.message);
           ItemEditorAction.awaitMessageResponse(user, "custom_model_data");
         }
         case 14 -> ItemEditorAction.openAttributesMenu(user);
@@ -63,13 +91,13 @@ public class ItemEditorInventoryListener {
       }
       case 29 -> {
         user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-            PluginMessage.Success.ITEMEDITOR_INPUT_SET_LORE.message);
+            Success.INPUT_SET_LORE.message);
         ItemEditorAction.awaitMessageResponse(user, "lore-set");
       }
       case 30 -> readItemLore(user, "lore-clear");
       case 37 -> {
         user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-            PluginMessage.Success.ITEMEDITOR_INPUT_ADD_LORE.message);
+            Success.INPUT_ADD_LORE.message);
         ItemEditorAction.awaitMessageResponse(user, "lore-add");
       }
       case 38 -> readItemLore(user, "lore-edit");
@@ -112,10 +140,10 @@ public class ItemEditorInventoryListener {
 
     if (!meta.isUnbreakable()) {
       meta.setUnbreakable(true);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_ENABLE_UNBREAKABLE.message);
+      user.sendMessage(Success.ENABLE_UNBREAKABLE.message);
     } else {
       meta.setUnbreakable(false);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_DISABLE_UNBREAKABLE.message);
+      user.sendMessage(Success.DISABLE_UNBREAKABLE.message);
     }
     item.setItemMeta(meta);
 
@@ -138,17 +166,17 @@ public class ItemEditorInventoryListener {
         }
         case "lore-edit" -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-              PluginMessage.Success.ITEMEDITOR_INPUT_EDIT_LORE.message);
+              Success.INPUT_EDIT_LORE.message);
           ItemEditorAction.awaitMessageResponse(user, action);
         }
         case "lore-remove" -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-              PluginMessage.Success.ITEMEDITOR_INPUT_REMOVE_LORE.message);
+              Success.INPUT_REMOVE_LORE.message);
           ItemEditorAction.awaitMessageResponse(user, action);
         }
       }
     } else {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_NO_LORE.message);
+      user.sendMessage(Failure.NO_ITEM_LORE.message);
     }
   }
 }

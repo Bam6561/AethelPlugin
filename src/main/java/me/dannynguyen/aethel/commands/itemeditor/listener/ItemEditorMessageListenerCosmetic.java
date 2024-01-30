@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.commands.itemeditor.listener;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorInventory;
-import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,10 +19,38 @@ import java.util.List;
  * ItemEditorMessageCosmetic is a utility class that edits an item's cosmetic-related metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.7.0
  */
 public class ItemEditorMessageListenerCosmetic {
+  private enum Success {
+    NAME_ITEM(ChatColor.GREEN + "[Named Item] "),
+    SET_CUSTOMMODELDATA(ChatColor.GREEN + "[Set Custom Model Data] "),
+    SET_LORE(ChatColor.GREEN + "[Set Lore]"),
+    CLEAR_LORE(ChatColor.GREEN + "[Cleared Lore]"),
+    ADD_LORE(ChatColor.GREEN + "[Added Lore]"),
+    EDIT_LORE(ChatColor.GREEN + "[Edited Lore]"),
+    REMOVE_LORE(ChatColor.GREEN + "[Removed Lore]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    INVALID_CUSTOMMODELDATA(ChatColor.RED + "Invalid custom model data."),
+    INVALID_LINE(ChatColor.RED + "Invalid line number."),
+    NONEXISTENT_LINE(ChatColor.RED + "Line does not exist.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * Sets the item's display name.
    *
@@ -35,7 +63,7 @@ public class ItemEditorMessageListenerCosmetic {
                                     ItemStack item, ItemMeta meta) {
     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
     item.setItemMeta(meta);
-    user.sendMessage(PluginMessage.Success.ITEMEDITOR_NAME_ITEM.message + ChatColor.WHITE + e.getMessage());
+    user.sendMessage(Success.NAME_ITEM.message + ChatColor.WHITE + e.getMessage());
     openMainMenu(user, item);
   }
 
@@ -53,10 +81,10 @@ public class ItemEditorMessageListenerCosmetic {
     try {
       meta.setCustomModelData(Integer.parseInt(e.getMessage()));
       item.setItemMeta(meta);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_SET_CUSTOMMODELDATA.message +
+      user.sendMessage(Success.SET_CUSTOMMODELDATA.message +
           ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_CUSTOMMODELDATA.message);
+      user.sendMessage(Failure.INVALID_CUSTOMMODELDATA.message);
     }
     openMainMenu(user, item);
   }
@@ -73,7 +101,7 @@ public class ItemEditorMessageListenerCosmetic {
                              ItemStack item, ItemMeta meta) {
     meta.setLore(List.of(e.getMessage().split(",, ")));
     item.setItemMeta(meta);
-    user.sendMessage(PluginMessage.Success.ITEMEDITOR_SET_LORE.message);
+    user.sendMessage(Success.SET_LORE.message);
     openMainMenu(user, item);
   }
 
@@ -87,7 +115,7 @@ public class ItemEditorMessageListenerCosmetic {
   public static void clearLore(Player user, ItemStack item, ItemMeta meta) {
     meta.setLore(new ArrayList<>());
     item.setItemMeta(meta);
-    user.sendMessage(PluginMessage.Success.ITEMEDITOR_CLEAR_LORE.message);
+    user.sendMessage(Success.CLEAR_LORE.message);
     openMainMenu(user, item);
   }
 
@@ -109,7 +137,7 @@ public class ItemEditorMessageListenerCosmetic {
       meta.setLore(List.of(e.getMessage()));
     }
     item.setItemMeta(meta);
-    user.sendMessage(PluginMessage.Success.ITEMEDITOR_ADD_LORE.message);
+    user.sendMessage(Success.ADD_LORE.message);
     openMainMenu(user, item);
   }
 
@@ -131,11 +159,11 @@ public class ItemEditorMessageListenerCosmetic {
       lore.set(Integer.parseInt(input[0]) - 1, input[1]);
       meta.setLore(lore);
       item.setItemMeta(meta);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_EDIT_LORE.message);
+      user.sendMessage(Success.EDIT_LORE.message);
     } catch (NumberFormatException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_LINE.message);
+      user.sendMessage(Failure.INVALID_LINE.message);
     } catch (IndexOutOfBoundsException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_NONEXISTENT_LINE.message);
+      user.sendMessage(Failure.NONEXISTENT_LINE.message);
     }
     openMainMenu(user, item);
   }
@@ -157,11 +185,11 @@ public class ItemEditorMessageListenerCosmetic {
       lore.remove(Integer.parseInt(e.getMessage()) - 1);
       meta.setLore(lore);
       item.setItemMeta(meta);
-      user.sendMessage(PluginMessage.Success.ITEMEDITOR_REMOVE_LORE.message);
+      user.sendMessage(Success.REMOVE_LORE.message);
     } catch (NumberFormatException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_INVALID_LINE.message);
+      user.sendMessage(Failure.INVALID_LINE.message);
     } catch (IndexOutOfBoundsException ex) {
-      user.sendMessage(PluginMessage.Failure.ITEMEDITOR_NONEXISTENT_LINE.message);
+      user.sendMessage(Failure.NONEXISTENT_LINE.message);
     }
     openMainMenu(user, item);
   }
@@ -180,7 +208,7 @@ public class ItemEditorMessageListenerCosmetic {
           user.openInventory(ItemEditorInventory.openMainMenu(user, item));
           user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
               new FixedMetadataValue(Plugin.getInstance(),
-                  PluginPlayerMeta.Inventory.ITEMEDITOR_COSMETICS.inventory));
+                  InventoryListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
         });
   }
 }

@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.enums;
 
+import me.dannynguyen.aethel.utility.ItemCreator;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,13 +12,14 @@ import org.bukkit.profile.PlayerTextures;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * PluginPlayerHead is an enum containing the plugin's player heads.
  *
  * @author Danny Nguyen
- * @version 1.7.12
+ * @version 1.8.4
  * @since 1.7.12
  */
 public enum PluginPlayerHead {
@@ -37,6 +40,18 @@ public enum PluginPlayerHead {
     this.head = head;
   }
 
+  private enum Failure {
+    PLUGIN_INVALID_PLAYER_HEAD_TEXTURE("[Aethel] Invalid player head texture: "),
+    NOTIFICATION_ERROR(ChatColor.RED + "[!] Error"),
+    INVALID_TEXTURE(ChatColor.RED + "Invalid texture.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * Creates a player head from provided texture data.
    *
@@ -45,11 +60,16 @@ public enum PluginPlayerHead {
    */
   private static ItemStack createPlayerHead(String textureData) {
     PlayerProfile profile = createProfile(getUrlFromTextureData(textureData));
-    ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-    SkullMeta meta = (SkullMeta) head.getItemMeta();
-    meta.setOwnerProfile(profile);
-    head.setItemMeta(meta);
-    return head;
+    if (profile != null) {
+      ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+      SkullMeta meta = (SkullMeta) head.getItemMeta();
+      meta.setOwnerProfile(profile);
+      head.setItemMeta(meta);
+      return head;
+    } else {
+      return ItemCreator.createItem(Material.BARRIER, Failure.NOTIFICATION_ERROR.message,
+          List.of(Failure.INVALID_TEXTURE.message));
+    }
   }
 
   /**
@@ -65,7 +85,7 @@ public enum PluginPlayerHead {
       url = new URL(urlString.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(),
           urlString.length() - "\"}}}".length()));
     } catch (MalformedURLException ex) {
-      Bukkit.getLogger().warning(PluginMessage.Failure.PLUGIN_INVALID_PLAYER_HEAD_TEXTURE + textureData);
+      Bukkit.getLogger().warning(Failure.PLUGIN_INVALID_PLAYER_HEAD_TEXTURE + textureData);
       return null;
     }
     return url;
@@ -78,10 +98,13 @@ public enum PluginPlayerHead {
    * @return player profile with desired texture
    */
   private static PlayerProfile createProfile(URL url) {
-    PlayerProfile profile = Bukkit.createPlayerProfile(UUID.fromString("58f8c6e4-8e24-4429-badc-ecf76de5bead"));
-    PlayerTextures textures = profile.getTextures();
-    textures.setSkin(url);
-    profile.setTextures(textures);
-    return profile;
+    if (url != null) {
+      PlayerProfile profile = Bukkit.createPlayerProfile(UUID.fromString("58f8c6e4-8e24-4429-badc-ecf76de5bead"));
+      PlayerTextures textures = profile.getTextures();
+      textures.setSkin(url);
+      profile.setTextures(textures);
+      return profile;
+    }
+    return null;
   }
 }

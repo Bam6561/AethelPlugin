@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.forge.object.ForgeCraftOperation;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeInventory is an inventory listener for the Forge command.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.4
  * @since 1.0.9
  */
 public class ForgeInventoryListener {
@@ -143,14 +144,14 @@ public class ForgeInventoryListener {
     if (categoryName.equals("")) {
       user.openInventory(ForgeInventory.openMainMenu(user, "edit"));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CATEGORY.inventory));
     } else {
       categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
 
       user.openInventory(ForgeInventory.openForgeCategoryPage(user, "edit",
           categoryName, user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_EDIT.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_EDIT.inventory));
     }
   }
 
@@ -165,7 +166,7 @@ public class ForgeInventoryListener {
     user.openInventory(ForgeInventory.openForgeCategoryPage(user, "remove",
         categoryName, user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_REMOVE.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_REMOVE.inventory));
   }
 
   /**
@@ -180,7 +181,7 @@ public class ForgeInventoryListener {
 
     user.openInventory(ForgeInventory.openMainMenu(user, action));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
@@ -196,7 +197,7 @@ public class ForgeInventoryListener {
     user.openInventory(ForgeInventory.openForgeCategoryPage(user, "craft", categoryName,
         user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.FORGE_CRAFT.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CRAFT.inventory));
   }
 
   /**

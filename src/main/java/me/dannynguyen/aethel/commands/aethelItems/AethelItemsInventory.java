@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.commands.aethelItems;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.aethelItems.object.AethelItemsCategory;
-import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -23,10 +22,34 @@ import java.util.Set;
  * pagination for obtaining, creating, editing, and removing Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.4
  * @since 1.4.0
  */
 public class AethelItemsInventory {
+  private enum Context {
+    CATEGORIES(List.of(
+        ChatColor.WHITE + "Place an item to",
+        ChatColor.WHITE + "the right of this",
+        ChatColor.WHITE + "slot to save it.")),
+    CATEGORY_PAGE(List.of(
+        ChatColor.WHITE + "Place an item to",
+        ChatColor.WHITE + "the right of this",
+        ChatColor.WHITE + "slot to save it.",
+        "",
+        ChatColor.WHITE + "You can toggle between",
+        ChatColor.WHITE + "Get and Remove modes by",
+        ChatColor.WHITE + "clicking on their button.",
+        "",
+        ChatColor.WHITE + "To undo a removal,",
+        ChatColor.WHITE + "get the item and save",
+        ChatColor.WHITE + "it before reloading."));
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Creates an AethelItems main menu with its buttons and item categories.
    *
@@ -113,9 +136,9 @@ public class AethelItemsInventory {
   private static void addContext(String requestedCategory, Inventory inv) {
     List<String> helpLore;
     if (requestedCategory.equals("categories")) {
-      helpLore = PluginContext.AETHELITEM_CATEGORIES.context;
+      helpLore = Context.CATEGORIES.context;
     } else {
-      helpLore = PluginContext.AETHELITEM_CATEGORY_PAGE.context;
+      helpLore = Context.CATEGORY_PAGE.context;
     }
 
     inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,

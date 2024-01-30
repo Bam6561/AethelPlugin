@@ -2,7 +2,8 @@ package me.dannynguyen.aethel.commands.playerstats;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.*;
+import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -22,10 +23,35 @@ import java.util.List;
  * supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.4
  * @since 1.4.7
  */
 public class PlayerStatsInventory {
+  public enum Array {
+    CATEGORY_NAMES(new String[]{
+        "Activities", "Containers", "Damage", "Entity Types",
+        "General", "Interactions", "Materials", "Movement"});
+
+    public final String[] array;
+
+    Array(String[] array) {
+      this.array = array;
+    }
+  }
+
+  private enum Context {
+    CATEGORIES(List.of(ChatColor.WHITE + "Stat Categories")),
+    SHARE_STAT(List.of(
+        ChatColor.WHITE + "Shift-click any",
+        ChatColor.WHITE + "stat to share it."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Creates a PlayerStats main menu containing stat categories.
    *
@@ -60,7 +86,7 @@ public class PlayerStatsInventory {
    */
   private static void addCategories(Inventory inv) {
     int i = 9;
-    for (String statCategory : PluginArray.PLAYERSTAT_CATEGORY_NAMES.array) {
+    for (String statCategory : Array.CATEGORY_NAMES.array) {
       inv.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + statCategory));
       i++;
     }
@@ -137,9 +163,9 @@ public class PlayerStatsInventory {
   private static void addContext(String categoryName, Inventory inv) {
     List<String> helpLore;
     if (categoryName.equals("categories")) {
-      helpLore = PluginContext.PLAYERSTATS_CATEGORIES.context;
+      helpLore = Context.CATEGORIES.context;
     } else {
-      helpLore = PluginContext.PLAYERSTATS_SHARE_STAT.context;
+      helpLore = Context.SHARE_STAT.context;
     }
 
     inv.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,

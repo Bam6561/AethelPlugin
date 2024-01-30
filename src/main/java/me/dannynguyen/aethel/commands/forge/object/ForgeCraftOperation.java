@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.forge.object;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -24,11 +24,21 @@ import java.util.Map;
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.4
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
   private final List<InventorySlot> postCraftInventorySlotsToUpdate = new ArrayList<>();
+
+  private enum Failure {
+    INSUFFICIENT_COMPONENTS(ChatColor.RED + "Insufficient components.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
 
   /**
    * Crafts a recipe.
@@ -47,7 +57,7 @@ public class ForgeCraftOperation {
       if (hasMatchingType(user, components)) {
         processMatchingType(user, results);
       } else {
-        user.sendMessage(PluginMessage.Failure.FORGE_CRAFT_INSUFFICIENT_COMPONENTS.message);
+        user.sendMessage(Failure.INSUFFICIENT_COMPONENTS.message);
       }
     } else {
       giveItemsToPlayer(user, results);

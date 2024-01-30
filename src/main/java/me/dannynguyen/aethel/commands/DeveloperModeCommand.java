@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.enums.PluginPermission;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,10 +15,32 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.7.9
+ * @version 1.8.4
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
+  public enum Permission {
+    DEVELOPERMODE("aethel.developermode");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+
+  private enum Success {
+    DEVELOPERMODE_ON(ChatColor.GREEN + "[Developer Mode On]"),
+    DEVELOPERMODE_OFF(ChatColor.RED + "[Developer Mode Off]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -26,7 +48,7 @@ public class DeveloperModeCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.DEVELOPERMODE.permission)) {
+    if (user.hasPermission(Permission.DEVELOPERMODE.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
@@ -58,10 +80,10 @@ public class DeveloperModeCommand implements CommandExecutor {
     if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) {
       user.setMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace,
           new FixedMetadataValue(Plugin.getInstance(), "on"));
-      user.sendMessage(PluginMessage.Success.DEVELOPERMODE_ON.message);
+      user.sendMessage(Success.DEVELOPERMODE_ON.message);
     } else {
       user.removeMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace, Plugin.getInstance());
-      user.sendMessage(PluginMessage.Success.DEVELOPERMODE_OFF.message);
+      user.sendMessage(Success.DEVELOPERMODE_OFF.message);
     }
   }
 }

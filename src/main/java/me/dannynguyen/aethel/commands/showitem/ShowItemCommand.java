@@ -4,8 +4,8 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
 import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPermission;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
@@ -29,10 +29,20 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
+  public enum Permission {
+    SHOWITEM("aethel.showitem");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -40,7 +50,7 @@ public class ShowItemCommand implements CommandExecutor {
       return true;
     }
 
-    if (user.hasPermission(PluginPermission.SHOWITEM.permission)) {
+    if (user.hasPermission(Permission.SHOWITEM.permission)) {
       readRequest(user, args);
     } else {
       user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
@@ -89,7 +99,7 @@ public class ShowItemCommand implements CommandExecutor {
     if (action.equals("past") || action.equals("p")) {
       user.openInventory(ShowItemPast.openInventory(user));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.SHOWITEM_PAST.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.SHOWITEM_PAST.inventory));
     } else {
       user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }

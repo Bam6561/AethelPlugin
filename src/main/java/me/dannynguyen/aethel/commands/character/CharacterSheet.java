@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -22,10 +21,24 @@ import java.util.List;
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.4
  * @since 1.6.3
  */
 public class CharacterSheet {
+  private enum Context {
+    EQUIPMENT(List.of(
+        ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Main Hand"
+            + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
+        ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
+        ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
+        ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring"));
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Creates a CharacterSheet with its equipment and attributes.
    *
@@ -72,7 +85,7 @@ public class CharacterSheet {
    */
   private static void addEquipment(Player user, Inventory inv) {
     inv.setItem(9, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.WHITE + "Equipment", PluginContext.CHARACTER_EQUIPMENT.context));
+        ChatColor.WHITE + "Equipment", Context.EQUIPMENT.context));
     inv.setItem(10, user.getInventory().getHelmet());
     inv.setItem(19, user.getInventory().getChestplate());
     inv.setItem(28, user.getInventory().getLeggings());

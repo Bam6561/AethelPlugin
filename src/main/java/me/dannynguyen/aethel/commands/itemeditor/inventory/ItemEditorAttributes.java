@@ -5,7 +5,6 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.itemeditor.object.AethelAttribute;
 import me.dannynguyen.aethel.enums.PluginConstant;
-import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -33,10 +32,20 @@ import java.util.Map;
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.8.4
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
+  private enum Context {
+    ATTRIBUTES(List.of(ChatColor.WHITE + "To remove a attribute, input \"0\"."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Opens an ItemEditorAttributes menu with attributes.
    *
@@ -97,7 +106,7 @@ public class ItemEditorAttributes {
    * @param inv interacting inventory
    */
   private static void addContext(Inventory inv) {
-    List<String> helpLore = PluginContext.ITEMEDITOR_ATTRIBUTES.context;
+    List<String> helpLore = Context.ATTRIBUTES.context;
 
     inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Help", helpLore));

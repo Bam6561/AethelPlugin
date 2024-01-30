@@ -10,7 +10,6 @@ import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.enums.PluginDirectory;
-import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.listeners.MessageListener;
 import org.bukkit.Bukkit;
@@ -25,10 +24,23 @@ import java.util.logging.Logger;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.4
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
+  private enum Success {
+    LOADING_RESOURCES("[Aethel] Loading Resources"),
+    LOADED_AETHELITEMS("[Aethel] Loaded Aethel Items: "),
+    LOADED_FORGE("[Aethel] Loaded Forge Recipes: "),
+    LOADED_PLAYERSTATS("[Aethel] Loaded Player Stats: ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * On startup:
    * - Loads existing plugin-related data.
@@ -63,7 +75,7 @@ public class Plugin extends JavaPlugin {
     DecimalFormat hundredths = new DecimalFormat();
     hundredths.setMaximumFractionDigits(2);
 
-    log.info(PluginMessage.Success.PLUGIN_LOAD_RESOURCES.message);
+    log.info(Success.LOADING_RESOURCES.message);
 
     File resourceDirectory = PluginDirectory.RESOURCES.file;
     if (!resourceDirectory.exists()) {
@@ -75,8 +87,7 @@ public class Plugin extends JavaPlugin {
       start = System.nanoTime();
       PluginData.aethelItemsData.loadItems();
       finish = System.nanoTime();
-      log.info(PluginMessage.Success.PLUGIN_LOAD_AETHELITEMS.message +
-          convertToMs(hundredths, start, finish));
+      log.info(Success.LOADED_AETHELITEMS.message + convertToMs(hundredths, start, finish));
     } else {
       aethelItemsDirectory.mkdir();
     }
@@ -86,8 +97,7 @@ public class Plugin extends JavaPlugin {
       start = System.nanoTime();
       PluginData.forgeData.loadRecipes();
       finish = System.nanoTime();
-      log.info(PluginMessage.Success.PLUGIN_LOAD_FORGE.message +
-          convertToMs(hundredths, start, finish));
+      log.info(Success.LOADED_FORGE.message + convertToMs(hundredths, start, finish));
     } else {
       forgeDirectory.mkdir();
     }
@@ -95,8 +105,7 @@ public class Plugin extends JavaPlugin {
     start = System.nanoTime();
     PluginData.playerStatsData.loadStats();
     finish = System.nanoTime();
-    log.info(PluginMessage.Success.PLUGIN_LOAD_PLAYERSTATS.message +
-        convertToMs(hundredths, start, finish));
+    log.info(Success.LOADED_PLAYERSTATS.message + convertToMs(hundredths, start, finish));
   }
 
   /**

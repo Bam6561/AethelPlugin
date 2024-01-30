@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.forge.object.ForgeRecipeCategory;
-import me.dannynguyen.aethel.enums.PluginContext;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -23,10 +22,30 @@ import java.util.Set;
  * pagination for crafting, editing, and removing forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.4
  * @since 1.0.6
  */
 public class ForgeInventory {
+  private enum Context {
+    FORGE_CRAFT(List.of(
+        ChatColor.WHITE + "Expand a recipe to see its",
+        ChatColor.WHITE + "results and components.",
+        "",
+        ChatColor.WHITE + "Components are matched",
+        ChatColor.WHITE + "by material unless",
+        ChatColor.WHITE + "they're unique items!")),
+    FORGE_EDITOR(List.of(
+        ChatColor.WHITE + "To undo a removal,",
+        ChatColor.WHITE + "edit the item and",
+        ChatColor.WHITE + "save it before reloading."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
+  }
+
   /**
    * Creates a Forge main menu containing categories.
    *
@@ -127,12 +146,12 @@ public class ForgeInventory {
     List<String> helpLore;
     switch (action) {
       case "craft" -> {
-        helpLore = PluginContext.FORGE_CRAFT.context;
+        helpLore = Context.FORGE_CRAFT.context;
         inv.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
             ChatColor.GREEN + "Help", helpLore));
       }
       case "edit", "remove" -> {
-        helpLore = PluginContext.FORGE_EDITOR.context;
+        helpLore = Context.FORGE_EDITOR.context;
         inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
             ChatColor.GREEN + "Help", helpLore));
       }

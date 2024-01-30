@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorEnchants;
 import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorInventory;
 import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorTags;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.listeners.InventoryListener;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -14,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorAction is a utility class that handles shared actions across ItemEditor's inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.8.4
  * @since 1.7.0
  */
 public class ItemEditorAction {
@@ -46,7 +47,7 @@ public class ItemEditorAction {
     user.openInventory(ItemEditorAttributes.openAttributesMenu(user, "Head"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
-            PluginPlayerMeta.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
   }
 
   /**
@@ -61,7 +62,7 @@ public class ItemEditorAction {
 
     user.openInventory(ItemEditorEnchants.openMenu(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.ITEMEDITOR_ENCHANTS.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_ENCHANTS.inventory));
   }
 
   /**
@@ -76,7 +77,7 @@ public class ItemEditorAction {
 
     user.openInventory(ItemEditorTags.openTagsMenu(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.ITEMEDITOR_TAGS.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_TAGS.inventory));
   }
 
 
@@ -89,6 +90,6 @@ public class ItemEditorAction {
     user.openInventory(ItemEditorInventory.openMainMenu(user,
         PluginData.itemEditorData.getEditedItemMap().get(user)));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), PluginPlayerMeta.Inventory.ITEMEDITOR_COSMETICS));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
   }
 }

@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.commands.aethelItems;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.aethelItems.object.AethelItem;
 import me.dannynguyen.aethel.enums.PluginDirectory;
-import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
@@ -19,10 +18,32 @@ import java.io.IOException;
  * AethelItemsAction is a utility class that saves, gives, and removes Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.7.13
+ * @version 1.8.4
  * @since 1.7.9
  */
 public class AethelItemsAction {
+  private enum Success {
+    SAVE_ITEM(ChatColor.GREEN + "[Saved Aethel Item] "),
+    REMOVE_ITEM(ChatColor.RED + "[Removed Aethel Item] ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_ITEM_TO_SAVE(ChatColor.RED + "No item to save."),
+    UNABLE_TO_SAVE(ChatColor.RED + "Unable to save item.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
   /**
    * Checks if there is an item in the correct inventory slot to save.
    *
@@ -34,7 +55,7 @@ public class AethelItemsAction {
     if (item != null) {
       saveItemToFile(user, item);
     } else {
-      user.sendMessage(PluginMessage.Failure.AETHELITEMS_NO_ITEM.message);
+      user.sendMessage(Failure.NO_ITEM_TO_SAVE.message);
     }
   }
 
@@ -66,8 +87,7 @@ public class AethelItemsAction {
         get(ItemReader.readName(e.getCurrentItem()));
 
     aethelItem.getFile().delete();
-    user.sendMessage(PluginMessage.Success.AETHELITEMS_REMOVE.message +
-        ChatColor.WHITE + aethelItem.getName());
+    user.sendMessage(Success.REMOVE_ITEM.message + ChatColor.WHITE + aethelItem.getName());
   }
 
   /**
@@ -83,10 +103,9 @@ public class AethelItemsAction {
           + "/" + nameItemFile(item) + "_itm.txt");
       fw.write(ItemCreator.encodeItem(item));
       fw.close();
-      user.sendMessage(PluginMessage.Success.AETHELITEMS_SAVE.message
-          + ChatColor.WHITE + ItemReader.readName(item));
+      user.sendMessage(Success.SAVE_ITEM.message + ChatColor.WHITE + ItemReader.readName(item));
     } catch (IOException ex) {
-      user.sendMessage(PluginMessage.Failure.AETHELITEMS_SAVE_FAILED.message);
+      user.sendMessage(Failure.UNABLE_TO_SAVE.message);
     }
   }
 
