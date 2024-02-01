@@ -28,19 +28,6 @@ import java.util.logging.Logger;
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
-  private enum Success {
-    LOADING_RESOURCES("[Aethel] Loading Resources"),
-    LOADED_AETHELITEMS("[Aethel] Loaded Aethel Items: "),
-    LOADED_FORGE("[Aethel] Loaded Forge Recipes: "),
-    LOADED_PLAYERSTATS("[Aethel] Loaded Player Stats: ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * On startup:
    * - Loads existing plugin-related data.
@@ -121,5 +108,18 @@ public class Plugin extends JavaPlugin {
 
   public static Plugin getInstance() {
     return getPlugin(Plugin.class);
+  }
+
+  private enum Success {
+    LOADING_RESOURCES("[Aethel] Loading Resources"),
+    LOADED_AETHELITEMS("[Aethel] Loaded Aethel Items: "),
+    LOADED_FORGE("[Aethel] Loaded Forge Recipes: "),
+    LOADED_PLAYERSTATS("[Aethel] Loaded Player Stats: ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
   }
 }

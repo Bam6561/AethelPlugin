@@ -15,31 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @since 1.7.0
  */
 public class ItemEditorItemFlags {
-  private enum Success {
-    ENABLE_HIDE_ARMOR_TRIM(ChatColor.GREEN + "[Hide Armor Trim]"),
-    ENABLE_HIDE_ATTRIBUTES(ChatColor.GREEN + "[Hide Attributes]"),
-    ENABLE_HIDE_DESTROYS(ChatColor.GREEN + "[Hide Destroys]"),
-    ENABLE_HIDE_DYE(ChatColor.GREEN + "[Hide Dye]"),
-    ENABLE_HIDE_ENCHANTS(ChatColor.GREEN + "[Hide Enchants]"),
-    ENABLE_HIDE_PLACED_ON(ChatColor.GREEN + "[Hide Placed On]"),
-    ENABLE_HIDE_POTION_EFFECTS(ChatColor.GREEN + "[Hide Potion Effects]"),
-    ENABLE_HIDE_UNBREAKABLE(ChatColor.GREEN + "[Hide Unbreakable]"),
-    DISABLE_HIDE_ARMOR_TRIM(ChatColor.RED + "[Hide Armor Trim]"),
-    DISABLE_HIDE_ATTRIBUTES(ChatColor.RED + "[Hide Attributes]"),
-    DISABLE_HIDE_DESTROYS(ChatColor.RED + "[Hide Destroys]"),
-    DISABLE_HIDE_DYE(ChatColor.RED + "[Hide Dye]"),
-    DISABLE_HIDE_ENCHANTS(ChatColor.RED + "[Hide Enchants]"),
-    DISABLE_HIDE_PLACED_ON(ChatColor.RED + "[Hide Placed On]"),
-    DISABLE_HIDE_POTION_EFFECTS(ChatColor.RED + "[Hide Potion Effects]"),
-    DISABLE_HIDE_UNBREAKABLE(ChatColor.RED + "[Hide Unbreakable]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Toggles an item's hide armor trim flag.
    *
@@ -206,5 +181,30 @@ public class ItemEditorItemFlags {
     item.setItemMeta(meta);
 
     ItemEditorToggles.addHideUnbreakableMeta(inv, meta);
+  }
+
+  private enum Success {
+    ENABLE_HIDE_ARMOR_TRIM(ChatColor.GREEN + "[Hide Armor Trim]"),
+    ENABLE_HIDE_ATTRIBUTES(ChatColor.GREEN + "[Hide Attributes]"),
+    ENABLE_HIDE_DESTROYS(ChatColor.GREEN + "[Hide Destroys]"),
+    ENABLE_HIDE_DYE(ChatColor.GREEN + "[Hide Dye]"),
+    ENABLE_HIDE_ENCHANTS(ChatColor.GREEN + "[Hide Enchants]"),
+    ENABLE_HIDE_PLACED_ON(ChatColor.GREEN + "[Hide Placed On]"),
+    ENABLE_HIDE_POTION_EFFECTS(ChatColor.GREEN + "[Hide Potion Effects]"),
+    ENABLE_HIDE_UNBREAKABLE(ChatColor.GREEN + "[Hide Unbreakable]"),
+    DISABLE_HIDE_ARMOR_TRIM(ChatColor.RED + "[Hide Armor Trim]"),
+    DISABLE_HIDE_ATTRIBUTES(ChatColor.RED + "[Hide Attributes]"),
+    DISABLE_HIDE_DESTROYS(ChatColor.RED + "[Hide Destroys]"),
+    DISABLE_HIDE_DYE(ChatColor.RED + "[Hide Dye]"),
+    DISABLE_HIDE_ENCHANTS(ChatColor.RED + "[Hide Enchants]"),
+    DISABLE_HIDE_PLACED_ON(ChatColor.RED + "[Hide Placed On]"),
+    DISABLE_HIDE_POTION_EFFECTS(ChatColor.RED + "[Hide Potion Effects]"),
+    DISABLE_HIDE_UNBREAKABLE(ChatColor.RED + "[Hide Unbreakable]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
   }
 }

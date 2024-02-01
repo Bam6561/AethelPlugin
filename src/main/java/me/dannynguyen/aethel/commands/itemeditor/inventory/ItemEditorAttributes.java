@@ -36,16 +36,6 @@ import java.util.Map;
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
-  private enum Context {
-    ATTRIBUTES(List.of(ChatColor.WHITE + "To remove a attribute, input \"0\"."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Opens an ItemEditorAttributes menu with attributes.
    *
@@ -271,6 +261,16 @@ public class ItemEditorAttributes {
     } else {
       inv.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME,
           ChatColor.AQUA + attributeName));
+    }
+  }
+
+  private enum Context {
+    ATTRIBUTES(List.of(ChatColor.WHITE + "To remove a attribute, input \"0\"."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
     }
   }
 }

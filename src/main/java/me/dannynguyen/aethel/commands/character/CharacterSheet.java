@@ -25,20 +25,6 @@ import java.util.List;
  * @since 1.6.3
  */
 public class CharacterSheet {
-  private enum Context {
-    EQUIPMENT(List.of(
-        ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Main Hand"
-            + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
-        ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
-        ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
-        ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring"));
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Creates a CharacterSheet with its equipment and attributes.
    *
@@ -241,5 +227,19 @@ public class CharacterSheet {
     int minutes = ticks / 1200 % 60;
     int seconds = ticks / 20 % 60;
     return (minutes == 0 ? "0:" : minutes + ":") + (seconds > 10 ? seconds : "0" + seconds);
+  }
+
+  private enum Context {
+    EQUIPMENT(List.of(
+        ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Main Hand"
+            + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
+        ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
+        ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
+        ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring"));
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
   }
 }

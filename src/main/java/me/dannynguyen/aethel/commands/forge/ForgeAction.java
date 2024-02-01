@@ -35,43 +35,6 @@ import java.util.List;
  * @since 1.7.13
  */
 public class ForgeAction {
-  private enum Success {
-    SAVE_RECIPE(ChatColor.GREEN + "[Saved Recipe] "),
-    REMOVE_RECIPE(ChatColor.RED + "[Removed Recipe] ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    NO_RECIPE_COMPONENTS(ChatColor.RED + "No recipe components."),
-    NO_RECIPE_RESULTS(ChatColor.RED + "No recipe results."),
-    UNABLE_TO_SAVE(ChatColor.RED + "Unable to save recipe.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Context {
-    EXPANDED_CRAFT(List.of(
-        ChatColor.AQUA + "Rows",
-        ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
-        ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
-        ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components"));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Expands the recipe's details to the user before crafting.
    *
@@ -301,6 +264,43 @@ public class ForgeAction {
       user.sendMessage(Success.SAVE_RECIPE.message + ChatColor.WHITE + TextFormatter.capitalizePhrase(fileName));
     } catch (IOException ex) {
       user.sendMessage(Failure.UNABLE_TO_SAVE.message);
+    }
+  }
+
+  private enum Success {
+    SAVE_RECIPE(ChatColor.GREEN + "[Saved Recipe] "),
+    REMOVE_RECIPE(ChatColor.RED + "[Removed Recipe] ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_RECIPE_COMPONENTS(ChatColor.RED + "No recipe components."),
+    NO_RECIPE_RESULTS(ChatColor.RED + "No recipe results."),
+    UNABLE_TO_SAVE(ChatColor.RED + "Unable to save recipe.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Context {
+    EXPANDED_CRAFT(List.of(
+        ChatColor.AQUA + "Rows",
+        ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
+        ChatColor.AQUA + "2 " + ChatColor.WHITE + "Components",
+        ChatColor.AQUA + "3 " + ChatColor.WHITE + "Components"));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
     }
   }
 }

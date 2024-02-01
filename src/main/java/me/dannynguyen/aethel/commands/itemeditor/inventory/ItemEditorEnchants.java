@@ -31,16 +31,6 @@ import static java.util.Comparator.comparing;
 public class ItemEditorEnchants {
   private static final List<Enchantment> sortedEnchantments = sortEnchantments();
 
-  private enum Context {
-    ENCHANTS(List.of(ChatColor.WHITE + "To remove an enchant, input \"0\"."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Opens an ItemEditorEnchants menu.
    *
@@ -113,5 +103,15 @@ public class ItemEditorEnchants {
     Comparator<Enchantment> enchantmentComparator = comparing(e -> e.getKey().getKey());
     enchantments.sort(enchantmentComparator);
     return enchantments;
+  }
+
+  private enum Context {
+    ENCHANTS(List.of(ChatColor.WHITE + "To remove an enchant, input \"0\"."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
   }
 }

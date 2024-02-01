@@ -26,26 +26,6 @@ import java.util.Set;
  * @since 1.0.6
  */
 public class ForgeInventory {
-  private enum Context {
-    FORGE_CRAFT(List.of(
-        ChatColor.WHITE + "Expand a recipe to see its",
-        ChatColor.WHITE + "results and components.",
-        "",
-        ChatColor.WHITE + "Components are matched",
-        ChatColor.WHITE + "by material unless",
-        ChatColor.WHITE + "they're unique items!")),
-    FORGE_EDITOR(List.of(
-        ChatColor.WHITE + "To undo a removal,",
-        ChatColor.WHITE + "edit the item and",
-        ChatColor.WHITE + "save it before reloading."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Creates a Forge main menu containing categories.
    *
@@ -188,6 +168,26 @@ public class ForgeInventory {
         inv.setItem(4, ItemCreator.
             createPluginPlayerHead(PluginPlayerHead.FILE_EXPLORER.head, ChatColor.AQUA + "Edit"));
       }
+    }
+  }
+
+  private enum Context {
+    FORGE_CRAFT(List.of(
+        ChatColor.WHITE + "Expand a recipe to see its",
+        ChatColor.WHITE + "results and components.",
+        "",
+        ChatColor.WHITE + "Components are matched",
+        ChatColor.WHITE + "by material unless",
+        ChatColor.WHITE + "they're unique items!")),
+    FORGE_EDITOR(List.of(
+        ChatColor.WHITE + "To undo a removal,",
+        ChatColor.WHITE + "edit the item and",
+        ChatColor.WHITE + "save it before reloading."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
     }
   }
 }

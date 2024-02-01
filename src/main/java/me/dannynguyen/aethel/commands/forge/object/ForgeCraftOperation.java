@@ -30,16 +30,6 @@ import java.util.Map;
 public class ForgeCraftOperation {
   private final List<InventorySlot> postCraftInventorySlotsToUpdate = new ArrayList<>();
 
-  private enum Failure {
-    INSUFFICIENT_COMPONENTS(ChatColor.RED + "Insufficient components.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Crafts a recipe.
    *
@@ -234,6 +224,16 @@ public class ForgeCraftOperation {
       } else {
         user.getWorld().dropItem(user.getLocation(), item);
       }
+    }
+  }
+
+  private enum Failure {
+    INSUFFICIENT_COMPONENTS(ChatColor.RED + "Insufficient components.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
     }
   }
 }

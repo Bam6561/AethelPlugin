@@ -35,17 +35,6 @@ import java.util.UUID;
  * @since 1.7.0
  */
 public class ItemEditorMessageListenerGameplay {
-  private enum Failure {
-    INVALID_VALUE(ChatColor.RED + "Invalid value."),
-    INVALID_ENCHANT_LEVEL(ChatColor.RED + "Specify a level between 0 - 32767.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Sets or removes an item's attribute modifier.
    *
@@ -347,5 +336,16 @@ public class ItemEditorMessageListenerGameplay {
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
             InventoryListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+  }
+
+  private enum Failure {
+    INVALID_VALUE(ChatColor.RED + "Invalid value."),
+    INVALID_ENCHANT_LEVEL(ChatColor.RED + "Specify a level between 0 - 32767.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 }

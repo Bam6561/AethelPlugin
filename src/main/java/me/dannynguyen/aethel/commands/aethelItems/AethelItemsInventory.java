@@ -26,30 +26,6 @@ import java.util.Set;
  * @since 1.4.0
  */
 public class AethelItemsInventory {
-  private enum Context {
-    CATEGORIES(List.of(
-        ChatColor.WHITE + "Place an item to",
-        ChatColor.WHITE + "the right of this",
-        ChatColor.WHITE + "slot to save it.")),
-    CATEGORY_PAGE(List.of(
-        ChatColor.WHITE + "Place an item to",
-        ChatColor.WHITE + "the right of this",
-        ChatColor.WHITE + "slot to save it.",
-        "",
-        ChatColor.WHITE + "You can toggle between",
-        ChatColor.WHITE + "Get and Remove modes by",
-        ChatColor.WHITE + "clicking on their button.",
-        "",
-        ChatColor.WHITE + "To undo a removal,",
-        ChatColor.WHITE + "get the item and save",
-        ChatColor.WHITE + "it before reloading."));
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Creates an AethelItems main menu with its buttons and item categories.
    *
@@ -167,6 +143,30 @@ public class AethelItemsInventory {
       }
       case "view" -> inv.setItem(4, ItemCreator.
           createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
+    }
+  }
+
+  private enum Context {
+    CATEGORIES(List.of(
+        ChatColor.WHITE + "Place an item to",
+        ChatColor.WHITE + "the right of this",
+        ChatColor.WHITE + "slot to save it.")),
+    CATEGORY_PAGE(List.of(
+        ChatColor.WHITE + "Place an item to",
+        ChatColor.WHITE + "the right of this",
+        ChatColor.WHITE + "slot to save it.",
+        "",
+        ChatColor.WHITE + "You can toggle between",
+        ChatColor.WHITE + "Get and Remove modes by",
+        ChatColor.WHITE + "clicking on their button.",
+        "",
+        ChatColor.WHITE + "To undo a removal,",
+        ChatColor.WHITE + "get the item and save",
+        ChatColor.WHITE + "it before reloading."));
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
     }
   }
 }

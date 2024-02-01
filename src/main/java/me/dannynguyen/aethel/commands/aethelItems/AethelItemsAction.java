@@ -22,28 +22,6 @@ import java.io.IOException;
  * @since 1.7.9
  */
 public class AethelItemsAction {
-  private enum Success {
-    SAVE_ITEM(ChatColor.GREEN + "[Saved Aethel Item] "),
-    REMOVE_ITEM(ChatColor.RED + "[Removed Aethel Item] ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    NO_ITEM_TO_SAVE(ChatColor.RED + "No item to save."),
-    UNABLE_TO_SAVE(ChatColor.RED + "Unable to save item.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Checks if there is an item in the correct inventory slot to save.
    *
@@ -121,6 +99,28 @@ public class AethelItemsAction {
       return meta.getDisplayName().toLowerCase().replace(" ", "_");
     } else {
       return item.getType().name().toLowerCase();
+    }
+  }
+
+  private enum Success {
+    SAVE_ITEM(ChatColor.GREEN + "[Saved Aethel Item] "),
+    REMOVE_ITEM(ChatColor.RED + "[Removed Aethel Item] ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_ITEM_TO_SAVE(ChatColor.RED + "No item to save."),
+    UNABLE_TO_SAVE(ChatColor.RED + "Unable to save item.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
     }
   }
 }

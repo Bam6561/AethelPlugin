@@ -25,16 +25,6 @@ import java.util.List;
  * @since 1.6.15
  */
 public class ItemEditorTags {
-  private enum Context {
-    TAGS(List.of(ChatColor.WHITE + "To remove a tag, input \"-\"."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Opens an ItemEditorTags menu with Aethel tags.
    *
@@ -94,5 +84,15 @@ public class ItemEditorTags {
   private static void addContext(Inventory inv) {
     inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.GREEN + "Help", Context.TAGS.context));
+  }
+
+  private enum Context {
+    TAGS(List.of(ChatColor.WHITE + "To remove a tag, input \"-\"."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
   }
 }

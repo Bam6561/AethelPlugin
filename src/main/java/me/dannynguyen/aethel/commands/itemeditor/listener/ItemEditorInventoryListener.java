@@ -22,33 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
-  private enum Success {
-    ENABLE_UNBREAKABLE(ChatColor.GREEN + "[Set Unbreakable]"),
-    DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]"),
-    INPUT_DISPLAY_NAME(ChatColor.WHITE + "Input display name."),
-    INPUT_CUSTOMMODELDATA(ChatColor.WHITE + "Input custom model data value."),
-    INPUT_SET_LORE(ChatColor.WHITE + "Input lore to set."),
-    INPUT_ADD_LORE(ChatColor.WHITE + "Input lore to add."),
-    INPUT_EDIT_LORE(ChatColor.WHITE + "Input line number and lore to edit."),
-    INPUT_REMOVE_LORE(ChatColor.WHITE + "Input line number to remove.");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    NO_ITEM_LORE(ChatColor.RED + "Item has no lore.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Edits an item's metadata field.
    *
@@ -177,6 +150,33 @@ public class ItemEditorInventoryListener {
       }
     } else {
       user.sendMessage(Failure.NO_ITEM_LORE.message);
+    }
+  }
+
+  private enum Success {
+    ENABLE_UNBREAKABLE(ChatColor.GREEN + "[Set Unbreakable]"),
+    DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]"),
+    INPUT_DISPLAY_NAME(ChatColor.WHITE + "Input display name."),
+    INPUT_CUSTOMMODELDATA(ChatColor.WHITE + "Input custom model data value."),
+    INPUT_SET_LORE(ChatColor.WHITE + "Input lore to set."),
+    INPUT_ADD_LORE(ChatColor.WHITE + "Input lore to add."),
+    INPUT_EDIT_LORE(ChatColor.WHITE + "Input line number and lore to edit."),
+    INPUT_REMOVE_LORE(ChatColor.WHITE + "Input line number to remove.");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_ITEM_LORE(ChatColor.RED + "Item has no lore.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
     }
   }
 }

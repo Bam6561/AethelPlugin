@@ -23,34 +23,6 @@ import java.util.List;
  * @since 1.7.0
  */
 public class ItemEditorMessageListenerCosmetic {
-  private enum Success {
-    NAME_ITEM(ChatColor.GREEN + "[Named Item] "),
-    SET_CUSTOMMODELDATA(ChatColor.GREEN + "[Set Custom Model Data] "),
-    SET_LORE(ChatColor.GREEN + "[Set Lore]"),
-    CLEAR_LORE(ChatColor.GREEN + "[Cleared Lore]"),
-    ADD_LORE(ChatColor.GREEN + "[Added Lore]"),
-    EDIT_LORE(ChatColor.GREEN + "[Edited Lore]"),
-    REMOVE_LORE(ChatColor.GREEN + "[Removed Lore]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    INVALID_CUSTOMMODELDATA(ChatColor.RED + "Invalid custom model data."),
-    INVALID_LINE(ChatColor.RED + "Invalid line number."),
-    NONEXISTENT_LINE(ChatColor.RED + "Line does not exist.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Sets the item's display name.
    *
@@ -210,5 +182,33 @@ public class ItemEditorMessageListenerCosmetic {
               new FixedMetadataValue(Plugin.getInstance(),
                   InventoryListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
         });
+  }
+
+  private enum Success {
+    NAME_ITEM(ChatColor.GREEN + "[Named Item] "),
+    SET_CUSTOMMODELDATA(ChatColor.GREEN + "[Set Custom Model Data] "),
+    SET_LORE(ChatColor.GREEN + "[Set Lore]"),
+    CLEAR_LORE(ChatColor.GREEN + "[Cleared Lore]"),
+    ADD_LORE(ChatColor.GREEN + "[Added Lore]"),
+    EDIT_LORE(ChatColor.GREEN + "[Edited Lore]"),
+    REMOVE_LORE(ChatColor.GREEN + "[Removed Lore]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    INVALID_CUSTOMMODELDATA(ChatColor.RED + "Invalid custom model data."),
+    INVALID_LINE(ChatColor.RED + "Invalid line number."),
+    NONEXISTENT_LINE(ChatColor.RED + "Line does not exist.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 }

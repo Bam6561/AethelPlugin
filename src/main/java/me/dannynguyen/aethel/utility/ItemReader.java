@@ -25,18 +25,6 @@ public class ItemReader {
   private ItemReader() {
   }
 
-  private enum Failure {
-    INVALID_GENERIC_ITEM_DATA("[Aethel] Invalid item data: "),
-    INVALID_AETHEL_ITEM_FILE("[Aethel] Invalid item file: "),
-    INVALID_FORGE_RECIPE_FILE("[Aethel] Invalid forge recipe file: ");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Returns either an item's display name or its material.
    *
@@ -95,6 +83,18 @@ public class ItemReader {
             Failure.INVALID_GENERIC_ITEM_DATA.message + data);
       }
       return null;
+    }
+  }
+
+  private enum Failure {
+    INVALID_GENERIC_ITEM_DATA("[Aethel] Invalid item data: "),
+    INVALID_AETHEL_ITEM_FILE("[Aethel] Invalid item file: "),
+    INVALID_FORGE_RECIPE_FILE("[Aethel] Invalid forge recipe file: ");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
     }
   }
 }
