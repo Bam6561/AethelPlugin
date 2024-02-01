@@ -32,7 +32,7 @@ import java.util.Map;
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.8
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -83,7 +83,7 @@ public class ItemEditorAttributes {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     Multimap<Attribute, AttributeModifier> metaAttributes = meta.getAttributeModifiers();
-    Map<String, List<AethelAttribute>> aethelAttributesMap = mapAttributes(dataContainer);
+    Map<String, List<AethelAttribute>> aethelAttributesMap = mapAethelAttributes(dataContainer);
 
     addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "offense", 19);
     addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "defense", 28);
@@ -134,7 +134,7 @@ public class ItemEditorAttributes {
    * @param dataContainer item's persistent data
    * @return item's Aethel attributes map
    */
-  private static Map<String, List<AethelAttribute>> mapAttributes(PersistentDataContainer dataContainer) {
+  private static Map<String, List<AethelAttribute>> mapAethelAttributes(PersistentDataContainer dataContainer) {
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
@@ -181,7 +181,7 @@ public class ItemEditorAttributes {
                                            String category, int invSlot) {
     if (!aethelAttributesMap.isEmpty()) { // Read both Minecraft & Aethel attributes
       for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
-        if (PluginConstant.minecraftAttributes.contains(category)) {
+        if (PluginConstant.minecraftAttributes.contains(attributeName)) {
           addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
         } else {
           createAethelAttribute(inv, dataContainer, aethelAttributesMap, attributeName, invSlot);
@@ -190,7 +190,7 @@ public class ItemEditorAttributes {
       }
     } else {  // Read Minecraft attributes only
       for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
-        if (PluginConstant.minecraftAttributes.contains(category)) {
+        if (PluginConstant.minecraftAttributes.contains(attributeName)) {
           addMinecraftAttribute(inv, metaAttributes, attributeName, invSlot);
         } else {
           inv.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME,

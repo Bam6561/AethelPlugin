@@ -22,7 +22,7 @@ import java.util.*;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.8
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -100,9 +100,7 @@ public class AethelItemsData {
       if (sortedItems.containsKey(itemCategory)) {
         sortedItems.get(itemCategory).add(item);
       } else {
-        List<ItemStack> newItemCategory = new ArrayList<>();
-        newItemCategory.add(item);
-        sortedItems.put(itemCategory, newItemCategory);
+        sortedItems.put(itemCategory, new ArrayList<>(List.of(item)));
       }
     }
   }

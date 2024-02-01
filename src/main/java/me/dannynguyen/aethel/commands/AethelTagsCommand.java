@@ -26,7 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.8
  * @since 1.2.6
  */
 public class AethelTagsCommand implements CommandExecutor {
@@ -113,15 +113,19 @@ public class AethelTagsCommand implements CommandExecutor {
    * @param item main hand item
    */
   private void removeAethelTag(Player user, String tag, ItemStack item) {
-    ItemMeta meta = item.getItemMeta();
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tag);
+    if (!tag.contains("attribute.")) {
+      ItemMeta meta = item.getItemMeta();
+      PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+      NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tag);
 
-    if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
-      dataContainer.remove(namespacedKey);
-      item.setItemMeta(meta);
+      if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
+        dataContainer.remove(namespacedKey);
+        item.setItemMeta(meta);
+      }
+      user.sendMessage(Success.REMOVE_TAG.message + ChatColor.AQUA + tag);
+    } else {
+      user.sendMessage(Failure.ATTRIBUTE_MODIFY.message);
     }
-    user.sendMessage(Success.REMOVE_TAG.message + ChatColor.AQUA + tag);
   }
 
   /**
@@ -163,7 +167,8 @@ public class AethelTagsCommand implements CommandExecutor {
   }
 
   private enum Failure {
-    NO_TAGS(ChatColor.RED + "No tags found.");
+    NO_TAGS(ChatColor.RED + "No tags found."),
+    ATTRIBUTE_MODIFY(ChatColor.RED + "Use the ItemEditor to modify Aethel attributes.");
 
     public final String message;
 

@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.8
  * @since 1.1.11
  */
 public class ForgeData {
@@ -145,9 +145,7 @@ public class ForgeData {
       if (sortedRecipes.containsKey(recipeCategory)) {
         sortedRecipes.get(recipeCategory).add(recipe);
       } else {
-        List<ForgeRecipe> recipes = new ArrayList<>();
-        recipes.add(recipe);
-        sortedRecipes.put(recipeCategory, recipes);
+        sortedRecipes.put(recipeCategory, new ArrayList<>(List.of(recipe)));
       }
     }
   }
