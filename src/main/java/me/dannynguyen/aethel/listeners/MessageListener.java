@@ -1,8 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.itemeditor.listener.ItemEditorMessageListenerCosmetic;
-import me.dannynguyen.aethel.commands.itemeditor.listener.ItemEditorMessageListenerGameplay;
+import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageListener;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * MessageListener is a general usage player message listener.
  *
  * @author Danny Nguyen
- * @version 1.7.11
+ * @version 1.8.7
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -49,15 +48,15 @@ public class MessageListener implements Listener {
     ItemMeta meta = item.getItemMeta();
 
     switch (msgType[1]) {
-      case "display_name" -> ItemEditorMessageListenerCosmetic.setDisplayName(e, user, item, meta);
-      case "custom_model_data" -> ItemEditorMessageListenerCosmetic.setCustomModelData(e, user, item, meta);
-      case "lore-set" -> ItemEditorMessageListenerCosmetic.setLore(e, user, item, meta);
-      case "lore-add" -> ItemEditorMessageListenerCosmetic.addLore(e, user, item, meta);
-      case "lore-edit" -> ItemEditorMessageListenerCosmetic.editLore(e, user, item, meta);
-      case "lore-remove" -> ItemEditorMessageListenerCosmetic.removeLore(e, user, item, meta);
-      case "attributes" -> ItemEditorMessageListenerGameplay.setAttribute(e, user, item);
-      case "enchants" -> ItemEditorMessageListenerGameplay.setEnchant(e, user, item);
-      case "tags" -> ItemEditorMessageListenerGameplay.setTag(e, user, item, meta);
+      case "display_name" -> ItemEditorMessageListener.setDisplayName(e, user, item, meta);
+      case "custom_model_data" -> ItemEditorMessageListener.setCustomModelData(e, user, item, meta);
+      case "lore-set" -> ItemEditorMessageListener.setLore(e, user, item, meta);
+      case "lore-add" -> ItemEditorMessageListener.addLore(e, user, item, meta);
+      case "lore-edit" -> ItemEditorMessageListener.editLore(e, user, item, meta);
+      case "lore-remove" -> ItemEditorMessageListener.removeLore(e, user, item, meta);
+      case "attributes" -> ItemEditorMessageListener.setAttribute(e, user, item);
+      case "enchants" -> ItemEditorMessageListener.setEnchant(e, user, item);
+      case "tags" -> ItemEditorMessageListener.setTag(e, user, item, meta);
     }
   }
 }

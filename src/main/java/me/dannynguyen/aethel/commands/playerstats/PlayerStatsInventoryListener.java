@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * PlayerStatsInventoryListener is an inventory listener for the PlayerStats inventory.
+ * PlayerStatsInventoryListener is an inventory listener for the PlayerStats inventories.
  *
  * @author Danny Nguyen
  * @version 1.8.4
@@ -60,7 +60,7 @@ public class PlayerStatsInventoryListener {
         case 0 -> previousStatPage(user);
         case 3, 4 -> { // Player Heads
         }
-        case 5 -> returnToMainPage(user);
+        case 5 -> returnToMainMenu(user);
         case 8 -> nextStatPage(user);
         default -> PlayerStatsSend.sendStat(e, user);
       }
@@ -80,7 +80,7 @@ public class PlayerStatsInventoryListener {
         case 0 -> previousStatPage(user);
         case 3, 4 -> { // Player Heads
         }
-        case 5 -> returnToMainPage(user);
+        case 5 -> returnToMainMenu(user);
         case 8 -> nextStatPage(user);
         default -> PlayerStatsSend.sendSubstat(e, user);
       }
@@ -110,7 +110,7 @@ public class PlayerStatsInventoryListener {
    *
    * @param user user
    */
-  private static void returnToMainPage(Player user) {
+  private static void returnToMainMenu(Player user) {
     String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
     user.openInventory(PlayerStatsInventory.openMainMenu(user, requestedPlayerName));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,

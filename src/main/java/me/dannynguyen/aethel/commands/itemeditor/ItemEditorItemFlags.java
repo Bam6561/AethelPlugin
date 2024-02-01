@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.itemeditor.utility;
+package me.dannynguyen.aethel.commands.itemeditor;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

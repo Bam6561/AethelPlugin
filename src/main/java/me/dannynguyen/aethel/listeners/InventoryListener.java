@@ -3,8 +3,7 @@ package me.dannynguyen.aethel.listeners;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelItems.AethelItemsInventoryListener;
 import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
-import me.dannynguyen.aethel.commands.itemeditor.listener.ItemEditorInventoryListener;
-import me.dannynguyen.aethel.commands.itemeditor.listener.ItemEditorInventoryListenerGameplay;
+import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsInventoryListener;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import org.bukkit.entity.Player;
@@ -17,7 +16,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
  * InventoryListener is a general usage inventory action listener.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.7
  * @since 1.0.2
  */
 public class InventoryListener implements Listener {
@@ -98,10 +97,10 @@ public class InventoryListener implements Listener {
    */
   private void interpretItemEditor(InventoryClickEvent e, Player user, String[] invType) {
     switch (invType[1]) {
-      case "cosmetics" -> ItemEditorInventoryListener.interpretMenuClick(e, user);
-      case "attributes" -> ItemEditorInventoryListenerGameplay.interpretAttributesClick(e, user);
-      case "enchants" -> ItemEditorInventoryListenerGameplay.interpretEnchantsClick(e, user);
-      case "tags" -> ItemEditorInventoryListenerGameplay.interpretTagsClick(e, user);
+      case "cosmetics" -> ItemEditorInventoryListener.interpretMainMenuClick(e, user);
+      case "attributes" -> ItemEditorInventoryListener.interpretAttributesMenuClick(e, user);
+      case "enchants" -> ItemEditorInventoryListener.interpretEnchantsMenuClick(e, user);
+      case "tags" -> ItemEditorInventoryListener.interpretTagsMenuClick(e, user);
     }
   }
 

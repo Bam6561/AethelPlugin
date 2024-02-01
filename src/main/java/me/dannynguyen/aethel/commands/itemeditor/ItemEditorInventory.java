@@ -1,6 +1,5 @@
-package me.dannynguyen.aethel.commands.itemeditor.inventory;
+package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.commands.itemeditor.utility.ItemEditorToggles;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;

@@ -1,11 +1,7 @@
-package me.dannynguyen.aethel.commands.itemeditor.utility;
+package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorAttributes;
-import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorEnchants;
-import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorInventory;
-import me.dannynguyen.aethel.commands.itemeditor.inventory.ItemEditorTags;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryListener;
 import org.bukkit.entity.Player;

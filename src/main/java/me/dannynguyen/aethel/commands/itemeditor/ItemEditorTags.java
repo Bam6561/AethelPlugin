@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.itemeditor.inventory;
+package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginConstant;

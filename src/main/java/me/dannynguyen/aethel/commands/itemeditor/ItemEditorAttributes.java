@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.itemeditor.inventory;
+package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
