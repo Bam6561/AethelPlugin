@@ -40,18 +40,6 @@ public enum PluginPlayerHead {
     this.head = head;
   }
 
-  private enum Failure {
-    PLUGIN_INVALID_PLAYER_HEAD_TEXTURE("[Aethel] Invalid player head texture: "),
-    NOTIFICATION_ERROR(ChatColor.RED + "[!] Error"),
-    INVALID_TEXTURE(ChatColor.RED + "Invalid texture.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   /**
    * Creates a player head from provided texture data.
    *
@@ -106,5 +94,17 @@ public enum PluginPlayerHead {
       return profile;
     }
     return null;
+  }
+
+  private enum Failure {
+    PLUGIN_INVALID_PLAYER_HEAD_TEXTURE("[Aethel] Invalid player head texture: "),
+    NOTIFICATION_ERROR(ChatColor.RED + "[!] Error"),
+    INVALID_TEXTURE(ChatColor.RED + "Invalid texture.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 }

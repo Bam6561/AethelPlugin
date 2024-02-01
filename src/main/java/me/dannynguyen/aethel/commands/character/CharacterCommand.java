@@ -21,16 +21,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
-  public enum Permission {
-    CHARACTER("aethel.character");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -68,5 +58,15 @@ public class CharacterCommand implements CommandExecutor {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.CHARACTER_SHEET.inventory));
+  }
+
+  private enum Permission {
+    CHARACTER("aethel.character");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
   }
 }

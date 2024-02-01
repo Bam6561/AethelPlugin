@@ -24,27 +24,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.3.2
  */
 public class AethelItemsCommand implements CommandExecutor {
-  public enum Permission {
-    AETHELITEMS("aethel.aethelitems");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    RELOAD(ChatColor.GREEN + "[Reloaded Aethel Items]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -101,5 +80,25 @@ public class AethelItemsCommand implements CommandExecutor {
         new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
+  }
+
+  private enum Permission {
+    AETHELITEMS("aethel.aethelitems");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    RELOAD(ChatColor.GREEN + "[Reloaded Aethel Items]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
   }
 }

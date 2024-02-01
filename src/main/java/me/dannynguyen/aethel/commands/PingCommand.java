@@ -15,16 +15,6 @@ import org.bukkit.entity.Player;
  * @since 1.0.1
  */
 public class PingCommand implements CommandExecutor {
-  public enum Permission {
-    PING("aethel.ping");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -36,5 +26,15 @@ public class PingCommand implements CommandExecutor {
       user.sendMessage("Pong! " + ChatColor.GRAY + user.getPing() + "ms");
     }
     return true;
+  }
+
+  private enum Permission {
+    PING("aethel.ping");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
   }
 }

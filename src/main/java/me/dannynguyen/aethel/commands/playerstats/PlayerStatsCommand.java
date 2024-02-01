@@ -25,16 +25,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.4.7
  */
 public class PlayerStatsCommand implements CommandExecutor {
-  public enum Permission {
-    PLAYERSTATS("aethel.playerstats");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -112,6 +102,16 @@ public class PlayerStatsCommand implements CommandExecutor {
           new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
+    }
+  }
+
+  private enum Permission {
+    PLAYERSTATS("aethel.playerstats");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
     }
   }
 }

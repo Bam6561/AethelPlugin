@@ -25,27 +25,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
-  public enum Permission {
-    FORGE("aethel.forge"),
-    FORGE_EDITOR("aethel.forge.editor");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    RELOAD(ChatColor.GREEN + "[Reloaded Forge Recipes]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -139,5 +118,26 @@ public class ForgeCommand implements CommandExecutor {
         new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
+  }
+
+  private enum Permission {
+    FORGE("aethel.forge"),
+    FORGE_EDITOR("aethel.forge.editor");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    RELOAD(ChatColor.GREEN + "[Reloaded Forge Recipes]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
   }
 }

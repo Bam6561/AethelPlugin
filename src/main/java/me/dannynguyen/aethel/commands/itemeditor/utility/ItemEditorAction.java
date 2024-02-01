@@ -82,7 +82,7 @@ public class ItemEditorAction {
 
 
   /**
-   * Opens an ItemEditor main menu,
+   * Opens an ItemEditor main menu.
    *
    * @param user user
    */

@@ -19,28 +19,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
-  public enum Permission {
-    DEVELOPERMODE("aethel.developermode");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-
-  private enum Success {
-    DEVELOPERMODE_ON(ChatColor.GREEN + "[Developer Mode On]"),
-    DEVELOPERMODE_OFF(ChatColor.RED + "[Developer Mode Off]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -84,6 +62,27 @@ public class DeveloperModeCommand implements CommandExecutor {
     } else {
       user.removeMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace, Plugin.getInstance());
       user.sendMessage(Success.DEVELOPERMODE_OFF.message);
+    }
+  }
+
+  private enum Permission {
+    DEVELOPERMODE("aethel.developermode");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    DEVELOPERMODE_ON(ChatColor.GREEN + "[Developer Mode On]"),
+    DEVELOPERMODE_OFF(ChatColor.RED + "[Developer Mode Off]");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
     }
   }
 }

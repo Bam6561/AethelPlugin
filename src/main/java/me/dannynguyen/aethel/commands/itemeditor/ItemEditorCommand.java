@@ -23,16 +23,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
-  public enum Permission {
-    ITEMEDITOR("aethel.itemeditor");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -80,5 +70,15 @@ public class ItemEditorCommand implements CommandExecutor {
     user.openInventory(ItemEditorInventory.openMainMenu(user, item));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+  }
+
+  private enum Permission {
+    ITEMEDITOR("aethel.itemeditor");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
   }
 }

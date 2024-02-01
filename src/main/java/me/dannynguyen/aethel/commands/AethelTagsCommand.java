@@ -30,38 +30,6 @@ import org.bukkit.persistence.PersistentDataType;
  * @since 1.2.6
  */
 public class AethelTagsCommand implements CommandExecutor {
-  public enum Permission {
-    AETHELTAGS("aethel.aetheltags");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    GET_TAGS(ChatColor.GREEN + "[Get Tags] "),
-    SET_TAG(ChatColor.GREEN + "[Set Tag] "),
-    REMOVE_TAG(ChatColor.RED + "[Removed Tag] ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    NO_TAGS(ChatColor.RED + "No tags found.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -170,5 +138,37 @@ public class AethelTagsCommand implements CommandExecutor {
     item.setItemMeta(meta);
     user.sendMessage(Success.SET_TAG.message + ChatColor.AQUA +
         args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
+  }
+
+  private enum Permission {
+    AETHELTAGS("aethel.aetheltags");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    GET_TAGS(ChatColor.GREEN + "[Get Tags] "),
+    SET_TAG(ChatColor.GREEN + "[Set Tag] "),
+    REMOVE_TAG(ChatColor.RED + "[Removed Tag] ");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    NO_TAGS(ChatColor.RED + "No tags found.");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 }

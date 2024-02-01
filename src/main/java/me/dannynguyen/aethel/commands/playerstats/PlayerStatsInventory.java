@@ -27,31 +27,6 @@ import java.util.List;
  * @since 1.4.7
  */
 public class PlayerStatsInventory {
-  public enum Array {
-    CATEGORY_NAMES(new String[]{
-        "Activities", "Containers", "Damage", "Entity Types",
-        "General", "Interactions", "Materials", "Movement"});
-
-    public final String[] array;
-
-    Array(String[] array) {
-      this.array = array;
-    }
-  }
-
-  private enum Context {
-    CATEGORIES(List.of(ChatColor.WHITE + "Stat Categories")),
-    SHARE_STAT(List.of(
-        ChatColor.WHITE + "Shift-click any",
-        ChatColor.WHITE + "stat to share it."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
-  }
-
   /**
    * Creates a PlayerStats main menu containing stat categories.
    *
@@ -189,5 +164,30 @@ public class PlayerStatsInventory {
     meta.setDisplayName(ChatColor.DARK_PURPLE + statOwner);
     item.setItemMeta(meta);
     inv.setItem(4, item);
+  }
+
+  private enum Array {
+    CATEGORY_NAMES(new String[]{
+        "Activities", "Containers", "Damage", "Entity Types",
+        "General", "Interactions", "Materials", "Movement"});
+
+    public final String[] array;
+
+    Array(String[] array) {
+      this.array = array;
+    }
+  }
+
+  private enum Context {
+    CATEGORIES(List.of(ChatColor.WHITE + "Stat Categories")),
+    SHARE_STAT(List.of(
+        ChatColor.WHITE + "Shift-click any",
+        ChatColor.WHITE + "stat to share it."));
+
+    public final List<String> context;
+
+    Context(List<String> context) {
+      this.context = context;
+    }
   }
 }

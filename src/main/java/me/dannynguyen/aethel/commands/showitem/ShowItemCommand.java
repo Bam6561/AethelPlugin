@@ -33,16 +33,6 @@ import org.bukkit.metadata.FixedMetadataValue;
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
-  public enum Permission {
-    SHOWITEM("aethel.showitem");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -124,5 +114,15 @@ public class ShowItemCommand implements CommandExecutor {
         new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
 
     return message;
+  }
+
+  private enum Permission {
+    SHOWITEM("aethel.showitem");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
   }
 }

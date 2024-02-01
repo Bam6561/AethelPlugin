@@ -15,36 +15,6 @@ import org.bukkit.entity.Player;
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
-  public enum Permission {
-    TEMPLATE("");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    TEMPLATE("");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    TEMPLATE("");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
-  }
-
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!(sender instanceof Player user)) {
@@ -80,5 +50,35 @@ public class Template implements CommandExecutor {
    */
   private void interpretParameters(Player user, String[] args) {
 
+  }
+
+  private enum Permission {
+    TEMPLATE("");
+
+    public final String permission;
+
+    Permission(String permission) {
+      this.permission = permission;
+    }
+  }
+
+  private enum Success {
+    TEMPLATE("");
+
+    public final String message;
+
+    Success(String message) {
+      this.message = message;
+    }
+  }
+
+  private enum Failure {
+    TEMPLATE("");
+
+    public final String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 }
