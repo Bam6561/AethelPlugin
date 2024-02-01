@@ -12,6 +12,7 @@ import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.listeners.InventoryListener;
 import me.dannynguyen.aethel.listeners.MessageListener;
+import me.dannynguyen.aethel.listeners.PlayerJoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.10
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -38,6 +39,7 @@ public class Plugin extends JavaPlugin {
   public void onEnable() {
     loadResources();
 
+    getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     getServer().getPluginManager().registerEvents(new MessageListener(), this);
 

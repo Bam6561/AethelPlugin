@@ -29,7 +29,7 @@ import java.util.UUID;
  * ItemEditorMessageListener is a message listener for the ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.8.10
  * @since 1.7.0
  */
 public class ItemEditorMessageListener {
@@ -398,7 +398,7 @@ public class ItemEditorMessageListener {
       dataContainer.set(attributesKey, PersistentDataType.STRING, attributeName);
     }
 
-    dataContainer.set(attributeKey, PersistentDataType.STRING, attributeValue);
+    dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
     user.sendMessage(ChatColor.GREEN +
         "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }

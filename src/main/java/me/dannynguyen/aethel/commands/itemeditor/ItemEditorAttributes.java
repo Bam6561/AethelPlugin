@@ -32,7 +32,7 @@ import java.util.Map;
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.8.8
+ * @version 1.8.10
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -252,7 +252,7 @@ public class ItemEditorAttributes {
       for (AethelAttributeModifierSlot aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
         NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(),
             "aethel.attribute." + aethelAttribute.getType() + "." + aethelAttribute.getSlot());
-        String attributeValue = dataContainer.get(attributeKey, PersistentDataType.STRING);
+        String attributeValue = String.valueOf(dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
         lore.add(ChatColor.WHITE +
             TextFormatter.capitalizePhrase(aethelAttribute.getSlot()) + ": " + attributeValue);
       }

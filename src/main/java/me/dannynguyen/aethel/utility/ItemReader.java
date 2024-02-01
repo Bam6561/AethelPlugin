@@ -18,7 +18,7 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.10
  * @since 1.1.4
  */
 public class ItemReader {
@@ -52,8 +52,18 @@ public class ItemReader {
     for (NamespacedKey key : dataContainer.getKeys()) {
       String keyName = key.getKey();
       if (keyName.startsWith("aethel.")) {
-        aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
-            append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+        if (!keyName.startsWith("aethel.attribute.")) {
+          aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
+              append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+        } else {
+          if (keyName.matches("aethel.attribute.list")) {
+            aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
+                append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+          } else {
+            aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
+                append(dataContainer.get(key, PersistentDataType.DOUBLE)).append(" ");
+          }
+        }
       }
     }
     return aethelTags.toString();
