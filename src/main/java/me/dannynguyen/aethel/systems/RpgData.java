@@ -18,7 +18,7 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.10
+ * @version 1.8.11
  * @since 1.8.10
  */
 public class RpgData {
@@ -27,7 +27,7 @@ public class RpgData {
   /**
    * Loads an RPG character into memory.
    *
-   * @param player interacting player
+   * @param player player
    */
   public void loadRpgCharacter(Player player) {
     PlayerInventory inv = player.getInventory();
@@ -38,14 +38,16 @@ public class RpgData {
 
       loadEquipment(inv, equipment);
       loadAethelAttributes(equipment, aethelAttributes);
+
+      rpgCharacters.put(player, new RpgCharacter(player, equipment, aethelAttributes));
     }
   }
 
   /**
    * Loads the player's equipment into memory.
    *
-   * @param inv       interacting player's inventory
-   * @param equipment interacting player's equipment
+   * @param inv       player's inventory
+   * @param equipment player's equipment
    */
   private void loadEquipment(PlayerInventory inv, Map<String, ItemStack> equipment) {
     equipment.put(Slot.HAND.slot, inv.getItemInMainHand());
@@ -59,12 +61,15 @@ public class RpgData {
   /**
    * Loads the player's Aethel attribute values into memory.
    *
-   * @param equipment        interacting player's equipment
-   * @param aethelAttributes interacting player's Aethel attribute values
+   * @param equipment        player's equipment
+   * @param aethelAttributes player's Aethel attribute values
    */
   private void loadAethelAttributes(Map<String, ItemStack> equipment,
                                     Map<String, Double> aethelAttributes) {
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+    for (AethelAttributeId attribute : AethelAttributeId.values()) {
+      aethelAttributes.put(attribute.id, 0.0);
+    }
 
     readAethelAttributes(equipment, aethelAttributes, listKey, Slot.HAND.slot);
     readAethelAttributes(equipment, aethelAttributes, listKey, Slot.OFF_HAND.slot);
@@ -77,7 +82,7 @@ public class RpgData {
   /**
    * Checks if the item has Aethel attributes in the matching slot type before calculating values.
    *
-   * @param attributeValues interacting player's Aethel attributes
+   * @param attributeValues player's Aethel attributes
    * @param listKey         Aethel attributes list key
    * @param slot            equipment slot
    */
@@ -85,7 +90,7 @@ public class RpgData {
                                     Map<String, Double> attributeValues,
                                     NamespacedKey listKey, String slot) {
     ItemStack item = equipment.get(slot);
-    if (item.getType() != Material.AIR) {
+    if (item != null && item.getType() != Material.AIR) {
 
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
@@ -105,7 +110,7 @@ public class RpgData {
   /**
    * Updates the player's Aethel attribute values based on the item's statistics.
    *
-   * @param attributeValues interacting player's Aethel attributes
+   * @param attributeValues player's Aethel attributes
    * @param dataContainer   item's persistent tags
    * @param attribute       Aethel attribute type
    */
@@ -115,12 +120,8 @@ public class RpgData {
     String attributeType = attribute.substring(0, attribute.indexOf("."));
     NamespacedKey key = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
 
-    if (attributeValues.containsKey(attributeType)) {
-      attributeValues.put(attributeType,
-          (attributeValues.get(attributeType) + dataContainer.get(key, PersistentDataType.DOUBLE)));
-    } else {
-      attributeValues.put(attributeType, (dataContainer.get(key, PersistentDataType.DOUBLE)));
-    }
+    attributeValues.put(attributeType,
+        (attributeValues.get(attributeType) + dataContainer.get(key, PersistentDataType.DOUBLE)));
   }
 
   public Map<Player, RpgCharacter> getRpgCharacters() {
@@ -139,6 +140,24 @@ public class RpgData {
 
     Slot(String slot) {
       this.slot = slot;
+    }
+  }
+
+  private enum AethelAttributeId {
+    CRITICAL_CHANCE("critical_chance"),
+    CRITICAL_DAMAGE("critical_damage"),
+    BLOCK("block"),
+    PARRY_CHANCE("parry_chance"),
+    PARRY_DEFLECT("parry_deflect"),
+    DODGE_CHANCE("dodge_chance"),
+    ABILITY_DAMAGE("ability_damage"),
+    ABILITY_COOLDOWN("ability_cooldown"),
+    APPLY_STATUS("apply_status");
+
+    public final String id;
+
+    AethelAttributeId(String attribute) {
+      this.id = attribute;
     }
   }
 }

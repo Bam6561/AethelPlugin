@@ -20,7 +20,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventory is an inventory listener for the ItemEditor inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.8.11
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -249,6 +249,7 @@ public class ItemEditorInventoryListener {
 
     user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
+    user.sendMessage(getAttributeValueContext(attributeName));
 
     user.setMetadata(PluginPlayerMeta.Namespace.TYPE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), attribute));
@@ -289,6 +290,36 @@ public class ItemEditorInventoryListener {
     ItemEditorAction.awaitMessageResponse(user, "tags");
   }
 
+  /**
+   * Sends a value context for the attribute being edited.
+   *
+   * @param attributeName attribute name
+   * @return attribute value context
+   */
+  private static String getAttributeValueContext(String attributeName) {
+    String attributeContext = PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Base: ";
+    switch (attributeName) {
+      case "Attack Damage" -> attributeContext += AttributeContext.ATTACK_DAMAGE.context;
+      case "Attack Speed" -> attributeContext += AttributeContext.ATTACK_SPEED.context;
+      case "Critical Chance" -> attributeContext += AttributeContext.CRITICAL_CHANCE.context;
+      case "Critical Damage" -> attributeContext += AttributeContext.CRITICAL_DAMAGE.context;
+      case "Max Health" -> attributeContext += AttributeContext.MAX_HEALTH.context;
+      case "Armor" -> attributeContext += AttributeContext.ARMOR.context;
+      case "Armor Toughness" -> attributeContext += AttributeContext.ARMOR_TOUGHNESS.context;
+      case "Movement Speed" -> attributeContext += AttributeContext.MOVEMENT_SPEED.context;
+      case "Block" -> attributeContext += AttributeContext.BLOCK.context;
+      case "Parry Chance" -> attributeContext += AttributeContext.PARRY_CHANCE.context;
+      case "Parry Deflect" -> attributeContext += AttributeContext.PARRY_DEFLECT.context;
+      case "Dodge Chance" -> attributeContext += AttributeContext.DODGE_CHANCE.context;
+      case "Ability Damage" -> attributeContext += AttributeContext.ABILITY_DAMAGE.context;
+      case "Ability Cooldown" -> attributeContext += AttributeContext.ABILITY_COOLDOWN.context;
+      case "Apply Status" -> attributeContext += AttributeContext.APPLY_STATUS.context;
+      case "Knockback Resistance" -> attributeContext += AttributeContext.KNOCKBACK_RESISTANCE.context;
+      case "Luck" -> attributeContext += AttributeContext.LUCK.context;
+    }
+    return attributeContext;
+  }
+
   private enum Success {
     ENABLE_UNBREAKABLE(ChatColor.GREEN + "[Set Unbreakable]"),
     DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]"),
@@ -313,6 +344,32 @@ public class ItemEditorInventoryListener {
 
     Failure(String message) {
       this.message = message;
+    }
+  }
+
+  private enum AttributeContext {
+    ATTACK_DAMAGE("1.0"),
+    ATTACK_SPEED("4.0"),
+    CRITICAL_CHANCE("0.0%"),
+    CRITICAL_DAMAGE("1.25x [Input / 100]"),
+    MAX_HEALTH("20.0"),
+    ARMOR("0.0 [Max: 30.0]"),
+    ARMOR_TOUGHNESS("0.0 [Max: 20.0]"),
+    MOVEMENT_SPEED("2.0 [Input * 20]"),
+    BLOCK("0.0"),
+    PARRY_CHANCE("0.0%"),
+    PARRY_DEFLECT("0.0%"),
+    DODGE_CHANCE("0.0%"),
+    ABILITY_DAMAGE("1.0x [Input / 100]"),
+    ABILITY_COOLDOWN("-0.0%"),
+    APPLY_STATUS("0.0%"),
+    KNOCKBACK_RESISTANCE("0.0 [Max: 1.0]"),
+    LUCK("0.0");
+
+    public final String context;
+
+    AttributeContext(String context) {
+      this.context = context;
     }
   }
 }

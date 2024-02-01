@@ -11,7 +11,7 @@ import java.util.Set;
  * PluginConstant is an enum-like storage containing various data type constants.
  *
  * @author Danny Nguyen
- * @version 1.8.3
+ * @version 1.8.11
  * @since 1.7.13
  */
 public class PluginConstant {
@@ -25,8 +25,8 @@ public class PluginConstant {
           "Attack Damage", "Attack Speed",
           "Critical Chance", "Critical Damage"},
       "defense", new String[]{
-          "Max Health", "Armor", "Armor Toughness",
-          "Movement Speed", "Block", "Parry", "Dodge"},
+          "Max Health", "Armor", "Armor Toughness", "Movement Speed",
+          "Block", "Parry Chance", "Parry Deflect", "Dodge Chance"},
       "other", new String[]{
           "Ability Damage", "Ability Cooldown",
           "Apply Status", "Knockback Resistance", "Luck"});

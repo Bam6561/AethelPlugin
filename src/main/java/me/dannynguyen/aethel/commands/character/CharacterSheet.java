@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -15,13 +16,14 @@ import org.bukkit.potion.PotionEffect;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CharacterSheet is an inventory that shows the user's
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.8.11
  * @since 1.6.3
  */
 public class CharacterSheet {
@@ -87,17 +89,16 @@ public class CharacterSheet {
    * @param inv  interacting inv
    */
   private static void addAttributes(Player user, Inventory inv) {
-    DecimalFormat tenths = new DecimalFormat();
+    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgCharacters().get(user).getAethelAttributes();
     DecimalFormat hundredths = new DecimalFormat();
     DecimalFormat thousandths = new DecimalFormat();
 
-    tenths.setMaximumFractionDigits(1);
     hundredths.setMaximumFractionDigits(2);
     thousandths.setMaximumFractionDigits(3);
 
-    addOffenseAttributes(user, inv, hundredths);
-    addDefenseAttributes(user, inv, tenths, hundredths, thousandths);
-    addOtherAttributes(user, inv, hundredths);
+    addOffenseAttributes(user, inv, aethelAttributes, hundredths);
+    addDefenseAttributes(user, inv, aethelAttributes, hundredths, thousandths);
+    addOtherAttributes(user, inv, aethelAttributes, hundredths);
   }
 
   /**
@@ -115,19 +116,22 @@ public class CharacterSheet {
   /**
    * Adds the user's offense attributes.
    *
-   * @param user       user
-   * @param inv        interacting inventory
-   * @param hundredths 0.00
+   * @param user             user
+   * @param inv              interacting inventory
+   * @param aethelAttributes user's Aethel attribute values
+   * @param hundredths       0.00
    */
-  private static void addOffenseAttributes(Player user, Inventory inv, DecimalFormat hundredths) {
-    String damage = ChatColor.RED + "" +
-        hundredths.format(user.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " DMG";
-    String attackSpeed = ChatColor.GOLD +
-        hundredths.format(user.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
-    String criticalChance = ChatColor.GREEN +
-        hundredths.format(0) + "% CRIT";
-    String criticalDamage = ChatColor.DARK_GREEN +
-        hundredths.format(1) + "x CRIT DMG";
+  private static void addOffenseAttributes(Player user, Inventory inv,
+                                           Map<String, Double> aethelAttributes,
+                                           DecimalFormat hundredths) {
+    String damage = ChatColor.RED + "" + hundredths.format(user.getAttribute(
+        Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG";
+    String attackSpeed = ChatColor.GOLD + hundredths.format(user.getAttribute(
+        Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
+    String criticalChance = ChatColor.GREEN + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.CRITICAL_CHANCE.id)) + "% CRIT";
+    String criticalDamage = ChatColor.DARK_GREEN + hundredths.format(1.25 +
+        aethelAttributes.get(AethelAttributeId.CRITICAL_DAMAGE.id) / 100) + "x CRIT DMG";
 
     inv.setItem(15, ItemCreator.createItem(Material.IRON_SWORD,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense",
@@ -138,54 +142,60 @@ public class CharacterSheet {
   /**
    * Adds the user's defense attributes.
    *
-   * @param user        user
-   * @param inv         interacting inventory
-   * @param tenths      0.0
-   * @param hundredths  0.00
-   * @param thousandths 0.000
+   * @param user             user
+   * @param inv              interacting inventory
+   * @param aethelAttributes user's Aethel attributes
+   * @param hundredths       0.00
+   * @param thousandths      0.000
    */
   private static void addDefenseAttributes(Player user, Inventory inv,
-                                           DecimalFormat tenths, DecimalFormat hundredths,
+                                           Map<String, Double> aethelAttributes,
+                                           DecimalFormat hundredths,
                                            DecimalFormat thousandths) {
-    String maxHealth = ChatColor.WHITE + "" +
-        (int) user.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + " MAX HP";
-    String armor = ChatColor.GRAY + "" +
-        tenths.format(user.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
-    String armorToughness = ChatColor.GRAY + "" +
-        tenths.format(user.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
-    String speed = ChatColor.AQUA + "" +
-        thousandths.format(user.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPD";
-    String block = ChatColor.BLUE + "" +
-        "0" + " BLOCK";
-    String parryChance = ChatColor.RED + "" +
-        hundredths.format(0) + "% PARRY";
-    String dodgeChance = ChatColor.DARK_AQUA + "" +
-        hundredths.format(0) + "% DODGE";
+    String maxHealth = ChatColor.WHITE + "" + hundredths.format(
+        user.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) + " MAX HP";
+    String armor = ChatColor.GRAY + "" + hundredths.format(
+        user.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
+    String armorToughness = ChatColor.GRAY + "" + hundredths.format(
+        user.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " ARMOR TOUGH";
+    String speed = ChatColor.AQUA + "" + thousandths.format(
+        user.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPD";
+    String block = ChatColor.BLUE + "" + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.BLOCK.id)) + " BLOCK";
+    String parryChance = ChatColor.RED + "" + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.PARRY_CHANCE.id)) + "% PARRY";
+    String parryReflect = ChatColor.DARK_RED + "" + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.PARRY_DEFLECT.id)) + "% PARRY DEFLECT";
+    String dodgeChance = ChatColor.DARK_AQUA + "" + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.DODGE_CHANCE.id)) + "% DODGE";
 
     inv.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense",
-        List.of(maxHealth, armor, armorToughness, speed, block, parryChance, dodgeChance),
+        List.of(maxHealth, armor, armorToughness, speed, block, parryChance, parryReflect, dodgeChance),
         ItemFlag.HIDE_ATTRIBUTES));
   }
 
   /**
    * Adds the user's other attributes.
    *
-   * @param user       user
-   * @param inv        interacting inventory
-   * @param hundredths 0.00
+   * @param user             user
+   * @param inv              interacting inventory
+   * @param aethelAttributes user's Aethel attributes
+   * @param hundredths       0.00
    */
-  private static void addOtherAttributes(Player user, Inventory inv, DecimalFormat hundredths) {
-    String abilityDamage = ChatColor.LIGHT_PURPLE + "" +
-        hundredths.format(1) + "x ABILITY DMG";
-    String abilityCooldown = ChatColor.DARK_PURPLE + "-" +
-        hundredths.format(0) + "% ABILITY CD";
-    String applyStatusEffect = ChatColor.YELLOW + "" +
-        hundredths.format(0) + "% APPLY STATUS";
-    String knockbackResistance = ChatColor.GRAY + "" +
-        hundredths.format(user.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST";
-    String luck = ChatColor.GREEN + "" +
-        hundredths.format(user.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
+  private static void addOtherAttributes(Player user, Inventory inv,
+                                         Map<String, Double> aethelAttributes,
+                                         DecimalFormat hundredths) {
+    String abilityDamage = ChatColor.LIGHT_PURPLE + "" + hundredths.format(1 +
+        aethelAttributes.get(AethelAttributeId.ABILITY_DAMAGE.id) / 100) + "x ABILITY DMG";
+    String abilityCooldown = ChatColor.DARK_PURPLE + "-" + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.ABILITY_COOLDOWN.id)) + "% ABILITY CD";
+    String applyStatusEffect = ChatColor.YELLOW + "" + hundredths.format(
+        aethelAttributes.get(AethelAttributeId.APPLY_STATUS.id)) + "% APPLY STATUS";
+    String knockbackResistance = ChatColor.GRAY + "" + hundredths.format(
+        user.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST";
+    String luck = ChatColor.GREEN + "" + hundredths.format(
+        user.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
 
     inv.setItem(33, ItemCreator.createItem(Material.SPYGLASS,
         ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other",
@@ -240,6 +250,24 @@ public class CharacterSheet {
 
     Context(List<String> context) {
       this.context = context;
+    }
+  }
+
+  private enum AethelAttributeId {
+    CRITICAL_CHANCE("critical_chance"),
+    CRITICAL_DAMAGE("critical_damage"),
+    BLOCK("block"),
+    PARRY_CHANCE("parry_chance"),
+    PARRY_DEFLECT("parry_deflect"),
+    DODGE_CHANCE("dodge_chance"),
+    ABILITY_DAMAGE("ability_damage"),
+    ABILITY_COOLDOWN("ability_cooldown"),
+    APPLY_STATUS("apply_status");
+
+    public final String id;
+
+    AethelAttributeId(String attribute) {
+      this.id = attribute;
     }
   }
 }
