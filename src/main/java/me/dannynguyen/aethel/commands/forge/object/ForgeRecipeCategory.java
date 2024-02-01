@@ -5,7 +5,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.List;
 
 /**
- * ForgeRecipeCategory is an object that relates forge recipes with their category and page number.
+ * ForgeRecipeCategory is an object relating forge recipes with their category and page number.
  *
  * @author Danny Nguyen
  * @version 1.8.2

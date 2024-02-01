@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 
 /**
- * AethelItem is an object that relates a custom item with its file.
+ * AethelItem is an object relating a custom item with its file.
  *
  * @author Danny Nguyen
  * @version 1.5.1

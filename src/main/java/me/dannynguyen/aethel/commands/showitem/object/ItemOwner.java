@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.showitem.object;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * ItemOwner is an object that relates an item with its owner.
+ * ItemOwner is an object relating an item with its owner.
  *
  * @author Danny Nguyen
  * @version 1.7.13

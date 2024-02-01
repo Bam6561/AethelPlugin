@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.forge.object;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * InventorySlot is an object that relates an inventory slot
+ * InventorySlot is an object relating inventory slot
  * with the type and amount of materials it should have.
  *
  * @author Danny Nguyen

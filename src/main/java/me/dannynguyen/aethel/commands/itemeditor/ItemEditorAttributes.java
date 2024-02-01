@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.itemeditor.object.AethelAttribute;
+import me.dannynguyen.aethel.commands.itemeditor.object.AethelAttributeModifierSlot;
 import me.dannynguyen.aethel.enums.PluginConstant;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
@@ -83,7 +83,7 @@ public class ItemEditorAttributes {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     Multimap<Attribute, AttributeModifier> metaAttributes = meta.getAttributeModifiers();
-    Map<String, List<AethelAttribute>> aethelAttributesMap = mapAethelAttributes(dataContainer);
+    Map<String, List<AethelAttributeModifierSlot>> aethelAttributesMap = mapAethelAttributes(dataContainer);
 
     addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "offense", 19);
     addAttributeCategory(inv, dataContainer, metaAttributes, aethelAttributesMap, "defense", 28);
@@ -134,12 +134,12 @@ public class ItemEditorAttributes {
    * @param dataContainer item's persistent data
    * @return item's Aethel attributes map
    */
-  private static Map<String, List<AethelAttribute>> mapAethelAttributes(PersistentDataContainer dataContainer) {
+  private static Map<String, List<AethelAttributeModifierSlot>> mapAethelAttributes(PersistentDataContainer dataContainer) {
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {
-      Map<String, List<AethelAttribute>> attributesMap = new HashMap<>();
+      Map<String, List<AethelAttributeModifierSlot>> attributesMap = new HashMap<>();
       List<String> attributes = new ArrayList<>(List.of(
           dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
 
@@ -148,10 +148,10 @@ public class ItemEditorAttributes {
         String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
 
         if (attributesMap.containsKey(attributeType)) {
-          attributesMap.get(attributeType).add(new AethelAttribute(attributeType, attributeSlot));
+          attributesMap.get(attributeType).add(new AethelAttributeModifierSlot(attributeType, attributeSlot));
         } else {
           attributesMap.put(attributeType,
-              new ArrayList<>(List.of(new AethelAttribute(attributeType, attributeSlot))));
+              new ArrayList<>(List.of(new AethelAttributeModifierSlot(attributeType, attributeSlot))));
         }
       }
       return attributesMap;
@@ -177,7 +177,7 @@ public class ItemEditorAttributes {
    */
   private static void addAttributeCategory(Inventory inv, PersistentDataContainer dataContainer,
                                            Multimap<Attribute, AttributeModifier> metaAttributes,
-                                           Map<String, List<AethelAttribute>> aethelAttributesMap,
+                                           Map<String, List<AethelAttributeModifierSlot>> aethelAttributesMap,
                                            String category, int invSlot) {
     if (!aethelAttributesMap.isEmpty()) { // Read both Minecraft & Aethel attributes
       for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
@@ -242,14 +242,14 @@ public class ItemEditorAttributes {
    */
   private static void createAethelAttribute(Inventory inv,
                                             PersistentDataContainer dataContainer,
-                                            Map<String, List<AethelAttribute>> aethelAttributesMap,
+                                            Map<String, List<AethelAttributeModifierSlot>> aethelAttributesMap,
                                             String attributeName, int invSlot) {
     String attributeMapKey = attributeName.toLowerCase().replace(" ", "_");
     boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
 
     if (enabled) {
       List<String> lore = new ArrayList<>();
-      for (AethelAttribute aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
+      for (AethelAttributeModifierSlot aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
         NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(),
             "aethel.attribute." + aethelAttribute.getType() + "." + aethelAttribute.getSlot());
         String attributeValue = dataContainer.get(attributeKey, PersistentDataType.STRING);
