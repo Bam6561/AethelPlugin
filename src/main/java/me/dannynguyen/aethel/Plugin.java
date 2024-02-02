@@ -9,23 +9,24 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
-import me.dannynguyen.aethel.enums.PluginDirectory;
-import me.dannynguyen.aethel.listeners.InventoryListener;
-import me.dannynguyen.aethel.listeners.MessageListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MessageInputListener;
 import me.dannynguyen.aethel.listeners.PlayerJoinListener;
+import me.dannynguyen.aethel.listeners.PlayerSwapHandItemListener;
+import me.dannynguyen.aethel.systems.object.RpgCharacter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.logging.Logger;
+import java.util.Map;
 
 /**
  * Plugin represents the plugin as an object. Through event listeners and command executors,
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.8.12
+ * @version 1.8.13
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -37,12 +38,26 @@ public class Plugin extends JavaPlugin {
    */
   @Override
   public void onEnable() {
-    loadResources();
+    PluginData.loadResources();
+    registerEventListeners();
+    registerCommands();
+    scheduleRepeatingTasks();
+  }
 
-    getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-    getServer().getPluginManager().registerEvents(new MessageListener(), this);
+  /**
+   * Registers the plugin's event listeners.
+   */
+  private void registerEventListeners() {
+    getServer().getPluginManager().registerEvents(new InventoryMenuListener(), this);
+    getServer().getPluginManager().registerEvents(new MessageInputListener(), this);
     getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+    getServer().getPluginManager().registerEvents(new PlayerSwapHandItemListener(), this);
+  }
 
+  /**
+   * Registers the plugin's commands.
+   */
+  private void registerCommands() {
     this.getCommand("aethelitems").setExecutor(new AethelItemsCommand());
     this.getCommand("aetheltags").setExecutor(new AethelTagsCommand());
     this.getCommand("character").setExecutor(new CharacterCommand());
@@ -55,73 +70,40 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Loads existing plugin-related data. Creates data directories if they do not already exist.
+   * Schedules the plugin's repeating tasks.
    */
-  private void loadResources() {
-    Logger log = Bukkit.getLogger();
-    long start;
-    long finish;
-    DecimalFormat hundredths = new DecimalFormat();
-    hundredths.setMaximumFractionDigits(2);
-
-    log.info(Success.LOADING_RESOURCES.message);
-
-    File resourceDirectory = PluginDirectory.RESOURCES.file;
-    if (!resourceDirectory.exists()) {
-      resourceDirectory.mkdir();
-    }
-
-    File aethelItemsDirectory = PluginDirectory.AETHELITEMS.file;
-    if (aethelItemsDirectory.exists()) {
-      start = System.nanoTime();
-      PluginData.aethelItemsData.loadItems();
-      finish = System.nanoTime();
-      log.info(Success.LOADED_AETHELITEMS.message + convertToMs(hundredths, start, finish));
-    } else {
-      aethelItemsDirectory.mkdir();
-    }
-
-    File forgeDirectory = PluginDirectory.FORGE.file;
-    if (forgeDirectory.exists()) {
-      start = System.nanoTime();
-      PluginData.forgeData.loadRecipes();
-      finish = System.nanoTime();
-      log.info(Success.LOADED_FORGE.message + convertToMs(hundredths, start, finish));
-    } else {
-      forgeDirectory.mkdir();
-    }
-
-    start = System.nanoTime();
-    PluginData.playerStatsData.loadStats();
-    finish = System.nanoTime();
-    log.info(Success.LOADED_PLAYERSTATS.message + convertToMs(hundredths, start, finish));
+  private void scheduleRepeatingTasks() {
+    addMainHandEquipmentAttributesInterval();
   }
 
   /**
-   * Converts the time duration of a process in nanoseconds to milliseconds.
-   *
-   * @param start  start time
-   * @param finish finish time
-   * @return milliseconds elapsed
+   * Adds an interval to store the player's main hand item into memory for future comparisons.
    */
-  private static String convertToMs(DecimalFormat dc, long start, long finish) {
-    return dc.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
+  private void addMainHandEquipmentAttributesInterval() {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+      Map<Player, ItemStack> playerHeldItemMap = PluginData.rpgData.getPlayerHeldItemMap();
+
+      for (Player player : Bukkit.getOnlinePlayers()) {
+        ItemStack heldItem = player.getInventory().getItemInMainHand();
+
+        if (playerHeldItemMap.containsKey(player)) {
+          if (!playerHeldItemMap.get(player).equals(heldItem)) {
+            playerHeldItemMap.put(player, heldItem);
+
+            RpgCharacter rpgCharacter = PluginData.rpgData.getRpgCharacters().get(player);
+            PluginData.rpgData.readEquipmentSlot(
+                rpgCharacter.getEquipmentAttributes(),
+                rpgCharacter.getAethelAttributes(),
+                heldItem, "hand");
+          }
+        } else {
+          playerHeldItemMap.put(player, heldItem);
+        }
+      }
+    }, 0, 20);
   }
 
   public static Plugin getInstance() {
     return getPlugin(Plugin.class);
-  }
-
-  private enum Success {
-    LOADING_RESOURCES("[Aethel] Loading Resources"),
-    LOADED_AETHELITEMS("[Aethel] Loaded Aethel Items: "),
-    LOADED_FORGE("[Aethel] Loaded Forge Recipes: "),
-    LOADED_PLAYERSTATS("[Aethel] Loaded Player Stats: ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
   }
 }

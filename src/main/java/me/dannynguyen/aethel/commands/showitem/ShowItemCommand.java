@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
@@ -89,7 +89,7 @@ public class ShowItemCommand implements CommandExecutor {
     if (action.equals("past") || action.equals("p")) {
       user.openInventory(ShowItemPast.openInventory(user));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.SHOWITEM_PAST.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.SHOWITEM_PAST.inventory));
     } else {
       user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }

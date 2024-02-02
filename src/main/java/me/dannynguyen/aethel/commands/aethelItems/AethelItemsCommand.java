@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -77,7 +77,7 @@ public class AethelItemsCommand implements CommandExecutor {
   private void openMainMenu(Player user) {
     user.openInventory(AethelItemsInventory.openMainMenu(user, "view"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.AETHELITEMS_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.AETHELITEMS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }

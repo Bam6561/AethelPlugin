@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.playerstats;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -38,10 +38,10 @@ public class PlayerStatsInventoryListener {
         switch (itemName) {
           case "Entity Types", "Materials" -> user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
               new FixedMetadataValue(Plugin.getInstance(),
-                  InventoryListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+                  InventoryMenuListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
           default -> user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
               new FixedMetadataValue(Plugin.getInstance(),
-                  InventoryListener.Inventory.PLAYERSTATS_STAT.inventory));
+                  InventoryMenuListener.Inventory.PLAYERSTATS_STAT.inventory));
         }
       }
     }
@@ -102,7 +102,7 @@ public class PlayerStatsInventoryListener {
         openCategoryPage(user, requestedPlayerName, categoryName, pageRequest - 1));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+            InventoryMenuListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
   }
 
   /**
@@ -114,7 +114,7 @@ public class PlayerStatsInventoryListener {
     String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
     user.openInventory(PlayerStatsInventory.openMainMenu(user, requestedPlayerName));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
@@ -132,6 +132,6 @@ public class PlayerStatsInventoryListener {
     user.openInventory(PlayerStatsInventory.
         openCategoryPage(user, requestedPlayerName, categoryName, pageRequest + 1));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
   }
 }

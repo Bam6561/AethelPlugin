@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.character;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -57,7 +57,7 @@ public class CharacterCommand implements CommandExecutor {
   private void openCharacterSheet(Player user) {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.CHARACTER_SHEET.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.CHARACTER_SHEET.inventory));
   }
 
   private enum Permission {

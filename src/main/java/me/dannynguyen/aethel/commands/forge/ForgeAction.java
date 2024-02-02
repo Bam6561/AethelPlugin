@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.commands.forge.object.ForgeRecipe;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -53,7 +53,7 @@ public class ForgeAction {
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_CRAFT_CONFIRM.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CRAFT_CONFIRM.inventory));
   }
 
   /**
@@ -74,7 +74,7 @@ public class ForgeAction {
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_SAVE.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_SAVE.inventory));
   }
 
   /**
@@ -90,7 +90,7 @@ public class ForgeAction {
 
     user.openInventory(inv);
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.FORGE_SAVE.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_SAVE.inventory));
   }
 
   /**

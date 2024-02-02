@@ -18,11 +18,12 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.12
+ * @version 1.8.13
  * @since 1.8.10
  */
 public class RpgData {
   private Map<Player, RpgCharacter> rpgCharacters = new HashMap<>();
+  private Map<Player, ItemStack> playerHeldItemMap = new HashMap<>();
 
   /**
    * Loads an RPG character into memory.
@@ -46,28 +47,26 @@ public class RpgData {
   private void loadEquipmentAttributes(PlayerInventory inv,
                                        Map<String, Map<String, Double>> equipment,
                                        Map<String, Double> aethelAttributes) {
-    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.HAND.slot);
-    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.OFF_HAND.slot);
-    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.HEAD.slot);
-    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.CHEST.slot);
-    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.LEGS.slot);
-    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.FEET.slot);
+    readEquipmentSlot(equipment, aethelAttributes, inv.getItemInMainHand(), Slot.HAND.slot);
+    readEquipmentSlot(equipment, aethelAttributes, inv.getItemInOffHand(), Slot.OFF_HAND.slot);
+    readEquipmentSlot(equipment, aethelAttributes, inv.getHelmet(), Slot.HEAD.slot);
+    readEquipmentSlot(equipment, aethelAttributes, inv.getChestplate(), Slot.CHEST.slot);
+    readEquipmentSlot(equipment, aethelAttributes, inv.getLeggings(), Slot.LEGS.slot);
+    readEquipmentSlot(equipment, aethelAttributes, inv.getBoots(), Slot.FEET.slot);
   }
 
   /**
    * Checks if the item has Aethel attribute modifiers before
    * checking whether the item is in the correct equipment slot.
    *
-   * @param inv              player's inventory
    * @param equipment        slot : attribute and value
    * @param aethelAttributes attribute : total value
+   * @param item             interacting item
    * @param slot             slot type
    */
-  private void readEquipmentSlot(PlayerInventory inv,
-                                 Map<String, Map<String, Double>> equipment,
-                                 Map<String, Double> aethelAttributes,
-                                 String slot) {
-    ItemStack item = translateEquipmentSlot(inv, slot);
+  public void readEquipmentSlot(Map<String, Map<String, Double>> equipment,
+                                Map<String, Double> aethelAttributes,
+                                ItemStack item, String slot) {
     if (item != null && item.getType() != Material.AIR) {
 
       if (equipment.containsKey(slot)) {
@@ -125,27 +124,6 @@ public class RpgData {
   }
 
   /**
-   * Gets the item at the corresponding equipment slot.
-   *
-   * @param inv  player's inventory
-   * @param slot slot type
-   * @return item at equipment slot
-   */
-  private ItemStack translateEquipmentSlot(PlayerInventory inv, String slot) {
-    ItemStack item;
-    switch (slot) {
-      case "hand" -> item = inv.getItemInMainHand();
-      case "off_hand" -> item = inv.getItemInOffHand();
-      case "head" -> item = inv.getHelmet();
-      case "chest" -> item = inv.getChestplate();
-      case "legs" -> item = inv.getLeggings();
-      case "feet" -> item = inv.getBoots();
-      default -> item = null;
-    }
-    return item;
-  }
-
-  /**
    * Adds new equipment attribute modifiers.
    *
    * @param equipment        slot : attribute and value
@@ -167,11 +145,6 @@ public class RpgData {
         aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }
 
-  public Map<Player, RpgCharacter> getRpgCharacters() {
-    return this.rpgCharacters;
-  }
-
-
   /**
    * Removes existing equipment attribute modifiers.
    *
@@ -186,6 +159,14 @@ public class RpgData {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipment.get(slot).get(attribute));
     }
     equipment.remove(slot);
+  }
+
+  public Map<Player, RpgCharacter> getRpgCharacters() {
+    return this.rpgCharacters;
+  }
+
+  public Map<Player, ItemStack> getPlayerHeldItemMap() {
+    return this.playerHeldItemMap;
   }
 
   private enum Slot {

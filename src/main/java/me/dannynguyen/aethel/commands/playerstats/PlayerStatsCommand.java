@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.playerstats;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -65,7 +65,7 @@ public class PlayerStatsCommand implements CommandExecutor {
     if (parameter.equals("past") || parameter.equals("p")) {
       user.openInventory(PlayerStatsPast.createInventory(user));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_PAST.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_PAST.inventory));
     } else {
       openPlayerStatsOther(user, parameter);
     }
@@ -82,7 +82,7 @@ public class PlayerStatsCommand implements CommandExecutor {
 
     user.openInventory(PlayerStatsInventory.openMainMenu(user, user.getName()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
   }
 
   /**
@@ -99,7 +99,7 @@ public class PlayerStatsCommand implements CommandExecutor {
 
       user.openInventory(PlayerStatsInventory.openMainMenu(user, player.getName()));
       user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

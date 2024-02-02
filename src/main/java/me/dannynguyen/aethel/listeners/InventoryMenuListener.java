@@ -13,13 +13,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 /**
- * InventoryListener is a general usage inventory action listener.
+ * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
  * @version 1.8.7
  * @since 1.0.2
  */
-public class InventoryListener implements Listener {
+public class InventoryMenuListener implements Listener {
   /**
    * Routes interactions between inventories.
    *

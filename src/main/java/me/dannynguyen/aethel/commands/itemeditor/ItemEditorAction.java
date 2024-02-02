@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -43,7 +43,7 @@ public class ItemEditorAction {
     user.openInventory(ItemEditorAttributes.openAttributesMenu(user, "Head"));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryMenuListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
   }
 
   /**
@@ -58,7 +58,7 @@ public class ItemEditorAction {
 
     user.openInventory(ItemEditorEnchants.openMenu(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_ENCHANTS.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_ENCHANTS.inventory));
   }
 
   /**
@@ -73,7 +73,7 @@ public class ItemEditorAction {
 
     user.openInventory(ItemEditorTags.openTagsMenu(user));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_TAGS.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_TAGS.inventory));
   }
 
 
@@ -86,6 +86,6 @@ public class ItemEditorAction {
     user.openInventory(ItemEditorInventory.openMainMenu(user,
         PluginData.itemEditorData.getEditedItemMap().get(user)));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
   }
 }

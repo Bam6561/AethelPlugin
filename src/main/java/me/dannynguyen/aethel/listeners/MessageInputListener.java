@@ -11,13 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
- * MessageListener is a general usage player message listener.
+ * MessageInputListener is a player chat listener for the plugin's message inputs.
  *
  * @author Danny Nguyen
  * @version 1.8.7
  * @since 1.6.7
  */
-public class MessageListener implements Listener {
+public class MessageInputListener implements Listener {
   /**
    * Routes interactions for messages sent.
    *

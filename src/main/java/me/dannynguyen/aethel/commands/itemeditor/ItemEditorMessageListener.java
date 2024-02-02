@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
-import me.dannynguyen.aethel.listeners.InventoryListener;
+import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -189,7 +189,7 @@ public class ItemEditorMessageListener {
           user.openInventory(ItemEditorInventory.openMainMenu(user, item));
           user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
               new FixedMetadataValue(Plugin.getInstance(),
-                  InventoryListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+                  InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
         });
   }
 
@@ -493,7 +493,7 @@ public class ItemEditorMessageListener {
             user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString()));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryMenuListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
   }
 
   private enum Success {
