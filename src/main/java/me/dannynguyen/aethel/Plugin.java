@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.8.10
+ * @version 1.8.12
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -39,9 +39,9 @@ public class Plugin extends JavaPlugin {
   public void onEnable() {
     loadResources();
 
-    getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
     getServer().getPluginManager().registerEvents(new InventoryListener(), this);
     getServer().getPluginManager().registerEvents(new MessageListener(), this);
+    getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 
     this.getCommand("aethelitems").setExecutor(new AethelItemsCommand());
     this.getCommand("aetheltags").setExecutor(new AethelTagsCommand());

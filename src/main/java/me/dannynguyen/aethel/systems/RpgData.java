@@ -18,7 +18,7 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.11
+ * @version 1.8.12
  * @since 1.8.10
  */
 public class RpgData {
@@ -30,102 +30,162 @@ public class RpgData {
    * @param player player
    */
   public void loadRpgCharacter(Player player) {
-    PlayerInventory inv = player.getInventory();
+    Map<String, Map<String, Double>> equipment = new HashMap<>();
+    Map<String, Double> aethelAttributes = createBlankAethelAttributes();
 
-    if (!player.getInventory().isEmpty()) {
-      Map<String, ItemStack> equipment = new HashMap<>();
-      Map<String, Double> aethelAttributes = new HashMap<>();
-
-      loadEquipment(inv, equipment);
-      loadAethelAttributes(equipment, aethelAttributes);
-
-      rpgCharacters.put(player, new RpgCharacter(player, equipment, aethelAttributes));
-    }
+    loadEquipmentAttributes(player.getInventory(), equipment, aethelAttributes);
+    rpgCharacters.put(player, new RpgCharacter(player, equipment, aethelAttributes));
   }
 
   /**
-   * Loads the player's equipment into memory.
+   * Loads the player's equipment-related Aethel attribute modifiers into memory.
    *
    * @param inv       player's inventory
-   * @param equipment player's equipment
+   * @param equipment slot : attribute and value
    */
-  private void loadEquipment(PlayerInventory inv, Map<String, ItemStack> equipment) {
-    equipment.put(Slot.HAND.slot, inv.getItemInMainHand());
-    equipment.put(Slot.OFF_HAND.slot, inv.getItemInOffHand());
-    equipment.put(Slot.HEAD.slot, inv.getHelmet());
-    equipment.put(Slot.CHEST.slot, inv.getChestplate());
-    equipment.put(Slot.LEGS.slot, inv.getLeggings());
-    equipment.put(Slot.FEET.slot, inv.getBoots());
+  private void loadEquipmentAttributes(PlayerInventory inv,
+                                       Map<String, Map<String, Double>> equipment,
+                                       Map<String, Double> aethelAttributes) {
+    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.HAND.slot);
+    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.OFF_HAND.slot);
+    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.HEAD.slot);
+    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.CHEST.slot);
+    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.LEGS.slot);
+    readEquipmentSlot(inv, equipment, aethelAttributes, Slot.FEET.slot);
   }
 
   /**
-   * Loads the player's Aethel attribute values into memory.
+   * Checks if the item has Aethel attribute modifiers before
+   * checking whether the item is in the correct equipment slot.
    *
-   * @param equipment        player's equipment
-   * @param aethelAttributes player's Aethel attribute values
+   * @param inv              player's inventory
+   * @param equipment        slot : attribute and value
+   * @param aethelAttributes attribute : total value
+   * @param slot             slot type
    */
-  private void loadAethelAttributes(Map<String, ItemStack> equipment,
-                                    Map<String, Double> aethelAttributes) {
-    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
-    for (AethelAttributeId attribute : AethelAttributeId.values()) {
-      aethelAttributes.put(attribute.id, 0.0);
-    }
-
-    readAethelAttributes(equipment, aethelAttributes, listKey, Slot.HAND.slot);
-    readAethelAttributes(equipment, aethelAttributes, listKey, Slot.OFF_HAND.slot);
-    readAethelAttributes(equipment, aethelAttributes, listKey, Slot.HEAD.slot);
-    readAethelAttributes(equipment, aethelAttributes, listKey, Slot.CHEST.slot);
-    readAethelAttributes(equipment, aethelAttributes, listKey, Slot.LEGS.slot);
-    readAethelAttributes(equipment, aethelAttributes, listKey, Slot.FEET.slot);
-  }
-
-  /**
-   * Checks if the item has Aethel attributes in the matching slot type before calculating values.
-   *
-   * @param attributeValues player's Aethel attributes
-   * @param listKey         Aethel attributes list key
-   * @param slot            equipment slot
-   */
-  private void readAethelAttributes(Map<String, ItemStack> equipment,
-                                    Map<String, Double> attributeValues,
-                                    NamespacedKey listKey, String slot) {
-    ItemStack item = equipment.get(slot);
+  private void readEquipmentSlot(PlayerInventory inv,
+                                 Map<String, Map<String, Double>> equipment,
+                                 Map<String, Double> aethelAttributes,
+                                 String slot) {
+    ItemStack item = translateEquipmentSlot(inv, slot);
     if (item != null && item.getType() != Material.AIR) {
 
+      if (equipment.containsKey(slot)) {
+        removeExistingEquipmentAttributes(equipment, aethelAttributes, slot);
+      }
+
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+      NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-
-        String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
-        for (String attribute : attributes) {
-
-          String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
-          if (attributeSlot.equals(slot)) {
-            updateAethelAttributes(attributeValues, dataContainer, attribute);
-          }
-        }
+        equipment.put(slot, new HashMap<>());
+        readEquipmentMeta(equipment, aethelAttributes, slot, dataContainer, listKey);
+      }
+    } else {
+      if (equipment.containsKey(slot)) {
+        removeExistingEquipmentAttributes(equipment, aethelAttributes, slot);
       }
     }
   }
 
   /**
-   * Updates the player's Aethel attribute values based on the item's statistics.
+   * Checks if the item is in the correct equipment slot before updating the player's attribute values.
    *
-   * @param attributeValues player's Aethel attributes
-   * @param dataContainer   item's persistent tags
-   * @param attribute       Aethel attribute type
+   * @param equipment        slot : attribute and value
+   * @param aethelAttributes attribute : total value
+   * @param slot             slot type
+   * @param dataContainer    item's persistent tags
+   * @param listKey          attribute list key
    */
-  private void updateAethelAttributes(Map<String, Double> attributeValues,
-                                      PersistentDataContainer dataContainer,
-                                      String attribute) {
-    String attributeType = attribute.substring(0, attribute.indexOf("."));
-    NamespacedKey key = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+  private void readEquipmentMeta(Map<String, Map<String, Double>> equipment,
+                                 Map<String, Double> aethelAttributes,
+                                 String slot,
+                                 PersistentDataContainer dataContainer, NamespacedKey listKey) {
+    String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
+    for (String attribute : attributes) {
 
-    attributeValues.put(attributeType,
-        (attributeValues.get(attributeType) + dataContainer.get(key, PersistentDataType.DOUBLE)));
+      String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
+      if (attributeSlot.equals(slot)) {
+        addNewEquipmentAttributes(equipment, aethelAttributes, slot, dataContainer, attribute);
+      }
+    }
+  }
+
+  /**
+   * Creates a blank set of Aethel attributes.
+   *
+   * @return blank set of Aethel attributes
+   */
+  private Map<String, Double> createBlankAethelAttributes() {
+    Map<String, Double> aethelAttributes = new HashMap<>();
+    for (AethelAttributeId attribute : AethelAttributeId.values()) {
+      aethelAttributes.put(attribute.id, 0.0);
+    }
+    return aethelAttributes;
+  }
+
+  /**
+   * Gets the item at the corresponding equipment slot.
+   *
+   * @param inv  player's inventory
+   * @param slot slot type
+   * @return item at equipment slot
+   */
+  private ItemStack translateEquipmentSlot(PlayerInventory inv, String slot) {
+    ItemStack item;
+    switch (slot) {
+      case "hand" -> item = inv.getItemInMainHand();
+      case "off_hand" -> item = inv.getItemInOffHand();
+      case "head" -> item = inv.getHelmet();
+      case "chest" -> item = inv.getChestplate();
+      case "legs" -> item = inv.getLeggings();
+      case "feet" -> item = inv.getBoots();
+      default -> item = null;
+    }
+    return item;
+  }
+
+  /**
+   * Adds new equipment attribute modifiers.
+   *
+   * @param equipment        slot : attribute and value
+   * @param aethelAttributes attribute : total value
+   * @param slot             slot type
+   * @param dataContainer    item's persistent tags
+   * @param attribute        attribute modifier
+   */
+  private void addNewEquipmentAttributes(Map<String, Map<String, Double>> equipment,
+                                         Map<String, Double> aethelAttributes,
+                                         String slot,
+                                         PersistentDataContainer dataContainer,
+                                         String attribute) {
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+    String attributeType = attribute.substring(0, attribute.indexOf("."));
+
+    equipment.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
+    aethelAttributes.put(attributeType,
+        aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }
 
   public Map<Player, RpgCharacter> getRpgCharacters() {
     return this.rpgCharacters;
+  }
+
+
+  /**
+   * Removes existing equipment attribute modifiers.
+   *
+   * @param equipment        slot : attribute and value
+   * @param aethelAttributes attribute : total value
+   * @param slot             slot type
+   */
+  private void removeExistingEquipmentAttributes(Map<String, Map<String, Double>> equipment,
+                                                 Map<String, Double> aethelAttributes,
+                                                 String slot) {
+    for (String attribute : equipment.get(slot).keySet()) {
+      aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipment.get(slot).get(attribute));
+    }
+    equipment.remove(slot);
   }
 
   private enum Slot {

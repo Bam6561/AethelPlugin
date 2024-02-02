@@ -118,7 +118,7 @@ public class CharacterSheet {
    *
    * @param user             user
    * @param inv              interacting inventory
-   * @param aethelAttributes user's Aethel attribute values
+   * @param aethelAttributes user's Aethel attributes
    * @param hundredths       0.00
    */
   private static void addOffenseAttributes(Player user, Inventory inv,

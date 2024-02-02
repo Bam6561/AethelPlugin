@@ -134,7 +134,8 @@ public class ItemEditorAttributes {
    * @param dataContainer item's persistent data
    * @return item's Aethel attributes map
    */
-  private static Map<String, List<AethelAttributeModifierSlot>> mapAethelAttributes(PersistentDataContainer dataContainer) {
+  private static Map<String, List<AethelAttributeModifierSlot>> mapAethelAttributes(
+      PersistentDataContainer dataContainer) {
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 

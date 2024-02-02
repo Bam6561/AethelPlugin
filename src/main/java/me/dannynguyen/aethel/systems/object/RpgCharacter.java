@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.systems.object;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -10,17 +9,19 @@ import java.util.Map;
  * with their equipment and Aethel attribute values.
  *
  * @author Danny Nguyen
- * @version 1.8.10
+ * @version 1.8.12
  * @since 1.8.9
  */
 public class RpgCharacter {
   private final Player player;
-  private Map<String, ItemStack> equipment;
+  private Map<String, Map<String, Double>> equipmentAttributes;
   private Map<String, Double> aethelAttributes;
 
-  public RpgCharacter(Player player, Map<String, ItemStack> equipment, Map<String, Double> aethelAttributes) {
+  public RpgCharacter(Player player,
+                      Map<String, Map<String, Double>> equipmentAttributes,
+                      Map<String, Double> aethelAttributes) {
     this.player = player;
-    this.equipment = equipment;
+    this.equipmentAttributes = equipmentAttributes;
     this.aethelAttributes = aethelAttributes;
   }
 
@@ -28,8 +29,8 @@ public class RpgCharacter {
     return this.player;
   }
 
-  public Map<String, ItemStack> getEquipment() {
-    return this.equipment;
+  public Map<String, Map<String, Double>> getEquipmentAttributes() {
+    return this.equipmentAttributes;
   }
 
   public Map<String, Double> getAethelAttributes() {
