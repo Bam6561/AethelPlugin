@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.enums;
 
 /**
- * PluginPlayerMeta is an enum collection containing the plugin's accessed player metadata types.
+ * PluginPlayerMeta is a collection of enums containing the plugin's accessed player metadata types.
  *
  * @author Danny Nguyen
  * @version 1.8.4

@@ -9,10 +9,9 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
+import me.dannynguyen.aethel.listeners.EquipmentAttributeListener;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.listeners.MessageInputListener;
-import me.dannynguyen.aethel.listeners.PlayerJoinListener;
-import me.dannynguyen.aethel.listeners.PlayerSwapHandItemListener;
 import me.dannynguyen.aethel.systems.object.RpgCharacter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ import java.util.Map;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.8.13
+ * @version 1.9.0
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -48,10 +47,9 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's event listeners.
    */
   private void registerEventListeners() {
+    getServer().getPluginManager().registerEvents(new EquipmentAttributeListener(), this);
     getServer().getPluginManager().registerEvents(new InventoryMenuListener(), this);
     getServer().getPluginManager().registerEvents(new MessageInputListener(), this);
-    getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-    getServer().getPluginManager().registerEvents(new PlayerSwapHandItemListener(), this);
   }
 
   /**

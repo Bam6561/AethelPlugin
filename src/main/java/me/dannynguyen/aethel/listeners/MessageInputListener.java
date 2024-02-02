@@ -24,7 +24,7 @@ public class MessageInputListener implements Listener {
    * @param e message event
    */
   @EventHandler
-  public void onMessage(AsyncPlayerChatEvent e) {
+  public void onPlayerChat(AsyncPlayerChatEvent e) {
     Player user = e.getPlayer();
     if (user.hasMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace)) {
       String[] msgType =

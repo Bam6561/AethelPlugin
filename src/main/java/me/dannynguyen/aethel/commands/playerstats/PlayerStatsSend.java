@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ import java.util.List;
  * the player and saves their most recent statistic lookup.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.9.0
  * @since 1.4.10
  */
 public class PlayerStatsSend {
@@ -45,7 +44,7 @@ public class PlayerStatsSend {
         onlinePlayer.sendMessage(PluginMessage.Success.NOTIFICATION_GLOBAL.message
             + statNameString + " " + statValueString);
       }
-      PluginData.playerStatsData.addToPastStats(statNameString, Collections.singletonList(statValueString));
+      PluginData.playerStatsData.addToPastStats(statNameString, List.of(statValueString));
     }
   }
 

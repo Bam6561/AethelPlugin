@@ -26,7 +26,7 @@ public class InventoryMenuListener implements Listener {
    * @param e inventory click event
    */
   @EventHandler
-  public void onClick(InventoryClickEvent e) {
+  public void onInventoryClick(InventoryClickEvent e) {
     Player user = (Player) e.getWhoClicked();
     if (user.hasMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace)) {
       String[] invType = user.getMetadata(

@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.enums;
 import org.bukkit.ChatColor;
 
 /**
- * PluginMessage is an enum collection containing the plugin's commonly sent messages.
+ * PluginMessage is a collection of enums containing the plugin's commonly sent messages.
  *
  * @author Danny Nguyen
  * @version 1.8.4
