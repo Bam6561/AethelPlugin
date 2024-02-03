@@ -18,7 +18,7 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.13
+ * @version 1.9.1
  * @since 1.8.10
  */
 public class RpgData {
@@ -152,9 +152,9 @@ public class RpgData {
    * @param aethelAttributes attribute : total value
    * @param slot             slot type
    */
-  private void removeExistingEquipmentAttributes(Map<String, Map<String, Double>> equipment,
-                                                 Map<String, Double> aethelAttributes,
-                                                 String slot) {
+  public void removeExistingEquipmentAttributes(Map<String, Map<String, Double>> equipment,
+                                                Map<String, Double> aethelAttributes,
+                                                String slot) {
     for (String attribute : equipment.get(slot).keySet()) {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipment.get(slot).get(attribute));
     }

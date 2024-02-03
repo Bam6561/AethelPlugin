@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.enums;
 
 import org.bukkit.NamespacedKey;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +11,7 @@ import java.util.Set;
  * PluginConstant is an enum-like storage containing various data type constants.
  *
  * @author Danny Nguyen
- * @version 1.8.11
+ * @version 1.9.1
  * @since 1.7.13
  */
 public class PluginConstant {
@@ -31,7 +31,7 @@ public class PluginConstant {
           "Ability Damage", "Ability Cooldown",
           "Apply Status", "Knockback Resistance", "Luck"});
 
-  public static final Set<String> minecraftAttributes = new HashSet<>(Arrays.asList(
+  public static final Set<String> minecraftAttributes = new HashSet<>(List.of(
       "Attack Damage", "Attack Speed", "Max Health", "Armor", "Armor Toughness",
       "Movement Speed", "Knockback Resistance", "Luck"));
 }
