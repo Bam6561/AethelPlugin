@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelItems.AethelItemsInventoryListener;
+import me.dannynguyen.aethel.commands.character.CharacterInventoryListener;
 import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsInventoryListener;
@@ -11,12 +12,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 /**
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.9.2
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -38,6 +40,23 @@ public class InventoryMenuListener implements Listener {
         case "itemeditor" -> interpretItemEditor(e, user, invType);
         case "playerstats" -> interpretPlayerStats(e, user, invType);
         case "showitem" -> e.setCancelled(true);
+      }
+    }
+  }
+
+  /**
+   * Disables drag clicks while inside specific plugin menus.
+   *
+   * @param e inventory drag event
+   */
+  @EventHandler
+  public void onDrag(InventoryDragEvent e) {
+    Player user = (Player) e.getWhoClicked();
+    if (user.hasMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace)) {
+      String[] invType = user.getMetadata(
+          PluginPlayerMeta.Namespace.INVENTORY.namespace).get(0).asString().split("\\.");
+      switch (invType[0]) {
+        case "aethelitems", "character" -> e.setCancelled(true);
       }
     }
   }
@@ -66,7 +85,7 @@ public class InventoryMenuListener implements Listener {
    */
   private void interpretCharacter(InventoryClickEvent e, Player user, String[] invType) {
     switch (invType[1]) {
-      case "sheet" -> e.setCancelled(true);
+      case "sheet" -> CharacterInventoryListener.readMainClick(e, user);
     }
   }
 

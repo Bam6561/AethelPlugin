@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.systems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.object.RpgCharacter;
+import me.dannynguyen.aethel.systems.object.RpgPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 1.8.10
  */
 public class RpgData {
-  private Map<Player, RpgCharacter> rpgCharacters = new HashMap<>();
+  private Map<Player, RpgPlayer> rpgPlayers = new HashMap<>();
   private Map<Player, ItemStack> playerHeldItemMap = new HashMap<>();
 
   /**
@@ -30,12 +30,12 @@ public class RpgData {
    *
    * @param player player
    */
-  public void loadRpgCharacter(Player player) {
+  public void loadRpgPlayer(Player player) {
     Map<String, Map<String, Double>> equipment = new HashMap<>();
     Map<String, Double> aethelAttributes = createBlankAethelAttributes();
 
     loadEquipmentAttributes(player.getInventory(), equipment, aethelAttributes);
-    rpgCharacters.put(player, new RpgCharacter(player, equipment, aethelAttributes));
+    rpgPlayers.put(player, new RpgPlayer(player, equipment, aethelAttributes));
   }
 
   /**
@@ -161,8 +161,8 @@ public class RpgData {
     equipment.remove(slot);
   }
 
-  public Map<Player, RpgCharacter> getRpgCharacters() {
-    return this.rpgCharacters;
+  public Map<Player, RpgPlayer> getRpgPlayers() {
+    return this.rpgPlayers;
   }
 
   public Map<Player, ItemStack> getPlayerHeldItemMap() {

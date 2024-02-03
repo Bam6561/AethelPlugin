@@ -5,21 +5,20 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 /**
- * RpgCharacter is an object relating a player
- * with their equipment and Aethel attribute values.
+ * RpgPlayer is an object relating a player with their equipment and Aethel attribute values.
  *
  * @author Danny Nguyen
  * @version 1.8.12
  * @since 1.8.9
  */
-public class RpgCharacter {
+public class RpgPlayer {
   private final Player player;
   private Map<String, Map<String, Double>> equipmentAttributes;
   private Map<String, Double> aethelAttributes;
 
-  public RpgCharacter(Player player,
-                      Map<String, Map<String, Double>> equipmentAttributes,
-                      Map<String, Double> aethelAttributes) {
+  public RpgPlayer(Player player,
+                   Map<String, Map<String, Double>> equipmentAttributes,
+                   Map<String, Double> aethelAttributes) {
     this.player = player;
     this.equipmentAttributes = equipmentAttributes;
     this.aethelAttributes = aethelAttributes;

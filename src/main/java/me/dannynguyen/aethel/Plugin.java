@@ -12,7 +12,7 @@ import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.listeners.EquipmentAttributeListener;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.listeners.MessageInputListener;
-import me.dannynguyen.aethel.systems.object.RpgCharacter;
+import me.dannynguyen.aethel.systems.object.RpgPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -88,10 +88,10 @@ public class Plugin extends JavaPlugin {
           if (!playerHeldItemMap.get(player).equals(heldItem)) {
             playerHeldItemMap.put(player, heldItem);
 
-            RpgCharacter rpgCharacter = PluginData.rpgData.getRpgCharacters().get(player);
+            RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
             PluginData.rpgData.readEquipmentSlot(
-                rpgCharacter.getEquipmentAttributes(),
-                rpgCharacter.getAethelAttributes(),
+                rpgPlayer.getEquipmentAttributes(),
+                rpgPlayer.getAethelAttributes(),
                 heldItem, "hand");
           }
         } else {

@@ -23,7 +23,7 @@ import java.util.Map;
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.8.11
+ * @version 1.9.2
  * @since 1.6.3
  */
 public class CharacterSheet {
@@ -88,8 +88,8 @@ public class CharacterSheet {
    * @param user user
    * @param inv  interacting inv
    */
-  private static void addAttributes(Player user, Inventory inv) {
-    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgCharacters().get(user).getAethelAttributes();
+  public static void addAttributes(Player user, Inventory inv) {
+    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgPlayers().get(user).getAethelAttributes();
     DecimalFormat hundredths = new DecimalFormat();
     DecimalFormat thousandths = new DecimalFormat();
 

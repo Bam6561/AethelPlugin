@@ -218,7 +218,7 @@ public class ForgeAction {
    * <p>
    * At this stage in the process, it is known the results are non-null,
    * so the method checks if the components are non-null first.
-   * <p>
+   * </p>
    *
    * @param inv items in the inventory
    * @return encoded recipe string
