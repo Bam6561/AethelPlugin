@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemsInventoryListener is an inventory listener for the AethelItems inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.4.0
  */
 public class AethelItemsInventoryListener {
@@ -33,7 +33,7 @@ public class AethelItemsInventoryListener {
   public static void readMainClick(InventoryClickEvent e, Player user) {
     Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
-      if (e.getCurrentItem() != null) {
+      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         interpretMainClick(e, user);
       } else if (e.getSlot() != 3) {
         e.setCancelled(true);
@@ -84,7 +84,7 @@ public class AethelItemsInventoryListener {
   public static void readCategoryClick(InventoryClickEvent e, Player user, String action) {
     Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
-      if (e.getCurrentItem() != null) {
+      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         interpretCategoryClick(e, user, action);
       } else if (e.getSlot() != 3) {
         e.setCancelled(true);

@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.systems;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.object.RpgPlayer;
-import org.bukkit.Material;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +18,7 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.1
+ * @version 1.9.3
  * @since 1.8.10
  */
 public class RpgData {
@@ -67,7 +67,7 @@ public class RpgData {
   public void readEquipmentSlot(Map<String, Map<String, Double>> equipment,
                                 Map<String, Double> aethelAttributes,
                                 ItemStack item, String slot) {
-    if (item != null && item.getType() != Material.AIR) {
+    if (ItemReader.isNotNullOrAir(item)) {
 
       if (equipment.containsKey(slot)) {
         removeExistingEquipmentAttributes(equipment, aethelAttributes, slot);

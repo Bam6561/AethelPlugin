@@ -31,7 +31,7 @@ import java.util.List;
  * - removes recipes
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.7.13
  */
 public class ForgeAction {
@@ -201,7 +201,7 @@ public class ForgeAction {
   private static String nameRecipeFile(ItemStack[] inv) {
     for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
-      if (item != null) {
+      if (ItemReader.isNotNullOrAir(item)) {
         ItemMeta meta = item.getItemMeta();
         if (meta.hasDisplayName()) {
           return meta.getDisplayName().toLowerCase().replace(" ", "_");
@@ -227,7 +227,7 @@ public class ForgeAction {
     StringBuilder components = new StringBuilder();
     for (int i = 9; i < 24; i++) {
       ItemStack item = inv[i];
-      if (item != null) {
+      if (ItemReader.isNotNullOrAir(item)) {
         components.append(ItemCreator.encodeItem(item)).append(" ");
       }
     }
@@ -239,7 +239,7 @@ public class ForgeAction {
     StringBuilder results = new StringBuilder();
     for (int i = 0; i < 8; i++) {
       ItemStack item = inv[i];
-      if (item != null) {
+      if (ItemReader.isNotNullOrAir(item)) {
         results.append(ItemCreator.encodeItem(item)).append(" ");
       }
     }

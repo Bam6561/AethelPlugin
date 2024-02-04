@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
@@ -57,7 +57,7 @@ public class DeveloperModeCommand implements CommandExecutor {
   private void toggleDeveloperMode(Player user) {
     if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) {
       user.setMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), "on"));
+          new FixedMetadataValue(Plugin.getInstance(), 1));
       user.sendMessage(Success.DEVELOPERMODE_ON.message);
     } else {
       user.removeMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace, Plugin.getInstance());

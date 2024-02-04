@@ -32,7 +32,7 @@ import java.util.Map;
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.8.10
+ * @version 1.9.3
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -62,7 +62,8 @@ public class ItemEditorAttributes {
    */
   private static Inventory createInventory(Player user, String action) {
     switch (action) {
-      case "head", "chest", "legs", "feet", "hand" -> action = TextFormatter.capitalizeWord(action);
+      case "head", "chest", "legs", "feet",
+          "hand", "necklace", "ring" -> action = TextFormatter.capitalizeWord(action);
       case "off_hand" -> action = "Off Hand";
     }
     Inventory inv = Bukkit.createInventory(user, 54,
@@ -126,6 +127,8 @@ public class ItemEditorAttributes {
         ChatColor.AQUA + "Hand", ItemFlag.HIDE_ATTRIBUTES));
     inv.setItem(8, ItemCreator.createItem(Material.SHIELD,
         ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
+    inv.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace"));
+    inv.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring"));
   }
 
   /**

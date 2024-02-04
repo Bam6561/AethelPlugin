@@ -29,7 +29,7 @@ import java.util.UUID;
  * ItemEditorMessageListener is a message listener for the ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.8.10
+ * @version 1.9.3
  * @since 1.7.0
  */
 public class ItemEditorMessageListener {
@@ -417,24 +417,26 @@ public class ItemEditorMessageListener {
                                                     PersistentDataContainer dataContainer,
                                                     NamespacedKey attributesKey,
                                                     String attributeName, NamespacedKey attributeKey) {
-    List<String> attributes = new ArrayList<>(
-        List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+    if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
+      List<String> attributes = new ArrayList<>(
+          List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
 
-    StringBuilder newAttributes = new StringBuilder();
-    for (String attribute : attributes) {
-      if (!attribute.equals(attributeName)) {
-        newAttributes.append(attribute).append(" ");
+      StringBuilder newAttributes = new StringBuilder();
+      for (String attribute : attributes) {
+        if (!attribute.equals(attributeName)) {
+          newAttributes.append(attribute).append(" ");
+        }
       }
-    }
 
-    if (!newAttributes.isEmpty()) {
-      dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes.toString().trim());
-    } else {
-      dataContainer.remove(attributesKey);
+      if (!newAttributes.isEmpty()) {
+        dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes.toString().trim());
+      } else {
+        dataContainer.remove(attributesKey);
+      }
+      dataContainer.remove(attributeKey);
+      user.sendMessage(ChatColor.RED +
+          "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
     }
-    dataContainer.remove(attributeKey);
-    user.sendMessage(ChatColor.RED +
-        "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }
 
   /**

@@ -23,7 +23,7 @@ import java.util.Map;
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.9.2
+ * @version 1.9.3
  * @since 1.6.3
  */
 public class CharacterSheet {
@@ -245,7 +245,7 @@ public class CharacterSheet {
             + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
         ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
         ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
-        ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Ring"));
+        ChatColor.GRAY + "Boots"));
     public final List<String> context;
 
     Context(List<String> context) {

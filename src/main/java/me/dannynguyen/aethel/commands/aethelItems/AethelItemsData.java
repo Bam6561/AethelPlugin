@@ -22,7 +22,7 @@ import java.util.*;
  * AethelItemsData stores Aethel items in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.8
+ * @version 1.9.3
  * @since 1.3.2
  */
 public class AethelItemsData {
@@ -73,7 +73,7 @@ public class AethelItemsData {
     try {
       Scanner scanner = new Scanner(file);
       ItemStack item = ItemReader.decodeItem(scanner.nextLine(), "aethelitems");
-      if (item != null) {
+      if (ItemReader.isNotNullOrAir(item)) {
         return new AethelItem(file, ItemReader.readName(item), item);
       } else {
         return null;

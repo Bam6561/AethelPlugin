@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.8
+ * @version 1.9.3
  * @since 1.1.11
  */
 public class ForgeData {
@@ -113,7 +113,7 @@ public class ForgeData {
       String[] data = line.split(" ");
       for (String encodedItem : data) {
         ItemStack item = ItemReader.decodeItem(encodedItem, "forge");
-        if (item != null) {
+        if (ItemReader.isNotNullOrAir(item)) {
           switch (dataType) {
             case 1 -> results.add(item);
             case 2 -> components.add(item);

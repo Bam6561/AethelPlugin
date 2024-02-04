@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
-import org.bukkit.Material;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,7 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * user to edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -31,7 +31,7 @@ public class ItemEditorCommand implements CommandExecutor {
 
     if (user.hasPermission(Permission.ITEMEDITOR.permission)) {
       ItemStack item = user.getInventory().getItemInMainHand();
-      if (item.getType() != Material.AIR) {
+      if (ItemReader.isNotNullOrAir(item)) {
         readRequest(user, args, item);
       } else {
         user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
@@ -68,7 +68,8 @@ public class ItemEditorCommand implements CommandExecutor {
 
     user.openInventory(ItemEditorInventory.openMainMenu(user, item));
     user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+        new FixedMetadataValue(Plugin.getInstance(),
+            InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
   }
 
   private enum Permission {

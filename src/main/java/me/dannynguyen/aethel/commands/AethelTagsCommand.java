@@ -4,7 +4,6 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,7 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.8
+ * @version 1.9.3
  * @since 1.2.6
  */
 public class AethelTagsCommand implements CommandExecutor {
@@ -39,7 +38,7 @@ public class AethelTagsCommand implements CommandExecutor {
 
     if (user.hasPermission(Permission.AETHELTAGS.permission)) {
       ItemStack item = user.getInventory().getItemInMainHand();
-      if (item.getType() != Material.AIR) {
+      if (ItemReader.isNotNullOrAir(item)) {
         readRequest(user, args, item);
       } else {
         user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);

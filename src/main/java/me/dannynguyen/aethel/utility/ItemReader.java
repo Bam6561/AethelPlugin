@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.utility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -18,11 +19,24 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.8.10
+ * @version 1.9.3
  * @since 1.1.4
  */
 public class ItemReader {
   private ItemReader() {
+  }
+
+  /**
+   * Checks if the item is not null or air.
+   *
+   * @param item interacting item
+   * @return item is not null or air
+   */
+  public static boolean isNotNullOrAir(ItemStack item) {
+    if (item != null) {
+      return item.getType() != Material.AIR;
+    }
+    return false;
   }
 
   /**

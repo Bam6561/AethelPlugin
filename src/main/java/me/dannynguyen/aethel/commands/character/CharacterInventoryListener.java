@@ -4,9 +4,12 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginItems;
 import me.dannynguyen.aethel.systems.object.RpgPlayer;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -16,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
  * CharacterInventoryListener is an inventory listener for the Character inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.2
+ * @version 1.9.3
  * @since 1.9.2
  */
 public class CharacterInventoryListener {
@@ -24,28 +27,37 @@ public class CharacterInventoryListener {
    * Checks if the user's action is allowed based on the clicked inventory.
    * <p>
    * Additional Parameters:
-   * - CharacterSheet: prevent adding new items to the inventory outside of the intended equipment slots
+   * - CharacterSheet: prevent adding new items to the
+   * inventory outside of the intended equipment slots
    * - Player: prevent shift-clicks adding items to the CharacterSheet inventory
+   * and remove the main hand item from the menu when the user clicks on it
    * </p>
    *
    * @param e    inventory click event
    * @param user user
    */
   public static void readMainClick(InventoryClickEvent e, Player user) {
-    Inventory clickedInv = e.getClickedInventory();
-    if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
-      if (e.getCurrentItem() != null) {
-        interpretItemClick(e, user);
-      } else {
-        int slot = e.getSlot();
-        switch (slot) {
-          case 10, 11, 12, 19, 20, 28, 29, 37, 38 -> interpretEquipItem(e, user, slot);
-          default -> e.setCancelled(true);
+    if (!e.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) { // Prevents duplication
+      Inventory clickedInv = e.getClickedInventory();
+      if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
+        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+          interpretItemClick(e, user);
+        } else {
+          int slot = e.getSlot();
+          switch (slot) {
+            case 10, 11, 12, 19, 20, 28, 29, 37 -> interpretEquipItem(e, user, slot);
+            default -> e.setCancelled(true);
+          }
         }
-      }
-    } else {
-      if (e.getClick().isShiftClick()) {
-        e.setCancelled(true);
+      } else {
+        if (e.getClick().isShiftClick()) {
+          e.setCancelled(true);
+        } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+            (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
+          e.getInventory().setItem(11, new ItemStack(Material.AIR));
+        } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
+          e.getInventory().setItem(11, e.getCursor());
+        }
       }
     }
   }
@@ -67,7 +79,8 @@ public class CharacterInventoryListener {
       case 25 -> e.setCancelled(true); // Quests
       case 34 -> e.setCancelled(true); // Collectibles
       case 43 -> e.setCancelled(true); // Settings
-      case 10, 11, 12, 19, 28, 37 -> unequipItem(user, e.getClickedInventory(), slot);
+      case 10, 11, 12, 19, 28, 37 -> unequipItem(user, e.getClickedInventory(), slot); // Armor & Hands
+      case 20, 29 -> unequipJewelryItem(user, e.getClickedInventory(), slot); // Necklace & Ring
     }
   }
 
@@ -82,24 +95,19 @@ public class CharacterInventoryListener {
     ItemStack item = e.getCursor();
     String itemType = item.getType().name();
 
-    if (slot == 11) {
-      equipMainHandItem(e, user, e.getClickedInventory(), user.getInventory().getHeldItemSlot());
-    } else {
-      if (slot == 12) {
-        updateAttributesIfShield(e, user, item, itemType);
-      } else {
-        if (PluginItems.WornItems.ALL.items.contains(itemType)) {
+    if (!itemType.equals("AIR")) {
+      switch (slot) {
+        case 11 -> equipMainHandItem(e, user, e.getClickedInventory(), user.getInventory().getHeldItemSlot());
+        case 12 -> updateOffHandAttributes(e, user, item);
+        default -> {
           switch (slot) {
-            case 10, 19, 28, 37 -> equipIfValidArmorSlot(e, user, slot, item, itemType);
-            case 20 -> {
-              // Necklace
-            }
-            case 29, 38 -> {
-              // Rings
-            }
+            case 10 -> equipIfValidHeadItem(e, user, item, itemType);
+            case 19 -> equipIfValidChestItem(e, user, item, itemType);
+            case 28 -> equipIfValidLegsItem(e, user, item, itemType);
+            case 37 -> equipIfValidFeetItem(e, user, item, itemType);
+            case 20 -> equipIfValidNecklaceItem(e, user, itemType);
+            case 29 -> equipIfValidRingItem(e, user, itemType, slot);
           }
-        } else {
-          e.setCancelled(true);
         }
       }
     }
@@ -125,7 +133,19 @@ public class CharacterInventoryListener {
 
     user.getInventory().setItem(invSlot, new ItemStack(Material.AIR));
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
-        () -> updateAttributes(user, menu, invSlot), 1);
+        () -> updateArmorHandAttributes(user, menu, invSlot), 1);
+  }
+
+  /**
+   * Removes a jewelry item from the user.
+   *
+   * @param user user
+   * @param menu CharacterSheet inventory
+   * @param slot slot type
+   */
+  private static void unequipJewelryItem(Player user, Inventory menu, int slot) {
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
+        () -> updateJewelryAttributes(user, menu, slot), 1);
   }
 
   /**
@@ -143,83 +163,145 @@ public class CharacterInventoryListener {
 
     if (inv.getItem(slot) == null) {
       inv.setItem(slot, item);
-      updateAttributes(user, menu, slot);
+      updateArmorHandAttributes(user, menu, slot);
     } else if (inv.firstEmpty() != -1) {
       int emptySlot = inv.firstEmpty();
       inv.setItem(emptySlot, item);
-      updateAttributes(user, menu, emptySlot);
-    } else {
-      if (item != null) {
-        user.getWorld().dropItem(user.getLocation(), item);
-      }
+      updateArmorHandAttributes(user, menu, emptySlot);
+    } else if (ItemReader.isNotNullOrAir(item)) {
+      user.getWorld().dropItem(user.getLocation(), item);
+
+      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+      PluginData.rpgData.readEquipmentSlot(
+          rpgPlayer.getEquipmentAttributes(),
+          rpgPlayer.getAethelAttributes(),
+          null, "hand");
     }
   }
 
   /**
-   * Update's the user's attribute if a shield is equipped to the off-hand.
+   * Update's the user's offhand attributes.
    *
-   * @param e        inventory click event
-   * @param user     user
-   * @param item     interacting item
-   * @param itemType item type
+   * @param e    inventory click event
+   * @param user user
+   * @param item interacting item
    */
-  private static void updateAttributesIfShield(InventoryClickEvent e, Player user, ItemStack item, String itemType) {
+  private static void updateOffHandAttributes(InventoryClickEvent e, Player user, ItemStack item) {
     user.getInventory().setItem(40, item);
-    if (itemType.equals("SHIELD")) {
-      updateAttributes(user, e.getClickedInventory(), 40);
-    }
+    updateArmorHandAttributes(user, e.getClickedInventory(), 40);
   }
 
   /**
-   * Equips the armor piece to the user if it is valid for its corresponding slot.
+   * Equips the head item to the user if it is valid for its corresponding slot.
    *
    * @param e        inventory click event
    * @param user     user
-   * @param slot     slot type
    * @param item     interacting item
    * @param itemType item type
    */
-  private static void equipIfValidArmorSlot(InventoryClickEvent e, Player user, int slot,
-                                            ItemStack item, String itemType) {
-    boolean validSlot = false;
-    int armorSlot = 0;
-    switch (slot) {
-      case 10 -> {
-        if (PluginItems.WornItems.HEAD.items.contains(itemType)) {
-          validSlot = true;
-          armorSlot = 39;
-        }
-      }
-      case 19 -> {
-        if (PluginItems.WornItems.CHEST.items.contains(itemType)) {
-          validSlot = true;
-          armorSlot = 38;
-        }
-      }
-      case 28 -> {
-        if (PluginItems.WornItems.LEGS.items.contains(itemType)) {
-          validSlot = true;
-          armorSlot = 37;
-        }
-      }
-      case 37 -> {
-        if (PluginItems.WornItems.FEET.items.contains(itemType)) {
-          validSlot = true;
-          armorSlot = 36;
-        }
-      }
-    }
-
-    if (validSlot) {
-      user.getInventory().setItem(armorSlot, item);
-      updateAttributes(user, e.getClickedInventory(), armorSlot);
+  private static void equipIfValidHeadItem(InventoryClickEvent e, Player user,
+                                           ItemStack item, String itemType) {
+    if (PluginItems.WornItems.HEAD.items.contains(itemType)) {
+      user.getInventory().setItem(39, item);
+      updateArmorHandAttributes(user, e.getClickedInventory(), 39);
     } else {
+      user.sendMessage(Failure.UNABLE_TO_EQUIP_HEAD.message);
       e.setCancelled(true);
     }
   }
 
   /**
-   * Updates the user's displayed attributes.
+   * Equips the chest item to the user if it is valid for its corresponding slot.
+   *
+   * @param e        inventory click event
+   * @param user     user
+   * @param item     interacting item
+   * @param itemType item type
+   */
+  private static void equipIfValidChestItem(InventoryClickEvent e, Player user,
+                                            ItemStack item, String itemType) {
+    if (PluginItems.WornItems.CHEST.items.contains(itemType)) {
+      user.getInventory().setItem(38, item);
+      updateArmorHandAttributes(user, e.getClickedInventory(), 38);
+    } else {
+      user.sendMessage(Failure.UNABLE_TO_EQUIP_CHEST.message);
+      e.setCancelled(true);
+    }
+  }
+
+  /**
+   * Equips the legs item to the user if it is valid for its corresponding slot.
+   *
+   * @param e        inventory click event
+   * @param user     user
+   * @param item     interacting item
+   * @param itemType item type
+   */
+  private static void equipIfValidLegsItem(InventoryClickEvent e, Player user,
+                                           ItemStack item, String itemType) {
+    if (PluginItems.WornItems.LEGS.items.contains(itemType)) {
+      user.getInventory().setItem(37, item);
+      updateArmorHandAttributes(user, e.getClickedInventory(), 37);
+    } else {
+      user.sendMessage(Failure.UNABLE_TO_EQUIP_LEGS.message);
+      e.setCancelled(true);
+    }
+  }
+
+  /**
+   * Equips the feet item to the user if it is valid for its corresponding slot.
+   *
+   * @param e        inventory click event
+   * @param user     user
+   * @param item     interacting item
+   * @param itemType item type
+   */
+  private static void equipIfValidFeetItem(InventoryClickEvent e, Player user,
+                                           ItemStack item, String itemType) {
+    if (PluginItems.WornItems.FEET.items.contains(itemType)) {
+      user.getInventory().setItem(36, item);
+      updateArmorHandAttributes(user, e.getClickedInventory(), 36);
+    } else {
+      user.sendMessage(Failure.UNABLE_TO_EQUIP_FEET.message);
+      e.setCancelled(true);
+    }
+  }
+
+  /**
+   * Equips the necklace to the user if it is valid for its corresponding slot.
+   *
+   * @param e        inventory click event
+   * @param user     user
+   * @param itemType item type
+   */
+  private static void equipIfValidNecklaceItem(InventoryClickEvent e, Player user, String itemType) {
+    if (itemType.equals("IRON_NUGGET")) {
+      updateJewelryAttributes(user, e.getClickedInventory(), 20);
+    } else {
+      user.sendMessage(Failure.UNABLE_TO_EQUIP_NECKLACE.message);
+      e.setCancelled(true);
+    }
+  }
+
+  /**
+   * Equips the ring to the user if it is valid for its corresponding slot.
+   *
+   * @param e        inventory click event
+   * @param user     user
+   * @param itemType item type
+   * @param slot     slot type
+   */
+  private static void equipIfValidRingItem(InventoryClickEvent e, Player user, String itemType, int slot) {
+    if (itemType.equals("GOLD_NUGGET")) {
+      updateJewelryAttributes(user, e.getClickedInventory(), slot);
+    } else {
+      user.sendMessage(Failure.UNABLE_TO_EQUIP_RING.message);
+      e.setCancelled(true);
+    }
+  }
+
+  /**
+   * Updates the user's displayed attributes for the armor and main hand slots.
    * <p>
    * A 1 tick delay is used because only the item that exists in the
    * corresponding slot after the interaction happens should be read.
@@ -229,7 +311,7 @@ public class CharacterInventoryListener {
    * @param menu CharacterSheet inventory
    * @param slot user's item slot
    */
-  private static void updateAttributes(Player user, Inventory menu, int slot) {
+  private static void updateArmorHandAttributes(Player user, Inventory menu, int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
       ItemStack wornItem = user.getInventory().getItem(slot);
@@ -264,5 +346,52 @@ public class CharacterInventoryListener {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
           () -> CharacterSheet.addAttributes(user, menu), 1);
     }, 1);
+  }
+
+  /**
+   * Updates the user's displayed attributes for the jewelry slots.
+   * <p>
+   * A 1 tick delay is used because only the item that exists in the
+   * corresponding slot after the interaction happens should be read.
+   * </p>
+   *
+   * @param user user
+   * @param menu CharacterSheet inventory
+   * @param slot user's item slot
+   */
+  private static void updateJewelryAttributes(Player user, Inventory menu, int slot) {
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+      ItemStack wornItem = menu.getItem(slot);
+
+      switch (slot) {
+        case 20 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            wornItem, "necklace");
+        case 29 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            wornItem, "ring");
+      }
+
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
+          () -> CharacterSheet.addAttributes(user, menu), 1);
+    }, 1);
+  }
+
+  private enum Failure {
+    UNABLE_TO_EQUIP_HEAD(ChatColor.RED + "Unable to equip item to head slot."),
+    UNABLE_TO_EQUIP_CHEST(ChatColor.RED + "Unable to equip item to chest slot."),
+    UNABLE_TO_EQUIP_LEGS(ChatColor.RED + "Unable to equip item to legs slot."),
+    UNABLE_TO_EQUIP_FEET(ChatColor.RED + "Unable to equip item to feet slot."),
+    UNABLE_TO_EQUIP_NECKLACE(ChatColor.RED + "Unable to equip item to necklace slot."),
+    UNABLE_TO_EQUIP_RING(ChatColor.RED + "Unable to equip item to ring slot.");
+
+    public String message;
+
+    Failure(String message) {
+      this.message = message;
+    }
   }
 }

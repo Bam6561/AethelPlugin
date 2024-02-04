@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.utility;
  * TextFormatter is a utility class that formats text.
  *
  * @author Danny Nguyen
- * @version 1.8.1
+ * @version 1.9.3
  * @since 1.6.16
  */
 public class TextFormatter {
@@ -18,7 +18,7 @@ public class TextFormatter {
    * @return proper word
    */
   public static String capitalizeWord(String word) {
-    return word.toUpperCase().replace(word.substring(1), word.substring(1).toLowerCase());
+    return word.substring(0, 1).toUpperCase() + word.substring(1);
   }
 
   /**
@@ -33,7 +33,7 @@ public class TextFormatter {
 
     StringBuilder properPhrase = new StringBuilder();
     for (String word : words) {
-      properPhrase.append(word.replace(word.substring(1), word.substring(1).toLowerCase())).append(" ");
+      properPhrase.append(capitalizeWord(word)).append(" ");
     }
     return properPhrase.toString().trim();
   }

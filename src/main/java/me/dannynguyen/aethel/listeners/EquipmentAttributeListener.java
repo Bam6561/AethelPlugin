@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginItems;
 import me.dannynguyen.aethel.systems.object.RpgPlayer;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +28,7 @@ import java.util.Map;
  * events related to changing a player's equipment attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.2
+ * @version 1.9.3
  * @since 1.9.0
  */
 public class EquipmentAttributeListener implements Listener {
@@ -45,13 +46,17 @@ public class EquipmentAttributeListener implements Listener {
     Inventory inv = e.getClickedInventory();
 
     if (inv != null && inv.getType().equals(InventoryType.PLAYER)) {
-      if (e.getClick().isShiftClick() && e.getCurrentItem() != null) {
+      if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         updateIfWornItem(player, e.getCurrentItem(), "shift");
       } else {
         int slot = e.getSlot();
         switch (slot) {
-          case 36, 37, 38, 39, 40 -> updateEquipmentAttributesAtSlot(
-              player, null, slot, "click");
+          case 36, 37, 38, 39, 40 -> {
+            if (ItemReader.isNotNullOrAir(e.getCursor()) ||
+                ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+              updateEquipmentAttributesAtSlot(player, null, slot, "click");
+            }
+          }
         }
       }
     }
@@ -71,7 +76,7 @@ public class EquipmentAttributeListener implements Listener {
     Action action = e.getAction();
 
     if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-      if (e.getItem() != null) {
+      if (ItemReader.isNotNullOrAir(e.getItem())) {
         updateIfWornItem(e.getPlayer(), e.getItem(), "interact");
       }
     }

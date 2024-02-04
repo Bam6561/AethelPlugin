@@ -24,7 +24,7 @@ import java.util.Map;
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
@@ -101,7 +101,7 @@ public class ForgeCraftOperation {
 
     for (int i = 0; i < 36; i++) {
       ItemStack item = inv.getItem(i);
-      if (inv.getItem(i) != null) {
+      if (ItemReader.isNotNullOrAir(inv.getItem(i))) {
         Material material = item.getType();
         int amount = item.getAmount();
 

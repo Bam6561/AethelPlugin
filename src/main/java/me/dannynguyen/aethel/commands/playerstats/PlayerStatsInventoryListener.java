@@ -14,7 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * PlayerStatsInventoryListener is an inventory listener for the PlayerStats inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.4.7
  */
 public class PlayerStatsInventoryListener {
@@ -25,7 +25,8 @@ public class PlayerStatsInventoryListener {
    * @param user user
    */
   public static void readMainClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       if (e.getSlot() > 8) {
         String requestedPlayerName = user.getMetadata(
             PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
@@ -55,7 +56,8 @@ public class PlayerStatsInventoryListener {
    * @param user user
    */
   public static void readStatClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 0 -> previousStatPage(user);
         case 3, 4 -> { // Player Heads
@@ -75,7 +77,8 @@ public class PlayerStatsInventoryListener {
    * @param user user
    */
   public static void readSubstatClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 0 -> previousStatPage(user);
         case 3, 4 -> { // Player Heads

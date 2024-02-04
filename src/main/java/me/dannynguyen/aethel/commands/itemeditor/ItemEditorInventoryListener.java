@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.enums.PluginConstant;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventory is an inventory listener for the ItemEditor inventories.
  *
  * @author Danny Nguyen
- * @version 1.8.11
+ * @version 1.9.3
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -32,7 +33,8 @@ public class ItemEditorInventoryListener {
    * @param user user
    */
   public static void interpretMainMenuClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 11 -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
@@ -62,7 +64,8 @@ public class ItemEditorInventoryListener {
    * @param user user
    */
   public static void interpretAttributesMenuClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 0, 1 -> { // Context, Item
         }
@@ -73,6 +76,8 @@ public class ItemEditorInventoryListener {
         case 6 -> setMode(user, "feet");
         case 7 -> setMode(user, "hand");
         case 8 -> setMode(user, "off_hand");
+        case 16 -> setMode(user, "necklace");
+        case 17 -> setMode(user, "ring");
         default -> readAttribute(e, user);
       }
     }
@@ -86,7 +91,8 @@ public class ItemEditorInventoryListener {
    * @param user user
    */
   public static void interpretEnchantsMenuClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 2, 4 -> { // Context, Item
         }
@@ -104,7 +110,8 @@ public class ItemEditorInventoryListener {
    * @param user user
    */
   public static void interpretTagsMenuClick(InventoryClickEvent e, Player user) {
-    if (e.getCurrentItem() != null && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
       switch (e.getSlot()) {
         case 2, 4 -> { // Context, Item
         }

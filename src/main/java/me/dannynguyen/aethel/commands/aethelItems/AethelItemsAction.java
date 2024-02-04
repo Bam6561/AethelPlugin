@@ -18,7 +18,7 @@ import java.io.IOException;
  * AethelItemsAction is a utility class that saves, gives, and removes Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.7.9
  */
 public class AethelItemsAction {
@@ -30,7 +30,7 @@ public class AethelItemsAction {
    */
   public static void readSaveClick(InventoryClickEvent e, Player user) {
     ItemStack item = e.getClickedInventory().getItem(3);
-    if (item != null) {
+    if (ItemReader.isNotNullOrAir(item)) {
       saveItemToFile(user, item);
     } else {
       user.sendMessage(Failure.NO_ITEM_TO_SAVE.message);

@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +28,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.3
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -69,7 +68,7 @@ public class ShowItemCommand implements CommandExecutor {
    */
   private void showItem(Player user) {
     ItemStack item = user.getInventory().getItemInMainHand();
-    if (item.getType() != Material.AIR) {
+    if (ItemReader.isNotNullOrAir(item)) {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.spigot().sendMessage(createShowItemTextComponent(user, item));
       }
