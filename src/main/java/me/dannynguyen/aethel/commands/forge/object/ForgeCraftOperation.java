@@ -24,7 +24,7 @@ import java.util.Map;
  * has sufficient materials to craft items from a Forge recipe.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.4.15
  */
 public class ForgeCraftOperation {
@@ -43,7 +43,7 @@ public class ForgeCraftOperation {
     List<ItemStack> results = recipe.getResults();
     List<ItemStack> components = recipe.getComponents();
 
-    if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) {
+    if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) { // Developer mode bypass
       if (hasMatchingType(user, components)) {
         processMatchingType(user, results);
       } else {
@@ -108,9 +108,7 @@ public class ForgeCraftOperation {
         if (invMap.containsKey(material)) {
           invMap.get(material).add(new InventorySlot(i, item, amount));
         } else {
-          List<InventorySlot> invSlots = new ArrayList<>();
-          invSlots.add(new InventorySlot(i, item, amount));
-          invMap.put(material, invSlots);
+          invMap.put(material, new ArrayList<>(List.of(new InventorySlot(i, item, amount))));
         }
       }
     }
@@ -132,7 +130,7 @@ public class ForgeCraftOperation {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
 
-      if (!dataContainer.has(forgeIdKey, PersistentDataType.STRING)) {
+      if (!dataContainer.has(forgeIdKey, PersistentDataType.STRING)) { // Don't use unique items for crafting
         if (invSlot.getAmount() > 0) {
           reqAmount -= invSlot.getAmount();
           if (hasReqAmountSatisfied(invSlot, reqAmount)) {
@@ -201,11 +199,10 @@ public class ForgeCraftOperation {
   private void processMatchingType(Player user, List<ItemStack> results) {
     Inventory inv = user.getInventory();
     for (InventorySlot invSlot : postCraftInventorySlotsToUpdate) {
-      int slotNumber = invSlot.getSlot();
       ItemStack item = invSlot.getItem();
       item.setAmount(invSlot.getAmount());
 
-      inv.setItem(slotNumber, item);
+      inv.setItem(invSlot.getSlot(), item);
     }
     giveItemsToPlayer(user, results);
   }

@@ -50,7 +50,7 @@ public class AethelItemsData {
           if (item != null) {
             itemsMap.put(item.getName(), item);
             allItems.add(item.getItem());
-            sortItems(item.getItem(), categoryKey, sortedItems);
+            sortItem(item.getItem(), categoryKey, sortedItems);
           }
         }
       }
@@ -90,8 +90,8 @@ public class AethelItemsData {
    * @param categoryKey item category tag
    * @param sortedItems items sorted by category
    */
-  private void sortItems(ItemStack item, NamespacedKey categoryKey,
-                         Map<String, List<ItemStack>> sortedItems) {
+  private void sortItem(ItemStack item, NamespacedKey categoryKey,
+                        Map<String, List<ItemStack>> sortedItems) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 
     if (dataContainer.has(categoryKey, PersistentDataType.STRING)) {

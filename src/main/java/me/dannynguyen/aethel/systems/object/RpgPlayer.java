@@ -8,21 +8,12 @@ import java.util.Map;
  * RpgPlayer is an object relating a player with their equipment and Aethel attribute values.
  *
  * @author Danny Nguyen
- * @version 1.8.12
+ * @version 1.9.4
  * @since 1.8.9
  */
-public class RpgPlayer {
-  private final Player player;
-  private Map<String, Map<String, Double>> equipmentAttributes;
-  private Map<String, Double> aethelAttributes;
-
-  public RpgPlayer(Player player,
-                   Map<String, Map<String, Double>> equipmentAttributes,
-                   Map<String, Double> aethelAttributes) {
-    this.player = player;
-    this.equipmentAttributes = equipmentAttributes;
-    this.aethelAttributes = aethelAttributes;
-  }
+public record RpgPlayer(Player player,
+                        Map<String, Map<String, Double>> equipmentAttributes,
+                        Map<String, Double> aethelAttributes) {
 
   public Player getPlayer() {
     return this.player;

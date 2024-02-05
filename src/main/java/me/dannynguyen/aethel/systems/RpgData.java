@@ -18,12 +18,12 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.8.10
  */
 public class RpgData {
-  private Map<Player, RpgPlayer> rpgPlayers = new HashMap<>();
-  private Map<Player, ItemStack> playerHeldItemMap = new HashMap<>();
+  private final Map<Player, RpgPlayer> rpgPlayers = new HashMap<>();
+  private final Map<Player, ItemStack> playerHeldItemMap = new HashMap<>();
 
   /**
    * Loads an RPG character into memory.
@@ -68,14 +68,12 @@ public class RpgData {
                                 Map<String, Double> aethelAttributes,
                                 ItemStack item, String slot) {
     if (ItemReader.isNotNullOrAir(item)) {
-
       if (equipment.containsKey(slot)) {
         removeExistingEquipmentAttributes(equipment, aethelAttributes, slot);
       }
 
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
       NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
-
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         equipment.put(slot, new HashMap<>());
         readEquipmentMeta(equipment, aethelAttributes, slot, dataContainer, listKey);
@@ -102,7 +100,6 @@ public class RpgData {
                                  PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
-
       String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
       if (attributeSlot.equals(slot)) {
         addNewEquipmentAttributes(equipment, aethelAttributes, slot, dataContainer, attribute);
@@ -139,7 +136,6 @@ public class RpgData {
                                          String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
     String attributeType = attribute.substring(0, attribute.indexOf("."));
-
     equipment.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     aethelAttributes.put(attributeType,
         aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));

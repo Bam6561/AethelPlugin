@@ -21,7 +21,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ItemEditorInventory is an inventory listener for the ItemEditor inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -34,7 +34,7 @@ public class ItemEditorInventoryListener {
    */
   public static void interpretMainMenuClick(InventoryClickEvent e, Player user) {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
-        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 11 -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
@@ -65,7 +65,7 @@ public class ItemEditorInventoryListener {
    */
   public static void interpretAttributesMenuClick(InventoryClickEvent e, Player user) {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
-        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 0, 1 -> { // Context, Item
         }
@@ -92,7 +92,7 @@ public class ItemEditorInventoryListener {
    */
   public static void interpretEnchantsMenuClick(InventoryClickEvent e, Player user) {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
-        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 2, 4 -> { // Context, Item
         }
@@ -111,7 +111,7 @@ public class ItemEditorInventoryListener {
    */
   public static void interpretTagsMenuClick(InventoryClickEvent e, Player user) {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
-        !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 2, 4 -> { // Context, Item
         }

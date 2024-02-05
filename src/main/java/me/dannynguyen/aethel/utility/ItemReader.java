@@ -19,7 +19,7 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.1.4
  */
 public class ItemReader {
@@ -33,10 +33,7 @@ public class ItemReader {
    * @return item is not null or air
    */
   public static boolean isNotNullOrAir(ItemStack item) {
-    if (item != null) {
-      return item.getType() != Material.AIR;
-    }
-    return false;
+    return item != null && item.getType() != Material.AIR;
   }
 
   /**

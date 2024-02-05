@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
  * CharacterInventoryListener is an inventory listener for the Character inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.9.2
  */
 public class CharacterInventoryListener {
@@ -30,35 +30,64 @@ public class CharacterInventoryListener {
    * - CharacterSheet: prevent adding new items to the
    * inventory outside of the intended equipment slots
    * - Player: prevent shift-clicks adding items to the CharacterSheet inventory
-   * and remove the main hand item from the menu when the user clicks on it
+   * and remove the main hand item from the menu whenever the user clicks on it
    * </p>
    *
    * @param e    inventory click event
    * @param user user
    */
   public static void readMainClick(InventoryClickEvent e, Player user) {
-    if (!e.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) { // Prevents duplication
-      Inventory clickedInv = e.getClickedInventory();
-      if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
-        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-          interpretItemClick(e, user);
+    Inventory clickedInv = e.getClickedInventory();
+    if (clickedInv != null) {
+
+      // Prevents item duplication since copies of the user's items are stored inside the menu
+      if (!e.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) {
+        if (clickedInv.getType().equals(InventoryType.CHEST)) {
+          interpretMenuClick(e, user);
         } else {
-          int slot = e.getSlot();
-          switch (slot) {
-            case 10, 11, 12, 19, 20, 28, 29, 37 -> interpretEquipItem(e, user, slot);
-            default -> e.setCancelled(true);
-          }
-        }
-      } else {
-        if (e.getClick().isShiftClick()) {
-          e.setCancelled(true);
-        } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
-            (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
-          e.getInventory().setItem(11, new ItemStack(Material.AIR));
-        } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
-          e.getInventory().setItem(11, e.getCursor());
+          interpretPlayerInventoryClick(e, user);
         }
       }
+    }
+  }
+
+  /**
+   * Checks if the user is interacting with an item or button or attempting to wear equipment.
+   *
+   * @param e    inventory click event
+   * @param user user
+   */
+  private static void interpretMenuClick(InventoryClickEvent e, Player user) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+      interpretItemClick(e, user);
+    } else {
+      int slot = e.getSlot();
+      switch (slot) {
+        case 10, 11, 12, 19, 20, 28, 29, 37 -> interpretEquipItem(e, user, slot);
+        default -> e.setCancelled(true);
+      }
+    }
+  }
+
+  /**
+   * Disables shift clicks and updates the user's main hand item in
+   * the menu when it is interacted with from the user's inventory.
+   *
+   * @param e    inventory click event
+   * @param user user
+   */
+  private static void interpretPlayerInventoryClick(InventoryClickEvent e, Player user) {
+    if (e.getClick().isShiftClick()) {
+      e.setCancelled(true);
+
+      // User removes main hand item
+    } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
+      e.getInventory().setItem(11, new ItemStack(Material.AIR));
+
+      // User sets new main hand item
+    } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
+      e.getInventory().setItem(11, e.getCursor());
     }
   }
 
@@ -80,7 +109,7 @@ public class CharacterInventoryListener {
       case 34 -> e.setCancelled(true); // Collectibles
       case 43 -> e.setCancelled(true); // Settings
       case 10, 11, 12, 19, 28, 37 -> unequipItem(user, e.getClickedInventory(), slot); // Armor & Hands
-      case 20, 29 -> unequipJewelryItem(user, e.getClickedInventory(), slot); // Necklace & Ring
+      case 20, 29 -> updateJewelryAttributes(user, e.getClickedInventory(), slot); // Necklace & Ring
     }
   }
 
@@ -93,9 +122,8 @@ public class CharacterInventoryListener {
    */
   private static void interpretEquipItem(InventoryClickEvent e, Player user, int slot) {
     ItemStack item = e.getCursor();
-    String itemType = item.getType().name();
-
-    if (!itemType.equals("AIR")) {
+    if (item.getType() != Material.AIR) {
+      String itemType = item.getType().name();
       switch (slot) {
         case 11 -> equipMainHandItem(e, user, e.getClickedInventory(), user.getInventory().getHeldItemSlot());
         case 12 -> updateOffHandAttributes(e, user, item);
@@ -137,18 +165,6 @@ public class CharacterInventoryListener {
   }
 
   /**
-   * Removes a jewelry item from the user.
-   *
-   * @param user user
-   * @param menu CharacterSheet inventory
-   * @param slot slot type
-   */
-  private static void unequipJewelryItem(Player user, Inventory menu, int slot) {
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
-        () -> updateJewelryAttributes(user, menu, slot), 1);
-  }
-
-  /**
    * Equips the item to the user's main hand.
    *
    * @param e    inventory click event
@@ -161,14 +177,14 @@ public class CharacterInventoryListener {
     Inventory inv = user.getInventory();
     ItemStack item = e.getCursor();
 
-    if (inv.getItem(slot) == null) {
+    if (inv.getItem(slot) == null) { // Main hand slot is empty
       inv.setItem(slot, item);
       updateArmorHandAttributes(user, menu, slot);
-    } else if (inv.firstEmpty() != -1) {
+    } else if (inv.firstEmpty() != -1) { // Main hand slot is full
       int emptySlot = inv.firstEmpty();
       inv.setItem(emptySlot, item);
       updateArmorHandAttributes(user, menu, emptySlot);
-    } else if (ItemReader.isNotNullOrAir(item)) {
+    } else if (ItemReader.isNotNullOrAir(item)) { // Inventory is full
       user.getWorld().dropItem(user.getLocation(), item);
 
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
@@ -317,22 +333,22 @@ public class CharacterInventoryListener {
       ItemStack wornItem = user.getInventory().getItem(slot);
 
       switch (slot) {
-        case 36 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            wornItem, "feet");
-        case 37 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            wornItem, "legs");
-        case 38 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            wornItem, "chest");
         case 39 -> PluginData.rpgData.readEquipmentSlot(
             rpgPlayer.getEquipmentAttributes(),
             rpgPlayer.getAethelAttributes(),
             wornItem, "head");
+        case 38 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            wornItem, "chest");
+        case 37 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            wornItem, "legs");
+        case 36 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            wornItem, "feet");
         case 40 -> PluginData.rpgData.readEquipmentSlot(
             rpgPlayer.getEquipmentAttributes(),
             rpgPlayer.getAethelAttributes(),

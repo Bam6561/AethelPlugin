@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * AethelItemsInventoryListener is an inventory listener for the AethelItems inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.4.0
  */
 public class AethelItemsInventoryListener {
@@ -23,7 +23,7 @@ public class AethelItemsInventoryListener {
    * Checks if the user's action is allowed based on the clicked inventory.
    * <p>
    * Additional Parameters:
-   * - AethelItems: prevent adding new items to the inventory outside of the intended Save Item slot
+   * - AethelItems: prevent adding new items to the inventory outside of the intended Save Iitem slot
    * - Player: prevent shift-clicks adding items to the AethelItems inventory
    * </p>
    *
@@ -32,15 +32,17 @@ public class AethelItemsInventoryListener {
    */
   public static void readMainClick(InventoryClickEvent e, Player user) {
     Inventory clickedInv = e.getClickedInventory();
-    if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
-      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-        interpretMainClick(e, user);
-      } else if (e.getSlot() != 3) {
-        e.setCancelled(true);
-      }
-    } else {
-      if (e.getClick().isShiftClick()) {
-        e.setCancelled(true);
+    if (clickedInv != null) {
+      if (clickedInv.getType().equals(InventoryType.CHEST)) {
+        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+          interpretMainClick(e, user);
+        } else if (e.getSlot() != 3) { // Save Item slot
+          e.setCancelled(true);
+        }
+      } else {
+        if (e.getClick().isShiftClick()) {
+          e.setCancelled(true);
+        }
       }
     }
   }
@@ -83,15 +85,17 @@ public class AethelItemsInventoryListener {
    */
   public static void readCategoryClick(InventoryClickEvent e, Player user, String action) {
     Inventory clickedInv = e.getClickedInventory();
-    if (clickedInv != null && !clickedInv.getType().equals(InventoryType.PLAYER)) {
-      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-        interpretCategoryClick(e, user, action);
-      } else if (e.getSlot() != 3) {
-        e.setCancelled(true);
-      }
-    } else {
-      if (e.getClick().isShiftClick()) {
-        e.setCancelled(true);
+    if (clickedInv != null) {
+      if (clickedInv.getType().equals(InventoryType.CHEST)) {
+        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+          interpretCategoryClick(e, user, action);
+        } else if (e.getSlot() != 3) {
+          e.setCancelled(true);
+        }
+      } else {
+        if (e.getClick().isShiftClick()) {
+          e.setCancelled(true);
+        }
       }
     }
   }

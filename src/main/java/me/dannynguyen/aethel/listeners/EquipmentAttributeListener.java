@@ -28,7 +28,7 @@ import java.util.Map;
  * events related to changing a player's equipment attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.9.0
  */
 public class EquipmentAttributeListener implements Listener {
@@ -42,18 +42,17 @@ public class EquipmentAttributeListener implements Listener {
 
   @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
-    Player player = (Player) e.getWhoClicked();
     Inventory inv = e.getClickedInventory();
-
     if (inv != null && inv.getType().equals(InventoryType.PLAYER)) {
+
+      Player player = (Player) e.getWhoClicked();
       if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         updateIfWornItem(player, e.getCurrentItem(), "shift");
       } else {
         int slot = e.getSlot();
         switch (slot) {
           case 36, 37, 38, 39, 40 -> {
-            if (ItemReader.isNotNullOrAir(e.getCursor()) ||
-                ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+            if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
               updateEquipmentAttributesAtSlot(player, null, slot, "click");
             }
           }
@@ -74,7 +73,6 @@ public class EquipmentAttributeListener implements Listener {
   @EventHandler
   public void onInteract(PlayerInteractEvent e) {
     Action action = e.getAction();
-
     if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
       if (ItemReader.isNotNullOrAir(e.getItem())) {
         updateIfWornItem(e.getPlayer(), e.getItem(), "interact");
@@ -149,22 +147,22 @@ public class EquipmentAttributeListener implements Listener {
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
 
       switch (slot) {
-        case 36 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "feet");
-        case 37 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "legs");
-        case 38 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "chest");
         case 39 -> PluginData.rpgData.readEquipmentSlot(
             rpgPlayer.getEquipmentAttributes(),
             rpgPlayer.getAethelAttributes(),
             item, "head");
+        case 38 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            item, "chest");
+        case 37 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            item, "legs");
+        case 36 -> PluginData.rpgData.readEquipmentSlot(
+            rpgPlayer.getEquipmentAttributes(),
+            rpgPlayer.getAethelAttributes(),
+            item, "feet");
         case 40 -> PluginData.rpgData.readEquipmentSlot(
             rpgPlayer.getEquipmentAttributes(),
             rpgPlayer.getAethelAttributes(),

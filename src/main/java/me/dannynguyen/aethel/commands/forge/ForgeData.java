@@ -51,7 +51,7 @@ public class ForgeData {
           if (recipe != null) {
             recipesMap.put(recipe.getName(), recipe);
             allRecipes.add(recipe);
-            sortRecipes(recipe, categoryKey, sortedRecipes);
+            sortRecipe(recipe, categoryKey, sortedRecipes);
           }
         }
       }
@@ -134,8 +134,8 @@ public class ForgeData {
    * @param categoryKey   forge category tag
    * @param sortedRecipes recipes sorted by category
    */
-  private void sortRecipes(ForgeRecipe recipe, NamespacedKey categoryKey,
-                           Map<String, List<ForgeRecipe>> sortedRecipes) {
+  private void sortRecipe(ForgeRecipe recipe, NamespacedKey categoryKey,
+                          Map<String, List<ForgeRecipe>> sortedRecipes) {
     ItemStack item = recipe.getResults().get(0);
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
 

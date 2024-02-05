@@ -15,7 +15,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * ForgeInventoryListener is an inventory listener for the Forge inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.4
  * @since 1.0.9
  */
 public class ForgeInventoryListener {
@@ -26,8 +26,8 @@ public class ForgeInventoryListener {
    * @param user user
    */
   public static void interpretMainClick(InventoryClickEvent e, Player user) {
-    if (ItemReader.isNotNullOrAir(e.getCurrentItem())
-        && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 2, 4 -> { // Help Context
         }
@@ -60,8 +60,8 @@ public class ForgeInventoryListener {
    * @param action type of interaction
    */
   public static void interpretCategoryClick(InventoryClickEvent e, Player user, String action) {
-    if (ItemReader.isNotNullOrAir(e.getCurrentItem())
-        && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 0 -> previousRecipePage(user, action);
         case 2 -> { // Help Context
@@ -88,8 +88,8 @@ public class ForgeInventoryListener {
    * @param user user
    */
   public static void interpretCraftConfirmClick(InventoryClickEvent e, Player user) {
-    if (ItemReader.isNotNullOrAir(e.getCurrentItem())
-        && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 25 -> new ForgeCraftOperation().craftRecipe(e, user);
         case 26 -> openForgeCraft(user);
@@ -105,8 +105,8 @@ public class ForgeInventoryListener {
    * @param user user
    */
   public static void interpretSaveClick(InventoryClickEvent e, Player user) {
-    if (ItemReader.isNotNullOrAir(e.getCurrentItem())
-        && !e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
+        e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       switch (e.getSlot()) {
         case 8 -> e.setCancelled(true);
         case 25 -> ForgeAction.readSaveClick(e, user);
