@@ -11,6 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import java.text.DecimalFormat;
@@ -23,7 +24,7 @@ import java.util.Map;
  * equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.5
  * @since 1.6.3
  */
 public class CharacterSheet {
@@ -72,6 +73,8 @@ public class CharacterSheet {
    * @param inv  interacting inv
    */
   private static void addEquipment(Player user, Inventory inv) {
+    ItemStack[] jewelrySlots = PluginData.rpgData.getRpgPlayers().get(user).getJewelrySlots();
+
     inv.setItem(9, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
         ChatColor.WHITE + "Equipment", Context.EQUIPMENT.context));
     inv.setItem(10, user.getInventory().getHelmet());
@@ -80,6 +83,8 @@ public class CharacterSheet {
     inv.setItem(37, user.getInventory().getBoots());
     inv.setItem(11, user.getInventory().getItemInMainHand());
     inv.setItem(12, user.getInventory().getItemInOffHand());
+    inv.setItem(20, jewelrySlots[0]);
+    inv.setItem(29, jewelrySlots[1]);
   }
 
   /**

@@ -18,7 +18,7 @@ import java.util.List;
  * ItemEditorInventory is an inventory that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.5
  * @since 1.6.7
  */
 public class ItemEditorInventory {
@@ -169,8 +169,8 @@ public class ItemEditorInventory {
         ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
         ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
         ChatColor.WHITE + "&2 " + ChatColor.DARK_GREEN + "Dark Green",
-        ChatColor.WHITE + "&3 " + ChatColor.DARK_RED + "Dark Red",
-        ChatColor.WHITE + "&4 " + ChatColor.DARK_AQUA + "Dark Aqua",
+        ChatColor.WHITE + "&3 " + ChatColor.DARK_RED + "Dark Aqua",
+        ChatColor.WHITE + "&4 " + ChatColor.DARK_AQUA + "Dark Red",
         ChatColor.WHITE + "&5 " + ChatColor.DARK_PURPLE + "Dark Purple",
         ChatColor.WHITE + "&6 " + ChatColor.GOLD + "Gold",
         ChatColor.WHITE + "&7 " + ChatColor.GRAY + "Gray",

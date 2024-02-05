@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
  * CharacterInventoryListener is an inventory listener for the Character inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.5
  * @since 1.9.2
  */
 public class CharacterInventoryListener {
@@ -83,11 +83,21 @@ public class CharacterInventoryListener {
       // User removes main hand item
     } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) &&
         (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
+      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+
       e.getInventory().setItem(11, new ItemStack(Material.AIR));
+      PluginData.rpgData.readEquipmentSlot(
+          rpgPlayer.getEquipmentAttributes(),
+          rpgPlayer.getAethelAttributes(),
+          null, "hand");
+
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
+          () -> CharacterSheet.addAttributes(user, e.getInventory()), 1);
 
       // User sets new main hand item
     } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
       e.getInventory().setItem(11, e.getCursor());
+      updateArmorHandAttributes(user, e.getInventory(), user.getInventory().getHeldItemSlot());
     }
   }
 
@@ -109,7 +119,7 @@ public class CharacterInventoryListener {
       case 34 -> e.setCancelled(true); // Collectibles
       case 43 -> e.setCancelled(true); // Settings
       case 10, 11, 12, 19, 28, 37 -> unequipItem(user, e.getClickedInventory(), slot); // Armor & Hands
-      case 20, 29 -> updateJewelryAttributes(user, e.getClickedInventory(), slot); // Necklace & Ring
+      case 20, 29 -> unequipJewelry(user, e.getClickedInventory(), slot); // Necklace & Ring
     }
   }
 
@@ -162,6 +172,22 @@ public class CharacterInventoryListener {
     user.getInventory().setItem(invSlot, new ItemStack(Material.AIR));
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),
         () -> updateArmorHandAttributes(user, menu, invSlot), 1);
+  }
+
+  /**
+   * Removes an equipped jewelry item from the user.
+   *
+   * @param user user
+   * @param menu CharacterSheet inventory
+   * @param slot slot type
+   */
+  private static void unequipJewelry(Player user, Inventory menu, int slot) {
+    ItemStack[] jewelrySlots = PluginData.rpgData.getRpgPlayers().get(user).getJewelrySlots();
+    switch (slot) {
+      case 20 -> jewelrySlots[0] = new ItemStack(Material.AIR);
+      case 29 -> jewelrySlots[1] = new ItemStack(Material.AIR);
+    }
+    updateJewelryAttributes(user, menu, slot);
   }
 
   /**
@@ -381,14 +407,20 @@ public class CharacterInventoryListener {
       ItemStack wornItem = menu.getItem(slot);
 
       switch (slot) {
-        case 20 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            wornItem, "necklace");
-        case 29 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            wornItem, "ring");
+        case 20 -> {
+          rpgPlayer.getJewelrySlots()[0] = wornItem;
+          PluginData.rpgData.readEquipmentSlot(
+              rpgPlayer.getEquipmentAttributes(),
+              rpgPlayer.getAethelAttributes(),
+              wornItem, "necklace");
+        }
+        case 29 -> {
+          rpgPlayer.getJewelrySlots()[1] = wornItem;
+          PluginData.rpgData.readEquipmentSlot(
+              rpgPlayer.getEquipmentAttributes(),
+              rpgPlayer.getAethelAttributes(),
+              wornItem, "ring");
+        }
       }
 
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(),

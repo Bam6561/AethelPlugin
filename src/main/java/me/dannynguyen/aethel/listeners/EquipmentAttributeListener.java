@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.enums.PluginItems;
 import me.dannynguyen.aethel.systems.object.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +29,7 @@ import java.util.Map;
  * events related to changing a player's equipment attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.5
  * @since 1.9.0
  */
 public class EquipmentAttributeListener implements Listener {
@@ -98,6 +99,8 @@ public class EquipmentAttributeListener implements Listener {
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(e.getEntity());
       Map<String, Map<String, Double>> equipment = rpgPlayer.getEquipmentAttributes();
       Map<String, Double> aethelAttributes = rpgPlayer.getAethelAttributes();
+
+      dropJewelryItems(e.getEntity(), rpgPlayer.getJewelrySlots());
 
       for (String slot : equipment.keySet()) {
         PluginData.rpgData.removeExistingEquipmentAttributes(equipment, aethelAttributes, slot);
@@ -197,5 +200,17 @@ public class EquipmentAttributeListener implements Listener {
         }
       }, 1);
     }
+  }
+
+  /**
+   * Drops the player's jewelry items.
+   *
+   * @param player interacting player
+   */
+  private void dropJewelryItems(Player player, ItemStack[] jewelrySlots) {
+    player.getWorld().dropItem(player.getLocation(), jewelrySlots[0]);
+    player.getWorld().dropItem(player.getLocation(), jewelrySlots[1]);
+    jewelrySlots[0] = new ItemStack(Material.AIR);
+    jewelrySlots[1] = new ItemStack(Material.AIR);
   }
 }

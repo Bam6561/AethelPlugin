@@ -18,7 +18,7 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.5
  * @since 1.8.10
  */
 public class RpgData {
@@ -35,7 +35,7 @@ public class RpgData {
     Map<String, Double> aethelAttributes = createBlankAethelAttributes();
 
     loadEquipmentAttributes(player.getInventory(), equipment, aethelAttributes);
-    rpgPlayers.put(player, new RpgPlayer(player, equipment, aethelAttributes));
+    rpgPlayers.put(player, new RpgPlayer(player, equipment, aethelAttributes, new ItemStack[2]));
   }
 
   /**

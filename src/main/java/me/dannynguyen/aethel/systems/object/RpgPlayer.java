@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.systems.object;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -8,12 +9,13 @@ import java.util.Map;
  * RpgPlayer is an object relating a player with their equipment and Aethel attribute values.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.5
  * @since 1.8.9
  */
 public record RpgPlayer(Player player,
                         Map<String, Map<String, Double>> equipmentAttributes,
-                        Map<String, Double> aethelAttributes) {
+                        Map<String, Double> aethelAttributes,
+                        ItemStack[] jewelrySlots) {
 
   public Player getPlayer() {
     return this.player;
@@ -25,5 +27,9 @@ public record RpgPlayer(Player player,
 
   public Map<String, Double> getAethelAttributes() {
     return this.aethelAttributes;
+  }
+
+  public ItemStack[] getJewelrySlots() {
+    return this.jewelrySlots;
   }
 }

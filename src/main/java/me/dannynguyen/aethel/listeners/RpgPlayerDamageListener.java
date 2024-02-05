@@ -14,7 +14,7 @@ import java.util.Random;
  * RpgPlayerDamageListener is a collection of listeners for events related to players' damage done and taken.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.5
  * @since 1.9.4
  */
 public class RpgPlayerDamageListener implements Listener {
@@ -105,9 +105,7 @@ public class RpgPlayerDamageListener implements Listener {
       Double damageDeflected = damage * (aethelAttributes.get("parry_deflect") / 100);
       damage = damage - damageDeflected;
 
-      LivingEntity damager = (LivingEntity) e.getDamager();
-      damager.setHealth(damager.getHealth() - damageDeflected);
-
+      ((LivingEntity) e.getDamager()).damage(damageDeflected);
       if (damage < 0) {
         e.setCancelled(true);
         return true;
@@ -124,7 +122,8 @@ public class RpgPlayerDamageListener implements Listener {
    * @param damage           damage taken
    * @return damage taken completely blocked
    */
-  private boolean calculateIfBlocked(EntityDamageByEntityEvent e, Map<String, Double> aethelAttributes, Double damage) {
+  private boolean calculateIfBlocked(EntityDamageByEntityEvent e,
+                                     Map<String, Double> aethelAttributes, Double damage) {
     damage = damage - aethelAttributes.get("block");
     if (damage < 0) {
       e.setCancelled(true);
