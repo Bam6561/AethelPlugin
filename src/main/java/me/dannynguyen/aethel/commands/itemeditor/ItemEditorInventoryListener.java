@@ -4,11 +4,13 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginConstant;
 import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -16,12 +18,17 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ItemEditorInventory is an inventory listener for the ItemEditor inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.6
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
@@ -49,7 +56,7 @@ public class ItemEditorInventoryListener {
         case 14 -> ItemEditorAction.openAttributesMenu(user);
         case 15 -> ItemEditorAction.openEnchantsMenu(user);
         case 16 -> ItemEditorAction.openTagsMenu(user);
-        case 28, 29, 30, 37, 38, 39 -> interpretLoreAction(e.getSlot(), user);
+        case 28, 29, 30, 37, 38, 39, 47 -> interpretLoreAction(e.getSlot(), user);
         case 32, 33, 34, 41, 42, 43, 50, 51 -> interpretItemFlagToggle(e.getSlot(), e.getClickedInventory(), user);
         case 52 -> toggleUnbreakable(e.getClickedInventory(), user);
       }
@@ -145,6 +152,7 @@ public class ItemEditorInventoryListener {
       }
       case 38 -> readItemLore(user, "lore-edit");
       case 39 -> readItemLore(user, "lore-remove");
+      case 47 -> readItemLore(user, "lore-generate");
     }
   }
 
@@ -201,11 +209,16 @@ public class ItemEditorInventoryListener {
    */
   private static void readItemLore(Player user, String action) {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
-    if (meta.hasLore()) {
+    if (action.equals("lore-generate")) {
+      ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
+      generateLore(item, meta);
+      user.sendMessage(Success.GENERATE_LORE.message);
+    } else if (meta.hasLore()) {
       switch (action) {
         case "lore-clear" -> {
           ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
           ItemEditorMessageListener.clearLore(user, item, item.getItemMeta());
+          user.sendMessage(Success.CLEAR_LORE.message);
         }
         case "lore-edit" -> {
           user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
@@ -327,9 +340,56 @@ public class ItemEditorInventoryListener {
     return attributeContext;
   }
 
+  /**
+   * Generates an item's lore based on its plugin-related data.
+   *
+   * @param item interacting item
+   * @param meta item meta
+   */
+  private static void generateLore(ItemStack item, ItemMeta meta) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+    boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
+
+    if (hasAttributes) {
+      List<String> attributes = new ArrayList<>(List.of(
+          dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+
+      List<String> lore;
+      if (meta.hasLore()) {
+        lore = meta.getLore();
+      } else {
+        lore = new ArrayList<>();
+      }
+
+      for (String attribute : attributes) {
+        String attributeType = attribute.substring(0, attribute.indexOf("."));
+        String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
+        NamespacedKey attributeKey =
+            new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+
+        switch (attributeSlot) {
+          case "head", "chest", "legs", "feet",
+              "necklace", "ring" -> attributeSlot = ChatColor.GRAY
+              + "When on " + TextFormatter.capitalizeWord(attributeSlot) + ": ";
+          case "hand" -> attributeSlot = ChatColor.GRAY + "When in Hand: ";
+          case "off_hand" -> attributeSlot = ChatColor.GRAY + "When in Off Hand: ";
+        }
+
+        lore.add(ChatColor.GRAY + attributeSlot + ChatColor.DARK_GREEN +
+            dataContainer.get(attributeKey, PersistentDataType.DOUBLE)
+            + " " + TextFormatter.capitalizePhrase(attributeType));
+      }
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+    }
+  }
+
   private enum Success {
     ENABLE_UNBREAKABLE(ChatColor.GREEN + "[Set Unbreakable]"),
     DISABLE_UNBREAKABLE(ChatColor.RED + "[Set Unbreakable]"),
+    CLEAR_LORE(ChatColor.GREEN + "[Cleared Lore]"),
+    GENERATE_LORE(ChatColor.GREEN + "[Generated Lore]"),
     INPUT_DISPLAY_NAME(ChatColor.WHITE + "Input display name."),
     INPUT_CUSTOMMODELDATA(ChatColor.WHITE + "Input custom model data value."),
     INPUT_SET_LORE(ChatColor.WHITE + "Input lore to set."),

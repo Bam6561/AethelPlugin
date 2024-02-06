@@ -29,7 +29,7 @@ import java.util.UUID;
  * ItemEditorMessageListener is a message listener for the ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.6
  * @since 1.7.0
  */
 public class ItemEditorMessageListener {
@@ -81,7 +81,7 @@ public class ItemEditorMessageListener {
    */
   public static void setLore(AsyncPlayerChatEvent e, Player user,
                              ItemStack item, ItemMeta meta) {
-    meta.setLore(List.of(e.getMessage().split(",, ")));
+    meta.setLore(List.of(ChatColor.translateAlternateColorCodes('&', e.getMessage()).split(",, ")));
     item.setItemMeta(meta);
     user.sendMessage(Success.SET_LORE.message);
     returnToMainMenu(user, item);
@@ -113,10 +113,10 @@ public class ItemEditorMessageListener {
                              ItemStack item, ItemMeta meta) {
     if (meta.hasLore()) {
       List<String> lore = meta.getLore();
-      lore.add(e.getMessage());
+      lore.add(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
       meta.setLore(lore);
     } else {
-      meta.setLore(List.of(e.getMessage()));
+      meta.setLore(List.of(ChatColor.translateAlternateColorCodes('&', e.getMessage())));
     }
     item.setItemMeta(meta);
     user.sendMessage(Success.ADD_LORE.message);
@@ -138,7 +138,7 @@ public class ItemEditorMessageListener {
     String[] input = e.getMessage().split(" ", 2);
     try {
       List<String> lore = meta.getLore();
-      lore.set(Integer.parseInt(input[0]) - 1, input[1]);
+      lore.set(Integer.parseInt(input[0]) - 1, ChatColor.translateAlternateColorCodes('&', input[1]));
       meta.setLore(lore);
       item.setItemMeta(meta);
       user.sendMessage(Success.EDIT_LORE.message);

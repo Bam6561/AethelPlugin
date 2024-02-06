@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.6
  * @since 1.1.11
  */
 public class ForgeData {
@@ -118,12 +118,12 @@ public class ForgeData {
             case 1 -> results.add(item);
             case 2 -> components.add(item);
           }
-          dataType++;
         } else {
           results.clear();
           return;
         }
       }
+      dataType++;
     }
   }
 

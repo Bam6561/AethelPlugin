@@ -18,7 +18,7 @@ import java.util.List;
  * ItemEditorInventory is an inventory that displays an item's metadata fields.
  *
  * @author Danny Nguyen
- * @version 1.9.5
+ * @version 1.9.6
  * @since 1.6.7
  */
 public class ItemEditorInventory {
@@ -135,6 +135,8 @@ public class ItemEditorInventory {
         ChatColor.AQUA + "Edit Lore", List.of(ChatColor.WHITE + "Specify line, then new text."));
     ItemStack removeLore = ItemCreator.createItem(Material.PAPER,
         ChatColor.AQUA + "Remove Lore", List.of(ChatColor.WHITE + "Specify line."));
+    ItemStack generateLore = ItemCreator.createItem(Material.PAPER,
+        ChatColor.AQUA + "Generate Lore", List.of(ChatColor.WHITE + "Generates plugin-related lore."));
 
     inv.setItem(28, lore);
     inv.setItem(29, setLore);
@@ -142,6 +144,7 @@ public class ItemEditorInventory {
     inv.setItem(37, addLore);
     inv.setItem(38, editLore);
     inv.setItem(39, removeLore);
+    inv.setItem(47, generateLore);
   }
 
 
