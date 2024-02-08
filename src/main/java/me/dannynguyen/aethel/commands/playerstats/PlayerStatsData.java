@@ -90,7 +90,7 @@ public class PlayerStatsData {
   private void createMaterialPages() {
     List<Material> materials = sortedMaterials;
     int numberOfMaterials = materials.size();
-    int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfMaterials);
+    int numberOfPages = InventoryPages.calculateTotalPages(numberOfMaterials);
     numberOfMaterialPages = numberOfPages;
 
     int startIndex = 0;
@@ -121,7 +121,7 @@ public class PlayerStatsData {
   private void createEntityTypeStatPages() {
     List<EntityType> entityTypes = sortedEntityTypes;
     int numberOfEntityTypes = entityTypes.size();
-    int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfEntityTypes);
+    int numberOfPages = InventoryPages.calculateTotalPages(numberOfEntityTypes);
     numberOfEntityTypePages = numberOfPages;
 
     int startIndex = 0;

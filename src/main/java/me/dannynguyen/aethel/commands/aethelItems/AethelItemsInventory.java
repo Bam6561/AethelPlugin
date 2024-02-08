@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.aethelItems.object.AethelItemsCategory;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -22,7 +21,7 @@ import java.util.Set;
  * pagination for obtaining, creating, editing, and removing Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.7
  * @since 1.4.0
  */
 public class AethelItemsInventory {
@@ -65,7 +64,7 @@ public class AethelItemsInventory {
    * @param inv interacting inventory
    */
   private static void addCategories(Inventory inv) {
-    Set<String> categories = PluginData.aethelItemsData.getItemCategoriesMap().keySet();
+    Set<String> categories = PluginData.itemRegistry.getCategoryMap().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {
@@ -88,13 +87,13 @@ public class AethelItemsInventory {
                                            String requestedCategory, int requestedPage) {
     Inventory inv = createInventory(user, action);
 
-    AethelItemsCategory category = PluginData.aethelItemsData.getItemCategoriesMap().get(requestedCategory);
-    int numberOfPages = category.getNumberOfPages();
+    List<Inventory> category = PluginData.itemRegistry.getCategoryMap().get(requestedCategory);
+    int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
         new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
-    inv.setContents(category.getPages().get(pageViewed).getContents());
+    inv.setContents(category.get(pageViewed).getContents());
 
     addContext(requestedCategory, inv);
     addActions(action, inv);

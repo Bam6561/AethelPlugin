@@ -309,7 +309,7 @@ public class ItemEditorMessageListener {
                                          Player user, ItemStack item,
                                          ItemMeta meta, String type) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey attributesKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+    NamespacedKey attributesKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
 
     String equipmentSlot = user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString();
     String attributeName = type + "." + equipmentSlot;

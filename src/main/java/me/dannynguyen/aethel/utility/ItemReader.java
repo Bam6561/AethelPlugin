@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.utility;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -9,6 +8,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
@@ -19,7 +19,7 @@ import java.util.Base64;
  * - decodes serialized ItemStacks
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.7
  * @since 1.1.4
  */
 public class ItemReader {
@@ -81,41 +81,19 @@ public class ItemReader {
   }
 
   /**
-   * Deserializes an item.
+   * Deserializes an ItemStack.
    *
-   * @param data   serialized item string
-   * @param action type of interaction
+   * @param data serialized item string
    * @return item
-   * @throws IOException            file not found
-   * @throws ClassNotFoundException item could not be decoded
    */
-  public static ItemStack decodeItem(String data, String action) {
+  @Nullable
+  public static ItemStack decodeItem(String data) {
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
       BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
       return (ItemStack) bois.readObject();
     } catch (IOException | ClassNotFoundException ex) {
-      switch (action) {
-        case "aethelitems" -> Bukkit.getLogger().warning(
-            Failure.INVALID_AETHEL_ITEM_FILE.message + data);
-        case "forge" -> Bukkit.getLogger().warning(
-            Failure.INVALID_FORGE_RECIPE_FILE.message + data);
-        default -> Bukkit.getLogger().warning(
-            Failure.INVALID_GENERIC_ITEM_DATA.message + data);
-      }
       return null;
-    }
-  }
-
-  private enum Failure {
-    INVALID_GENERIC_ITEM_DATA("[Aethel] Invalid item data: "),
-    INVALID_AETHEL_ITEM_FILE("[Aethel] Invalid item file: "),
-    INVALID_FORGE_RECIPE_FILE("[Aethel] Invalid forge recipe file: ");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
     }
   }
 }

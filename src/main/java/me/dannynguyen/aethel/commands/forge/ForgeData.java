@@ -23,7 +23,7 @@ import java.util.*;
  * ForgeRecipeData stores forge recipes in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.6
+ * @version 1.9.7
  * @since 1.1.11
  */
 public class ForgeData {
@@ -43,7 +43,7 @@ public class ForgeData {
 
       List<ForgeRecipe> allRecipes = new ArrayList<>();
       Map<String, List<ForgeRecipe>> sortedRecipes = new HashMap<>();
-      NamespacedKey categoryKey = PluginNamespacedKey.FORGE_CATEGORY.namespacedKey;
+      NamespacedKey categoryKey = PluginNamespacedKey.FORGE_CATEGORY.getNamespacedKey();
 
       for (File file : directory) {
         if (file.getName().endsWith("_rcp.txt")) {
@@ -112,7 +112,7 @@ public class ForgeData {
     for (String line : lines) {
       String[] data = line.split(" ");
       for (String encodedItem : data) {
-        ItemStack item = ItemReader.decodeItem(encodedItem, "forge");
+        ItemStack item = ItemReader.decodeItem(encodedItem);
         if (ItemReader.isNotNullOrAir(item)) {
           switch (dataType) {
             case 1 -> results.add(item);
@@ -159,7 +159,7 @@ public class ForgeData {
   private void createAllRecipePages(List<ForgeRecipe> allRecipes,
                                     Map<String, ForgeRecipeCategory> recipeCategoriesMap) {
     int numberOfRecipes = allRecipes.size();
-    int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
+    int numberOfPages = InventoryPages.calculateTotalPages(numberOfRecipes);
 
     List<Inventory> pages = createRecipePages(allRecipes, numberOfRecipes, numberOfPages);
 
@@ -179,7 +179,7 @@ public class ForgeData {
                                          Map<String, ForgeRecipeCategory> recipeCategoriesMap) {
     for (List<ForgeRecipe> recipes : sortedRecipes.values()) {
       int numberOfRecipes = recipes.size();
-      int numberOfPages = InventoryPages.calculateNumberOfPages(numberOfRecipes);
+      int numberOfPages = InventoryPages.calculateTotalPages(numberOfRecipes);
 
       List<Inventory> pages = createRecipePages(recipes, numberOfRecipes, numberOfPages);
 

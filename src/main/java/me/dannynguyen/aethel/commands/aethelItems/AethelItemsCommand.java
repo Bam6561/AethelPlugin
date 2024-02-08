@@ -62,7 +62,7 @@ public class AethelItemsCommand implements CommandExecutor {
   private void readParameter(Player user, String action) {
     switch (action) {
       case "reload", "r" -> {
-        PluginData.aethelItemsData.loadItems();
+        PluginData.itemRegistry.loadData();
         user.sendMessage(Success.RELOAD.message);
       }
       default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);

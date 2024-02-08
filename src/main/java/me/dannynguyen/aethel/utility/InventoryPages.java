@@ -22,7 +22,7 @@ public class InventoryPages {
    * @param numberOfItems number of items
    * @return number of pages
    */
-  public static int calculateNumberOfPages(int numberOfItems) {
+  public static int calculateTotalPages(int numberOfItems) {
     int numberOfPages = numberOfItems / 45;
     if ((numberOfItems % 45) > 0) {
       numberOfPages += 1;

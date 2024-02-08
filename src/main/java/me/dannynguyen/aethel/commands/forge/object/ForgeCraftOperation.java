@@ -69,7 +69,7 @@ public class ForgeCraftOperation {
       if (invMap.containsKey(reqMaterial)) {
         int reqAmount = item.getAmount();
 
-        NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.namespacedKey;
+        NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.getNamespacedKey();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         boolean hasForgeId = dataContainer.has(forgeIdKey, PersistentDataType.STRING);
 
@@ -125,7 +125,7 @@ public class ForgeCraftOperation {
    */
   private boolean hasSufficientMaterials(Map<Material, List<InventorySlot>> invMap,
                                          Material reqMaterial, int reqAmount) {
-    NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.namespacedKey;
+    NamespacedKey forgeIdKey = PluginNamespacedKey.FORGE_ID.getNamespacedKey();
 
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();

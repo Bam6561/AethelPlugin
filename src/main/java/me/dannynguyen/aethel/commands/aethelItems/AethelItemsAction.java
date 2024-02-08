@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aethelItems;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.aethelItems.object.AethelItem;
 import me.dannynguyen.aethel.enums.PluginDirectory;
+import me.dannynguyen.aethel.commands.aethelitem.PersistentItem;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
@@ -18,7 +18,7 @@ import java.io.IOException;
  * AethelItemsAction is a utility class that saves, gives, and removes Aethel items.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.7
  * @since 1.7.9
  */
 public class AethelItemsAction {
@@ -44,7 +44,7 @@ public class AethelItemsAction {
    * @param user user
    */
   public static void getItem(InventoryClickEvent e, Player user) {
-    ItemStack item = PluginData.aethelItemsData.getItemsMap().
+    ItemStack item = PluginData.itemRegistry.getItemMap().
         get(ItemReader.readName(e.getCurrentItem())).getItem();
 
     if (user.getInventory().firstEmpty() != -1) {
@@ -61,10 +61,10 @@ public class AethelItemsAction {
    * @param user user
    */
   public static void removeItem(InventoryClickEvent e, Player user) {
-    AethelItem aethelItem = PluginData.aethelItemsData.getItemsMap().
+    PersistentItem aethelItem = PluginData.itemRegistry.getItemMap().
         get(ItemReader.readName(e.getCurrentItem()));
 
-    aethelItem.getFile().delete();
+    aethelItem.delete();
     user.sendMessage(Success.REMOVE_ITEM.message + ChatColor.WHITE + aethelItem.getName());
   }
 

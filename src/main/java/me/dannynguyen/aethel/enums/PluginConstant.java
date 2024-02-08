@@ -16,9 +16,9 @@ import java.util.Set;
  */
 public class PluginConstant {
   public static final NamespacedKey[] aethelTags = {
-      PluginNamespacedKey.AETHELITEM_CATEGORY.namespacedKey,
-      PluginNamespacedKey.FORGE_CATEGORY.namespacedKey,
-      PluginNamespacedKey.FORGE_ID.namespacedKey};
+      PluginNamespacedKey.AETHELITEM_CATEGORY.getNamespacedKey(),
+      PluginNamespacedKey.FORGE_CATEGORY.getNamespacedKey(),
+      PluginNamespacedKey.FORGE_ID.getNamespacedKey()};
 
   public static final Map<String, String[]> aethelAttributesMap = Map.of(
       "offense", new String[]{

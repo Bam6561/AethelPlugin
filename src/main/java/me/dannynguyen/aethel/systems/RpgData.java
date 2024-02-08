@@ -73,7 +73,7 @@ public class RpgData {
       }
 
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-      NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+      NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         equipment.put(slot, new HashMap<>());
         readEquipmentMeta(equipment, aethelAttributes, slot, dataContainer, listKey);

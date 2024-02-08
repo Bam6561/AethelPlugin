@@ -348,7 +348,7 @@ public class ItemEditorInventoryListener {
    */
   private static void generateLore(ItemStack item, ItemMeta meta) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {

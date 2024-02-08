@@ -139,7 +139,7 @@ public class ItemEditorAttributes {
    */
   private static Map<String, List<AethelAttributeModifierSlot>> mapAethelAttributes(
       PersistentDataContainer dataContainer) {
-    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.namespacedKey;
+    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {
