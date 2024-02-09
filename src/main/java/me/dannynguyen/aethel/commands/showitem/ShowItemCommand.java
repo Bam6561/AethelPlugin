@@ -87,8 +87,8 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("past") || action.equals("p")) {
       user.openInventory(ShowItemPast.openInventory(user));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.SHOWITEM_PAST.inventory));
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
     } else {
       user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }

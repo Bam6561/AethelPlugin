@@ -88,16 +88,16 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openCraftingMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace,
+    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "craft"));
-    user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), ""));
 
     user.openInventory(ForgeInventory.openMainMenu(user, "craft"));
 
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CATEGORY.inventory));
-    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
@@ -107,16 +107,16 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openEditorMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace,
+    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "edit"));
-    user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), ""));
 
     user.openInventory(ForgeInventory.openMainMenu(user, "edit"));
 
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CATEGORY.inventory));
-    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 

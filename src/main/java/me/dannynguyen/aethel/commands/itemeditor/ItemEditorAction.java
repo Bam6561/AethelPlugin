@@ -23,7 +23,7 @@ public class ItemEditorAction {
    */
   public static void awaitMessageResponse(Player user, String metadata) {
     user.closeInventory();
-    user.setMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.MESSAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "itemeditor." + metadata));
   }
 
@@ -33,17 +33,17 @@ public class ItemEditorAction {
    * @param user user
    */
   public static void openAttributesMenu(Player user) {
-    if (user.hasMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace)) {
-      user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
+      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     }
 
-    user.setMetadata(PluginPlayerMeta.Namespace.SLOT.namespace,
+    user.setMetadata(PluginPlayerMeta.SLOT.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "head"));
 
     user.openInventory(ItemEditorAttributes.openAttributesMenu(user, "Head"));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryMenuListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   /**
@@ -52,13 +52,13 @@ public class ItemEditorAction {
    * @param user user
    */
   public static void openEnchantsMenu(Player user) {
-    if (user.hasMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace)) {
-      user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
+      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     }
 
     user.openInventory(ItemEditorEnchants.openMenu(user));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_ENCHANTS.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTS.menu));
   }
 
   /**
@@ -67,13 +67,13 @@ public class ItemEditorAction {
    * @param user user
    */
   public static void openTagsMenu(Player user) {
-    if (user.hasMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace)) {
-      user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
+      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     }
 
     user.openInventory(ItemEditorTags.openTagsMenu(user));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_TAGS.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_TAGS.menu));
   }
 
 
@@ -85,7 +85,7 @@ public class ItemEditorAction {
   public static void returnToMainMenu(Player user) {
     user.openInventory(ItemEditorInventory.openMainMenu(user,
         PluginData.itemEditorData.getEditedItemMap().get(user)));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
   }
 }

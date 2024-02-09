@@ -37,7 +37,7 @@ public class ForgeInventory {
     Inventory inv = createInventory(user, action);
     addRecipeCategories(inv);
 
-    String futureAction = user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString();
+    String futureAction = user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString();
     List<String> helpLore = List.of(ChatColor.WHITE + "Recipe Categories");
 
     if (futureAction.equals("craft")) {
@@ -62,11 +62,11 @@ public class ForgeInventory {
     String title = ChatColor.DARK_GRAY + "Forge";
     switch (action) {
       case "craft" -> title += ChatColor.BLUE + " Craft " +
-          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
       case "edit" -> title += ChatColor.YELLOW + " Edit " +
-          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
       case "remove" -> title += ChatColor.RED + " Remove " +
-          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+          ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     }
     return Bukkit.createInventory(user, 54, title);
   }
@@ -104,7 +104,7 @@ public class ForgeInventory {
         getRecipeCategoriesMap().get(requestedCategory);
     int numberOfPages = category.getNumberOfPages();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
-    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     inv.setContents(category.getPages().get(pageViewed).getContents());

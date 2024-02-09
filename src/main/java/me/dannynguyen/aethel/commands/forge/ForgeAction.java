@@ -52,8 +52,8 @@ public class ForgeAction {
     addActions(inv, invType);
 
     user.openInventory(inv);
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CRAFT_CONFIRM.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CRAFT_CONFIRM.menu));
   }
 
   /**
@@ -73,8 +73,8 @@ public class ForgeAction {
     addActions(inv, invType);
 
     user.openInventory(inv);
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_SAVE.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
   }
 
   /**
@@ -89,8 +89,8 @@ public class ForgeAction {
     addActions(inv, invType);
 
     user.openInventory(inv);
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_SAVE.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
   }
 
   /**

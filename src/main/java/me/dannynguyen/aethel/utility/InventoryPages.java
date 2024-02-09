@@ -55,8 +55,7 @@ public class InventoryPages {
    * @param inv interacting inventory
    */
   public static void addBackButton(Inventory inv, int invSlot) {
-    inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(
-        PluginPlayerHead.CHISELED_BOOKSHELF.head, ChatColor.AQUA + "Back"));
+    inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CHISELED_BOOKSHELF.head, ChatColor.AQUA + "Back"));
   }
 
   /**
@@ -68,13 +67,10 @@ public class InventoryPages {
    */
   public static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
     if (pageViewed > 0) {
-      inv.setItem(0, ItemCreator.createPluginPlayerHead(
-          PluginPlayerHead.BACKWARD_RED.head, ChatColor.AQUA + "Previous Page"));
+      inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKWARD_RED.head, ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, ItemCreator.
-          createPluginPlayerHead(
-              PluginPlayerHead.FORWARD_LIME.head, ChatColor.AQUA + "Next Page"));
+      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.FORWARD_LIME.head, ChatColor.AQUA + "Next Page"));
     }
   }
 }

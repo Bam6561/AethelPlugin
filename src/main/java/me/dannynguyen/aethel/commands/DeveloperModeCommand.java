@@ -55,12 +55,12 @@ public class DeveloperModeCommand implements CommandExecutor {
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) {
-      user.setMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace,
+    if (!user.hasMetadata(PluginPlayerMeta.DEVELOPER.getMeta())) {
+      user.setMetadata(PluginPlayerMeta.DEVELOPER.getMeta(),
           new FixedMetadataValue(Plugin.getInstance(), 1));
       user.sendMessage(Success.DEVELOPERMODE_ON.message);
     } else {
-      user.removeMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace, Plugin.getInstance());
+      user.removeMetadata(PluginPlayerMeta.DEVELOPER.getMeta(), Plugin.getInstance());
       user.sendMessage(Success.DEVELOPERMODE_OFF.message);
     }
   }

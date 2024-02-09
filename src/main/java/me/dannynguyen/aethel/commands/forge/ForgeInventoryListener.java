@@ -33,14 +33,14 @@ public class ForgeInventoryListener {
         }
         case 3 -> ForgeAction.openForgeSaveInventory(user);
         default -> {
-          String action = user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString();
+          String action = user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString();
           String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-          user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
+          user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
               new FixedMetadataValue(Plugin.getInstance(), itemName));
-          int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
+          int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
           user.openInventory(ForgeInventory.openForgeCategoryPage(user, action, itemName, pageRequest));
-          user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+          user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
               new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
         }
       }
@@ -68,7 +68,7 @@ public class ForgeInventoryListener {
         }
         case 3 -> ForgeAction.openForgeSaveInventory(user);
         case 4 -> {
-          if (user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString().equals("edit")) {
+          if (user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString().equals("edit")) {
             openForgeEdit(user);
           }
         }
@@ -125,12 +125,12 @@ public class ForgeInventoryListener {
    * @param action type of interaction
    */
   private static void previousRecipePage(Player user, String action) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(ForgeInventory.openForgeCategoryPage(user, action, categoryName,
         pageRequest - 1));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
   }
 
@@ -144,18 +144,18 @@ public class ForgeInventoryListener {
    * @param user user
    */
   private static void openForgeEdit(Player user) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     if (categoryName.equals("")) {
       user.openInventory(ForgeInventory.openMainMenu(user, "edit"));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CATEGORY.inventory));
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
     } else {
-      categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+      categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
 
       user.openInventory(ForgeInventory.openForgeCategoryPage(user, "edit",
-          categoryName, user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_EDIT.inventory));
+          categoryName, user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt()));
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_EDIT.menu));
     }
   }
 
@@ -165,12 +165,12 @@ public class ForgeInventoryListener {
    * @param user user
    */
   private static void openForgeRemove(Player user) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
 
     user.openInventory(ForgeInventory.openForgeCategoryPage(user, "remove",
-        categoryName, user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_REMOVE.inventory));
+        categoryName, user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt()));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_REMOVE.menu));
   }
 
   /**
@@ -179,14 +179,14 @@ public class ForgeInventoryListener {
    * @param user user
    */
   private static void returnToMainMenu(Player user) {
-    String action = user.getMetadata(PluginPlayerMeta.Namespace.FUTURE.namespace).get(0).asString();
-    user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
+    String action = user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString();
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), ""));
 
     user.openInventory(ForgeInventory.openMainMenu(user, action));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CATEGORY.inventory));
-    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
@@ -196,12 +196,12 @@ public class ForgeInventoryListener {
    * @param user user
    */
   private static void openForgeCraft(Player user) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
 
     user.openInventory(ForgeInventory.openForgeCategoryPage(user, "craft", categoryName,
-        user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt()));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.FORGE_CRAFT.inventory));
+        user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt()));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CRAFT.menu));
   }
 
   /**
@@ -211,12 +211,12 @@ public class ForgeInventoryListener {
    * @param action type of interaction
    */
   private static void nextRecipePage(Player user, String action) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(ForgeInventory.openForgeCategoryPage(user, action, categoryName,
         pageRequest + 1));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "forge." + action));
   }
 

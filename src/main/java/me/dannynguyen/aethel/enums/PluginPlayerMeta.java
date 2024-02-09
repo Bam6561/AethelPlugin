@@ -4,28 +4,28 @@ package me.dannynguyen.aethel.enums;
  * PluginPlayerMeta is a collection of enums containing the plugin's accessed player metadata types.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.7
  * @since 1.7.6
  */
-public class PluginPlayerMeta {
-  /**
-   * Metadata namespaces.
-   */
-  public enum Namespace {
-    CATEGORY("category"),
-    DEVELOPER("developer"),
-    FUTURE("future"),
-    INVENTORY("inventory"),
-    MESSAGE("message"),
-    PAGE("page"),
-    PLAYER("player"),
-    SLOT("slot"),
-    TYPE("type");
+public enum PluginPlayerMeta {
+  CATEGORY("category"),
+  DEVELOPER("developer"),
+  FUTURE("future"),
+  INVENTORY("inventory"),
+  MESSAGE("message"),
+  PAGE("page"),
+  PLAYER("player"),
+  SLOT("slot"),
+  TYPE("type");
 
-    public final String namespace;
+  private final String meta;
 
-    Namespace(String namespace) {
-      this.namespace = namespace;
-    }
+  PluginPlayerMeta(String meta) {
+    this.meta = meta;
+  }
+
+  public String getMeta() {
+    return this.meta;
   }
 }
+

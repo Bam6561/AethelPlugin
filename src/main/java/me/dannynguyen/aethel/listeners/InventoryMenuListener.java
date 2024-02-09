@@ -1,24 +1,28 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.commands.aethelItems.AethelItemsInventoryListener;
+import me.dannynguyen.aethel.commands.aethelitem.AethelItemAction;
+import me.dannynguyen.aethel.commands.aethelitem.AethelItemListener;
+import me.dannynguyen.aethel.commands.aethelitem.AethelItemMenu;
 import me.dannynguyen.aethel.commands.character.CharacterInventoryListener;
 import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsInventoryListener;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 
 /**
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.2
+ * @version 1.9.8
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -30,9 +34,9 @@ public class InventoryMenuListener implements Listener {
   @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
     Player user = (Player) e.getWhoClicked();
-    if (user.hasMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace)) {
+    if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
       String[] invType = user.getMetadata(
-          PluginPlayerMeta.Namespace.INVENTORY.namespace).get(0).asString().split("\\.");
+          PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
       switch (invType[0]) {
         case "aethelitems" -> interpretAethelItems(e, user, invType);
         case "character" -> interpretCharacter(e, user, invType);
@@ -52,9 +56,9 @@ public class InventoryMenuListener implements Listener {
   @EventHandler
   public void onDrag(InventoryDragEvent e) {
     Player user = (Player) e.getWhoClicked();
-    if (user.hasMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace)) {
+    if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
       String[] invType = user.getMetadata(
-          PluginPlayerMeta.Namespace.INVENTORY.namespace).get(0).asString().split("\\.");
+          PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
       switch (invType[0]) {
         case "aethelitems", "character" -> e.setCancelled(true);
       }
@@ -63,16 +67,33 @@ public class InventoryMenuListener implements Listener {
 
   /**
    * Determines which AethelItem inventory is being interacting with.
+   * <p>
+   * - AethelItem: Prevent adding new items to the inventory outside of the intended Save Item slot.
+   * - Player: Prevent shift-clicks adding items to the AethelItem inventory.
+   * </p>
    *
    * @param e       inventory click event
    * @param user    user
    * @param invType inventory type
    */
   private void interpretAethelItems(InventoryClickEvent e, Player user, String[] invType) {
-    switch (invType[1]) {
-      case "category" -> AethelItemsInventoryListener.readMainClick(e, user);
-      case "get" -> AethelItemsInventoryListener.readCategoryClick(e, user, "get");
-      case "remove" -> AethelItemsInventoryListener.readCategoryClick(e, user, "remove");
+    org.bukkit.inventory.Inventory clickedInv = e.getClickedInventory();
+    if (clickedInv != null) {
+      if (clickedInv.getType().equals(InventoryType.CHEST)) {
+        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+          AethelItemListener listener = new AethelItemListener(e, user);
+          switch (invType[1]) {
+            case "category" -> listener.interpretMainMenuClick();
+            case "get" -> listener.interpretCategoryClick(AethelItemAction.GET);
+            case "remove" -> listener.interpretCategoryClick(AethelItemAction.REMOVE);
+          }
+        }
+        if (e.getSlot() != 3) {
+          e.setCancelled(true);
+        }
+      } else if (e.getClick().isShiftClick()) {
+        e.setCancelled(true);
+      }
     }
   }
 
@@ -152,16 +173,16 @@ public class InventoryMenuListener implements Listener {
   @EventHandler
   public void onClose(InventoryCloseEvent e) {
     Player player = (Player) e.getPlayer();
-    if (player.hasMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace)) {
-      player.removeMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace, Plugin.getInstance());
+    if (player.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
+      player.removeMetadata(PluginPlayerMeta.INVENTORY.getMeta(), Plugin.getInstance());
     }
   }
 
   /**
-   * Currently open inventory.
+   * Currently open menu.
    */
-  public enum Inventory {
-    AETHELITEMS_CATEGORY("aethelitems.category"),
+  public enum Menu {
+    AETHELITEM_CATEGORY("aethelitems.category"),
     AETHELITEMS_GET("aethelitems.get"),
     AETHELITEMS_REMOVE("aethelitems.remove"),
     CHARACTER_SHEET("character.sheet"),
@@ -181,10 +202,10 @@ public class InventoryMenuListener implements Listener {
     PLAYERSTATS_SUBSTAT("playerstats.substat"),
     SHOWITEM_PAST("showitem.past");
 
-    public final String inventory;
+    public final String menu;
 
-    Inventory(String inventory) {
-      this.inventory = inventory;
+    Menu(String menu) {
+      this.menu = menu;
     }
   }
 }

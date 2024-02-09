@@ -26,9 +26,9 @@ public class MessageInputListener implements Listener {
   @EventHandler
   public void onPlayerChat(AsyncPlayerChatEvent e) {
     Player user = e.getPlayer();
-    if (user.hasMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace)) {
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
       String[] msgType =
-          user.getMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace).get(0).asString().split("\\.");
+          user.getMetadata(PluginPlayerMeta.MESSAGE.getMeta()).get(0).asString().split("\\.");
       switch (msgType[0]) {
         case "itemeditor" -> interpretItemEditor(e, user, msgType);
       }

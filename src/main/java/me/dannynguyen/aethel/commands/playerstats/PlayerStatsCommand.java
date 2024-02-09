@@ -64,8 +64,8 @@ public class PlayerStatsCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("past") || parameter.equals("p")) {
       user.openInventory(PlayerStatsPast.createInventory(user));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_PAST.inventory));
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTATS_PAST.menu));
     } else {
       openPlayerStatsOther(user, parameter);
     }
@@ -77,12 +77,12 @@ public class PlayerStatsCommand implements CommandExecutor {
    * @param user user
    */
   private void openPlayerStatsSelf(Player user) {
-    user.setMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace,
+    user.setMetadata(PluginPlayerMeta.PLAYER.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), user.getName()));
 
     user.openInventory(PlayerStatsInventory.openMainMenu(user, user.getName()));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTATS_CATEGORY.menu));
   }
 
   /**
@@ -94,12 +94,12 @@ public class PlayerStatsCommand implements CommandExecutor {
   private void openPlayerStatsOther(Player user, String requestedPlayer) {
     OfflinePlayer player = Bukkit.getOfflinePlayer(requestedPlayer);
     if (player.hasPlayedBefore()) {
-      user.setMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace,
+      user.setMetadata(PluginPlayerMeta.PLAYER.getMeta(),
           new FixedMetadataValue(Plugin.getInstance(), player.getName()));
 
       user.openInventory(PlayerStatsInventory.openMainMenu(user, player.getName()));
-      user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTATS_CATEGORY.menu));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

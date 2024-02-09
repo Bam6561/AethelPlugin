@@ -43,7 +43,7 @@ public class ForgeCraftOperation {
     List<ItemStack> results = recipe.getResults();
     List<ItemStack> components = recipe.getComponents();
 
-    if (!user.hasMetadata(PluginPlayerMeta.Namespace.DEVELOPER.namespace)) { // Developer mode bypass
+    if (!user.hasMetadata(PluginPlayerMeta.DEVELOPER.getMeta())) { // Developer mode bypass
       if (hasMatchingType(user, components)) {
         processMatchingType(user, results);
       } else {

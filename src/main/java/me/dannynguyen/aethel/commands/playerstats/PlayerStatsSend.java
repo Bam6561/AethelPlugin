@@ -28,7 +28,7 @@ public class PlayerStatsSend {
    * @param user user
    */
   public static void sendStat(InventoryClickEvent e, Player user) {
-    String statOwner = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
+    String statOwner = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
@@ -55,13 +55,13 @@ public class PlayerStatsSend {
    * @param user user
    */
   public static void sendSubstat(InventoryClickEvent e, Player user) {
-    String statOwner = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
+    String statOwner = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     String substatName = ChatColor.stripColor(itemName.replace(" ", "_").toUpperCase());
 
-    String statCategory = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
+    String statCategory = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     List<String> statValues = new ArrayList<>();
 
     if (statCategory.equals("Entity Types")) {

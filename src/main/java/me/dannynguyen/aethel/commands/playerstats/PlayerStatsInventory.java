@@ -111,7 +111,7 @@ public class PlayerStatsInventory {
       numberOfPages = playerStatsData.getNumberOfMaterialPages();
     }
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
-    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     inv.setContents(playerStatsData.getSubstatCategoryPages().get(category).get(pageViewed).getContents());
@@ -157,7 +157,7 @@ public class PlayerStatsInventory {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
+    String statOwner = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     meta.setOwningPlayer(requestedPlayer);

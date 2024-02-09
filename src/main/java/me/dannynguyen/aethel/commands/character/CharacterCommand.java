@@ -56,8 +56,8 @@ public class CharacterCommand implements CommandExecutor {
    */
   private void openCharacterSheet(Player user) {
     user.openInventory(CharacterSheet.openCharacterSheet(user));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.CHARACTER_SHEET.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.CHARACTER_SHEET.menu));
   }
 
   private enum Permission {

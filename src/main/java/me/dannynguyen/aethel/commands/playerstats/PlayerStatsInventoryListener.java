@@ -29,20 +29,20 @@ public class PlayerStatsInventoryListener {
         e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       if (e.getSlot() > 8) {
         String requestedPlayerName = user.getMetadata(
-            PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
+            PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
         String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-        user.setMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace,
+        user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
             new FixedMetadataValue(Plugin.getInstance(), itemName));
 
         user.openInventory(PlayerStatsInventory.
             openCategoryPage(user, requestedPlayerName, itemName, 0));
         switch (itemName) {
-          case "Entity Types", "Materials" -> user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+          case "Entity Types", "Materials" -> user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
               new FixedMetadataValue(Plugin.getInstance(),
-                  InventoryMenuListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
-          default -> user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+                  InventoryMenuListener.Menu.PLAYERSTATS_SUBSTAT.menu));
+          default -> user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
               new FixedMetadataValue(Plugin.getInstance(),
-                  InventoryMenuListener.Inventory.PLAYERSTATS_STAT.inventory));
+                  InventoryMenuListener.Menu.PLAYERSTATS_STAT.menu));
         }
       }
     }
@@ -97,15 +97,15 @@ public class PlayerStatsInventoryListener {
    * @param user user
    */
   private static void previousStatPage(Player user) {
-    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
+    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(PlayerStatsInventory.
         openCategoryPage(user, requestedPlayerName, categoryName, pageRequest - 1));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryMenuListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+            InventoryMenuListener.Menu.PLAYERSTATS_SUBSTAT.menu));
   }
 
   /**
@@ -114,11 +114,11 @@ public class PlayerStatsInventoryListener {
    * @param user user
    */
   private static void returnToMainMenu(Player user) {
-    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
+    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
     user.openInventory(PlayerStatsInventory.openMainMenu(user, requestedPlayerName));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_CATEGORY.inventory));
-    user.setMetadata(PluginPlayerMeta.Namespace.PAGE.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTATS_CATEGORY.menu));
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
@@ -128,13 +128,13 @@ public class PlayerStatsInventoryListener {
    * @param user user
    */
   private static void nextStatPage(Player user) {
-    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.Namespace.PLAYER.namespace).get(0).asString();
-    String categoryName = user.getMetadata(PluginPlayerMeta.Namespace.CATEGORY.namespace).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.Namespace.PAGE.namespace).get(0).asInt();
+    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(PlayerStatsInventory.
         openCategoryPage(user, requestedPlayerName, categoryName, pageRequest + 1));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Inventory.PLAYERSTATS_SUBSTAT.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
+        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTATS_SUBSTAT.menu));
   }
 }

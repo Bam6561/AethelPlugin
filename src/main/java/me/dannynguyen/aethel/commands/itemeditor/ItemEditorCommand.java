@@ -67,9 +67,7 @@ public class ItemEditorCommand implements CommandExecutor {
     PluginData.itemEditorData.getEditedItemMap().put(user, item);
 
     user.openInventory(ItemEditorInventory.openMainMenu(user, item));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
-        new FixedMetadataValue(Plugin.getInstance(),
-            InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
   }
 
   private enum Permission {

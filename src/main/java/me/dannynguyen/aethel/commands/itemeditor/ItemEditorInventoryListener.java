@@ -243,13 +243,13 @@ public class ItemEditorInventoryListener {
    * @param equipmentSlot interacting equipment slot.
    */
   private static void setMode(Player user, String equipmentSlot) {
-    user.setMetadata(PluginPlayerMeta.Namespace.SLOT.namespace,
+    user.setMetadata(PluginPlayerMeta.SLOT.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), equipmentSlot));
 
     user.openInventory(ItemEditorAttributes.openAttributesMenu(user, equipmentSlot));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryMenuListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   /**
@@ -271,7 +271,7 @@ public class ItemEditorInventoryListener {
         ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeValueContext(attributeName));
 
-    user.setMetadata(PluginPlayerMeta.Namespace.TYPE.namespace,
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(), attribute));
     ItemEditorAction.awaitMessageResponse(user, "attributes");
   }
@@ -290,7 +290,7 @@ public class ItemEditorInventoryListener {
         + ChatColor.WHITE + "Input " + ChatColor.AQUA
         + TextFormatter.capitalizePhrase(enchant) + ChatColor.WHITE + " value.");
 
-    user.setMetadata(PluginPlayerMeta.Namespace.TYPE.namespace, new FixedMetadataValue(Plugin.getInstance(), enchant));
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), enchant));
     ItemEditorAction.awaitMessageResponse(user, "enchants");
   }
 
@@ -306,7 +306,7 @@ public class ItemEditorInventoryListener {
     user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
         ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + ChatColor.WHITE + " value.");
 
-    user.setMetadata(PluginPlayerMeta.Namespace.TYPE.namespace, new FixedMetadataValue(Plugin.getInstance(), aethelTag));
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), aethelTag));
     ItemEditorAction.awaitMessageResponse(user, "tags");
   }
 

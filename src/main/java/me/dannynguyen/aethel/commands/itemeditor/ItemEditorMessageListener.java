@@ -183,13 +183,13 @@ public class ItemEditorMessageListener {
    * @param item interacting item
    */
   private static void returnToMainMenu(Player user, ItemStack item) {
-    user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
+    user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     Bukkit.getScheduler().runTask(Plugin.getInstance(),
         () -> {
           user.openInventory(ItemEditorInventory.openMainMenu(user, item));
-          user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+          user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
               new FixedMetadataValue(Plugin.getInstance(),
-                  InventoryMenuListener.Inventory.ITEMEDITOR_COSMETICS.inventory));
+                  InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
         });
   }
 
@@ -203,7 +203,7 @@ public class ItemEditorMessageListener {
    */
   public static void setAttribute(AsyncPlayerChatEvent e, Player user, ItemStack item) {
     ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
-    String type = user.getMetadata(PluginPlayerMeta.Namespace.TYPE.namespace).get(0).asString();
+    String type = user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString();
     if (!type.contains("aethel.")) {
       setMinecraftAttribute(e, user, item, meta, type);
     } else {
@@ -221,7 +221,7 @@ public class ItemEditorMessageListener {
    */
   public static void setEnchant(AsyncPlayerChatEvent e, Player user, ItemStack item) {
     NamespacedKey enchant = NamespacedKey.minecraft(user.getMetadata(
-        PluginPlayerMeta.Namespace.TYPE.namespace).get(0).asString());
+        PluginPlayerMeta.TYPE.getMeta()).get(0).asString());
 
     if (!e.getMessage().equals("0")) {
       setEnchantLevel(e, user, item, enchant);
@@ -245,7 +245,7 @@ public class ItemEditorMessageListener {
   public static void setTag(AsyncPlayerChatEvent e, Player user,
                             ItemStack item, ItemMeta meta) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String tagType = user.getMetadata(PluginPlayerMeta.Namespace.TYPE.namespace).get(0).asString();
+    String tagType = user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString();
     NamespacedKey aethelTagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tagType);
 
     if (!e.getMessage().equals("-")) {
@@ -275,7 +275,7 @@ public class ItemEditorMessageListener {
                                             ItemMeta meta, String type) {
     Attribute attribute = Attribute.valueOf(type);
     EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(
-        user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString().toUpperCase());
+        user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString().toUpperCase());
 
     try {
       AttributeModifier attributeModifier = new AttributeModifier(
@@ -311,7 +311,7 @@ public class ItemEditorMessageListener {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey attributesKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
 
-    String equipmentSlot = user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString();
+    String equipmentSlot = user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString();
     String attributeName = type + "." + equipmentSlot;
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attributeName);
 
@@ -488,14 +488,14 @@ public class ItemEditorMessageListener {
    * @param user user
    */
   private static void returnToAttributesMenu(Player user) {
-    user.removeMetadata(PluginPlayerMeta.Namespace.MESSAGE.namespace, Plugin.getInstance());
+    user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
 
     user.openInventory(ItemEditorAttributes.
         openAttributesMenu(user,
-            user.getMetadata(PluginPlayerMeta.Namespace.SLOT.namespace).get(0).asString()));
-    user.setMetadata(PluginPlayerMeta.Namespace.INVENTORY.namespace,
+            user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString()));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
         new FixedMetadataValue(Plugin.getInstance(),
-            InventoryMenuListener.Inventory.ITEMEDITOR_ATTRIBUTES.inventory));
+            InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   private enum Success {

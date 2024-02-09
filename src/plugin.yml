@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.9.7
+version: 1.9.8
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -7,8 +7,8 @@ prefix: Aethel
 website: https://linktr.ee/aethelsmp
 description: Plugin for Aethel SMP.
 commands:
-  aethelitems:
-    description: Opens an AethelItem inventory.
+  aethelitem:
+    description: Opens an AethelItem menu.
     usage: /aethelitem [reload]
     aliases: [ ai, aitem ]
   aetheltags:
