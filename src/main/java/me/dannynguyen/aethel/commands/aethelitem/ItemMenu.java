@@ -20,13 +20,13 @@ import java.util.Set;
 
 /**
  * Represents a menu that supports categorical pagination
- * for obtaining, creating, editing, and removing Aethel items.
+ * for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.9.8
+ * @version 1.9.9
  * @since 1.4.0
  */
-public class AethelItemMenu {
+public class ItemMenu {
   /**
    * AethelItem GUI.
    */
@@ -40,7 +40,7 @@ public class AethelItemMenu {
   /**
    * GUI action.
    */
-  private final AethelItemAction action;
+  private final ItemMenuAction action;
 
   /**
    * Associates an AethelItem menu with its user and action.
@@ -48,7 +48,7 @@ public class AethelItemMenu {
    * @param user   user
    * @param action type of interaction
    */
-  public AethelItemMenu(@NotNull Player user, @NotNull AethelItemAction action) {
+  public ItemMenu(@NotNull Player user, @NotNull ItemMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
     this.menu = createMenu();
@@ -60,7 +60,7 @@ public class AethelItemMenu {
    * @return AethelItem menu
    */
   private Inventory createMenu() {
-    String title = ChatColor.DARK_GRAY + "Aethel Items";
+    String title = ChatColor.DARK_GRAY + "Aethel Item";
     String category = ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     switch (action) {
       case GET -> title += ChatColor.GREEN + " Get " + category;

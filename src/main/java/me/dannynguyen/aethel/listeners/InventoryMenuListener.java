@@ -1,9 +1,8 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.commands.aethelitem.AethelItemAction;
-import me.dannynguyen.aethel.commands.aethelitem.AethelItemListener;
-import me.dannynguyen.aethel.commands.aethelitem.AethelItemMenu;
+import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
+import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterInventoryListener;
 import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
@@ -22,7 +21,7 @@ import org.bukkit.event.inventory.InventoryType;
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.8
+ * @version 1.9.9
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -38,7 +37,7 @@ public class InventoryMenuListener implements Listener {
       String[] invType = user.getMetadata(
           PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
       switch (invType[0]) {
-        case "aethelitems" -> interpretAethelItems(e, user, invType);
+        case "aethelitem" -> interpretAethelItem(e, user, invType);
         case "character" -> interpretCharacter(e, user, invType);
         case "forge" -> interpretForge(e, user, invType);
         case "itemeditor" -> interpretItemEditor(e, user, invType);
@@ -60,7 +59,7 @@ public class InventoryMenuListener implements Listener {
       String[] invType = user.getMetadata(
           PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
       switch (invType[0]) {
-        case "aethelitems", "character" -> e.setCancelled(true);
+        case "aethelitem", "character" -> e.setCancelled(true);
       }
     }
   }
@@ -76,16 +75,16 @@ public class InventoryMenuListener implements Listener {
    * @param user    user
    * @param invType inventory type
    */
-  private void interpretAethelItems(InventoryClickEvent e, Player user, String[] invType) {
+  private void interpretAethelItem(InventoryClickEvent e, Player user, String[] invType) {
     org.bukkit.inventory.Inventory clickedInv = e.getClickedInventory();
     if (clickedInv != null) {
       if (clickedInv.getType().equals(InventoryType.CHEST)) {
         if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-          AethelItemListener listener = new AethelItemListener(e, user);
+          ItemMenuClick click = new ItemMenuClick(e, user);
           switch (invType[1]) {
-            case "category" -> listener.interpretMainMenuClick();
-            case "get" -> listener.interpretCategoryClick(AethelItemAction.GET);
-            case "remove" -> listener.interpretCategoryClick(AethelItemAction.REMOVE);
+            case "category" -> click.interpretMainMenuClick();
+            case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
+            case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
           }
         }
         if (e.getSlot() != 3) {
@@ -182,9 +181,9 @@ public class InventoryMenuListener implements Listener {
    * Currently open menu.
    */
   public enum Menu {
-    AETHELITEM_CATEGORY("aethelitems.category"),
-    AETHELITEMS_GET("aethelitems.get"),
-    AETHELITEMS_REMOVE("aethelitems.remove"),
+    AETHELITEM_CATEGORY("aethelitem.category"),
+    AETHELITEM_GET("aethelitem.get"),
+    AETHELITEM_REMOVE("aethelitem.remove"),
     CHARACTER_SHEET("character.sheet"),
     FORGE_CATEGORY("forge.category"),
     FORGE_CRAFT("forge.craft"),

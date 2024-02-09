@@ -3,7 +3,7 @@ package me.dannynguyen.aethel;
 import me.dannynguyen.aethel.commands.AethelTagsCommand;
 import me.dannynguyen.aethel.commands.DeveloperModeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
-import me.dannynguyen.aethel.commands.aethelitem.AethelItemCommand;
+import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
@@ -26,7 +26,7 @@ import java.util.Map;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.9.8
+ * @version 1.9.9
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -58,7 +58,7 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's commands.
    */
   private void registerCommands() {
-    this.getCommand("aethelitem").setExecutor(new AethelItemCommand());
+    this.getCommand("aethelitem").setExecutor(new ItemCommand());
     this.getCommand("aetheltags").setExecutor(new AethelTagsCommand());
     this.getCommand("character").setExecutor(new CharacterCommand());
     this.getCommand("developermode").setExecutor(new DeveloperModeCommand());

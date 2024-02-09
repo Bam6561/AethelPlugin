@@ -17,11 +17,11 @@ import java.util.logging.Logger;
  * PluginData stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.7
+ * @version 1.9.9
  * @since 1.1.7
  */
 public class PluginData {
-  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEMS.file);
+  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.file);
   public static final ItemEditorData itemEditorData = new ItemEditorData();
   public static final ForgeData forgeData = new ForgeData();
   public static final PlayerStatsData playerStatsData = new PlayerStatsData();
@@ -45,14 +45,14 @@ public class PluginData {
       resourceDirectory.mkdir();
     }
 
-    File aethelItemsDirectory = PluginDirectory.AETHELITEMS.file;
-    if (aethelItemsDirectory.exists()) {
+    File aethelItemDirectory = PluginDirectory.AETHELITEM.file;
+    if (aethelItemDirectory.exists()) {
       start = System.nanoTime();
       PluginData.itemRegistry.loadData();
       finish = System.nanoTime();
-      log.info(Success.LOADED_AETHELITEMS.message + convertToMs(hundredths, start, finish));
+      log.info(Success.LOADED_AETHELITEM.message + convertToMs(hundredths, start, finish));
     } else {
-      aethelItemsDirectory.mkdir();
+      aethelItemDirectory.mkdir();
     }
 
     File forgeDirectory = PluginDirectory.FORGE.file;
@@ -84,7 +84,7 @@ public class PluginData {
 
   private enum Success {
     LOADING_RESOURCES("[Aethel] Loading Resources"),
-    LOADED_AETHELITEMS("[Aethel] Loaded Aethel Items: "),
+    LOADED_AETHELITEM("[Aethel] Loaded Aethel Items: "),
     LOADED_FORGE("[Aethel] Loaded Forge Recipes: "),
     LOADED_PLAYERSTATS("[Aethel] Loaded Player Stats: ");
 

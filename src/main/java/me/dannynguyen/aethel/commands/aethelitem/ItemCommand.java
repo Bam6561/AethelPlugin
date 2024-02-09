@@ -21,10 +21,10 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.8
+ * @version 1.9.9
  * @since 1.3.2
  */
-public class AethelItemCommand implements CommandExecutor {
+public class ItemCommand implements CommandExecutor {
   /**
    * Executes the AethelItem command.
    *
@@ -69,7 +69,7 @@ public class AethelItemCommand implements CommandExecutor {
    */
   private void openMainMenu(Player user) {
     user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
-    user.openInventory(new AethelItemMenu(user, AethelItemAction.VIEW).openMainMenu());
+    user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_CATEGORY.menu));
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }

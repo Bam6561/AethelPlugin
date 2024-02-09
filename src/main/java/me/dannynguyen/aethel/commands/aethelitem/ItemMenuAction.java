@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
  * Types of interaction within AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.9.8
+ * @version 1.9.9
  * @since 1.9.8
  */
-public enum AethelItemAction {
+public enum ItemMenuAction {
   /**
    * Obtain items.
    */
@@ -32,7 +32,7 @@ public enum AethelItemAction {
    * @return string value of action
    */
   @Nullable
-  public static String asString(AethelItemAction action) {
+  public static String asString(ItemMenuAction action) {
     switch (action) {
       case GET -> {
         return "get";
