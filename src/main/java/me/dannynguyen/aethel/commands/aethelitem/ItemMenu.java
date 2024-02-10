@@ -19,11 +19,10 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Represents a menu that supports categorical pagination
- * for obtaining, creating, editing, and removing items.
+ * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.9.9
+ * @version 1.9.10
  * @since 1.4.0
  */
 public class ItemMenu {
@@ -43,7 +42,7 @@ public class ItemMenu {
   private final ItemMenuAction action;
 
   /**
-   * Associates an AethelItem menu with its user and action.
+   * Associates a new AethelItem menu with its user and action.
    *
    * @param user   user
    * @param action type of interaction
@@ -63,10 +62,10 @@ public class ItemMenu {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
     String category = ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get " + category;
-      case REMOVE -> title += ChatColor.RED + " Remove " + category;
+      case GET -> title += ChatColor.GREEN + " Get ";
+      case REMOVE -> title += ChatColor.RED + " Remove ";
     }
-    return Bukkit.createInventory(user, 54, title);
+    return Bukkit.createInventory(user, 54, title + category);
   }
 
   /**
@@ -103,7 +102,7 @@ public class ItemMenu {
   }
 
   /**
-   * Adds a help context to the menu.
+   * Adds contextual help.
    */
   private void addContext(String requestedCategory) {
     List<String> helpLore;

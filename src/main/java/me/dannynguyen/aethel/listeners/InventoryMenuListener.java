@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.listeners;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
-import me.dannynguyen.aethel.commands.character.CharacterInventoryListener;
+import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
 import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsInventoryListener;
@@ -12,16 +12,13 @@ import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 
 /**
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.9
+ * @version 1.9.10
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -32,17 +29,19 @@ public class InventoryMenuListener implements Listener {
    */
   @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
-    Player user = (Player) e.getWhoClicked();
-    if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
-      String[] invType = user.getMetadata(
-          PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
-      switch (invType[0]) {
-        case "aethelitem" -> interpretAethelItem(e, user, invType);
-        case "character" -> interpretCharacter(e, user, invType);
-        case "forge" -> interpretForge(e, user, invType);
-        case "itemeditor" -> interpretItemEditor(e, user, invType);
-        case "playerstats" -> interpretPlayerStats(e, user, invType);
-        case "showitem" -> e.setCancelled(true);
+    if (e.getClickedInventory() != null) {
+      Player user = (Player) e.getWhoClicked();
+      if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
+        String[] invType = user.getMetadata(
+            PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+        switch (invType[0]) {
+          case "aethelitem" -> interpretAethelItem(e, invType);
+          case "character" -> interpretCharacter(e, invType);
+          case "forge" -> interpretForge(e, user, invType);
+          case "itemeditor" -> interpretItemEditor(e, user, invType);
+          case "playerstats" -> interpretPlayerStats(e, user, invType);
+          case "showitem" -> e.setCancelled(true);
+        }
       }
     }
   }
@@ -65,47 +64,56 @@ public class InventoryMenuListener implements Listener {
   }
 
   /**
-   * Determines which AethelItem inventory is being interacting with.
+   * Determines which AethelItem menu is being interacting with.
    * <p>
-   * - AethelItem: Prevent adding new items to the inventory outside of the intended Save Item slot.
-   * - Player: Prevent shift-clicks adding items to the AethelItem inventory.
+   * - AethelItem: prevent adding new items to the menu outside of the intended Save Item slot
+   * - Player: prevent shift-clicks adding items to the AethelItem menu
    * </p>
    *
    * @param e       inventory click event
-   * @param user    user
    * @param invType inventory type
    */
-  private void interpretAethelItem(InventoryClickEvent e, Player user, String[] invType) {
-    org.bukkit.inventory.Inventory clickedInv = e.getClickedInventory();
-    if (clickedInv != null) {
-      if (clickedInv.getType().equals(InventoryType.CHEST)) {
-        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-          ItemMenuClick click = new ItemMenuClick(e, user);
-          switch (invType[1]) {
-            case "category" -> click.interpretMainMenuClick();
-            case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
-            case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
-          }
+  private void interpretAethelItem(InventoryClickEvent e, String[] invType) {
+    if (e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+      int slot = e.getSlot();
+      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+        ItemMenuClick click = new ItemMenuClick(e);
+        switch (invType[1]) {
+          case "category" -> click.interpretMainMenuClick();
+          case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
+          case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
         }
-        if (e.getSlot() != 3) {
-          e.setCancelled(true);
-        }
-      } else if (e.getClick().isShiftClick()) {
+      }
+      if (slot != 3) {
         e.setCancelled(true);
       }
+    } else if (e.getClick().isShiftClick()) {
+      e.setCancelled(true);
     }
   }
 
   /**
-   * Determines which Character inventory is being interacting with.
+   * Determines which Character menu is being interacting with.
+   * <p>
+   * - Character: prevent adding new items to the menu outside of the intended equipment slots.
+   * - Player: prevent shift-clicks adding items to the Character menu and
+   * remove the main hand item from the menu whenever the user clicks on it
+   * </p>
    *
    * @param e       inventory click event
-   * @param user    user
    * @param invType inventory type
    */
-  private void interpretCharacter(InventoryClickEvent e, Player user, String[] invType) {
-    switch (invType[1]) {
-      case "sheet" -> CharacterInventoryListener.readMainClick(e, user);
+  private void interpretCharacter(InventoryClickEvent e, String[] invType) {
+    // Prevents item duplication since copies of the user's items are stored inside the menu
+    if (!e.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) {
+      CharacterMenuClick click = new CharacterMenuClick(e);
+      if (e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+        switch (invType[1]) {
+          case "sheet" -> click.interpretMainMenuClick();
+        }
+      } else {
+        click.interpretPlayerInventoryClick();
+      }
     }
   }
 

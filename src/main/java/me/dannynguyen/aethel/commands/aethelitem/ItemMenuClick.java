@@ -23,28 +23,43 @@ import java.util.Objects;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.9.9
+ * @version 1.9.10
  * @since 1.4.0
  */
-public record ItemMenuClick(@NotNull InventoryClickEvent e, @NotNull Player user) {
+public class ItemMenuClick {
+  /**
+   * Inventory click event.
+   */
+  private final InventoryClickEvent e;
+
+  /**
+   * Player who clicked.
+   */
+  private final Player user;
+
+  /**
+   * Slot clicked.
+   */
+  private final int slotClicked;
+
   /**
    * Associates an inventory click event with its user in the context of an open AethelItem menu.
    *
-   * @param e    inventory click event
-   * @param user user
+   * @param e inventory click event
    */
-  public ItemMenuClick(@NotNull InventoryClickEvent e, @NotNull Player user) {
+  public ItemMenuClick(@NotNull InventoryClickEvent e) {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
-    this.user = Objects.requireNonNull(user, "Null user");
+    this.user = (Player) e.getWhoClicked();
+    this.slotClicked = e.getSlot();
   }
 
   /**
    * Either saves an item or opens an item category page.
    */
   public void interpretMainMenuClick() {
-    if (e.getSlot() == 4) {
-      saveItem(e.getClickedInventory().getItem(3));
-    } else if (e.getSlot() > 8) {
+    if (slotClicked == 4) {
+      saveItem();
+    } else if (slotClicked > 8) {
       String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
       int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
@@ -64,16 +79,15 @@ public record ItemMenuClick(@NotNull InventoryClickEvent e, @NotNull Player user
    * @param action type of interaction
    */
   public void interpretCategoryClick(@NotNull ItemMenuAction action) {
-    int slotClicked = e.getSlot();
     switch (slotClicked) {
       case 0 -> previousPage(action);
       case 2 -> { // Help Context
       }
-      case 4 -> saveItem(e.getClickedInventory().getItem(3));
+      case 4 -> saveItem();
       case 5 -> toggleAction(action);
       case 6 -> returnToMainMenu();
       case 8 -> nextPage(action);
-      default -> interpretContextualClick(action, e.getCurrentItem());
+      default -> interpretContextualClick(action);
     }
   }
 
@@ -93,7 +107,8 @@ public record ItemMenuClick(@NotNull InventoryClickEvent e, @NotNull Player user
   /**
    * Checks if there is an item in the designated save slot before saving the item to a file.
    */
-  private void saveItem(ItemStack item) {
+  private void saveItem() {
+    ItemStack item = e.getClickedInventory().getItem(3);
     if (ItemReader.isNotNullOrAir(item)) {
       String encodedItem = ItemCreator.encodeItem(item);
       if (encodedItem != null) {
@@ -122,7 +137,7 @@ public record ItemMenuClick(@NotNull InventoryClickEvent e, @NotNull Player user
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
-    if (action.equals(ItemMenuAction.GET)) {
+    if (action == ItemMenuAction.GET) {
       user.openInventory(new ItemMenu(user, ItemMenuAction.REMOVE).openCategoryPage(categoryName, pageRequest));
       user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_REMOVE.menu));
     } else {
@@ -156,10 +171,10 @@ public record ItemMenuClick(@NotNull InventoryClickEvent e, @NotNull Player user
   /**
    * Either gets or remove an item.
    *
-   * @param action      interacting action
-   * @param clickedItem clicked item
+   * @param action interacting action
    */
-  private void interpretContextualClick(ItemMenuAction action, ItemStack clickedItem) {
+  private void interpretContextualClick(ItemMenuAction action) {
+    ItemStack clickedItem = e.getCurrentItem();
     switch (action) {
       case GET -> {
         ItemStack item = PluginData.itemRegistry.getItemMap().get(ItemReader.readName(clickedItem)).getItem();

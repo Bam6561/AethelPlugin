@@ -37,9 +37,9 @@ public class ItemRegistry {
   private final Map<String, PersistentItem> itemMap = new HashMap<>();
 
   /**
-   * Loaded item categories represented by collections of inventories.
+   * Loaded item categories represented by groups of inventories.
    * <p>
-   * An inventory from any of the collections is also referred to as a page.
+   * An inventory from any of the groups is also referred to as a page.
    * </p>
    */
   private final Map<String, List<Inventory>> categoryMap = new HashMap<>();
