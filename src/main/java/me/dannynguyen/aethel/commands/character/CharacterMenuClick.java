@@ -20,7 +20,7 @@ import java.util.Objects;
  * Inventory click event listener for Character menus.
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.11
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -61,7 +61,7 @@ public class CharacterMenuClick {
         case 34 -> e.setCancelled(true); // Collectibles
         case 43 -> e.setCancelled(true); // Settings
         case 10, 11, 12, 19, 28, 37 -> unequipArmorHands(); // Armor & Hands
-        case 20, 29 -> unequipJewelry(); // Necklace & Ring
+        case 20, 29 -> updateJewelryAttributes(); // Necklace & Ring
       }
     } else {
       switch (slotClicked) {
@@ -101,27 +101,15 @@ public class CharacterMenuClick {
     int invSlot;
     switch (slotClicked) {
       case 10 -> invSlot = 39;
+      case 11 -> invSlot = user.getInventory().getHeldItemSlot();
+      case 12 -> invSlot = 40;
       case 19 -> invSlot = 38;
       case 28 -> invSlot = 37;
       case 37 -> invSlot = 36;
-      case 11 -> invSlot = user.getInventory().getHeldItemSlot();
-      case 12 -> invSlot = 40;
       default -> invSlot = -1; // Unreachable
     }
     user.getInventory().setItem(invSlot, new ItemStack(Material.AIR));
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> updateArmorHandsAttributes(invSlot), 1);
-  }
-
-  /**
-   * Removes an equipped jewelry item from the user.
-   */
-  private void unequipJewelry() {
-    ItemStack[] jewelrySlots = PluginData.rpgData.getRpgPlayers().get(user).getJewelrySlots();
-    switch (slotClicked) {
-      case 20 -> jewelrySlots[0] = new ItemStack(Material.AIR);
-      case 29 -> jewelrySlots[1] = new ItemStack(Material.AIR);
-    }
-    updateJewelryAttributes();
   }
 
   /**
@@ -194,6 +182,7 @@ public class CharacterMenuClick {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
       ItemStack wornItem = user.getInventory().getItem(slot);
+
       switch (slot) {
         case 39 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "head");
         case 38 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "chest");
@@ -218,6 +207,7 @@ public class CharacterMenuClick {
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
       Inventory menu = e.getClickedInventory();
       ItemStack wornItem = menu.getItem(slotClicked);
+
       switch (slotClicked) {
         case 20 -> {
           rpgPlayer.getJewelrySlots()[0] = wornItem;

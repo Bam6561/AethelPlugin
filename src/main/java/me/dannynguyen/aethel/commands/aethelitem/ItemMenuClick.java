@@ -23,7 +23,7 @@ import java.util.Objects;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.11
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -60,12 +60,7 @@ public class ItemMenuClick {
     if (slotClicked == 4) {
       saveItem();
     } else if (slotClicked > 8) {
-      String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-      int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-
-      user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
-      user.openInventory(new ItemMenu(user, ItemMenuAction.GET).openCategoryPage(itemName, pageRequest));
-      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_GET.menu));
+      viewItemCategory();
     }
   }
 
@@ -92,19 +87,6 @@ public class ItemMenuClick {
   }
 
   /**
-   * Opens the previous item category page.
-   *
-   * @param action type of interaction
-   */
-  private void previousPage(ItemMenuAction action) {
-    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-
-    user.openInventory(new ItemMenu(user, action).openCategoryPage(categoryName, pageRequest - 1));
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "aethelitem." + ItemMenuAction.asString(action)));
-  }
-
-  /**
    * Checks if there is an item in the designated save slot before saving the item to a file.
    */
   private void saveItem() {
@@ -126,6 +108,31 @@ public class ItemMenuClick {
     } else {
       user.sendMessage(ChatColor.RED + "No item to save.");
     }
+  }
+
+  /**
+   * Views an item category.
+   */
+  private void viewItemCategory() {
+    String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
+
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
+    user.openInventory(new ItemMenu(user, ItemMenuAction.GET).openCategoryPage(itemName, pageRequest));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_GET.menu));
+  }
+
+  /**
+   * Opens the previous item category page.
+   *
+   * @param action type of interaction
+   */
+  private void previousPage(ItemMenuAction action) {
+    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
+
+    user.openInventory(new ItemMenu(user, action).openCategoryPage(categoryName, pageRequest - 1));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "aethelitem." + ItemMenuAction.asString(action)));
   }
 
   /**

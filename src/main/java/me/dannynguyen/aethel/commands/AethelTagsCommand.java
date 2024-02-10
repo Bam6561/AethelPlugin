@@ -15,8 +15,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 /**
- * AethelTags is a command invocation that allows the user to
- * retrieve, set, or remove Aethel tags to their main hand item.
+ * Command invocation that allows the user to retrieve,
+ * set, or remove Aethel tags to their main hand item.
  * <p>
  * Additional Parameters:
  * - "get", "g": reads the item's tags
@@ -25,26 +25,34 @@ import org.bukkit.persistence.PersistentDataType;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.11
  * @since 1.2.6
  */
 public class AethelTagsCommand implements CommandExecutor {
+  /**
+   * Executes the AethelTags command.
+   *
+   * @param sender  command source
+   * @param command executed command
+   * @param label   command alias used
+   * @param args    command arguments
+   * @return true if a valid command
+   */
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
-      return true;
-    }
-
-    if (user.hasPermission(Permission.AETHELTAGS.permission)) {
-      ItemStack item = user.getInventory().getItemInMainHand();
-      if (ItemReader.isNotNullOrAir(item)) {
-        readRequest(user, args, item);
+    if (sender instanceof Player user) {
+      if (user.hasPermission("aethel.aetheltags")) {
+        ItemStack item = user.getInventory().getItemInMainHand();
+        if (ItemReader.isNotNullOrAir(item)) {
+          readRequest(user, args, item);
+        } else {
+          user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
+        }
       } else {
-        user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
+        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
       }
     } else {
-      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
     }
     return true;
   }
@@ -59,20 +67,20 @@ public class AethelTagsCommand implements CommandExecutor {
   private void readRequest(Player user, String[] args, ItemStack item) {
     int numberOfParameters = args.length;
     String action = "";
-    if (numberOfParameters != 0) {
+    if (numberOfParameters > 0) {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
       case 0 -> user.sendMessage(PluginMessage.Failure.NO_PARAMETERS.message);
       case 1 -> {
-        if (action.equals("get") || action.equals("g")) {
+        if (action.equals("g") || action.equals("get")) {
           getAethelTags(user, item);
         } else {
           user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
         }
       }
       case 2 -> {
-        if (action.equals("remove") || action.equals("r")) {
+        if (action.equals("r") || action.equals("remove")) {
           removeAethelTag(user, args[1], item);
         } else {
           user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
@@ -98,9 +106,9 @@ public class AethelTagsCommand implements CommandExecutor {
   private void getAethelTags(Player user, ItemStack item) {
     String response = ItemReader.readAethelTags(item);
     if (!response.isEmpty()) {
-      user.sendMessage(Success.GET_TAGS.message + response);
+      user.sendMessage(ChatColor.GREEN + "[Get Tags] " + response);
     } else {
-      user.sendMessage(Failure.NO_TAGS.message);
+      user.sendMessage(ChatColor.RED + "No tags found.");
     }
   }
 
@@ -120,10 +128,12 @@ public class AethelTagsCommand implements CommandExecutor {
       if (dataContainer.has(namespacedKey, PersistentDataType.STRING)) {
         dataContainer.remove(namespacedKey);
         item.setItemMeta(meta);
+        user.sendMessage(ChatColor.RED + "[Removed Tag] " + ChatColor.AQUA + tag);
+      } else {
+        user.sendMessage(ChatColor.RED + "Tag does not exist.");
       }
-      user.sendMessage(Success.REMOVE_TAG.message + ChatColor.AQUA + tag);
     } else {
-      user.sendMessage(Failure.ATTRIBUTE_MODIFY.message);
+      user.sendMessage(ChatColor.RED + "Use the ItemEditor to modify Aethel attributes.");
     }
   }
 
@@ -139,40 +149,6 @@ public class AethelTagsCommand implements CommandExecutor {
     NamespacedKey namespacedKey = new NamespacedKey(Plugin.getInstance(), "aethel." + args[1]);
     meta.getPersistentDataContainer().set(namespacedKey, PersistentDataType.STRING, args[2]);
     item.setItemMeta(meta);
-    user.sendMessage(Success.SET_TAG.message + ChatColor.AQUA +
-        args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
-  }
-
-  private enum Permission {
-    AETHELTAGS("aethel.aetheltags");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    GET_TAGS(ChatColor.GREEN + "[Get Tags] "),
-    SET_TAG(ChatColor.GREEN + "[Set Tag] "),
-    REMOVE_TAG(ChatColor.RED + "[Removed Tag] ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
-  }
-
-  private enum Failure {
-    NO_TAGS(ChatColor.RED + "No tags found."),
-    ATTRIBUTE_MODIFY(ChatColor.RED + "Use the ItemEditor to modify Aethel attributes.");
-
-    public final String message;
-
-    Failure(String message) {
-      this.message = message;
-    }
+    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + args[1].toLowerCase() + " " + ChatColor.WHITE + args[2]);
   }
 }

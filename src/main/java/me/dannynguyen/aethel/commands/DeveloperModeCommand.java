@@ -11,25 +11,33 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * DeveloperMode is a command invocation that allows the
- * user to bypass conditions for various interactions.
+ * Command invocation that allows the user to
+ * bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.11
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
+  /**
+   * Executes the DeveloperMode command.
+   *
+   * @param sender  command source
+   * @param command executed command
+   * @param label   command alias used
+   * @param args    command arguments
+   * @return true if a valid command
+   */
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
-      return true;
-    }
-
-    if (user.hasPermission(Permission.DEVELOPERMODE.permission)) {
-      readRequest(user, args);
+    if (sender instanceof Player user) {
+      if (user.hasPermission("aethel.developermode")) {
+        readRequest(user, args);
+      } else {
+        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      }
     } else {
-      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
     }
     return true;
   }
@@ -56,33 +64,11 @@ public class DeveloperModeCommand implements CommandExecutor {
    */
   private void toggleDeveloperMode(Player user) {
     if (!user.hasMetadata(PluginPlayerMeta.DEVELOPER.getMeta())) {
-      user.setMetadata(PluginPlayerMeta.DEVELOPER.getMeta(),
-          new FixedMetadataValue(Plugin.getInstance(), 1));
-      user.sendMessage(Success.DEVELOPERMODE_ON.message);
+      user.setMetadata(PluginPlayerMeta.DEVELOPER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), 1));
+      user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");
     } else {
       user.removeMetadata(PluginPlayerMeta.DEVELOPER.getMeta(), Plugin.getInstance());
-      user.sendMessage(Success.DEVELOPERMODE_OFF.message);
-    }
-  }
-
-  private enum Permission {
-    DEVELOPERMODE("aethel.developermode");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    DEVELOPERMODE_ON(ChatColor.GREEN + "[Developer Mode On]"),
-    DEVELOPERMODE_OFF(ChatColor.RED + "[Developer Mode Off]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
+      user.sendMessage(ChatColor.RED + "[Developer Mode Off]");
     }
   }
 }
