@@ -17,18 +17,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * Command invocation that shows the user's main hand item to global chat.
  * <p>
  * Additional Parameters:
- * - "past", "p": opens a menu with the last 9 shown items
+ * - "past", "p": opens a menu with the last 27 shown items
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.12
+ * @version 1.9.13
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -81,12 +80,7 @@ public class ShowItemCommand implements CommandExecutor {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.spigot().sendMessage(message);
       }
-
-      ItemStack pastItem = item.clone();
-      ItemMeta meta = pastItem.getItemMeta();
-      meta.setDisplayName(ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " " + ItemReader.readName(pastItem));
-      pastItem.setItemMeta(meta);
-      PluginData.pastItemHistory.addPastItem(pastItem);
+      PluginData.pastItemHistory.addPastItem(user, item);
     } else {
       user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
     }

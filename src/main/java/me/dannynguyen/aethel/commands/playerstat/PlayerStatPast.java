@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.showitem;
+package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.PluginData;
 import org.bukkit.Bukkit;
@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents a menu that shows past shown items.
+ * Represents a menu that shows past shared stats.
  *
  * @author Danny Nguyen
  * @version 1.9.13
- * @since 1.4.5
+ * @since 1.4.10
  */
-public class ShowItemPast {
+public class PlayerStatPast {
   /**
-   * ShowItemPast GUI.
+   * PlayerStatPast GUI.
    */
   private final Inventory menu;
 
@@ -29,36 +29,36 @@ public class ShowItemPast {
   private final Player user;
 
   /**
-   * Associates a new ShowItemPast menu with its user.
+   * Associates a new PlayerStatPast menu with its user.
    *
    * @param user user
    */
-  public ShowItemPast(@NotNull Player user) {
+  public PlayerStatPast(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
 
   /**
-   * Sets the ShowItemPast menu to show past shown items.
+   * Sets the PlayerStatPast menu to show past shared stats.
    *
-   * @return ShowItemPast menu
+   * @return PlayerStatPast menu
    */
   @NotNull
   public Inventory openMenu() {
-    int index = 0;
-    for (ItemStack item : PluginData.pastItemHistory.getPastItems()) {
-      menu.setItem(index, item);
-      index++;
+    int i = 0;
+    for (ItemStack pastStat : PluginData.pastStatHistory.getPastStats()) {
+      menu.setItem(i, pastStat);
+      i++;
     }
     return menu;
   }
 
   /**
-   * Creates and names a ShowItemPast menu.
+   * Creates and names a PlayerStatPast menu.
    *
-   * @return ShowItemPast menu
+   * @return PlayerStatPast menu
    */
   private Inventory createMenu() {
-    return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
+    return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "PlayerStat " + ChatColor.DARK_PURPLE + "Past");
   }
 }

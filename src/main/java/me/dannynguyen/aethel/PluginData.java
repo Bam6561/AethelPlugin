@@ -3,7 +3,8 @@ package me.dannynguyen.aethel;
 import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.ForgeData;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorData;
-import me.dannynguyen.aethel.commands.playerstats.PlayerStatsData;
+import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
+import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.RpgData;
@@ -17,17 +18,19 @@ import java.util.logging.Logger;
  * PluginData stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.12
+ * @version 1.9.13
  * @since 1.1.7
  */
 public class PluginData {
   public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.file);
 
+  public static final PlayerStatData playerStatData = new PlayerStatData();
+
   public static final PastItemHistory pastItemHistory = new PastItemHistory();
+  public static final PastStatHistory pastStatHistory = new PastStatHistory();
 
   public static final ItemEditorData itemEditorData = new ItemEditorData();
   public static final ForgeData forgeData = new ForgeData();
-  public static final PlayerStatsData playerStatsData = new PlayerStatsData();
   public static final RpgData rpgData = new RpgData();
 
   /**
@@ -41,7 +44,6 @@ public class PluginData {
     hundredths.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Loading Resources");
-
     File resourceDirectory = PluginDirectory.RESOURCES.file;
     if (!resourceDirectory.exists()) {
       resourceDirectory.mkdir();
@@ -68,7 +70,7 @@ public class PluginData {
     }
 
     start = System.nanoTime();
-    PluginData.playerStatsData.loadStats();
+    PluginData.playerStatData.loadData();
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Player Stats: " + convertToMs(hundredths, start, finish));
   }

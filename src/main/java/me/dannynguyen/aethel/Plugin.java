@@ -7,7 +7,7 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
-import me.dannynguyen.aethel.commands.playerstats.PlayerStatsCommand;
+import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.listeners.EquipmentAttributeListener;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
@@ -26,7 +26,7 @@ import java.util.Map;
  * the plugin can process various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.9.9
+ * @version 1.9.13
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -66,7 +66,7 @@ public class Plugin extends JavaPlugin {
     this.getCommand("itemeditor").setExecutor(new ItemEditorCommand());
     this.getCommand("ping").setExecutor(new PingCommand());
     this.getCommand("showitem").setExecutor(new ShowItemCommand());
-    this.getCommand("playerstats").setExecutor(new PlayerStatsCommand());
+    this.getCommand("playerstat").setExecutor(new PlayerStatCommand());
   }
 
   /**

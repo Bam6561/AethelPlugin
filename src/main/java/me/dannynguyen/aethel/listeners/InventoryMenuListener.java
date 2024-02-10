@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
 import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
-import me.dannynguyen.aethel.commands.playerstats.PlayerStatsInventoryListener;
+import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import org.bukkit.event.inventory.*;
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.13
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -32,14 +32,13 @@ public class InventoryMenuListener implements Listener {
     if (e.getClickedInventory() != null) {
       Player user = (Player) e.getWhoClicked();
       if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
-        String[] invType = user.getMetadata(
-            PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+        String[] invType = user.getMetadata(PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
         switch (invType[0]) {
           case "aethelitem" -> interpretAethelItem(e, invType);
           case "character" -> interpretCharacter(e, invType);
           case "forge" -> interpretForge(e, user, invType);
           case "itemeditor" -> interpretItemEditor(e, user, invType);
-          case "playerstats" -> interpretPlayerStats(e, user, invType);
+          case "playerstats" -> interpretPlayerStat(e, user, invType);
           case "showitem" -> e.setCancelled(true);
         }
       }
@@ -55,8 +54,7 @@ public class InventoryMenuListener implements Listener {
   public void onDrag(InventoryDragEvent e) {
     Player user = (Player) e.getWhoClicked();
     if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
-      String[] invType = user.getMetadata(
-          PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+      String[] invType = user.getMetadata(PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
       switch (invType[0]) {
         case "aethelitem", "character" -> e.setCancelled(true);
       }
@@ -158,13 +156,17 @@ public class InventoryMenuListener implements Listener {
    * @param user    user
    * @param invType inventory type
    */
-  private void interpretPlayerStats(InventoryClickEvent e, Player user, String[] invType) {
-    switch (invType[1]) {
-      case "category" -> PlayerStatsInventoryListener.readMainClick(e, user);
-      case "past" -> e.setCancelled(true);
-      case "stat" -> PlayerStatsInventoryListener.readStatClick(e, user);
-      case "substat" -> PlayerStatsInventoryListener.readSubstatClick(e, user);
+  private void interpretPlayerStat(InventoryClickEvent e, Player user, String[] invType) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+      PlayerStatMenuClick click = new PlayerStatMenuClick(e);
+      switch (invType[1]) {
+        case "category" -> click.readMainClick();
+        case "past" -> e.setCancelled(true);
+        case "stat" -> click.readStatClick();
+        case "substat" -> click.readSubstatClick();
+      }
     }
+    e.setCancelled(true);
   }
 
   /**
@@ -203,10 +205,10 @@ public class InventoryMenuListener implements Listener {
     ITEMEDITOR_COSMETICS("itemeditor.cosmetics"),
     ITEMEDITOR_ENCHANTS("itemeditor.enchants"),
     ITEMEDITOR_TAGS("itemeditor.tags"),
-    PLAYERSTATS_CATEGORY("playerstats.category"),
-    PLAYERSTATS_PAST("playerstats.past"),
-    PLAYERSTATS_STAT("playerstats.stat"),
-    PLAYERSTATS_SUBSTAT("playerstats.substat"),
+    PLAYERSTAT_CATEGORY("playerstats.category"),
+    PLAYERSTAT_PAST("playerstats.past"),
+    PLAYERSTAT_STAT("playerstats.stat"),
+    PLAYERSTAT_SUBSTAT("playerstats.substat"),
     SHOWITEM_PAST("showitem.past");
 
     public final String menu;
