@@ -53,7 +53,7 @@ public class CharacterMenuClick {
   /**
    * Checks if the user is interacting with an item/button or attempting to wear equipment.
    */
-  public void interpretMainMenuClick() {
+  public void interpretCharacterSheetClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
       switch (slotClicked) {
         case 4, 9, 15, 24, 33, 42 -> e.setCancelled(true); // Player Head & Attributes
@@ -85,7 +85,7 @@ public class CharacterMenuClick {
       PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), null, "hand");
 
       e.getInventory().setItem(11, new ItemStack(Material.AIR));
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterMenu(user, e.getInventory()).addAttributes(), 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
 
       // User sets new main hand item
     } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
@@ -191,7 +191,7 @@ public class CharacterMenuClick {
         case 40 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "off_hand");
         default -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "hand");
       }
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterMenu(user, e.getClickedInventory()).addAttributes(), 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getClickedInventory()).addAttributes(), 1);
     }, 1);
   }
 
@@ -218,7 +218,7 @@ public class CharacterMenuClick {
           PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "ring");
         }
       }
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterMenu(user, menu).addAttributes(), 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, menu).addAttributes(), 1);
     }, 1);
   }
 }

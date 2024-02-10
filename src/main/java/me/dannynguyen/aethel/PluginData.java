@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.ForgeData;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorData;
 import me.dannynguyen.aethel.commands.playerstats.PlayerStatsData;
-import me.dannynguyen.aethel.commands.showitem.ShowItemData;
+import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.RpgData;
 import org.bukkit.Bukkit;
@@ -17,15 +17,17 @@ import java.util.logging.Logger;
  * PluginData stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.9
+ * @version 1.9.12
  * @since 1.1.7
  */
 public class PluginData {
   public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.file);
+
+  public static final PastItemHistory pastItemHistory = new PastItemHistory();
+
   public static final ItemEditorData itemEditorData = new ItemEditorData();
   public static final ForgeData forgeData = new ForgeData();
   public static final PlayerStatsData playerStatsData = new PlayerStatsData();
-  public static final ShowItemData showItemData = new ShowItemData();
   public static final RpgData rpgData = new RpgData();
 
   /**
@@ -38,7 +40,7 @@ public class PluginData {
     DecimalFormat hundredths = new DecimalFormat();
     hundredths.setMaximumFractionDigits(2);
 
-    log.info(Success.LOADING_RESOURCES.message);
+    log.info("[Aethel] Loading Resources");
 
     File resourceDirectory = PluginDirectory.RESOURCES.file;
     if (!resourceDirectory.exists()) {
@@ -50,7 +52,7 @@ public class PluginData {
       start = System.nanoTime();
       PluginData.itemRegistry.loadData();
       finish = System.nanoTime();
-      log.info(Success.LOADED_AETHELITEM.message + convertToMs(hundredths, start, finish));
+      log.info("[Aethel] Loaded Aethel Items: " + convertToMs(hundredths, start, finish));
     } else {
       aethelItemDirectory.mkdir();
     }
@@ -60,7 +62,7 @@ public class PluginData {
       start = System.nanoTime();
       PluginData.forgeData.loadRecipes();
       finish = System.nanoTime();
-      log.info(Success.LOADED_FORGE.message + convertToMs(hundredths, start, finish));
+      log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(hundredths, start, finish));
     } else {
       forgeDirectory.mkdir();
     }
@@ -68,7 +70,7 @@ public class PluginData {
     start = System.nanoTime();
     PluginData.playerStatsData.loadStats();
     finish = System.nanoTime();
-    log.info(Success.LOADED_PLAYERSTATS.message + convertToMs(hundredths, start, finish));
+    log.info("[Aethel] Loaded Player Stats: " + convertToMs(hundredths, start, finish));
   }
 
   /**
@@ -80,18 +82,5 @@ public class PluginData {
    */
   private static String convertToMs(DecimalFormat dc, long start, long finish) {
     return dc.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
-  }
-
-  private enum Success {
-    LOADING_RESOURCES("[Aethel] Loading Resources"),
-    LOADED_AETHELITEM("[Aethel] Loaded Aethel Items: "),
-    LOADED_FORGE("[Aethel] Loaded Forge Recipes: "),
-    LOADED_PLAYERSTATS("[Aethel] Loaded Player Stats: ");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
   }
 }

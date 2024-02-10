@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
@@ -18,31 +17,40 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * ShowItemCommand is a command invocation that shows the user's main hand item to global chat.
+ * Command invocation that shows the user's main hand item to global chat.
  * <p>
  * Additional Parameters:
- * - "past", "p": opens an inventory with the last 9 shown items
+ * - "past", "p": opens a menu with the last 9 shown items
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.12
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
+  /**
+   * Executes the ShowItem command.
+   *
+   * @param sender  command source
+   * @param command executed command
+   * @param label   command alias used
+   * @param args    command arguments
+   * @return true if a valid command
+   */
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
-      return true;
-    }
-
-    if (user.hasPermission(Permission.SHOWITEM.permission)) {
-      readRequest(user, args);
+    if (sender instanceof Player user) {
+      if (user.hasPermission("aethel.showitem")) {
+        readRequest(user, args);
+      } else {
+        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      }
     } else {
-      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
     }
     return true;
   }
@@ -69,26 +77,31 @@ public class ShowItemCommand implements CommandExecutor {
   private void showItem(Player user) {
     ItemStack item = user.getInventory().getItemInMainHand();
     if (ItemReader.isNotNullOrAir(item)) {
+      TextComponent message = createShowItemTextComponent(user, item);
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        onlinePlayer.spigot().sendMessage(createShowItemTextComponent(user, item));
+        onlinePlayer.spigot().sendMessage(message);
       }
-      PluginData.showItemData.addPastItem(new ItemOwner(user.getName(), item.clone()));
+
+      ItemStack pastItem = item.clone();
+      ItemMeta meta = pastItem.getItemMeta();
+      meta.setDisplayName(ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " " + ItemReader.readName(pastItem));
+      pastItem.setItemMeta(meta);
+      PluginData.pastItemHistory.addPastItem(pastItem);
     } else {
       user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
     }
   }
 
   /**
-   * Checks if the parameter is "past" before opening a ShowItemPast inventory.
+   * Checks if the parameter is "past" before opening a ShowItemPast menu.
    *
    * @param user   user
    * @param action type of interaction
    */
   private void interpretParameter(Player user, String action) {
-    if (action.equals("past") || action.equals("p")) {
-      user.openInventory(ShowItemPast.openInventory(user));
-      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
-          new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
+    if (action.equals("p") || action.equals("past")) {
+      user.openInventory(new ShowItemPast(user).openMenu());
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
     } else {
       user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
     }
@@ -103,25 +116,13 @@ public class ShowItemCommand implements CommandExecutor {
    */
   private TextComponent createShowItemTextComponent(Player user, ItemStack item) {
     // [!] <ItemName> [PlayerName]
-    TextComponent message = new TextComponent(PluginMessage.Success.NOTIFICATION_GLOBAL.message +
-        ChatColor.DARK_PURPLE + user.getName() + " ");
+    TextComponent message = new TextComponent(PluginMessage.Success.NOTIFICATION_GLOBAL.message + ChatColor.DARK_PURPLE + user.getName() + " ");
+
     TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readName(item) + " ");
-    message.addExtra(itemName);
-
     ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
-    itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM,
-        new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
+    itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
 
+    message.addExtra(itemName);
     return message;
-  }
-
-  private enum Permission {
-    SHOWITEM("aethel.showitem");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
   }
 }

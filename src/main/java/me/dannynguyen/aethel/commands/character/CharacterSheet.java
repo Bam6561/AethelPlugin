@@ -29,7 +29,7 @@ import java.util.Objects;
  * @version 1.9.10
  * @since 1.6.3
  */
-public class CharacterMenu {
+public class CharacterSheet {
   /**
    * Character GUI.
    */
@@ -45,7 +45,7 @@ public class CharacterMenu {
    *
    * @param user user
    */
-  public CharacterMenu(@NotNull Player user) {
+  public CharacterSheet(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
@@ -56,7 +56,7 @@ public class CharacterMenu {
    * @param user user
    * @param menu existing Character menu
    */
-  public CharacterMenu(@NotNull Player user, @NotNull Inventory menu) {
+  public CharacterSheet(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = Objects.requireNonNull(menu, "Null menu");
   }
@@ -73,10 +73,10 @@ public class CharacterMenu {
   /**
    * Sets the menu to view equipment and attributes.
    *
-   * @return Character main menu
+   * @return CharacterSheet menu
    */
   @NotNull
-  public Inventory openMainMenu() {
+  public Inventory openMenu() {
     addContext();
     addActions();
     addEquipment();

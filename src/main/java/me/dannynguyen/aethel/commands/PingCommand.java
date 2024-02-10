@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Command invocation that responds to the user with their server latency.
@@ -25,7 +26,7 @@ public class PingCommand implements CommandExecutor {
    * @return true if a valid command
    */
   @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+  public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.ping")) {
         user.sendMessage("Pong! " + ChatColor.GRAY + user.getPing() + "ms");

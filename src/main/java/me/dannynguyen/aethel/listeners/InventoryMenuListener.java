@@ -109,7 +109,7 @@ public class InventoryMenuListener implements Listener {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
         switch (invType[1]) {
-          case "sheet" -> click.interpretMainMenuClick();
+          case "sheet" -> click.interpretCharacterSheetClick();
         }
       } else {
         click.interpretPlayerInventoryClick();

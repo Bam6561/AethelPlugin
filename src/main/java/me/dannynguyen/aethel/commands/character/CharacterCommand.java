@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Command invocation that allows the user to view a player's RPG character information.
  * <p>
- * From the main menu, the user can also view the player's quests and collectibles.
+ * From the Character Sheet, the user can also view the player's quests and collectibles.
  * </p>
  *
  * @author Danny Nguyen
@@ -46,25 +46,25 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a Character main menu.
+   * Checks if the command request was formatted correctly before opening a CharacterSheet menu.
    *
    * @param user user
    * @param args user provided parameters
    */
   private void readRequest(Player user, String[] args) {
     switch (args.length) {
-      case 0 -> openMainMenu(user);
+      case 0 -> openCharacterSheet(user);
       default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
     }
   }
 
   /**
-   * Opens the player's Character main menu.
+   * Opens the player's CharacterSheet menu.
    *
    * @param user user
    */
-  private void openMainMenu(Player user) {
-    user.openInventory(new CharacterMenu(user).openMainMenu());
+  private void openCharacterSheet(Player user) {
+    user.openInventory(new CharacterSheet(user).openMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.CHARACTER_SHEET.menu));
   }
 }

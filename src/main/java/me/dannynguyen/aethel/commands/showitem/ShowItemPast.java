@@ -1,61 +1,47 @@
 package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.showitem.object.ItemOwner;
-import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * ShowItemPast is an inventory that shows past shared items.
+ * Represents a menu that shows past shown items.
  *
  * @author Danny Nguyen
- * @version 1.8.0
+ * @version 1.9.12
  * @since 1.4.5
  */
 public class ShowItemPast {
   /**
-   * Creates and names a ShowItemPast inventory.
+   * ShowItemPast GUI.
+   */
+  private final Inventory menu;
+
+  /**
+   * Associates a new ShowItemPast menu with its user.
    *
    * @param user user
-   * @return ShowItemPast inventory
    */
-  public static Inventory openInventory(Player user) {
-    Inventory inv = createInventory(user);
-    addPastShownItems(inv);
-    return inv;
+  public ShowItemPast(@NotNull Player user) {
+    this.menu = Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
   }
 
   /**
-   * Creates and names a ShowItemPast inventory.
+   * Sets the ShowItemPast menu to show past shown items.
    *
-   * @param user user
-   * @return ShowItemPast inventory
+   * @return ShowItemPast menu
    */
-  private static Inventory createInventory(Player user) {
-    return Bukkit.createInventory(user, 9,
-        ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
-  }
-
-  /**
-   * Adds past shown items to the ShowItemPast inventory.
-   *
-   * @param inv interacting inventory
-   */
-  private static void addPastShownItems(Inventory inv) {
+  @NotNull
+  public Inventory openMenu() {
     int index = 0;
-    for (ItemOwner itemOwner : PluginData.showItemData.getPastItems()) {
-      String owner = itemOwner.getOwner();
-      ItemStack item = itemOwner.getItem().clone();
-      ItemMeta meta = item.getItemMeta();
-      meta.setDisplayName(ChatColor.DARK_PURPLE + owner + ChatColor.WHITE + " " + ItemReader.readName(item));
-      item.setItemMeta(meta);
-      inv.setItem(index, item);
+    for (ItemStack item : PluginData.pastItemHistory.getPastItems()) {
+      menu.setItem(index, item);
       index++;
     }
+    return menu;
   }
 }
