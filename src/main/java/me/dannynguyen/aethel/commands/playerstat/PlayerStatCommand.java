@@ -21,7 +21,7 @@ import org.bukkit.metadata.FixedMetadataValue;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.14
  * @since 1.4.7
  */
 public class PlayerStatCommand implements CommandExecutor {
@@ -42,6 +42,7 @@ public class PlayerStatCommand implements CommandExecutor {
       } else {
         user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
       }
+    } else {
       sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
     }
     return true;

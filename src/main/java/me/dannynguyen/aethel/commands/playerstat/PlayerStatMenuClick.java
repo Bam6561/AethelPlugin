@@ -16,7 +16,7 @@ import java.util.Objects;
  * Inventory click event listener for PlayerStat menus.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.14
  * @since 1.4.7
  */
 public class PlayerStatMenuClick {
@@ -50,7 +50,7 @@ public class PlayerStatMenuClick {
    * Retrieves a player's stat category page.
    */
   public void readMainClick() {
-    if (e.getSlot() > 8) {
+    if (slotClicked > 8) {
       String requestedPlayer = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
       String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
       user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
@@ -70,7 +70,7 @@ public class PlayerStatMenuClick {
    * - gets a player's statistic value.
    */
   public void readStatClick() {
-    switch (e.getSlot()) {
+    switch (slotClicked) {
       case 0 -> previousPage();
       case 3, 4 -> { // Player Heads
       }
@@ -87,7 +87,7 @@ public class PlayerStatMenuClick {
    * - gets a player's substatistic value.
    */
   public void readSubstatClick() {
-    switch (e.getSlot()) {
+    switch (slotClicked) {
       case 0 -> previousPage();
       case 3, 4 -> { // Player Heads
       }

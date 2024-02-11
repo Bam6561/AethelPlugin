@@ -20,7 +20,7 @@ import java.util.Objects;
  * Inventory click event listener for Character menus.
  *
  * @author Danny Nguyen
- * @version 1.9.11
+ * @version 1.9.14
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -90,7 +90,13 @@ public class CharacterMenuClick {
       // User sets new main hand item
     } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
       e.getInventory().setItem(11, e.getCursor());
-      updateArmorHandsAttributes(user.getInventory().getHeldItemSlot());
+
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+        ItemStack wornItem = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
+        PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "hand");
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
+      }, 1);
     }
   }
 
@@ -157,15 +163,15 @@ public class CharacterMenuClick {
       inv.setItem(slot, item);
       updateArmorHandsAttributes(slot);
     } else if (inv.firstEmpty() != -1) { // Main hand slot is full
+      user.setItemOnCursor(new ItemStack(Material.AIR));
       inv.setItem(inv.firstEmpty(), item);
       user.sendMessage(ChatColor.RED + "Main hand occupied.");
       e.setCancelled(true);
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> e.getInventory().setItem(slotClicked, new ItemStack(Material.AIR)), 1);
     } else if (ItemReader.isNotNullOrAir(item)) { // Inventory is full
+      user.setItemOnCursor(new ItemStack(Material.AIR));
       user.getWorld().dropItem(user.getLocation(), item);
       user.sendMessage(ChatColor.RED + "Inventory full.");
       e.setCancelled(true);
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> e.getInventory().setItem(slotClicked, new ItemStack(Material.AIR)), 1);
     }
   }
 

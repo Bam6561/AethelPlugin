@@ -18,7 +18,7 @@ import java.util.Objects;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.14
  * @since 1.4.10
  */
 public class PlayerStatMessage {
@@ -81,7 +81,7 @@ public class PlayerStatMessage {
     String substatName = ChatColor.stripColor(requestedStat.replace(" ", "_").toUpperCase());
     String category = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
-    List<String> statValues = loadSubStatValues(substatName, category);
+    List<String> statValues = loadSubStatValues(category, substatName);
 
     StringBuilder message = new StringBuilder(statName);
     for (String value : statValues) {
@@ -138,19 +138,6 @@ public class PlayerStatMessage {
   }
 
   /**
-   * Gets a time duration in ticks and converts to readable conventional time.
-   *
-   * @return conventional time duration
-   */
-  private String tickTimeConversion(long ticks) {
-    long days = ticks / 1728000L % 30;
-    long hours = ticks / 72000L % 24;
-    long minutes = ticks / 1200L % 60;
-
-    return (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ");
-  }
-
-  /**
    * Retrieves the requested player's substat values.
    *
    * @param category    substat category
@@ -184,5 +171,18 @@ public class PlayerStatMessage {
       statValues.add(ChatColor.YELLOW + "Dropped " + ChatColor.WHITE + dropped);
     }
     return statValues;
+  }
+
+  /**
+   * Gets a time duration in ticks and converts to readable conventional time.
+   *
+   * @return conventional time duration
+   */
+  private String tickTimeConversion(long ticks) {
+    long days = ticks / 1728000L % 30;
+    long hours = ticks / 72000L % 24;
+    long minutes = ticks / 1200L % 60;
+
+    return (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ");
   }
 }

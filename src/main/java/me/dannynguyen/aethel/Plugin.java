@@ -18,12 +18,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 /**
- * Plugin represents the plugin as an object. Through event listeners and command executors,
- * the plugin can process various requests given to it by its users and the server.
+ * Represents the plugin as an object.
+ * <p>
+ * Through event listeners and command executors, the plugin can
+ * process various requests given to it by its users and the server.
+ * </p>
  *
  * @author Danny Nguyen
  * @version 1.9.13
@@ -103,6 +107,12 @@ public class Plugin extends JavaPlugin {
     }, 0, 20);
   }
 
+  /**
+   * Gets the plugin.
+   *
+   * @return plugin instance
+   */
+  @NotNull
   public static Plugin getInstance() {
     return getPlugin(Plugin.class);
   }

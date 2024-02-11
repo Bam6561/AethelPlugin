@@ -28,6 +28,7 @@ public record PlayerStatCategory(@NotNull String name, @NotNull String[] stats) 
    *
    * @return category name
    */
+  @NotNull
   public String getName() {
     return this.name;
   }
@@ -37,6 +38,7 @@ public record PlayerStatCategory(@NotNull String name, @NotNull String[] stats) 
    *
    * @return player statistics
    */
+  @NotNull
   public String[] getStats() {
     return this.stats;
   }

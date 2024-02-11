@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class PastStatHistory {
    *
    * @return past shown stats
    */
+  @NotNull
   public Queue<ItemStack> getPastStats() {
     return this.pastStats;
   }

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.9
+ * @version 1.9.14
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -68,7 +68,7 @@ public class ItemCommand implements CommandExecutor {
    * @param user user
    */
   private void openMainMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), " "));
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_CATEGORY.menu));
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
