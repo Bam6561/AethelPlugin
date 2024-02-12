@@ -4,7 +4,8 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
-import me.dannynguyen.aethel.commands.forge.ForgeInventoryListener;
+import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
+import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
@@ -18,7 +19,7 @@ import org.bukkit.event.inventory.*;
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.15
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -36,9 +37,9 @@ public class InventoryMenuListener implements Listener {
         switch (invType[0]) {
           case "aethelitem" -> interpretAethelItem(e, invType);
           case "character" -> interpretCharacter(e, invType);
-          case "forge" -> interpretForge(e, user, invType);
+          case "forge" -> interpretForge(e, invType);
           case "itemeditor" -> interpretItemEditor(e, user, invType);
-          case "playerstats" -> interpretPlayerStat(e, user, invType);
+          case "playerstats" -> interpretPlayerStat(e, invType);
           case "showitem" -> e.setCancelled(true);
         }
       }
@@ -116,20 +117,27 @@ public class InventoryMenuListener implements Listener {
   }
 
   /**
-   * Determines which Forge inventory is being interacting with.
+   * Determines which Forge menu is being interacting with.
    *
    * @param e       inventory click event
-   * @param user    user
    * @param invType inventory type
    */
-  private void interpretForge(InventoryClickEvent e, Player user, String[] invType) {
+  private void interpretForge(InventoryClickEvent e, String[] invType) {
     switch (invType[1]) {
-      case "category" -> ForgeInventoryListener.interpretMainClick(e, user);
-      case "craft" -> ForgeInventoryListener.interpretCategoryClick(e, user, "craft");
-      case "craft-confirm" -> ForgeInventoryListener.interpretCraftConfirmClick(e, user);
-      case "edit" -> ForgeInventoryListener.interpretCategoryClick(e, user, "edit");
-      case "remove" -> ForgeInventoryListener.interpretCategoryClick(e, user, "remove");
-      case "save" -> ForgeInventoryListener.interpretSaveClick(e, user);
+      case "category", "craft", "craft-confirm", "edit", "remove" -> {
+        if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+          ForgeMenuClick click = new ForgeMenuClick(e);
+          switch (invType[1]) {
+            case "category" -> click.interpretMainMenuClick();
+            case "craft" -> click.interpretCategoryClick(ForgeMenuAction.CRAFT);
+            case "craft-confirm" -> click.interpretCraftConfirmClick();
+            case "edit" -> click.interpretCategoryClick(ForgeMenuAction.EDIT);
+            case "remove" -> click.interpretCategoryClick(ForgeMenuAction.REMOVE);
+          }
+        }
+        e.setCancelled(true);
+      }
+      case "save" -> new ForgeMenuClick(e).interpretSaveClick();
     }
   }
 
@@ -153,10 +161,9 @@ public class InventoryMenuListener implements Listener {
    * Determines which PlayerStats inventory is being interacting with.
    *
    * @param e       inventory click event
-   * @param user    user
    * @param invType inventory type
    */
-  private void interpretPlayerStat(InventoryClickEvent e, Player user, String[] invType) {
+  private void interpretPlayerStat(InventoryClickEvent e, String[] invType) {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       PlayerStatMenuClick click = new PlayerStatMenuClick(e);
       switch (invType[1]) {

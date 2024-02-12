@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.9.14
+version: 1.9.15
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -24,7 +24,7 @@ commands:
     usage: /developermode
     aliases: [ dm, dev ]
   forge:
-    description: Opens a Forge inventory.
+    description: Opens a Forge menu.
     usage: /forge [edit|reload]
     aliases: [ f ]
   itemeditor:

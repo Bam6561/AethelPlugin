@@ -12,9 +12,9 @@ import org.bukkit.NamespacedKey;
  */
 public enum PluginNamespacedKey {
   AETHEL_ATTRIBUTE_LIST(new NamespacedKey(Plugin.getInstance(), "aethel.attribute.list")),
-  AETHELITEM_CATEGORY(new NamespacedKey(Plugin.getInstance(), "aethel.aethelitem.category")),
-  FORGE_CATEGORY(new NamespacedKey(Plugin.getInstance(), "aethel.forge.category")),
-  FORGE_ID(new NamespacedKey(Plugin.getInstance(), "aethel.forge.id"));
+  ITEM_CATEGORY(new NamespacedKey(Plugin.getInstance(), "aethel.aethelitem.category")),
+  RECIPE_CATEGORY(new NamespacedKey(Plugin.getInstance(), "aethel.forge.category")),
+  RECIPE_ID(new NamespacedKey(Plugin.getInstance(), "aethel.forge.id"));
 
   private final NamespacedKey namespacedKey;
 

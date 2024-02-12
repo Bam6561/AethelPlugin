@@ -28,13 +28,13 @@ import java.util.List;
  * ItemEditorInventory is an inventory listener for the ItemEditor inventories.
  *
  * @author Danny Nguyen
- * @version 1.9.6
+ * @version 1.9.15
  * @since 1.6.7
  */
 public class ItemEditorInventoryListener {
   /**
    * Edits an item's cosmetic metadata fields or opens
-   * a gameplay-related metadata field editing inventory.
+   * a gameplay-related metadata field editing menu.
    *
    * @param e    inventory click event
    * @param user user
@@ -262,9 +262,9 @@ public class ItemEditorInventoryListener {
     String attributeName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     String attribute;
     if (PluginConstant.minecraftAttributes.contains(attributeName)) {
-      attribute = "GENERIC_" + attributeName.replace(" ", "_").toUpperCase();
+      attribute = "GENERIC_" + TextFormatter.formatEnum(attributeName);
     } else {
-      attribute = "aethel.attribute." + attributeName.replace(" ", "_").toLowerCase();
+      attribute = "aethel.attribute." + TextFormatter.formatId(attributeName);
     }
 
     user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
@@ -283,8 +283,7 @@ public class ItemEditorInventoryListener {
    * @param user user
    */
   private static void readEnchant(InventoryClickEvent e, Player user) {
-    String enchant = ChatColor.stripColor(e.getCurrentItem().
-        getItemMeta().getDisplayName().replace(" ", "_").toLowerCase());
+    String enchant = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
 
     user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message
         + ChatColor.WHITE + "Input " + ChatColor.AQUA

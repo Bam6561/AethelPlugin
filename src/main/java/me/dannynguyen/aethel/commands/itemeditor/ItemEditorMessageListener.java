@@ -483,7 +483,7 @@ public class ItemEditorMessageListener {
   }
 
   /**
-   * Opens a ItemEditorAttributes inventory.
+   * Opens a ItemEditorAttributes menu.
    *
    * @param user user
    */

@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -32,7 +31,7 @@ public class PlayerStatMenu {
   /**
    * Stat category names.
    */
-  private static String[] categoryNames = new String[]{"Activities", "Containers", "Damage", "Entity Types", "General", "Interactions", "Materials", "Movement"};
+  private static final String[] categoryNames = new String[]{"Activities", "Containers", "Damage", "Entity Types", "General", "Interactions", "Materials", "Movement"};
 
   /**
    * PlayerStat GUI.
@@ -86,14 +85,14 @@ public class PlayerStatMenu {
   /**
    * Sets the menu to load stat category page.
    *
-   * @param categoryName category to view
-   * @param pageRequest  page to view
+   * @param categoryName  category to view
+   * @param requestedPage requested page
    * @return PlayerStat category page
    */
   @NotNull
-  public Inventory openCategoryPage(String categoryName, int pageRequest) {
+  public Inventory openCategoryPage(String categoryName, int requestedPage) {
     switch (categoryName) {
-      case "Entity Types", "Materials" -> loadSubstatPage(categoryName, pageRequest);
+      case "Entity Types", "Materials" -> loadSubstatPage(categoryName, requestedPage);
       default -> loadStatsPage(categoryName);
     }
     addContext(categoryName);
@@ -105,13 +104,13 @@ public class PlayerStatMenu {
   /**
    * Sets the menu to load a substat category page.
    *
-   * @param category       requested category
-   * @param pageRequest    page to view
+   * @param category      requested category
+   * @param requestedPage requested page
    */
-  private void loadSubstatPage(String category, int pageRequest) {
+  private void loadSubstatPage(String category, int requestedPage) {
     PlayerStatData playerStatData = PluginData.playerStatData;
     int numberOfPages = playerStatData.getSubstatCategories().get(category).size();
-    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, pageRequest);
+    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     menu.setContents(playerStatData.getSubstatCategories().get(category).get(pageViewed).getContents());
@@ -121,7 +120,7 @@ public class PlayerStatMenu {
   /**
    * Sets the menu to load a non-stat category page.
    *
-   * @param category       requested category
+   * @param category requested category
    */
   private void loadStatsPage(String category) {
     menu.setContents(PluginData.playerStatData.getStatCategories().get(category).getContents());
@@ -131,15 +130,15 @@ public class PlayerStatMenu {
    * Adds contextual help.
    */
   private void addContext(String categoryName) {
-    List<String> helpLore;
+    List<String> lore;
     if (categoryName == null) {
-      helpLore = List.of(ChatColor.WHITE + "Stat Categories");
+      lore = List.of(ChatColor.WHITE + "Stat Categories");
     } else {
-      helpLore = List.of(
+      lore = List.of(
           ChatColor.WHITE + "Shift-click any",
           ChatColor.WHITE + "stat to share it.");
     }
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", helpLore));
+    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", lore));
   }
 
   /**

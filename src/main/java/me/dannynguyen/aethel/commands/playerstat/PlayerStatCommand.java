@@ -12,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Command invocation that retrieves a player's statistics.
@@ -35,7 +36,7 @@ public class PlayerStatCommand implements CommandExecutor {
    * @return true if a valid command
    */
   @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+  public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.playerstat")) {
         readRequest(user, args);
@@ -64,14 +65,14 @@ public class PlayerStatCommand implements CommandExecutor {
   }
 
   /**
-   * Either opens a PlayerStat main menu belonging to another player or opens a PlayerStatPast menu.
+   * Either opens a PlayerStat main menu belonging to another player or opens a PastStat menu.
    *
    * @param user      user
    * @param parameter player given parameter
    */
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
-      user.openInventory(new PlayerStatPast(user).openMenu());
+      user.openInventory(new PastStatMenu(user).openMenu());
       user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_PAST.menu));
     } else {
       openPlayerStatOther(user, parameter);

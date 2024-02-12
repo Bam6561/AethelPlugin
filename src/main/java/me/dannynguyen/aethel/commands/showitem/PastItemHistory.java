@@ -25,7 +25,7 @@ public class PastItemHistory {
 
   /**
    * Adds the item to past item history and ensures the number
-   * of past items never exceeds 27 (ShowItemPast menu's size).
+   * of past items never exceeds 27 (PastItem menu's size).
    *
    * @param user item owner
    * @param item original item

@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -19,7 +20,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.15
  * @since 1.4.8
  */
 public class PlayerStatData {
@@ -187,15 +188,17 @@ public class PlayerStatData {
    *
    * @return player statistic categories
    */
+  @NotNull
   public Map<String, Inventory> getStatCategories() {
     return this.statCategories;
   }
 
   /**
-   * Gets player substatistic categories
+   * Gets player substatistic categories.
    *
    * @return player substatistic categories
    */
+  @NotNull
   public Map<String, List<Inventory>> getSubstatCategories() {
     return this.substatCategories;
   }

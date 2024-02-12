@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,7 +24,7 @@ import java.util.Objects;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.9.11
+ * @version 1.9.15
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -211,9 +212,9 @@ public class ItemMenuClick {
   private String nameItemFile(ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     if (meta.hasDisplayName()) {
-      return meta.getDisplayName().toLowerCase().replace(" ", "_");
+      return TextFormatter.formatId(meta.getDisplayName());
     } else {
-      return item.getType().name().toLowerCase();
+      return TextFormatter.formatId(item.getType().name());
     }
   }
 }

@@ -47,7 +47,7 @@ public class ItemEditorEnchants {
   }
 
   /**
-   * Creates and names an ItemEditorEnchants inventory.
+   * Creates and names an ItemEditorEnchants menu.
    *
    * @param user user
    * @param item interacting item

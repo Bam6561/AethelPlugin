@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,10 +19,10 @@ import java.util.Objects;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.9.14
+ * @version 1.9.15
  * @since 1.4.10
  */
-public class PlayerStatMessage {
+public class StatMessage {
   /**
    * Player who requested the value.
    */
@@ -53,7 +54,7 @@ public class PlayerStatMessage {
    * @param e    inventory click event
    * @param user user
    */
-  public PlayerStatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
+  public StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
     this.ownerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
@@ -66,7 +67,7 @@ public class PlayerStatMessage {
    * Sends a statistic value.
    */
   public void sendStat() {
-    Statistic stat = Statistic.valueOf(requestedStat.replace(" ", "_").toUpperCase());
+    Statistic stat = Statistic.valueOf(TextFormatter.formatEnum(requestedStat));
     String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.YELLOW + requestedStat;
     String statValue = formatStatValue(requestedStat, stat);
     String message = statName + " " + statValue;
@@ -78,7 +79,7 @@ public class PlayerStatMessage {
    * Sends a substatistic value.
    */
   public void sendSubstat() {
-    String substatName = ChatColor.stripColor(requestedStat.replace(" ", "_").toUpperCase());
+    String substatName = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
     String category = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
     List<String> statValues = loadSubStatValues(category, substatName);

@@ -76,7 +76,7 @@ public class PlayerStatMenuClick {
       }
       case 5 -> returnToMainMenu();
       case 8 -> nextPage();
-      default -> new PlayerStatMessage(e, user).sendStat();
+      default -> new StatMessage(e, user).sendStat();
     }
   }
 
@@ -93,7 +93,7 @@ public class PlayerStatMenuClick {
       }
       case 5 -> returnToMainMenu();
       case 8 -> nextPage();
-      default -> new PlayerStatMessage(e, user).sendSubstat();
+      default -> new StatMessage(e, user).sendSubstat();
     }
   }
 

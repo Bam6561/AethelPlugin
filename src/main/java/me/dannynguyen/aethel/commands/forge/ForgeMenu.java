@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.aethelitem;
+package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
@@ -19,15 +19,15 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
+ * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.9.10
- * @since 1.4.0
+ * @version 1.9.15
+ * @since 1.0.6
  */
-public class ItemMenu {
+public class ForgeMenu {
   /**
-   * AethelItem GUI.
+   * Forge GUI.
    */
   private final Inventory menu;
 
@@ -39,64 +39,66 @@ public class ItemMenu {
   /**
    * GUI action.
    */
-  private final ItemMenuAction action;
+  private final ForgeMenuAction action;
 
   /**
-   * Associates a new AethelItem menu with its user and action.
+   * Associates a new Forge menu with its user and action.
    *
    * @param user   user
    * @param action type of interaction
    */
-  public ItemMenu(@NotNull Player user, @NotNull ItemMenuAction action) {
+  public ForgeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
     this.menu = createMenu();
   }
 
   /**
-   * Creates and names an AethelItem menu with its action and category.
+   * Creates and names a Forge menu with its action and category.
    *
-   * @return AethelItem menu
+   * @return Forge menu
    */
   private Inventory createMenu() {
-    String title = ChatColor.DARK_GRAY + "Aethel Item";
+    String title = ChatColor.DARK_GRAY + "Forge";
     String category = ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get ";
+      case CRAFT -> title += ChatColor.BLUE + " Craft ";
+      case EDIT -> title += ChatColor.YELLOW + " Edit ";
       case REMOVE -> title += ChatColor.RED + " Remove ";
     }
-    return Bukkit.createInventory(user, 54, title + category);
+    return Bukkit.createInventory(user, 54, title + ChatColor.WHITE + category);
   }
 
   /**
-   * Sets the menu to view item categories.
+   * Sets the menu to view recipe categories.
    *
-   * @return AethelItem main menu
+   * @return Forge main menu
    */
   @NotNull
   public Inventory openMainMenu() {
     addCategories();
-    addContext(null);
-    addActions();
+    if (action != ForgeMenuAction.CRAFT) {
+      addCreateButton();
+    }
     return menu;
   }
 
   /**
-   * Sets the menu to load an item category page.
+   * Sets the menu to load a recipe category page.
    *
    * @param requestedCategory requested category
    * @param requestedPage     requested page
-   * @return AethelItem item category page
+   * @return recipe category page
    */
   @NotNull
   public Inventory openCategoryPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = PluginData.itemRegistry.getCategoryMap().get(requestedCategory);
+    List<Inventory> category = PluginData.forgeData.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
-    addContext(requestedCategory);
+    addContext();
     addActions();
     InventoryPages.addBackButton(menu, 6);
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
@@ -106,52 +108,50 @@ public class ItemMenu {
   /**
    * Adds contextual help.
    */
-  private void addContext(String requestedCategory) {
-    List<String> lore;
-    if (requestedCategory != null) {
-      lore = List.of(
-          ChatColor.WHITE + "Place an item to",
-          ChatColor.WHITE + "the right of this",
-          ChatColor.WHITE + "slot to save it.");
-    } else {
-      lore = List.of(
-          ChatColor.WHITE + "Place an item to",
-          ChatColor.WHITE + "the right of this",
-          ChatColor.WHITE + "slot to save it.",
+  private void addContext() {
+    switch (action) {
+      case CRAFT -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(
+          ChatColor.WHITE + "Expand a recipe to see its",
+          ChatColor.WHITE + "results and materials.",
           "",
-          ChatColor.WHITE + "You can toggle between",
-          ChatColor.WHITE + "Get and Remove modes by",
-          ChatColor.WHITE + "clicking on their button.",
-          "",
+          ChatColor.WHITE + "Materials are matched",
+          ChatColor.WHITE + "by material unless",
+          ChatColor.WHITE + "they're unique items!")));
+      case EDIT, REMOVE -> menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(
           ChatColor.WHITE + "To undo a removal,",
-          ChatColor.WHITE + "get the item and save",
-          ChatColor.WHITE + "it before reloading.");
+          ChatColor.WHITE + "edit the item and",
+          ChatColor.WHITE + "save it before reloading.")));
     }
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", lore));
   }
 
   /**
-   * Adds save, get, and remove actions.
+   * Adds the create button.
+   */
+  private void addCreateButton() {
+    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
+  }
+
+  /**
+   * Adds create, edit, and remove buttons.
    */
   private void addActions() {
     switch (action) {
-      case GET -> {
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
+      case EDIT -> {
+        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
         menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.TRASH_CAN.head, ChatColor.AQUA + "Remove"));
       }
       case REMOVE -> {
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKPACK_BROWN.head, ChatColor.AQUA + "Get"));
+        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.FILE_EXPLORER.head, ChatColor.AQUA + "Edit"));
       }
-      case VIEW -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
     }
   }
 
   /**
-   * Adds item categories.
+   * Adds recipe categories.
    */
   private void addCategories() {
-    Set<String> categories = PluginData.itemRegistry.getCategoryMap().keySet();
+    Set<String> categories = PluginData.forgeData.getCategoryMap().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {

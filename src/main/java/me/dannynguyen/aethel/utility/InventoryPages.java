@@ -34,17 +34,17 @@ public class InventoryPages {
    * Determines which page is viewed.
    *
    * @param numberOfPages number of pages
-   * @param pageRequest   page to view
+   * @param requestedPage requested page
    * @return interpreted page to view
    */
-  public static int calculatePageViewed(int numberOfPages, int pageRequest) {
+  public static int calculatePageViewed(int numberOfPages, int requestedPage) {
     if (numberOfPages > 0) {
-      if (pageRequest >= numberOfPages) {
-        pageRequest = numberOfPages - 1;
-      } else if (pageRequest < 0) {
-        pageRequest = 0;
+      if (requestedPage >= numberOfPages) {
+        requestedPage = numberOfPages - 1;
+      } else if (requestedPage < 0) {
+        requestedPage = 0;
       }
-      return pageRequest;
+      return requestedPage;
     }
     return 0;
   }

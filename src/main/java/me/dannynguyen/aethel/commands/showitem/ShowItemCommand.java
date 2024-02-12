@@ -18,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Command invocation that shows the user's main hand item to global chat.
@@ -41,7 +42,7 @@ public class ShowItemCommand implements CommandExecutor {
    * @return true if a valid command
    */
   @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+  public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.showitem")) {
         readRequest(user, args);
@@ -87,14 +88,14 @@ public class ShowItemCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the parameter is "past" before opening a ShowItemPast menu.
+   * Checks if the parameter is "past" before opening a PastItem menu.
    *
    * @param user   user
    * @param action type of interaction
    */
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
-      user.openInventory(new ShowItemPast(user).openMenu());
+      user.openInventory(new PastItemMenu(user).openMenu());
       user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
     } else {
       user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);

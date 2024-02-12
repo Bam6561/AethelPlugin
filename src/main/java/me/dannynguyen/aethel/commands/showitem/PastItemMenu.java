@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.playerstat;
+package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.PluginData;
 import org.bukkit.Bukkit;
@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents a menu that shows past shared stats.
+ * Represents a menu that shows past shown items.
  *
  * @author Danny Nguyen
  * @version 1.9.13
- * @since 1.4.10
+ * @since 1.4.5
  */
-public class PlayerStatPast {
+public class PastItemMenu {
   /**
-   * PlayerStatPast GUI.
+   * PastItem GUI.
    */
   private final Inventory menu;
 
@@ -29,36 +29,36 @@ public class PlayerStatPast {
   private final Player user;
 
   /**
-   * Associates a new PlayerStatPast menu with its user.
+   * Associates a new PastItem menu with its user.
    *
    * @param user user
    */
-  public PlayerStatPast(@NotNull Player user) {
+  public PastItemMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
 
   /**
-   * Sets the PlayerStatPast menu to show past shared stats.
+   * Sets the PastItem menu to show past shown items.
    *
-   * @return PlayerStatPast menu
+   * @return PastItem menu
    */
   @NotNull
   public Inventory openMenu() {
-    int i = 0;
-    for (ItemStack pastStat : PluginData.pastStatHistory.getPastStats()) {
-      menu.setItem(i, pastStat);
-      i++;
+    int index = 0;
+    for (ItemStack item : PluginData.pastItemHistory.getPastItems()) {
+      menu.setItem(index, item);
+      index++;
     }
     return menu;
   }
 
   /**
-   * Creates and names a PlayerStatPast menu.
+   * Creates and names a PastItem menu.
    *
-   * @return PlayerStatPast menu
+   * @return PastItem menu
    */
   private Inventory createMenu() {
-    return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "PlayerStat " + ChatColor.DARK_PURPLE + "Past");
+    return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "Show " + ChatColor.DARK_PURPLE + "Past");
   }
 }

@@ -4,11 +4,31 @@ package me.dannynguyen.aethel.utility;
  * TextFormatter is a utility class that formats text.
  *
  * @author Danny Nguyen
- * @version 1.9.4
+ * @version 1.9.15
  * @since 1.6.16
  */
 public class TextFormatter {
   private TextFormatter() {
+  }
+
+  /**
+   * Formats a phrase like an enum.
+   *
+   * @param phrase phrase
+   * @return enum formatted phrase
+   */
+  public static String formatEnum(String phrase) {
+    return phrase.replace(" ", "_").toUpperCase();
+  }
+
+  /**
+   * Formats a phrase like an id.
+   *
+   * @param phrase phrase
+   * @return id formatted phrase
+   */
+  public static String formatId(String phrase) {
+    return phrase.replace(" ", "_").toLowerCase();
   }
 
   /**

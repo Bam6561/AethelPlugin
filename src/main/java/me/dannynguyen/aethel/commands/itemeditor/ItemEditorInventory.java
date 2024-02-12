@@ -65,7 +65,7 @@ public class ItemEditorInventory {
   }
 
   /**
-   * Adds help contexts to the ItemEditor inventory.
+   * Adds contextual help.
    *
    * @param inv interacting inventory
    */

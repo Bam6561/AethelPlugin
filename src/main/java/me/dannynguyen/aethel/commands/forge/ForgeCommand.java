@@ -11,31 +11,40 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Forge is a command invocation that allows the user to fabricate items through clicking.
+ * Command invocation that allows the user to craft items through clicking.
  * <p>
  * Additional Parameters:
- * - "edit", "e": allows the user to create, edit, or remove forge recipes
- * - "reload", "r": reloads forge recipes into memory
+ * - "edit", "e": create, edit, or remove Forge recipes
+ * - "reload", "r": reloads Forge recipes into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.9.15
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
+  /**
+   * Executes the Forge command.
+   *
+   * @param sender  command source
+   * @param command executed command
+   * @param label   command alias used
+   * @param args    command arguments
+   * @return true if a valid command
+   */
   @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!(sender instanceof Player user)) {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
-      return true;
-    }
-
-    if (user.hasPermission(Permission.FORGE.permission)) {
-      readRequest(user, args);
+  public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    if (sender instanceof Player user) {
+      if (user.hasPermission("aethel.forge")) {
+        readRequest(user, args);
+      } else {
+        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      }
     } else {
-      user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
     }
     return true;
   }
@@ -64,16 +73,16 @@ public class ForgeCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     switch (action) {
       case "edit", "e" -> {
-        if (user.hasPermission(Permission.FORGE_EDITOR.permission)) {
+        if (user.hasPermission("aethel.forge.editor")) {
           openEditorMenu(user);
         } else {
           user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
         }
       }
       case "reload", "r" -> {
-        if (user.hasPermission(Permission.FORGE_EDITOR.permission)) {
-          PluginData.forgeData.loadRecipes();
-          user.sendMessage(Success.RELOAD.message);
+        if (user.hasPermission("aethel.forge.editor")) {
+          PluginData.forgeData.loadData();
+          user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
         } else {
           user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
         }
@@ -88,17 +97,11 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openCraftingMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), "craft"));
-    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), ""));
-
-    user.openInventory(ForgeInventory.openMainMenu(user, "craft"));
-
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), "0"));
+    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "craft"));
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
+    user.openInventory(new ForgeMenu(user, ForgeMenuAction.CRAFT).openMainMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -107,37 +110,10 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openEditorMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), "edit"));
-    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), ""));
-
-    user.openInventory(ForgeInventory.openMainMenu(user, "edit"));
-
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), "0"));
-  }
-
-  private enum Permission {
-    FORGE("aethel.forge"),
-    FORGE_EDITOR("aethel.forge.editor");
-
-    public final String permission;
-
-    Permission(String permission) {
-      this.permission = permission;
-    }
-  }
-
-  private enum Success {
-    RELOAD(ChatColor.GREEN + "[Reloaded Forge Recipes]");
-
-    public final String message;
-
-    Success(String message) {
-      this.message = message;
-    }
+    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "edit"));
+    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
+    user.openInventory(new ForgeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 }

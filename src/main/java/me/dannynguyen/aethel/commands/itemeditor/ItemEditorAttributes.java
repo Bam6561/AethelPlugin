@@ -32,7 +32,7 @@ import java.util.Map;
  * ItemEditorAttributes is an inventory that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.3
+ * @version 1.9.15
  * @since 1.7.0
  */
 public class ItemEditorAttributes {
@@ -97,10 +97,10 @@ public class ItemEditorAttributes {
    * @param inv interacting inventory
    */
   private static void addContext(Inventory inv) {
-    List<String> helpLore = Context.ATTRIBUTES.context;
+    List<String> lore = Context.ATTRIBUTES.context;
 
     inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", helpLore));
+        ChatColor.GREEN + "Help", lore));
     inv.setItem(18, ItemCreator.createItem(Material.IRON_SWORD,
         ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     inv.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE,
@@ -216,8 +216,7 @@ public class ItemEditorAttributes {
   private static void addMinecraftAttribute(Inventory inv,
                                             Multimap<Attribute, AttributeModifier> metaAttributes,
                                             String attributeName, int invSlot) {
-    Attribute attribute = Attribute.valueOf("GENERIC_" +
-        attributeName.toUpperCase().replace(" ", "_"));
+    Attribute attribute = Attribute.valueOf("GENERIC_" + TextFormatter.formatEnum(attributeName));
 
     boolean disabled = metaAttributes == null || metaAttributes.get(attribute).isEmpty();
     if (disabled) {
@@ -248,7 +247,7 @@ public class ItemEditorAttributes {
                                             PersistentDataContainer dataContainer,
                                             Map<String, List<AethelAttributeModifierSlot>> aethelAttributesMap,
                                             String attributeName, int invSlot) {
-    String attributeMapKey = attributeName.toLowerCase().replace(" ", "_");
+    String attributeMapKey = TextFormatter.formatId(attributeName.toLowerCase());
     boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
 
     if (enabled) {

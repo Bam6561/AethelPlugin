@@ -41,7 +41,7 @@ public class ItemEditorTags {
   }
 
   /**
-   * Creates and names an ItemEditorTags inventory.
+   * Creates and names an ItemEditorTags menu.
    *
    * @param user user
    * @param item interacting item

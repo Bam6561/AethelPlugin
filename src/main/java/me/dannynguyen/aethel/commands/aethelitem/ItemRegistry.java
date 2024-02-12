@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -22,7 +23,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.7
+ * @version 1.9.15
  * @since 1.3.2
  */
 public class ItemRegistry {
@@ -87,7 +88,8 @@ public class ItemRegistry {
   }
 
   /**
-   * Deserializes bytes from designated item file into an ItemStack that is then sorted into a category.
+   * Deserializes bytes from designated item file into
+   * an ItemStack that is then sorted into a category.
    *
    * @param file       item file
    * @param categories item categories
@@ -103,6 +105,8 @@ public class ItemRegistry {
         itemMap.put(pItem.getName(), pItem);
         categories.get("All").add(item);
         sortItem(categories, item);
+      } else {
+        Bukkit.getLogger().warning("[Aethel] Invalid file: " + file.getName());
       }
     } catch (FileNotFoundException ex) {
       Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
@@ -148,8 +152,9 @@ public class ItemRegistry {
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
     PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    if (data.has(PluginNamespacedKey.AETHELITEM_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
-      String category = data.get(PluginNamespacedKey.AETHELITEM_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
+    NamespacedKey itemId = PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey();
+    if (data.has(itemId, PersistentDataType.STRING)) {
+      String category = data.get(itemId, PersistentDataType.STRING);
       if (categories.containsKey(category)) {
         categories.get(category).add(item);
       } else {
