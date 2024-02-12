@@ -205,7 +205,8 @@ public class EquipmentAttributeListener implements Listener {
   /**
    * Drops the player's jewelry items.
    *
-   * @param player interacting player
+   * @param player       interacting player
+   * @param jewelrySlots player's jewelry slots
    */
   private void dropJewelryItems(Player player, ItemStack[] jewelrySlots) {
     player.getWorld().dropItem(player.getLocation(), jewelrySlots[0]);

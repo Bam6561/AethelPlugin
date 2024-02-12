@@ -20,38 +20,38 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.16
  * @since 1.4.8
  */
 public class PlayerStatData {
   /**
    * Player stat categories.
    */
-  private final PlayerStatCategory[] playerStatCategories = new PlayerStatCategory[]{
-      new PlayerStatCategory("Activities", new String[]{
+  private final Map<String, String[]> playerStatCategories = new HashMap<>(Map.of(
+      "Activities", new String[]{
           "ANIMALS_BRED", "ARMOR_CLEANED", "BANNER_CLEANED", "BELL_RING",
           "CAKE_SLICES_EATEN", "CAULDRON_FILLED", "CAULDRON_USED", "CLEAN_SHULKER_BOX",
           "DROP_COUNT", "FISH_CAUGHT", "FLOWER_POTTED", "ITEM_ENCHANTED", "NOTEBLOCK_PLAYED",
           "NOTEBLOCK_TUNED", "RAID_TRIGGER", "RAID_WIN", "RECORD_PLAYED", "SLEEP_IN_BED",
-          "TALKED_TO_VILLAGER", "TARGET_HIT", "TRADED_WITH_VILLAGER"}),
-      new PlayerStatCategory("Containers", new String[]{
+          "TALKED_TO_VILLAGER", "TARGET_HIT", "TRADED_WITH_VILLAGER"},
+      "Containers", new String[]{
           "CHEST_OPENED", "DISPENSER_INSPECTED", "DROPPER_INSPECTED", "ENDERCHEST_OPENED",
-          "HOPPER_INSPECTED", "OPEN_BARREL", "SHULKER_BOX_OPENED", "TRAPPED_CHEST_TRIGGERED"}),
-      new PlayerStatCategory("Damage", new String[]{
+          "HOPPER_INSPECTED", "OPEN_BARREL", "SHULKER_BOX_OPENED", "TRAPPED_CHEST_TRIGGERED"},
+      "Damage", new String[]{
           "DAMAGE_ABSORBED", "DAMAGE_BLOCKED_BY_SHIELD", "DAMAGE_DEALT", "DAMAGE_DEALT_ABSORBED",
-          "DAMAGE_DEALT_RESISTED", "DAMAGE_RESISTED", "DAMAGE_TAKEN"}),
-      new PlayerStatCategory("General", new String[]{
-          "DEATHS", "LEAVE_GAME", "PLAY_ONE_MINUTE", "TIME_SINCE_DEATH", "TIME_SINCE_REST", "TOTAL_WORLD_TIME"}),
-      new PlayerStatCategory("Movement", new String[]{
+          "DAMAGE_DEALT_RESISTED", "DAMAGE_RESISTED", "DAMAGE_TAKEN"},
+      "General", new String[]{
+          "DEATHS", "LEAVE_GAME", "PLAY_ONE_MINUTE", "TIME_SINCE_DEATH", "TIME_SINCE_REST", "TOTAL_WORLD_TIME"},
+      "Movement", new String[]{
           "AVIATE_ONE_CM", "BOAT_ONE_CM", "CLIMB_ONE_CM", "CROUCH_ONE_CM", "FALL_ONE_CM", "FLY_ONE_CM",
           "HORSE_ONE_CM", "JUMP", "MINECART_ONE_CM", "PIG_ONE_CM", "SNEAK_TIME", "SPRINT_ONE_CM",
-          "STRIDER_ONE_CM", "SWIM_ONE_CM", "WALK_ON_WATER_ONE_CM", "WALK_ONE_CM", "WALK_UNDER_WATER_ONE_CM"}),
-      new PlayerStatCategory("Interactions", new String[]{
+          "STRIDER_ONE_CM", "SWIM_ONE_CM", "WALK_ON_WATER_ONE_CM", "WALK_ONE_CM", "WALK_UNDER_WATER_ONE_CM"},
+      "Interactions", new String[]{
           "BEACON_INTERACTION", "BREWINGSTAND_INTERACTION", "CRAFTING_TABLE_INTERACTION",
           "FURNACE_INTERACTION", "INTERACT_WITH_ANVIL", "INTERACT_WITH_BLAST_FURNACE",
           "INTERACT_WITH_CAMPFIRE", "INTERACT_WITH_CARTOGRAPHY_TABLE", "INTERACT_WITH_GRINDSTONE",
           "INTERACT_WITH_LECTERN", "INTERACT_WITH_LOOM", "INTERACT_WITH_SMITHING_TABLE",
-          "INTERACT_WITH_SMOKER", "INTERACT_WITH_STONECUTTER"})};
+          "INTERACT_WITH_SMOKER", "INTERACT_WITH_STONECUTTER"}));
 
   /**
    * Loaded player statistic categories represented by groups of inventories.
@@ -82,14 +82,14 @@ public class PlayerStatData {
    * Creates pages of non-substats by category.
    */
   private void createStatCategoryPages() {
-    for (PlayerStatCategory category : playerStatCategories) {
+    for (String category : playerStatCategories.keySet()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54);
-      for (String stat : category.getStats()) {
+      for (String stat : playerStatCategories.get(category)) {
         inv.setItem(i, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + TextFormatter.capitalizePhrase(stat)));
         i++;
       }
-      statCategories.put(category.getName(), inv);
+      statCategories.put(category, inv);
     }
   }
 

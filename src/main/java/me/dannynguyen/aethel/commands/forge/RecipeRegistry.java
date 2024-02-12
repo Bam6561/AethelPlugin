@@ -208,7 +208,7 @@ public class RecipeRegistry {
    * Creates an item display for recipes with multiple results.
    * <p>
    * Format:
-   * x<Amount> Item
+   * xAmount Item
    * ...
    * </p>
    *

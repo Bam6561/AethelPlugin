@@ -165,7 +165,6 @@ public class ItemCreator {
    *
    * @param item item to encode
    * @return encoded item string
-   * @throws IOException item could not be encoded
    */
   public static String encodeItem(ItemStack item) {
     try {

@@ -72,6 +72,8 @@ public class ForgeMenuClick {
    * - saves a recipe
    * - changes the interaction type
    * - contextualizes the click to expand, edit, or remove recipes
+   *
+   * @param action type of interaction
    */
   public void interpretCategoryClick(ForgeMenuAction action) {
     switch (slotClicked) {
@@ -133,6 +135,8 @@ public class ForgeMenuClick {
 
   /**
    * Opens the previous recipe category page.
+   *
+   * @param action type of interaction
    */
   private void previousRecipePage(ForgeMenuAction action) {
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
@@ -192,6 +196,8 @@ public class ForgeMenuClick {
 
   /**
    * Opens the next recipe category page.
+   *
+   * @param action type of interaction
    */
   private void nextRecipePage(ForgeMenuAction action) {
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
@@ -202,6 +208,8 @@ public class ForgeMenuClick {
 
   /**
    * Either crafts, edits, or removes a recipe.
+   *
+   * @param action type of interaction
    */
   private void interpretContextualClick(ForgeMenuAction action) {
     switch (action) {
@@ -248,6 +256,7 @@ public class ForgeMenuClick {
   /**
    * Names a recipe by the first item in the results row.
    *
+   * @param menuContents items in menu
    * @return file name
    */
   private String nameFile(ItemStack[] menuContents) {

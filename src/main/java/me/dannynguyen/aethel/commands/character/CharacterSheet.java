@@ -219,6 +219,7 @@ public class CharacterSheet {
   /**
    * Gets a time duration in ticks and converts it to readable conventional time.
    *
+   * @param ticks ticks
    * @return conventional time duration
    */
   private String tickTimeConversion(int ticks) {
