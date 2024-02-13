@@ -44,7 +44,7 @@ public class MessageInputListener implements Listener {
    * @param msgType message type
    */
   private void interpretItemEditor(AsyncPlayerChatEvent e, Player user, String[] msgType) {
-    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
+    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
     ItemMeta meta = item.getItemMeta();
 
     switch (msgType[1]) {

@@ -4,9 +4,9 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
-import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
-import me.dannynguyen.aethel.commands.itemeditor.ItemEditorInventoryListener;
+import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
+import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -19,7 +19,7 @@ import org.bukkit.event.inventory.*;
  * InventoryMenuListener is an inventory click listener for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.17
  * @since 1.0.2
  */
 public class InventoryMenuListener implements Listener {
@@ -38,7 +38,7 @@ public class InventoryMenuListener implements Listener {
           case "aethelitem" -> interpretAethelItem(e, invType);
           case "character" -> interpretCharacter(e, invType);
           case "forge" -> interpretForge(e, invType);
-          case "itemeditor" -> interpretItemEditor(e, user, invType);
+          case "itemeditor" -> interpretItemEditor(e, invType);
           case "playerstats" -> interpretPlayerStat(e, invType);
           case "showitem" -> e.setCancelled(true);
         }
@@ -145,16 +145,19 @@ public class InventoryMenuListener implements Listener {
    * Determines which ItemEditor inventory is being interacting with.
    *
    * @param e       inventory click event
-   * @param user    user
    * @param invType inventory type
    */
-  private void interpretItemEditor(InventoryClickEvent e, Player user, String[] invType) {
-    switch (invType[1]) {
-      case "cosmetics" -> ItemEditorInventoryListener.interpretMainMenuClick(e, user);
-      case "attributes" -> ItemEditorInventoryListener.interpretAttributesMenuClick(e, user);
-      case "enchants" -> ItemEditorInventoryListener.interpretEnchantsMenuClick(e, user);
-      case "tags" -> ItemEditorInventoryListener.interpretTagsMenuClick(e, user);
+  private void interpretItemEditor(InventoryClickEvent e, String[] invType) {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+      ItemEditorMenuClick click = new ItemEditorMenuClick(e);
+      switch (invType[1]) {
+        case "cosmetics" -> click.interpretMainMenuClick();
+        case "attributes" -> click.interpretAttributesMenuClick();
+        case "enchants" -> click.interpretEnchantsMenuClick();
+        case "tags" -> click.interpretTagsMenuClick();
+      }
     }
+    e.setCancelled(true);
   }
 
   /**

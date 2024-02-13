@@ -186,7 +186,7 @@ public class ItemEditorMessageListener {
     user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     Bukkit.getScheduler().runTask(Plugin.getInstance(),
         () -> {
-          user.openInventory(ItemEditorInventory.openMainMenu(user, item));
+          user.openInventory(ItemEditorCosmetic.openMenu(user, item));
           user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(),
               new FixedMetadataValue(Plugin.getInstance(),
                   InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
@@ -202,7 +202,7 @@ public class ItemEditorMessageListener {
    * @throws NumberFormatException not a number
    */
   public static void setAttribute(AsyncPlayerChatEvent e, Player user, ItemStack item) {
-    ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
+    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
     String type = user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString();
     if (!type.contains("aethel.")) {
       setMinecraftAttribute(e, user, item, meta, type);
@@ -231,7 +231,7 @@ public class ItemEditorMessageListener {
           ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(),
-        () -> ItemEditorAction.openEnchantsMenu(user));
+        () -> openEnchantsMenu());
   }
 
   /**
@@ -256,8 +256,7 @@ public class ItemEditorMessageListener {
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () ->
-        ItemEditorAction.openTagsMenu(user));
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> openTagsMenu());
   }
 
   /**

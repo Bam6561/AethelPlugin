@@ -92,7 +92,7 @@ public class ForgeMenu {
    */
   @NotNull
   public Inventory openCategoryPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = PluginData.forgeData.getCategoryMap().get(requestedCategory);
+    List<Inventory> category = PluginData.recipeRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
@@ -151,7 +151,7 @@ public class ForgeMenu {
    * Adds recipe categories.
    */
   private void addCategories() {
-    Set<String> categories = PluginData.forgeData.getCategoryMap().keySet();
+    Set<String> categories = PluginData.recipeRegistry.getCategoryMap().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {

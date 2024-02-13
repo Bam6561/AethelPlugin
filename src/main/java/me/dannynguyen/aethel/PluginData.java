@@ -2,7 +2,7 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
-import me.dannynguyen.aethel.commands.itemeditor.ItemEditorData;
+import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
@@ -18,19 +18,19 @@ import java.util.logging.Logger;
  * PluginData stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.17
  * @since 1.1.7
  */
 public class PluginData {
   public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.file);
-  public static final RecipeRegistry forgeData = new RecipeRegistry(PluginDirectory.FORGE.file);
+  public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.file);
 
   public static final PlayerStatData playerStatData = new PlayerStatData();
 
   public static final PastItemHistory pastItemHistory = new PastItemHistory();
   public static final PastStatHistory pastStatHistory = new PastStatHistory();
 
-  public static final ItemEditorData itemEditorData = new ItemEditorData();
+  public static final EditedItemCache editedItemCache = new EditedItemCache();
 
   public static final RpgData rpgData = new RpgData();
 
@@ -63,7 +63,7 @@ public class PluginData {
     File forgeDirectory = PluginDirectory.FORGE.file;
     if (forgeDirectory.exists()) {
       start = System.nanoTime();
-      PluginData.forgeData.loadData();
+      PluginData.recipeRegistry.loadData();
       finish = System.nanoTime();
       log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(hundredths, start, finish));
     } else {

@@ -81,7 +81,7 @@ public class ForgeCommand implements CommandExecutor {
       }
       case "reload", "r" -> {
         if (user.hasPermission("aethel.forge.editor")) {
-          PluginData.forgeData.loadData();
+          PluginData.recipeRegistry.loadData();
           user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
         } else {
           user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);

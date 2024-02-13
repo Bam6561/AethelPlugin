@@ -61,7 +61,7 @@ public class RecipeCraftOperation {
    */
   public RecipeCraftOperation(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
-    PersistentRecipe recipe = PluginData.forgeData.getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
+    PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
     this.invMap = mapMaterialIndices(user.getInventory());

@@ -7,15 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ItemEditorData stores items currently being edited into memory.
+ * Represents items currently being edited in memory.
  *
  * @author Danny Nguyen
- * @version 1.8.2
+ * @version 1.9.17
  * @since 1.6.7
  */
-public class ItemEditorData {
+public class EditedItemCache {
+  /**
+   * Items currently being edited by what player.
+   */
   private final Map<Player, ItemStack> editedItemMap = new HashMap<>();
 
+  /**
+   * Gets the player:item map.
+   *
+   * @return player:item map
+   */
   public Map<Player, ItemStack> getEditedItemMap() {
     return this.editedItemMap;
   }

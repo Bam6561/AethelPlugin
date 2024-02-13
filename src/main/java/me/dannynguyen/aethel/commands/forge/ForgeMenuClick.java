@@ -248,7 +248,7 @@ public class ForgeMenuClick {
    * Removes an existing recipe.
    */
   private void removeRecipe() {
-    PersistentRecipe recipe = PluginData.forgeData.getRecipeMap().get(ItemReader.readName(e.getCurrentItem()));
+    PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(e.getCurrentItem()));
     recipe.delete();
     user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());
   }

@@ -83,7 +83,7 @@ public class RecipeDetailsMenu {
   public RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
-    this.recipe = Objects.requireNonNull(PluginData.forgeData.getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
+    this.recipe = Objects.requireNonNull(PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
     this.menu = createMenu(this.type);
   }
 

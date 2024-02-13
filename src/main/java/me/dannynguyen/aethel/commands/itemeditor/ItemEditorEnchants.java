@@ -38,7 +38,7 @@ public class ItemEditorEnchants {
    * @return ItemEditorEnchants menu
    */
   public static Inventory openMenu(Player user) {
-    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
+    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
     Inventory inv = createInventory(user, item);
     addEnchants(inv, user);
     addContext(inv);
@@ -54,8 +54,7 @@ public class ItemEditorEnchants {
    * @return ItemEditorEnchants inventory
    */
   private static Inventory createInventory(Player user, ItemStack item) {
-    Inventory inv = Bukkit.createInventory(user, 54,
-        ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Enchants");
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Enchants");
     inv.setItem(4, item);
     return inv;
   }
@@ -67,18 +66,15 @@ public class ItemEditorEnchants {
    * @param user user
    */
   private static void addEnchants(Inventory inv, Player user) {
-    ItemMeta meta = PluginData.itemEditorData.getEditedItemMap().get(user).getItemMeta();
+    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
     Map<Enchantment, Integer> metaEnchants = meta.getEnchants();
-
     int invSlot = 9;
     for (Enchantment enchant : sortedEnchantments) {
       String enchantName = ChatColor.AQUA + TextFormatter.capitalizePhrase(enchant.getKey().getKey());
-
       boolean disabled = metaEnchants.get(enchant) == null;
       inv.setItem(invSlot, disabled ?
           ItemCreator.createItem(Material.BOOK, enchantName) :
-          ItemCreator.createItem(Material.ENCHANTED_BOOK, enchantName,
-              List.of(ChatColor.WHITE + String.valueOf(metaEnchants.get(enchant)))));
+          ItemCreator.createItem(Material.ENCHANTED_BOOK, enchantName, List.of(ChatColor.WHITE + String.valueOf(metaEnchants.get(enchant)))));
       invSlot++;
     }
   }
@@ -89,8 +85,7 @@ public class ItemEditorEnchants {
    * @param inv interacting inventory
    */
   private static void addContext(Inventory inv) {
-    inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", Context.ENCHANTS.context));
+    inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove an enchant, input \"0\".")));
   }
 
   /**
@@ -103,15 +98,5 @@ public class ItemEditorEnchants {
     Comparator<Enchantment> enchantmentComparator = comparing(e -> e.getKey().getKey());
     enchantments.sort(enchantmentComparator);
     return enchantments;
-  }
-
-  private enum Context {
-    ENCHANTS(List.of(ChatColor.WHITE + "To remove an enchant, input \"0\"."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
   }
 }

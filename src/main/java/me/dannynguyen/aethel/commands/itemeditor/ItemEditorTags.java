@@ -32,7 +32,7 @@ public class ItemEditorTags {
    * @return ItemEditorTags menu
    */
   public static Inventory openTagsMenu(Player user) {
-    ItemStack item = PluginData.itemEditorData.getEditedItemMap().get(user);
+    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
     Inventory inv = createInventory(user, item);
     addAethelTags(inv, user);
     addContext(inv);
@@ -48,8 +48,7 @@ public class ItemEditorTags {
    * @return ItemEditorTags inventory
    */
   private static Inventory createInventory(Player user, ItemStack item) {
-    Inventory inv = Bukkit.createInventory(user, 54,
-        ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Aethel Tags");
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Aethel Tags");
     inv.setItem(4, item);
     return inv;
   }
@@ -61,17 +60,13 @@ public class ItemEditorTags {
    * @param user user
    */
   private static void addAethelTags(Inventory inv, Player user) {
-    PersistentDataContainer dataContainer = PluginData.itemEditorData.
-        getEditedItemMap().get(user).getItemMeta().getPersistentDataContainer();
-
+    PersistentDataContainer dataContainer = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta().getPersistentDataContainer();
     int invSlot = 9;
     for (NamespacedKey tag : PluginConstant.aethelTags) {
       boolean disabled = !dataContainer.has(tag, PersistentDataType.STRING);
-
       inv.setItem(invSlot, disabled ?
           ItemCreator.createItem(Material.ENDER_PEARL, ChatColor.AQUA + tag.getKey().substring(7)) :
-          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag.getKey().substring(7),
-              List.of(ChatColor.WHITE + dataContainer.get(tag, PersistentDataType.STRING))));
+          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag.getKey().substring(7), List.of(ChatColor.WHITE + dataContainer.get(tag, PersistentDataType.STRING))));
       invSlot++;
     }
   }
@@ -82,17 +77,6 @@ public class ItemEditorTags {
    * @param inv interacting inventory
    */
   private static void addContext(Inventory inv) {
-    inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
-        ChatColor.GREEN + "Help", Context.TAGS.context));
-  }
-
-  private enum Context {
-    TAGS(List.of(ChatColor.WHITE + "To remove a tag, input \"-\"."));
-
-    public final List<String> context;
-
-    Context(List<String> context) {
-      this.context = context;
-    }
+    inv.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
   }
 }

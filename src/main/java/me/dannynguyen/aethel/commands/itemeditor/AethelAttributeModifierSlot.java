@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.commands.itemeditor.object;
+package me.dannynguyen.aethel.commands.itemeditor;
 
 /**
  * AethelAttributeModifierSlot is an object relating

@@ -24,14 +24,16 @@ import java.util.Objects;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.17
  * @since 1.4.7
  */
 public class PlayerStatMenu {
   /**
    * Stat category names.
    */
-  private static final String[] categoryNames = new String[]{"Activities", "Containers", "Damage", "Entity Types", "General", "Interactions", "Materials", "Movement"};
+  private static final String[] categoryNames = new String[]{
+      "Activities", "Containers", "Damage", "Entity Types",
+      "General", "Interactions", "Materials", "Movement"};
 
   /**
    * PlayerStat GUI.
@@ -104,26 +106,26 @@ public class PlayerStatMenu {
   /**
    * Sets the menu to load a substat category page.
    *
-   * @param category      requested category
-   * @param requestedPage requested page
+   * @param requestedCategory requested category
+   * @param requestedPage     requested page
    */
-  private void loadSubstatPage(String category, int requestedPage) {
-    PlayerStatData playerStatData = PluginData.playerStatData;
-    int numberOfPages = playerStatData.getSubstatCategories().get(category).size();
+  private void loadSubstatPage(String requestedCategory, int requestedPage) {
+    List<Inventory> category = PluginData.playerStatData.getSubstatCategories().get(requestedCategory);
+    int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
-    menu.setContents(playerStatData.getSubstatCategories().get(category).get(pageViewed).getContents());
+    menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
   }
 
   /**
-   * Sets the menu to load a non-stat category page.
+   * Sets the menu to load a non-stat requestedCategory page.
    *
-   * @param category requested category
+   * @param requestedCategory requested requestedCategory
    */
-  private void loadStatsPage(String category) {
-    menu.setContents(PluginData.playerStatData.getStatCategories().get(category).getContents());
+  private void loadStatsPage(String requestedCategory) {
+    menu.setContents(PluginData.playerStatData.getStatCategories().get(requestedCategory).getContents());
   }
 
   /**
