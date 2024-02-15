@@ -31,7 +31,7 @@ import java.util.UUID;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.20
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -123,16 +123,20 @@ public class ItemEditorMessageSent {
    */
   public void editLore() {
     String[] input = e.getMessage().split(" ", 2);
-    try {
-      List<String> lore = meta.getLore();
-      lore.set(Integer.parseInt(input[0]) - 1, ChatColor.translateAlternateColorCodes('&', input[1]));
-      meta.setLore(lore);
-      item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Edited Lore]");
-    } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid line number.");
-    } catch (IndexOutOfBoundsException ex) {
-      user.sendMessage(ChatColor.RED + "Line does not exist.");
+    if (input.length == 2) {
+      try {
+        List<String> lore = meta.getLore();
+        lore.set(Integer.parseInt(input[0]) - 1, ChatColor.translateAlternateColorCodes('&', input[1]));
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        user.sendMessage(ChatColor.GREEN + "[Edited Lore]");
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid line number.");
+      } catch (IndexOutOfBoundsException ex) {
+        user.sendMessage(ChatColor.RED + "Line does not exist.");
+      }
+    } else {
+      user.sendMessage(ChatColor.RED + "Invalid input.");
     }
     returnToCosmeticEditor();
   }
@@ -169,17 +173,16 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's enchant.
+   * Sets or removes an item's enchantment.
    */
   public void setEnchant() {
-    NamespacedKey enchant = NamespacedKey.minecraft(user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString());
     if (!e.getMessage().equals("0")) {
       try {
         int level = Integer.parseInt(e.getMessage());
         if (level > 0 && level < 32768) {
+          NamespacedKey enchant = NamespacedKey.minecraft(user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString());
           item.addUnsafeEnchantment(Enchantment.getByKey(enchant), level);
-          user.sendMessage(ChatColor.GREEN + "[Set " +
-              TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
+          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
         } else {
           user.sendMessage(ChatColor.RED + "Specify a level between 0 - 32767.");
         }
@@ -187,10 +190,11 @@ public class ItemEditorMessageSent {
         user.sendMessage(ChatColor.RED + "Invalid value.");
       }
     } else {
-      item.removeEnchantment(Enchantment.getByKey(enchant));
-      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
+      NamespacedKey enchantment = NamespacedKey.minecraft(user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString());
+      item.removeEnchantment(Enchantment.getByKey(enchantment));
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> new EnchantmentEditorMenu(user).openMenu());
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> returnToEnchantmentEditor());
   }
 
   /**
@@ -199,17 +203,17 @@ public class ItemEditorMessageSent {
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     String tagType = user.getMetadata(PluginPlayerMeta.TYPE.getMeta()).get(0).asString();
-    NamespacedKey aethelTagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tagType);
+    NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tagType);
 
     if (!e.getMessage().equals("-")) {
-      dataContainer.set(aethelTagKey, PersistentDataType.STRING, e.getMessage());
+      dataContainer.set(tagKey, PersistentDataType.STRING, e.getMessage());
       user.sendMessage(ChatColor.GREEN + "[Set " + tagType + "]");
     } else {
-      dataContainer.remove(aethelTagKey);
+      dataContainer.remove(tagKey);
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> new TagEditorMenu(user).openMenu());
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> returnToTagEditor());
   }
 
   /**
@@ -218,11 +222,11 @@ public class ItemEditorMessageSent {
    * @param type attribute derived from inventory click
    */
   private void setMinecraftAttribute(String type) {
-    Attribute attribute = Attribute.valueOf(type);
-    EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString().toUpperCase());
     try {
-      AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
+      Attribute attribute = Attribute.valueOf(type);
+      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString().toUpperCase());
       if (!e.getMessage().equals("0")) {
+        AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
         removeExistingAttributeModifiers(attribute, equipmentSlot);
         meta.addAttributeModifier(attribute, attributeModifier);
         user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
@@ -242,9 +246,6 @@ public class ItemEditorMessageSent {
    * @param type attribute derived from inventory click
    */
   private void setAethelAttribute(String type) {
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey attributesKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
-
     String equipmentSlot = user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString();
     String attributeName = type + "." + equipmentSlot;
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attributeName);
@@ -255,9 +256,9 @@ public class ItemEditorMessageSent {
     try {
       String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
       if (!e.getMessage().equals("0")) {
-        setAethelAttributeModifier(type, dataContainer, attributesKey, attributeName, attributeKey, attributeValue);
+        setAethelAttributeModifier(type, attributeName, attributeKey, attributeValue);
       } else {
-        removeAethelAttributeModifier(type, dataContainer, attributesKey, attributeName, attributeKey);
+        removeAethelAttributeModifier(type, attributeName, attributeKey);
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
@@ -269,27 +270,25 @@ public class ItemEditorMessageSent {
    * Sets an item's Aethel attribute modifier based on the equipment slot mode.
    *
    * @param type           attribute derived from inventory click
-   * @param dataContainer  item's persistent tags
-   * @param attributesKey  attributes list key
    * @param attributeName  attribute name
    * @param attributeKey   attribute key
    * @param attributeValue attribute value
    */
-  private void setAethelAttributeModifier(String type, PersistentDataContainer dataContainer, NamespacedKey attributesKey, String attributeName, NamespacedKey attributeKey, String attributeValue) {
-    if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
-      List<String> attributes = new ArrayList<>(
-          List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+  private void setAethelAttributeModifier(String type, String attributeName, NamespacedKey attributeKey, String attributeValue) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
 
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newAttributes = new StringBuilder();
       for (String attribute : attributes) {
         if (!attribute.equals(attributeName)) {
           newAttributes.append(attribute).append(" ");
         }
       }
-
-      dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes + attributeName);
+      dataContainer.set(listKey, PersistentDataType.STRING, newAttributes + attributeName);
     } else {
-      dataContainer.set(attributesKey, PersistentDataType.STRING, attributeName);
+      dataContainer.set(listKey, PersistentDataType.STRING, attributeName);
     }
     dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
     user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
@@ -299,15 +298,15 @@ public class ItemEditorMessageSent {
    * Removes an item's Aethel attribute modifier based on the equipment slot mode.
    *
    * @param type          attribute derived from inventory click
-   * @param dataContainer item's persistent tags
-   * @param attributesKey attributes list key
    * @param attributeName attribute name
    * @param attributeKey  attribute key
    */
-  private void removeAethelAttributeModifier(String type, PersistentDataContainer dataContainer, NamespacedKey attributesKey, String attributeName, NamespacedKey attributeKey) {
-    if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
-      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+  private void removeAethelAttributeModifier(String type, String attributeName, NamespacedKey attributeKey) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
 
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newAttributes = new StringBuilder();
       for (String attribute : attributes) {
         if (!attribute.equals(attributeName)) {
@@ -316,9 +315,9 @@ public class ItemEditorMessageSent {
       }
 
       if (!newAttributes.isEmpty()) {
-        dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes.toString().trim());
+        dataContainer.set(listKey, PersistentDataType.STRING, newAttributes.toString().trim());
       } else {
-        dataContainer.remove(attributesKey);
+        dataContainer.remove(listKey);
       }
       dataContainer.remove(attributeKey);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
@@ -360,5 +359,23 @@ public class ItemEditorMessageSent {
     user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(user.getMetadata(PluginPlayerMeta.SLOT.getMeta()).get(0).asString())).openMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+  }
+
+  /**
+   * Returns to the EnchantmentEditor.
+   */
+  private void returnToEnchantmentEditor() {
+    user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    user.openInventory(new EnchantmentEditorMenu(user).openMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
+  }
+
+  /**
+   * Returns to the TagEditor.
+   */
+  private void returnToTagEditor() {
+    user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    user.openInventory(new TagEditorMenu(user).openMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_TAGS.menu));
   }
 }

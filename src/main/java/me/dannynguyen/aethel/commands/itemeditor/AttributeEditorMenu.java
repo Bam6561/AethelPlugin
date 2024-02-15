@@ -29,7 +29,7 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.20
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -61,12 +61,12 @@ class AttributeEditorMenu {
   /**
    * ItemStack Minecraft attributes.
    */
-  private final Multimap<Attribute, AttributeModifier> metaAttributes;
+  private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
   /**
    * ItemStack Aethel attributes.
    */
-  private final Map<String, List<AethelAttributeModifierSlot>> aethelAttributesMap;
+  private final Map<String, List<String>> aethelAttributesMap;
 
   /**
    * Associates a new AttributeEditor menu with its user and editing item.
@@ -78,7 +78,7 @@ class AttributeEditorMenu {
     this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
     this.action = action;
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
-    this.metaAttributes = item.getItemMeta().getAttributeModifiers();
+    this.attributeModifiers = item.getItemMeta().getAttributeModifiers();
     this.aethelAttributesMap = mapAethelAttributes();
     this.menu = createMenu();
   }
@@ -151,24 +151,23 @@ class AttributeEditorMenu {
    *
    * @return item's Aethel attributes map
    */
-  private Map<String, List<AethelAttributeModifierSlot>> mapAethelAttributes() {
+  private Map<String, List<String>> mapAethelAttributes() {
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasAttributes) {
-      Map<String, List<AethelAttributeModifierSlot>> attributesMap = new HashMap<>();
+      Map<String, List<String>> attributesMap = new HashMap<>();
       List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String attribute : attributes) {
         String attributeType = attribute.substring(0, attribute.indexOf("."));
-        String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
         if (attributesMap.containsKey(attributeType)) {
-          attributesMap.get(attributeType).add(new AethelAttributeModifierSlot(attributeType, attributeSlot));
+          attributesMap.get(attributeType).add(attribute.substring(attribute.indexOf(".") + 1));
         } else {
-          attributesMap.put(attributeType, new ArrayList<>(List.of(new AethelAttributeModifierSlot(attributeType, attributeSlot))));
+          attributesMap.put(attributeType, new ArrayList<>(List.of(attribute.substring(attribute.indexOf(".") + 1))));
         }
       }
       return attributesMap;
     } else {
-      return new HashMap<>();
+      return null;
     }
   }
 
@@ -184,7 +183,7 @@ class AttributeEditorMenu {
    * @param invSlot  inventory slot
    */
   private void addAttributeCategory(String category, int invSlot) {
-    if (!aethelAttributesMap.isEmpty()) { // Read both Minecraft & Aethel attributes
+    if (aethelAttributesMap != null) { // Read both Minecraft & Aethel attributes
       for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
         if (PluginConstant.minecraftAttributes.contains(attributeName)) {
           addMinecraftAttribute(attributeName, invSlot);
@@ -213,12 +212,12 @@ class AttributeEditorMenu {
    */
   private void addMinecraftAttribute(String attributeName, int invSlot) {
     Attribute attribute = Attribute.valueOf("GENERIC_" + TextFormatter.formatEnum(attributeName));
-    boolean disabled = metaAttributes == null || metaAttributes.get(attribute).isEmpty();
+    boolean disabled = attributeModifiers == null || attributeModifiers.get(attribute).isEmpty();
     if (disabled) {
       menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
     } else {
       List<String> lore = new ArrayList<>();
-      for (AttributeModifier attributeModifier : metaAttributes.get(attribute)) {
+      for (AttributeModifier attributeModifier : attributeModifiers.get(attribute)) {
         lore.add(ChatColor.WHITE + "" + TextFormatter.capitalizePhrase(attributeModifier.getSlot().name()) + ": " + attributeModifier.getAmount());
       }
       menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));
@@ -232,14 +231,14 @@ class AttributeEditorMenu {
    * @param invSlot       inventory slot
    */
   private void addAethelAttribute(String attributeName, int invSlot) {
-    String attributeMapKey = TextFormatter.formatId(attributeName.toLowerCase());
+    String attributeMapKey = TextFormatter.formatId(attributeName);
     boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
     if (enabled) {
       List<String> lore = new ArrayList<>();
-      for (AethelAttributeModifierSlot aethelAttribute : aethelAttributesMap.get(attributeMapKey)) {
-        NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + aethelAttribute.getType() + "." + aethelAttribute.getSlot());
-        String attributeValue = String.valueOf(dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
-        lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(aethelAttribute.getSlot()) + ": " + attributeValue);
+      for (String attribute : aethelAttributesMap.get(attributeMapKey)) {
+        NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attributeMapKey + "." + attribute);
+        Double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
+        lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(attribute + ": " + attributeValue));
       }
       menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));
     } else {

@@ -75,7 +75,7 @@ class EnchantmentEditorMenu {
    */
   @NotNull
   protected Inventory openMenu() {
-    addEnchants();
+    addEnchantments();
     addContext();
     InventoryPages.addBackButton(menu, 6);
     return menu;
@@ -84,7 +84,7 @@ class EnchantmentEditorMenu {
   /**
    * Adds enchantments.
    */
-  private void addEnchants() {
+  private void addEnchantments() {
     Map<Enchantment, Integer> metaEnchantments = item.getItemMeta().getEnchants();
     int invSlot = 9;
     for (Enchantment enchantment : enchantments) {

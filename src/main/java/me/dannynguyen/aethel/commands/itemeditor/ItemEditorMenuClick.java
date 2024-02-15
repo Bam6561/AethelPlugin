@@ -135,7 +135,7 @@ public class ItemEditorMenuClick {
       case 2, 4 -> { // Context, Item
       }
       case 6 -> returnToCosmeticEditor();
-      default -> readEnchant();
+      default -> readEnchantment();
     }
   }
 
@@ -187,7 +187,7 @@ public class ItemEditorMenuClick {
       user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     }
     user.openInventory(new EnchantmentEditorMenu(user).openMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTS.menu));
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
   }
 
   /**
@@ -235,7 +235,7 @@ public class ItemEditorMenuClick {
    */
   private void editLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number to remove.");
+      user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number and lore to edit.");
       awaitMessageResponse("lore-edit");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -247,7 +247,7 @@ public class ItemEditorMenuClick {
    */
   private void removeLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number and lore to edit.");
+      user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number to remove.");
       awaitMessageResponse("lore-remove");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -288,7 +288,7 @@ public class ItemEditorMenuClick {
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
     } else {
-      user.sendMessage(ChatColor.RED + "No plugin modifications to item.");
+      user.sendMessage(ChatColor.RED + "Not modified by plugin.");
     }
   }
 
@@ -465,10 +465,10 @@ public class ItemEditorMenuClick {
   /**
    * Determines the enchantment to be set and prompts the user for an input.
    */
-  private void readEnchant() {
-    String enchant = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchant) + ChatColor.WHITE + " value.");
-    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), enchant));
+  private void readEnchantment() {
+    String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), enchantment));
     awaitMessageResponse("enchantments");
   }
 

@@ -20,7 +20,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.16
+ * @version 1.9.19
  * @since 1.4.8
  */
 public class PlayerStatData {

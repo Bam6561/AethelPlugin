@@ -10,7 +10,7 @@ import java.util.Map;
  * Represents items currently being edited in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.17
+ * @version 1.9.19
  * @since 1.6.7
  */
 public class EditedItemCache {

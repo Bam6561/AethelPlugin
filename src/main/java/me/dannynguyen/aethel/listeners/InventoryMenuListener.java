@@ -213,7 +213,7 @@ public class InventoryMenuListener implements Listener {
     FORGE_SAVE("forge.save"),
     ITEMEDITOR_ATTRIBUTES("itemeditor.attributes"),
     ITEMEDITOR_COSMETICS("itemeditor.cosmetics"),
-    ITEMEDITOR_ENCHANTS("itemeditor.enchants"),
+    ITEMEDITOR_ENCHANTMENTS("itemeditor.enchantments"),
     ITEMEDITOR_TAGS("itemeditor.tags"),
     PLAYERSTAT_CATEGORY("playerstats.category"),
     PLAYERSTAT_PAST("playerstats.past"),
