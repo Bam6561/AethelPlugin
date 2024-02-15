@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -64,6 +64,6 @@ public class CharacterCommand implements CommandExecutor {
    */
   private void openCharacterSheet(Player user) {
     user.openInventory(new CharacterSheet(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.CHARACTER_SHEET.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.CHARACTER_SHEET.menu));
   }
 }

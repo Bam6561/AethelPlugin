@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -114,7 +114,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CRAFT_CONFIRM.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_CRAFT_CONFIRM.menu));
   }
 
   /**
@@ -125,7 +125,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_SAVE.menu));
   }
 
   /**
@@ -135,7 +135,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_SAVE.menu));
   }
 
   /**

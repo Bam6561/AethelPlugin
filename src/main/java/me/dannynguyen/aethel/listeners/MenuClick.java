@@ -16,13 +16,44 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 
 /**
- * InventoryMenuListener is an inventory click listener for the plugin's menus.
+ * Collection of inventory click listeners for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.17
+ * @version 1.9.22
  * @since 1.0.2
  */
-public class InventoryMenuListener implements Listener {
+public class MenuClick implements Listener {
+  /**
+   * Currently open menu.
+   */
+  public enum Menu {
+    AETHELITEM_CATEGORY("aethelitem.category"),
+    AETHELITEM_GET("aethelitem.get"),
+    AETHELITEM_REMOVE("aethelitem.remove"),
+    CHARACTER_SHEET("character.sheet"),
+    FORGE_CATEGORY("forge.category"),
+    FORGE_CRAFT("forge.craft"),
+    FORGE_CRAFT_CONFIRM("forge.craft-confirm"),
+    FORGE_EDIT("forge.edit"),
+    FORGE_REMOVE("forge.remove"),
+    FORGE_SAVE("forge.save"),
+    ITEMEDITOR_ATTRIBUTES("itemeditor.attribute"),
+    ITEMEDITOR_COSMETICS("itemeditor.cosmetic"),
+    ITEMEDITOR_ENCHANTMENTS("itemeditor.enchantment"),
+    ITEMEDITOR_TAGS("itemeditor.tag"),
+    PLAYERSTAT_CATEGORY("playerstat.category"),
+    PLAYERSTAT_PAST("playerstat.past"),
+    PLAYERSTAT_STAT("playerstat.stat"),
+    PLAYERSTAT_SUBSTAT("playerstat.substat"),
+    SHOWITEM_PAST("showitem.past");
+
+    public final String menu;
+
+    Menu(String menu) {
+      this.menu = menu;
+    }
+  }
+
   /**
    * Routes interactions between inventories.
    *
@@ -39,7 +70,7 @@ public class InventoryMenuListener implements Listener {
           case "character" -> interpretCharacter(e, invType);
           case "forge" -> interpretForge(e, invType);
           case "itemeditor" -> interpretItemEditor(e, invType);
-          case "playerstats" -> interpretPlayerStat(e, invType);
+          case "playerstat" -> interpretPlayerStat(e, invType);
           case "showitem" -> e.setCancelled(true);
         }
       }
@@ -47,7 +78,7 @@ public class InventoryMenuListener implements Listener {
   }
 
   /**
-   * Disables drag clicks while inside specific plugin menus.
+   * Disables drag clicks while inside specific menus.
    *
    * @param e inventory drag event
    */
@@ -73,7 +104,7 @@ public class InventoryMenuListener implements Listener {
    * @param invType inventory type
    */
   private void interpretAethelItem(InventoryClickEvent e, String[] invType) {
-    if (e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+    if (e.getClickedInventory().getType().equals(InventoryType.CHEST) && !e.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) {
       int slot = e.getSlot();
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ItemMenuClick click = new ItemMenuClick(e);
@@ -151,10 +182,10 @@ public class InventoryMenuListener implements Listener {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       ItemEditorMenuClick click = new ItemEditorMenuClick(e);
       switch (invType[1]) {
-        case "cosmetics" -> click.interpretCosmeticEditorClick();
-        case "attributes" -> click.interpretAttributeEditorClick();
-        case "enchantments" -> click.interpretEnchantmentEditorClick();
-        case "tags" -> click.interpretTagEditorClick();
+        case "cosmetic" -> click.interpretCosmeticEditorClick();
+        case "attribute" -> click.interpretAttributeEditorClick();
+        case "enchantment" -> click.interpretEnchantmentEditorClick();
+        case "tag" -> click.interpretTagEditorClick();
       }
     }
     e.setCancelled(true);
@@ -194,37 +225,6 @@ public class InventoryMenuListener implements Listener {
     Player player = (Player) e.getPlayer();
     if (player.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
       player.removeMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), Plugin.getInstance());
-    }
-  }
-
-  /**
-   * Currently open menu.
-   */
-  public enum Menu {
-    AETHELITEM_CATEGORY("aethelitem.category"),
-    AETHELITEM_GET("aethelitem.get"),
-    AETHELITEM_REMOVE("aethelitem.remove"),
-    CHARACTER_SHEET("character.sheet"),
-    FORGE_CATEGORY("forge.category"),
-    FORGE_CRAFT("forge.craft"),
-    FORGE_CRAFT_CONFIRM("forge.craft-confirm"),
-    FORGE_EDIT("forge.edit"),
-    FORGE_REMOVE("forge.remove"),
-    FORGE_SAVE("forge.save"),
-    ITEMEDITOR_ATTRIBUTES("itemeditor.attributes"),
-    ITEMEDITOR_COSMETICS("itemeditor.cosmetics"),
-    ITEMEDITOR_ENCHANTMENTS("itemeditor.enchantments"),
-    ITEMEDITOR_TAGS("itemeditor.tags"),
-    PLAYERSTAT_CATEGORY("playerstats.category"),
-    PLAYERSTAT_PAST("playerstats.past"),
-    PLAYERSTAT_STAT("playerstats.stat"),
-    PLAYERSTAT_SUBSTAT("playerstats.substat"),
-    SHOWITEM_PAST("showitem.past");
-
-    public final String menu;
-
-    Menu(String menu) {
-      this.menu = menu;
     }
   }
 }

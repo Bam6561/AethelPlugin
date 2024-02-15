@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -57,8 +57,8 @@ public class PlayerStatMenuClick {
 
       user.openInventory(new PlayerStatMenu(user, requestedPlayer).openCategoryPage(itemName, 0));
       switch (itemName) {
-        case "Entity Types", "Materials" -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
-        default -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_STAT.menu));
+        case "Entity Types", "Materials" -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_SUBSTAT.menu));
+        default -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_STAT.menu));
       }
     }
   }
@@ -106,7 +106,7 @@ public class PlayerStatMenuClick {
     int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openCategoryPage(categoryName, pageRequest - 1));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_SUBSTAT.menu));
   }
 
   /**
@@ -115,7 +115,7 @@ public class PlayerStatMenuClick {
   private void returnToMainMenu() {
     String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_CATEGORY.menu));
     user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
@@ -128,6 +128,6 @@ public class PlayerStatMenuClick {
     int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openCategoryPage(categoryName, pageRequest + 1));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_SUBSTAT.menu));
   }
 }

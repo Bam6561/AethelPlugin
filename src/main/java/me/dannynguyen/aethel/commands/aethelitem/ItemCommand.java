@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -69,7 +69,7 @@ public class ItemCommand implements CommandExecutor {
   private void openMainMenu(Player user) {
     user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), " "));
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_CATEGORY.menu));
     user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 

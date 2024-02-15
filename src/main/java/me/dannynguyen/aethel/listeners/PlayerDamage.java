@@ -11,13 +11,18 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * RpgPlayerDamageListener is a collection of listeners for events related to players' damage done and taken.
+ * Player damage done and taken listener.
  *
  * @author Danny Nguyen
- * @version 1.9.5
+ * @version 1.9.22
  * @since 1.9.4
  */
-public class RpgPlayerDamageListener implements Listener {
+public class PlayerDamage implements Listener {
+  /**
+   * Calculates damage done or taken by players.
+   *
+   * @param e entity damaged by entity event
+   */
   @EventHandler
   public void onDamage(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Player player) {
@@ -46,7 +51,6 @@ public class RpgPlayerDamageListener implements Listener {
   private void processDamageTaken(EntityDamageByEntityEvent e, Player player) {
     Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgPlayers().get(player).getAethelAttributes();
     Random random = new Random();
-
     Double damage = e.getDamage();
     if (calculateIfDodged(e, aethelAttributes, random)) {
       return;
@@ -66,7 +70,6 @@ public class RpgPlayerDamageListener implements Listener {
    */
   private void calculateIfCriticallyHit(EntityDamageByEntityEvent e, Player player) {
     Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgPlayers().get(player).getAethelAttributes();
-
     if (aethelAttributes.get("critical_chance") > new Random().nextDouble() * 100) {
       e.setDamage(e.getDamage() * (1.25 + (aethelAttributes.get("critical_damage") / 100)));
     }
@@ -78,10 +81,9 @@ public class RpgPlayerDamageListener implements Listener {
    * @param e                entity damage by entity event
    * @param aethelAttributes player's attributes
    * @param random           rng
-   * @return damage taken dodged
+   * @return if damage taken dodged
    */
-  private boolean calculateIfDodged(EntityDamageByEntityEvent e,
-                                    Map<String, Double> aethelAttributes, Random random) {
+  private boolean calculateIfDodged(EntityDamageByEntityEvent e, Map<String, Double> aethelAttributes, Random random) {
     if (aethelAttributes.get("dodge_chance") > random.nextDouble() * 100) {
       e.setCancelled(true);
       return true;
@@ -97,14 +99,12 @@ public class RpgPlayerDamageListener implements Listener {
    * @param aethelAttributes player's attributes
    * @param random           rng
    * @param damage           damage taken
-   * @return damage taken completely parried
+   * @return if damage taken completely parried
    */
-  private boolean calculateIfParried(EntityDamageByEntityEvent e, Map<String, Double> aethelAttributes,
-                                     Random random, Double damage) {
+  private boolean calculateIfParried(EntityDamageByEntityEvent e, Map<String, Double> aethelAttributes, Random random, Double damage) {
     if (aethelAttributes.get("parry_chance") > random.nextDouble() * 100) {
       Double damageDeflected = damage * (aethelAttributes.get("parry_deflect") / 100);
       damage = damage - damageDeflected;
-
       ((LivingEntity) e.getDamager()).damage(damageDeflected);
       if (damage < 0) {
         e.setCancelled(true);
@@ -120,10 +120,9 @@ public class RpgPlayerDamageListener implements Listener {
    * @param e                entity damage by entity event
    * @param aethelAttributes player's attributes
    * @param damage           damage taken
-   * @return damage taken completely blocked
+   * @return if damage taken completely blocked
    */
-  private boolean calculateIfBlocked(EntityDamageByEntityEvent e,
-                                     Map<String, Double> aethelAttributes, Double damage) {
+  private boolean calculateIfBlocked(EntityDamageByEntityEvent e, Map<String, Double> aethelAttributes, Double damage) {
     damage = damage - aethelAttributes.get("block");
     if (damage < 0) {
       e.setCancelled(true);

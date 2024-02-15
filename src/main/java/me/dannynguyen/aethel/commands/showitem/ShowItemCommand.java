@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.showitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
@@ -95,7 +95,7 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
       user.openInventory(new PastItemMenu(user).openMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.SHOWITEM_PAST.menu));
     } else {
       user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
     }

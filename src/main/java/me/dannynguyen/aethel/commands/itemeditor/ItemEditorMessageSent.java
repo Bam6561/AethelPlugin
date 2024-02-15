@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -347,7 +347,7 @@ public class ItemEditorMessageSent {
     user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticEditorMenu(user).openMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_COSMETICS.menu));
     });
   }
 
@@ -357,7 +357,7 @@ public class ItemEditorMessageSent {
   private void returnToAttributeEditor() {
     user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(user.getMetadata(PluginEnum.PlayerMeta.SLOT.getMeta()).get(0).asString())).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   /**
@@ -366,7 +366,7 @@ public class ItemEditorMessageSent {
   private void returnToEnchantmentEditor() {
     user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     user.openInventory(new EnchantmentEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
   }
 
   /**
@@ -375,6 +375,6 @@ public class ItemEditorMessageSent {
   private void returnToTagEditor() {
     user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     user.openInventory(new TagEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_TAGS.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_TAGS.menu));
   }
 }

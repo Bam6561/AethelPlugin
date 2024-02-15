@@ -8,13 +8,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
- * MessageInputListener is a player chat listener for the plugin's message inputs.
+ * Collection of player chat listeners for the plugin's message inputs.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.9.22
  * @since 1.6.7
  */
-public class MessageInputListener implements Listener {
+public class MessageSent implements Listener {
   /**
    * Routes interactions for messages sent.
    *
@@ -33,9 +33,9 @@ public class MessageInputListener implements Listener {
   }
 
   /**
-   * Determines which ItemEditor message is being interacted with.
+   * Determines which ItemEditor input is being interacted with.
    *
-   * @param e       inventory click event   user
+   * @param e       inventory click event
    * @param msgType message type
    */
   private void interpretItemEditor(AsyncPlayerChatEvent e, String[] msgType) {
@@ -47,9 +47,9 @@ public class MessageInputListener implements Listener {
       case "lore-add" -> msg.addLore();
       case "lore-edit" -> msg.editLore();
       case "lore-remove" -> msg.removeLore();
-      case "attributes" -> msg.setAttribute();
-      case "enchantments" -> msg.setEnchant();
-      case "tags" -> msg.setTag();
+      case "attribute" -> msg.setAttribute();
+      case "enchantment" -> msg.setEnchant();
+      case "tag" -> msg.setTag();
     }
   }
 }

@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -72,7 +72,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).openMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_PAST.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_PAST.menu));
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -86,7 +86,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void openPlayerStatSelf(Player user) {
     user.setMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), user.getName()));
     user.openInventory(new PlayerStatMenu(user, user.getName()).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_CATEGORY.menu));
   }
 
   /**
@@ -100,7 +100,7 @@ public class PlayerStatCommand implements CommandExecutor {
     if (player.hasPlayedBefore()) {
       user.setMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), player.getName()));
       user.openInventory(new PlayerStatMenu(user, player.getName()).openMainMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_CATEGORY.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_CATEGORY.menu));
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginConstant;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -27,7 +27,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.9.22
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -174,7 +174,7 @@ public class ItemEditorMenuClick {
     }
     user.setMetadata(PluginEnum.PlayerMeta.SLOT.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "head"));
     user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.HEAD).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   /**
@@ -185,7 +185,7 @@ public class ItemEditorMenuClick {
       user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     }
     user.openInventory(new EnchantmentEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
   }
 
   /**
@@ -196,7 +196,7 @@ public class ItemEditorMenuClick {
       user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
     }
     user.openInventory(new TagEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_TAGS.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_TAGS.menu));
   }
 
   /**
@@ -430,7 +430,7 @@ public class ItemEditorMenuClick {
    */
   private void returnToCosmeticEditor() {
     user.openInventory(new CosmeticEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_COSMETICS.menu));
   }
 
   /**
@@ -440,7 +440,7 @@ public class ItemEditorMenuClick {
     String equipmentSlot = AttributeEditorAction.asString(action);
     user.setMetadata(PluginEnum.PlayerMeta.SLOT.getMeta(), new FixedMetadataValue(Plugin.getInstance(), equipmentSlot));
     user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(equipmentSlot)).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   /**
@@ -457,7 +457,7 @@ public class ItemEditorMenuClick {
     user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeValueContext(attributeName));
     user.setMetadata(PluginEnum.PlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), attribute));
-    awaitMessageResponse("attributes");
+    awaitMessageResponse("attribute");
   }
 
   /**
@@ -467,7 +467,7 @@ public class ItemEditorMenuClick {
     String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
     user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     user.setMetadata(PluginEnum.PlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), enchantment));
-    awaitMessageResponse("enchantments");
+    awaitMessageResponse("enchantment");
   }
 
   /**
@@ -477,7 +477,7 @@ public class ItemEditorMenuClick {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
     user.setMetadata(PluginEnum.PlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), tag));
-    awaitMessageResponse("tags");
+    awaitMessageResponse("tag");
   }
 
   /**

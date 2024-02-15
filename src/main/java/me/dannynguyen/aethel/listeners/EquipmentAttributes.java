@@ -24,52 +24,64 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * EquipmentAttributeListener is a collection of listeners for
- * events related to changing a player's equipment attributes.
+ * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.9.22
  * @since 1.9.0
  */
-public class EquipmentAttributeListener implements Listener {
-  public enum WornItems {
-    ALL(new HashSet<>(List.of(
-        "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS",
-        "CHAINMAIL_HELMET", "CHAINMAIL_CHESTPLATE", "CHAINMAIL_LEGGINGS", "CHAINMAIL_BOOTS",
-        "IRON_HELMET", "IRON_CHESTPLATE", "IRON_LEGGINGS", "IRON_BOOTS",
-        "GOLDEN_HELMET", "GOLDEN_CHESTPLATE", "GOLDEN_LEGGINGS", "GOLDEN_BOOTS",
-        "DIAMOND_HELMET", "DIAMOND_CHESTPLATE", "DIAMOND_LEGGINGS", "DIAMOND_BOOTS",
-        "NETHERITE_HELMET", "NETHERITE_CHESTPLATE", "NETHERITE_LEGGINGS", "NETHERITE_BOOTS",
-        "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL", "PLAYER_HEAD",
-        "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN", "ELYTRA", "SHIELD"))),
-    HEAD(new HashSet<>(List.of(
-        "LEATHER_HELMET", "CHAINMAIL_HELMET", "IRON_HELMET",
-        "GOLDEN_HELMET", "DIAMOND_HELMET", "NETHERITE_HELMET",
-        "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL", "PLAYER_HEAD",
-        "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN"))),
-    CHEST(new HashSet<>(List.of(
-        "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE", "IRON_CHESTPLATE",
-        "GOLDEN_CHESTPLATE", "DIAMOND_CHESTPLATE", "NETHERITE_CHESTPLATE",
-        "ELYTRA"))),
-    LEGS(new HashSet<>(List.of(
-        "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS", "IRON_LEGGINGS",
-        "GOLDEN_LEGGINGS", "DIAMOND_LEGGINGS", "NETHERITE_LEGGINGS"))),
-    FEET(new HashSet<>(List.of(
-        "LEATHER_BOOTS", "CHAINMAIL_BOOTS", "IRON_BOOTS",
-        "GOLDEN_BOOTS", "DIAMOND_BOOTS", "NETHERITE_BOOTS"
-    )));
+public class EquipmentAttributes implements Listener {
+  /**
+   * All wearable items.
+   */
+  private final static HashSet<String> wornAll = new HashSet<>(List.of(
+      "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS",
+      "CHAINMAIL_HELMET", "CHAINMAIL_CHESTPLATE", "CHAINMAIL_LEGGINGS", "CHAINMAIL_BOOTS",
+      "IRON_HELMET", "IRON_CHESTPLATE", "IRON_LEGGINGS", "IRON_BOOTS",
+      "GOLDEN_HELMET", "GOLDEN_CHESTPLATE", "GOLDEN_LEGGINGS", "GOLDEN_BOOTS",
+      "DIAMOND_HELMET", "DIAMOND_CHESTPLATE", "DIAMOND_LEGGINGS", "DIAMOND_BOOTS",
+      "NETHERITE_HELMET", "NETHERITE_CHESTPLATE", "NETHERITE_LEGGINGS", "NETHERITE_BOOTS",
+      "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL", "PLAYER_HEAD",
+      "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN", "ELYTRA", "SHIELD"));
 
-    public Set<String> items;
+  /**
+   * Items worn on the head slot.
+   */
+  private final static HashSet<String> wornHead = new HashSet<>(List.of(
+      "LEATHER_HELMET", "CHAINMAIL_HELMET", "IRON_HELMET",
+      "GOLDEN_HELMET", "DIAMOND_HELMET", "NETHERITE_HELMET",
+      "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL",
+      "PLAYER_HEAD", "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN"));
 
-    WornItems(Set<String> items) {
-      this.items = items;
-    }
-  }
+  /**
+   * Items worn on the chest slot.
+   */
+  private final static HashSet<String> wornChest = new HashSet<>(List.of(
+      "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE", "IRON_CHESTPLATE",
+      "GOLDEN_CHESTPLATE", "DIAMOND_CHESTPLATE", "NETHERITE_CHESTPLATE",
+      "ELYTRA"));
 
+  /**
+   * Items worn on the leg slot.
+   */
+  private final static HashSet<String> wornLegs = new HashSet<>(List.of(
+      "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS", "IRON_LEGGINGS",
+      "GOLDEN_LEGGINGS", "DIAMOND_LEGGINGS", "NETHERITE_LEGGINGS"));
 
+  /**
+   * Items worn on the feet slot.
+   */
+  private final static HashSet<String> wornFeet = new HashSet<>(List.of(
+      "LEATHER_BOOTS", "CHAINMAIL_BOOTS", "IRON_BOOTS",
+      "GOLDEN_BOOTS", "DIAMOND_BOOTS", "NETHERITE_BOOTS"));
+
+  /**
+   * Assigns an RPG profile to a player upon joining the server.
+   *
+   * @param e player join event
+   */
   @EventHandler
   public void onJoin(PlayerJoinEvent e) {
     Player player = e.getPlayer();
@@ -78,11 +90,15 @@ public class EquipmentAttributeListener implements Listener {
     }
   }
 
+  /**
+   * Checks clicks within player inventories to determine whether to update a player's equipment attributes.
+   *
+   * @param e inventory click event
+   */
   @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
     Inventory inv = e.getClickedInventory();
     if (inv != null && inv.getType().equals(InventoryType.PLAYER)) {
-
       Player player = (Player) e.getWhoClicked();
       if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         updateIfWornItem(player, e.getCurrentItem(), "shift");
@@ -99,15 +115,22 @@ public class EquipmentAttributeListener implements Listener {
     }
   }
 
+  /**
+   * Updates a player's equipment attributes when items are swapped.
+   *
+   * @param e player swap hand items event
+   */
   @EventHandler
   public void onSwapHandItem(PlayerSwapHandItemsEvent e) {
     RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(e.getPlayer());
-    PluginData.rpgData.readEquipmentSlot(
-        rpgPlayer.getEquipmentAttributes(),
-        rpgPlayer.getAethelAttributes(),
-        e.getOffHandItem(), "off_hand");
+    PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), e.getOffHandItem(), "off_hand");
   }
 
+  /**
+   * Updates a player's equipment attributes when a wearable item is interacted with.
+   *
+   * @param e player interact event
+   */
   @EventHandler
   public void onInteract(PlayerInteractEvent e) {
     Action action = e.getAction();
@@ -118,6 +141,11 @@ public class EquipmentAttributeListener implements Listener {
     }
   }
 
+  /**
+   * Updates a player's equipment attributes when a dispenser equips them with armor.
+   *
+   * @param e block dispense armor event
+   */
   @EventHandler
   public void onDispense(BlockDispenseArmorEvent e) {
     if (e.getTargetEntity() instanceof Player player) {
@@ -125,11 +153,21 @@ public class EquipmentAttributeListener implements Listener {
     }
   }
 
+  /**
+   * Updates a player's equipment attributes when a wearable item is broken.
+   *
+   * @param e player item break event
+   */
   @EventHandler
   public void onBreak(PlayerItemBreakEvent e) {
     updateIfWornItem(e.getPlayer(), e.getBrokenItem(), "break");
   }
 
+  /**
+   * Updates a player's equipment attributes when they die unless they have keep inventory on.
+   *
+   * @param e player death event
+   */
   @EventHandler
   public void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
@@ -154,15 +192,14 @@ public class EquipmentAttributeListener implements Listener {
    */
   private void updateIfWornItem(Player player, ItemStack item, String action) {
     String itemType = item.getType().name();
-
-    if (WornItems.ALL.items.contains(itemType)) {
-      if (WornItems.HEAD.items.contains(itemType)) {
+    if (wornAll.contains(itemType)) {
+      if (wornHead.contains(itemType)) {
         updateEquipmentAttributesAtSlot(player, item, 39, action);
-      } else if (WornItems.CHEST.items.contains(itemType)) {
+      } else if (wornChest.contains(itemType)) {
         updateEquipmentAttributesAtSlot(player, item, 38, action);
-      } else if (WornItems.LEGS.items.contains(itemType)) {
+      } else if (wornLegs.contains(itemType)) {
         updateEquipmentAttributesAtSlot(player, item, 37, action);
-      } else if (WornItems.FEET.items.contains(itemType)) {
+      } else if (wornFeet.contains(itemType)) {
         updateEquipmentAttributesAtSlot(player, item, 36, action);
       } else if (itemType.equals("SHIELD")) {
         updateEquipmentAttributesAtSlot(player, item, 40, action);
@@ -185,55 +222,23 @@ public class EquipmentAttributeListener implements Listener {
   private void updateEquipmentAttributesAtSlot(Player player, ItemStack item, int slot, String action) {
     if (!(action.equals("shift") || action.equals("click") || action.equals("break"))) {
       RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
-
       switch (slot) {
-        case 39 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "head");
-        case 38 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "chest");
-        case 37 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "legs");
-        case 36 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "feet");
-        case 40 -> PluginData.rpgData.readEquipmentSlot(
-            rpgPlayer.getEquipmentAttributes(),
-            rpgPlayer.getAethelAttributes(),
-            item, "off_hand");
+        case 36 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "feet");
+        case 37 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "legs");
+        case 38 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "chest");
+        case 39 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "head");
+        case 40 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "off_hand");
       }
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
         final ItemStack wornItem = player.getInventory().getItem(slot);
-
         switch (slot) {
-          case 36 -> PluginData.rpgData.readEquipmentSlot(
-              rpgPlayer.getEquipmentAttributes(),
-              rpgPlayer.getAethelAttributes(),
-              wornItem, "feet");
-          case 37 -> PluginData.rpgData.readEquipmentSlot(
-              rpgPlayer.getEquipmentAttributes(),
-              rpgPlayer.getAethelAttributes(),
-              wornItem, "legs");
-          case 38 -> PluginData.rpgData.readEquipmentSlot(
-              rpgPlayer.getEquipmentAttributes(),
-              rpgPlayer.getAethelAttributes(),
-              wornItem, "chest");
-          case 39 -> PluginData.rpgData.readEquipmentSlot(
-              rpgPlayer.getEquipmentAttributes(),
-              rpgPlayer.getAethelAttributes(),
-              wornItem, "head");
-          case 40 -> PluginData.rpgData.readEquipmentSlot(
-              rpgPlayer.getEquipmentAttributes(),
-              rpgPlayer.getAethelAttributes(),
-              wornItem, "off_hand");
+          case 36 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "feet");
+          case 37 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "legs");
+          case 38 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "chest");
+          case 39 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "head");
+          case 40 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "off_hand");
         }
       }, 1);
     }

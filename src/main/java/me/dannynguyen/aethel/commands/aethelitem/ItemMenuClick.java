@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -119,7 +119,7 @@ public class ItemMenuClick {
 
     user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
     user.openInventory(new ItemMenu(user, ItemMenuAction.GET).openCategoryPage(itemName, pageRequest));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_GET.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_GET.menu));
   }
 
   /**
@@ -146,10 +146,10 @@ public class ItemMenuClick {
 
     if (action == ItemMenuAction.GET) {
       user.openInventory(new ItemMenu(user, ItemMenuAction.REMOVE).openCategoryPage(categoryName, pageRequest));
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_REMOVE.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_REMOVE.menu));
     } else {
       user.openInventory(new ItemMenu(user, ItemMenuAction.GET).openCategoryPage(categoryName, pageRequest));
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_GET.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_GET.menu));
     }
   }
 
@@ -158,7 +158,7 @@ public class ItemMenuClick {
    */
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_CATEGORY.menu));
     user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 

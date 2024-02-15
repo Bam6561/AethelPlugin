@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.InventoryMenuListener;
+import me.dannynguyen.aethel.listeners.MenuClick;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -99,7 +99,7 @@ public class ForgeCommand implements CommandExecutor {
     user.setMetadata(PluginEnum.PlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "craft"));
     user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
     user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_CATEGORY.menu));
     user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
@@ -112,7 +112,7 @@ public class ForgeCommand implements CommandExecutor {
     user.setMetadata(PluginEnum.PlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "edit"));
     user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
     user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_CATEGORY.menu));
     user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 }
