@@ -23,7 +23,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.19
  * @since 1.3.2
  */
 public class ItemRegistry {
@@ -169,7 +169,7 @@ public class ItemRegistry {
    * @return loaded items
    */
   @NotNull
-  public Map<String, PersistentItem> getItemMap() {
+  protected Map<String, PersistentItem> getItemMap() {
     return this.itemMap;
   }
 
@@ -179,7 +179,7 @@ public class ItemRegistry {
    * @return loaded item categories
    */
   @NotNull
-  public Map<String, List<Inventory>> getCategoryMap() {
+  protected Map<String, List<Inventory>> getCategoryMap() {
     return this.categoryMap;
   }
 }

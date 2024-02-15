@@ -11,10 +11,10 @@ import java.util.Objects;
  * Represents a ItemStack stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.9.7
+ * @version 1.9.19
  * @since 1.3.2
  */
-public class PersistentItem {
+class PersistentItem {
   /**
    * Item file.
    * <p>
@@ -56,7 +56,7 @@ public class PersistentItem {
    *
    * @return true if the file was deleted
    */
-  public boolean delete() {
+  protected boolean delete() {
     return this.file.delete();
   }
 
@@ -66,7 +66,7 @@ public class PersistentItem {
    * @return item file
    */
   @NotNull
-  public File getFile() {
+  protected File getFile() {
     return this.file;
   }
 
@@ -76,7 +76,7 @@ public class PersistentItem {
    * @return ItemStack
    */
   @NotNull
-  public ItemStack getItem() {
+  protected ItemStack getItem() {
     return this.item;
   }
 
@@ -86,7 +86,7 @@ public class PersistentItem {
    * @return item name
    */
   @NotNull
-  public String getName() {
+  protected String getName() {
     return this.name;
   }
 }

@@ -29,10 +29,10 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.19
  * @since 1.7.0
  */
-public class AttributeEditorMenu {
+class AttributeEditorMenu {
   /**
    * AttributeEditor GUI.
    */
@@ -73,7 +73,7 @@ public class AttributeEditorMenu {
    *
    * @param user user
    */
-  public AttributeEditorMenu(@NotNull Player user, @NotNull AttributeEditorAction action) {
+  protected AttributeEditorMenu(@NotNull Player user, @NotNull AttributeEditorAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
     this.action = action;
@@ -105,7 +105,7 @@ public class AttributeEditorMenu {
    * @return AttributeEditor menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     addAttributes();
     addContext();
     addActions();

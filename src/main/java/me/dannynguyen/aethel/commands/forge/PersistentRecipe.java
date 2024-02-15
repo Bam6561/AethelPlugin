@@ -12,10 +12,10 @@ import java.util.Objects;
  * Represents a recipe stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.19
  * @since 1.0.3
  */
-public class PersistentRecipe {
+class PersistentRecipe {
   /**
    * Recipe file.
    * <p>
@@ -48,7 +48,7 @@ public class PersistentRecipe {
    * @param materials recipe materials
    * @throws IllegalArgumentException provided file is not a file
    */
-  public PersistentRecipe(@NotNull File file, @NotNull List<ItemStack> results, @NotNull List<ItemStack> materials) {
+  protected PersistentRecipe(@NotNull File file, @NotNull List<ItemStack> results, @NotNull List<ItemStack> materials) {
     if (file.isFile()) {
       this.file = Objects.requireNonNull(file, "Null file");
       this.results = Objects.requireNonNull(results, "Null results");
@@ -64,7 +64,7 @@ public class PersistentRecipe {
    *
    * @return true if the file was deleted
    */
-  public boolean delete() {
+  protected boolean delete() {
     return this.file.delete();
   }
 
@@ -74,7 +74,7 @@ public class PersistentRecipe {
    * @return recipe file
    */
   @NotNull
-  public File getFile() {
+  protected File getFile() {
     return this.file;
   }
 
@@ -84,7 +84,7 @@ public class PersistentRecipe {
    * @return recipe results
    */
   @NotNull
-  public List<ItemStack> getResults() {
+  protected List<ItemStack> getResults() {
     return this.results;
   }
 
@@ -94,7 +94,7 @@ public class PersistentRecipe {
    * @return recipe materials
    */
   @NotNull
-  public List<ItemStack> getMaterials() {
+  protected List<ItemStack> getMaterials() {
     return this.materials;
   }
 
@@ -104,7 +104,7 @@ public class PersistentRecipe {
    * @return recipe name
    */
   @NotNull
-  public String getName() {
+  protected String getName() {
     return this.name;
   }
 

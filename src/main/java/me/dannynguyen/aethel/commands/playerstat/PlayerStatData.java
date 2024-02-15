@@ -189,7 +189,7 @@ public class PlayerStatData {
    * @return player statistic categories
    */
   @NotNull
-  public Map<String, Inventory> getStatCategories() {
+  protected Map<String, Inventory> getStatCategories() {
     return this.statCategories;
   }
 
@@ -199,7 +199,7 @@ public class PlayerStatData {
    * @return player substatistic categories
    */
   @NotNull
-  public Map<String, List<Inventory>> getSubstatCategories() {
+  protected Map<String, List<Inventory>> getSubstatCategories() {
     return this.substatCategories;
   }
 }

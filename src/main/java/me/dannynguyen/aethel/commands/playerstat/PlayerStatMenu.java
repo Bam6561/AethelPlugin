@@ -24,10 +24,10 @@ import java.util.Objects;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.9.17
+ * @version 1.9.19
  * @since 1.4.7
  */
-public class PlayerStatMenu {
+class PlayerStatMenu {
   /**
    * Stat category names.
    */
@@ -56,7 +56,7 @@ public class PlayerStatMenu {
    * @param user            user
    * @param requestedPlayer requested player's name
    */
-  public PlayerStatMenu(@NotNull Player user, @NotNull String requestedPlayer) {
+  protected PlayerStatMenu(@NotNull Player user, @NotNull String requestedPlayer) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.requestedPlayer = Objects.requireNonNull(requestedPlayer, "Null requested user");
     this.menu = createMenu();
@@ -77,7 +77,7 @@ public class PlayerStatMenu {
    * @return PlayerStat main menu
    */
   @NotNull
-  public Inventory openMainMenu() {
+  protected Inventory openMainMenu() {
     addCategories();
     addContext(null);
     addStatOwnerHead();
@@ -92,7 +92,7 @@ public class PlayerStatMenu {
    * @return PlayerStat category page
    */
   @NotNull
-  public Inventory openCategoryPage(String categoryName, int requestedPage) {
+  protected Inventory openCategoryPage(String categoryName, int requestedPage) {
     switch (categoryName) {
       case "Entity Types", "Materials" -> loadSubstatPage(categoryName, requestedPage);
       default -> loadStatsPage(categoryName);

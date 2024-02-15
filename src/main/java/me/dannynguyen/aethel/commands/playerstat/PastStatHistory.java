@@ -13,7 +13,7 @@ import java.util.Queue;
  * Represents past shared player stats in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.19
  * @since 1.4.5
  */
 public class PastStatHistory {
@@ -29,7 +29,7 @@ public class PastStatHistory {
    * @param name   stat owner
    * @param values stat values
    */
-  public void addPastStat(String name, List<String> values) {
+  protected void addPastStat(String name, List<String> values) {
     ItemStack stat = ItemCreator.createItem(Material.PAPER, name, values);
     if (pastStats.size() == 27) {
       pastStats.remove();
@@ -43,7 +43,7 @@ public class PastStatHistory {
    * @return past shown stats
    */
   @NotNull
-  public Queue<ItemStack> getPastStats() {
+  protected Queue<ItemStack> getPastStats() {
     return this.pastStats;
   }
 }

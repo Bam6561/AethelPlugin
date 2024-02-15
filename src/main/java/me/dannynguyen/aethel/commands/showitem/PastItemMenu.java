@@ -14,10 +14,10 @@ import java.util.Objects;
  * Represents a menu that shows past shown items.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.19
  * @since 1.4.5
  */
-public class PastItemMenu {
+class PastItemMenu {
   /**
    * PastItem GUI.
    */
@@ -33,7 +33,7 @@ public class PastItemMenu {
    *
    * @param user user
    */
-  public PastItemMenu(@NotNull Player user) {
+  protected PastItemMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
@@ -44,7 +44,7 @@ public class PastItemMenu {
    * @return PastItem menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     int index = 0;
     for (ItemStack item : PluginData.pastItemHistory.getPastItems()) {
       menu.setItem(index, item);

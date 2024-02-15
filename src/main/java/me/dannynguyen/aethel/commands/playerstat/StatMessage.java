@@ -19,10 +19,10 @@ import java.util.Objects;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.19
  * @since 1.4.10
  */
-public class StatMessage {
+class StatMessage {
   /**
    * Player who requested the value.
    */
@@ -54,7 +54,7 @@ public class StatMessage {
    * @param e    inventory click event
    * @param user user
    */
-  public StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
+  protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
     this.ownerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
@@ -66,7 +66,7 @@ public class StatMessage {
   /**
    * Sends a statistic value.
    */
-  public void sendStat() {
+  protected void sendStat() {
     Statistic stat = Statistic.valueOf(TextFormatter.formatEnum(requestedStat));
     String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.YELLOW + requestedStat;
     String statValue = formatStatValue(requestedStat, stat);
@@ -78,7 +78,7 @@ public class StatMessage {
   /**
    * Sends a substatistic value.
    */
-  public void sendSubstat() {
+  protected void sendSubstat() {
     String substatName = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
     String category = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;

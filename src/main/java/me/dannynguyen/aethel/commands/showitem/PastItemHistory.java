@@ -14,7 +14,7 @@ import java.util.Queue;
  * Represents past shown items in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.19
  * @since 1.4.5
  */
 public class PastItemHistory {
@@ -30,7 +30,7 @@ public class PastItemHistory {
    * @param user item owner
    * @param item original item
    */
-  public void addPastItem(Player user, ItemStack item) {
+  protected void addPastItem(Player user, ItemStack item) {
     ItemStack pastItem = item.clone();
     ItemMeta meta = pastItem.getItemMeta();
     meta.setDisplayName(ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " " + ItemReader.readName(pastItem));
@@ -48,7 +48,7 @@ public class PastItemHistory {
    * @return past shown items
    */
   @NotNull
-  public Queue<ItemStack> getPastItems() {
+  protected Queue<ItemStack> getPastItems() {
     return this.pastItems;
   }
 }

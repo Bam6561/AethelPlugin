@@ -24,7 +24,7 @@ public class EditedItemCache {
    *
    * @return player:item map
    */
-  public Map<Player, ItemStack> getEditedItemMap() {
+  protected Map<Player, ItemStack> getEditedItemMap() {
     return this.editedItemMap;
   }
 }

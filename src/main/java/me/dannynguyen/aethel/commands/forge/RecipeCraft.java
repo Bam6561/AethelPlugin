@@ -24,10 +24,10 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.19
  * @since 1.4.15
  */
-public class RecipeCraft {
+class RecipeCraft {
   /**
    * User crafting the recipe.
    */
@@ -64,7 +64,7 @@ public class RecipeCraft {
    * @param user user
    * @param item representative item of recipe
    */
-  public RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
+  protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
     this.results = recipe.getResults();
@@ -99,7 +99,7 @@ public class RecipeCraft {
   /**
    * Crafts a recipe if the user has enough materials.
    */
-  public void craftRecipe() {
+  protected void craftRecipe() {
     if (!user.hasMetadata(PluginPlayerMeta.DEVELOPER.getMeta())) {
       if (hasEnoughOfAllMaterials()) {
         processRecipeCraft();

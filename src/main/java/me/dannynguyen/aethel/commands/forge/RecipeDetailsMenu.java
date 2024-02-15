@@ -22,10 +22,10 @@ import java.util.Objects;
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.19
  * @since 1.9.15
  */
-public class RecipeDetailsMenu {
+class RecipeDetailsMenu {
   /**
    * RecipeDetails GUI.
    */
@@ -49,7 +49,7 @@ public class RecipeDetailsMenu {
   /**
    * Type of recipe details menu.
    */
-  public enum RecipeDetailsType {
+  protected enum RecipeDetailsType {
     /**
      * Craft a recipe.
      */
@@ -67,7 +67,7 @@ public class RecipeDetailsMenu {
    * @param user user
    * @param type recipe details type
    */
-  public RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type) {
+  protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
     this.menu = createMenu(this.type);
@@ -80,7 +80,7 @@ public class RecipeDetailsMenu {
    * @param type recipe details type
    * @param item requested item
    */
-  public RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type, @NotNull ItemStack item) {
+  protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
     this.recipe = Objects.requireNonNull(PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
@@ -110,7 +110,7 @@ public class RecipeDetailsMenu {
   /**
    * Expands the recipe's details to the user before crafting.
    */
-  public void craftRecipeDetails() {
+  protected void craftRecipeDetails() {
     addRecipeContents();
     addContext();
     addActions();
@@ -121,7 +121,7 @@ public class RecipeDetailsMenu {
   /**
    * Expands the recipe's details to the user before crafting.
    */
-  public void editRecipeDetails() {
+  protected void editRecipeDetails() {
     addRecipeContents();
     addContext();
     addActions();
@@ -132,7 +132,7 @@ public class RecipeDetailsMenu {
   /**
    * Opens the RecipeDetails menu with the intent to save a recipe.
    */
-  public void saveRecipeDetails() {
+  protected void saveRecipeDetails() {
     addContext();
     addActions();
     user.openInventory(menu);

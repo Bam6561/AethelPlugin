@@ -31,7 +31,7 @@ import java.util.UUID;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.19
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -156,17 +156,6 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the CosmeticEditor menu.
-   */
-  private void returnToCosmeticEditor() {
-    user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new CosmeticEditorMenu(user).openMenu());
-      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
-    });
-  }
-
-  /**
    * Sets or removes an item's attribute modifier.
    */
   public void setAttribute() {
@@ -266,45 +255,76 @@ public class ItemEditorMessageSent {
     try {
       String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
       if (!e.getMessage().equals("0")) {
-        if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
-          List<String> attributes = new ArrayList<>(List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
-          StringBuilder newAttributes = new StringBuilder();
-          for (String attribute : attributes) {
-            if (!attribute.equals(attributeName)) {
-              newAttributes.append(attribute).append(" ");
-            }
-          }
-          dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes + attributeName);
-        } else {
-          dataContainer.set(attributesKey, PersistentDataType.STRING, attributeName);
-        }
-        dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+        setAethelAttributeModifier(type, dataContainer, attributesKey, attributeName, attributeKey, attributeValue);
       } else {
-        if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
-          List<String> attributes = new ArrayList<>(List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
-
-          StringBuilder newAttributes = new StringBuilder();
-          for (String attribute : attributes) {
-            if (!attribute.equals(attributeName)) {
-              newAttributes.append(attribute).append(" ");
-            }
-          }
-
-          if (!newAttributes.isEmpty()) {
-            dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes.toString().trim());
-          } else {
-            dataContainer.remove(attributesKey);
-          }
-          dataContainer.remove(attributeKey);
-          user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
-        }
+        removeAethelAttributeModifier(type, dataContainer, attributesKey, attributeName, attributeKey);
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
     }
   }
+
+  /**
+   * Sets an item's Aethel attribute modifier based on the equipment slot mode.
+   *
+   * @param type           attribute derived from inventory click
+   * @param dataContainer  item's persistent tags
+   * @param attributesKey  attributes list key
+   * @param attributeName  attribute name
+   * @param attributeKey   attribute key
+   * @param attributeValue attribute value
+   */
+  private void setAethelAttributeModifier(String type, PersistentDataContainer dataContainer, NamespacedKey attributesKey, String attributeName, NamespacedKey attributeKey, String attributeValue) {
+    if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
+      List<String> attributes = new ArrayList<>(
+          List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+
+      StringBuilder newAttributes = new StringBuilder();
+      for (String attribute : attributes) {
+        if (!attribute.equals(attributeName)) {
+          newAttributes.append(attribute).append(" ");
+        }
+      }
+
+      dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes + attributeName);
+    } else {
+      dataContainer.set(attributesKey, PersistentDataType.STRING, attributeName);
+    }
+    dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+  }
+
+  /**
+   * Removes an item's Aethel attribute modifier based on the equipment slot mode.
+   *
+   * @param type          attribute derived from inventory click
+   * @param dataContainer item's persistent tags
+   * @param attributesKey attributes list key
+   * @param attributeName attribute name
+   * @param attributeKey  attribute key
+   */
+  private void removeAethelAttributeModifier(String type, PersistentDataContainer dataContainer, NamespacedKey attributesKey, String attributeName, NamespacedKey attributeKey) {
+    if (dataContainer.has(attributesKey, PersistentDataType.STRING)) {
+      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(attributesKey, PersistentDataType.STRING).split(" ")));
+
+      StringBuilder newAttributes = new StringBuilder();
+      for (String attribute : attributes) {
+        if (!attribute.equals(attributeName)) {
+          newAttributes.append(attribute).append(" ");
+        }
+      }
+
+      if (!newAttributes.isEmpty()) {
+        dataContainer.set(attributesKey, PersistentDataType.STRING, newAttributes.toString().trim());
+      } else {
+        dataContainer.remove(attributesKey);
+      }
+      dataContainer.remove(attributeKey);
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+    }
+  }
+
 
   /**
    * Removes existing attribute modifiers in the same slot.
@@ -320,6 +340,17 @@ public class ItemEditorMessageSent {
         }
       }
     }
+  }
+
+  /**
+   * Returns to the CosmeticEditor menu.
+   */
+  private void returnToCosmeticEditor() {
+    user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new CosmeticEditorMenu(user).openMenu());
+      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
+    });
   }
 
   /**

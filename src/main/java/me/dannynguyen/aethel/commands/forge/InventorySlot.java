@@ -14,10 +14,10 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.19
  * @since 1.2.4
  */
-public class InventorySlot {
+class InventorySlot {
   /**
    * Inventory slot number.
    */
@@ -40,7 +40,7 @@ public class InventorySlot {
    * @param item   ItemStack
    * @param amount amount of ItemStack
    */
-  public InventorySlot(int slot, @NotNull ItemStack item, int amount) {
+  protected InventorySlot(int slot, @NotNull ItemStack item, int amount) {
     this.slot = slot;
     this.item = Objects.requireNonNull(item, "Item is null");
     this.amount = amount;
@@ -51,7 +51,7 @@ public class InventorySlot {
    *
    * @return inventory slot
    */
-  public int getSlot() {
+  protected int getSlot() {
     return this.slot;
   }
 
@@ -61,7 +61,7 @@ public class InventorySlot {
    * @return ItemStack
    */
   @NotNull
-  public ItemStack getItem() {
+  protected ItemStack getItem() {
     return this.item;
   }
 
@@ -70,7 +70,7 @@ public class InventorySlot {
    *
    * @return post-craft amount of ItemStack
    */
-  public int getAmount() {
+  protected int getAmount() {
     return this.amount;
   }
 
@@ -79,7 +79,7 @@ public class InventorySlot {
    *
    * @param amount post-craft amount of ItemStack
    */
-  public void setAmount(int amount) {
+  protected void setAmount(int amount) {
     this.amount = amount;
   }
 }

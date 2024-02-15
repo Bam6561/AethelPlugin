@@ -24,10 +24,10 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.19
  * @since 1.6.7
  */
-public class CosmeticEditorMenu {
+class CosmeticEditorMenu {
   /**
    * CosmeticEditor GUI.
    */
@@ -53,7 +53,7 @@ public class CosmeticEditorMenu {
    *
    * @param user user
    */
-  public CosmeticEditorMenu(@NotNull Player user) {
+  protected CosmeticEditorMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
     this.meta = Objects.requireNonNull(item.getItemMeta(), "Null meta");
@@ -77,7 +77,7 @@ public class CosmeticEditorMenu {
    * @return CosmeticEditor menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     addContext();
     addDisplayName();
     addCustomModelData();

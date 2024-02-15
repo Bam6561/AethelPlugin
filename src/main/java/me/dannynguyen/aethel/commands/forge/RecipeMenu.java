@@ -22,10 +22,10 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.19
  * @since 1.0.6
  */
-public class RecipeMenu {
+class RecipeMenu {
   /**
    * Recipe GUI.
    */
@@ -47,7 +47,7 @@ public class RecipeMenu {
    * @param user   user
    * @param action type of interaction
    */
-  public RecipeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
+  protected RecipeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
     this.menu = createMenu();
@@ -75,7 +75,7 @@ public class RecipeMenu {
    * @return Recipe menu
    */
   @NotNull
-  public Inventory openMainMenu() {
+  protected Inventory openMainMenu() {
     addCategories();
     if (action != ForgeMenuAction.CRAFT) {
       addCreateButton();
@@ -91,7 +91,7 @@ public class RecipeMenu {
    * @return recipe category page
    */
   @NotNull
-  public Inventory openCategoryPage(String requestedCategory, int requestedPage) {
+  protected Inventory openCategoryPage(String requestedCategory, int requestedPage) {
     List<Inventory> category = PluginData.recipeRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);

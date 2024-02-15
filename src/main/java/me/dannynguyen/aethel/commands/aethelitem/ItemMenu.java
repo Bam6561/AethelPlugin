@@ -22,10 +22,10 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.19
  * @since 1.4.0
  */
-public class ItemMenu {
+class ItemMenu {
   /**
    * AethelItem GUI.
    */
@@ -47,7 +47,7 @@ public class ItemMenu {
    * @param user   user
    * @param action type of interaction
    */
-  public ItemMenu(@NotNull Player user, @NotNull ItemMenuAction action) {
+  protected ItemMenu(@NotNull Player user, @NotNull ItemMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
     this.menu = createMenu();
@@ -74,7 +74,7 @@ public class ItemMenu {
    * @return AethelItem main menu
    */
   @NotNull
-  public Inventory openMainMenu() {
+  protected Inventory openMainMenu() {
     addCategories();
     addContext(null);
     addActions();
@@ -89,7 +89,7 @@ public class ItemMenu {
    * @return AethelItem item category page
    */
   @NotNull
-  public Inventory openCategoryPage(String requestedCategory, int requestedPage) {
+  protected Inventory openCategoryPage(String requestedCategory, int requestedPage) {
     List<Inventory> category = PluginData.itemRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);

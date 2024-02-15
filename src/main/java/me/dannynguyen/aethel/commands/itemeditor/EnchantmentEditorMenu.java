@@ -22,10 +22,10 @@ import static java.util.Comparator.comparing;
  * Represents a menu that edits an item's enchantments.
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.19
  * @since 1.6.16
  */
-public class EnchantmentEditorMenu {
+class EnchantmentEditorMenu {
   /**
    * List of sorted enchantments by name.
    */
@@ -51,7 +51,7 @@ public class EnchantmentEditorMenu {
    *
    * @param user user
    */
-  public EnchantmentEditorMenu(@NotNull Player user) {
+  protected EnchantmentEditorMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
     this.menu = createMenu();
@@ -74,7 +74,7 @@ public class EnchantmentEditorMenu {
    * @return EnchantmentEditor menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     addEnchants();
     addContext();
     InventoryPages.addBackButton(menu, 6);

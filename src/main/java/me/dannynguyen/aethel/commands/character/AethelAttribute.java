@@ -4,10 +4,10 @@ package me.dannynguyen.aethel.commands.character;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.19
  * @since 1.9.10
  */
-public enum AethelAttribute {
+enum AethelAttribute {
   /**
    * Critical hit chance.
    */

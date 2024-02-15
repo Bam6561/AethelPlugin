@@ -14,10 +14,10 @@ import java.util.Objects;
  * Represents a menu that shows past shared stats.
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.19
  * @since 1.4.10
  */
-public class PastStatMenu {
+class PastStatMenu {
   /**
    * PastStat GUI.
    */
@@ -33,7 +33,7 @@ public class PastStatMenu {
    *
    * @param user user
    */
-  public PastStatMenu(@NotNull Player user) {
+  protected PastStatMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
@@ -44,7 +44,7 @@ public class PastStatMenu {
    * @return PastStat menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     int i = 0;
     for (ItemStack pastStat : PluginData.pastStatHistory.getPastStats()) {
       menu.setItem(i, pastStat);

@@ -29,7 +29,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.19
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -476,9 +476,9 @@ public class ItemEditorMenuClick {
    * Determines the Aethel tag to be set and prompts the user for an input.
    */
   private void readTag() {
-    String aethelTag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + ChatColor.WHITE + " value.");
-    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), aethelTag));
+    String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), tag));
     awaitMessageResponse("tags");
   }
 
@@ -538,7 +538,7 @@ public class ItemEditorMenuClick {
         return attributeContext + "0.0 [Max: 1.0]";
       }
       default -> {
-        return "";
+        return null;
       }
     }
   }

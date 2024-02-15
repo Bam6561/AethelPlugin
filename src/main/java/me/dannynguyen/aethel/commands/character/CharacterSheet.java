@@ -26,10 +26,10 @@ import java.util.Objects;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.19
  * @since 1.6.3
  */
-public class CharacterSheet {
+class CharacterSheet {
   /**
    * Character GUI.
    */
@@ -45,7 +45,7 @@ public class CharacterSheet {
    *
    * @param user user
    */
-  public CharacterSheet(@NotNull Player user) {
+  protected CharacterSheet(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
@@ -56,7 +56,7 @@ public class CharacterSheet {
    * @param user user
    * @param menu existing Character menu
    */
-  public CharacterSheet(@NotNull Player user, @NotNull Inventory menu) {
+  protected CharacterSheet(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = Objects.requireNonNull(menu, "Null menu");
   }
@@ -76,7 +76,7 @@ public class CharacterSheet {
    * @return CharacterSheet menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     addContext();
     addActions();
     addEquipment();
@@ -128,7 +128,7 @@ public class CharacterSheet {
   /**
    * Adds the player's attributes.
    */
-  public void addAttributes() {
+  protected void addAttributes() {
     Map<String, Double> attributes = PluginData.rpgData.getRpgPlayers().get(user).getAethelAttributes();
 
     DecimalFormat hundredths = new DecimalFormat();
