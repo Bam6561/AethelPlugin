@@ -26,13 +26,14 @@ public enum ForgeMenuAction {
   REMOVE;
 
   /**
-   * Gets the string as an action.
+   * Gets the string as an enum.
    *
    * @param action type of interaction
-   * @return action value of string
+   * @return enum value of string
    */
   @Nullable
-  public static ForgeMenuAction asAction(String action) {
+  public static ForgeMenuAction asEnum(String action) {
+    action = action.toLowerCase();
     switch (action) {
       case "craft" -> {
         return CRAFT;
@@ -50,10 +51,10 @@ public enum ForgeMenuAction {
   }
 
   /**
-   * Gets the action as a string.
+   * Gets the enum as a string.
    *
    * @param action type of interaction
-   * @return string value of action
+   * @return string value of enum
    */
   @Nullable
   public static String asString(ForgeMenuAction action) {

@@ -151,10 +151,10 @@ public class InventoryMenuListener implements Listener {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
       ItemEditorMenuClick click = new ItemEditorMenuClick(e);
       switch (invType[1]) {
-        case "cosmetics" -> click.interpretMainMenuClick();
-        case "attributes" -> click.interpretAttributesMenuClick();
-        case "enchants" -> click.interpretEnchantsMenuClick();
-        case "tags" -> click.interpretTagsMenuClick();
+        case "cosmetics" -> click.interpretCosmeticEditorClick();
+        case "attributes" -> click.interpretAttributeEditorClick();
+        case "enchantments" -> click.interpretEnchantmentEditorClick();
+        case "tags" -> click.interpretTagEditorClick();
       }
     }
     e.setCancelled(true);

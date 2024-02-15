@@ -88,10 +88,10 @@ public class RecipeDetailsMenu {
   }
 
   /**
-   * Creates and names a ForgeCraft or ForgeSave menu.
+   * Creates and names a RecipeDetails menu with the intent to craft or save a recipe.
    *
    * @param type details menu type
-   * @return ForgeCraft or ForgeSave menu
+   * @return RecipeDetails menu
    */
   private Inventory createMenu(RecipeDetailsType type) {
     switch (type) {
@@ -130,7 +130,7 @@ public class RecipeDetailsMenu {
   }
 
   /**
-   * Opens a ForgeSave menu.
+   * Opens the RecipeDetails menu with the intent to save a recipe.
    */
   public void saveRecipeDetails() {
     addContext();

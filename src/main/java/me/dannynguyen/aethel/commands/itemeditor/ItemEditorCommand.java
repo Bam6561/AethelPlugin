@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.9.17
+ * @version 1.9.18
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -52,7 +52,7 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening an ItemEditorCosmetic menu.
+   * Checks if the command request was formatted correctly before opening an CosmeticEditor menu.
    *
    * @param user user
    * @param args user provided parameters
@@ -67,14 +67,14 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Opens an ItemEditorCosmetic menu.
+   * Opens the CosmeticEditor menu.
    *
    * @param user user
    * @param item interacting item
    */
   private void openMainMenu(Player user, ItemStack item) {
     PluginData.editedItemCache.getEditedItemMap().put(user, item);
-    user.openInventory(new ItemEditorCosmetic(user, item).openMenu());
+    user.openInventory(new CosmeticEditorMenu(user).openMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
   }
 }

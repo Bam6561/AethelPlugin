@@ -7,10 +7,8 @@ import me.dannynguyen.aethel.enums.PluginMessage;
 import me.dannynguyen.aethel.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
-import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,7 +29,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.9.17
+ * @version 1.9.18
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -51,6 +49,16 @@ public class ItemEditorMenuClick {
   private final Player user;
 
   /**
+   * ItemStack being edited.
+   */
+  private final ItemStack item;
+
+  /**
+   * ItemStack's meta.
+   */
+  private final ItemMeta meta;
+
+  /**
    * Slot clicked.
    */
   private final int slotClicked;
@@ -64,39 +72,29 @@ public class ItemEditorMenuClick {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
     this.menu = e.getInventory();
     this.user = (Player) e.getWhoClicked();
+    this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
+    this.meta = item.getItemMeta();
     this.slotClicked = e.getSlot();
   }
 
   /**
-   * Edits an item's cosmetic metadata or opens a gameplay metadata editor menu.
+   * Sets an item's cosmetic metadata or opens a gameplay metadata editor menu.
    */
-  public void interpretMainMenuClick() {
+  public void interpretCosmeticEditorClick() {
     switch (slotClicked) {
-      case 11 -> {
-        user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input display name.");
-        awaitMessageResponse("display_name");
-      }
-      case 12 -> {
-        user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input custom model data value.");
-        awaitMessageResponse("custom_model_data");
-      }
-      case 14 -> openAttributesMenu();
-      case 15 -> openEnchantsMenu();
-      case 16 -> openTagsMenu();
+      case 11 -> setDisplayName();
+      case 12 -> setCustomModelData();
+      case 14 -> openAttributeEditor();
+      case 15 -> openEnchantmentEditor();
+      case 16 -> openTagEditor();
       case 28 -> { // Lore Context
       }
-      case 29 -> {
-        user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input lore to set.");
-        awaitMessageResponse("lore-set");
-      }
-      case 30 -> readItemLore("lore-clear");
-      case 37 -> {
-        user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input lore to add.");
-        awaitMessageResponse("lore-add");
-      }
-      case 38 -> readItemLore("lore-edit");
-      case 39 -> readItemLore("lore-remove");
-      case 47 -> readItemLore("lore-generate");
+      case 29 -> setLore();
+      case 30 -> clearLore();
+      case 37 -> addLore();
+      case 38 -> editLore();
+      case 39 -> removeLore();
+      case 47 -> generateLore();
       case 32 -> toggleHideArmorTrim();
       case 33 -> toggleHideAttributes();
       case 34 -> toggleHideDestroys();
@@ -105,217 +103,167 @@ public class ItemEditorMenuClick {
       case 43 -> toggleHidePlacedOn();
       case 50 -> toggleHidePotionEffects();
       case 51 -> toggleHideUnbreakable();
-      case 52 -> toggleUnbreakable(e.getClickedInventory(), user);
+      case 52 -> toggleUnbreakable();
     }
   }
 
   /**
    * Either changes the equipment slot mode or sets an item's attribute.
    */
-  public void interpretAttributesMenuClick() {
+  public void interpretAttributeEditorClick() {
     switch (e.getSlot()) {
       case 0, 1 -> { // Context, Item
       }
-      case 2 -> returnToMainMenu();
-      case 3 -> setMode("head");
-      case 4 -> setMode("chest");
-      case 5 -> setMode("legs");
-      case 6 -> setMode("feet");
-      case 7 -> setMode("hand");
-      case 8 -> setMode("off_hand");
-      case 16 -> setMode("necklace");
-      case 17 -> setMode("ring");
-      default -> readAttribute(e, user);
+      case 2 -> returnToCosmeticEditor();
+      case 3 -> setMode(AttributeEditorAction.HEAD);
+      case 4 -> setMode(AttributeEditorAction.CHEST);
+      case 5 -> setMode(AttributeEditorAction.LEGS);
+      case 6 -> setMode(AttributeEditorAction.FEET);
+      case 7 -> setMode(AttributeEditorAction.HAND);
+      case 8 -> setMode(AttributeEditorAction.OFF_HAND);
+      case 16 -> setMode(AttributeEditorAction.NECKLACE);
+      case 17 -> setMode(AttributeEditorAction.RING);
+      default -> readAttribute();
     }
   }
 
   /**
    * Sets an item's enchant.
    */
-  public void interpretEnchantsMenuClick() {
+  public void interpretEnchantmentEditorClick() {
     switch (e.getSlot()) {
       case 2, 4 -> { // Context, Item
       }
-      case 6 -> returnToMainMenu();
-      default -> readEnchant(e, user);
+      case 6 -> returnToCosmeticEditor();
+      default -> readEnchant();
     }
   }
 
   /**
-   * Edits an item's Aethel tag.
+   * Sets an item's Aethel tag.
    */
-  public void interpretTagsMenuClick() {
+  public void interpretTagEditorClick() {
     switch (e.getSlot()) {
       case 2, 4 -> { // Context, Item
       }
-      case 6 -> returnToMainMenu();
-      default -> readTag(e, user);
+      case 6 -> returnToCosmeticEditor();
+      default -> readTag();
     }
   }
 
   /**
-   * Toggles an item's ability to be broken.
-   *
-   * @param inv  interacting inventory
-   * @param user user
+   * Sets an item's display name.
    */
-  private void toggleUnbreakable(Inventory inv, Player user) {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
-
-    if (!meta.isUnbreakable()) {
-      meta.setUnbreakable(true);
-      user.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
-    } else {
-      meta.setUnbreakable(false);
-      user.sendMessage(ChatColor.RED + "[Set Unbreakable]");
-    }
-    item.setItemMeta(meta);
-
-    addUnbreakableMeta();
+  private void setDisplayName() {
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input display name.");
+    awaitMessageResponse("display_name");
   }
 
   /**
-   * Checks if the item has lore before making changes.
-   *
-   * @param action interaction type
+   * Sets an item's custom model data.
    */
-  private void readItemLore(String action) {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    if (action.equals("lore-generate")) {
-      ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-      generateLore(item, meta);
-      user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
-    } else if (meta.hasLore()) {
-      switch (action) {
-        case "lore-clear" -> {
-          ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-          ItemEditorMessageListener.clearLore(user, item, item.getItemMeta());
-          user.sendMessage(ChatColor.GREEN + "[Cleared Lore]");
-        }
-        case "lore-edit" -> {
-          user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number and lore to edit.");
-          awaitMessageResponse(action);
-        }
-        case "lore-remove" -> {
-          user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number to remove.");
-          awaitMessageResponse(action);
-        }
-      }
+  private void setCustomModelData() {
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input custom model data value.");
+    awaitMessageResponse("custom_model_data");
+  }
+
+  /**
+   * Opens an AttributeEditor menu.
+   */
+  private void openAttributeEditor() {
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
+      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    }
+    user.setMetadata(PluginPlayerMeta.SLOT.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "head"));
+    user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.HEAD).openMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+  }
+
+  /**
+   * Opens an EnchantmentEditor menu.
+   */
+  private void openEnchantmentEditor() {
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
+      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    }
+    user.openInventory(new EnchantmentEditorMenu(user).openMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTS.menu));
+  }
+
+  /**
+   * Opens a TagEditor menu.
+   */
+  private void openTagEditor() {
+    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
+      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    }
+    user.openInventory(new TagEditorMenu(user).openMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_TAGS.menu));
+  }
+
+  /**
+   * Sets an item's lore.
+   */
+  private void setLore() {
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input lore to set.");
+    awaitMessageResponse("lore-set");
+  }
+
+  /**
+   * Clears an item's lore.
+   */
+  private void clearLore() {
+    if (meta.hasLore()) {
+      meta.setLore(new ArrayList<>());
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.GREEN + "[Cleared Lore]");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
     }
   }
 
   /**
-   * Sets the user's interacting equipment slot.
-   *
-   * @param equipmentSlot interacting equipment slot.
+   * Adds a line of text to an item's lore.
    */
-  private void setMode(String equipmentSlot) {
-    user.setMetadata(PluginPlayerMeta.SLOT.getMeta(), new FixedMetadataValue(Plugin.getInstance(), equipmentSlot));
-    user.openInventory(ItemEditorAttributes.openAttributesMenu(user, equipmentSlot));
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+  private void addLore() {
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input lore to add.");
+    awaitMessageResponse("lore-add");
   }
 
   /**
-   * Determines the attribute to be set and prompts the user for an input.
-   *
-   * @param e    inventory click event
-   * @param user user
+   * Edits a line of text from an item's lore.
    */
-  private void readAttribute(InventoryClickEvent e, Player user) {
-    String attributeName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    String attribute;
-    if (PluginConstant.minecraftAttributes.contains(attributeName)) {
-      attribute = "GENERIC_" + TextFormatter.formatEnum(attributeName);
+  private void editLore() {
+    if (meta.hasLore()) {
+      user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number to remove.");
+      awaitMessageResponse("lore-edit");
     } else {
-      attribute = "aethel.attribute." + TextFormatter.formatId(attributeName);
+      user.sendMessage(ChatColor.RED + "Item has no lore.");
     }
-
-    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-        ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
-    user.sendMessage(getAttributeValueContext(attributeName));
-
-    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(),
-        new FixedMetadataValue(Plugin.getInstance(), attribute));
-    awaitMessageResponse("attributes");
   }
 
   /**
-   * Determines the enchantment to be set and prompts the user for an input.
-   *
-   * @param e    inventory click event
-   * @param user user
+   * Removes a line of text from an item's lore.
    */
-  private void readEnchant(InventoryClickEvent e, Player user) {
-    String enchant = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-
-    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message
-        + ChatColor.WHITE + "Input " + ChatColor.AQUA
-        + TextFormatter.capitalizePhrase(enchant) + ChatColor.WHITE + " value.");
-
-    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), enchant));
-    awaitMessageResponse("enchants");
-  }
-
-  /**
-   * Determines the Aethel tag to be set and prompts the user for an input.
-   *
-   * @param e    inventory click event
-   * @param user user
-   */
-  private void readTag(InventoryClickEvent e, Player user) {
-    String aethelTag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-
-    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message +
-        ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + ChatColor.WHITE + " value.");
-
-    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), aethelTag));
-    awaitMessageResponse("tags");
-  }
-
-  /**
-   * Sends a value context for the attribute being edited.
-   *
-   * @param attributeName attribute name
-   * @return attribute value context
-   */
-  private String getAttributeValueContext(String attributeName) {
-    String attributeContext = PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Base: ";
-    switch (attributeName) {
-      case "Attack Damage" -> attributeContext += "1.0";
-      case "Attack Speed" -> attributeContext += "4.0";
-      case "Critical Chance", "Parry Chance", "Parry Deflect",
-          "Dodge Chance", "Apply Status" -> attributeContext += "0.0%";
-      case "Critical Damage" -> attributeContext += "1.25x [Input / 100]";
-      case "Max Health" -> attributeContext += "20.0";
-      case "Armor" -> attributeContext += "0.0 [Max: 30.0]";
-      case "Armor Toughness" -> attributeContext += "0.0 [Max: 20.0]";
-      case "Movement Speed" -> attributeContext += "2.0 [Input * 20]";
-      case "Block", "Luck" -> attributeContext += "0.0";
-      case "Ability Damage" -> attributeContext += "1.0x [Input / 100]";
-      case "Ability Cooldown" -> attributeContext += "-0.0%";
-      case "Knockback Resistance" -> attributeContext += "0.0 [Max: 1.0]";
+  private void removeLore() {
+    if (meta.hasLore()) {
+      user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input line number and lore to edit.");
+      awaitMessageResponse("lore-remove");
+    } else {
+      user.sendMessage(ChatColor.RED + "Item has no lore.");
     }
-    return attributeContext;
   }
 
   /**
    * Generates an item's lore based on its plugin-related data.
-   *
-   * @param item interacting item
-   * @param meta item meta
    */
-  private void generateLore(ItemStack item, ItemMeta meta) {
+  private void generateLore() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {
-      List<String> attributes = new ArrayList<>(List.of(
-          dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
-
+      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       List<String> lore;
       if (meta.hasLore()) {
         lore = meta.getLore();
@@ -326,32 +274,28 @@ public class ItemEditorMenuClick {
       for (String attribute : attributes) {
         String attributeType = attribute.substring(0, attribute.indexOf("."));
         String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
-        NamespacedKey attributeKey =
-            new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+        NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
 
         switch (attributeSlot) {
-          case "head", "chest", "legs", "feet",
-              "necklace", "ring" -> attributeSlot = ChatColor.GRAY
-              + "When on " + TextFormatter.capitalizeWord(attributeSlot) + ": ";
+          case "head", "chest", "legs", "feet", "necklace", "ring" -> attributeSlot = ChatColor.GRAY + "When on " + TextFormatter.capitalizeWord(attributeSlot) + ": ";
           case "hand" -> attributeSlot = ChatColor.GRAY + "When in Hand: ";
           case "off_hand" -> attributeSlot = ChatColor.GRAY + "When in Off Hand: ";
         }
 
-        lore.add(ChatColor.GRAY + attributeSlot + ChatColor.DARK_GREEN +
-            dataContainer.get(attributeKey, PersistentDataType.DOUBLE)
-            + " " + TextFormatter.capitalizePhrase(attributeType));
+        lore.add(ChatColor.GRAY + attributeSlot + ChatColor.DARK_GREEN + dataContainer.get(attributeKey, PersistentDataType.DOUBLE) + " " + TextFormatter.capitalizePhrase(attributeType));
       }
       meta.setLore(lore);
       item.setItemMeta(meta);
+      user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
+    } else {
+      user.sendMessage(ChatColor.RED + "No plugin modifications to item.");
     }
   }
 
   /**
    * Toggles an item's hide armor trim flag.
    */
-  public void toggleHideArmorTrim() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHideArmorTrim() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM)) {
       meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
       user.sendMessage(ChatColor.GREEN + "[Hide Armor Trim]");
@@ -360,16 +304,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Armor Trim]");
     }
     item.setItemMeta(meta);
-
-    addHideArmorTrimMeta();
+    CosmeticEditorMenu.addHideArmorTrim(menu, meta);
   }
 
   /**
    * Toggles an item's hide attributes flag.
    */
-  public void toggleHideAttributes() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHideAttributes() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
       meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
       user.sendMessage(ChatColor.GREEN + "[Hide Attributes]");
@@ -378,16 +319,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Attributes]");
     }
     item.setItemMeta(meta);
-
-    addHideAttributesMeta();
+    CosmeticEditorMenu.addHideAttributes(menu, meta);
   }
 
   /**
    * Toggles an item's hide destroys flag.
    */
-  public void toggleHideDestroys() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHideDestroys() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
       meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
       user.sendMessage(ChatColor.GREEN + "[Hide Destroys]");
@@ -396,16 +334,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Destroys]");
     }
     item.setItemMeta(meta);
-
-    addHideDestroysMeta();
+    CosmeticEditorMenu.addHideDestroys(menu, meta);
   }
 
   /**
    * Toggles an item's hide dye flag.
    */
-  public void toggleHideDye() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHideDye() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_DYE)) {
       meta.addItemFlags(ItemFlag.HIDE_DYE);
       user.sendMessage(ChatColor.GREEN + "[Hide Dye]");
@@ -414,16 +349,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Dye]");
     }
     item.setItemMeta(meta);
-
-    addHideDyeMeta();
+    CosmeticEditorMenu.addHideDye(menu, meta);
   }
 
   /**
    * Toggles an item's hide enchants flag.
    */
-  public void toggleHideEnchants() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHideEnchants() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
       meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
       user.sendMessage(ChatColor.GREEN + "[Hide Enchants]");
@@ -432,16 +364,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Enchants]");
     }
     item.setItemMeta(meta);
-
-    addHideEnchantsMeta();
+    CosmeticEditorMenu.addHideEnchants(menu, meta);
   }
 
   /**
    * Toggles an item's hide placed on flag.
    */
-  public void toggleHidePlacedOn() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHidePlacedOn() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
       meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
       user.sendMessage(ChatColor.GREEN + "[Hide Placed On]");
@@ -450,16 +379,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Placed On]");
     }
     item.setItemMeta(meta);
-
-    addHidePlacedOnMeta();
+    CosmeticEditorMenu.addHidePlacedOn(menu, meta);
   }
 
   /**
    * Toggles an item's hide potion effects flag.
    */
-  public void toggleHidePotionEffects() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHidePotionEffects() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS)) {
       meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
       user.sendMessage(ChatColor.GREEN + "[Hide Potion Effects]");
@@ -468,16 +394,13 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Potion Effects]");
     }
     item.setItemMeta(meta);
-
-    addHidePotionEffectsMeta();
+    CosmeticEditorMenu.addHidePotionEffects(menu, meta);
   }
 
   /**
    * Toggles an item's hide unbreakable flag.
    */
-  public void toggleHideUnbreakable() {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
+  private void toggleHideUnbreakable() {
     if (!meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)) {
       meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
       user.sendMessage(ChatColor.GREEN + "[Hide Unbreakable]");
@@ -486,154 +409,77 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Hide Unbreakable]");
     }
     item.setItemMeta(meta);
-
-    addHideUnbreakableMeta();
+    CosmeticEditorMenu.addHideUnbreakable(menu, meta);
   }
 
   /**
-   * Adds the unbreakable toggle button.
+   * Toggles an item's ability to be broken.
    */
-  public void addUnbreakableMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.isUnbreakable();
-    String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(52, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK, ChatColor.AQUA + "Unbreakable", List.of(unbreakable)));
-  }
-
-  /**
-   * Adds item flag toggle buttons.
-   */
-  public void addItemFlagsMeta() {
-    addHideArmorTrimMeta();
-    addHideAttributesMeta();
-    addHideDestroysMeta();
-    addHideDyeMeta();
-    addHideEnchantsMeta();
-    addHidePlacedOnMeta();
-    addHidePotionEffectsMeta();
-    addHideUnbreakableMeta();
-  }
-
-  /**
-   * Adds hide armor trim toggle button.
-   */
-  public void addHideArmorTrimMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM);
-    String armorTrim = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(32, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Armor Trims", List.of(armorTrim)));
-  }
-
-  /**
-   * Adds hide attributes toggle button.
-   */
-  public void addHideAttributesMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES);
-    String attributes = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(33, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(attributes)));
-  }
-
-  /**
-   * Adds hide destroys toggle button.
-   */
-  public void addHideDestroysMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DESTROYS);
-    String destroys = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(34, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Destroys", List.of(destroys)));
-  }
-
-  /**
-   * Adds hide dye toggle button.
-   */
-  public void addHideDyeMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DYE);
-    String dye = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(41, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Dyes", List.of(dye)));
-  }
-
-  /**
-   * Adds hide enchants toggle button.
-   */
-  public void addHideEnchantsMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
-    String enchants = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(42, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Enchants", List.of(enchants)));
-  }
-
-  /**
-   * Adds hide placed on toggle button.
-   */
-  public void addHidePlacedOnMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON);
-    String placedOn = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(43, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Placed On", List.of(placedOn)));
-  }
-
-  /**
-   * Adds hide potion effects toggle button.
-   */
-  public void addHidePotionEffectsMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS);
-    String potionEffects = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(50, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
-  }
-
-  /**
-   * Adds hide unbreakable toggle button.
-   */
-  public void addHideUnbreakableMeta() {
-    ItemMeta meta = PluginData.editedItemCache.getEditedItemMap().get(user).getItemMeta();
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE);
-    String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(51, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Unbreakable", List.of(unbreakable)));
-  }
-
-  /**
-   * Opens a ItemEditorAttributes menu.
-   */
-  public void openAttributesMenu() {
-    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
-      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+  private void toggleUnbreakable() {
+    if (!meta.isUnbreakable()) {
+      meta.setUnbreakable(true);
+      user.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
+    } else {
+      meta.setUnbreakable(false);
+      user.sendMessage(ChatColor.RED + "[Set Unbreakable]");
     }
-    user.setMetadata(PluginPlayerMeta.SLOT.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "head"));
-    user.openInventory(ItemEditorAttributes.openAttributesMenu(user, "Head"));
+    item.setItemMeta(meta);
+    CosmeticEditorMenu.addUnbreakable(menu, meta);
+  }
+
+  /**
+   * Returns to the CosmeticEditor menu.
+   */
+  private void returnToCosmeticEditor() {
+    user.openInventory(new CosmeticEditorMenu(user).openMenu());
+    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
+  }
+
+  /**
+   * Sets the user's interacting equipment slot.
+   */
+  private void setMode(AttributeEditorAction action) {
+    String equipmentSlot = AttributeEditorAction.asString(action);
+    user.setMetadata(PluginPlayerMeta.SLOT.getMeta(), new FixedMetadataValue(Plugin.getInstance(), equipmentSlot));
+    user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(equipmentSlot)).openMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ATTRIBUTES.menu));
   }
 
   /**
-   * Opens a ItemEditorEnchants menu.
+   * Determines the attribute to be set and prompts the user for an input.
    */
-  public void openEnchantsMenu() {
-    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
-      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+  private void readAttribute() {
+    String attributeName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    String attribute;
+    if (PluginConstant.minecraftAttributes.contains(attributeName)) {
+      attribute = "GENERIC_" + TextFormatter.formatEnum(attributeName);
+    } else {
+      attribute = "aethel.attribute." + TextFormatter.formatId(attributeName);
     }
-    user.openInventory(ItemEditorEnchants.openMenu(user));
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_ENCHANTS.menu));
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
+    user.sendMessage(getAttributeValueContext(attributeName));
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), attribute));
+    awaitMessageResponse("attributes");
   }
 
   /**
-   * Opens a ItemEditorTags menu.
+   * Determines the enchantment to be set and prompts the user for an input.
    */
-  public void openTagsMenu() {
-    if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
-      user.removeMetadata(PluginPlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
-    }
-    user.openInventory(ItemEditorTags.openTagsMenu(user));
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_TAGS.menu));
+  private void readEnchant() {
+    String enchant = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchant) + ChatColor.WHITE + " value.");
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), enchant));
+    awaitMessageResponse("enchantments");
   }
 
   /**
-   * Opens an ItemEditor main menu.
+   * Determines the Aethel tag to be set and prompts the user for an input.
    */
-  public void returnToMainMenu() {
-    user.openInventory(new ItemEditorCosmetic(user, PluginData.editedItemCache.getEditedItemMap().get(user)).openMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
+  private void readTag() {
+    String aethelTag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    user.sendMessage(PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Input " + ChatColor.AQUA + aethelTag + ChatColor.WHITE + " value.");
+    user.setMetadata(PluginPlayerMeta.TYPE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), aethelTag));
+    awaitMessageResponse("tags");
   }
 
   /**
@@ -641,8 +487,59 @@ public class ItemEditorMenuClick {
    *
    * @param metadata metadata field
    */
-  public void awaitMessageResponse(String metadata) {
+  private void awaitMessageResponse(String metadata) {
     user.closeInventory();
     user.setMetadata(PluginPlayerMeta.MESSAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "itemeditor." + metadata));
+  }
+
+  /**
+   * Sends a contextual base value for the attribute being edited.
+   *
+   * @param attribute attribute name
+   * @return base attribute value
+   */
+  private String getAttributeValueContext(String attribute) {
+    String attributeContext = PluginMessage.Success.NOTIFICATION_INPUT.message + ChatColor.WHITE + "Base: ";
+    switch (attribute) {
+      case "Attack Damage" -> {
+        return attributeContext + "1.0";
+      }
+      case "Attack Speed" -> {
+        return attributeContext + "4.0";
+      }
+      case "Critical Chance", "Parry Chance", "Parry Deflect", "Dodge Chance", "Apply Status" -> {
+        return attributeContext + "0.0%";
+      }
+      case "Critical Damage" -> {
+        return attributeContext + "1.25x [Input / 100]";
+      }
+      case "Max Health" -> {
+        return attributeContext + "20.0";
+      }
+      case "Armor" -> {
+        return attributeContext + "0.0 [Max: 30.0]";
+      }
+      case "Armor Toughness" -> {
+        return attributeContext + "0.0 [Max: 20.0]";
+      }
+      case "Movement Speed" -> {
+        return attributeContext + "2.0 [Input * 20]";
+      }
+      case "Block", "Luck" -> {
+        return attributeContext + "0.0";
+      }
+      case "Ability Damage" -> {
+        return attributeContext + "1.0x [Input / 100]";
+      }
+      case "Ability Cooldown" -> {
+        return attributeContext + "-0.0%";
+      }
+      case "Knockback Resistance" -> {
+        return attributeContext + "0.0 [Max: 1.0]";
+      }
+      default -> {
+        return "";
+      }
+    }
   }
 }

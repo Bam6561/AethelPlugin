@@ -39,7 +39,7 @@ public class PastItemMenu {
   }
 
   /**
-   * Sets the PastItem menu to show past shown items.
+   * Sets the menu to show past shown items.
    *
    * @return PastItem menu
    */

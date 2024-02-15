@@ -39,7 +39,7 @@ public class PastStatMenu {
   }
 
   /**
-   * Sets the PastStat menu to show past shared stats.
+   * Sets the menu to show past shared stats.
    *
    * @return PastStat menu
    */

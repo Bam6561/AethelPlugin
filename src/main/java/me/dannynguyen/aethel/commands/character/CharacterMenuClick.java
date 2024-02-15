@@ -155,16 +155,16 @@ public class CharacterMenuClick {
    * Equips the item to the user's main hand.
    */
   private void equipMainHandItem() {
-    PlayerInventory inv = user.getInventory();
-    int slot = inv.getHeldItemSlot();
+    PlayerInventory pInv = user.getInventory();
+    int slot = pInv.getHeldItemSlot();
     ItemStack item = e.getCursor();
 
-    if (inv.getItem(slot) == null) { // Main hand slot is empty
-      inv.setItem(slot, item);
+    if (pInv.getItem(slot) == null) { // Main hand slot is empty
+      pInv.setItem(slot, item);
       updateArmorHandsAttributes(slot);
-    } else if (inv.firstEmpty() != -1) { // Main hand slot is full
+    } else if (pInv.firstEmpty() != -1) { // Main hand slot is full
       user.setItemOnCursor(new ItemStack(Material.AIR));
-      inv.setItem(inv.firstEmpty(), item);
+      pInv.setItem(pInv.firstEmpty(), item);
       user.sendMessage(ChatColor.RED + "Main hand occupied.");
       e.setCancelled(true);
     } else if (ItemReader.isNotNullOrAir(item)) { // Inventory is full

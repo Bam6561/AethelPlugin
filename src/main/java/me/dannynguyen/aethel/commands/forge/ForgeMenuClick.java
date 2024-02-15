@@ -98,7 +98,7 @@ public class ForgeMenuClick {
    */
   public void interpretCraftConfirmClick() {
     switch (e.getSlot()) {
-      case 25 -> new RecipeCraftOperation(user, e.getClickedInventory().getItem(0)).craftRecipe();
+      case 25 -> new RecipeCraft(user, e.getClickedInventory().getItem(0)).craftRecipe();
       case 26 -> openForgeCraftMenu();
     }
   }
@@ -124,12 +124,12 @@ public class ForgeMenuClick {
    * Views a recipe category.
    */
   private void viewRecipeCategory() {
-    ForgeMenuAction action = ForgeMenuAction.asAction(user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString());
+    ForgeMenuAction action = ForgeMenuAction.asEnum(user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString());
     String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
-    user.openInventory(new ForgeMenu(user, action).openCategoryPage(itemName, requestedPage));
+    user.openInventory(new RecipeMenu(user, action).openCategoryPage(itemName, requestedPage));
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "forge." + ForgeMenuAction.asString(action)));
   }
 
@@ -141,12 +141,12 @@ public class ForgeMenuClick {
   private void previousRecipePage(ForgeMenuAction action) {
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     int requestedPage = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-    user.openInventory(new ForgeMenu(user, action).openCategoryPage(categoryName, requestedPage - 1));
+    user.openInventory(new RecipeMenu(user, action).openCategoryPage(categoryName, requestedPage - 1));
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "forge." + ForgeMenuAction.asString(action)));
   }
 
   /**
-   * Opens the Forge main menu with the intent to edit recipes.
+   * Opens the Recipe menu with the intent to edit recipes.
    * <p>
    * The player can return to either the main menu or a recipe category.
    * </p>
@@ -154,43 +154,43 @@ public class ForgeMenuClick {
   private void openForgeEditMenu() {
     String category = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     if (category.equals("")) {
-      user.openInventory(new ForgeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
+      user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
       user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
     } else {
       int requestedPage = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-      user.openInventory(new ForgeMenu(user, ForgeMenuAction.EDIT).openCategoryPage(category, requestedPage));
+      user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openCategoryPage(category, requestedPage));
       user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_EDIT.menu));
     }
   }
 
   /**
-   * Opens the Forge main menu with the intent to remove recipes.
+   * Opens the Recipe menu with the intent to remove recipes.
    */
   private void openForgeRemoveMenu() {
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     int requestedPage = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-    user.openInventory(new ForgeMenu(user, ForgeMenuAction.REMOVE).openCategoryPage(categoryName, requestedPage));
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.REMOVE).openCategoryPage(categoryName, requestedPage));
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_REMOVE.menu));
   }
 
   /**
-   * Opens the Forge main menu with the future action in mind.
+   * Opens the Recipe menu with the future action in mind.
    */
   private void returnToMainMenu() {
-    ForgeMenuAction action = ForgeMenuAction.asAction(user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString());
+    ForgeMenuAction action = ForgeMenuAction.asEnum(user.getMetadata(PluginPlayerMeta.FUTURE.getMeta()).get(0).asString());
     user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
-    user.openInventory(new ForgeMenu(user, action).openMainMenu());
+    user.openInventory(new RecipeMenu(user, action).openMainMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
-   * Opens the Forge main menu with the intent to craft recipes.
+   * Opens the Recipe menu with the intent to craft recipes.
    */
   private void openForgeCraftMenu() {
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     int requestedPage = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-    user.openInventory(new ForgeMenu(user, ForgeMenuAction.CRAFT).openCategoryPage(categoryName, requestedPage));
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openCategoryPage(categoryName, requestedPage));
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CRAFT.menu));
   }
 
@@ -202,7 +202,7 @@ public class ForgeMenuClick {
   private void nextRecipePage(ForgeMenuAction action) {
     String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
     int requestedPage = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
-    user.openInventory(new ForgeMenu(user, action).openCategoryPage(categoryName, requestedPage + 1));
+    user.openInventory(new RecipeMenu(user, action).openCategoryPage(categoryName, requestedPage + 1));
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "forge." + ForgeMenuAction.asString(action)));
   }
 

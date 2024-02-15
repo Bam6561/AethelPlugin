@@ -160,7 +160,7 @@ public class PlayerStatData {
    * @return sorted entity types
    */
   private List<EntityType> sortEntityTypes() {
-    List<EntityType> entityTypes = Arrays.asList(EntityType.values());
+    List<EntityType> entityTypes = new ArrayList<>(List.of(EntityType.values()));
     Comparator<EntityType> entityTypeComparator = Comparator.comparing(Enum::name);
     entityTypes.sort(entityTypeComparator);
     return entityTypes;

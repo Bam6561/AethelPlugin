@@ -1,20 +1,17 @@
 package me.dannynguyen.aethel.listeners;
 
-import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageListener;
+import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
 import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * MessageInputListener is a player chat listener for the plugin's message inputs.
  *
  * @author Danny Nguyen
- * @version 1.8.7
+ * @version 1.9.18
  * @since 1.6.7
  */
 public class MessageInputListener implements Listener {
@@ -27,10 +24,9 @@ public class MessageInputListener implements Listener {
   public void onPlayerChat(AsyncPlayerChatEvent e) {
     Player user = e.getPlayer();
     if (user.hasMetadata(PluginPlayerMeta.MESSAGE.getMeta())) {
-      String[] msgType =
-          user.getMetadata(PluginPlayerMeta.MESSAGE.getMeta()).get(0).asString().split("\\.");
+      String[] msgType = user.getMetadata(PluginPlayerMeta.MESSAGE.getMeta()).get(0).asString().split("\\.");
       switch (msgType[0]) {
-        case "itemeditor" -> interpretItemEditor(e, user, msgType);
+        case "itemeditor" -> interpretItemEditor(e, msgType);
       }
       e.setCancelled(true);
     }
@@ -39,24 +35,21 @@ public class MessageInputListener implements Listener {
   /**
    * Determines which ItemEditor message is being interacted with.
    *
-   * @param e       inventory click event
-   * @param user    user
+   * @param e       inventory click event   user
    * @param msgType message type
    */
-  private void interpretItemEditor(AsyncPlayerChatEvent e, Player user, String[] msgType) {
-    ItemStack item = PluginData.editedItemCache.getEditedItemMap().get(user);
-    ItemMeta meta = item.getItemMeta();
-
+  private void interpretItemEditor(AsyncPlayerChatEvent e, String[] msgType) {
+    ItemEditorMessageSent msg = new ItemEditorMessageSent(e);
     switch (msgType[1]) {
-      case "display_name" -> ItemEditorMessageListener.setDisplayName(e, user, item, meta);
-      case "custom_model_data" -> ItemEditorMessageListener.setCustomModelData(e, user, item, meta);
-      case "lore-set" -> ItemEditorMessageListener.setLore(e, user, item, meta);
-      case "lore-add" -> ItemEditorMessageListener.addLore(e, user, item, meta);
-      case "lore-edit" -> ItemEditorMessageListener.editLore(e, user, item, meta);
-      case "lore-remove" -> ItemEditorMessageListener.removeLore(e, user, item, meta);
-      case "attributes" -> ItemEditorMessageListener.setAttribute(e, user, item);
-      case "enchants" -> ItemEditorMessageListener.setEnchant(e, user, item);
-      case "tags" -> ItemEditorMessageListener.setTag(e, user, item, meta);
+      case "display_name" -> msg.setDisplayName();
+      case "custom_model_data" -> msg.setCustomModelData();
+      case "lore-set" -> msg.setLore();
+      case "lore-add" -> msg.addLore();
+      case "lore-edit" -> msg.editLore();
+      case "lore-remove" -> msg.removeLore();
+      case "attributes" -> msg.setAttribute();
+      case "enchantments" -> msg.setEnchant();
+      case "tags" -> msg.setTag();
     }
   }
 }

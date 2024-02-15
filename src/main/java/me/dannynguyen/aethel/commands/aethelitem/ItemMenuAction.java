@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Types of interaction within AethelItem menus.
+ * Types of interactions within AethelItem menus.
  *
  * @author Danny Nguyen
  * @version 1.9.9
@@ -26,10 +26,10 @@ public enum ItemMenuAction {
   VIEW;
 
   /**
-   * Gets the action as a string.
+   * Gets the enum as a string.
    *
    * @param action type of interaction
-   * @return string value of action
+   * @return string value of enum
    */
   @Nullable
   public static String asString(ItemMenuAction action) {

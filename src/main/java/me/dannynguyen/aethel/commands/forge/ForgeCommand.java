@@ -51,7 +51,7 @@ public class ForgeCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly before
-   * opening a Forge crafting menu or interpreting its usage.
+   * opening a Recipe crafting menu or interpreting its usage.
    *
    * @param user user
    * @param args user provided parameters
@@ -92,27 +92,27 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a Forge main menu with the intent to craft recipes.
+   * Opens the Recipe menu with the intent to craft recipes.
    *
    * @param user user
    */
   private void openCraftingMenu(Player user) {
     user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "craft"));
     user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
-    user.openInventory(new ForgeMenu(user, ForgeMenuAction.CRAFT).openMainMenu());
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMainMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
-   * Opens a Forge main menu with the intent to edit recipes.
+   * Opens the  Recipe menu with the intent to edit recipes.
    *
    * @param user user
    */
   private void openEditorMenu(Player user) {
     user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "edit"));
     user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
-    user.openInventory(new ForgeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
     user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
     user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }

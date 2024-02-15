@@ -9,7 +9,7 @@ import java.util.Objects;
  * Represents an inventory slot containing an ItemStack.
  * <p>
  * The "amount" field is separate from the ItemStack's built-in
- * amount, as it is used in ForgeCraftOperation to set a new value
+ * amount, as it is used in RecipeCraft to set a new value
  * post-craft if the craft operation's requirements are met.
  * </p>
  *

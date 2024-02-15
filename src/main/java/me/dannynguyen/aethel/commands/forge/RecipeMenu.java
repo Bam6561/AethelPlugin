@@ -25,9 +25,9 @@ import java.util.Set;
  * @version 1.9.15
  * @since 1.0.6
  */
-public class ForgeMenu {
+public class RecipeMenu {
   /**
-   * Forge GUI.
+   * Recipe GUI.
    */
   private final Inventory menu;
 
@@ -42,21 +42,21 @@ public class ForgeMenu {
   private final ForgeMenuAction action;
 
   /**
-   * Associates a new Forge menu with its user and action.
+   * Associates a new Recipe menu with its user and action.
    *
    * @param user   user
    * @param action type of interaction
    */
-  public ForgeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
+  public RecipeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
     this.menu = createMenu();
   }
 
   /**
-   * Creates and names a Forge menu with its action and category.
+   * Creates and names a Recipe menu with its action and category.
    *
-   * @return Forge menu
+   * @return Recipe menu
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
@@ -72,7 +72,7 @@ public class ForgeMenu {
   /**
    * Sets the menu to view recipe categories.
    *
-   * @return Forge main menu
+   * @return Recipe menu
    */
   @NotNull
   public Inventory openMainMenu() {

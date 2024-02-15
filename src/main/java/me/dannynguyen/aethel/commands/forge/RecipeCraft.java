@@ -8,8 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -24,10 +24,10 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.18
  * @since 1.4.15
  */
-public class RecipeCraftOperation {
+public class RecipeCraft {
   /**
    * User crafting the recipe.
    */
@@ -42,6 +42,11 @@ public class RecipeCraftOperation {
    * Recipe's materials.
    */
   private final List<ItemStack> materials;
+
+  /**
+   * User's inventory.
+   */
+  private final PlayerInventory pInv;
 
   /**
    * Map of the user's inventory by material.
@@ -59,26 +64,26 @@ public class RecipeCraftOperation {
    * @param user user
    * @param item representative item of recipe
    */
-  public RecipeCraftOperation(@NotNull Player user, @NotNull ItemStack item) {
+  public RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
-    this.invMap = mapMaterialIndices(user.getInventory());
+    this.pInv = user.getInventory();
+    this.invMap = mapMaterialIndices();
     this.postCraft = new ArrayList<>();
   }
 
   /**
    * Maps the user's inventory by material.
    *
-   * @param inv user inventory
    * @return map of material:inventory slots
    */
-  private Map<Material, List<InventorySlot>> mapMaterialIndices(Inventory inv) {
+  private Map<Material, List<InventorySlot>> mapMaterialIndices() {
     Map<Material, List<InventorySlot>> invMap = new HashMap<>();
     for (int i = 0; i < 36; i++) {
-      ItemStack item = inv.getItem(i);
-      if (ItemReader.isNotNullOrAir(inv.getItem(i))) {
+      ItemStack item = pInv.getItem(i);
+      if (ItemReader.isNotNullOrAir(pInv.getItem(i))) {
         Material material = item.getType();
         int amount = item.getAmount();
         if (invMap.containsKey(material)) {
@@ -140,11 +145,10 @@ public class RecipeCraftOperation {
    * Removes the recipe's materials from the user's inventory and gives the recipe's results.
    */
   private void processRecipeCraft() {
-    Inventory inv = user.getInventory();
     for (InventorySlot invSlot : postCraft) {
       ItemStack item = invSlot.getItem();
       item.setAmount(invSlot.getAmount());
-      inv.setItem(invSlot.getSlot(), item);
+      pInv.setItem(invSlot.getSlot(), item);
     }
     giveResults();
   }

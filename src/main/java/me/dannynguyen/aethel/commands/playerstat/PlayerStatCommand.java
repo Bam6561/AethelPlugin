@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * Command invocation that retrieves a player's statistics.
  * <p>
  * Additional Parameters:
- * - "past", "p": opens an inventory with the last 27 shown stats
+ * - "past", "p": opens a menu with the last 27 shown stats
  * </p>
  *
  * @author Danny Nguyen
