@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.systems.object.RpgPlayer;
+import me.dannynguyen.aethel.systems.RpgProfile;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ import java.util.Map;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.9.22
+ * @version 1.9.23
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -85,7 +85,7 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent e) {
     Player player = e.getPlayer();
-    if (PluginData.rpgData.getRpgPlayers().get(player) == null) {
+    if (PluginData.rpgData.getRpgProfiles().get(player) == null) {
       PluginData.rpgData.loadRpgPlayer(player);
     }
   }
@@ -122,8 +122,8 @@ public class EquipmentAttributes implements Listener {
    */
   @EventHandler
   public void onSwapHandItem(PlayerSwapHandItemsEvent e) {
-    RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(e.getPlayer());
-    PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), e.getOffHandItem(), "off_hand");
+    RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(e.getPlayer());
+    rpgProfile.readEquipmentSlot(e.getOffHandItem(), "off_hand");
   }
 
   /**
@@ -171,14 +171,13 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
-      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(e.getEntity());
-      Map<String, Map<String, Double>> equipment = rpgPlayer.getEquipmentAttributes();
-      Map<String, Double> aethelAttributes = rpgPlayer.getAethelAttributes();
+      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(e.getEntity());
+      Map<String, Map<String, Double>> equipment = rpgProfile.getEquipmentAttributes();
 
-      dropJewelryItems(e.getEntity(), rpgPlayer.getJewelrySlots());
+      dropJewelryItems(e.getEntity(), rpgProfile.getJewelrySlots());
 
       for (String slot : equipment.keySet()) {
-        PluginData.rpgData.removeExistingEquipmentAttributes(equipment, aethelAttributes, slot);
+        rpgProfile.removeExistingEquipmentAttributes(slot);
       }
     }
   }
@@ -221,24 +220,24 @@ public class EquipmentAttributes implements Listener {
    */
   private void updateEquipmentAttributesAtSlot(Player player, ItemStack item, int slot, String action) {
     if (!(action.equals("shift") || action.equals("click") || action.equals("break"))) {
-      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
+      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(player);
       switch (slot) {
-        case 36 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "feet");
-        case 37 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "legs");
-        case 38 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "chest");
-        case 39 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "head");
-        case 40 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), item, "off_hand");
+        case 36 -> rpgProfile.readEquipmentSlot(item, "feet");
+        case 37 -> rpgProfile.readEquipmentSlot(item, "legs");
+        case 38 -> rpgProfile.readEquipmentSlot(item, "chest");
+        case 39 -> rpgProfile.readEquipmentSlot(item, "head");
+        case 40 -> rpgProfile.readEquipmentSlot(item, "off_hand");
       }
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
+        RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(player);
         final ItemStack wornItem = player.getInventory().getItem(slot);
         switch (slot) {
-          case 36 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "feet");
-          case 37 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "legs");
-          case 38 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "chest");
-          case 39 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "head");
-          case 40 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "off_hand");
+          case 36 -> rpgProfile.readEquipmentSlot(wornItem, "feet");
+          case 37 -> rpgProfile.readEquipmentSlot(wornItem, "legs");
+          case 38 -> rpgProfile.readEquipmentSlot(wornItem, "chest");
+          case 39 -> rpgProfile.readEquipmentSlot(wornItem, "head");
+          case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
         }
       }, 1);
     }

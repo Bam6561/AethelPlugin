@@ -26,7 +26,7 @@ import java.util.Objects;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.9.23
  * @since 1.6.3
  */
 class CharacterSheet {
@@ -113,7 +113,7 @@ class CharacterSheet {
    */
   private void addEquipment() {
     PlayerInventory pInv = user.getInventory();
-    ItemStack[] jewelry = PluginData.rpgData.getRpgPlayers().get(user).getJewelrySlots();
+    ItemStack[] jewelry = PluginData.rpgData.getRpgProfiles().get(user).getJewelrySlots();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -129,7 +129,7 @@ class CharacterSheet {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<String, Double> attributes = PluginData.rpgData.getRpgPlayers().get(user).getAethelAttributes();
+    Map<String, Double> attributes = PluginData.rpgData.getRpgProfiles().get(user).getAethelAttributes();
 
     DecimalFormat hundredths = new DecimalFormat();
     hundredths.setMaximumFractionDigits(2);

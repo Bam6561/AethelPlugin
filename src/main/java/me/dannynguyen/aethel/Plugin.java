@@ -13,7 +13,7 @@ import me.dannynguyen.aethel.listeners.EquipmentAttributes;
 import me.dannynguyen.aethel.listeners.MenuClick;
 import me.dannynguyen.aethel.listeners.MessageSent;
 import me.dannynguyen.aethel.listeners.PlayerDamage;
-import me.dannynguyen.aethel.systems.object.RpgPlayer;
+import me.dannynguyen.aethel.systems.RpgProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +30,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.23
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -94,11 +94,8 @@ public class Plugin extends JavaPlugin {
           if (!playerHeldItemMap.get(player).equals(heldItem)) {
             playerHeldItemMap.put(player, heldItem);
 
-            RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(player);
-            PluginData.rpgData.readEquipmentSlot(
-                rpgPlayer.getEquipmentAttributes(),
-                rpgPlayer.getAethelAttributes(),
-                heldItem, "hand");
+            RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(player);
+            rpgProfile.readEquipmentSlot(heldItem, "hand");
           }
         } else {
           playerHeldItemMap.put(player, heldItem);

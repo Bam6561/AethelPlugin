@@ -14,7 +14,7 @@ import java.util.Random;
  * Player damage done and taken listener.
  *
  * @author Danny Nguyen
- * @version 1.9.22
+ * @version 1.9.23
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -49,7 +49,7 @@ public class PlayerDamage implements Listener {
    * @param player interacting player
    */
   private void processDamageTaken(EntityDamageByEntityEvent e, Player player) {
-    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgPlayers().get(player).getAethelAttributes();
+    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgProfiles().get(player).getAethelAttributes();
     Random random = new Random();
     Double damage = e.getDamage();
     if (calculateIfDodged(e, aethelAttributes, random)) {
@@ -69,7 +69,7 @@ public class PlayerDamage implements Listener {
    * @param player interacting player
    */
   private void calculateIfCriticallyHit(EntityDamageByEntityEvent e, Player player) {
-    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgPlayers().get(player).getAethelAttributes();
+    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgProfiles().get(player).getAethelAttributes();
     if (aethelAttributes.get("critical_chance") > new Random().nextDouble() * 100) {
       e.setDamage(e.getDamage() * (1.25 + (aethelAttributes.get("critical_damage") / 100)));
     }

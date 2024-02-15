@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.systems.object.RpgPlayer;
+import me.dannynguyen.aethel.systems.RpgProfile;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,7 +20,7 @@ import java.util.Objects;
  * Inventory click event listener for Character menus.
  *
  * @author Danny Nguyen
- * @version 1.9.14
+ * @version 1.9.23
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -81,8 +81,8 @@ public class CharacterMenuClick {
 
       // User removes main hand item
     } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
-      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
-      PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), null, "hand");
+      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
+      rpgProfile.readEquipmentSlot(null, "hand");
 
       e.getInventory().setItem(11, new ItemStack(Material.AIR));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
@@ -92,9 +92,9 @@ public class CharacterMenuClick {
       e.getInventory().setItem(11, e.getCursor());
 
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+        RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
         ItemStack wornItem = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
-        PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "hand");
+        rpgProfile.readEquipmentSlot(wornItem, "hand");
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
       }, 1);
     }
@@ -186,16 +186,16 @@ public class CharacterMenuClick {
    */
   private void updateArmorHandsAttributes(int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
       ItemStack wornItem = user.getInventory().getItem(slot);
 
       switch (slot) {
-        case 39 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "head");
-        case 38 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "chest");
-        case 37 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "legs");
-        case 36 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "feet");
-        case 40 -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "off_hand");
-        default -> PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "hand");
+        case 39 -> rpgProfile.readEquipmentSlot(wornItem, "head");
+        case 38 -> rpgProfile.readEquipmentSlot(wornItem, "chest");
+        case 37 -> rpgProfile.readEquipmentSlot(wornItem, "legs");
+        case 36 -> rpgProfile.readEquipmentSlot(wornItem, "feet");
+        case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
+        default -> rpgProfile.readEquipmentSlot(wornItem, "hand");
       }
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getClickedInventory()).addAttributes(), 1);
     }, 1);
@@ -210,18 +210,18 @@ public class CharacterMenuClick {
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgPlayer rpgPlayer = PluginData.rpgData.getRpgPlayers().get(user);
+      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
       Inventory menu = e.getClickedInventory();
       ItemStack wornItem = menu.getItem(slotClicked);
 
       switch (slotClicked) {
         case 20 -> {
-          rpgPlayer.getJewelrySlots()[0] = wornItem;
-          PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "necklace");
+          rpgProfile.getJewelrySlots()[0] = wornItem;
+          rpgProfile.readEquipmentSlot(wornItem, "necklace");
         }
         case 29 -> {
-          rpgPlayer.getJewelrySlots()[1] = wornItem;
-          PluginData.rpgData.readEquipmentSlot(rpgPlayer.getEquipmentAttributes(), rpgPlayer.getAethelAttributes(), wornItem, "ring");
+          rpgProfile.getJewelrySlots()[1] = wornItem;
+          rpgProfile.readEquipmentSlot(wornItem, "ring");
         }
       }
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, menu).addAttributes(), 1);
