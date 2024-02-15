@@ -1,8 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -100,7 +99,7 @@ class RecipeCraft {
    * Crafts a recipe if the user has enough materials.
    */
   protected void craftRecipe() {
-    if (!user.hasMetadata(PluginPlayerMeta.DEVELOPER.getMeta())) {
+    if (!user.hasMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta())) {
       if (hasEnoughOfAllMaterials()) {
         processRecipeCraft();
       } else {
@@ -117,7 +116,7 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughOfAllMaterials() {
-    NamespacedKey recipeId = PluginNamespacedKey.RECIPE_ID.getNamespacedKey();
+    NamespacedKey recipeId = PluginEnum.Key.RECIPE_ID.getNamespacedKey();
     for (ItemStack item : materials) {
       Material requiredMaterial = item.getType();
       if (invMap.containsKey(requiredMaterial)) {

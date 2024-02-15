@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.13
+ * @version 1.9.21
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -47,10 +46,10 @@ public class ShowItemCommand implements CommandExecutor {
       if (user.hasPermission("aethel.showitem")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -65,7 +64,7 @@ public class ShowItemCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> showItem(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -83,7 +82,7 @@ public class ShowItemCommand implements CommandExecutor {
       }
       PluginData.pastItemHistory.addPastItem(user, item);
     } else {
-      user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
+      user.sendMessage(PluginEnum.Message.NO_MAIN_HAND_ITEM.getMessage());
     }
   }
 
@@ -96,9 +95,9 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
       user.openInventory(new PastItemMenu(user).openMenu());
-      user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
+      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.SHOWITEM_PAST.menu));
     } else {
-      user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
+      user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
     }
   }
 
@@ -111,7 +110,7 @@ public class ShowItemCommand implements CommandExecutor {
    */
   private TextComponent createShowItemTextComponent(Player user, ItemStack item) {
     // [!] <ItemName> [PlayerName]
-    TextComponent message = new TextComponent(PluginMessage.Success.NOTIFICATION_GLOBAL.message + ChatColor.DARK_PURPLE + user.getName() + " ");
+    TextComponent message = new TextComponent(PluginEnum.Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + " ");
 
     TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readName(item) + " ");
     ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());

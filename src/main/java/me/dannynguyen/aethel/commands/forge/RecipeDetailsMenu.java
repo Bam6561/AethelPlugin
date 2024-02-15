@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -22,7 +21,7 @@ import java.util.Objects;
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -115,7 +114,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CRAFT_CONFIRM.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CRAFT_CONFIRM.menu));
   }
 
   /**
@@ -126,7 +125,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
   }
 
   /**
@@ -136,14 +135,14 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_SAVE.menu));
   }
 
   /**
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+    menu.setItem(8, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(),
         ChatColor.GREEN + "Help", List.of(
             ChatColor.AQUA + "Rows",
             ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
@@ -156,10 +155,10 @@ class RecipeDetailsMenu {
    */
   private void addActions() {
     switch (type) {
-      case CRAFT -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Craft"));
-      case SAVE -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginPlayerHead.STACK_OF_PAPER.head, ChatColor.AQUA + "Save"));
+      case CRAFT -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Craft"));
+      case SAVE -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.STACK_OF_PAPER.getHead(), ChatColor.AQUA + "Save"));
     }
-    menu.setItem(26, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.head, ChatColor.AQUA + "Back"));
+    menu.setItem(26, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.BACKWARD_GRAY.getHead(), ChatColor.AQUA + "Back"));
   }
 
   /**

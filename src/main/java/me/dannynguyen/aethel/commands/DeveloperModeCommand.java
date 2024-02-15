@@ -1,8 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.9.11
+ * @version 1.9.21
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
@@ -35,10 +34,10 @@ public class DeveloperModeCommand implements CommandExecutor {
       if (user.hasPermission("aethel.developermode")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -54,7 +53,7 @@ public class DeveloperModeCommand implements CommandExecutor {
     if (numberOfParameters == 0) {
       toggleDeveloperMode(user);
     } else {
-      user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -64,11 +63,11 @@ public class DeveloperModeCommand implements CommandExecutor {
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    if (!user.hasMetadata(PluginPlayerMeta.DEVELOPER.getMeta())) {
-      user.setMetadata(PluginPlayerMeta.DEVELOPER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), 1));
+    if (!user.hasMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta())) {
+      user.setMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), 1));
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");
     } else {
-      user.removeMetadata(PluginPlayerMeta.DEVELOPER.getMeta(), Plugin.getInstance());
+      user.removeMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta(), Plugin.getInstance());
       user.sendMessage(ChatColor.RED + "[Developer Mode Off]");
     }
   }

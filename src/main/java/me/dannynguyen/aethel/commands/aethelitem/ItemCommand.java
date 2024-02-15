@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.14
+ * @version 1.9.21
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -40,10 +39,10 @@ public class ItemCommand implements CommandExecutor {
       if (user.hasPermission("aethel.aethelitem")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -58,7 +57,7 @@ public class ItemCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> openMainMenu(user);
       case 1 -> readParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -68,10 +67,10 @@ public class ItemCommand implements CommandExecutor {
    * @param user user
    */
   private void openMainMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), " "));
+    user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), " "));
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_CATEGORY.menu));
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.AETHELITEM_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -86,7 +85,7 @@ public class ItemCommand implements CommandExecutor {
         PluginData.itemRegistry.loadData();
         user.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
       }
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
     }
   }
 }

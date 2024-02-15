@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.systems;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.systems.object.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.NamespacedKey;
@@ -18,7 +18,7 @@ import java.util.Map;
  * RpgData stores RPG characters in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.5
+ * @version 1.9.21
  * @since 1.8.10
  */
 public class RpgData {
@@ -73,7 +73,7 @@ public class RpgData {
       }
 
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-      NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
+      NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         equipment.put(slot, new HashMap<>());
         readEquipmentMeta(equipment, aethelAttributes, slot, dataContainer, listKey);

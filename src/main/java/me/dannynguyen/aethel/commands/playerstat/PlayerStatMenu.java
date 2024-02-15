@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -24,7 +23,7 @@ import java.util.Objects;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.4.7
  */
 class PlayerStatMenu {
@@ -113,7 +112,7 @@ class PlayerStatMenu {
     List<Inventory> category = PluginData.playerStatData.getSubstatCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
@@ -140,7 +139,7 @@ class PlayerStatMenu {
           ChatColor.WHITE + "Shift-click any",
           ChatColor.WHITE + "stat to share it.");
     }
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", lore));
+    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
   }
 
   /**
@@ -150,7 +149,7 @@ class PlayerStatMenu {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
+    String statOwner = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
     OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
 
     meta.setOwningPlayer(requestedPlayer);

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.11
+ * @version 1.9.21
  * @since 1.2.6
  */
 public class AethelTagsCommand implements CommandExecutor {
@@ -47,13 +47,13 @@ public class AethelTagsCommand implements CommandExecutor {
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
         } else {
-          user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
+          user.sendMessage(PluginEnum.Message.NO_MAIN_HAND_ITEM.getMessage());
         }
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -72,29 +72,29 @@ public class AethelTagsCommand implements CommandExecutor {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(PluginMessage.Failure.NO_PARAMETERS.message);
+      case 0 -> user.sendMessage(PluginEnum.Message.NO_PARAMETERS.getMessage());
       case 1 -> {
         if (action.equals("g") || action.equals("get")) {
           getAethelTags(user, item);
         } else {
-          user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
+          user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
         }
       }
       case 2 -> {
         if (action.equals("r") || action.equals("remove")) {
           removeAethelTag(user, args[1], item);
         } else {
-          user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+          user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 3 -> {
         if (action.equals("set") || action.equals("s")) {
           setAethelTag(user, args, item);
         } else {
-          user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+          user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.command.Command;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.9.18
+ * @version 1.9.21
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -40,13 +39,13 @@ public class ItemEditorCommand implements CommandExecutor {
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
         } else {
-          user.sendMessage(PluginMessage.Failure.NO_MAIN_HAND_ITEM.message);
+          user.sendMessage(PluginEnum.Message.NO_MAIN_HAND_ITEM.getMessage());
         }
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -62,7 +61,7 @@ public class ItemEditorCommand implements CommandExecutor {
     if (args.length == 0) {
       openMainMenu(user, item);
     } else {
-      user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -75,6 +74,6 @@ public class ItemEditorCommand implements CommandExecutor {
   private void openMainMenu(Player user, ItemStack item) {
     PluginData.editedItemCache.getEditedItemMap().put(user, item);
     user.openInventory(new CosmeticEditorMenu(user).openMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.ITEMEDITOR_COSMETICS.menu));
   }
 }

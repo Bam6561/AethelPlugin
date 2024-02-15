@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -22,7 +21,7 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.0.6
  */
 class RecipeMenu {
@@ -60,7 +59,7 @@ class RecipeMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    String category = ChatColor.WHITE + user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -95,7 +94,7 @@ class RecipeMenu {
     List<Inventory> category = PluginData.recipeRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();
@@ -110,14 +109,14 @@ class RecipeMenu {
    */
   private void addContext() {
     switch (action) {
-      case CRAFT -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(
+      case CRAFT -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(
           ChatColor.WHITE + "Expand a recipe to see its",
           ChatColor.WHITE + "results and materials.",
           "",
           ChatColor.WHITE + "Materials are matched",
           ChatColor.WHITE + "by material unless",
           ChatColor.WHITE + "they're unique items!")));
-      case EDIT, REMOVE -> menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(
+      case EDIT, REMOVE -> menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(
           ChatColor.WHITE + "To undo a removal,",
           ChatColor.WHITE + "edit the item and",
           ChatColor.WHITE + "save it before reloading.")));
@@ -128,7 +127,7 @@ class RecipeMenu {
    * Adds the create button.
    */
   private void addCreateButton() {
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
+    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
   }
 
   /**
@@ -137,12 +136,12 @@ class RecipeMenu {
   private void addActions() {
     switch (action) {
       case EDIT -> {
-        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.TRASH_CAN.head, ChatColor.AQUA + "Remove"));
+        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
+        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Remove"));
       }
       case REMOVE -> {
-        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Create"));
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.FILE_EXPLORER.head, ChatColor.AQUA + "Edit"));
+        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.FILE_EXPLORER.getHead(), ChatColor.AQUA + "Edit"));
       }
     }
   }

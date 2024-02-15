@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.21
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -41,10 +40,10 @@ public class ForgeCommand implements CommandExecutor {
       if (user.hasPermission("aethel.forge")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -60,7 +59,7 @@ public class ForgeCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> openCraftingMenu(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -76,7 +75,7 @@ public class ForgeCommand implements CommandExecutor {
         if (user.hasPermission("aethel.forge.editor")) {
           openEditorMenu(user);
         } else {
-          user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+          user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
         }
       }
       case "reload", "r" -> {
@@ -84,10 +83,10 @@ public class ForgeCommand implements CommandExecutor {
           PluginData.recipeRegistry.loadData();
           user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
         } else {
-          user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+          user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
         }
       }
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETER.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
     }
   }
 
@@ -97,11 +96,11 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openCraftingMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "craft"));
-    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
+    user.setMetadata(PluginEnum.PlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "craft"));
+    user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
     user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMainMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
@@ -110,10 +109,10 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openEditorMenu(Player user) {
-    user.setMetadata(PluginPlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "edit"));
-    user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
+    user.setMetadata(PluginEnum.PlayerMeta.FUTURE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "edit"));
+    user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), ""));
     user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.FORGE_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 }

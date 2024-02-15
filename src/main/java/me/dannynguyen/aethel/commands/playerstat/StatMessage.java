@@ -1,8 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.*;
@@ -19,7 +18,7 @@ import java.util.Objects;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.4.10
  */
 class StatMessage {
@@ -57,7 +56,7 @@ class StatMessage {
   protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
-    this.ownerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
+    this.ownerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
     this.requestedPlayer = Bukkit.getOfflinePlayer(ownerName);
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     this.isGlobalBroadcast = e.isShiftClick();
@@ -80,7 +79,7 @@ class StatMessage {
    */
   protected void sendSubstat() {
     String substatName = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
-    String category = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    String category = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
     String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
     List<String> statValues = loadSubStatValues(category, substatName);
 
@@ -105,11 +104,11 @@ class StatMessage {
     } else {
       if (user.getName().equals(ownerName)) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-          onlinePlayer.sendMessage(PluginMessage.Success.NOTIFICATION_GLOBAL.message + message);
+          onlinePlayer.sendMessage(PluginEnum.Message.NOTIFICATION_GLOBAL.getMessage() + message);
         }
       } else {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-          onlinePlayer.sendMessage(PluginMessage.Success.NOTIFICATION_GLOBAL.message + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
+          onlinePlayer.sendMessage(PluginEnum.Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
         }
       }
       PluginData.pastStatHistory.addPastStat(statName, statValues);

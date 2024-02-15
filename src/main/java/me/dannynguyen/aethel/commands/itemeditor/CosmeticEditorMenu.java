@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.6.7
  */
 class CosmeticEditorMenu {
@@ -92,7 +92,7 @@ class CosmeticEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(),
         ChatColor.GREEN + "Format Codes", List.of(
             ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
             ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
@@ -100,7 +100,7 @@ class CosmeticEditorMenu {
             ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
             ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
             ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
-    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head,
+    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(),
         ChatColor.GREEN + "Color Codes", List.of(
             ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
             ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
@@ -144,13 +144,13 @@ class CosmeticEditorMenu {
   private void addLore() {
     ItemStack lore;
     if (!meta.hasLore()) {
-      lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
+      lore = ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
     } else {
       List<String> loreLines = meta.getLore();
       for (int i = 0; i < loreLines.size(); i++) {
         loreLines.set(i, ChatColor.WHITE + "" + (i + 1) + " " + ChatColor.RESET + loreLines.get(i));
       }
-      lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Lore", loreLines);
+      lore = ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", loreLines);
     }
     menu.setItem(28, lore);
     menu.setItem(29, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Set Lore", List.of(ChatColor.WHITE + "Separate lines by \",, \".")));

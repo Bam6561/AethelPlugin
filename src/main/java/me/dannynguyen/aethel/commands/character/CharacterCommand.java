@@ -1,8 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.PluginMessage;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.10
+ * @version 1.9.21
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -37,10 +36,10 @@ public class CharacterCommand implements CommandExecutor {
       if (user.hasPermission("aethel.character")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -54,7 +53,7 @@ public class CharacterCommand implements CommandExecutor {
   private void readRequest(Player user, String[] args) {
     switch (args.length) {
       case 0 -> openCharacterSheet(user);
-      default -> user.sendMessage(PluginMessage.Failure.UNRECOGNIZED_PARAMETERS.message);
+      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -65,6 +64,6 @@ public class CharacterCommand implements CommandExecutor {
    */
   private void openCharacterSheet(Player user) {
     user.openInventory(new CharacterSheet(user).openMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.CHARACTER_SHEET.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.CHARACTER_SHEET.menu));
   }
 }

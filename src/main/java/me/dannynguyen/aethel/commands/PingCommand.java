@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.PluginEnum;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * Command invocation that responds to the user with their server latency.
  *
  * @author Danny Nguyen
- * @version 1.9.11
+ * @version 1.9.21
  * @since 1.0.1
  */
 public class PingCommand implements CommandExecutor {
@@ -31,10 +31,10 @@ public class PingCommand implements CommandExecutor {
       if (user.hasPermission("aethel.ping")) {
         user.sendMessage("Pong! " + ChatColor.GRAY + user.getPing() + "ms");
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }

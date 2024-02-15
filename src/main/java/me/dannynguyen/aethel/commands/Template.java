@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.enums.PluginMessage;
+import me.dannynguyen.aethel.PluginEnum;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.9.11
+ * @version 1.9.21
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
@@ -31,10 +31,10 @@ public class Template implements CommandExecutor {
       if (user.hasPermission("aethel.template")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.Failure.INSUFFICIENT_PERMISSION.message);
+        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.Failure.PLAYER_ONLY_COMMAND.message);
+      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }

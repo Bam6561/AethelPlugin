@@ -2,8 +2,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -22,7 +21,7 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.4.0
  */
 class ItemMenu {
@@ -60,7 +59,7 @@ class ItemMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
-    String category = ChatColor.WHITE + user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    String category = ChatColor.WHITE + user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
     switch (action) {
       case GET -> title += ChatColor.GREEN + " Get ";
       case REMOVE -> title += ChatColor.RED + " Remove ";
@@ -93,7 +92,7 @@ class ItemMenu {
     List<Inventory> category = PluginData.itemRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext(requestedCategory);
@@ -127,7 +126,7 @@ class ItemMenu {
           ChatColor.WHITE + "get the item and save",
           ChatColor.WHITE + "it before reloading.");
     }
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", lore));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
   }
 
   /**
@@ -136,14 +135,14 @@ class ItemMenu {
   private void addActions() {
     switch (action) {
       case GET -> {
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.TRASH_CAN.head, ChatColor.AQUA + "Remove"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
+        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Remove"));
       }
       case REMOVE -> {
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKPACK_BROWN.head, ChatColor.AQUA + "Get"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
+        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.BACKPACK_BROWN.getHead(), ChatColor.AQUA + "Get"));
       }
-      case VIEW -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.head, ChatColor.AQUA + "Save"));
+      case VIEW -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
     }
   }
 

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
@@ -8,7 +9,6 @@ import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,8 +32,8 @@ public class InventoryMenuListener implements Listener {
   public void onInventoryClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
       Player user = (Player) e.getWhoClicked();
-      if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
-        String[] invType = user.getMetadata(PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+      if (user.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
+        String[] invType = user.getMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
         switch (invType[0]) {
           case "aethelitem" -> interpretAethelItem(e, invType);
           case "character" -> interpretCharacter(e, invType);
@@ -54,8 +54,8 @@ public class InventoryMenuListener implements Listener {
   @EventHandler
   public void onDrag(InventoryDragEvent e) {
     Player user = (Player) e.getWhoClicked();
-    if (user.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
-      String[] invType = user.getMetadata(PluginPlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+    if (user.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
+      String[] invType = user.getMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
       switch (invType[0]) {
         case "aethelitem", "character" -> e.setCancelled(true);
       }
@@ -192,8 +192,8 @@ public class InventoryMenuListener implements Listener {
   @EventHandler
   public void onClose(InventoryCloseEvent e) {
     Player player = (Player) e.getPlayer();
-    if (player.hasMetadata(PluginPlayerMeta.INVENTORY.getMeta())) {
-      player.removeMetadata(PluginPlayerMeta.INVENTORY.getMeta(), Plugin.getInstance());
+    if (player.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
+      player.removeMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), Plugin.getInstance());
     }
   }
 

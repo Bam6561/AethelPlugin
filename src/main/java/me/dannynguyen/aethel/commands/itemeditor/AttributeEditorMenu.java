@@ -2,10 +2,9 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginConstant;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginConstant;
-import me.dannynguyen.aethel.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -29,10 +28,18 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.20
+ * @version 1.9.21
  * @since 1.7.0
  */
 class AttributeEditorMenu {
+  /**
+   * Categorized Aethel attributes.
+   */
+  private static final Map<String, String[]> aethelAttributeCategories = Map.of(
+      "offense", new String[]{"Attack Damage", "Attack Speed", "Critical Chance", "Critical Damage"},
+      "defense", new String[]{"Max Health", "Armor", "Armor Toughness", "Movement Speed", "Block", "Parry Chance", "Parry Deflect", "Dodge Chance"},
+      "other", new String[]{"Ability Damage", "Ability Cooldown", "Apply Status", "Knockback Resistance", "Luck"});
+
   /**
    * AttributeEditor GUI.
    */
@@ -126,7 +133,7 @@ class AttributeEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"0\".")));
+    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"0\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(36, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));
@@ -152,7 +159,7 @@ class AttributeEditorMenu {
    * @return item's Aethel attributes map
    */
   private Map<String, List<String>> mapAethelAttributes() {
-    NamespacedKey listKey = PluginNamespacedKey.AETHEL_ATTRIBUTE_LIST.getNamespacedKey();
+    NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasAttributes) {
       Map<String, List<String>> attributesMap = new HashMap<>();
@@ -184,7 +191,7 @@ class AttributeEditorMenu {
    */
   private void addAttributeCategory(String category, int invSlot) {
     if (aethelAttributesMap != null) { // Read both Minecraft & Aethel attributes
-      for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
+      for (String attributeName : aethelAttributeCategories.get(category)) {
         if (PluginConstant.minecraftAttributes.contains(attributeName)) {
           addMinecraftAttribute(attributeName, invSlot);
         } else {
@@ -193,7 +200,7 @@ class AttributeEditorMenu {
         invSlot++;
       }
     } else {  // Read Minecraft attributes only
-      for (String attributeName : PluginConstant.aethelAttributesMap.get(category)) {
+      for (String attributeName : aethelAttributeCategories.get(category)) {
         if (PluginConstant.minecraftAttributes.contains(attributeName)) {
           addMinecraftAttribute(attributeName, invSlot);
         } else {

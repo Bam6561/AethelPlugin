@@ -1,8 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.enums.PluginConstant;
-import me.dannynguyen.aethel.enums.PluginPlayerHead;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -23,10 +22,18 @@ import java.util.Objects;
  * Represents a menu that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.9.21
  * @since 1.6.15
  */
 class TagEditorMenu {
+  /**
+   * Aethel tags managed by the GUI.
+   */
+  private static final NamespacedKey[] aethelTags = {
+      PluginEnum.Key.ITEM_CATEGORY.getNamespacedKey(),
+      PluginEnum.Key.RECIPE_CATEGORY.getNamespacedKey(),
+      PluginEnum.Key.RECIPE_ID.getNamespacedKey()};
+
   /**
    * TagEditor GUI.
    */
@@ -83,7 +90,7 @@ class TagEditorMenu {
   private void addAethelTags() {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
     int invSlot = 9;
-    for (NamespacedKey tag : PluginConstant.aethelTags) {
+    for (NamespacedKey tag : aethelTags) {
       boolean disabled = !dataContainer.has(tag, PersistentDataType.STRING);
       menu.setItem(invSlot, disabled ?
           ItemCreator.createItem(Material.ENDER_PEARL, ChatColor.AQUA + tag.getKey().substring(7)) :
@@ -96,6 +103,6 @@ class TagEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.head, ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
   }
 }

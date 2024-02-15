@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.9.21
  * @since 1.1.11
  */
 public class RecipeRegistry {
@@ -194,8 +194,8 @@ public class RecipeRegistry {
    */
   private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
     PersistentDataContainer data = results.get(0).getItemMeta().getPersistentDataContainer();
-    if (data.has(PluginNamespacedKey.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
-      String category = data.get(PluginNamespacedKey.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
+    if (data.has(PluginEnum.Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
+      String category = data.get(PluginEnum.Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
       if (categories.containsKey(category)) {
         categories.get(category).add(results);
       } else {

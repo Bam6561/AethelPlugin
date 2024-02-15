@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
-import me.dannynguyen.aethel.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.RpgData;
 import org.bukkit.Bukkit;
 
@@ -18,12 +17,12 @@ import java.util.logging.Logger;
  * PluginData stores the plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.17
+ * @version 1.9.21
  * @since 1.1.7
  */
 public class PluginData {
-  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.file);
-  public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.file);
+  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginEnum.Directory.AETHELITEM.getFile());
+  public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginEnum.Directory.FORGE.getFile());
 
   public static final PlayerStatData playerStatData = new PlayerStatData();
 
@@ -45,12 +44,12 @@ public class PluginData {
     hundredths.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Loading Resources");
-    File resourceDirectory = PluginDirectory.RESOURCES.file;
+    File resourceDirectory = PluginEnum.Directory.RESOURCES.getFile();
     if (!resourceDirectory.exists()) {
       resourceDirectory.mkdir();
     }
 
-    File aethelItemDirectory = PluginDirectory.AETHELITEM.file;
+    File aethelItemDirectory = PluginEnum.Directory.AETHELITEM.getFile();
     if (aethelItemDirectory.exists()) {
       start = System.nanoTime();
       PluginData.itemRegistry.loadData();
@@ -60,7 +59,7 @@ public class PluginData {
       aethelItemDirectory.mkdir();
     }
 
-    File forgeDirectory = PluginDirectory.FORGE.file;
+    File forgeDirectory = PluginEnum.Directory.FORGE.getFile();
     if (forgeDirectory.exists()) {
       start = System.nanoTime();
       PluginData.recipeRegistry.loadData();

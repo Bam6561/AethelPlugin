@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.PluginPlayerMeta;
+import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.listeners.InventoryMenuListener;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ import java.util.Objects;
  * Inventory click event listener for PlayerStat menus.
  *
  * @author Danny Nguyen
- * @version 1.9.14
+ * @version 1.9.21
  * @since 1.4.7
  */
 public class PlayerStatMenuClick {
@@ -51,14 +51,14 @@ public class PlayerStatMenuClick {
    */
   public void readMainClick() {
     if (slotClicked > 8) {
-      String requestedPlayer = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
+      String requestedPlayer = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
       String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-      user.setMetadata(PluginPlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
+      user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
 
       user.openInventory(new PlayerStatMenu(user, requestedPlayer).openCategoryPage(itemName, 0));
       switch (itemName) {
-        case "Entity Types", "Materials" -> user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
-        default -> user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_STAT.menu));
+        case "Entity Types", "Materials" -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
+        default -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_STAT.menu));
       }
     }
   }
@@ -101,33 +101,33 @@ public class PlayerStatMenuClick {
    * Opens the previous stat category page.
    */
   private void previousPage() {
-    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
-    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
+    String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
+    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openCategoryPage(categoryName, pageRequest - 1));
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
   }
 
   /**
    * Opens a PlayerStat menu.
    */
   private void returnToMainMenu() {
-    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
+    String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openMainMenu());
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_CATEGORY.menu));
-    user.setMetadata(PluginPlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_CATEGORY.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
   }
 
   /**
    * Opens the next stat category page.
    */
   private void nextPage() {
-    String requestedPlayerName = user.getMetadata(PluginPlayerMeta.PLAYER.getMeta()).get(0).asString();
-    String categoryName = user.getMetadata(PluginPlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginPlayerMeta.PAGE.getMeta()).get(0).asInt();
+    String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
+    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
 
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openCategoryPage(categoryName, pageRequest + 1));
-    user.setMetadata(PluginPlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
+    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), InventoryMenuListener.Menu.PLAYERSTAT_SUBSTAT.menu));
   }
 }
