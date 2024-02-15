@@ -30,7 +30,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.23
+ * @version 1.10.0
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -85,7 +85,7 @@ public class Plugin extends JavaPlugin {
    */
   private void addMainHandEquipmentAttributesInterval() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-      Map<Player, ItemStack> playerHeldItemMap = PluginData.rpgData.getPlayerHeldItemMap();
+      Map<Player, ItemStack> playerHeldItemMap = PluginData.rpgSystem.getPlayerHeldItemMap();
 
       for (Player player : Bukkit.getOnlinePlayers()) {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -94,14 +94,14 @@ public class Plugin extends JavaPlugin {
           if (!playerHeldItemMap.get(player).equals(heldItem)) {
             playerHeldItemMap.put(player, heldItem);
 
-            RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(player);
+            RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
             rpgProfile.readEquipmentSlot(heldItem, "hand");
           }
         } else {
           playerHeldItemMap.put(player, heldItem);
         }
       }
-    }, 0, 20);
+    }, 0, 10);
   }
 
   /**

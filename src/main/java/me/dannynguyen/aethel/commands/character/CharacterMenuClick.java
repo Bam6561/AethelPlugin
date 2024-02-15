@@ -81,7 +81,7 @@ public class CharacterMenuClick {
 
       // User removes main hand item
     } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
-      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
       rpgProfile.readEquipmentSlot(null, "hand");
 
       e.getInventory().setItem(11, new ItemStack(Material.AIR));
@@ -92,7 +92,7 @@ public class CharacterMenuClick {
       e.getInventory().setItem(11, e.getCursor());
 
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
+        RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
         ItemStack wornItem = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
         rpgProfile.readEquipmentSlot(wornItem, "hand");
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
@@ -186,7 +186,7 @@ public class CharacterMenuClick {
    */
   private void updateArmorHandsAttributes(int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
       ItemStack wornItem = user.getInventory().getItem(slot);
 
       switch (slot) {
@@ -210,7 +210,7 @@ public class CharacterMenuClick {
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(user);
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
       Inventory menu = e.getClickedInventory();
       ItemStack wornItem = menu.getItem(slotClicked);
 

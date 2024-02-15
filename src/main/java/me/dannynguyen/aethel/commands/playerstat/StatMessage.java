@@ -142,6 +142,7 @@ class StatMessage {
    *
    * @param category    substat category
    * @param substatName substat name
+   * @return substat value
    */
   private List<String> loadSubStatValues(String category, String substatName) {
     List<String> statValues = new ArrayList<>();
@@ -176,6 +177,7 @@ class StatMessage {
   /**
    * Gets a time duration in ticks and converts to readable conventional time.
    *
+   * @param ticks ticks
    * @return conventional time duration
    */
   private String tickTimeConversion(long ticks) {

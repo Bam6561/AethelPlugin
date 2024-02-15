@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
-import me.dannynguyen.aethel.systems.RpgData;
+import me.dannynguyen.aethel.systems.RpgSystem;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -14,24 +14,47 @@ import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
 /**
- * PluginData stores the plugin's resources in memory.
+ * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.0
  * @since 1.1.7
  */
 public class PluginData {
+  /**
+   * Registered items in memory.
+   */
   public static final ItemRegistry itemRegistry = new ItemRegistry(PluginEnum.Directory.AETHELITEM.getFile());
+
+  /**
+   * Registered recipes in memory.
+   */
   public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginEnum.Directory.FORGE.getFile());
 
+  /**
+   * Data regarding player stats.
+   */
   public static final PlayerStatData playerStatData = new PlayerStatData();
 
-  public static final PastItemHistory pastItemHistory = new PastItemHistory();
-  public static final PastStatHistory pastStatHistory = new PastStatHistory();
-
+  /**
+   * Currently editing items.
+   */
   public static final EditedItemCache editedItemCache = new EditedItemCache();
 
-  public static final RpgData rpgData = new RpgData();
+  /**
+   * Past shared item history.
+   */
+  public static final PastItemHistory pastItemHistory = new PastItemHistory();
+
+  /**
+   * Past shared stat history.
+   */
+  public static final PastStatHistory pastStatHistory = new PastStatHistory();
+
+  /**
+   * Data regarding RPG systems.
+   */
+  public static final RpgSystem rpgSystem = new RpgSystem();
 
   /**
    * Loads existing plugin-related data. Creates data directories if they do not already exist.
@@ -78,6 +101,7 @@ public class PluginData {
   /**
    * Converts the time duration of a process in nanoseconds to milliseconds.
    *
+   * @param dc     decimal format
    * @param start  start time
    * @param finish finish time
    * @return milliseconds elapsed

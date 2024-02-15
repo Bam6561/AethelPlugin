@@ -78,7 +78,8 @@ class AttributeEditorMenu {
   /**
    * Associates a new AttributeEditor menu with its user and editing item.
    *
-   * @param user user
+   * @param user   user
+   * @param action type of interaction
    */
   protected AttributeEditorMenu(@NotNull Player user, @NotNull AttributeEditorAction action) {
     this.user = Objects.requireNonNull(user, "Null user");

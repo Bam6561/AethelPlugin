@@ -49,7 +49,7 @@ public class PlayerDamage implements Listener {
    * @param player interacting player
    */
   private void processDamageTaken(EntityDamageByEntityEvent e, Player player) {
-    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgProfiles().get(player).getAethelAttributes();
+    Map<String, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(player).getAethelAttributes();
     Random random = new Random();
     Double damage = e.getDamage();
     if (calculateIfDodged(e, aethelAttributes, random)) {
@@ -69,7 +69,7 @@ public class PlayerDamage implements Listener {
    * @param player interacting player
    */
   private void calculateIfCriticallyHit(EntityDamageByEntityEvent e, Player player) {
-    Map<String, Double> aethelAttributes = PluginData.rpgData.getRpgProfiles().get(player).getAethelAttributes();
+    Map<String, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(player).getAethelAttributes();
     if (aethelAttributes.get("critical_chance") > new Random().nextDouble() * 100) {
       e.setDamage(e.getDamage() * (1.25 + (aethelAttributes.get("critical_damage") / 100)));
     }

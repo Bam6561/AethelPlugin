@@ -104,6 +104,8 @@ class ItemMenu {
 
   /**
    * Adds contextual help.
+   *
+   * @param requestedCategory requested category
    */
   private void addContext(String requestedCategory) {
     List<String> lore;

@@ -119,6 +119,7 @@ public class RpgProfile {
    *
    * @param slot          slot type
    * @param dataContainer item's persistent tags
+   * @param listKey       attributes list
    */
   private void readEquipmentMeta(String slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");

@@ -14,7 +14,7 @@ import java.util.Map;
  * @version 1.9.23
  * @since 1.8.10
  */
-public class RpgData {
+public class RpgSystem {
   /**
    * RPG profiles.
    */

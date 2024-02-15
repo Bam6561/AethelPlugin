@@ -113,7 +113,7 @@ class CharacterSheet {
    */
   private void addEquipment() {
     PlayerInventory pInv = user.getInventory();
-    ItemStack[] jewelry = PluginData.rpgData.getRpgProfiles().get(user).getJewelrySlots();
+    ItemStack[] jewelry = PluginData.rpgSystem.getRpgProfiles().get(user).getJewelrySlots();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -129,7 +129,7 @@ class CharacterSheet {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<String, Double> attributes = PluginData.rpgData.getRpgProfiles().get(user).getAethelAttributes();
+    Map<String, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(user).getAethelAttributes();
 
     DecimalFormat hundredths = new DecimalFormat();
     hundredths.setMaximumFractionDigits(2);

@@ -129,6 +129,8 @@ class PlayerStatMenu {
 
   /**
    * Adds contextual help.
+   *
+   * @param categoryName category name
    */
   private void addContext(String categoryName) {
     List<String> lore;

@@ -435,6 +435,8 @@ public class ItemEditorMenuClick {
 
   /**
    * Sets the user's interacting equipment slot.
+   *
+   * @param action type of interaction
    */
   private void setMode(AttributeEditorAction action) {
     String equipmentSlot = AttributeEditorAction.asString(action);

@@ -15,15 +15,16 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * ItemCreator is a utility class that:
- * - creates ItemStacks with metadata
- * - serializes ItemStacks
+ * Creates and serializes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.8.4
+ * @version 1.10.0
  * @since 1.1.5
  */
 public class ItemCreator {
+  /**
+   * Utility methods only.
+   */
   private ItemCreator() {
   }
 

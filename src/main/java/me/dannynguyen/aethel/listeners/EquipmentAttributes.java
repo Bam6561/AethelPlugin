@@ -85,8 +85,8 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent e) {
     Player player = e.getPlayer();
-    if (PluginData.rpgData.getRpgProfiles().get(player) == null) {
-      PluginData.rpgData.loadRpgPlayer(player);
+    if (PluginData.rpgSystem.getRpgProfiles().get(player) == null) {
+      PluginData.rpgSystem.loadRpgPlayer(player);
     }
   }
 
@@ -122,7 +122,7 @@ public class EquipmentAttributes implements Listener {
    */
   @EventHandler
   public void onSwapHandItem(PlayerSwapHandItemsEvent e) {
-    RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(e.getPlayer());
+    RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getPlayer());
     rpgProfile.readEquipmentSlot(e.getOffHandItem(), "off_hand");
   }
 
@@ -171,7 +171,7 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
-      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(e.getEntity());
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getEntity());
       Map<String, Map<String, Double>> equipment = rpgProfile.getEquipmentAttributes();
 
       dropJewelryItems(e.getEntity(), rpgProfile.getJewelrySlots());
@@ -220,7 +220,7 @@ public class EquipmentAttributes implements Listener {
    */
   private void updateEquipmentAttributesAtSlot(Player player, ItemStack item, int slot, String action) {
     if (!(action.equals("shift") || action.equals("click") || action.equals("break"))) {
-      RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(player);
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
       switch (slot) {
         case 36 -> rpgProfile.readEquipmentSlot(item, "feet");
         case 37 -> rpgProfile.readEquipmentSlot(item, "legs");
@@ -230,7 +230,7 @@ public class EquipmentAttributes implements Listener {
       }
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        RpgProfile rpgProfile = PluginData.rpgData.getRpgProfiles().get(player);
+        RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
         final ItemStack wornItem = player.getInventory().getItem(slot);
         switch (slot) {
           case 36 -> rpgProfile.readEquipmentSlot(wornItem, "feet");

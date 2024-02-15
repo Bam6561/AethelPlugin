@@ -1,13 +1,16 @@
 package me.dannynguyen.aethel.utility;
 
 /**
- * TextFormatter is a utility class that formats text.
+ * Formats text.
  *
  * @author Danny Nguyen
- * @version 1.9.15
+ * @version 1.10.0
  * @since 1.6.16
  */
 public class TextFormatter {
+  /**
+   * Utility methods only.
+   */
   private TextFormatter() {
   }
 

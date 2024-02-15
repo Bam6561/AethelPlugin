@@ -5,14 +5,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 
 /**
- * InventoryPages is a utility class that supports
- * double chest sized inventories with useful methods.
+ * Provides double chest sized inventories with useful methods.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.0
  * @since 1.4.2
  */
 public class InventoryPages {
+  /**
+   * Utility methods only.
+   */
   private InventoryPages() {
   }
 
@@ -52,7 +54,8 @@ public class InventoryPages {
   /**
    * Returns the player to the categories page.
    *
-   * @param inv interacting inventory
+   * @param inv     interacting inventory
+   * @param invSlot inventory slot
    */
   public static void addBackButton(Inventory inv, int invSlot) {
     inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CHISELED_BOOKSHELF.getHead(), ChatColor.AQUA + "Back"));

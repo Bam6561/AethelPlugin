@@ -14,15 +14,16 @@ import java.io.IOException;
 import java.util.Base64;
 
 /**
- * ItemReader is a utility class that:
- * - reads metadata from ItemStacks
- * - decodes serialized ItemStacks
+ * Reads and decodes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.9.7
+ * @version 1.10.0
  * @since 1.1.4
  */
 public class ItemReader {
+  /**
+   * Utility methods only.
+   */
   private ItemReader() {
   }
 
@@ -58,7 +59,6 @@ public class ItemReader {
    */
   public static String readAethelTags(ItemStack item) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-
     StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey key : dataContainer.getKeys()) {
       String keyName = key.getKey();
