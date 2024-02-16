@@ -1,13 +1,13 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -64,6 +64,6 @@ public class CharacterCommand implements CommandExecutor {
    */
   private void openCharacterSheet(Player user) {
     user.openInventory(new CharacterSheet(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.CHARACTER_SHEET.menu));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 }

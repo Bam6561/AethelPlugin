@@ -1,8 +1,9 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -10,8 +11,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Command invocation that retrieves a player's statistics.
@@ -21,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.7
  */
 public class PlayerStatCommand implements CommandExecutor {
@@ -72,7 +74,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).openMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_PAST.menu));
+      PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -84,9 +86,10 @@ public class PlayerStatCommand implements CommandExecutor {
    * @param user user
    */
   private void openPlayerStatSelf(Player user) {
-    user.setMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), user.getName()));
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    playerMeta.put(PlayerMeta.PLAYER, user.getName());
     user.openInventory(new PlayerStatMenu(user, user.getName()).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_CATEGORY.menu));
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
   }
 
   /**
@@ -98,9 +101,10 @@ public class PlayerStatCommand implements CommandExecutor {
   private void openPlayerStatOther(Player user, String requestedPlayer) {
     OfflinePlayer player = Bukkit.getOfflinePlayer(requestedPlayer);
     if (player.hasPlayedBefore()) {
-      user.setMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), player.getName()));
+      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+      playerMeta.put(PlayerMeta.PLAYER, player.getName());
       user.openInventory(new PlayerStatMenu(user, player.getName()).openMainMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_CATEGORY.menu));
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     } else {
       user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
     }

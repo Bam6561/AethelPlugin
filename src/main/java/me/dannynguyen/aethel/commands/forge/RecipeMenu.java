@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.0.6
  */
 class RecipeMenu {
@@ -59,7 +60,7 @@ class RecipeMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    String category = ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -94,7 +95,7 @@ class RecipeMenu {
     List<Inventory> category = PluginData.recipeRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();

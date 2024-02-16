@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -99,7 +100,7 @@ class RecipeCraft {
    * Crafts a recipe if the user has enough materials.
    */
   protected void craftRecipe() {
-    if (!user.hasMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta())) {
+    if (!PluginData.pluginSystem.getPlayerMetadata().get(user).containsKey(PlayerMeta.DEVELOPER)) {
       if (hasEnoughOfAllMaterials()) {
         processRecipeCraft();
       } else {

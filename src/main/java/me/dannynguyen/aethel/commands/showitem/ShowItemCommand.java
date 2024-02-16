@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.showitem;
 
-import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
@@ -16,7 +16,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -95,7 +94,7 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
       user.openInventory(new PastItemMenu(user).openMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.SHOWITEM_PAST.menu));
+      PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
     } else {
       user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
     }

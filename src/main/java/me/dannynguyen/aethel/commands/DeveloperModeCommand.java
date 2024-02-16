@@ -1,21 +1,23 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Command invocation that allows the user to
  * bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
@@ -63,11 +65,12 @@ public class DeveloperModeCommand implements CommandExecutor {
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    if (!user.hasMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta())) {
-      user.setMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta(), new FixedMetadataValue(Plugin.getInstance(), 1));
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    if (!playerMeta.containsKey(PlayerMeta.DEVELOPER)) {
+      playerMeta.put(PlayerMeta.DEVELOPER, "1");
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");
     } else {
-      user.removeMetadata(PluginEnum.PlayerMeta.DEVELOPER.getMeta(), Plugin.getInstance());
+      playerMeta.remove(PlayerMeta.DEVELOPER);
       user.sendMessage(ChatColor.RED + "[Developer Mode Off]");
     }
   }

@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
+import me.dannynguyen.aethel.systems.PluginSystem;
 import me.dannynguyen.aethel.systems.RpgSystem;
 import org.bukkit.Bukkit;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.10.0
+ * @version 1.10.1
  * @since 1.1.7
  */
 public class PluginData {
@@ -42,7 +43,7 @@ public class PluginData {
   public static final EditedItemCache editedItemCache = new EditedItemCache();
 
   /**
-   * Past shared item history.
+   * Past shown item history.
    */
   public static final PastItemHistory pastItemHistory = new PastItemHistory();
 
@@ -52,12 +53,17 @@ public class PluginData {
   public static final PastStatHistory pastStatHistory = new PastStatHistory();
 
   /**
+   * Data regarding plugin systems.
+   */
+  public static final PluginSystem pluginSystem = new PluginSystem();
+
+  /**
    * Data regarding RPG systems.
    */
   public static final RpgSystem rpgSystem = new RpgSystem();
 
   /**
-   * Loads existing plugin-related data. Creates data directories if they do not already exist.
+   * Loads existing plugin data. Creates data directories if they do not already exist.
    */
   public static void loadResources() {
     Logger log = Bukkit.getLogger();

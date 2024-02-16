@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents a player's equipped items and Aethel attribute values.
+ * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
  * @version 1.9.22

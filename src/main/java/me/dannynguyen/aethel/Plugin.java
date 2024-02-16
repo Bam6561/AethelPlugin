@@ -9,10 +9,7 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
-import me.dannynguyen.aethel.listeners.EquipmentAttributes;
-import me.dannynguyen.aethel.listeners.MenuClick;
-import me.dannynguyen.aethel.listeners.MessageSent;
-import me.dannynguyen.aethel.listeners.PlayerDamage;
+import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.systems.RpgProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,13 +27,13 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.0
+ * @version 1.10.1
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
   /**
    * On startup:
-   * - Loads existing plugin-related data.
+   * - Loads existing plugin data.
    * - Registers event listeners.
    * - Registers commands.
    */
@@ -52,10 +49,11 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's event listeners.
    */
   private void registerEventListeners() {
-    getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
     getServer().getPluginManager().registerEvents(new EquipmentAttributes(), this);
+    getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
     getServer().getPluginManager().registerEvents(new MenuClick(), this);
     getServer().getPluginManager().registerEvents(new MessageSent(), this);
+    getServer().getPluginManager().registerEvents(new PluginEvent(), this);
   }
 
   /**

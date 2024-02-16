@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -12,18 +12,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -114,12 +114,13 @@ public class ItemMenuClick {
    * Views an item category.
    */
   private void viewItemCategory() {
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
     String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
+    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
-    user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
+    playerMeta.put(PlayerMeta.CATEGORY, itemName);
     user.openInventory(new ItemMenu(user, ItemMenuAction.GET).openCategoryPage(itemName, pageRequest));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_GET.menu));
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_GET.getMeta());
   }
 
   /**
@@ -128,11 +129,12 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void previousPage(ItemMenuAction action) {
-    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     user.openInventory(new ItemMenu(user, action).openCategoryPage(categoryName, pageRequest - 1));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "aethelitem." + ItemMenuAction.asString(action)));
+    playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + ItemMenuAction.asString(action));
   }
 
   /**
@@ -141,15 +143,16 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void toggleAction(ItemMenuAction action) {
-    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     if (action == ItemMenuAction.GET) {
       user.openInventory(new ItemMenu(user, ItemMenuAction.REMOVE).openCategoryPage(categoryName, pageRequest));
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_REMOVE.menu));
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_REMOVE.getMeta());
     } else {
       user.openInventory(new ItemMenu(user, ItemMenuAction.GET).openCategoryPage(categoryName, pageRequest));
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_GET.menu));
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_GET.getMeta());
     }
   }
 
@@ -158,8 +161,9 @@ public class ItemMenuClick {
    */
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.AETHELITEM_CATEGORY.menu));
-    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
+    playerMeta.put(PlayerMeta.PAGE, "0");
   }
 
   /**
@@ -168,11 +172,12 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void nextPage(ItemMenuAction action) {
-    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     user.openInventory(new ItemMenu(user, action).openCategoryPage(categoryName, pageRequest + 1));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "aethelitem." + ItemMenuAction.asString(action)));
+    playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + ItemMenuAction.asString(action));
   }
 
   /**

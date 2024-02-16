@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -11,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.Objects;
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -114,7 +113,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_CRAFT_CONFIRM.menu));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT_RECIPE.getMeta());
   }
 
   /**
@@ -125,7 +124,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_SAVE.menu));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
   }
 
   /**
@@ -135,7 +134,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.FORGE_SAVE.menu));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
   }
 
   /**

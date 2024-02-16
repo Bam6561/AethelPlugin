@@ -1,22 +1,22 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Inventory click event listener for PlayerStat menus.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.7
  */
 public class PlayerStatMenuClick {
@@ -51,14 +51,15 @@ public class PlayerStatMenuClick {
    */
   public void readMainClick() {
     if (slotClicked > 8) {
-      String requestedPlayer = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
+      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+      String requestedPlayer = playerMeta.get(PlayerMeta.PLAYER);
       String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-      user.setMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), itemName));
+      playerMeta.put(PlayerMeta.CATEGORY, itemName);
 
       user.openInventory(new PlayerStatMenu(user, requestedPlayer).openCategoryPage(itemName, 0));
       switch (itemName) {
-        case "Entity Types", "Materials" -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_SUBSTAT.menu));
-        default -> user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_STAT.menu));
+        case "Entity Types", "Materials" -> playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_SUBSTAT.getMeta());
+        default -> playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_STAT.getMeta());
       }
     }
   }
@@ -101,33 +102,36 @@ public class PlayerStatMenuClick {
    * Opens the previous stat category page.
    */
   private void previousPage() {
-    String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
-    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    String requestedPlayerName = playerMeta.get(PlayerMeta.PLAYER);
+    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openCategoryPage(categoryName, pageRequest - 1));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_SUBSTAT.menu));
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_SUBSTAT.getMeta());
   }
 
   /**
    * Opens a PlayerStat menu.
    */
   private void returnToMainMenu() {
-    String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    String requestedPlayerName = playerMeta.get(PlayerMeta.PLAYER);
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openMainMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_CATEGORY.menu));
-    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), "0"));
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
+    playerMeta.put(PlayerMeta.PAGE, "0");
   }
 
   /**
    * Opens the next stat category page.
    */
   private void nextPage() {
-    String requestedPlayerName = user.getMetadata(PluginEnum.PlayerMeta.PLAYER.getMeta()).get(0).asString();
-    String categoryName = user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
-    int pageRequest = user.getMetadata(PluginEnum.PlayerMeta.PAGE.getMeta()).get(0).asInt();
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    String requestedPlayerName = playerMeta.get(PlayerMeta.PLAYER);
+    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     user.openInventory(new PlayerStatMenu(user, requestedPlayerName).openCategoryPage(categoryName, pageRequest + 1));
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.PLAYERSTAT_SUBSTAT.menu));
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_SUBSTAT.getMeta());
   }
 }

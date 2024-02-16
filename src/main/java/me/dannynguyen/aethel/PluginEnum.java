@@ -23,7 +23,7 @@ import java.util.UUID;
  * Common values used throughout the plugin.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.9.21
  */
 public class PluginEnum {
@@ -186,79 +186,6 @@ public class PluginEnum {
     @NotNull
     public NamespacedKey getNamespacedKey() {
       return this.namespacedKey;
-    }
-  }
-
-  /**
-   * Plugin player metadata.
-   */
-  public enum PlayerMeta {
-    /**
-     * Menu category.
-     */
-    CATEGORY("category"),
-
-    /**
-     * Developer mode.
-     */
-    DEVELOPER("developer"),
-
-    /**
-     * Future action.
-     */
-    FUTURE("future"),
-
-    /**
-     * Menu type.
-     */
-    INVENTORY("inventory"),
-
-    /**
-     * Message input type.
-     */
-    MESSAGE("message"),
-
-    /**
-     * Menu page.
-     */
-    PAGE("page"),
-
-    /**
-     * Target player.
-     */
-    PLAYER("player"),
-
-    /**
-     * Equipment slot.
-     */
-    SLOT("slot"),
-
-    /**
-     * Type of interacting object.
-     */
-    TYPE("type");
-
-    /**
-     * Metadata value.
-     */
-    private final String meta;
-
-    /**
-     * Associates a player's metadata with its value.
-     *
-     * @param meta metadata value
-     */
-    PlayerMeta(String meta) {
-      this.meta = meta;
-    }
-
-    /**
-     * Gets the player metadata value.
-     *
-     * @return player metadata value
-     */
-    public String getMeta() {
-      return this.meta;
     }
   }
 

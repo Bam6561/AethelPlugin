@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.listeners;
 
-import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
@@ -9,51 +8,24 @@ import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 
+import java.util.Map;
+
 /**
  * Collection of inventory click listeners for the plugin's menus.
  *
  * @author Danny Nguyen
- * @version 1.9.22
+ * @version 1.10.1
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
-  /**
-   * Currently open menu.
-   */
-  public enum Menu {
-    AETHELITEM_CATEGORY("aethelitem.category"),
-    AETHELITEM_GET("aethelitem.get"),
-    AETHELITEM_REMOVE("aethelitem.remove"),
-    CHARACTER_SHEET("character.sheet"),
-    FORGE_CATEGORY("forge.category"),
-    FORGE_CRAFT("forge.craft"),
-    FORGE_CRAFT_CONFIRM("forge.craft-confirm"),
-    FORGE_EDIT("forge.edit"),
-    FORGE_REMOVE("forge.remove"),
-    FORGE_SAVE("forge.save"),
-    ITEMEDITOR_ATTRIBUTES("itemeditor.attribute"),
-    ITEMEDITOR_COSMETICS("itemeditor.cosmetic"),
-    ITEMEDITOR_ENCHANTMENTS("itemeditor.enchantment"),
-    ITEMEDITOR_TAGS("itemeditor.tag"),
-    PLAYERSTAT_CATEGORY("playerstat.category"),
-    PLAYERSTAT_PAST("playerstat.past"),
-    PLAYERSTAT_STAT("playerstat.stat"),
-    PLAYERSTAT_SUBSTAT("playerstat.substat"),
-    SHOWITEM_PAST("showitem.past");
-
-    public final String menu;
-
-    Menu(String menu) {
-      this.menu = menu;
-    }
-  }
-
   /**
    * Routes interactions between inventories.
    *
@@ -62,9 +34,10 @@ public class MenuClick implements Listener {
   @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
-      Player user = (Player) e.getWhoClicked();
-      if (user.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
-        String[] invType = user.getMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
+      if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
+        Bukkit.getLogger().warning(playerMeta.get(PlayerMeta.INVENTORY));
+        String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
         switch (invType[0]) {
           case "aethelitem" -> interpretAethelItem(e, invType);
           case "character" -> interpretCharacter(e, invType);
@@ -84,9 +57,9 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   public void onDrag(InventoryDragEvent e) {
-    Player user = (Player) e.getWhoClicked();
-    if (user.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
-      String[] invType = user.getMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta()).get(0).asString().split("\\.");
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
+    if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
+      String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
       switch (invType[0]) {
         case "aethelitem", "character" -> e.setCancelled(true);
       }
@@ -155,13 +128,13 @@ public class MenuClick implements Listener {
    */
   private void interpretForge(InventoryClickEvent e, String[] invType) {
     switch (invType[1]) {
-      case "category", "craft", "craft-confirm", "edit", "remove" -> {
+      case "category", "craft", "craft-recipe", "edit", "remove" -> {
         if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
           ForgeMenuClick click = new ForgeMenuClick(e);
           switch (invType[1]) {
             case "category" -> click.interpretMainMenuClick();
             case "craft" -> click.interpretCategoryClick(ForgeMenuAction.CRAFT);
-            case "craft-confirm" -> click.interpretCraftConfirmClick();
+            case "craft-recipe" -> click.interpretCraftDetailsClick();
             case "edit" -> click.interpretCategoryClick(ForgeMenuAction.EDIT);
             case "remove" -> click.interpretCategoryClick(ForgeMenuAction.REMOVE);
           }
@@ -222,9 +195,9 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   public void onClose(InventoryCloseEvent e) {
-    Player player = (Player) e.getPlayer();
-    if (player.hasMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta())) {
-      player.removeMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), Plugin.getInstance());
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getPlayer());
+    if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
+      playerMeta.remove(PlayerMeta.INVENTORY);
     }
   }
 }

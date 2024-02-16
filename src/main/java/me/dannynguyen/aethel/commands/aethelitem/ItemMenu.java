@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.4.0
  */
 class ItemMenu {
@@ -59,7 +58,7 @@ class ItemMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
-    String category = ChatColor.WHITE + user.getMetadata(PluginEnum.PlayerMeta.CATEGORY.getMeta()).get(0).asString();
+    String category = ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
     switch (action) {
       case GET -> title += ChatColor.GREEN + " Get ";
       case REMOVE -> title += ChatColor.RED + " Remove ";
@@ -92,7 +91,7 @@ class ItemMenu {
     List<Inventory> category = PluginData.itemRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    user.setMetadata(PluginEnum.PlayerMeta.PAGE.getMeta(), new FixedMetadataValue(Plugin.getInstance(), pageViewed));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext(requestedCategory);

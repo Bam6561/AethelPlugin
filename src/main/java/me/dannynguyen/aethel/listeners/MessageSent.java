@@ -1,17 +1,19 @@
 package me.dannynguyen.aethel.listeners;
 
-import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
-import org.bukkit.entity.Player;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.Map;
 
 /**
  * Collection of player chat listeners for the plugin's message inputs.
  *
  * @author Danny Nguyen
- * @version 1.9.22
+ * @version 1.10.1
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -22,9 +24,9 @@ public class MessageSent implements Listener {
    */
   @EventHandler
   public void onPlayerChat(AsyncPlayerChatEvent e) {
-    Player user = e.getPlayer();
-    if (user.hasMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta())) {
-      String[] msgType = user.getMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta()).get(0).asString().split("\\.");
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer());
+    if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
+      String[] msgType = playerMeta.get(PlayerMeta.MESSAGE).split("\\.");
       switch (msgType[0]) {
         case "itemeditor" -> interpretItemEditor(e, msgType);
       }

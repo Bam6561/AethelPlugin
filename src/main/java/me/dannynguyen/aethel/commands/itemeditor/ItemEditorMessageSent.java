@@ -3,7 +3,8 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
-import me.dannynguyen.aethel.listeners.MenuClick;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,21 +17,17 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.1
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -162,13 +159,13 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's attribute modifier.
    */
   public void setAttribute() {
-    String type = user.getMetadata(PluginEnum.PlayerMeta.TYPE.getMeta()).get(0).asString();
+    String type = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.TYPE);
     if (!type.contains("aethel.")) {
       setMinecraftAttribute(type);
     } else {
       setAethelAttribute(type);
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> returnToAttributeEditor());
+    returnToAttributeEditor();
   }
 
   /**
@@ -179,7 +176,7 @@ public class ItemEditorMessageSent {
       try {
         int level = Integer.parseInt(e.getMessage());
         if (level > 0 && level < 32768) {
-          NamespacedKey enchant = NamespacedKey.minecraft(user.getMetadata(PluginEnum.PlayerMeta.TYPE.getMeta()).get(0).asString());
+          NamespacedKey enchant = NamespacedKey.minecraft(PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.TYPE));
           item.addUnsafeEnchantment(Enchantment.getByKey(enchant), level);
           user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
         } else {
@@ -189,7 +186,7 @@ public class ItemEditorMessageSent {
         user.sendMessage(ChatColor.RED + "Invalid value.");
       }
     } else {
-      NamespacedKey enchantment = NamespacedKey.minecraft(user.getMetadata(PluginEnum.PlayerMeta.TYPE.getMeta()).get(0).asString());
+      NamespacedKey enchantment = NamespacedKey.minecraft(PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.TYPE));
       item.removeEnchantment(Enchantment.getByKey(enchantment));
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
@@ -201,7 +198,7 @@ public class ItemEditorMessageSent {
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String tagType = user.getMetadata(PluginEnum.PlayerMeta.TYPE.getMeta()).get(0).asString();
+    String tagType = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.TYPE);
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tagType);
 
     if (!e.getMessage().equals("-")) {
@@ -223,7 +220,7 @@ public class ItemEditorMessageSent {
   private void setMinecraftAttribute(String type) {
     try {
       Attribute attribute = Attribute.valueOf(type);
-      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(user.getMetadata(PluginEnum.PlayerMeta.SLOT.getMeta()).get(0).asString().toUpperCase());
+      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.SLOT).toUpperCase());
       if (!e.getMessage().equals("0")) {
         AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
         removeExistingAttributeModifiers(attribute, equipmentSlot);
@@ -245,7 +242,7 @@ public class ItemEditorMessageSent {
    * @param type attribute derived from inventory click
    */
   private void setAethelAttribute(String type) {
-    String equipmentSlot = user.getMetadata(PluginEnum.PlayerMeta.SLOT.getMeta()).get(0).asString();
+    String equipmentSlot = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.SLOT);
     String attributeName = type + "." + equipmentSlot;
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attributeName);
 
@@ -344,10 +341,11 @@ public class ItemEditorMessageSent {
    * Returns to the CosmeticEditor menu.
    */
   private void returnToCosmeticEditor() {
-    user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticEditorMenu(user).openMenu());
-      user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_COSMETICS.menu));
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
     });
   }
 
@@ -355,26 +353,35 @@ public class ItemEditorMessageSent {
    * Returns to the AttributeEditor.
    */
   private void returnToAttributeEditor() {
-    user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
-    user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(user.getMetadata(PluginEnum.PlayerMeta.SLOT.getMeta()).get(0).asString())).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ATTRIBUTES.menu));
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(playerMeta.get(PlayerMeta.SLOT))).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
+    });
   }
 
   /**
    * Returns to the EnchantmentEditor.
    */
   private void returnToEnchantmentEditor() {
-    user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
-    user.openInventory(new EnchantmentEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_ENCHANTMENTS.menu));
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new EnchantmentEditorMenu(user).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
+    });
   }
 
   /**
    * Returns to the TagEditor.
    */
   private void returnToTagEditor() {
-    user.removeMetadata(PluginEnum.PlayerMeta.MESSAGE.getMeta(), Plugin.getInstance());
-    user.openInventory(new TagEditorMenu(user).openMenu());
-    user.setMetadata(PluginEnum.PlayerMeta.INVENTORY.getMeta(), new FixedMetadataValue(Plugin.getInstance(), MenuClick.Menu.ITEMEDITOR_TAGS.menu));
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new TagEditorMenu(user).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
+    });
   }
 }
