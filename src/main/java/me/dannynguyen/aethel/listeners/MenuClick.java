@@ -10,7 +10,6 @@ import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
 import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +25,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.2
+ * @version 1.10.3
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -41,7 +40,7 @@ public class MenuClick implements Listener {
       Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
       if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
         e.setCancelled(true);
-        if (e.getAction() != InventoryAction.COLLECT_TO_CURSOR) {
+        if (e.getAction() != InventoryAction.COLLECT_TO_CURSOR) { // Prevents item duplication
           String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
           switch (invType[0]) {
             case "aethelitem" -> interpretAethelItem(e, invType);
@@ -94,7 +93,9 @@ public class MenuClick implements Listener {
         }
       }
     } else {
-      e.setCancelled(false);
+      if (!e.isShiftClick()) {
+        e.setCancelled(false);
+      }
     }
   }
 
@@ -140,7 +141,9 @@ public class MenuClick implements Listener {
         new ForgeMenuClick(e).interpretSaveClick();
       }
     } else {
-      if (!e.isShiftClick()) {
+      if (e.isShiftClick() && invType[1].equals("save")) {
+        e.setCancelled(false);
+      } else if (!e.isShiftClick()) {
         e.setCancelled(false);
       }
     }
@@ -153,18 +156,18 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretItemEditor(InventoryClickEvent e, String[] invType) {
-    if (!e.isShiftClick()) {
-      if (e.getClickedInventory().getType() == InventoryType.CHEST) {
-        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-          ItemEditorMenuClick click = new ItemEditorMenuClick(e);
-          switch (invType[1]) {
-            case "cosmetic" -> click.interpretCosmeticEditorClick();
-            case "attribute" -> click.interpretAttributeEditorClick();
-            case "enchantment" -> click.interpretEnchantmentEditorClick();
-            case "tag" -> click.interpretTagEditorClick();
-          }
+    if (e.getClickedInventory().getType() == InventoryType.CHEST) {
+      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+        ItemEditorMenuClick click = new ItemEditorMenuClick(e);
+        switch (invType[1]) {
+          case "cosmetic" -> click.interpretCosmeticEditorClick();
+          case "attribute" -> click.interpretAttributeEditorClick();
+          case "enchantment" -> click.interpretEnchantmentEditorClick();
+          case "tag" -> click.interpretTagEditorClick();
         }
-      } else {
+      }
+    } else {
+      if (!e.isShiftClick()) {
         e.setCancelled(true);
       }
     }
