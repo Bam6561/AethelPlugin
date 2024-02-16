@@ -43,9 +43,6 @@ public class MenuClick implements Listener {
         e.setCancelled(true);
         if (e.getAction() != InventoryAction.COLLECT_TO_CURSOR) {
           String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
-          Bukkit.getLogger().warning(invType[0]);
-          Bukkit.getLogger().warning(invType[1]);
-          Bukkit.getLogger().warning(String.valueOf(e.getSlot()));
           switch (invType[0]) {
             case "aethelitem" -> interpretAethelItem(e, invType);
             case "character" -> interpretCharacter(e, invType);
@@ -83,23 +80,21 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretAethelItem(InventoryClickEvent e, String[] invType) {
-    if (!e.isShiftClick()) {
-      if (e.getClickedInventory().getType() == InventoryType.CHEST) {
-        if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-          ItemMenuClick click = new ItemMenuClick(e);
-          switch (invType[1]) {
-            case "category" -> click.interpretMainMenuClick();
-            case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
-            case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
-          }
-        } else {
-          if (e.getSlot() == 3) {
-            e.setCancelled(false);
-          }
+    if (e.getClickedInventory().getType() == InventoryType.CHEST) {
+      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+        ItemMenuClick click = new ItemMenuClick(e);
+        switch (invType[1]) {
+          case "category" -> click.interpretMainMenuClick();
+          case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
+          case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
         }
       } else {
-        e.setCancelled(false);
+        if (e.getSlot() == 3) {
+          e.setCancelled(false);
+        }
       }
+    } else {
+      e.setCancelled(false);
     }
   }
 
