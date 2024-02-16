@@ -23,7 +23,7 @@ import java.util.Objects;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.2
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -57,7 +57,9 @@ public class ItemMenuClick {
    * Either saves an item or opens an item category page.
    */
   public void interpretMainMenuClick() {
-    if (slotClicked == 4) {
+    if (slotClicked == 3) { // Save Item Slot
+      e.setCancelled(false);
+    } else if (slotClicked == 4) {
       saveItem();
     } else if (slotClicked > 8) {
       viewItemCategory();
@@ -76,13 +78,18 @@ public class ItemMenuClick {
   public void interpretCategoryClick(@NotNull ItemMenuAction action) {
     switch (slotClicked) {
       case 0 -> previousPage(action);
-      case 2 -> { // Help Context
+      case 2 -> { // Context
       }
+      case 3 -> e.setCancelled(false); // Save Item Slot
       case 4 -> saveItem();
       case 5 -> toggleAction(action);
       case 6 -> returnToMainMenu();
       case 8 -> nextPage(action);
-      default -> interpretContextualClick(action);
+      default -> {
+        if (slotClicked > 8) {
+          interpretContextualClick(action);
+        }
+      }
     }
   }
 

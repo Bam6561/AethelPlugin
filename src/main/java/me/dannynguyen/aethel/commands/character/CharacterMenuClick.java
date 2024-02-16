@@ -20,7 +20,7 @@ import java.util.Objects;
  * Inventory click event listener for Character menus.
  *
  * @author Danny Nguyen
- * @version 1.9.23
+ * @version 1.10.2
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -56,17 +56,29 @@ public class CharacterMenuClick {
   public void interpretCharacterSheetClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
       switch (slotClicked) {
-        case 4, 9, 15, 24, 33, 42 -> e.setCancelled(true); // Player Head & Attributes
-        case 25 -> e.setCancelled(true); // Quests
-        case 34 -> e.setCancelled(true); // Collectibles
-        case 43 -> e.setCancelled(true); // Settings
-        case 10, 11, 12, 19, 28, 37 -> unequipArmorHands(); // Armor & Hands
-        case 20, 29 -> updateJewelryAttributes(); // Necklace & Ring
+        case 4, 9, 15, 24, 33, 42 -> { // Player Head & Attributes
+        }
+        case 25 -> { // Quests
+        }
+        case 34 -> { // Collectibles
+        }
+        case 43 -> { // Settings
+        }
+        case 10, 11, 12, 19, 28, 37 -> {
+          e.setCancelled(false);
+          unequipArmorHands(); // Armor & Hands
+        }
+        case 20, 29 -> {
+          e.setCancelled(false);
+          updateJewelryAttributes(); // Necklace & Ring
+        }
       }
     } else {
       switch (slotClicked) {
-        case 10, 11, 12, 19, 20, 28, 29, 37 -> interpretEquipItem();
-        default -> e.setCancelled(true);
+        case 10, 11, 12, 19, 20, 28, 29, 37 -> {
+          e.setCancelled(false);
+          interpretEquipItem();
+        }
       }
     }
   }
@@ -76,11 +88,8 @@ public class CharacterMenuClick {
    * the menu when it is interacted with from the user's inventory.
    */
   public void interpretPlayerInventoryClick() {
-    if (e.getClick().isShiftClick()) {
-      e.setCancelled(true);
-
-      // User removes main hand item
-    } else if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
+    // User removes main hand item
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
       RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
       rpgProfile.readEquipmentSlot(null, "hand");
 
@@ -166,12 +175,10 @@ public class CharacterMenuClick {
       user.setItemOnCursor(new ItemStack(Material.AIR));
       pInv.setItem(pInv.firstEmpty(), item);
       user.sendMessage(ChatColor.RED + "Main hand occupied.");
-      e.setCancelled(true);
     } else if (ItemReader.isNotNullOrAir(item)) { // Inventory is full
       user.setItemOnCursor(new ItemStack(Material.AIR));
       user.getWorld().dropItem(user.getLocation(), item);
       user.sendMessage(ChatColor.RED + "Inventory full.");
-      e.setCancelled(true);
     }
   }
 

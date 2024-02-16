@@ -11,9 +11,12 @@ import java.util.Map;
 
 /**
  * Collection of player chat listeners for the plugin's message inputs.
+ * <p>
+ * By default, all message inputs are cancelled since they are used for only user inputs.
+ * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.2
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -26,11 +29,11 @@ public class MessageSent implements Listener {
   public void onPlayerChat(AsyncPlayerChatEvent e) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer());
     if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
+      e.setCancelled(true);
       String[] msgType = playerMeta.get(PlayerMeta.MESSAGE).split("\\.");
       switch (msgType[0]) {
         case "itemeditor" -> interpretItemEditor(e, msgType);
       }
-      e.setCancelled(true);
     }
   }
 

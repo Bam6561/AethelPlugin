@@ -23,7 +23,7 @@ import java.util.Objects;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.2
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -58,7 +58,7 @@ public class ForgeMenuClick {
    */
   public void interpretMainMenuClick() {
     switch (slotClicked) {
-      case 2, 4 -> { // Help Context
+      case 2, 4 -> { // Context
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.RecipeDetailsType.SAVE).saveRecipeDetails();
       default -> viewRecipeCategory();
@@ -77,7 +77,7 @@ public class ForgeMenuClick {
   public void interpretCategoryClick(ForgeMenuAction action) {
     switch (slotClicked) {
       case 0 -> previousRecipePage(action);
-      case 2 -> { // Help Context
+      case 2 -> { // Context
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.RecipeDetailsType.SAVE).saveRecipeDetails();
       case 4 -> {
@@ -88,7 +88,11 @@ public class ForgeMenuClick {
       case 5 -> openForgeRemoveMenu();
       case 6 -> returnToMainMenu();
       case 8 -> nextRecipePage(action);
-      default -> interpretContextualClick(action);
+      default -> {
+        if (e.getSlot() > 8) {
+          interpretContextualClick(action);
+        }
+      }
     }
   }
 
@@ -107,15 +111,11 @@ public class ForgeMenuClick {
    */
   public void interpretSaveClick() {
     switch (slotClicked) {
-      case 8 -> e.setCancelled(true);
-      case 25 -> {
-        readSaveClick();
-        e.setCancelled(true);
+      case 8 -> { // Context
       }
-      case 26 -> {
-        openForgeEditMenu();
-        e.setCancelled(true);
-      }
+      case 25 -> readSaveClick();
+      case 26 -> openForgeEditMenu();
+      default -> e.setCancelled(false);
     }
   }
 

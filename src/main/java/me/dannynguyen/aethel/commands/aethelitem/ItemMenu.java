@@ -20,7 +20,7 @@ import java.util.Set;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.2
  * @since 1.4.0
  */
 class ItemMenu {
@@ -58,12 +58,11 @@ class ItemMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
-    String category = ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get ";
-      case REMOVE -> title += ChatColor.RED + " Remove ";
+      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
+      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
     }
-    return Bukkit.createInventory(user, 54, title + category);
+    return Bukkit.createInventory(user, 54, title);
   }
 
   /**
