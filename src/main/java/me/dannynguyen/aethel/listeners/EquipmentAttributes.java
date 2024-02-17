@@ -28,7 +28,7 @@ import java.util.Map;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.10.6
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -235,9 +235,11 @@ public class EquipmentAttributes implements Listener {
    * @param jewelrySlots player's jewelry slots
    */
   private void dropJewelryItems(Player player, ItemStack[] jewelrySlots) {
-    player.getWorld().dropItem(player.getLocation(), jewelrySlots[0]);
-    player.getWorld().dropItem(player.getLocation(), jewelrySlots[1]);
-    jewelrySlots[0] = null;
-    jewelrySlots[1] = null;
+    for (int i = 0; i < jewelrySlots.length; i++) {
+      if (jewelrySlots[i] != null) {
+        player.getWorld().dropItem(player.getLocation(), jewelrySlots[i]);
+        jewelrySlots[i] = null;
+      }
+    }
   }
 }

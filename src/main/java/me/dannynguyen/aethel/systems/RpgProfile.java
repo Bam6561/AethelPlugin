@@ -3,7 +3,13 @@ package me.dannynguyen.aethel.systems;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemReader;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -19,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.9.22
+ * @version 1.10.6
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -37,14 +43,29 @@ public class RpgProfile {
   private final Player player;
 
   /**
-   * Equipment Aethel attributes.
+   * Player health bar.
    */
-  private final Map<String, Map<String, Double>> equipmentAttributes;
+  private final BossBar healthBar;
+
+  /**
+   * Player max health;
+   */
+  private double maxHealth;
+
+  /**
+   * Player health.
+   */
+  private double health;
 
   /**
    * Total Aethel attributes.
    */
   private final Map<String, Double> aethelAttributes;
+
+  /**
+   * Equipment Aethel attributes.
+   */
+  private final Map<String, Map<String, Double>> equipmentAttributes;
 
   /**
    * Jewelry slots.
@@ -58,8 +79,11 @@ public class RpgProfile {
    */
   public RpgProfile(@NotNull Player player) {
     this.player = Objects.requireNonNull(player, "Null player");
-    this.equipmentAttributes = new HashMap<>();
+    this.healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    this.health = player.getHealth();
     this.aethelAttributes = createBlankAethelAttributes();
+    this.equipmentAttributes = new HashMap<>();
     this.jewelrySlots = new ItemStack[2];
   }
 
@@ -158,6 +182,44 @@ public class RpgProfile {
   }
 
   /**
+   * Damages the player by an amount.
+   *
+   * @param damage damage amount
+   */
+  public void damage(Double damage) {
+    health = health - damage;
+    processHealthBarProgress();
+  }
+
+  /**
+   * Resets the player's health bar.
+   */
+  public void resetHealthBar() {
+    health = maxHealth;
+    processHealthBarProgress();
+  }
+
+  /**
+   * Sets the progress of the health bar based on the player's health : max health.
+   */
+  private void processHealthBarProgress() {
+    if (health > 0) {
+      if (health >= maxHealth) {
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        healthBar.setProgress(1.0);
+      } else {
+        double lifeTotal = health / maxHealth;
+        player.setHealth(lifeTotal * player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        healthBar.setProgress(lifeTotal);
+      }
+    } else {
+      player.setHealth(0);
+      healthBar.setProgress(0.0);
+      player.sendMessage(ChatColor.RED + "You died!");
+    }
+  }
+
+  /**
    * Gets the player the RPG profile belongs to.
    *
    * @return RPG profile owner
@@ -165,6 +227,33 @@ public class RpgProfile {
   @NotNull
   public Player getPlayer() {
     return this.player;
+  }
+
+  /**
+   * Gets the player's health bar.
+   *
+   * @return player's health bar
+   */
+  public BossBar getHealthBar() {
+    return this.healthBar;
+  }
+
+  /**
+   * Gets the player's max health.
+   *
+   * @return player's max health
+   */
+  public double getMaxHealth() {
+    return this.maxHealth;
+  }
+
+  /**
+   * Gets the player's health.
+   *
+   * @return player's health
+   */
+  public double getHealth() {
+    return this.health;
   }
 
   /**

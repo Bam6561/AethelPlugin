@@ -27,7 +27,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.6
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -54,6 +54,7 @@ public class Plugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new MenuClick(), this);
     getServer().getPluginManager().registerEvents(new MessageSent(), this);
     getServer().getPluginManager().registerEvents(new PluginEvent(), this);
+    getServer().getPluginManager().registerEvents(new RpgEvent(), this);
   }
 
   /**
@@ -75,13 +76,13 @@ public class Plugin extends JavaPlugin {
    * Schedules the plugin's repeating tasks.
    */
   private void scheduleRepeatingTasks() {
-    addMainHandEquipmentAttributesInterval();
+    updateMainHandEquipmentAttributes();
   }
 
   /**
    * Adds an interval to store the player's main hand item into memory for future comparisons.
    */
-  private void addMainHandEquipmentAttributesInterval() {
+  private void updateMainHandEquipmentAttributes() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
       Map<Player, ItemStack> playerHeldItemMap = PluginData.rpgSystem.getPlayerHeldItemMap();
 

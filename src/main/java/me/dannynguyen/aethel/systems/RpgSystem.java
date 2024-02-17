@@ -11,7 +11,7 @@ import java.util.Map;
  * Represents RPG profiles in memory.
  *
  * @author Danny Nguyen
- * @version 1.9.23
+ * @version 1.10.6
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -33,6 +33,7 @@ public class RpgSystem {
   public void loadRpgPlayer(Player player) {
     RpgProfile rpgProfile = new RpgProfile(player);
     rpgProfile.loadEquipmentAttributes();
+    rpgProfile.getHealthBar().addPlayer(player);
     rpgProfiles.put(player, rpgProfile);
   }
 
