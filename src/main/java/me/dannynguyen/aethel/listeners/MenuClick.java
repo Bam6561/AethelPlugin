@@ -25,7 +25,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.3
+ * @version 1.10.5
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -106,15 +106,17 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretCharacter(InventoryClickEvent e, String[] invType) {
-    CharacterMenuClick click = new CharacterMenuClick(e);
-    if (e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
-      switch (invType[1]) {
-        case "sheet" -> click.interpretCharacterSheetClick();
-      }
-    } else {
-      if (!e.isShiftClick()) {
-        e.setCancelled(false);
-        click.interpretPlayerInventoryClick();
+    if (PluginData.pluginSystem.getPlayerMetadata().get(e.getWhoClicked()).get(PlayerMeta.PLAYER).equals(e.getWhoClicked().getName())) {
+      CharacterMenuClick click = new CharacterMenuClick(e);
+      if (e.getClickedInventory().getType() == InventoryType.CHEST) {
+        switch (invType[1]) {
+          case "sheet" -> click.interpretCharacterSheetClick();
+        }
+      } else {
+        if (!e.isShiftClick()) {
+          e.setCancelled(false);
+          click.interpretPlayerInventoryClick();
+        }
       }
     }
   }
@@ -126,7 +128,7 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretForge(InventoryClickEvent e, String[] invType) {
-    if (e.getClickedInventory().getType().equals(InventoryType.CHEST)) {
+    if (e.getClickedInventory().getType() == InventoryType.CHEST) {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ForgeMenuClick click = new ForgeMenuClick(e);
         switch (invType[1]) {

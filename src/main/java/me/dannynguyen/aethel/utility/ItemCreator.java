@@ -18,7 +18,7 @@ import java.util.List;
  * Creates and serializes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.0
+ * @version 1.10.5
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -31,14 +31,14 @@ public class ItemCreator {
   /**
    * Creates a named item.
    *
-   * @param material    item material
-   * @param displayName item name
+   * @param material item material
+   * @param name     item name
    * @return named item
    */
-  public static ItemStack createItem(Material material, String displayName) {
+  public static ItemStack createItem(Material material, String name) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(name);
     item.setItemMeta(meta);
     return item;
   }
@@ -46,15 +46,15 @@ public class ItemCreator {
   /**
    * Creates a named item with lore.
    *
-   * @param material    item material
-   * @param displayName item name
-   * @param lore        item lore
+   * @param material item material
+   * @param name     item name
+   * @param lore     item lore
    * @return named item with lore
    */
-  public static ItemStack createItem(Material material, String displayName, List<String> lore) {
+  public static ItemStack createItem(Material material, String name, List<String> lore) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(name);
     meta.setLore(lore);
     item.setItemMeta(meta);
     return item;
@@ -63,17 +63,17 @@ public class ItemCreator {
   /**
    * Creates a named item with lore and an item flag.
    *
-   * @param material    item material
-   * @param displayName item name
-   * @param lore        item lore
-   * @param itemFlag    item flag
+   * @param material item material
+   * @param name     item name
+   * @param lore     item lore
+   * @param itemFlag item flag
    * @return named item with an item flag
    */
-  public static ItemStack createItem(Material material, String displayName,
+  public static ItemStack createItem(Material material, String name,
                                      List<String> lore, ItemFlag itemFlag) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(name);
     meta.setLore(lore);
     meta.addItemFlags(itemFlag);
     item.setItemMeta(meta);
@@ -83,15 +83,15 @@ public class ItemCreator {
   /**
    * Creates a named item with an item flag.
    *
-   * @param material    item material
-   * @param displayName item name
-   * @param itemFlag    item flag
+   * @param material item material
+   * @param name     item name
+   * @param itemFlag item flag
    * @return named item with an item flag disabled
    */
-  public static ItemStack createItem(Material material, String displayName, ItemFlag itemFlag) {
+  public static ItemStack createItem(Material material, String name, ItemFlag itemFlag) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(name);
     meta.addItemFlags(itemFlag);
     item.setItemMeta(meta);
     return item;
@@ -132,14 +132,14 @@ public class ItemCreator {
   /**
    * Creates a named player head from loaded textures.
    *
-   * @param head        interacting player head
-   * @param displayName item name
+   * @param head interacting player head
+   * @param name item name
    * @return named player head texture
    */
-  public static ItemStack createPluginPlayerHead(ItemStack head, String displayName) {
+  public static ItemStack createPluginPlayerHead(ItemStack head, String name) {
     ItemStack item = head.clone();
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(name);
     item.setItemMeta(meta);
     return item;
   }
@@ -147,15 +147,15 @@ public class ItemCreator {
   /**
    * Creates a named player head from loaded textures with lore.
    *
-   * @param head        interacting player head
-   * @param displayName item name
-   * @param lore        item lore
+   * @param head interacting player head
+   * @param name item name
+   * @param lore item lore
    * @return named player head texture with lore
    */
-  public static ItemStack createPluginPlayerHead(ItemStack head, String displayName, List<String> lore) {
+  public static ItemStack createPluginPlayerHead(ItemStack head, String name, List<String> lore) {
     ItemStack item = head.clone();
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(displayName);
+    meta.setDisplayName(name);
     meta.setLore(lore);
     item.setItemMeta(meta);
     return item;

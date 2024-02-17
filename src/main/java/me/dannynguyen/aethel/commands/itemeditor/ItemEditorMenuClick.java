@@ -28,7 +28,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.5
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -454,16 +454,16 @@ public class ItemEditorMenuClick {
    * Determines the attribute to be set and prompts the user for an input.
    */
   private void readAttribute() {
-    String attributeName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    String attribute;
-    if (PluginConstant.minecraftAttributes.contains(attributeName)) {
-      attribute = "GENERIC_" + TextFormatter.formatEnum(attributeName);
+    String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    String attributeType;
+    if (PluginConstant.minecraftAttributes.contains(attribute)) {
+      attributeType = "GENERIC_" + TextFormatter.formatEnum(attribute);
     } else {
-      attribute = "aethel.attribute." + TextFormatter.formatId(attributeName);
+      attributeType = "aethel.attribute." + TextFormatter.formatId(attribute);
     }
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attributeName + ChatColor.WHITE + " value.");
-    user.sendMessage(getAttributeValueContext(attributeName));
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, attribute);
+    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
+    user.sendMessage(getAttributeValueContext(attribute));
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, attributeType);
     awaitMessageResponse("attribute");
   }
 

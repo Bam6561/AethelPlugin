@@ -26,7 +26,7 @@ import java.util.Objects;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.9.23
+ * @version 1.10.5
  * @since 1.6.3
  */
 class CharacterSheet {
@@ -41,12 +41,19 @@ class CharacterSheet {
   private final Player user;
 
   /**
-   * Associates a new Character menu with its user.
-   *
-   * @param user user
+   * Owner of the character sheet.
    */
-  protected CharacterSheet(@NotNull Player user) {
+  private final Player owner;
+
+  /**
+   * Associates a new Character menu with its user and target player.
+   *
+   * @param user  user
+   * @param owner requested player
+   */
+  protected CharacterSheet(@NotNull Player user, @NotNull Player owner) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.owner = Objects.requireNonNull(owner, "Null owner");
     this.menu = createMenu();
   }
 
@@ -58,6 +65,7 @@ class CharacterSheet {
    */
   protected CharacterSheet(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.owner = user;
     this.menu = Objects.requireNonNull(menu, "Null menu");
   }
 
@@ -67,7 +75,7 @@ class CharacterSheet {
    * @return Character menu
    */
   private Inventory createMenu() {
-    return Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Character " + ChatColor.DARK_PURPLE + user.getName());
+    return Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Character " + ChatColor.DARK_PURPLE + owner.getName());
   }
 
   /**
@@ -112,8 +120,8 @@ class CharacterSheet {
    * Adds the player's equipped items.
    */
   private void addEquipment() {
-    PlayerInventory pInv = user.getInventory();
-    ItemStack[] jewelry = PluginData.rpgSystem.getRpgProfiles().get(user).getJewelrySlots();
+    PlayerInventory pInv = owner.getInventory();
+    ItemStack[] jewelry = PluginData.rpgSystem.getRpgProfiles().get(owner).getJewelrySlots();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -129,7 +137,7 @@ class CharacterSheet {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<String, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(user).getAethelAttributes();
+    Map<String, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(owner).getAethelAttributes();
 
     DecimalFormat hundredths = new DecimalFormat();
     hundredths.setMaximumFractionDigits(2);
@@ -144,7 +152,7 @@ class CharacterSheet {
    */
   private void addStatusEffects() {
     List<String> lore = new ArrayList<>();
-    for (PotionEffect potionEffect : user.getActivePotionEffects()) {
+    for (PotionEffect potionEffect : owner.getActivePotionEffects()) {
       String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
       String effectType = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
       String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
@@ -158,20 +166,20 @@ class CharacterSheet {
    * Adds the player's level and currency balance.
    */
   private void addExtras() {
-    String level = ChatColor.DARK_GREEN + "" + user.getLevel() + " LVL";
-    String exp = ChatColor.GREEN + "" + user.getTotalExperience() + " EXP";
-    menu.setItem(4, ItemCreator.createPlayerHead(user, List.of(level, exp, ChatColor.WHITE + "0 Silver")));
+    String level = ChatColor.DARK_GREEN + "" + owner.getLevel() + " LVL";
+    String exp = ChatColor.GREEN + "" + owner.getTotalExperience() + " EXP";
+    menu.setItem(4, ItemCreator.createPlayerHead(owner, List.of(level, exp, ChatColor.WHITE + "0 Silver")));
   }
 
   /**
    * Adds the player's offense attributes.
    *
-   * @param attributes user's Aethel attributes
+   * @param attributes owner's Aethel attributes
    * @param hundredths 0.00
    */
   private void addOffenseAttributes(Map<String, Double> attributes, DecimalFormat hundredths) {
-    String damage = ChatColor.RED + "" + hundredths.format(user.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG";
-    String attackSpeed = ChatColor.GOLD + hundredths.format(user.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
+    String damage = ChatColor.RED + "" + hundredths.format(owner.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG";
+    String attackSpeed = ChatColor.GOLD + hundredths.format(owner.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
     String criticalChance = ChatColor.GREEN + hundredths.format(attributes.get(AethelAttribute.CRITICAL_CHANCE.getId())) + "% CRIT";
     String criticalDamage = ChatColor.DARK_GREEN + hundredths.format(1.25 + attributes.get(AethelAttribute.CRITICAL_DAMAGE.getId()) / 100) + "x CRIT DMG";
 
@@ -181,17 +189,17 @@ class CharacterSheet {
   /**
    * Adds the player's defense attributes.
    *
-   * @param attributes user's Aethel attributes
+   * @param attributes owner's Aethel attributes
    * @param hundredths 0.00
    */
   private void addDefenseAttributes(Map<String, Double> attributes, DecimalFormat hundredths) {
     DecimalFormat thousandths = new DecimalFormat();
     thousandths.setMaximumFractionDigits(3);
 
-    String maxHealth = ChatColor.WHITE + "" + hundredths.format(user.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) + " MAX HP";
-    String armor = ChatColor.GRAY + "" + hundredths.format(user.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
-    String armorToughness = ChatColor.GRAY + "" + hundredths.format(user.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " ARMOR TOUGH";
-    String speed = ChatColor.AQUA + "" + thousandths.format(user.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPD";
+    String maxHealth = ChatColor.WHITE + "" + hundredths.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) + " MAX HP";
+    String armor = ChatColor.GRAY + "" + hundredths.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
+    String armorToughness = ChatColor.GRAY + "" + hundredths.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " ARMOR TOUGH";
+    String speed = ChatColor.AQUA + "" + thousandths.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPD";
     String block = ChatColor.BLUE + "" + hundredths.format(attributes.get(AethelAttribute.BLOCK.getId())) + " BLOCK";
     String parryChance = ChatColor.RED + "" + hundredths.format(attributes.get(AethelAttribute.PARRY_CHANCE.getId())) + "% PARRY";
     String parryReflect = ChatColor.DARK_RED + "" + hundredths.format(attributes.get(AethelAttribute.PARRY_DEFLECT.getId())) + "% PARRY DEFLECT";
@@ -203,15 +211,15 @@ class CharacterSheet {
   /**
    * Adds the player's other attributes.
    *
-   * @param attributes user's Aethel attributes
+   * @param attributes owner's Aethel attributes
    * @param hundredths 0.00
    */
   private void addOtherAttributes(Map<String, Double> attributes, DecimalFormat hundredths) {
     String abilityDamage = ChatColor.LIGHT_PURPLE + "" + hundredths.format(1 + attributes.get(AethelAttribute.ABILITY_DAMAGE.getId()) / 100) + "x ABILITY DMG";
     String abilityCooldown = ChatColor.DARK_PURPLE + "-" + hundredths.format(attributes.get(AethelAttribute.ABILITY_COOLDOWN.getId())) + "% ABILITY CD";
     String applyStatusEffect = ChatColor.YELLOW + "" + hundredths.format(attributes.get(AethelAttribute.APPLY_STATUS.getId())) + "% APPLY STATUS";
-    String knockbackResistance = ChatColor.GRAY + "" + hundredths.format(user.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST";
-    String luck = ChatColor.GREEN + "" + hundredths.format(user.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
+    String knockbackResistance = ChatColor.GRAY + "" + hundredths.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST";
+    String luck = ChatColor.GREEN + "" + hundredths.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
 
     menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(abilityDamage, abilityCooldown, applyStatusEffect, knockbackResistance, luck)));
   }

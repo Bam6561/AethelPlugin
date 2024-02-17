@@ -27,7 +27,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.5
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -243,18 +243,18 @@ public class ItemEditorMessageSent {
    */
   private void setAethelAttribute(String type) {
     String equipmentSlot = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.SLOT);
-    String attributeName = type + "." + equipmentSlot;
-    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attributeName);
+    String attribute = type + "." + equipmentSlot;
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attribute);
 
     // Remove "aethel.attribute."
-    attributeName = attributeName.substring(17);
+    attribute = attribute.substring(17);
 
     try {
       String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
       if (!e.getMessage().equals("0")) {
-        setAethelAttributeModifier(type, attributeName, attributeKey, attributeValue);
+        setAethelAttributeModifier(type, attribute, attributeKey, attributeValue);
       } else {
-        removeAethelAttributeModifier(type, attributeName, attributeKey);
+        removeAethelAttributeModifier(type, attribute, attributeKey);
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
@@ -266,25 +266,25 @@ public class ItemEditorMessageSent {
    * Sets an item's Aethel attribute modifier based on the equipment slot mode.
    *
    * @param type           attribute derived from inventory click
-   * @param attributeName  attribute name
+   * @param attribute      attribute name
    * @param attributeKey   attribute key
    * @param attributeValue attribute value
    */
-  private void setAethelAttributeModifier(String type, String attributeName, NamespacedKey attributeKey, String attributeValue) {
+  private void setAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey, String attributeValue) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newAttributes = new StringBuilder();
-      for (String attribute : attributes) {
-        if (!attribute.equals(attributeName)) {
-          newAttributes.append(attribute).append(" ");
+      for (String itemAttribute : itemAttributes) {
+        if (!itemAttribute.equals(attribute)) {
+          newAttributes.append(itemAttribute).append(" ");
         }
       }
-      dataContainer.set(listKey, PersistentDataType.STRING, newAttributes + attributeName);
+      dataContainer.set(listKey, PersistentDataType.STRING, newAttributes + attribute);
     } else {
-      dataContainer.set(listKey, PersistentDataType.STRING, attributeName);
+      dataContainer.set(listKey, PersistentDataType.STRING, attribute);
     }
     dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
     user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
@@ -293,20 +293,20 @@ public class ItemEditorMessageSent {
   /**
    * Removes an item's Aethel attribute modifier based on the equipment slot mode.
    *
-   * @param type          attribute derived from inventory click
-   * @param attributeName attribute name
-   * @param attributeKey  attribute key
+   * @param type         attribute derived from inventory click
+   * @param attribute    attribute name
+   * @param attributeKey attribute key
    */
-  private void removeAethelAttributeModifier(String type, String attributeName, NamespacedKey attributeKey) {
+  private void removeAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newAttributes = new StringBuilder();
-      for (String attribute : attributes) {
-        if (!attribute.equals(attributeName)) {
-          newAttributes.append(attribute).append(" ");
+      for (String itemAttribute : itemAttributes) {
+        if (!itemAttribute.equals(attribute)) {
+          newAttributes.append(itemAttribute).append(" ");
         }
       }
 
@@ -329,9 +329,9 @@ public class ItemEditorMessageSent {
    */
   private void removeExistingAttributeModifiers(Attribute attribute, EquipmentSlot equipmentSlot) {
     if (meta.getAttributeModifiers() != null) {
-      for (AttributeModifier existingAttributeModifier : meta.getAttributeModifiers().get(attribute)) {
-        if (existingAttributeModifier.getSlot().equals(equipmentSlot)) {
-          meta.removeAttributeModifier(attribute, existingAttributeModifier);
+      for (AttributeModifier attributeModifier : meta.getAttributeModifiers().get(attribute)) {
+        if (attributeModifier.getSlot() == equipmentSlot) {
+          meta.removeAttributeModifier(attribute, attributeModifier);
         }
       }
     }

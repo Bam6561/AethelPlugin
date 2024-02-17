@@ -20,7 +20,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.10.5
  * @since 1.4.8
  */
 public class PlayerStatData {
@@ -109,10 +109,9 @@ public class PlayerStatData {
 
       int invSlot = 9;
       for (int statIndex = startIndex; statIndex < endIndex; statIndex++) {
-        String materialName = materials.get(statIndex).name();
-        String materialDisplayName = TextFormatter.capitalizePhrase(materialName);
-        inv.setItem(invSlot, ItemCreator.createItem(
-            Material.valueOf(materialName), ChatColor.WHITE + materialDisplayName));
+        String material = materials.get(statIndex).name();
+        String materialName = TextFormatter.capitalizePhrase(material);
+        inv.setItem(invSlot, ItemCreator.createItem(Material.valueOf(material), ChatColor.WHITE + materialName));
         invSlot++;
       }
       substatCategories.get("Materials").add(inv);
@@ -142,8 +141,8 @@ public class PlayerStatData {
       // Stats begin on the second row
       int j = 9;
       for (int i = startIndex; i < endIndex; i++) {
-        String entityName = TextFormatter.capitalizePhrase(entityTypes.get(i).name());
-        inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entityName));
+        String entity = TextFormatter.capitalizePhrase(entityTypes.get(i).name());
+        inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entity));
         j++;
       }
       substatCategories.get("Entity Types").add(inv);

@@ -23,7 +23,7 @@ import java.util.Objects;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.10.2
+ * @version 1.10.5
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -125,11 +125,11 @@ public class ForgeMenuClick {
   private void viewRecipeCategory() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
     ForgeMenuAction action = ForgeMenuAction.asEnum(playerMeta.get(PlayerMeta.FUTURE));
-    String itemName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+    String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
-    playerMeta.put(PlayerMeta.CATEGORY, itemName);
-    user.openInventory(new RecipeMenu(user, action).openCategoryPage(itemName, requestedPage));
+    playerMeta.put(PlayerMeta.CATEGORY, item);
+    user.openInventory(new RecipeMenu(user, action).openCategoryPage(item, requestedPage));
     playerMeta.put(PlayerMeta.INVENTORY, "forge." + ForgeMenuAction.asString(action));
   }
 
@@ -140,9 +140,9 @@ public class ForgeMenuClick {
    */
   private void previousRecipePage(ForgeMenuAction action) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, action).openCategoryPage(categoryName, requestedPage - 1));
+    user.openInventory(new RecipeMenu(user, action).openCategoryPage(category, requestedPage - 1));
     playerMeta.put(PlayerMeta.INVENTORY, "forge." + ForgeMenuAction.asString(action));
   }
 
@@ -170,9 +170,9 @@ public class ForgeMenuClick {
    */
   private void openForgeRemoveMenu() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.REMOVE).openCategoryPage(categoryName, requestedPage));
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.REMOVE).openCategoryPage(category, requestedPage));
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_REMOVE.getMeta());
   }
 
@@ -193,9 +193,9 @@ public class ForgeMenuClick {
    */
   private void openForgeCraftMenu() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openCategoryPage(categoryName, requestedPage));
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openCategoryPage(category, requestedPage));
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT.getMeta());
   }
 
@@ -206,9 +206,9 @@ public class ForgeMenuClick {
    */
   private void nextRecipePage(ForgeMenuAction action) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    String categoryName = playerMeta.get(PlayerMeta.CATEGORY);
+    String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, action).openCategoryPage(categoryName, requestedPage + 1));
+    user.openInventory(new RecipeMenu(user, action).openCategoryPage(category, requestedPage + 1));
     playerMeta.put(PlayerMeta.INVENTORY, "forge." + ForgeMenuAction.asString(action));
   }
 
@@ -230,15 +230,15 @@ public class ForgeMenuClick {
    */
   private void readSaveClick() {
     ItemStack[] menuContents = e.getInventory().getContents();
-    String fileName = nameFile(menuContents);
-    if (fileName != null) {
+    String file = nameFile(menuContents);
+    if (file != null) {
       String encodedRecipe = encodeRecipe(menuContents);
       if (encodedRecipe != null) {
         try {
-          FileWriter fw = new FileWriter(PluginEnum.Directory.FORGE.getFile().getPath() + "/" + fileName + "_rcp.txt");
+          FileWriter fw = new FileWriter(PluginEnum.Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
           fw.write(encodedRecipe);
           fw.close();
-          user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(fileName));
+          user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(file));
         } catch (IOException ex) {
           user.sendMessage(ChatColor.RED + "Failed to write recipe to file.");
         }

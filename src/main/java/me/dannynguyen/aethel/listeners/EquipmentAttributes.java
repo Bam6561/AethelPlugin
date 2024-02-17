@@ -28,7 +28,7 @@ import java.util.Map;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.10.4
+ * @version 1.10.5
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -97,10 +97,10 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onInventoryClick(InventoryClickEvent e) {
     Inventory inv = e.getClickedInventory();
-    if (inv != null && inv.getType().equals(InventoryType.PLAYER)) {
+    if (inv != null && inv.getType() == InventoryType.PLAYER) {
       Player player = (Player) e.getWhoClicked();
       if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-        updateIfWornItem(player, e.getCurrentItem(), "shift");
+        updateIfWornItem(player, e.getCurrentItem());
       } else {
         int slot = e.getSlot();
         switch (slot) {
@@ -133,9 +133,9 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onInteract(PlayerInteractEvent e) {
     Action action = e.getAction();
-    if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
+    if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
       if (ItemReader.isNotNullOrAir(e.getItem())) {
-        updateIfWornItem(e.getPlayer(), e.getItem(), "interact");
+        updateIfWornItem(e.getPlayer(), e.getItem());
       }
     }
   }
@@ -148,7 +148,7 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   public void onDispense(BlockDispenseArmorEvent e) {
     if (e.getTargetEntity() instanceof Player player) {
-      updateIfWornItem(player, e.getItem(), "dispense");
+      updateIfWornItem(player, e.getItem());
     }
   }
 
@@ -159,7 +159,7 @@ public class EquipmentAttributes implements Listener {
    */
   @EventHandler
   public void onBreak(PlayerItemBreakEvent e) {
-    updateIfWornItem(e.getPlayer(), e.getBrokenItem(), "break");
+    updateIfWornItem(e.getPlayer(), e.getBrokenItem());
   }
 
   /**
@@ -186,9 +186,8 @@ public class EquipmentAttributes implements Listener {
    *
    * @param player interacting player
    * @param item   interacting item
-   * @param action type of interaction
    */
-  private void updateIfWornItem(Player player, ItemStack item, String action) {
+  private void updateIfWornItem(Player player, ItemStack item) {
     String itemType = item.getType().name();
     if (wornAll.contains(itemType)) {
       if (wornHead.contains(itemType)) {

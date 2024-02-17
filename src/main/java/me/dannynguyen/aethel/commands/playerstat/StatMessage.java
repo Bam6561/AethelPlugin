@@ -19,7 +19,7 @@ import java.util.Objects;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.5
  * @since 1.4.10
  */
 class StatMessage {
@@ -36,7 +36,7 @@ class StatMessage {
   /**
    * OfflinePlayer object of the player statistic owner.
    */
-  private final OfflinePlayer requestedPlayer;
+  private final OfflinePlayer owner;
 
   /**
    * Requested player statistic.
@@ -58,7 +58,7 @@ class StatMessage {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
     this.ownerName = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.PLAYER);
-    this.requestedPlayer = Bukkit.getOfflinePlayer(ownerName);
+    this.owner = Bukkit.getOfflinePlayer(ownerName);
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     this.isGlobalBroadcast = e.isShiftClick();
   }
@@ -79,31 +79,31 @@ class StatMessage {
    * Sends a substatistic value.
    */
   protected void sendSubstat() {
-    String substatName = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
+    String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
     String category = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
-    String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
-    List<String> statValues = loadSubStatValues(category, substatName);
+    String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
+    List<String> statValues = loadSubStatValues(category, substat);
 
-    StringBuilder message = new StringBuilder(statName);
+    StringBuilder message = new StringBuilder(stat);
     for (String value : statValues) {
       message.append(" ").append(value);
     }
 
-    broadcastMessage(message.toString(), statName, statValues);
+    broadcastMessage(message.toString(), stat, statValues);
   }
 
   /**
    * Sends the statistic value to the requester or global chat.
    *
    * @param message    message to be sent
-   * @param statName   statistic name
+   * @param stat       statistic name
    * @param statValues statistic values
    */
-  private void broadcastMessage(String message, String statName, List<String> statValues) {
+  private void broadcastMessage(String message, String stat, List<String> statValues) {
     if (!isGlobalBroadcast) {
       user.sendMessage(message);
     } else {
-      if (user.getName().equals(ownerName)) {
+      if (user.getUniqueId().equals(owner.getUniqueId())) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
           onlinePlayer.sendMessage(PluginEnum.Message.NOTIFICATION_GLOBAL.getMessage() + message);
         }
@@ -112,27 +112,27 @@ class StatMessage {
           onlinePlayer.sendMessage(PluginEnum.Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
         }
       }
-      PluginData.pastStatHistory.addPastStat(statName, statValues);
+      PluginData.pastStatHistory.addPastStat(stat, statValues);
     }
   }
 
   /**
    * Formats a statistic's value based on its name.
    *
-   * @param itemName item name
-   * @param stat     stat
+   * @param item item name
+   * @param stat stat
    * @return formatted statistic value
    */
-  private String formatStatValue(String itemName, Statistic stat) {
-    switch (itemName) {
+  private String formatStatValue(String item, Statistic stat) {
+    switch (item) {
       case "Play One Minute", "Time Since Death", "Time Since Rest", "Total World Time" -> {
-        return ChatColor.WHITE + tickTimeConversion(requestedPlayer.getStatistic(stat));
+        return ChatColor.WHITE + tickTimeConversion(owner.getStatistic(stat));
       }
       default -> {
-        if (!itemName.contains("One Cm")) {
-          return ChatColor.WHITE + String.valueOf(requestedPlayer.getStatistic(stat));
+        if (!item.contains("One Cm")) {
+          return ChatColor.WHITE + String.valueOf(owner.getStatistic(stat));
         } else {
-          return ChatColor.WHITE + String.valueOf(requestedPlayer.getStatistic(stat) / 100) + " meters";
+          return ChatColor.WHITE + String.valueOf(owner.getStatistic(stat) / 100) + " meters";
         }
       }
     }
@@ -141,29 +141,29 @@ class StatMessage {
   /**
    * Retrieves the requested player's substat values.
    *
-   * @param category    substat category
-   * @param substatName substat name
+   * @param category substat category
+   * @param substat  substat name
    * @return substat value
    */
-  private List<String> loadSubStatValues(String category, String substatName) {
+  private List<String> loadSubStatValues(String category, String substat) {
     List<String> statValues = new ArrayList<>();
     if (category.equals("Entity Types")) {
-      EntityType entityType = EntityType.valueOf(substatName);
+      EntityType entityType = EntityType.valueOf(substat);
 
-      int kills = requestedPlayer.getStatistic(Statistic.KILL_ENTITY, entityType);
-      int deaths = requestedPlayer.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
+      int kills = owner.getStatistic(Statistic.KILL_ENTITY, entityType);
+      int deaths = owner.getStatistic(Statistic.ENTITY_KILLED_BY, entityType);
 
       statValues.add(ChatColor.YELLOW + "Killed " + ChatColor.WHITE + kills);
       statValues.add(ChatColor.YELLOW + "Deaths by " + ChatColor.WHITE + deaths);
     } else {
-      Material material = Material.valueOf(substatName);
+      Material material = Material.valueOf(substat);
 
-      int mined = requestedPlayer.getStatistic(Statistic.MINE_BLOCK, material);
-      int crafted = requestedPlayer.getStatistic(Statistic.CRAFT_ITEM, material);
-      int used = requestedPlayer.getStatistic(Statistic.USE_ITEM, material);
-      int broke = requestedPlayer.getStatistic(Statistic.BREAK_ITEM, material);
-      int pickedUp = requestedPlayer.getStatistic(Statistic.PICKUP, material);
-      int dropped = requestedPlayer.getStatistic(Statistic.DROP, material);
+      int mined = owner.getStatistic(Statistic.MINE_BLOCK, material);
+      int crafted = owner.getStatistic(Statistic.CRAFT_ITEM, material);
+      int used = owner.getStatistic(Statistic.USE_ITEM, material);
+      int broke = owner.getStatistic(Statistic.BREAK_ITEM, material);
+      int pickedUp = owner.getStatistic(Statistic.PICKUP, material);
+      int dropped = owner.getStatistic(Statistic.DROP, material);
 
       statValues.add(ChatColor.YELLOW + "Mined " + ChatColor.WHITE + mined);
       statValues.add(ChatColor.YELLOW + "Crafted " + ChatColor.WHITE + crafted);

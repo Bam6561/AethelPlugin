@@ -22,7 +22,7 @@ import java.util.Objects;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.5
  * @since 1.4.7
  */
 class PlayerStatMenu {
@@ -46,17 +46,17 @@ class PlayerStatMenu {
   /**
    * Owner of the player statistics.
    */
-  private final String requestedPlayer;
+  private final String owner;
 
   /**
-   * Associates a new PlayerStat menu with its user.
+   * Associates a new PlayerStat menu with its user and target player.
    *
-   * @param user            user
-   * @param requestedPlayer requested player's name
+   * @param user  user
+   * @param owner requested player's name
    */
-  protected PlayerStatMenu(@NotNull Player user, @NotNull String requestedPlayer) {
+  protected PlayerStatMenu(@NotNull Player user, @NotNull String owner) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.requestedPlayer = Objects.requireNonNull(requestedPlayer, "Null requested user");
+    this.owner = Objects.requireNonNull(owner, "Null owner");
     this.menu = createMenu();
   }
 
@@ -66,7 +66,7 @@ class PlayerStatMenu {
    * @return PlayerStat menu
    */
   private Inventory createMenu() {
-    return Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "PlayerStat " + ChatColor.DARK_PURPLE + requestedPlayer);
+    return Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "PlayerStat " + ChatColor.DARK_PURPLE + owner);
   }
 
   /**
@@ -85,17 +85,17 @@ class PlayerStatMenu {
   /**
    * Sets the menu to load stat category page.
    *
-   * @param categoryName  category to view
+   * @param category      category to view
    * @param requestedPage requested page
    * @return PlayerStat category page
    */
   @NotNull
-  protected Inventory openCategoryPage(String categoryName, int requestedPage) {
-    switch (categoryName) {
-      case "Entity Types", "Materials" -> loadSubstatPage(categoryName, requestedPage);
-      default -> loadStatsPage(categoryName);
+  protected Inventory openCategoryPage(String category, int requestedPage) {
+    switch (category) {
+      case "Entity Types", "Materials" -> loadSubstatPage(category, requestedPage);
+      default -> loadStatsPage(category);
     }
-    addContext(categoryName);
+    addContext(category);
     addStatOwnerHead();
     InventoryPages.addBackButton(menu, 5);
     return menu;
@@ -129,11 +129,11 @@ class PlayerStatMenu {
   /**
    * Adds contextual help.
    *
-   * @param categoryName category name
+   * @param category category name
    */
-  private void addContext(String categoryName) {
+  private void addContext(String category) {
     List<String> lore;
-    if (categoryName == null) {
+    if (category == null) {
       lore = List.of(ChatColor.WHITE + "Stat Categories");
     } else {
       lore = List.of(
@@ -151,9 +151,9 @@ class PlayerStatMenu {
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
     String statOwner = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.PLAYER);
-    OfflinePlayer requestedPlayer = Bukkit.getOfflinePlayer(statOwner);
+    OfflinePlayer owner = Bukkit.getOfflinePlayer(statOwner);
 
-    meta.setOwningPlayer(requestedPlayer);
+    meta.setOwningPlayer(owner);
     meta.setDisplayName(ChatColor.DARK_PURPLE + statOwner);
     item.setItemMeta(meta);
     menu.setItem(4, item);

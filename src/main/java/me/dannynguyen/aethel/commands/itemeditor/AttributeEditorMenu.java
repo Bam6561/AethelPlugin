@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.10.5
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -192,20 +192,20 @@ class AttributeEditorMenu {
    */
   private void addAttributeCategory(String category, int invSlot) {
     if (aethelAttributesMap != null) { // Read both Minecraft & Aethel attributes
-      for (String attributeName : aethelAttributeCategories.get(category)) {
-        if (PluginConstant.minecraftAttributes.contains(attributeName)) {
-          addMinecraftAttribute(attributeName, invSlot);
+      for (String attribute : aethelAttributeCategories.get(category)) {
+        if (PluginConstant.minecraftAttributes.contains(attribute)) {
+          addMinecraftAttribute(attribute, invSlot);
         } else {
-          addAethelAttribute(attributeName, invSlot);
+          addAethelAttribute(attribute, invSlot);
         }
         invSlot++;
       }
     } else {  // Read Minecraft attributes only
-      for (String attributeName : aethelAttributeCategories.get(category)) {
-        if (PluginConstant.minecraftAttributes.contains(attributeName)) {
-          addMinecraftAttribute(attributeName, invSlot);
+      for (String attribute : aethelAttributeCategories.get(category)) {
+        if (PluginConstant.minecraftAttributes.contains(attribute)) {
+          addMinecraftAttribute(attribute, invSlot);
         } else {
-          menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
+          menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attribute));
         }
         invSlot++;
       }
@@ -215,42 +215,42 @@ class AttributeEditorMenu {
   /**
    * Adds a Minecraft attribute with its slot attribute modifiers.
    *
-   * @param attributeName attribute name
-   * @param invSlot       inventory slot
+   * @param attribute attribute name
+   * @param invSlot   inventory slot
    */
-  private void addMinecraftAttribute(String attributeName, int invSlot) {
-    Attribute attribute = Attribute.valueOf("GENERIC_" + TextFormatter.formatEnum(attributeName));
-    boolean disabled = attributeModifiers == null || attributeModifiers.get(attribute).isEmpty();
+  private void addMinecraftAttribute(String attribute, int invSlot) {
+    Attribute attributeEnum = Attribute.valueOf("GENERIC_" + TextFormatter.formatEnum(attribute));
+    boolean disabled = attributeModifiers == null || attributeModifiers.get(attributeEnum).isEmpty();
     if (disabled) {
-      menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
+      menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attribute));
     } else {
       List<String> lore = new ArrayList<>();
-      for (AttributeModifier attributeModifier : attributeModifiers.get(attribute)) {
+      for (AttributeModifier attributeModifier : attributeModifiers.get(attributeEnum)) {
         lore.add(ChatColor.WHITE + "" + TextFormatter.capitalizePhrase(attributeModifier.getSlot().name()) + ": " + attributeModifier.getAmount());
       }
-      menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));
+      menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attribute, lore));
     }
   }
 
   /**
    * Adds an Aethel attribute with its slot attribute modifiers.
    *
-   * @param attributeName attribute name
-   * @param invSlot       inventory slot
+   * @param attribute attribute name
+   * @param invSlot   inventory slot
    */
-  private void addAethelAttribute(String attributeName, int invSlot) {
-    String attributeMapKey = TextFormatter.formatId(attributeName);
+  private void addAethelAttribute(String attribute, int invSlot) {
+    String attributeMapKey = TextFormatter.formatId(attribute);
     boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
     if (enabled) {
       List<String> lore = new ArrayList<>();
-      for (String attribute : aethelAttributesMap.get(attributeMapKey)) {
-        NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attributeMapKey + "." + attribute);
+      for (String itemAttribute : aethelAttributesMap.get(attributeMapKey)) {
+        NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attributeMapKey + "." + itemAttribute);
         Double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
-        lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(attribute + ": " + attributeValue));
+        lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(itemAttribute + ": " + attributeValue));
       }
-      menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));
+      menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attribute, lore));
     } else {
-      menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
+      menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attribute));
     }
   }
 }

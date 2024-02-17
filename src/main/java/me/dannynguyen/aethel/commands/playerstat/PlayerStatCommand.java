@@ -23,7 +23,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.5
  * @since 1.4.7
  */
 public class PlayerStatCommand implements CommandExecutor {
@@ -95,18 +95,18 @@ public class PlayerStatCommand implements CommandExecutor {
   /**
    * Opens a PlayerStat main menu belonging to another player.
    *
-   * @param user            user
-   * @param requestedPlayer requested player's name
+   * @param user  user
+   * @param owner requested player's name
    */
-  private void openPlayerStatOther(Player user, String requestedPlayer) {
-    OfflinePlayer player = Bukkit.getOfflinePlayer(requestedPlayer);
+  private void openPlayerStatOther(Player user, String owner) {
+    OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
     if (player.hasPlayedBefore()) {
       Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
       playerMeta.put(PlayerMeta.PLAYER, player.getName());
       user.openInventory(new PlayerStatMenu(user, player.getName()).openMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     } else {
-      user.sendMessage(ChatColor.RED + requestedPlayer + " has never played on this server.");
+      user.sendMessage(ChatColor.RED + owner + " has never played on this server.");
     }
   }
 }
