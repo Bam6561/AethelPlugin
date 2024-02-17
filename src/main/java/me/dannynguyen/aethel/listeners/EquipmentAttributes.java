@@ -5,7 +5,6 @@ import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.systems.RpgProfile;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +28,7 @@ import java.util.Map;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.9.23
+ * @version 1.10.4
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -107,7 +106,7 @@ public class EquipmentAttributes implements Listener {
         switch (slot) {
           case 36, 37, 38, 39, 40 -> {
             if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-              updateEquipmentAttributesAtSlot(player, null, slot, "click");
+              updateEquipmentAttributesAtSlot(player, slot);
             }
           }
         }
@@ -193,15 +192,15 @@ public class EquipmentAttributes implements Listener {
     String itemType = item.getType().name();
     if (wornAll.contains(itemType)) {
       if (wornHead.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, item, 39, action);
+        updateEquipmentAttributesAtSlot(player, 39);
       } else if (wornChest.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, item, 38, action);
+        updateEquipmentAttributesAtSlot(player, 38);
       } else if (wornLegs.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, item, 37, action);
+        updateEquipmentAttributesAtSlot(player, 37);
       } else if (wornFeet.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, item, 36, action);
+        updateEquipmentAttributesAtSlot(player, 36);
       } else if (itemType.equals("SHIELD")) {
-        updateEquipmentAttributesAtSlot(player, item, 40, action);
+        updateEquipmentAttributesAtSlot(player, 40);
       }
     }
   }
@@ -209,38 +208,25 @@ public class EquipmentAttributes implements Listener {
   /**
    * Updates the player's equipment attributes at the slot they interacted with.
    * <p>
-   * A 1 tick delay is used for inventory clicks and item break interactions because only the
-   * item that exists in the corresponding slot after the interaction happens should be read.
+   * A 1 tick delay is used for because only the item that exists in the
+   * corresponding slot after the interaction happens should be read.
    * </p>
    *
    * @param player interacting player
-   * @param item   interacting item
    * @param slot   slot type
-   * @param action type of interaction
    */
-  private void updateEquipmentAttributesAtSlot(Player player, ItemStack item, int slot, String action) {
-    if (!(action.equals("shift") || action.equals("click") || action.equals("break"))) {
+  private void updateEquipmentAttributesAtSlot(Player player, int slot) {
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
+      final ItemStack wornItem = player.getInventory().getItem(slot);
       switch (slot) {
-        case 36 -> rpgProfile.readEquipmentSlot(item, "feet");
-        case 37 -> rpgProfile.readEquipmentSlot(item, "legs");
-        case 38 -> rpgProfile.readEquipmentSlot(item, "chest");
-        case 39 -> rpgProfile.readEquipmentSlot(item, "head");
-        case 40 -> rpgProfile.readEquipmentSlot(item, "off_hand");
+        case 36 -> rpgProfile.readEquipmentSlot(wornItem, "feet");
+        case 37 -> rpgProfile.readEquipmentSlot(wornItem, "legs");
+        case 38 -> rpgProfile.readEquipmentSlot(wornItem, "chest");
+        case 39 -> rpgProfile.readEquipmentSlot(wornItem, "head");
+        case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
       }
-    } else {
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
-        final ItemStack wornItem = player.getInventory().getItem(slot);
-        switch (slot) {
-          case 36 -> rpgProfile.readEquipmentSlot(wornItem, "feet");
-          case 37 -> rpgProfile.readEquipmentSlot(wornItem, "legs");
-          case 38 -> rpgProfile.readEquipmentSlot(wornItem, "chest");
-          case 39 -> rpgProfile.readEquipmentSlot(wornItem, "head");
-          case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
-        }
-      }, 1);
-    }
+    }, 1);
   }
 
   /**
@@ -252,7 +238,7 @@ public class EquipmentAttributes implements Listener {
   private void dropJewelryItems(Player player, ItemStack[] jewelrySlots) {
     player.getWorld().dropItem(player.getLocation(), jewelrySlots[0]);
     player.getWorld().dropItem(player.getLocation(), jewelrySlots[1]);
-    jewelrySlots[0] = new ItemStack(Material.AIR);
-    jewelrySlots[1] = new ItemStack(Material.AIR);
+    jewelrySlots[0] = null;
+    jewelrySlots[1] = null;
   }
 }

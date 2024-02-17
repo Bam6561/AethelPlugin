@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.systems.RpgProfile;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -18,9 +17,13 @@ import java.util.Objects;
 
 /**
  * Inventory click event listener for Character menus.
+ * <p>
+ * 1 tick delays are used because only the item that exists in the
+ * corresponding slot after the interaction happens should be read.
+ * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.2
+ * @version 1.10.4
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -84,27 +87,19 @@ public class CharacterMenuClick {
   }
 
   /**
-   * Disables shift clicks and updates the user's main hand item in
-   * the menu when it is interacted with from the user's inventory.
+   * Updates the user's main hand item in the menu when
+   * it is interacted with from the user's inventory.
    */
   public void interpretPlayerInventoryClick() {
-    // User removes main hand item
-    if (ItemReader.isNotNullOrAir(e.getCurrentItem()) && (e.getCurrentItem().equals(e.getClickedInventory().getItem(e.getSlot())))) {
-      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
-      rpgProfile.readEquipmentSlot(null, "hand");
-
-      e.getInventory().setItem(11, new ItemStack(Material.AIR));
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
-
-      // User sets new main hand item
-    } else if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
-      e.getInventory().setItem(11, e.getCursor());
-
+    if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
-        ItemStack wornItem = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
-        rpgProfile.readEquipmentSlot(wornItem, "hand");
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
+        e.getInventory().setItem(11, user.getInventory().getItem(e.getSlot()));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+          RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
+          ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
+          rpgProfile.readEquipmentSlot(item, "hand");
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
+        }, 1);
       }, 1);
     }
   }
@@ -123,38 +118,20 @@ public class CharacterMenuClick {
       case 37 -> invSlot = 36;
       default -> invSlot = -1; // Unreachable
     }
-    user.getInventory().setItem(invSlot, new ItemStack(Material.AIR));
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> updateArmorHandsAttributes(invSlot), 1);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      user.getInventory().setItem(invSlot, e.getInventory().getItem(slotClicked));
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> updateArmorHandsAttributes(invSlot), 1);
+    }, 1);
   }
 
   /**
    * Equips an item to the user.
    */
   private void interpretEquipItem() {
-    ItemStack item = e.getCursor();
-    if (item.getType() != Material.AIR) {
+    if (ItemReader.isNotNullOrAir(e.getCursor())) {
       switch (slotClicked) {
         case 11 -> equipMainHandItem();
-        case 12 -> {
-          user.getInventory().setItem(40, item);
-          updateArmorHandsAttributes(40);
-        }
-        case 10 -> {
-          user.getInventory().setItem(39, item);
-          updateArmorHandsAttributes(39);
-        }
-        case 19 -> {
-          user.getInventory().setItem(38, item);
-          updateArmorHandsAttributes(38);
-        }
-        case 28 -> {
-          user.getInventory().setItem(37, item);
-          updateArmorHandsAttributes(37);
-        }
-        case 37 -> {
-          user.getInventory().setItem(36, item);
-          updateArmorHandsAttributes(36);
-        }
+        case 10, 12, 19, 28, 37 -> equipOffHandArmorItem();
         case 20, 29 -> updateJewelryAttributes();
       }
     }
@@ -164,30 +141,48 @@ public class CharacterMenuClick {
    * Equips the item to the user's main hand.
    */
   private void equipMainHandItem() {
-    PlayerInventory pInv = user.getInventory();
-    int slot = pInv.getHeldItemSlot();
-    ItemStack item = e.getCursor();
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      PlayerInventory pInv = user.getInventory();
+      int slot = pInv.getHeldItemSlot();
+      ItemStack item = e.getInventory().getItem(11);
 
-    if (pInv.getItem(slot) == null) { // Main hand slot is empty
-      pInv.setItem(slot, item);
+      if (pInv.getItem(slot) == null) { // Main hand slot is empty
+        pInv.setItem(slot, item);
+        updateArmorHandsAttributes(slot);
+      } else if (pInv.firstEmpty() != -1) { // Main hand slot is full
+        user.setItemOnCursor(null);
+        pInv.setItem(pInv.firstEmpty(), item);
+        user.sendMessage(ChatColor.RED + "Main hand occupied.");
+      } else if (ItemReader.isNotNullOrAir(item)) { // Inventory is full
+        user.setItemOnCursor(null);
+        user.getWorld().dropItem(user.getLocation(), item);
+        user.sendMessage(ChatColor.RED + "Inventory full.");
+      }
+    }, 1);
+  }
+
+
+  /**
+   * Equips the item to the user's off hand or armor slot.
+   */
+  private void equipOffHandArmorItem() {
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      int slot;
+      switch (slotClicked) {
+        case 12 -> slot = 40;
+        case 10 -> slot = 39;
+        case 19 -> slot = 38;
+        case 28 -> slot = 37;
+        case 37 -> slot = 36;
+        default -> slot = -1;
+      }
+      user.getInventory().setItem(slot, e.getInventory().getItem(slotClicked));
       updateArmorHandsAttributes(slot);
-    } else if (pInv.firstEmpty() != -1) { // Main hand slot is full
-      user.setItemOnCursor(new ItemStack(Material.AIR));
-      pInv.setItem(pInv.firstEmpty(), item);
-      user.sendMessage(ChatColor.RED + "Main hand occupied.");
-    } else if (ItemReader.isNotNullOrAir(item)) { // Inventory is full
-      user.setItemOnCursor(new ItemStack(Material.AIR));
-      user.getWorld().dropItem(user.getLocation(), item);
-      user.sendMessage(ChatColor.RED + "Inventory full.");
-    }
+    }, 1);
   }
 
   /**
    * Updates the user's displayed attributes for the armor and main hand slots.
-   * <p>
-   * A 1 tick delay is used because only the item that exists in the
-   * corresponding slot after the interaction happens should be read.
-   * </p>
    *
    * @param slot user's item slot
    */
@@ -210,10 +205,6 @@ public class CharacterMenuClick {
 
   /**
    * Updates the user's displayed attributes for the jewelry slots.
-   * <p>
-   * A 1 tick delay is used because only the item that exists in the
-   * corresponding slot after the interaction happens should be read.
-   * </p>
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
