@@ -245,7 +245,7 @@ class AttributeEditorMenu {
       List<String> lore = new ArrayList<>();
       for (String itemAttribute : aethelAttributesMap.get(attributeMapKey)) {
         NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attributeMapKey + "." + itemAttribute);
-        Double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
+        double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
         lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(itemAttribute + ": " + attributeValue));
       }
       menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attribute, lore));

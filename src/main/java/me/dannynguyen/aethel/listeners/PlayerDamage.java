@@ -76,7 +76,7 @@ public class PlayerDamage implements Listener {
   private void onRegainHealth(EntityRegainHealthEvent e) {
     if (e.getEntity() instanceof Player player) {
       e.setCancelled(true);
-      PluginData.rpgSystem.getRpgProfiles().get(player).damageHealthBar(-e.getAmount());
+      PluginData.rpgSystem.getRpgProfiles().get(player).healHealthBar(e.getAmount());
     }
   }
 
@@ -89,7 +89,7 @@ public class PlayerDamage implements Listener {
   private void processDamageDone(EntityDamageByEntityEvent e, Player damager) {
     Map<String, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(damager).getAethelAttributes();
     Random random = new Random();
-    Double finalDamage = e.getDamage();
+    double finalDamage = e.getDamage();
     finalDamage = calculateIfCriticallyHit(aethelAttributes, random, finalDamage);
     e.setDamage(finalDamage);
   }
@@ -103,7 +103,7 @@ public class PlayerDamage implements Listener {
   private void processDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
     Map<String, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(damagee).getAethelAttributes();
     Random random = new Random();
-    Double finalDamage = e.getDamage();
+    double finalDamage = e.getDamage();
     if (calculateIfDodged(aethelAttributes, random)) {
       return;
     } else if (calculateIfParried(aethelAttributes, random, finalDamage, (LivingEntity) e.getDamager())) {
@@ -122,7 +122,7 @@ public class PlayerDamage implements Listener {
    * @param random           rng
    * @param damage           damage dealt
    */
-  private double calculateIfCriticallyHit(Map<String, Double> aethelAttributes, Random random, Double damage) {
+  private double calculateIfCriticallyHit(Map<String, Double> aethelAttributes, Random random, double damage) {
     if (aethelAttributes.get("critical_chance") > random.nextDouble() * 100) {
       return (damage * (1.25 + (aethelAttributes.get("critical_damage") / 100)));
     }
@@ -155,7 +155,7 @@ public class PlayerDamage implements Listener {
    */
   private boolean calculateIfParried(Map<String, Double> aethelAttributes, Random random, Double damage, LivingEntity damager) {
     if (aethelAttributes.get("parry_chance") > random.nextDouble() * 100) {
-      Double damageDeflected = damage * (aethelAttributes.get("parry_deflect") / 100);
+      double damageDeflected = damage * (aethelAttributes.get("parry_deflect") / 100);
       damage = damage - damageDeflected;
       damager.damage(damageDeflected);
       if (damage < 0) {
@@ -172,7 +172,7 @@ public class PlayerDamage implements Listener {
    * @param damage           damage taken
    * @return if damage taken completely blocked
    */
-  private boolean calculateIfBlocked(Map<String, Double> aethelAttributes, Double damage) {
+  private boolean calculateIfBlocked(Map<String, Double> aethelAttributes, double damage) {
     damage = damage - aethelAttributes.get("block");
     if (damage < 0) {
       return true;

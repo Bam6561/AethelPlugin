@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.7
+ * @version 1.11.0
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -150,25 +150,53 @@ public class RpgProfile {
    * Updates the player's health bar based on their max health attribute.
    */
   public void updateHealthBar() {
+    currentHealth = currentHealth + player.getAbsorptionAmount();
     maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     processHealthBarProgress();
   }
 
   /**
    * Damages the player by an amount.
+   * <p>
+   * Damage is done to absorption first before health.
+   * </p>
    *
    * @param damage damage amount
    */
-  public void damageHealthBar(Double damage) {
-    currentHealth = currentHealth - damage;
-    if (currentHealth < 0) {
-      DecimalFormat dc = new DecimalFormat();
-      dc.setMaximumFractionDigits(2);
-      currentHealth = 0;
-      player.setHealth(currentHealth);
-      healthBar.setProgress(0.0);
-      healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
+  public void damageHealthBar(double damage) {
+    if (player.getAbsorptionAmount() >= damage) { // Damage completely absorbed
+      player.setAbsorptionAmount(player.getAbsorptionAmount() - damage);
+      processHealthBarProgress();
     } else {
+      damage = damage - player.getAbsorptionAmount();
+      player.setAbsorptionAmount(0);
+      currentHealth = currentHealth - damage;
+      if (currentHealth > 0) { // Alive
+        processHealthBarProgress();
+      } else { // Dead
+        DecimalFormat dc = new DecimalFormat();
+        dc.setMaximumFractionDigits(2);
+        currentHealth = 0;
+        player.setHealth(currentHealth);
+        healthBar.setProgress(0.0);
+        healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
+      }
+    }
+  }
+
+  /**
+   * Heals the player by an amount.
+   *
+   * @param heal heal amount
+   */
+  public void healHealthBar(double heal) {
+    if (!(currentHealth > maxHealth)) {
+      double healthTotal = currentHealth + heal;
+      if (maxHealth >= healthTotal) {
+        currentHealth = healthTotal;
+      } else {
+        currentHealth = maxHealth;
+      }
       processHealthBarProgress();
     }
   }
@@ -228,16 +256,24 @@ public class RpgProfile {
    * Sets the progress of the health bar based on the player's health : max health.
    */
   private void processHealthBarProgress() {
+    double maxHealthScale = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    if (currentHealth < maxHealth) {
+      double lifeRatio = currentHealth / maxHealth;
+      player.setHealth(lifeRatio * maxHealthScale);
+      healthBar.setProgress(lifeRatio);
+      healthBar.setColor(BarColor.RED);
+    } else if (currentHealth == maxHealth) {
+      player.setHealth(maxHealthScale);
+      healthBar.setProgress(1.0);
+      healthBar.setColor(BarColor.RED);
+    } else if (currentHealth > maxHealth) {
+      player.setHealth(maxHealthScale);
+      healthBar.setProgress(1.0);
+      healthBar.setColor(BarColor.YELLOW);
+    }
+
     DecimalFormat dc = new DecimalFormat();
     dc.setMaximumFractionDigits(2);
-    if (currentHealth >= maxHealth) {
-      player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-      healthBar.setProgress(1.0);
-    } else if (currentHealth > 0) {
-      double lifeTotal = currentHealth / maxHealth;
-      player.setHealth(lifeTotal * player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-      healthBar.setProgress(lifeTotal);
-    }
     healthBar.setTitle(dc.format(currentHealth) + " / " + dc.format(maxHealth) + " HP");
   }
 
