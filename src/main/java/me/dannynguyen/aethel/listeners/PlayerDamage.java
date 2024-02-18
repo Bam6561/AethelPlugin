@@ -7,16 +7,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 /**
- * Player damage done and taken listener.
+ * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.10.6
+ * @version 1.10.7
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -24,7 +25,8 @@ public class PlayerDamage implements Listener {
    * Handled damage causes.
    */
   private static final Set<EntityDamageEvent.DamageCause> handledDamageCause = Set.of(
-      EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+      EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+      EntityDamageEvent.DamageCause.KILL);
 
   /**
    * Calculates damage taken by players from non-entity attacks.
@@ -32,13 +34,13 @@ public class PlayerDamage implements Listener {
    * @param e entity damage event
    */
   @EventHandler
-  public void onDamage(EntityDamageEvent e) {
+  public void onGeneralDamage(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player player && !handledDamageCause.contains(e.getCause())) {
       e.setCancelled(true);
       if (player.getNoDamageTicks() == 0) {
         player.damage(0.01);
         player.setNoDamageTicks(10);
-        PluginData.rpgSystem.getRpgProfiles().get(player).damage(e.getDamage());
+        PluginData.rpgSystem.getRpgProfiles().get(player).damageHealthBar(e.getDamage());
       }
     }
   }
@@ -49,7 +51,7 @@ public class PlayerDamage implements Listener {
    * @param e entity damaged by entity event
    */
   @EventHandler
-  public void onDamage(EntityDamageByEntityEvent e) {
+  public void onEntityDamage(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Player || e.getEntity() instanceof Player) {
       if (e.getDamager() instanceof Player player && !(e.getEntity() instanceof Player)) { // PvE
         processDamageDone(e, player);
@@ -64,6 +66,17 @@ public class PlayerDamage implements Listener {
       } else { // PvP
         // TO DO
       }
+    }
+  }
+
+  /**
+   * Calculates damage healed by players.
+   */
+  @EventHandler
+  private void onRegainHealth(EntityRegainHealthEvent e) {
+    if (e.getEntity() instanceof Player player) {
+      e.setCancelled(true);
+      PluginData.rpgSystem.getRpgProfiles().get(player).damageHealthBar(-e.getAmount());
     }
   }
 
@@ -94,7 +107,7 @@ public class PlayerDamage implements Listener {
     } else if (calculateIfBlocked(e, aethelAttributes, damage)) {
       return;
     }
-    PluginData.rpgSystem.getRpgProfiles().get(player).damage(damage);
+    PluginData.rpgSystem.getRpgProfiles().get(player).damageHealthBar(damage);
   }
 
   /**

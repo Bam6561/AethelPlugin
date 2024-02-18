@@ -23,7 +23,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.4
+ * @version 1.10.7
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -199,6 +199,7 @@ public class CharacterMenuClick {
         case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
         default -> rpgProfile.readEquipmentSlot(wornItem, "hand");
       }
+      PluginData.rpgSystem.getRpgProfiles().get(user).updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getClickedInventory()).addAttributes(), 1);
     }, 1);
   }
@@ -222,6 +223,7 @@ public class CharacterMenuClick {
           rpgProfile.readEquipmentSlot(wornItem, "ring");
         }
       }
+      PluginData.rpgSystem.getRpgProfiles().get(user).updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, menu).addAttributes(), 1);
     }, 1);
   }

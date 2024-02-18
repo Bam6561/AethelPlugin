@@ -13,10 +13,7 @@ import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,7 +25,7 @@ import java.util.Map;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.10.6
+ * @version 1.10.7
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -115,6 +112,19 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
+   * Updates a player's equipment attributes when items are held.
+   *
+   * @param e player held item event
+   */
+  @EventHandler
+  public void onItemHeld(PlayerItemHeldEvent e) {
+    Player player = e.getPlayer();
+    RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
+    rpgProfile.readEquipmentSlot(player.getInventory().getItem(e.getNewSlot()), "hand");
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 2);
+  }
+
+  /**
    * Updates a player's equipment attributes when items are swapped.
    *
    * @param e player swap hand items event
@@ -123,6 +133,7 @@ public class EquipmentAttributes implements Listener {
   public void onSwapHandItem(PlayerSwapHandItemsEvent e) {
     RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getPlayer());
     rpgProfile.readEquipmentSlot(e.getOffHandItem(), "off_hand");
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 2);
   }
 
   /**
@@ -225,6 +236,7 @@ public class EquipmentAttributes implements Listener {
         case 39 -> rpgProfile.readEquipmentSlot(wornItem, "head");
         case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
       }
+      rpgProfile.updateHealthBar();
     }, 1);
   }
 

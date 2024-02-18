@@ -4,7 +4,6 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -17,6 +16,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.6
+ * @version 1.10.7
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -55,7 +55,7 @@ public class RpgProfile {
   /**
    * Player health.
    */
-  private double health;
+  private double currentHealth;
 
   /**
    * Total Aethel attributes.
@@ -81,7 +81,7 @@ public class RpgProfile {
     this.player = Objects.requireNonNull(player, "Null player");
     this.healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    this.health = player.getHealth();
+    this.currentHealth = player.getHealth();
     this.aethelAttributes = createBlankAethelAttributes();
     this.equipmentAttributes = new HashMap<>();
     this.jewelrySlots = new ItemStack[2];
@@ -114,6 +114,14 @@ public class RpgProfile {
   }
 
   /**
+   * Loads the player's health bar.
+   */
+  public void loadHealthBar() {
+    updateHealthBar();
+    healthBar.addPlayer(player);
+  }
+
+  /**
    * Checks if the item has Aethel attribute modifiers before
    * checking whether the item is in the correct equipment slot.
    *
@@ -136,6 +144,41 @@ public class RpgProfile {
         removeExistingEquipmentAttributes(slot);
       }
     }
+  }
+
+  /**
+   * Updates the player's health bar based on their max health attribute.
+   */
+  public void updateHealthBar() {
+    maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    processHealthBarProgress();
+  }
+
+  /**
+   * Damages the player by an amount.
+   *
+   * @param damage damage amount
+   */
+  public void damageHealthBar(Double damage) {
+    currentHealth = currentHealth - damage;
+    if (currentHealth < 0) {
+      DecimalFormat dc = new DecimalFormat();
+      dc.setMaximumFractionDigits(2);
+      currentHealth = 0;
+      player.setHealth(currentHealth);
+      healthBar.setProgress(0.0);
+      healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
+    } else {
+      processHealthBarProgress();
+    }
+  }
+
+  /**
+   * Resets the player's health bar.
+   */
+  public void resetHealthBar() {
+    currentHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    processHealthBarProgress();
   }
 
   /**
@@ -182,41 +225,20 @@ public class RpgProfile {
   }
 
   /**
-   * Damages the player by an amount.
-   *
-   * @param damage damage amount
-   */
-  public void damage(Double damage) {
-    health = health - damage;
-    processHealthBarProgress();
-  }
-
-  /**
-   * Resets the player's health bar.
-   */
-  public void resetHealthBar() {
-    health = maxHealth;
-    processHealthBarProgress();
-  }
-
-  /**
    * Sets the progress of the health bar based on the player's health : max health.
    */
   private void processHealthBarProgress() {
-    if (health > 0) {
-      if (health >= maxHealth) {
-        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        healthBar.setProgress(1.0);
-      } else {
-        double lifeTotal = health / maxHealth;
-        player.setHealth(lifeTotal * player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        healthBar.setProgress(lifeTotal);
-      }
-    } else {
-      player.setHealth(0);
-      healthBar.setProgress(0.0);
-      player.sendMessage(ChatColor.RED + "You died!");
+    DecimalFormat dc = new DecimalFormat();
+    dc.setMaximumFractionDigits(2);
+    if (currentHealth >= maxHealth) {
+      player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+      healthBar.setProgress(1.0);
+    } else if (currentHealth > 0) {
+      double lifeTotal = currentHealth / maxHealth;
+      player.setHealth(lifeTotal * player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+      healthBar.setProgress(lifeTotal);
     }
+    healthBar.setTitle(dc.format(currentHealth) + " / " + dc.format(maxHealth) + " HP");
   }
 
   /**
@@ -252,8 +274,8 @@ public class RpgProfile {
    *
    * @return player's health
    */
-  public double getHealth() {
-    return this.health;
+  public double getCurrentHealth() {
+    return this.currentHealth;
   }
 
   /**
