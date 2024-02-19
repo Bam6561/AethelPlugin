@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.11.4
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -196,7 +196,7 @@ public class RpgProfile {
    * Resets the player's health bar.
    */
   public void resetHealthBar() {
-    currentHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    currentHealth = 20;
     processHealthBarProgress();
   }
 

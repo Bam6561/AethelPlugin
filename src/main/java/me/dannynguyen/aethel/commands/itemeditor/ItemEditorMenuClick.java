@@ -28,7 +28,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.11.4
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -114,12 +114,12 @@ public class ItemEditorMenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmeticEditor();
-      case 3 -> setMode(AttributeEditorAction.HEAD);
-      case 4 -> setMode(AttributeEditorAction.CHEST);
-      case 5 -> setMode(AttributeEditorAction.LEGS);
-      case 6 -> setMode(AttributeEditorAction.FEET);
-      case 7 -> setMode(AttributeEditorAction.HAND);
-      case 8 -> setMode(AttributeEditorAction.OFF_HAND);
+      case 5 -> setMode(AttributeEditorAction.HEAD);
+      case 6 -> setMode(AttributeEditorAction.CHEST);
+      case 7 -> setMode(AttributeEditorAction.LEGS);
+      case 8 -> setMode(AttributeEditorAction.FEET);
+      case 14 -> setMode(AttributeEditorAction.HAND);
+      case 15 -> setMode(AttributeEditorAction.OFF_HAND);
       case 16 -> setMode(AttributeEditorAction.NECKLACE);
       case 17 -> setMode(AttributeEditorAction.RING);
       default -> readAttribute();

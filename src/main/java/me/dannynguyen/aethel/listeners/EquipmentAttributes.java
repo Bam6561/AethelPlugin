@@ -27,7 +27,7 @@ import java.util.Set;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.11.4
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -93,6 +93,8 @@ public class EquipmentAttributes implements Listener {
           case 36, 37, 38, 39, 40 -> {
             if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
               updateEquipmentAttributesAtSlot(player, slot);
+              Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+              }, 1);
             }
           }
         }
@@ -225,7 +227,7 @@ public class EquipmentAttributes implements Listener {
         case 39 -> rpgProfile.readEquipmentSlot(wornItem, "head");
         case 40 -> rpgProfile.readEquipmentSlot(wornItem, "off_hand");
       }
-      rpgProfile.updateHealthBar();
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 1);
     }, 1);
   }
 
