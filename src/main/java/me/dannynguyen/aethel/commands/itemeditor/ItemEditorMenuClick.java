@@ -28,7 +28,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.11.3
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -512,7 +512,7 @@ public class ItemEditorMenuClick {
       case "Attack Speed" -> {
         return attributeContext + "4.0";
       }
-      case "Critical Chance", "Parry Chance", "Parry Deflect", "Dodge Chance", "Apply Status" -> {
+      case "Critical Chance", "Parry Chance", "Deflect", "Dodge Chance", "Status Chance" -> {
         return attributeContext + "0.0%";
       }
       case "Critical Damage" -> {
@@ -527,20 +527,20 @@ public class ItemEditorMenuClick {
       case "Armor Toughness" -> {
         return attributeContext + "0.0 [Max: 20.0]";
       }
+      case "Knockback Resistance" -> {
+        return attributeContext + "0.0 [Max: 1.0]";
+      }
       case "Movement Speed" -> {
         return attributeContext + "2.0 [Input * 20]";
       }
       case "Block", "Luck" -> {
         return attributeContext + "0.0";
       }
-      case "Ability Damage" -> {
+      case "Item Damage" -> {
         return attributeContext + "1.0x [Input / 100]";
       }
-      case "Ability Cooldown" -> {
+      case "Item Cooldown" -> {
         return attributeContext + "-0.0%";
-      }
-      case "Knockback Resistance" -> {
-        return attributeContext + "0.0 [Max: 1.0]";
       }
       default -> {
         return null;

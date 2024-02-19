@@ -14,7 +14,7 @@ import java.util.Map;
  * Collection of listeners for plugin system functionality.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.11.3
  * @since 1.10.1
  */
 public class PluginEvent implements Listener {
@@ -24,7 +24,7 @@ public class PluginEvent implements Listener {
    * @param e player join event
    */
   @EventHandler
-  public void onJoin(PlayerJoinEvent e) {
+  private void onJoin(PlayerJoinEvent e) {
     Map<Player, Map<PlayerMeta, String>> playerMetadata = PluginData.pluginSystem.getPlayerMetadata();
     if (!playerMetadata.containsKey(e.getPlayer())) {
       playerMetadata.put(e.getPlayer(), new HashMap<>());

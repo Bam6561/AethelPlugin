@@ -16,7 +16,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.2
+ * @version 1.11.3
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -26,7 +26,7 @@ public class MessageSent implements Listener {
    * @param e message event
    */
   @EventHandler
-  public void onPlayerChat(AsyncPlayerChatEvent e) {
+  private void onPlayerChat(AsyncPlayerChatEvent e) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer());
     if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
       e.setCancelled(true);

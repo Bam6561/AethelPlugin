@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.1
+ * @version 1.11.3
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -33,8 +33,8 @@ public class RpgProfile {
    * Aethel attribute IDs.
    */
   private static final String[] aethelAttributeId = new String[]{
-      "critical_chance", "critical_damage", "block", "parry_chance", "parry_deflect",
-      "dodge_chance", "ability_damage", "ability_cooldown", "apply_status"
+      "critical_chance", "critical_damage", "parry_chance", "dodge_chance",
+      "deflect", "block", "item_damage", "item_cooldown", "status_chance"
   };
 
   /**
@@ -147,7 +147,7 @@ public class RpgProfile {
   }
 
   /**
-   * Updates the player's health bar based on their max health attribute.
+   * Updates the player's health bar and display.
    */
   public void updateHealthBar() {
     currentHealth = currentHealth + player.getAbsorptionAmount();
@@ -232,7 +232,7 @@ public class RpgProfile {
   }
 
   /**
-   * Removes existing equipment attribute modifiers.
+   * Removes existing equipment attribute modifiers at an equipment slot.
    *
    * @param slot slot type
    */

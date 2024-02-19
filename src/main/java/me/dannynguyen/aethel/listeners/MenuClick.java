@@ -25,7 +25,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.11.3
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -35,7 +35,7 @@ public class MenuClick implements Listener {
    * @param e inventory click event
    */
   @EventHandler
-  public void onClick(InventoryClickEvent e) {
+  private void onClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
       Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
       if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
@@ -61,7 +61,7 @@ public class MenuClick implements Listener {
    * @param e inventory drag event
    */
   @EventHandler
-  public void onDrag(InventoryDragEvent e) {
+  private void onDrag(InventoryDragEvent e) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
     if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
       e.setCancelled(true);
@@ -228,7 +228,7 @@ public class MenuClick implements Listener {
    * @param e inventory close event
    */
   @EventHandler
-  public void onClose(InventoryCloseEvent e) {
+  private void onClose(InventoryCloseEvent e) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getPlayer());
     if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
       playerMeta.remove(PlayerMeta.INVENTORY);

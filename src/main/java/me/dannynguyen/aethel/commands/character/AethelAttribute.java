@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.commands.character;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.11.3
  * @since 1.9.10
  */
 enum AethelAttribute {
@@ -31,7 +31,7 @@ enum AethelAttribute {
   /**
    * Percentage of the damage deflected.
    */
-  PARRY_DEFLECT("parry_deflect"),
+  DEFLECT("deflect"),
 
   /**
    * Dodge chance.
@@ -39,19 +39,19 @@ enum AethelAttribute {
   DODGE_CHANCE("dodge_chance"),
 
   /**
-   * Ability damage multiplier.
+   * Item damage multiplier.
    */
-  ABILITY_DAMAGE("ability_damage"),
+  ITEM_DAMAGE("item_damage"),
 
   /**
-   * Ability cooldown multiplier.
+   * Item cooldown multiplier.
    */
-  ABILITY_COOLDOWN("ability_cooldown"),
+  ITEM_COOLDOWN("item_cooldown"),
 
   /**
    * Apply status chance multiplier.
    */
-  APPLY_STATUS("apply_status");
+  STATUS_CHANCE("status_chance");
 
   /**
    * Aethel attribute id.

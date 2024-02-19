@@ -17,7 +17,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.10.8
+ * @version 1.11.3
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -34,7 +34,7 @@ public class PlayerDamage implements Listener {
    * @param e entity damage event
    */
   @EventHandler
-  public void onGeneralDamage(EntityDamageEvent e) {
+  private void onGeneralDamage(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player damagee && !handledDamageCause.contains(e.getCause())) {
       e.setCancelled(true);
       if (damagee.getNoDamageTicks() == 0) {
@@ -51,7 +51,7 @@ public class PlayerDamage implements Listener {
    * @param e entity damaged by entity event
    */
   @EventHandler
-  public void onEntityDamage(EntityDamageByEntityEvent e) {
+  private void onEntityDamage(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Player || e.getEntity() instanceof Player) {
       if (e.getDamager() instanceof Player damager && !(e.getEntity() instanceof Player)) { // PvE
         processDamageDone(e, damager);
@@ -155,7 +155,7 @@ public class PlayerDamage implements Listener {
    */
   private boolean calculateIfParried(Map<String, Double> aethelAttributes, Random random, Double damage, LivingEntity damager) {
     if (aethelAttributes.get("parry_chance") > random.nextDouble() * 100) {
-      double damageDeflected = damage * (aethelAttributes.get("parry_deflect") / 100);
+      double damageDeflected = damage * (aethelAttributes.get("deflect") / 100);
       damage = damage - damageDeflected;
       damager.damage(damageDeflected);
       if (damage < 0) {

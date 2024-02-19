@@ -27,7 +27,7 @@ import java.util.Set;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.11.2
+ * @version 1.11.3
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -81,7 +81,7 @@ public class EquipmentAttributes implements Listener {
    * @param e inventory click event
    */
   @EventHandler
-  public void onInventoryClick(InventoryClickEvent e) {
+  private void onInventoryClick(InventoryClickEvent e) {
     Inventory inv = e.getClickedInventory();
     if (inv != null && inv.getType() == InventoryType.PLAYER) {
       Player player = (Player) e.getWhoClicked();
@@ -106,7 +106,7 @@ public class EquipmentAttributes implements Listener {
    * @param e player held item event
    */
   @EventHandler
-  public void onItemHeld(PlayerItemHeldEvent e) {
+  private void onItemHeld(PlayerItemHeldEvent e) {
     Player player = e.getPlayer();
     RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
     rpgProfile.readEquipmentSlot(player.getInventory().getItem(e.getNewSlot()), "hand");
@@ -119,7 +119,7 @@ public class EquipmentAttributes implements Listener {
    * @param e player swap hand items event
    */
   @EventHandler
-  public void onSwapHandItem(PlayerSwapHandItemsEvent e) {
+  private void onSwapHandItem(PlayerSwapHandItemsEvent e) {
     RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getPlayer());
     rpgProfile.readEquipmentSlot(e.getOffHandItem(), "off_hand");
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 2);
@@ -131,7 +131,7 @@ public class EquipmentAttributes implements Listener {
    * @param e player interact event
    */
   @EventHandler
-  public void onInteract(PlayerInteractEvent e) {
+  private void onInteract(PlayerInteractEvent e) {
     Action action = e.getAction();
     if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
       if (ItemReader.isNotNullOrAir(e.getItem())) {
@@ -146,7 +146,7 @@ public class EquipmentAttributes implements Listener {
    * @param e block dispense armor event
    */
   @EventHandler
-  public void onDispense(BlockDispenseArmorEvent e) {
+  private void onDispense(BlockDispenseArmorEvent e) {
     if (e.getTargetEntity() instanceof Player player) {
       updateIfWornItem(player, e.getItem());
     }
@@ -158,7 +158,7 @@ public class EquipmentAttributes implements Listener {
    * @param e player item break event
    */
   @EventHandler
-  public void onBreak(PlayerItemBreakEvent e) {
+  private void onBreak(PlayerItemBreakEvent e) {
     updateIfWornItem(e.getPlayer(), e.getBrokenItem());
   }
 
@@ -168,7 +168,7 @@ public class EquipmentAttributes implements Listener {
    * @param e player death event
    */
   @EventHandler
-  public void onDeath(PlayerDeathEvent e) {
+  private void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
       RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getEntity());
       Map<String, Map<String, Double>> equipment = rpgProfile.getEquipmentAttributes();
