@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static java.util.Comparator.comparing;
-
 /**
  * Represents a menu that edits an item's enchantments.
  *
@@ -111,7 +109,7 @@ class EnchantmentEditorMenu {
    */
   private static List<Enchantment> sortEnchantments() {
     List<Enchantment> enchantments = new ArrayList<>(List.of(Enchantment.values()));
-    Comparator<Enchantment> enchantmentComparator = comparing(e -> e.getKey().getKey());
+    Comparator<Enchantment> enchantmentComparator = Comparator.comparing(e -> e.getKey().getKey());
     enchantments.sort(enchantmentComparator);
     return enchantments;
   }

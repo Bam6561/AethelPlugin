@@ -32,7 +32,7 @@ public class RpgProfile {
   /**
    * Aethel attribute IDs.
    */
-  private final static String[] aethelAttributeId = new String[]{
+  private static final String[] aethelAttributeId = new String[]{
       "critical_chance", "critical_damage", "block", "parry_chance", "parry_deflect",
       "dodge_chance", "ability_damage", "ability_cooldown", "apply_status"
   };

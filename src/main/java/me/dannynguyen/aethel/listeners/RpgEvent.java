@@ -7,16 +7,31 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 /**
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.11.1
+ * @version 1.11.2
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
+  /**
+   * Assigns an RPG profile to a player upon joining the server.
+   *
+   * @param e player join event
+   */
+  @EventHandler
+  public void onJoin(PlayerJoinEvent e) {
+    Player player = e.getPlayer();
+    if (PluginData.rpgSystem.getRpgProfiles().get(player) == null) {
+      PluginData.rpgSystem.loadRpgPlayer(player);
+    }
+  }
+
+
   /**
    * Updates the player's health bar to account for absorption and health boost status effects.
    *

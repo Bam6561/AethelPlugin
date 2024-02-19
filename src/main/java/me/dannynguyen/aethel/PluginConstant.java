@@ -1,7 +1,5 @@
 package me.dannynguyen.aethel;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,7 +13,7 @@ public class PluginConstant {
   /**
    * Minecraft attributes.
    */
-  public static final Set<String> minecraftAttributes = new HashSet<>(List.of(
+  public static final Set<String> minecraftAttributes = Set.of(
       "Attack Damage", "Attack Speed", "Max Health", "Armor", "Armor Toughness",
-      "Movement Speed", "Knockback Resistance", "Luck"));
+      "Movement Speed", "Knockback Resistance", "Luck");
 }

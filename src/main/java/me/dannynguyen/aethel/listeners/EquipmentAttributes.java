@@ -13,26 +13,28 @@ import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.10.7
+ * @version 1.11.2
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
   /**
    * All wearable items.
    */
-  private final static HashSet<String> wornAll = new HashSet<>(List.of(
+  private static final Set<String> wornAll = Set.of(
       "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS",
       "CHAINMAIL_HELMET", "CHAINMAIL_CHESTPLATE", "CHAINMAIL_LEGGINGS", "CHAINMAIL_BOOTS",
       "IRON_HELMET", "IRON_CHESTPLATE", "IRON_LEGGINGS", "IRON_BOOTS",
@@ -40,51 +42,38 @@ public class EquipmentAttributes implements Listener {
       "DIAMOND_HELMET", "DIAMOND_CHESTPLATE", "DIAMOND_LEGGINGS", "DIAMOND_BOOTS",
       "NETHERITE_HELMET", "NETHERITE_CHESTPLATE", "NETHERITE_LEGGINGS", "NETHERITE_BOOTS",
       "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL", "PLAYER_HEAD",
-      "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN", "ELYTRA", "SHIELD"));
+      "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN", "ELYTRA", "SHIELD");
 
   /**
    * Items worn on the head slot.
    */
-  private final static HashSet<String> wornHead = new HashSet<>(List.of(
+  private static final Set<String> wornHead = Set.of(
       "LEATHER_HELMET", "CHAINMAIL_HELMET", "IRON_HELMET",
       "GOLDEN_HELMET", "DIAMOND_HELMET", "NETHERITE_HELMET",
       "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL",
-      "PLAYER_HEAD", "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN"));
+      "PLAYER_HEAD", "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN");
 
   /**
    * Items worn on the chest slot.
    */
-  private final static HashSet<String> wornChest = new HashSet<>(List.of(
+  private static final Set<String> wornChest = Set.of(
       "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE", "IRON_CHESTPLATE",
       "GOLDEN_CHESTPLATE", "DIAMOND_CHESTPLATE", "NETHERITE_CHESTPLATE",
-      "ELYTRA"));
+      "ELYTRA");
 
   /**
    * Items worn on the leg slot.
    */
-  private final static HashSet<String> wornLegs = new HashSet<>(List.of(
+  private static final Set<String> wornLegs = Set.of(
       "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS", "IRON_LEGGINGS",
-      "GOLDEN_LEGGINGS", "DIAMOND_LEGGINGS", "NETHERITE_LEGGINGS"));
+      "GOLDEN_LEGGINGS", "DIAMOND_LEGGINGS", "NETHERITE_LEGGINGS");
 
   /**
    * Items worn on the feet slot.
    */
-  private final static HashSet<String> wornFeet = new HashSet<>(List.of(
+  private static final Set<String> wornFeet = Set.of(
       "LEATHER_BOOTS", "CHAINMAIL_BOOTS", "IRON_BOOTS",
-      "GOLDEN_BOOTS", "DIAMOND_BOOTS", "NETHERITE_BOOTS"));
-
-  /**
-   * Assigns an RPG profile to a player upon joining the server.
-   *
-   * @param e player join event
-   */
-  @EventHandler
-  public void onJoin(PlayerJoinEvent e) {
-    Player player = e.getPlayer();
-    if (PluginData.rpgSystem.getRpgProfiles().get(player) == null) {
-      PluginData.rpgSystem.loadRpgPlayer(player);
-    }
-  }
+      "GOLDEN_BOOTS", "DIAMOND_BOOTS", "NETHERITE_BOOTS");
 
   /**
    * Checks clicks within player inventories to determine whether to update a player's equipment attributes.
