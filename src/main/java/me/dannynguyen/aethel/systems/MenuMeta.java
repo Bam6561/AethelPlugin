@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.systems;
  * Plugin menu metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.10.5
  * @since 1.10.1
  */
 public enum MenuMeta {
@@ -27,6 +27,11 @@ public enum MenuMeta {
    * Interact with character sheet.
    */
   CHARACTER_SHEET("character.sheet"),
+
+  /**
+   * Interact with RPG settings.
+   */
+  CHARACTER_SETTINGS("character.settings"),
 
   /**
    * View recipe categories.

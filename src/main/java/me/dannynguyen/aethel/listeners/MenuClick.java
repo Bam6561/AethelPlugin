@@ -25,7 +25,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.11.5
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -110,7 +110,8 @@ public class MenuClick implements Listener {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
         switch (invType[1]) {
-          case "sheet" -> click.interpretCharacterSheetClick();
+          case "sheet" -> click.interpretSheetClick();
+          case "settings" -> click.interpretSettingsClick();
         }
       } else {
         if (!e.isShiftClick()) {

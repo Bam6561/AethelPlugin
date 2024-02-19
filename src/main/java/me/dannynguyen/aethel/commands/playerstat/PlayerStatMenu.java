@@ -78,7 +78,7 @@ class PlayerStatMenu {
   protected Inventory openMainMenu() {
     addCategories();
     addContext(null);
-    addStatOwnerHead();
+    addOwner();
     return menu;
   }
 
@@ -96,7 +96,7 @@ class PlayerStatMenu {
       default -> loadStatsPage(category);
     }
     addContext(category);
-    addStatOwnerHead();
+    addOwner();
     InventoryPages.addBackButton(menu, 5);
     return menu;
   }
@@ -146,7 +146,7 @@ class PlayerStatMenu {
   /**
    * Adds the stat owner's head.
    */
-  private void addStatOwnerHead() {
+  private void addOwner() {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 

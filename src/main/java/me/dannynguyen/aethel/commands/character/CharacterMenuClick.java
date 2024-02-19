@@ -2,10 +2,14 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.systems.MenuMeta;
+import me.dannynguyen.aethel.systems.PlayerMeta;
 import me.dannynguyen.aethel.systems.RpgProfile;
+import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -23,7 +27,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.7
+ * @version 1.11.5
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -56,7 +60,7 @@ public class CharacterMenuClick {
   /**
    * Checks if the user is interacting with an item/button or attempting to wear equipment.
    */
-  public void interpretCharacterSheetClick() {
+  public void interpretSheetClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
       switch (slotClicked) {
         case 4, 9, 15, 24, 33, 42 -> { // Player Head & Attributes
@@ -65,8 +69,7 @@ public class CharacterMenuClick {
         }
         case 34 -> { // Collectibles
         }
-        case 43 -> { // Settings
-        }
+        case 43 -> openSettings();
         case 10, 11, 12, 19, 28, 37 -> {
           e.setCancelled(false);
           unequipArmorHands(); // Armor & Hands
@@ -87,6 +90,20 @@ public class CharacterMenuClick {
   }
 
   /**
+   * Toggles the player's health bar.
+   */
+  public void interpretSettingsClick() {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+      switch (slotClicked) {
+        case 4 -> { // Player Head
+        }
+        case 6 -> returnToSheet();
+        case 9 -> toggleHealthBar();
+      }
+    }
+  }
+
+  /**
    * Updates the user's main hand item in the menu when
    * it is interacted with from the user's inventory.
    */
@@ -98,10 +115,18 @@ public class CharacterMenuClick {
           RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
           rpgProfile.readEquipmentSlot(item, "hand");
-          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getInventory()).addAttributes(), 1);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getInventory()).addAttributes(), 1);
         }, 1);
       }, 1);
     }
+  }
+
+  /**
+   * Opens a Settings menu.
+   */
+  private void openSettings() {
+    user.openInventory(new SettingsMenu(user).openMenu());
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
   }
 
   /**
@@ -200,7 +225,7 @@ public class CharacterMenuClick {
         default -> rpgProfile.readEquipmentSlot(wornItem, "hand");
       }
       PluginData.rpgSystem.getRpgProfiles().get(user).updateHealthBar();
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, e.getClickedInventory()).addAttributes(), 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getClickedInventory()).addAttributes(), 1);
     }, 1);
   }
 
@@ -224,7 +249,30 @@ public class CharacterMenuClick {
         }
       }
       PluginData.rpgSystem.getRpgProfiles().get(user).updateHealthBar();
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new CharacterSheet(user, menu).addAttributes(), 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, menu).addAttributes(), 1);
     }, 1);
+  }
+
+  /**
+   * Returns to the Sheet menu.
+   */
+  private void returnToSheet() {
+    user.openInventory(new SheetMenu(user, user).openMenu());
+    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+  }
+
+  /**
+   * Toggles the player's health bar.
+   */
+  private void toggleHealthBar() {
+    Inventory menu = e.getInventory();
+    if (PluginData.rpgSystem.getRpgProfiles().get(user).getHealthBar().isVisible()) {
+      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Bar"));
+      user.sendMessage(ChatColor.RED + "[Display Health Bar]");
+    } else {
+      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Bar"));
+      user.sendMessage(ChatColor.GREEN + "[Display Health Bar]");
+    }
+    PluginData.rpgSystem.getRpgProfiles().get(user).toggleHealthBar();
   }
 }

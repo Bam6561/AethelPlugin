@@ -26,12 +26,12 @@ import java.util.Objects;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.11.4
  * @since 1.6.3
  */
-class CharacterSheet {
+class SheetMenu {
   /**
-   * Character GUI.
+   * Sheet GUI.
    */
   private final Inventory menu;
 
@@ -46,33 +46,33 @@ class CharacterSheet {
   private final Player owner;
 
   /**
-   * Associates a new Character menu with its user and target player.
+   * Associates a new Sheet menu with its user and target player.
    *
    * @param user  user
    * @param owner requested player
    */
-  protected CharacterSheet(@NotNull Player user, @NotNull Player owner) {
+  protected SheetMenu(@NotNull Player user, @NotNull Player owner) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.owner = Objects.requireNonNull(owner, "Null owner");
     this.menu = createMenu();
   }
 
   /**
-   * Associates an existing Character menu with its user.
+   * Associates an existing Sheet menu with its user.
    *
    * @param user user
-   * @param menu existing Character menu
+   * @param menu existing Sheet menu
    */
-  protected CharacterSheet(@NotNull Player user, @NotNull Inventory menu) {
+  protected SheetMenu(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.owner = user;
     this.menu = Objects.requireNonNull(menu, "Null menu");
   }
 
   /**
-   * Creates and names a Character menu with its user.
+   * Creates and names a Sheet menu with its user.
    *
-   * @return Character menu
+   * @return Sheet menu
    */
   private Inventory createMenu() {
     return Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Character " + ChatColor.DARK_PURPLE + owner.getName());
@@ -81,7 +81,7 @@ class CharacterSheet {
   /**
    * Sets the menu to view equipment and attributes.
    *
-   * @return CharacterSheet menu
+   * @return Sheet menu
    */
   @NotNull
   protected Inventory openMenu() {
@@ -113,7 +113,9 @@ class CharacterSheet {
   private void addActions() {
     menu.setItem(25, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
     menu.setItem(34, ItemCreator.createItem(Material.ENDER_CHEST, ChatColor.AQUA + "Collectibles"));
-    menu.setItem(43, ItemCreator.createItem(Material.COMMAND_BLOCK, ChatColor.AQUA + "Settings"));
+    if (user.equals(owner)) {
+      menu.setItem(43, ItemCreator.createItem(Material.COMMAND_BLOCK, ChatColor.AQUA + "Settings"));
+    }
   }
 
   /**

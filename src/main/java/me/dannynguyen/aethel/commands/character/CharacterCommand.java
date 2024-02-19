@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Command invocation that allows the user to view a player's RPG character information.
  * <p>
- * From the Character Sheet, the user can also view the player's quests and collectibles.
+ * From the Sheet, the user can also view the player's quests and collectibles.
  * </p>
  *
  * @author Danny Nguyen
@@ -49,42 +49,42 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a CharacterSheet menu.
+   * Checks if the command request was formatted correctly before opening a Sheet menu.
    *
    * @param user user
    * @param args user provided parameters
    */
   private void readRequest(Player user, String[] args) {
     switch (args.length) {
-      case 0 -> openCharacterSheetSelf(user);
-      case 1 -> openCharacterSheetOther(user, args[0]);
+      case 0 -> openSheetSelf(user);
+      case 1 -> openSheetOther(user, args[0]);
       default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
   /**
-   * Opens a CharacterSheet menu belonging to the user.
+   * Opens a Sheet menu belonging to the user.
    *
    * @param user user
    */
-  private void openCharacterSheetSelf(Player user) {
+  private void openSheetSelf(Player user) {
     PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.PLAYER, user.getName());
-    user.openInventory(new CharacterSheet(user, user).openMenu());
+    user.openInventory(new SheetMenu(user, user).openMenu());
     PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 
   /**
-   * Opens a CharacterSheet menu belonging to another player.
+   * Opens a Sheet menu belonging to another player.
    *
    * @param user  user
    * @param owner requested player's name
    */
-  private void openCharacterSheetOther(Player user, String owner) {
+  private void openSheetOther(Player user, String owner) {
     for (Player player : Bukkit.getOnlinePlayers()) {
       if (player.getName().equals(owner)) {
         Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
         playerMeta.put(PlayerMeta.PLAYER, player.getName());
-        user.openInventory(new CharacterSheet(user, player).openMenu());
+        user.openInventory(new SheetMenu(user, player).openMenu());
         playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
         return;
       }
