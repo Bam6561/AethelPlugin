@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.0
+ * @version 1.11.1
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -131,7 +131,7 @@ public class RpgProfile {
   public void readEquipmentSlot(ItemStack item, String slot) {
     if (ItemReader.isNotNullOrAir(item)) {
       if (equipmentAttributes.containsKey(slot)) {
-        removeExistingEquipmentAttributes(slot);
+        removeEquipmentAttributes(slot);
       }
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
       NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
@@ -141,7 +141,7 @@ public class RpgProfile {
       }
     } else {
       if (equipmentAttributes.containsKey(slot)) {
-        removeExistingEquipmentAttributes(slot);
+        removeEquipmentAttributes(slot);
       }
     }
   }
@@ -151,36 +151,27 @@ public class RpgProfile {
    */
   public void updateHealthBar() {
     currentHealth = currentHealth + player.getAbsorptionAmount();
+    player.setAbsorptionAmount(0);
     maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     processHealthBarProgress();
   }
 
   /**
    * Damages the player by an amount.
-   * <p>
-   * Damage is done to absorption first before health.
-   * </p>
    *
    * @param damage damage amount
    */
   public void damageHealthBar(double damage) {
-    if (player.getAbsorptionAmount() >= damage) { // Damage completely absorbed
-      player.setAbsorptionAmount(player.getAbsorptionAmount() - damage);
+    currentHealth = currentHealth - damage;
+    if (currentHealth > 0) {
       processHealthBarProgress();
     } else {
-      damage = damage - player.getAbsorptionAmount();
-      player.setAbsorptionAmount(0);
-      currentHealth = currentHealth - damage;
-      if (currentHealth > 0) { // Alive
-        processHealthBarProgress();
-      } else { // Dead
-        DecimalFormat dc = new DecimalFormat();
-        dc.setMaximumFractionDigits(2);
-        currentHealth = 0;
-        player.setHealth(currentHealth);
-        healthBar.setProgress(0.0);
-        healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
-      }
+      DecimalFormat dc = new DecimalFormat();
+      dc.setMaximumFractionDigits(2);
+      currentHealth = 0;
+      player.setHealth(currentHealth);
+      healthBar.setProgress(0.0);
+      healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
     }
   }
 
@@ -245,7 +236,7 @@ public class RpgProfile {
    *
    * @param slot slot type
    */
-  public void removeExistingEquipmentAttributes(String slot) {
+  public void removeEquipmentAttributes(String slot) {
     for (String attribute : equipmentAttributes.get(slot).keySet()) {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipmentAttributes.get(slot).get(attribute));
     }

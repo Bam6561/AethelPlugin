@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.11.0
+ * @version 1.11.1
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -26,7 +26,12 @@ public class RpgEvent implements Listener {
   public void onPotionEffect(EntityPotionEffectEvent e) {
     if (e.getEntity() instanceof Player player) {
       switch (e.getModifiedType().getName()) {
-        case "ABSORPTION", "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgProfiles().get(player).updateHealthBar(), 1);
+        case "ABSORPTION" -> {
+          if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgProfiles().get(player).updateHealthBar(), 1);
+          }
+        }
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgProfiles().get(player).updateHealthBar(), 1);
       }
     }
   }

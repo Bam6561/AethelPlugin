@@ -187,7 +187,7 @@ public class EquipmentAttributes implements Listener {
       dropJewelryItems(e.getEntity(), rpgProfile.getJewelrySlots());
 
       for (String slot : equipment.keySet()) {
-        rpgProfile.removeExistingEquipmentAttributes(slot);
+        rpgProfile.removeEquipmentAttributes(slot);
       }
     }
   }
