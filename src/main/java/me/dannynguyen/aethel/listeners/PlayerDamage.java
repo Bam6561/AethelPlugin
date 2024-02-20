@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.systems.AethelAttribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +18,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.11.6
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -87,10 +88,10 @@ public class PlayerDamage implements Listener {
    * @param damager interacting player
    */
   private void processDamageDone(EntityDamageByEntityEvent e, Player damager) {
-    Map<String, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(damager).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(damager).getAethelAttributes();
     Random random = new Random();
     double finalDamage = e.getDamage();
-    finalDamage = calculateIfCriticallyHit(aethelAttributes, random, finalDamage);
+    finalDamage = calculateIfCriticallyHit(attributes, random, finalDamage);
     e.setDamage(finalDamage);
   }
 
@@ -101,7 +102,7 @@ public class PlayerDamage implements Listener {
    * @param damagee interacting player
    */
   private void processDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
-    Map<String, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(damagee).getAethelAttributes();
+    Map<AethelAttribute, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(damagee).getAethelAttributes();
     Random random = new Random();
     double finalDamage = e.getDamage();
     if (calculateIfDodged(aethelAttributes, random)) {
@@ -118,13 +119,14 @@ public class PlayerDamage implements Listener {
   /**
    * Checks if the player deals a critical hit, then multiplies the damage by its modifier.
    *
-   * @param aethelAttributes player's attributes
-   * @param random           rng
-   * @param damage           damage dealt
+   * @param attributes player's attributes
+   * @param random     rng
+   * @param damage     damage dealt
+   * @return damage dealt
    */
-  private double calculateIfCriticallyHit(Map<String, Double> aethelAttributes, Random random, double damage) {
-    if (aethelAttributes.get("critical_chance") > random.nextDouble() * 100) {
-      return (damage * (1.25 + (aethelAttributes.get("critical_damage") / 100)));
+  private double calculateIfCriticallyHit(Map<AethelAttribute, Double> attributes, Random random, double damage) {
+    if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
+      return (damage * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
     }
     return damage;
   }
@@ -132,35 +134,30 @@ public class PlayerDamage implements Listener {
   /**
    * Checks if the player dodged, then negates the damage taken.
    *
-   * @param aethelAttributes player's attributes
-   * @param random           rng
+   * @param attributes player's attributes
+   * @param random     rng
    * @return if damage taken dodged
    */
-  private boolean calculateIfDodged(Map<String, Double> aethelAttributes, Random random) {
-    if (aethelAttributes.get("dodge_chance") > random.nextDouble() * 100) {
-      return true;
-    }
-    return false;
+  private boolean calculateIfDodged(Map<AethelAttribute, Double> attributes, Random random) {
+    return attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
   }
 
   /**
    * Checks if the player parried, then modifies the damage taken by
    * the percentage parried and deflects the remainder to the attacker.
    *
-   * @param damager          damager
-   * @param aethelAttributes player's attributes
-   * @param random           rng
-   * @param damage           damage taken
+   * @param damager    damager
+   * @param attributes player's attributes
+   * @param random     rng
+   * @param damage     damage taken
    * @return if damage taken completely parried
    */
-  private boolean calculateIfParried(Map<String, Double> aethelAttributes, Random random, Double damage, LivingEntity damager) {
-    if (aethelAttributes.get("parry_chance") > random.nextDouble() * 100) {
-      double damageDeflected = damage * (aethelAttributes.get("deflect") / 100);
+  private boolean calculateIfParried(Map<AethelAttribute, Double> attributes, Random random, Double damage, LivingEntity damager) {
+    if (attributes.get(AethelAttribute.PARRY_CHANCE) > random.nextDouble() * 100) {
+      double damageDeflected = damage * (attributes.get(AethelAttribute.DEFLECT) / 100);
       damage = damage - damageDeflected;
       damager.damage(damageDeflected);
-      if (damage < 0) {
-        return true;
-      }
+      return damage < 0;
     }
     return false;
   }
@@ -168,15 +165,12 @@ public class PlayerDamage implements Listener {
   /**
    * Checks if the player blocked, then subtracts from the damage taken.
    *
-   * @param aethelAttributes player's attributes
-   * @param damage           damage taken
+   * @param attributes player's attributes
+   * @param damage     damage taken
    * @return if damage taken completely blocked
    */
-  private boolean calculateIfBlocked(Map<String, Double> aethelAttributes, double damage) {
-    damage = damage - aethelAttributes.get("block");
-    if (damage < 0) {
-      return true;
-    }
-    return false;
+  private boolean calculateIfBlocked(Map<AethelAttribute, Double> attributes, double damage) {
+    damage = damage - attributes.get(AethelAttribute.BLOCK);
+    return damage < 0;
   }
 }

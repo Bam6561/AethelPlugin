@@ -9,6 +9,7 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
+import me.dannynguyen.aethel.systems.EquipmentSlot;
 import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.systems.RpgProfile;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.6
+ * @version 1.11.6
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -94,7 +95,7 @@ public class Plugin extends JavaPlugin {
             playerHeldItemMap.put(player, heldItem);
 
             RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player);
-            rpgProfile.readEquipmentSlot(heldItem, "hand");
+            rpgProfile.readEquipmentSlot(heldItem, EquipmentSlot.HAND);
           }
         } else {
           playerHeldItemMap.put(player, heldItem);

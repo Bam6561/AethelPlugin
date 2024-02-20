@@ -27,7 +27,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.11.6
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -190,7 +190,7 @@ public class ItemEditorMessageSent {
       item.removeEnchantment(Enchantment.getByKey(enchantment));
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> returnToEnchantmentEditor());
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToEnchantmentEditor);
   }
 
   /**
@@ -209,7 +209,7 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> returnToTagEditor());
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToTagEditor);
   }
 
   /**

@@ -32,6 +32,8 @@ public class SettingsMenu {
 
   /**
    * Associates a new Settings menu with its user.
+   *
+   * @param user user
    */
   public SettingsMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");

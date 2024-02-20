@@ -28,7 +28,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.11.4
+ * @version 1.11.6
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -446,7 +446,7 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
     String equipmentSlot = AttributeEditorAction.asString(action);
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(equipmentSlot)).openMenu());
+    user.openInventory(new AttributeEditorMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
   }
 

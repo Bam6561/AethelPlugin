@@ -25,7 +25,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.11.5
+ * @version 1.11.6
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -106,7 +106,7 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretCharacter(InventoryClickEvent e, String[] invType) {
-    if (PluginData.pluginSystem.getPlayerMetadata().get(e.getWhoClicked()).get(PlayerMeta.PLAYER).equals(e.getWhoClicked().getName())) {
+    if (PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked()).get(PlayerMeta.PLAYER).equals(e.getWhoClicked().getName())) {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
         switch (invType[1]) {
@@ -230,10 +230,7 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   private void onClose(InventoryCloseEvent e) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getPlayer());
-    if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
-      playerMeta.remove(PlayerMeta.INVENTORY);
-    }
+    PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getPlayer()).remove(PlayerMeta.INVENTORY);
   }
 
   /**

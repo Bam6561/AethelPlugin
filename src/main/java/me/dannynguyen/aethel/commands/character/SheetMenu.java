@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.PluginData;
 import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.systems.AethelAttribute;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import net.md_5.bungee.api.ChatColor;
@@ -26,7 +27,7 @@ import java.util.Objects;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.11.4
+ * @version 1.11.6
  * @since 1.6.3
  */
 class SheetMenu {
@@ -139,7 +140,7 @@ class SheetMenu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<String, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(owner).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(owner).getAethelAttributes();
 
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
@@ -179,11 +180,11 @@ class SheetMenu {
    * @param attributes owner's Aethel attributes
    * @param df2        0.00 decimal format
    */
-  private void addOffenseAttributes(Map<String, Double> attributes, DecimalFormat df2) {
+  private void addOffenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
     String damage = ChatColor.RED + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG";
     String attackSpeed = ChatColor.GOLD + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
-    String criticalChance = ChatColor.GREEN + df2.format(attributes.get(AethelAttribute.CRITICAL_CHANCE.getId())) + "% CRIT";
-    String criticalDamage = ChatColor.DARK_GREEN + df2.format(1.25 + attributes.get(AethelAttribute.CRITICAL_DAMAGE.getId()) / 100) + "x CRIT DMG";
+    String criticalChance = ChatColor.GREEN + df2.format(attributes.get(AethelAttribute.CRITICAL_CHANCE)) + "% CRIT";
+    String criticalDamage = ChatColor.DARK_GREEN + df2.format(1.25 + attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100) + "x CRIT DMG";
 
     menu.setItem(15, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense", List.of(damage, attackSpeed, criticalChance, criticalDamage), ItemFlag.HIDE_ATTRIBUTES));
   }
@@ -194,15 +195,15 @@ class SheetMenu {
    * @param attributes owner's Aethel attributes
    * @param df2        0.00 decimal format
    */
-  private void addDefenseAttributes(Map<String, Double> attributes, DecimalFormat df2) {
+  private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
     String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgProfiles().get(owner).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) + " HP";
     String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
     String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
     String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
-    String dodgeChance = ChatColor.DARK_AQUA + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE.getId())) + "% DODGE";
-    String parryChance = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.PARRY_CHANCE.getId())) + "% PARRY";
-    String deflect = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.DEFLECT.getId())) + "% DEFLECT";
-    String block = ChatColor.BLUE + "" + df2.format(attributes.get(AethelAttribute.BLOCK.getId())) + " BLOCK";
+    String dodgeChance = ChatColor.DARK_AQUA + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
+    String parryChance = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.PARRY_CHANCE)) + "% PARRY";
+    String deflect = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.DEFLECT)) + "% DEFLECT";
+    String block = ChatColor.BLUE + "" + df2.format(attributes.get(AethelAttribute.BLOCK)) + " BLOCK";
 
     menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, armor, armorToughness, knockbackResistance, dodgeChance, parryChance, deflect, block), ItemFlag.HIDE_ATTRIBUTES));
   }
@@ -213,13 +214,13 @@ class SheetMenu {
    * @param attributes owner's Aethel attributes
    * @param df2        0.00 decimal format
    */
-  private void addOtherAttributes(Map<String, Double> attributes, DecimalFormat df2) {
+  private void addOtherAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
     DecimalFormat df3 = new DecimalFormat();
     df3.setMaximumFractionDigits(3);
 
-    String abilityDamage = ChatColor.LIGHT_PURPLE + "" + df2.format(1.0 + attributes.get(AethelAttribute.ITEM_DAMAGE.getId()) / 100) + "x ITEM DMG";
-    String abilityCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(attributes.get(AethelAttribute.ITEM_COOLDOWN.getId())) + "% ITEM CD";
-    String applyStatusEffect = ChatColor.YELLOW + "" + df2.format(1.0 + attributes.get(AethelAttribute.STATUS_CHANCE.getId()) / 100) + "x STATUS CHANCE";
+    String abilityDamage = ChatColor.LIGHT_PURPLE + "" + df2.format(1.0 + attributes.get(AethelAttribute.ITEM_DAMAGE) / 100) + "x ITEM DMG";
+    String abilityCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(attributes.get(AethelAttribute.ITEM_COOLDOWN)) + "% ITEM CD";
+    String applyStatusEffect = ChatColor.YELLOW + "" + df2.format(1.0 + attributes.get(AethelAttribute.STATUS_CHANCE) / 100) + "x STATUS CHANCE";
     String speed = ChatColor.AQUA + "" + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPEED";
     String luck = ChatColor.GREEN + "" + df2.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
 

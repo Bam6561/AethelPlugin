@@ -123,7 +123,7 @@ public enum MenuMeta {
   }
 
   /**
-   * Gets the metadata's value.
+   * Gets the metadata value.
    *
    * @return metadata value
    */

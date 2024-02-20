@@ -25,18 +25,10 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.5
+ * @version 1.11.6
  * @since 1.8.9
  */
 public class RpgProfile {
-  /**
-   * Aethel attribute IDs.
-   */
-  private static final String[] aethelAttributeId = new String[]{
-      "critical_chance", "critical_damage", "parry_chance", "dodge_chance",
-      "deflect", "block", "item_damage", "item_cooldown", "status_chance"
-  };
-
   /**
    * RPG profile owner.
    */
@@ -60,12 +52,12 @@ public class RpgProfile {
   /**
    * Total Aethel attributes.
    */
-  private final Map<String, Double> aethelAttributes;
+  private final Map<AethelAttribute, Double> aethelAttributes;
 
   /**
    * Equipment Aethel attributes.
    */
-  private final Map<String, Map<String, Double>> equipmentAttributes;
+  private final Map<EquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes;
 
   /**
    * Jewelry slots.
@@ -92,10 +84,10 @@ public class RpgProfile {
    *
    * @return blank set of Aethel attributes
    */
-  private Map<String, Double> createBlankAethelAttributes() {
-    Map<String, Double> aethelAttributes = new HashMap<>();
-    for (String attributeId : aethelAttributeId) {
-      aethelAttributes.put(attributeId, 0.0);
+  private Map<AethelAttribute, Double> createBlankAethelAttributes() {
+    Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
+    for (AethelAttribute attribute : AethelAttribute.values()) {
+      aethelAttributes.put(attribute, 0.0);
     }
     return aethelAttributes;
   }
@@ -105,12 +97,12 @@ public class RpgProfile {
    */
   public void loadEquipmentAttributes() {
     PlayerInventory pInv = player.getInventory();
-    readEquipmentSlot(pInv.getItemInMainHand(), "hand");
-    readEquipmentSlot(pInv.getItemInOffHand(), "off_hand");
-    readEquipmentSlot(pInv.getHelmet(), "head");
-    readEquipmentSlot(pInv.getChestplate(), "chest");
-    readEquipmentSlot(pInv.getLeggings(), "legs");
-    readEquipmentSlot(pInv.getBoots(), "feet");
+    readEquipmentSlot(pInv.getItemInMainHand(), EquipmentSlot.HAND);
+    readEquipmentSlot(pInv.getItemInOffHand(), EquipmentSlot.OFF_HAND);
+    readEquipmentSlot(pInv.getHelmet(), EquipmentSlot.HEAD);
+    readEquipmentSlot(pInv.getChestplate(), EquipmentSlot.CHEST);
+    readEquipmentSlot(pInv.getLeggings(), EquipmentSlot.LEGS);
+    readEquipmentSlot(pInv.getBoots(), EquipmentSlot.FEET);
   }
 
   /**
@@ -128,7 +120,7 @@ public class RpgProfile {
    * @param item interacting item
    * @param slot slot type
    */
-  public void readEquipmentSlot(ItemStack item, String slot) {
+  public void readEquipmentSlot(ItemStack item, EquipmentSlot slot) {
     if (ItemReader.isNotNullOrAir(item)) {
       if (equipmentAttributes.containsKey(slot)) {
         removeEquipmentAttributes(slot);
@@ -183,11 +175,7 @@ public class RpgProfile {
   public void healHealthBar(double heal) {
     if (!(currentHealth > maxHealth)) {
       double healthTotal = currentHealth + heal;
-      if (maxHealth >= healthTotal) {
-        currentHealth = healthTotal;
-      } else {
-        currentHealth = maxHealth;
-      }
+      currentHealth = Math.min(maxHealth, healthTotal);
       processHealthBarProgress();
     }
   }
@@ -204,11 +192,7 @@ public class RpgProfile {
    * Toggles the visibility of the health bar.
    */
   public void toggleHealthBar() {
-    if (healthBar.isVisible()) {
-      healthBar.setVisible(false);
-    } else {
-      healthBar.setVisible(true);
-    }
+    healthBar.setVisible(!healthBar.isVisible());
   }
 
   /**
@@ -218,11 +202,11 @@ public class RpgProfile {
    * @param dataContainer item's persistent tags
    * @param listKey       attributes list
    */
-  private void readEquipmentMeta(String slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
+  private void readEquipmentMeta(EquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
-      String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
-      if (attributeSlot.equals(slot)) {
+      EquipmentSlot equipmentSlot = EquipmentSlot.asEnum(attribute.substring(attribute.indexOf(".") + 1));
+      if (equipmentSlot == slot) {
         addNewEquipmentAttributes(slot, dataContainer, attribute);
       }
     }
@@ -235,9 +219,9 @@ public class RpgProfile {
    * @param dataContainer item's persistent tags
    * @param attribute     attribute modifier
    */
-  private void addNewEquipmentAttributes(String slot, PersistentDataContainer dataContainer, String attribute) {
+  private void addNewEquipmentAttributes(EquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
-    String attributeType = attribute.substring(0, attribute.indexOf("."));
+    AethelAttribute attributeType = AethelAttribute.asEnum(attribute.substring(0, attribute.indexOf(".")));
     equipmentAttributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }
@@ -247,8 +231,8 @@ public class RpgProfile {
    *
    * @param slot slot type
    */
-  public void removeEquipmentAttributes(String slot) {
-    for (String attribute : equipmentAttributes.get(slot).keySet()) {
+  public void removeEquipmentAttributes(EquipmentSlot slot) {
+    for (AethelAttribute attribute : equipmentAttributes.get(slot).keySet()) {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipmentAttributes.get(slot).get(attribute));
     }
     equipmentAttributes.remove(slot);
@@ -322,7 +306,7 @@ public class RpgProfile {
    * @return equipment Aethel attributes
    */
   @NotNull
-  public Map<String, Map<String, Double>> getEquipmentAttributes() {
+  public Map<EquipmentSlot, Map<AethelAttribute, Double>> getEquipmentAttributes() {
     return this.equipmentAttributes;
   }
 
@@ -332,7 +316,7 @@ public class RpgProfile {
    * @return total Aethel attributes
    */
   @NotNull
-  public Map<String, Double> getAethelAttributes() {
+  public Map<AethelAttribute, Double> getAethelAttributes() {
     return this.aethelAttributes;
   }
 

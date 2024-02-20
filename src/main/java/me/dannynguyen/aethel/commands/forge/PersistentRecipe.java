@@ -12,7 +12,7 @@ import java.util.Objects;
  * Represents a recipe stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.11.6
  * @since 1.0.3
  */
 class PersistentRecipe {
@@ -65,7 +65,7 @@ class PersistentRecipe {
    * @return true if the file was deleted
    */
   protected boolean delete() {
-    return this.file.delete();
+    return getFile().delete();
   }
 
   /**

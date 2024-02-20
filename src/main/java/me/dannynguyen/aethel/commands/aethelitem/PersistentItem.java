@@ -11,7 +11,7 @@ import java.util.Objects;
  * Represents a ItemStack stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.11.6
  * @since 1.3.2
  */
 class PersistentItem {
@@ -57,7 +57,7 @@ class PersistentItem {
    * @return true if the file was deleted
    */
   protected boolean delete() {
-    return this.file.delete();
+    return getFile().delete();
   }
 
   /**
