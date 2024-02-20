@@ -1,9 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -40,10 +37,10 @@ public class CharacterCommand implements CommandExecutor {
       if (user.hasPermission("aethel.character")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -58,7 +55,7 @@ public class CharacterCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> openSheetSelf(user);
       case 1 -> openSheetOther(user, args[0]);
-      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

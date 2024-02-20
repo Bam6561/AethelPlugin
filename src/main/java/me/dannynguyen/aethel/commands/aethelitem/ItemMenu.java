@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -126,7 +126,7 @@ class ItemMenu {
           ChatColor.WHITE + "get the item and save",
           ChatColor.WHITE + "it before reloading.");
     }
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
   }
 
   /**
@@ -135,14 +135,14 @@ class ItemMenu {
   private void addActions() {
     switch (action) {
       case GET -> {
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Remove"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
+        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Remove"));
       }
       case REMOVE -> {
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.BACKPACK_BROWN.getHead(), ChatColor.AQUA + "Get"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
+        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKPACK_BROWN.getHead(), ChatColor.AQUA + "Get"));
       }
-      case VIEW -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
+      case VIEW -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Save"));
     }
   }
 

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.utility;
 
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 
@@ -58,7 +58,7 @@ public class InventoryPages {
    * @param invSlot inventory slot
    */
   public static void addBackButton(Inventory inv, int invSlot) {
-    inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CHISELED_BOOKSHELF.getHead(), ChatColor.AQUA + "Back"));
+    inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CHISELED_BOOKSHELF.getHead(), ChatColor.AQUA + "Back"));
   }
 
   /**
@@ -70,10 +70,10 @@ public class InventoryPages {
    */
   public static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
     if (pageViewed > 0) {
-      inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.BACKWARD_RED.getHead(), ChatColor.AQUA + "Previous Page"));
+      inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKWARD_RED.getHead(), ChatColor.AQUA + "Previous Page"));
     }
     if (numberOfPages - 1 > pageViewed) {
-      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.FORWARD_LIME.getHead(), ChatColor.AQUA + "Next Page"));
+      inv.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.FORWARD_LIME.getHead(), ChatColor.AQUA + "Next Page"));
     }
   }
 }

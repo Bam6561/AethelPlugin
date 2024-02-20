@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -47,13 +47,13 @@ public class AethelTagsCommand implements CommandExecutor {
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
         } else {
-          user.sendMessage(PluginEnum.Message.NO_MAIN_HAND_ITEM.getMessage());
+          user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.getMessage());
         }
       } else {
-        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -72,29 +72,29 @@ public class AethelTagsCommand implements CommandExecutor {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(PluginEnum.Message.NO_PARAMETERS.getMessage());
+      case 0 -> user.sendMessage(PluginMessage.NO_PARAMETERS.getMessage());
       case 1 -> {
         if (action.equals("g") || action.equals("get")) {
           getAethelTags(user, item);
         } else {
-          user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
+          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
         }
       }
       case 2 -> {
         if (action.equals("r") || action.equals("remove")) {
           removeAethelTag(user, args[1], item);
         } else {
-          user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 3 -> {
         if (action.equals("set") || action.equals("s")) {
           setAethelTag(user, args, item);
         } else {
-          user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

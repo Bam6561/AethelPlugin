@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,10 +36,10 @@ public class DeveloperModeCommand implements CommandExecutor {
       if (user.hasPermission("aethel.developermode")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -55,7 +55,7 @@ public class DeveloperModeCommand implements CommandExecutor {
     if (numberOfParameters == 0) {
       toggleDeveloperMode(user);
     } else {
-      user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

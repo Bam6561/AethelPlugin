@@ -1,7 +1,8 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -30,9 +31,9 @@ class TagEditorMenu {
    * Aethel tags managed by the GUI.
    */
   private static final NamespacedKey[] aethelTags = {
-      PluginEnum.Key.ITEM_CATEGORY.getNamespacedKey(),
-      PluginEnum.Key.RECIPE_CATEGORY.getNamespacedKey(),
-      PluginEnum.Key.RECIPE_ID.getNamespacedKey()};
+      PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey(),
+      PluginNamespacedKey.RECIPE_CATEGORY.getNamespacedKey(),
+      PluginNamespacedKey.RECIPE_ID.getNamespacedKey()};
 
   /**
    * TagEditor GUI.
@@ -103,6 +104,6 @@ class TagEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
   }
 }

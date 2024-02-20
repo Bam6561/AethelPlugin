@@ -1,10 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -272,7 +269,7 @@ public class ItemEditorMessageSent {
    */
   private void setAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey, String attributeValue) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
+    NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -299,7 +296,7 @@ public class ItemEditorMessageSent {
    */
   private void removeAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
+    NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));

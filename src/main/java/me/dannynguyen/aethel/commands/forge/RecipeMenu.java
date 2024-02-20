@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -108,14 +108,14 @@ class RecipeMenu {
    */
   private void addContext() {
     switch (action) {
-      case CRAFT -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(
+      case CRAFT -> menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(
           ChatColor.WHITE + "Expand a recipe to see its",
           ChatColor.WHITE + "results and materials.",
           "",
           ChatColor.WHITE + "Materials are matched",
           ChatColor.WHITE + "by material unless",
           ChatColor.WHITE + "they're unique items!")));
-      case EDIT, REMOVE -> menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(
+      case EDIT, REMOVE -> menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(
           ChatColor.WHITE + "To undo a removal,",
           ChatColor.WHITE + "edit the item and",
           ChatColor.WHITE + "save it before reloading.")));
@@ -126,7 +126,7 @@ class RecipeMenu {
    * Adds the create button.
    */
   private void addCreateButton() {
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
+    menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
   }
 
   /**
@@ -135,12 +135,12 @@ class RecipeMenu {
   private void addActions() {
     switch (action) {
       case EDIT -> {
-        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
-        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Remove"));
+        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
+        menu.setItem(5, ItemCreator.createPluginPlayerHead(PluginPlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Remove"));
       }
       case REMOVE -> {
-        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
-        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.FILE_EXPLORER.getHead(), ChatColor.AQUA + "Edit"));
+        menu.setItem(3, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
+        menu.setItem(4, ItemCreator.createPluginPlayerHead(PluginPlayerHead.FILE_EXPLORER.getHead(), ChatColor.AQUA + "Edit"));
       }
     }
   }

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -152,7 +152,7 @@ public class ItemRegistry {
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
     PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    NamespacedKey itemId = PluginEnum.Key.ITEM_CATEGORY.getNamespacedKey();
+    NamespacedKey itemId = PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey();
     if (data.has(itemId, PersistentDataType.STRING)) {
       String category = data.get(itemId, PersistentDataType.STRING);
       if (categories.containsKey(category)) {

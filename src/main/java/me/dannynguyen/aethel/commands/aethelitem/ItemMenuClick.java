@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -23,7 +23,7 @@ import java.util.Objects;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.11.9
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -102,7 +102,7 @@ public class ItemMenuClick {
       String encodedItem = ItemCreator.encodeItem(item);
       if (encodedItem != null) {
         try {
-          FileWriter fw = new FileWriter(PluginEnum.Directory.AETHELITEM.getFile().getPath() + "/" + nameItemFile(item) + "_itm.txt");
+          FileWriter fw = new FileWriter(PluginDirectory.AETHELITEM.getFile().getPath() + "/" + nameItemFile(item) + "_itm.txt");
           fw.write(encodedItem);
           fw.close();
           user.sendMessage(ChatColor.GREEN + "[Saved Aethel Item] " + ChatColor.WHITE + ItemReader.readName(item));

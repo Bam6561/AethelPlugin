@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -23,7 +23,7 @@ import java.util.Objects;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.11.9
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -235,7 +235,7 @@ public class ForgeMenuClick {
       String encodedRecipe = encodeRecipe(menuContents);
       if (encodedRecipe != null) {
         try {
-          FileWriter fw = new FileWriter(PluginEnum.Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
+          FileWriter fw = new FileWriter(PluginDirectory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
           fw.write(encodedRecipe);
           fw.close();
           user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(file));

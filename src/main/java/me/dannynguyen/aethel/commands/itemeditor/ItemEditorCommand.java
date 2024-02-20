@@ -1,9 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,13 +35,13 @@ public class ItemEditorCommand implements CommandExecutor {
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
         } else {
-          user.sendMessage(PluginEnum.Message.NO_MAIN_HAND_ITEM.getMessage());
+          user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.getMessage());
         }
       } else {
-        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -60,7 +57,7 @@ public class ItemEditorCommand implements CommandExecutor {
     if (args.length == 0) {
       openMainMenu(user, item);
     } else {
-      user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

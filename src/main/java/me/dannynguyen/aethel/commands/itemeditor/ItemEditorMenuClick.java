@@ -1,11 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginConstant;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -154,7 +150,7 @@ public class ItemEditorMenuClick {
    * Sets an item's display name.
    */
   private void setDisplayName() {
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
     awaitMessageResponse("display_name");
   }
 
@@ -162,7 +158,7 @@ public class ItemEditorMenuClick {
    * Sets an item's custom model data.
    */
   private void setCustomModelData() {
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
     awaitMessageResponse("custom_model_data");
   }
 
@@ -207,7 +203,7 @@ public class ItemEditorMenuClick {
    * Sets an item's lore.
    */
   private void setLore() {
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
     awaitMessageResponse("lore-set");
   }
 
@@ -228,7 +224,7 @@ public class ItemEditorMenuClick {
    * Adds a line of text to an item's lore.
    */
   private void addLore() {
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
     awaitMessageResponse("lore-add");
   }
 
@@ -237,7 +233,7 @@ public class ItemEditorMenuClick {
    */
   private void editLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and lore to edit.");
+      user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and lore to edit.");
       awaitMessageResponse("lore-edit");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -249,7 +245,7 @@ public class ItemEditorMenuClick {
    */
   private void removeLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
+      user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
       awaitMessageResponse("lore-remove");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -261,7 +257,7 @@ public class ItemEditorMenuClick {
    */
   private void generateLore() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
+    NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
 
     if (hasAttributes) {
@@ -461,7 +457,7 @@ public class ItemEditorMenuClick {
     } else {
       attributeType = "aethel.attribute." + TextFormatter.formatId(attribute);
     }
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeValueContext(attribute));
     PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, attributeType);
     awaitMessageResponse("attribute");
@@ -472,7 +468,7 @@ public class ItemEditorMenuClick {
    */
   private void readEnchantment() {
     String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, enchantment);
     awaitMessageResponse("enchantment");
   }
@@ -482,7 +478,7 @@ public class ItemEditorMenuClick {
    */
   private void readTag() {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
     PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, tag);
     awaitMessageResponse("tag");
   }
@@ -504,7 +500,7 @@ public class ItemEditorMenuClick {
    * @return base attribute value
    */
   private String getAttributeValueContext(String attribute) {
-    String attributeContext = PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
+    String attributeContext = PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
       case "Max HP", "Max Health" -> {
         return attributeContext + "20.0";

@@ -24,12 +24,12 @@ public class PluginData {
   /**
    * Registered items in memory.
    */
-  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginEnum.Directory.AETHELITEM.getFile());
+  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.getFile());
 
   /**
    * Registered recipes in memory.
    */
-  public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginEnum.Directory.FORGE.getFile());
+  public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.getFile());
 
   /**
    * Data regarding player stats.
@@ -72,12 +72,12 @@ public class PluginData {
     hundredths.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Loading Resources");
-    File resourceDirectory = PluginEnum.Directory.RESOURCES.getFile();
+    File resourceDirectory = PluginDirectory.RESOURCES.getFile();
     if (!resourceDirectory.exists()) {
       resourceDirectory.mkdir();
     }
 
-    File aethelItemDirectory = PluginEnum.Directory.AETHELITEM.getFile();
+    File aethelItemDirectory = PluginDirectory.AETHELITEM.getFile();
     if (aethelItemDirectory.exists()) {
       start = System.nanoTime();
       PluginData.itemRegistry.loadData();
@@ -87,7 +87,7 @@ public class PluginData {
       aethelItemDirectory.mkdir();
     }
 
-    File forgeDirectory = PluginEnum.Directory.FORGE.getFile();
+    File forgeDirectory = PluginDirectory.FORGE.getFile();
     if (forgeDirectory.exists()) {
       start = System.nanoTime();
       PluginData.recipeRegistry.loadData();

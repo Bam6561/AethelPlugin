@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,10 +31,10 @@ public class Template implements CommandExecutor {
       if (user.hasPermission("aethel.template")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }

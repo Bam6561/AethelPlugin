@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -126,7 +126,7 @@ public class RpgProfile {
         removeEquipmentAttributes(slot);
       }
       PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-      NamespacedKey listKey = PluginEnum.Key.ATTRIBUTE_LIST.getNamespacedKey();
+      NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         equipmentAttributes.put(slot, new HashMap<>());
         readEquipmentMeta(slot, dataContainer, listKey);

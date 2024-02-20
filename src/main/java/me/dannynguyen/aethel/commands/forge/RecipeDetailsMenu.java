@@ -1,9 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -141,7 +138,7 @@ class RecipeDetailsMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(8, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.QUESTION_MARK_WHITE.getHead(),
+    menu.setItem(8, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(),
         ChatColor.GREEN + "Help", List.of(
             ChatColor.AQUA + "Rows",
             ChatColor.AQUA + "1 " + ChatColor.WHITE + "Results",
@@ -154,10 +151,10 @@ class RecipeDetailsMenu {
    */
   private void addActions() {
     switch (type) {
-      case CRAFT -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Craft"));
-      case SAVE -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.STACK_OF_PAPER.getHead(), ChatColor.AQUA + "Save"));
+      case CRAFT -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Craft"));
+      case SAVE -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PluginPlayerHead.STACK_OF_PAPER.getHead(), ChatColor.AQUA + "Save"));
     }
-    menu.setItem(26, ItemCreator.createPluginPlayerHead(PluginEnum.PlayerHead.BACKWARD_GRAY.getHead(), ChatColor.AQUA + "Back"));
+    menu.setItem(26, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKWARD_GRAY.getHead(), ChatColor.AQUA + "Back"));
   }
 
   /**

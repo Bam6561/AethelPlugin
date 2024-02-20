@@ -1,9 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PluginEnum;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,10 +37,10 @@ public class ItemCommand implements CommandExecutor {
       if (user.hasPermission("aethel.aethelitem")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginEnum.Message.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginEnum.Message.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -58,7 +55,7 @@ public class ItemCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> openMainMenu(user);
       case 1 -> readParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -87,7 +84,7 @@ public class ItemCommand implements CommandExecutor {
         PluginData.itemRegistry.loadData();
         user.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
       }
-      default -> user.sendMessage(PluginEnum.Message.UNRECOGNIZED_PARAMETER.getMessage());
+      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
     }
   }
 }
