@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg;
+package me.dannynguyen.aethel.systems.rpg;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

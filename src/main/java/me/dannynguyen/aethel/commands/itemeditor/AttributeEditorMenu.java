@@ -2,9 +2,9 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.PluginConstant;
-import me.dannynguyen.aethel.plugin.PluginData;
-import me.dannynguyen.aethel.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginConstant;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;

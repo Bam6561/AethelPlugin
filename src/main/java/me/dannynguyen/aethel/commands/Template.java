@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

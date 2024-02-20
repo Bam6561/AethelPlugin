@@ -1,7 +1,7 @@
-package me.dannynguyen.aethel.rpg;
+package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;

@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg;
+package me.dannynguyen.aethel.systems.rpg;
 
 import javax.annotation.Nullable;
 

@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.plugin.PluginData;
-import me.dannynguyen.aethel.plugin.PluginEnum;
-import me.dannynguyen.aethel.rpg.AethelAttribute;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import net.md_5.bungee.api.ChatColor;

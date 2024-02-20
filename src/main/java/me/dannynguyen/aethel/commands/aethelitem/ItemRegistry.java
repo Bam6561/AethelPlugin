@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;

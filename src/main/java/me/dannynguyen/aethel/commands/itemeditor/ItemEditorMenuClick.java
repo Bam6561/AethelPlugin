@@ -1,11 +1,11 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.PluginConstant;
-import me.dannynguyen.aethel.plugin.PluginData;
-import me.dannynguyen.aethel.plugin.PluginEnum;
-import me.dannynguyen.aethel.plugin.MenuMeta;
-import me.dannynguyen.aethel.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginConstant;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.MenuMeta;
+import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;

@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.showitem;
 
-import me.dannynguyen.aethel.plugin.PluginData;
-import me.dannynguyen.aethel.plugin.PluginEnum;
-import me.dannynguyen.aethel.plugin.MenuMeta;
-import me.dannynguyen.aethel.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.MenuMeta;
+import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;

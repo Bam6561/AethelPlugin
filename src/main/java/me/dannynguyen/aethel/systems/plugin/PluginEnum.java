@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin;
+package me.dannynguyen.aethel.systems.plugin;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.utility.ItemCreator;

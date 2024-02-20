@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.plugin.PluginData;
-import me.dannynguyen.aethel.plugin.PluginEnum;
-import me.dannynguyen.aethel.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.PluginEnum;
+import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin;
+package me.dannynguyen.aethel.systems.plugin;
 
 import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
-import me.dannynguyen.aethel.rpg.RpgSystem;
+import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 
 import java.io.File;
