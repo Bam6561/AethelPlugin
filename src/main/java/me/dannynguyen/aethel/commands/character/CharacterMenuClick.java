@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.plugin.PluginData;
 import me.dannynguyen.aethel.rpg.EquipmentSlot;
 import me.dannynguyen.aethel.plugin.MenuMeta;
 import me.dannynguyen.aethel.plugin.PlayerMeta;

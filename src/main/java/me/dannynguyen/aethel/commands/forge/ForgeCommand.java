@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.plugin.PluginData;
+import me.dannynguyen.aethel.plugin.PluginEnum;
 import me.dannynguyen.aethel.plugin.MenuMeta;
 import me.dannynguyen.aethel.plugin.PlayerMeta;
 import org.bukkit.ChatColor;

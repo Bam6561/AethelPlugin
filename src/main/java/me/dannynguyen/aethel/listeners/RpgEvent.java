@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.plugin.PluginData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

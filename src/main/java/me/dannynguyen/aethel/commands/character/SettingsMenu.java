@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.plugin.PluginData;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import net.md_5.bungee.api.ChatColor;

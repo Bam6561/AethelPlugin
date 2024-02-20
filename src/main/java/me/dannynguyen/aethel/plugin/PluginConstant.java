@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel;
+package me.dannynguyen.aethel.plugin;
 
 import java.util.Set;
 

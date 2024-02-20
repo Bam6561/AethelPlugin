@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.plugin.PluginData;
 import me.dannynguyen.aethel.plugin.MenuMeta;
 import me.dannynguyen.aethel.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.plugin.PluginData;
+import me.dannynguyen.aethel.plugin.PluginEnum;
 import me.dannynguyen.aethel.rpg.AethelAttribute;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;

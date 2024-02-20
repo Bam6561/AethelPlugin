@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners;
 
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.plugin.PluginData;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;

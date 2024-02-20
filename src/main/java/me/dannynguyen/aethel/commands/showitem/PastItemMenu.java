@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.showitem;
 
-import me.dannynguyen.aethel.PluginData;
+import me.dannynguyen.aethel.plugin.PluginData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

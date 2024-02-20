@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.PluginConstant;
-import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.PluginEnum;
+import me.dannynguyen.aethel.plugin.PluginConstant;
+import me.dannynguyen.aethel.plugin.PluginData;
+import me.dannynguyen.aethel.plugin.PluginEnum;
 import me.dannynguyen.aethel.plugin.MenuMeta;
 import me.dannynguyen.aethel.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.TextFormatter;

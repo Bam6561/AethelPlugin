@@ -9,6 +9,7 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
+import me.dannynguyen.aethel.plugin.PluginData;
 import me.dannynguyen.aethel.rpg.EquipmentSlot;
 import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.rpg.RpgProfile;

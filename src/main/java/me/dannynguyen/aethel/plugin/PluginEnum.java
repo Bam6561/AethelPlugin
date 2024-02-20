@@ -1,5 +1,6 @@
-package me.dannynguyen.aethel;
+package me.dannynguyen.aethel.plugin;
 
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
