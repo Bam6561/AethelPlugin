@@ -28,7 +28,7 @@ import java.util.Objects;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.11.7
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -506,6 +506,9 @@ public class ItemEditorMenuClick {
   private String getAttributeValueContext(String attribute) {
     String attributeContext = PluginEnum.Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
+      case "Max HP", "Max Health" -> {
+        return attributeContext + "20.0";
+      }
       case "Attack Damage" -> {
         return attributeContext + "1.0";
       }
@@ -517,9 +520,6 @@ public class ItemEditorMenuClick {
       }
       case "Critical Damage" -> {
         return attributeContext + "1.25x [Input / 100]";
-      }
-      case "Max Health" -> {
-        return attributeContext + "20.0";
       }
       case "Armor" -> {
         return attributeContext + "0.0 [Max: 30.0]";

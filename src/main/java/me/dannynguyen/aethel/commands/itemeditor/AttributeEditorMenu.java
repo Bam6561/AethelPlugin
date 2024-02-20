@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.11.4
+ * @version 1.11.7
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -37,7 +37,7 @@ class AttributeEditorMenu {
    */
   private static final Map<String, String[]> aethelAttributeCategories = Map.of(
       "offense", new String[]{"Attack Damage", "Attack Speed", "Critical Chance", "Critical Damage"},
-      "defense", new String[]{"Max Health", "Armor", "Armor Toughness", "Knockback Resistance", "Dodge Chance", "Parry Chance", "Deflect", "Block"},
+      "defense", new String[]{"Max HP", "Armor", "Armor Toughness", "Knockback Resistance", "Dodge Chance", "Parry Chance", "Deflect", "Block", "Max Health"},
       "other", new String[]{"Item Damage", "Item Cooldown", "Status Chance", "Movement Speed", "Luck"});
 
   /**

@@ -6,10 +6,15 @@ import javax.annotation.Nullable;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.11.7
  * @since 1.9.10
  */
 public enum AethelAttribute {
+  /**
+   * Max health.
+   */
+  MAX_HP,
+
   /**
    * Critical hit chance.
    */
@@ -65,6 +70,9 @@ public enum AethelAttribute {
   public static AethelAttribute asEnum(String attribute) {
     attribute = attribute.toLowerCase();
     switch (attribute) {
+      case "max_hp" -> {
+        return MAX_HP;
+      }
       case "critical_chance" -> {
         return CRITICAL_CHANCE;
       }

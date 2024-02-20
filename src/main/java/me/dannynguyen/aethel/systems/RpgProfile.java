@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.11.7
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -142,9 +142,9 @@ public class RpgProfile {
    * Updates the player's health bar and display.
    */
   public void updateHealthBar() {
-    currentHealth = currentHealth + player.getAbsorptionAmount();
+    setCurrentHealth(currentHealth + player.getAbsorptionAmount());
     player.setAbsorptionAmount(0);
-    maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP));
     processHealthBarProgress();
   }
 
@@ -154,13 +154,13 @@ public class RpgProfile {
    * @param damage damage amount
    */
   public void damageHealthBar(double damage) {
-    currentHealth = currentHealth - damage;
+    setCurrentHealth(currentHealth - damage);
     if (currentHealth > 0) {
       processHealthBarProgress();
     } else {
       DecimalFormat dc = new DecimalFormat();
       dc.setMaximumFractionDigits(2);
-      currentHealth = 0;
+      setCurrentHealth(0.0);
       player.setHealth(currentHealth);
       healthBar.setProgress(0.0);
       healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
@@ -174,8 +174,7 @@ public class RpgProfile {
    */
   public void healHealthBar(double heal) {
     if (!(currentHealth > maxHealth)) {
-      double healthTotal = currentHealth + heal;
-      currentHealth = Math.min(maxHealth, healthTotal);
+      setCurrentHealth(Math.min(maxHealth, currentHealth + heal));
       processHealthBarProgress();
     }
   }
@@ -184,7 +183,7 @@ public class RpgProfile {
    * Resets the player's health bar.
    */
   public void resetHealthBar() {
-    currentHealth = 20;
+    setCurrentHealth(20.0);
     processHealthBarProgress();
   }
 
@@ -321,12 +320,30 @@ public class RpgProfile {
   }
 
   /**
-   * Gets the profile's jewelry slots
+   * Gets the profile's jewelry slots,
    *
    * @return jewelry slots
    */
   @NotNull
   public ItemStack[] getJewelrySlots() {
     return this.jewelrySlots;
+  }
+
+  /**
+   * Sets the player's current health.
+   *
+   * @param currentHealth new current health value
+   */
+  private void setCurrentHealth(Double currentHealth) {
+    this.currentHealth = currentHealth;
+  }
+
+  /**
+   * Sets the player's max health.
+   *
+   * @param maxHealth new max health value
+   */
+  private void setMaxHealth(Double maxHealth) {
+    this.maxHealth = maxHealth;
   }
 }
