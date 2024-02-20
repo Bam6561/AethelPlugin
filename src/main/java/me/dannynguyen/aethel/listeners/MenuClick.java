@@ -8,7 +8,7 @@ import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
-import me.dannynguyen.aethel.systems.PlayerMeta;
+import me.dannynguyen.aethel.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

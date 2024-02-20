@@ -2,10 +2,10 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.systems.EquipmentSlot;
-import me.dannynguyen.aethel.systems.MenuMeta;
-import me.dannynguyen.aethel.systems.PlayerMeta;
-import me.dannynguyen.aethel.systems.RpgProfile;
+import me.dannynguyen.aethel.rpg.EquipmentSlot;
+import me.dannynguyen.aethel.plugin.MenuMeta;
+import me.dannynguyen.aethel.plugin.PlayerMeta;
+import me.dannynguyen.aethel.rpg.RpgProfile;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;

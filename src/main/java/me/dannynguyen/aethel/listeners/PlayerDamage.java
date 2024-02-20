@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.systems.AethelAttribute;
+import me.dannynguyen.aethel.rpg.AethelAttribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

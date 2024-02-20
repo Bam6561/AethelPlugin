@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems;
+package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginEnum;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.7
+ * @version 1.11.8
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -184,6 +184,7 @@ public class RpgProfile {
    */
   public void resetHealthBar() {
     setCurrentHealth(20.0);
+    setMaxHealth(20.0);
     processHealthBarProgress();
   }
 

@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems;
+package me.dannynguyen.aethel.plugin;
 
 /**
  * Plugin player metadata.

@@ -2,9 +2,9 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.systems.AethelAttribute;
-import me.dannynguyen.aethel.systems.EquipmentSlot;
-import me.dannynguyen.aethel.systems.RpgProfile;
+import me.dannynguyen.aethel.rpg.AethelAttribute;
+import me.dannynguyen.aethel.rpg.EquipmentSlot;
+import me.dannynguyen.aethel.rpg.RpgProfile;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

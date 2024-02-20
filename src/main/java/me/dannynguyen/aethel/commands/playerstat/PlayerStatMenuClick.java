@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.PluginData;
-import me.dannynguyen.aethel.systems.MenuMeta;
-import me.dannynguyen.aethel.systems.PlayerMeta;
+import me.dannynguyen.aethel.plugin.MenuMeta;
+import me.dannynguyen.aethel.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
