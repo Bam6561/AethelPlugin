@@ -1,40 +1,40 @@
 package me.dannynguyen.aethel.systems.rpg;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Represents RPG profiles in memory.
  *
  * @author Danny Nguyen
- * @version 1.10.7
+ * @version 1.12.0
  * @since 1.8.10
  */
 public class RpgSystem {
   /**
    * RPG profiles.
    */
-  private final Map<Player, RpgProfile> rpgProfiles = new HashMap<>();
+  private final Map<UUID, RpgProfile> rpgProfiles = new HashMap<>();
 
   /**
    * Player held items.
    */
-  private final Map<Player, ItemStack> playerHeldItemMap = new HashMap<>();
+  private final Map<UUID, ItemStack> playerHeldItemMap = new HashMap<>();
 
   /**
    * Loads an RPG profile into memory.
    *
-   * @param player player
+   * @param playerUUID player's UUID
    */
-  public void loadRpgPlayer(Player player) {
-    RpgProfile rpgProfile = new RpgProfile(player);
+  public void loadRpgPlayer(UUID playerUUID) {
+    RpgProfile rpgProfile = new RpgProfile(playerUUID);
     rpgProfile.loadEquipmentAttributes();
     rpgProfile.loadHealthBar();
-    rpgProfiles.put(player, rpgProfile);
+    rpgProfiles.put(playerUUID, rpgProfile);
   }
 
   /**
@@ -43,7 +43,7 @@ public class RpgSystem {
    * @return RPG profiles
    */
   @NotNull
-  public Map<Player, RpgProfile> getRpgProfiles() {
+  public Map<UUID, RpgProfile> getRpgProfiles() {
     return this.rpgProfiles;
   }
 
@@ -53,7 +53,7 @@ public class RpgSystem {
    * @return player held items
    */
   @NotNull
-  public Map<Player, ItemStack> getPlayerHeldItemMap() {
+  public Map<UUID, ItemStack> getPlayerHeldItemMap() {
     return this.playerHeldItemMap;
   }
 }

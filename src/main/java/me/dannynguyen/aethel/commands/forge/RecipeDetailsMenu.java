@@ -15,12 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.0
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -33,6 +34,11 @@ class RecipeDetailsMenu {
    * GUI user.
    */
   private final Player user;
+
+  /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
 
   /**
    * Recipe details menu type.
@@ -67,6 +73,7 @@ class RecipeDetailsMenu {
    */
   protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.userUUID = user.getUniqueId();
     this.type = Objects.requireNonNull(type, "Null type");
     this.menu = createMenu(this.type);
   }
@@ -80,6 +87,7 @@ class RecipeDetailsMenu {
    */
   protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.userUUID = user.getUniqueId();
     this.type = Objects.requireNonNull(type, "Null type");
     this.recipe = Objects.requireNonNull(PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
     this.menu = createMenu(this.type);
@@ -113,7 +121,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT_RECIPE.getMeta());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT_RECIPE.getMeta());
   }
 
   /**
@@ -124,7 +132,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
   }
 
   /**
@@ -134,7 +142,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
   }
 
   /**

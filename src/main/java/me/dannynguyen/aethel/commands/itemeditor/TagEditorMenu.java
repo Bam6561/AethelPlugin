@@ -23,7 +23,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.12.0
  * @since 1.6.15
  */
 class TagEditorMenu {
@@ -57,7 +57,7 @@ class TagEditorMenu {
    */
   protected TagEditorMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
+    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
     this.menu = createMenu();
   }
 

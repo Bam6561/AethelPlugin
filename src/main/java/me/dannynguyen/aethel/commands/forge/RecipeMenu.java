@@ -15,12 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.0
  * @since 1.0.6
  */
 class RecipeMenu {
@@ -35,6 +36,11 @@ class RecipeMenu {
   private final Player user;
 
   /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
+
+  /**
    * GUI action.
    */
   private final ForgeMenuAction action;
@@ -47,6 +53,7 @@ class RecipeMenu {
    */
   protected RecipeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.userUUID = user.getUniqueId();
     this.action = Objects.requireNonNull(action, "Null action");
     this.menu = createMenu();
   }
@@ -58,7 +65,7 @@ class RecipeMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
+    String category = ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -93,7 +100,7 @@ class RecipeMenu {
     List<Inventory> category = PluginData.recipeRegistry.getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();

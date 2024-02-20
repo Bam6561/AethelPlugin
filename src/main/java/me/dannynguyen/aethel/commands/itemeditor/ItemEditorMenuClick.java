@@ -20,16 +20,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.11.7
+ * @version 1.12.0
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -47,6 +44,11 @@ public class ItemEditorMenuClick {
    * Player who clicked.
    */
   private final Player user;
+
+  /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
 
   /**
    * ItemStack being edited.
@@ -72,7 +74,8 @@ public class ItemEditorMenuClick {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
     this.menu = e.getInventory();
     this.user = (Player) e.getWhoClicked();
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
+    this.userUUID = user.getUniqueId();
+    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
     this.meta = item.getItemMeta();
     this.slotClicked = e.getSlot();
   }
@@ -171,10 +174,8 @@ public class ItemEditorMenuClick {
    * Opens an AttributeEditor menu.
    */
   private void openAttributeEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
-      playerMeta.remove(PlayerMeta.MESSAGE);
-    }
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
     user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
@@ -184,10 +185,8 @@ public class ItemEditorMenuClick {
    * Opens an EnchantmentEditor menu.
    */
   private void openEnchantmentEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
-      playerMeta.remove(PlayerMeta.MESSAGE);
-    }
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new EnchantmentEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
   }
@@ -196,10 +195,8 @@ public class ItemEditorMenuClick {
    * Opens a TagEditor menu.
    */
   private void openTagEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
-    if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
-      playerMeta.remove(PlayerMeta.MESSAGE);
-    }
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new TagEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
   }
@@ -435,7 +432,7 @@ public class ItemEditorMenuClick {
    */
   private void returnToCosmeticEditor() {
     user.openInventory(new CosmeticEditorMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
   }
 
   /**
@@ -444,7 +441,7 @@ public class ItemEditorMenuClick {
    * @param action type of interaction
    */
   private void setMode(AttributeEditorAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String equipmentSlot = AttributeEditorAction.asString(action);
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
     user.openInventory(new AttributeEditorMenu(user, action).openMenu());
@@ -464,7 +461,7 @@ public class ItemEditorMenuClick {
     }
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeValueContext(attribute));
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, attributeType);
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attributeType);
     awaitMessageResponse("attribute");
   }
 
@@ -474,7 +471,7 @@ public class ItemEditorMenuClick {
   private void readEnchantment() {
     String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, enchantment);
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, enchantment);
     awaitMessageResponse("enchantment");
   }
 
@@ -484,7 +481,7 @@ public class ItemEditorMenuClick {
   private void readTag() {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.TYPE, tag);
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, tag);
     awaitMessageResponse("tag");
   }
 
@@ -495,7 +492,7 @@ public class ItemEditorMenuClick {
    */
   private void awaitMessageResponse(String metadata) {
     user.closeInventory();
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.MESSAGE, "itemeditor." + metadata);
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.MESSAGE, "itemeditor." + metadata);
   }
 
   /**

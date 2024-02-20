@@ -21,7 +21,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.0
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -68,7 +68,7 @@ public class ItemCommand implements CommandExecutor {
    * @param user user
    */
   private void openMainMenu(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.CATEGORY, " ");
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());

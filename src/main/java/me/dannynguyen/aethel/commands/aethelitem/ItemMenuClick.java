@@ -18,12 +18,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.11.9
+ * @version 1.12.0
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -38,6 +39,11 @@ public class ItemMenuClick {
   private final Player user;
 
   /**
+   * User's uuid.
+   */
+  private final UUID userUUID;
+
+  /**
    * Slot clicked.
    */
   private final int slotClicked;
@@ -50,6 +56,7 @@ public class ItemMenuClick {
   public ItemMenuClick(@NotNull InventoryClickEvent e) {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
     this.user = (Player) e.getWhoClicked();
+    this.userUUID = user.getUniqueId();
     this.slotClicked = e.getSlot();
   }
 
@@ -121,7 +128,7 @@ public class ItemMenuClick {
    * Views an item category.
    */
   private void viewItemCategory() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -136,7 +143,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void previousPage(ItemMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -150,7 +157,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void toggleAction(ItemMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -168,7 +175,7 @@ public class ItemMenuClick {
    */
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }
@@ -179,7 +186,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void nextPage(ItemMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 

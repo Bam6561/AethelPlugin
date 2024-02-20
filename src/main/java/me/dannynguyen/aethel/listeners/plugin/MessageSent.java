@@ -16,7 +16,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.11.3
+ * @version 1.12.0
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -27,7 +27,7 @@ public class MessageSent implements Listener {
    */
   @EventHandler
   private void onPlayerChat(AsyncPlayerChatEvent e) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer());
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer().getUniqueId());
     if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
       e.setCancelled(true);
       String[] msgType = playerMeta.get(PlayerMeta.MESSAGE).split("\\.");

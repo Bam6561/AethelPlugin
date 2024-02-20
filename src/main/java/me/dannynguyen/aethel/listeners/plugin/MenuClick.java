@@ -10,7 +10,6 @@ import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
@@ -25,7 +24,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.12.0
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -37,7 +36,7 @@ public class MenuClick implements Listener {
   @EventHandler
   private void onClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
-      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
+      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getWhoClicked().getUniqueId());
       if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
         e.setCancelled(true);
         if (e.getAction() != InventoryAction.COLLECT_TO_CURSOR) { // Prevents item duplication
@@ -62,7 +61,7 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   private void onDrag(InventoryDragEvent e) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked());
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getWhoClicked().getUniqueId());
     if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
       e.setCancelled(true);
       String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
@@ -106,7 +105,7 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretCharacter(InventoryClickEvent e, String[] invType) {
-    if (PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getWhoClicked()).get(PlayerMeta.PLAYER).equals(e.getWhoClicked().getName())) {
+    if (PluginData.pluginSystem.getPlayerMetadata().get(e.getWhoClicked().getUniqueId()).get(PlayerMeta.PLAYER).equals(e.getWhoClicked().getName())) {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
         switch (invType[1]) {
@@ -230,7 +229,7 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   private void onClose(InventoryCloseEvent e) {
-    PluginData.pluginSystem.getPlayerMetadata().get((Player) e.getPlayer()).remove(PlayerMeta.INVENTORY);
+    PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer().getUniqueId()).remove(PlayerMeta.INVENTORY);
   }
 
   /**

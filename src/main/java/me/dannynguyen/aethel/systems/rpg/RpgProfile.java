@@ -20,19 +20,20 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.11.8
+ * @version 1.12.0
  * @since 1.8.9
  */
 public class RpgProfile {
   /**
    * RPG profile owner.
    */
-  private final Player player;
+  private final UUID uuid;
 
   /**
    * Player health bar.
@@ -67,11 +68,12 @@ public class RpgProfile {
   /**
    * Associates a player with a new RPG profile.
    *
-   * @param player player
+   * @param uuid player's uuid
    */
-  public RpgProfile(@NotNull Player player) {
-    this.player = Objects.requireNonNull(player, "Null player");
+  public RpgProfile(@NotNull UUID uuid) {
+    this.uuid = Objects.requireNonNull(uuid, "Null UUID");
     this.healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
+    Player player = Bukkit.getPlayer(uuid);
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     this.currentHealth = player.getHealth();
     this.aethelAttributes = createBlankAethelAttributes();
@@ -96,7 +98,7 @@ public class RpgProfile {
    * Loads the player's equipment-related Aethel attribute modifiers.
    */
   public void loadEquipmentAttributes() {
-    PlayerInventory pInv = player.getInventory();
+    PlayerInventory pInv = Bukkit.getPlayer(uuid).getInventory();
     readEquipmentSlot(pInv.getItemInMainHand(), EquipmentSlot.HAND);
     readEquipmentSlot(pInv.getItemInOffHand(), EquipmentSlot.OFF_HAND);
     readEquipmentSlot(pInv.getHelmet(), EquipmentSlot.HEAD);
@@ -109,8 +111,12 @@ public class RpgProfile {
    * Loads the player's health bar.
    */
   public void loadHealthBar() {
-    updateHealthBar();
-    healthBar.addPlayer(player);
+    double pluginMaxHealth = aethelAttributes.get(AethelAttribute.MAX_HP);
+    double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    double healthScale = (pluginMaxHealth + minecraftMaxHealth) / minecraftMaxHealth;
+    setCurrentHealth(currentHealth * healthScale);
+    processHealthBarProgress();
+    healthBar.addPlayer(Bukkit.getPlayer(uuid));
   }
 
   /**
@@ -142,6 +148,7 @@ public class RpgProfile {
    * Updates the player's health bar and display.
    */
   public void updateHealthBar() {
+    Player player = Bukkit.getPlayer(uuid);
     setCurrentHealth(currentHealth + player.getAbsorptionAmount());
     player.setAbsorptionAmount(0);
     setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP));
@@ -161,7 +168,7 @@ public class RpgProfile {
       DecimalFormat dc = new DecimalFormat();
       dc.setMaximumFractionDigits(2);
       setCurrentHealth(0.0);
-      player.setHealth(currentHealth);
+      Bukkit.getPlayer(uuid).setHealth(currentHealth);
       healthBar.setProgress(0.0);
       healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
     }
@@ -242,6 +249,7 @@ public class RpgProfile {
    * Sets the progress of the health bar based on the player's health : max health.
    */
   private void processHealthBarProgress() {
+    Player player = Bukkit.getPlayer(uuid);
     double maxHealthScale = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
@@ -264,13 +272,13 @@ public class RpgProfile {
   }
 
   /**
-   * Gets the player the RPG profile belongs to.
+   * Gets the UUID the RPG profile belongs to.
    *
    * @return RPG profile owner
    */
   @NotNull
-  public Player getPlayer() {
-    return this.player;
+  public UUID getUUID() {
+    return this.uuid;
   }
 
   /**

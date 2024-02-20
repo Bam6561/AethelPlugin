@@ -17,12 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.12.0
  * @since 1.4.7
  */
 class PlayerStatMenu {
@@ -44,6 +45,11 @@ class PlayerStatMenu {
   private final Player user;
 
   /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
+
+  /**
    * Owner of the player statistics.
    */
   private final String owner;
@@ -56,6 +62,7 @@ class PlayerStatMenu {
    */
   protected PlayerStatMenu(@NotNull Player user, @NotNull String owner) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.userUUID = user.getUniqueId();
     this.owner = Objects.requireNonNull(owner, "Null owner");
     this.menu = createMenu();
   }
@@ -111,7 +118,7 @@ class PlayerStatMenu {
     List<Inventory> category = PluginData.playerStatRecord.getSubstatCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
@@ -150,7 +157,7 @@ class PlayerStatMenu {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.PLAYER);
+    String statOwner = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
     OfflinePlayer owner = Bukkit.getOfflinePlayer(statOwner);
 
     meta.setOwningPlayer(owner);

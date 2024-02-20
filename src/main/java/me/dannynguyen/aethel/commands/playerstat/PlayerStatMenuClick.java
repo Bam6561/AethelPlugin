@@ -16,7 +16,7 @@ import java.util.Objects;
  * Inventory click event listener for PlayerStat menus.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.12.0
  * @since 1.4.7
  */
 public class PlayerStatMenuClick {
@@ -51,7 +51,7 @@ public class PlayerStatMenuClick {
    */
   public void readMainClick() {
     if (slotClicked > 8) {
-      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
       String owner = playerMeta.get(PlayerMeta.PLAYER);
       String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
       playerMeta.put(PlayerMeta.CATEGORY, item);
@@ -102,7 +102,7 @@ public class PlayerStatMenuClick {
    * Opens the previous stat category page.
    */
   private void previousPage() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
@@ -115,7 +115,7 @@ public class PlayerStatMenuClick {
    * Opens a PlayerStat menu.
    */
   private void returnToMainMenu() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
     user.openInventory(new PlayerStatMenu(user, owner).openMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
@@ -126,7 +126,7 @@ public class PlayerStatMenuClick {
    * Opens the next stat category page.
    */
   private void nextPage() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));

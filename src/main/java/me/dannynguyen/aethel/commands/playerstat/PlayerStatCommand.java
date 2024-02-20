@@ -23,7 +23,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.12.0
  * @since 1.4.7
  */
 public class PlayerStatCommand implements CommandExecutor {
@@ -74,7 +74,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).openMenu());
-      PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
+      PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -86,7 +86,7 @@ public class PlayerStatCommand implements CommandExecutor {
    * @param user user
    */
   private void openPlayerStatSelf(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.PLAYER, user.getName());
     user.openInventory(new PlayerStatMenu(user, user.getName()).openMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
@@ -101,7 +101,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void openPlayerStatOther(Player user, String owner) {
     OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
     if (player.hasPlayedBefore()) {
-      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
       playerMeta.put(PlayerMeta.PLAYER, player.getName());
       user.openInventory(new PlayerStatMenu(user, player.getName()).openMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());

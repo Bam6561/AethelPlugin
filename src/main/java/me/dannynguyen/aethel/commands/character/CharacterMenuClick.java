@@ -19,6 +19,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Inventory click event listener for Character menus.
@@ -28,7 +29,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.12.0
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -43,6 +44,11 @@ public class CharacterMenuClick {
   private final Player user;
 
   /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
+
+  /**
    * Slot clicked.
    */
   private final int slotClicked;
@@ -55,6 +61,7 @@ public class CharacterMenuClick {
   public CharacterMenuClick(@NotNull InventoryClickEvent e) {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
     this.user = (Player) e.getWhoClicked();
+    this.userUUID = user.getUniqueId();
     this.slotClicked = e.getSlot();
   }
 
@@ -113,7 +120,7 @@ public class CharacterMenuClick {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         e.getInventory().setItem(11, user.getInventory().getItem(e.getSlot()));
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-          RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
+          RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(userUUID);
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
           rpgProfile.readEquipmentSlot(item, EquipmentSlot.HAND);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getInventory()).addAttributes(), 1);
@@ -127,7 +134,7 @@ public class CharacterMenuClick {
    */
   private void openSettings() {
     user.openInventory(new SettingsMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
   }
 
   /**
@@ -214,7 +221,7 @@ public class CharacterMenuClick {
    */
   private void updateArmorHandsAttributes(int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(userUUID);
       ItemStack wornItem = user.getInventory().getItem(slot);
 
       switch (slot) {
@@ -225,7 +232,7 @@ public class CharacterMenuClick {
         case 40 -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.OFF_HAND);
         default -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.HAND);
       }
-      PluginData.rpgSystem.getRpgProfiles().get(user).updateHealthBar();
+      PluginData.rpgSystem.getRpgProfiles().get(userUUID).updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getClickedInventory()).addAttributes(), 1);
     }, 1);
   }
@@ -235,7 +242,7 @@ public class CharacterMenuClick {
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(user);
+      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(userUUID);
       Inventory menu = e.getClickedInventory();
       ItemStack wornItem = menu.getItem(slotClicked);
 
@@ -249,7 +256,7 @@ public class CharacterMenuClick {
           rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.RING);
         }
       }
-      PluginData.rpgSystem.getRpgProfiles().get(user).updateHealthBar();
+      PluginData.rpgSystem.getRpgProfiles().get(userUUID).updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, menu).addAttributes(), 1);
     }, 1);
   }
@@ -259,7 +266,7 @@ public class CharacterMenuClick {
    */
   private void returnToSheet() {
     user.openInventory(new SheetMenu(user, user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 
   /**
@@ -267,13 +274,13 @@ public class CharacterMenuClick {
    */
   private void toggleHealthBar() {
     Inventory menu = e.getInventory();
-    if (PluginData.rpgSystem.getRpgProfiles().get(user).getHealthBar().isVisible()) {
+    if (PluginData.rpgSystem.getRpgProfiles().get(userUUID).getHealthBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Bar]");
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Bar]");
     }
-    PluginData.rpgSystem.getRpgProfiles().get(user).toggleHealthBar();
+    PluginData.rpgSystem.getRpgProfiles().get(userUUID).toggleHealthBar();
   }
 }

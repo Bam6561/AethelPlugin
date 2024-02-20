@@ -11,12 +11,13 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a menu that shows the player's RPG settings.
  *
  * @author Danny Nguyen
- * @version 1.11.5
+ * @version 1.12.0
  * @since 1.11.5
  */
 public class SettingsMenu {
@@ -31,12 +32,18 @@ public class SettingsMenu {
   private final Player user;
 
   /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
+
+  /**
    * Associates a new Settings menu with its user.
    *
    * @param user user
    */
   public SettingsMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.userUUID = user.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -80,7 +87,7 @@ public class SettingsMenu {
    * Toggles the visibility of the health bar.
    */
   private void addDisplayHealthBar() {
-    if (PluginData.rpgSystem.getRpgProfiles().get(user).getHealthBar().isVisible()) {
+    if (PluginData.rpgSystem.getRpgProfiles().get(userUUID).getHealthBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Bar"));
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Bar"));

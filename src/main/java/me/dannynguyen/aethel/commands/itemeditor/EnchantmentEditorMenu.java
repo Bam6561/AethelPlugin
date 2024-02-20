@@ -20,7 +20,7 @@ import java.util.*;
  * Represents a menu that edits an item's enchantments.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.12.0
  * @since 1.6.16
  */
 class EnchantmentEditorMenu {
@@ -51,7 +51,7 @@ class EnchantmentEditorMenu {
    */
   protected EnchantmentEditorMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user);
+    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
     this.menu = createMenu();
   }
 

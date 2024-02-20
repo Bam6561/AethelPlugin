@@ -14,12 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.12.0
  * @since 1.4.10
  */
 class StatMessage {
@@ -27,6 +28,11 @@ class StatMessage {
    * Player who requested the value.
    */
   private final Player user;
+
+  /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
 
   /**
    * Player statistic owner's name.
@@ -57,7 +63,8 @@ class StatMessage {
   protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
-    this.ownerName = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.PLAYER);
+    this.userUUID = user.getUniqueId();
+    this.ownerName = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
     this.owner = Bukkit.getOfflinePlayer(ownerName);
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     this.isGlobalBroadcast = e.isShiftClick();
@@ -80,7 +87,7 @@ class StatMessage {
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
-    String category = PluginData.pluginSystem.getPlayerMetadata().get(user).get(PlayerMeta.CATEGORY);
+    String category = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
     String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
     List<String> statValues = loadSubStatValues(category, substat);
 

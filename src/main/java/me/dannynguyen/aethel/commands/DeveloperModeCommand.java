@@ -17,7 +17,7 @@ import java.util.Map;
  * bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.0
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
@@ -65,7 +65,7 @@ public class DeveloperModeCommand implements CommandExecutor {
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user);
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     if (!playerMeta.containsKey(PlayerMeta.DEVELOPER)) {
       playerMeta.put(PlayerMeta.DEVELOPER, "1");
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");

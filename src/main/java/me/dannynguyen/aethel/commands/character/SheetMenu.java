@@ -18,16 +18,13 @@ import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.11.7
+ * @version 1.12.0
  * @since 1.6.3
  */
 class SheetMenu {
@@ -47,6 +44,11 @@ class SheetMenu {
   private final Player owner;
 
   /**
+   * Owner's UUID.
+   */
+  private final UUID ownerUUID;
+
+  /**
    * Associates a new Sheet menu with its user and target player.
    *
    * @param user  user
@@ -55,6 +57,7 @@ class SheetMenu {
   protected SheetMenu(@NotNull Player user, @NotNull Player owner) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.owner = Objects.requireNonNull(owner, "Null owner");
+    this.ownerUUID = owner.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -67,6 +70,7 @@ class SheetMenu {
   protected SheetMenu(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.owner = user;
+    this.ownerUUID = owner.getUniqueId();
     this.menu = Objects.requireNonNull(menu, "Null menu");
   }
 
@@ -124,7 +128,7 @@ class SheetMenu {
    */
   private void addEquipment() {
     PlayerInventory pInv = owner.getInventory();
-    ItemStack[] jewelry = PluginData.rpgSystem.getRpgProfiles().get(owner).getJewelrySlots();
+    ItemStack[] jewelry = PluginData.rpgSystem.getRpgProfiles().get(ownerUUID).getJewelrySlots();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -140,7 +144,7 @@ class SheetMenu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(owner).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(ownerUUID).getAethelAttributes();
 
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
@@ -196,7 +200,7 @@ class SheetMenu {
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
-    String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgProfiles().get(owner).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
+    String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgProfiles().get(ownerUUID).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
     String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
     String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
     String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";

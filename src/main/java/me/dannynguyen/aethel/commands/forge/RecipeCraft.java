@@ -24,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.0
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -32,6 +32,11 @@ class RecipeCraft {
    * User crafting the recipe.
    */
   private final Player user;
+
+  /**
+   * User's UUID.
+   */
+  private final UUID userUUID;
 
   /**
    * Recipe's results.
@@ -66,6 +71,7 @@ class RecipeCraft {
    */
   protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.userUUID = user.getUniqueId();
     PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
@@ -100,7 +106,7 @@ class RecipeCraft {
    * Crafts a recipe if the user has enough materials.
    */
   protected void craftRecipe() {
-    if (!PluginData.pluginSystem.getPlayerMetadata().get(user).containsKey(PlayerMeta.DEVELOPER)) {
+    if (!PluginData.pluginSystem.getPlayerMetadata().get(userUUID).containsKey(PlayerMeta.DEVELOPER)) {
       if (hasEnoughOfAllMaterials()) {
         processRecipeCraft();
       } else {

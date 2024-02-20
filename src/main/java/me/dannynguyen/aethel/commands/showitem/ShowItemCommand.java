@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.0
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -94,7 +94,7 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
       user.openInventory(new PastItemMenu(user).openMenu());
-      PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
+      PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
     } else {
       user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
     }
