@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;

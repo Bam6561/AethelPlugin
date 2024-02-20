@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -108,7 +108,7 @@ class PlayerStatMenu {
    * @param requestedPage     requested page
    */
   private void loadSubstatPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = PluginData.playerStatData.getSubstatCategories().get(requestedCategory);
+    List<Inventory> category = PluginData.playerStatRecord.getSubstatCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     PluginData.pluginSystem.getPlayerMetadata().get(user).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
@@ -123,7 +123,7 @@ class PlayerStatMenu {
    * @param requestedCategory requested requestedCategory
    */
   private void loadStatsPage(String requestedCategory) {
-    menu.setContents(PluginData.playerStatData.getStatCategories().get(requestedCategory).getContents());
+    menu.setContents(PluginData.playerStatRecord.getStatCategories().get(requestedCategory).getContents());
   }
 
   /**

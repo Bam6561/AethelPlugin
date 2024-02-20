@@ -4,8 +4,9 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
 import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
-import me.dannynguyen.aethel.commands.playerstat.PlayerStatData;
+import me.dannynguyen.aethel.commands.playerstat.PlayerStatRecord;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
+import me.dannynguyen.aethel.systems.plugin.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 
@@ -22,19 +23,19 @@ import java.util.logging.Logger;
  */
 public class PluginData {
   /**
-   * Registered items in memory.
+   * Registered items.
    */
   public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.getFile());
 
   /**
-   * Registered recipes in memory.
+   * Registered recipes.
    */
   public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.getFile());
 
   /**
-   * Data regarding player stats.
+   * Available player stats.
    */
-  public static final PlayerStatData playerStatData = new PlayerStatData();
+  public static final PlayerStatRecord playerStatRecord = new PlayerStatRecord();
 
   /**
    * Currently editing items.
@@ -52,17 +53,17 @@ public class PluginData {
   public static final PastStatHistory pastStatHistory = new PastStatHistory();
 
   /**
-   * Data regarding plugin systems.
+   * Plugin system data.
    */
   public static final PluginSystem pluginSystem = new PluginSystem();
 
   /**
-   * Data regarding RPG systems.
+   * RPG system data.
    */
   public static final RpgSystem rpgSystem = new RpgSystem();
 
   /**
-   * Loads existing plugin data. Creates data directories if they do not already exist.
+   * Loads persistent plugin data. Creates data directories if they do not already exist.
    */
   public static void loadResources() {
     Logger log = Bukkit.getLogger();
@@ -98,7 +99,7 @@ public class PluginData {
     }
 
     start = System.nanoTime();
-    PluginData.playerStatData.loadData();
+    PluginData.playerStatRecord.loadData();
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Player Stats: " + convertToMs(hundredths, start, finish));
   }

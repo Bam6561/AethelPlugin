@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin;
+package me.dannynguyen.aethel.systems.plugin.enums;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;

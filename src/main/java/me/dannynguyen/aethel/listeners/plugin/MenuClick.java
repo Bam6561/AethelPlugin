@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.listeners.plugin;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
@@ -8,7 +7,8 @@ import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

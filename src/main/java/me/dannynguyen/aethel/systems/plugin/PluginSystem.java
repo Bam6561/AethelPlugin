@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.systems.plugin;
 
+import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

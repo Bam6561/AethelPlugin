@@ -23,7 +23,7 @@ import java.util.*;
  * @version 1.10.5
  * @since 1.4.8
  */
-public class PlayerStatData {
+public class PlayerStatRecord {
   /**
    * Player stat categories.
    */
