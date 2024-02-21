@@ -17,10 +17,13 @@ import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.RpgProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -34,7 +37,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.12.2
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -64,12 +67,13 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's event listeners.
    */
   private void registerEventListeners() {
-    getServer().getPluginManager().registerEvents(new EquipmentAttributes(), this);
-    getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
-    getServer().getPluginManager().registerEvents(new MenuClick(), this);
-    getServer().getPluginManager().registerEvents(new MessageSent(), this);
-    getServer().getPluginManager().registerEvents(new PluginEvent(), this);
-    getServer().getPluginManager().registerEvents(new RpgEvent(), this);
+    PluginManager manager = getServer().getPluginManager();
+    manager.registerEvents(new EquipmentAttributes(), this);
+    manager.registerEvents(new PlayerDamage(), this);
+    manager.registerEvents(new MenuClick(), this);
+    manager.registerEvents(new MessageSent(), this);
+    manager.registerEvents(new PluginEvent(), this);
+    manager.registerEvents(new RpgEvent(), this);
   }
 
   /**
@@ -91,7 +95,9 @@ public class Plugin extends JavaPlugin {
    * Schedules the plugin's repeating tasks.
    */
   private void scheduleRepeatingTasks() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
+    BukkitScheduler scheduler = Bukkit.getScheduler();
+    scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateOvershield, 0, 20);
   }
 
   /**
@@ -109,6 +115,23 @@ public class Plugin extends JavaPlugin {
         }
       } else {
         playerHeldItemMap.put(playerUUID, heldItem);
+      }
+    }
+  }
+
+  /**
+   * Adds an interval to check whether a player's current health decays.
+   * <p>
+   * Overshields (current health > maximum health) are capped to x1.2 a
+   * player's maximum health before it starts decaying every second.
+   * </p>
+   */
+  private void updateOvershield() {
+    Map<UUID, RpgProfile> rpgProfiles = PluginData.rpgSystem.getRpgProfiles();
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      RpgProfile rpgProfile = rpgProfiles.get(player.getUniqueId());
+      if (rpgProfile.getCurrentHealth() > rpgProfile.getMaxHealth() * 1.2) {
+        rpgProfile.decayOvershield();
       }
     }
   }

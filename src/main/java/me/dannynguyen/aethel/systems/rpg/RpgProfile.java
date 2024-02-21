@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.12.2
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -210,6 +210,20 @@ public class RpgProfile {
   public void resetHealthBar() {
     setCurrentHealth(20.0);
     setMaxHealth(20.0);
+    processHealthBarProgress();
+  }
+
+  /**
+   * Decays a player's current health.
+   * <p>
+   * This method should only be used when a player's overshield
+   * (current health > max health) exceeds x1.2 their max health.
+   * </p>
+   */
+  public void decayOvershield() {
+    double overshieldCap = maxHealth * 1.2;
+    double decayRate = Math.max((currentHealth - overshieldCap) / 40, 0.25);
+    setCurrentHealth(Math.max(overshieldCap, currentHealth - decayRate));
     processHealthBarProgress();
   }
 
