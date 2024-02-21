@@ -11,7 +11,7 @@ import java.util.UUID;
  * Represents RPG profiles in memory.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.1
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -34,6 +34,7 @@ public class RpgSystem {
     RpgProfile rpgProfile = new RpgProfile(playerUUID);
     rpgProfile.loadEquipmentAttributes();
     rpgProfile.loadHealthBar();
+    rpgProfile.loadJewelry();
     rpgProfiles.put(playerUUID, rpgProfile);
   }
 

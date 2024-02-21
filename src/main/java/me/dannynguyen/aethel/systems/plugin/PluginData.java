@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatRecord;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginDirectory;
+import me.dannynguyen.aethel.systems.rpg.RpgProfile;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.12.1
  * @since 1.1.7
  */
 public class PluginData {
@@ -73,35 +74,46 @@ public class PluginData {
     hundredths.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Loading Resources");
-    File resourceDirectory = PluginDirectory.RESOURCES.getFile();
-    if (!resourceDirectory.exists()) {
-      resourceDirectory.mkdir();
-    }
 
-    File aethelItemDirectory = PluginDirectory.AETHELITEM.getFile();
-    if (aethelItemDirectory.exists()) {
-      start = System.nanoTime();
-      PluginData.itemRegistry.loadData();
-      finish = System.nanoTime();
-      log.info("[Aethel] Loaded Aethel Items: " + convertToMs(hundredths, start, finish));
-    } else {
-      aethelItemDirectory.mkdir();
-    }
+    start = System.nanoTime();
+    PluginData.itemRegistry.loadData();
+    finish = System.nanoTime();
+    log.info("[Aethel] Loaded Aethel Items: " + convertToMs(hundredths, start, finish));
 
-    File forgeDirectory = PluginDirectory.FORGE.getFile();
-    if (forgeDirectory.exists()) {
-      start = System.nanoTime();
-      PluginData.recipeRegistry.loadData();
-      finish = System.nanoTime();
-      log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(hundredths, start, finish));
-    } else {
-      forgeDirectory.mkdir();
-    }
+    start = System.nanoTime();
+    PluginData.recipeRegistry.loadData();
+    finish = System.nanoTime();
+    log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(hundredths, start, finish));
 
     start = System.nanoTime();
     PluginData.playerStatRecord.loadData();
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Player Stats: " + convertToMs(hundredths, start, finish));
+
+    File rpgJewelryDirectory = PluginDirectory.JEWELRY.getFile();
+    if (!rpgJewelryDirectory.exists()) {
+      rpgJewelryDirectory.mkdirs();
+    }
+  }
+
+  /**
+   * Saves persistent plugin data.
+   */
+  public static void saveResources() {
+    Logger log = Bukkit.getLogger();
+    long start;
+    long finish;
+    DecimalFormat hundredths = new DecimalFormat();
+    hundredths.setMaximumFractionDigits(2);
+
+    log.info("[Aethel] Saving Resources");
+
+    start = System.nanoTime();
+    for (RpgProfile rpgProfile : PluginData.rpgSystem.getRpgProfiles().values()) {
+      rpgProfile.saveJewelry();
+    }
+    finish = System.nanoTime();
+    log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(hundredths, start, finish));
   }
 
   /**

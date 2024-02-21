@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class EditedItemCache {
    *
    * @return player:item map
    */
+  @NotNull
   protected Map<UUID, ItemStack> getEditedItemMap() {
     return this.editedItemMap;
   }

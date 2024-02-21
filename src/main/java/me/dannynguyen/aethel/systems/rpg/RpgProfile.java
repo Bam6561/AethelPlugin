@@ -1,7 +1,9 @@
 package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -16,17 +18,17 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.1
  * @since 1.8.9
  */
 public class RpgProfile {
@@ -41,14 +43,14 @@ public class RpgProfile {
   private final BossBar healthBar;
 
   /**
-   * Player max health;
-   */
-  private double maxHealth;
-
-  /**
    * Player health.
    */
   private double currentHealth;
+
+  /**
+   * Player max health.
+   */
+  private double maxHealth;
 
   /**
    * Total Aethel attributes.
@@ -74,8 +76,8 @@ public class RpgProfile {
     this.uuid = Objects.requireNonNull(uuid, "Null UUID");
     this.healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
     Player player = Bukkit.getPlayer(uuid);
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     this.currentHealth = player.getHealth();
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     this.aethelAttributes = createBlankAethelAttributes();
     this.equipmentAttributes = new HashMap<>();
     this.jewelrySlots = new ItemStack[2];
@@ -111,12 +113,28 @@ public class RpgProfile {
    * Loads the player's health bar.
    */
   public void loadHealthBar() {
-    double pluginMaxHealth = aethelAttributes.get(AethelAttribute.MAX_HP);
     double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double healthScale = (pluginMaxHealth + minecraftMaxHealth) / minecraftMaxHealth;
+    double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HP) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     processHealthBarProgress();
     healthBar.addPlayer(Bukkit.getPlayer(uuid));
+  }
+
+  /**
+   * Loads the player's equipped jewelry from a file.
+   */
+  public void loadJewelry() {
+    File file = new File(PluginDirectory.JEWELRY.getFile().getPath() + "/" + uuid.toString() + "_jwl.txt");
+    if (file.exists()) {
+      try {
+        Scanner scanner = new Scanner(file);
+        jewelrySlots[0] = ItemReader.decodeItem(scanner.nextLine());
+        jewelrySlots[1] = ItemReader.decodeItem(scanner.nextLine());
+        scanner.close();
+      } catch (IOException ex) {
+        Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
+      }
+    }
   }
 
   /**
@@ -145,7 +163,7 @@ public class RpgProfile {
   }
 
   /**
-   * Updates the player's health bar and display.
+   * Updates the health bar and display.
    */
   public void updateHealthBar() {
     Player player = Bukkit.getPlayer(uuid);
@@ -187,7 +205,7 @@ public class RpgProfile {
   }
 
   /**
-   * Resets the player's health bar.
+   * Resets the health bar.
    */
   public void resetHealthBar() {
     setCurrentHealth(20.0);
@@ -200,6 +218,21 @@ public class RpgProfile {
    */
   public void toggleHealthBar() {
     healthBar.setVisible(!healthBar.isVisible());
+  }
+
+  /**
+   * Saves the player's jewelry items to a file.
+   */
+  public void saveJewelry() {
+    File file = new File(PluginDirectory.JEWELRY.getFile().getPath() + "/" + uuid + "_jwl.txt");
+    String encodedJewelry = encodeJewelry();
+    try {
+      FileWriter fw = new FileWriter(file);
+      fw.write(encodedJewelry);
+      fw.close();
+    } catch (IOException ex) {
+      Bukkit.getLogger().warning("[Aethel] Failed to write " + uuid + "'s jewelry items to file.");
+    }
   }
 
   /**
@@ -246,7 +279,7 @@ public class RpgProfile {
   }
 
   /**
-   * Sets the progress of the health bar based on the player's health : max health.
+   * Sets the progress of the health bar based on the current health : max health.
    */
   private void processHealthBarProgress() {
     Player player = Bukkit.getPlayer(uuid);
@@ -272,6 +305,24 @@ public class RpgProfile {
   }
 
   /**
+   * Encodes the player's jewelry items.
+   *
+   * @return encoded jewelry string
+   */
+  private String encodeJewelry() {
+    StringBuilder encodedJewelry = new StringBuilder();
+    for (ItemStack jewelrySlot : jewelrySlots) {
+      if (ItemReader.isNotNullOrAir(jewelrySlot)) {
+        encodedJewelry.append(ItemCreator.encodeItem(jewelrySlot));
+      } else {
+        encodedJewelry.append("NULL");
+      }
+      encodedJewelry.append("\n");
+    }
+    return encodedJewelry.toString();
+  }
+
+  /**
    * Gets the UUID the RPG profile belongs to.
    *
    * @return RPG profile owner
@@ -282,30 +333,31 @@ public class RpgProfile {
   }
 
   /**
-   * Gets the player's health bar.
+   * Gets the health bar.
    *
    * @return player's health bar
    */
+  @NotNull
   public BossBar getHealthBar() {
     return this.healthBar;
   }
 
   /**
-   * Gets the player's max health.
+   * Gets the current health.
+   *
+   * @return player's current health
+   */
+  public double getCurrentHealth() {
+    return this.currentHealth;
+  }
+
+  /**
+   * Gets the max health.
    *
    * @return player's max health
    */
   public double getMaxHealth() {
     return this.maxHealth;
-  }
-
-  /**
-   * Gets the player's health.
-   *
-   * @return player's health
-   */
-  public double getCurrentHealth() {
-    return this.currentHealth;
   }
 
   /**

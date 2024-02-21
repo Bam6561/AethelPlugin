@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.systems.plugin;
 
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class PluginSystem {
    *
    * @return players' plugin metadata
    */
+  @NotNull
   public Map<UUID, Map<PlayerMeta, String>> getPlayerMetadata() {
     return playerMetadata;
   }

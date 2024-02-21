@@ -9,24 +9,29 @@ import java.util.Objects;
  * Plugin directories.
  *
  * @author Danny Nguyen
- * @version 1.11.9
+ * @version 1.12.1
  * @since 1.11.9
  */
 public enum PluginDirectory {
   /**
    * Resources directory.
    */
-  RESOURCES(new File("./plugins/Aethel")),
+  RESOURCES(new File("./plugins/aethel")),
 
   /**
-   * AethelItems directory.
+   * Aethel items directory.
    */
-  AETHELITEM(new File(RESOURCES.getFile().getPath() + "/aitem")),
+  AETHELITEM(new File(RESOURCES.getFile().getPath() + "/aethelitem")),
 
   /**
    * Forge recipes directory.
    */
-  FORGE(new File(RESOURCES.getFile().getPath() + "/forge"));
+  FORGE(new File(RESOURCES.getFile().getPath() + "/forge")),
+
+  /**
+   * RPG jewelry directory.
+   */
+  JEWELRY(new File(RESOURCES.getFile().getPath() + "/rpg/jewelry"));
 
   /**
    * Directory file.

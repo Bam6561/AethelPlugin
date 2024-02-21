@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.systems.plugin.enums;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Plugin menu metadata.
  *
@@ -127,6 +129,7 @@ public enum MenuMeta {
    *
    * @return metadata value
    */
+  @NotNull
   public String getMeta() {
     return this.meta;
   }

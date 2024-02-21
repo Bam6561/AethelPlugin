@@ -34,12 +34,12 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.1
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
   /**
-   * On startup:
+   * On enable:
    * - Loads existing plugin data.
    * - Registers event listeners.
    * - Registers commands.
@@ -50,6 +50,14 @@ public class Plugin extends JavaPlugin {
     registerEventListeners();
     registerCommands();
     scheduleRepeatingTasks();
+  }
+
+  /**
+   * On disable:
+   * - Saves persistent plugin data.
+   */
+  public void onDisable() {
+    PluginData.saveResources();
   }
 
   /**
@@ -83,28 +91,26 @@ public class Plugin extends JavaPlugin {
    * Schedules the plugin's repeating tasks.
    */
   private void scheduleRepeatingTasks() {
-    updateMainHandEquipmentAttributes();
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
   }
 
   /**
    * Adds an interval to store the player's main hand item into memory for future comparisons.
    */
   private void updateMainHandEquipmentAttributes() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-      Map<UUID, ItemStack> playerHeldItemMap = PluginData.rpgSystem.getPlayerHeldItemMap();
-      for (Player player : Bukkit.getOnlinePlayers()) {
-        ItemStack heldItem = player.getInventory().getItemInMainHand();
-        UUID playerUUID = player.getUniqueId();
-        if (playerHeldItemMap.containsKey(playerUUID)) {
-          if (!playerHeldItemMap.get(playerUUID).equals(heldItem)) {
-            playerHeldItemMap.put(playerUUID, heldItem);
-            PluginData.rpgSystem.getRpgProfiles().get(playerUUID).readEquipmentSlot(heldItem, EquipmentSlot.HAND);
-          }
-        } else {
+    Map<UUID, ItemStack> playerHeldItemMap = PluginData.rpgSystem.getPlayerHeldItemMap();
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      ItemStack heldItem = player.getInventory().getItemInMainHand();
+      UUID playerUUID = player.getUniqueId();
+      if (playerHeldItemMap.containsKey(playerUUID)) {
+        if (!playerHeldItemMap.get(playerUUID).equals(heldItem)) {
           playerHeldItemMap.put(playerUUID, heldItem);
+          PluginData.rpgSystem.getRpgProfiles().get(playerUUID).readEquipmentSlot(heldItem, EquipmentSlot.HAND);
         }
+      } else {
+        playerHeldItemMap.put(playerUUID, heldItem);
       }
-    }, 0, 10);
+    }
   }
 
   /**

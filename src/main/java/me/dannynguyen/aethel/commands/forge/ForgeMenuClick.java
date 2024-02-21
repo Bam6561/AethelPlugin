@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.1
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -309,7 +309,7 @@ public class ForgeMenuClick {
       }
     }
 
-    if (materials.toString().equals("")) {
+    if (materials.isEmpty()) {
       return null;
     }
 
