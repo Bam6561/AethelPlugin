@@ -128,7 +128,7 @@ class SheetMenu {
    */
   private void addEquipment() {
     PlayerInventory pInv = owner.getInventory();
-    ItemStack[] jewelry = PluginData.rpgSystem.getRpgProfiles().get(ownerUUID).getJewelrySlots();
+    ItemStack[] jewelry = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getJewelrySlots();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -144,7 +144,7 @@ class SheetMenu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(ownerUUID).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getAethelAttributes();
 
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
@@ -200,7 +200,7 @@ class SheetMenu {
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
-    String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgProfiles().get(ownerUUID).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
+    String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
     String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
     String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
     String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";

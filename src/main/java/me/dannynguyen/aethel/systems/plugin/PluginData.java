@@ -7,7 +7,7 @@ import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatRecord;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginDirectory;
-import me.dannynguyen.aethel.systems.rpg.RpgProfile;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 
@@ -109,8 +109,8 @@ public class PluginData {
     log.info("[Aethel] Saving Resources");
 
     start = System.nanoTime();
-    for (RpgProfile rpgProfile : PluginData.rpgSystem.getRpgProfiles().values()) {
-      rpgProfile.saveJewelry();
+    for (RpgPlayer rpgPlayer : PluginData.rpgSystem.getRpgPlayers().values()) {
+      rpgPlayer.saveJewelry();
     }
     finish = System.nanoTime();
     log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(hundredths, start, finish));

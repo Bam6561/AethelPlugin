@@ -41,7 +41,7 @@ public class PlayerDamage implements Listener {
       if (damagee.getNoDamageTicks() == 0) {
         damagee.damage(0.01);
         damagee.setNoDamageTicks(10);
-        PluginData.rpgSystem.getRpgProfiles().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
+        PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
       }
     }
   }
@@ -79,7 +79,7 @@ public class PlayerDamage implements Listener {
   private void onRegainHealth(EntityRegainHealthEvent e) {
     if (e.getEntity() instanceof Player player) {
       e.setCancelled(true);
-      PluginData.rpgSystem.getRpgProfiles().get(player.getUniqueId()).healHealthBar(e.getAmount());
+      PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).healHealthBar(e.getAmount());
     }
   }
 
@@ -90,7 +90,7 @@ public class PlayerDamage implements Listener {
    * @param damager interacting player
    */
   private void processDamageDone(EntityDamageByEntityEvent e, Player damager) {
-    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgProfiles().get(damager.getUniqueId()).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
     Random random = new Random();
     double finalDamage = e.getDamage();
     finalDamage = calculateIfCriticallyHit(attributes, random, finalDamage);
@@ -104,7 +104,7 @@ public class PlayerDamage implements Listener {
    * @param damagee interacting player
    */
   private void processDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
-    Map<AethelAttribute, Double> aethelAttributes = PluginData.rpgSystem.getRpgProfiles().get(damagee.getUniqueId()).getAethelAttributes();
+    Map<AethelAttribute, Double> aethelAttributes = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
     Random random = new Random();
     double finalDamage = e.getDamage();
     if (calculateIfDodged(aethelAttributes, random)) {
@@ -115,7 +115,7 @@ public class PlayerDamage implements Listener {
       return;
     }
     damagee.damage(0.01);
-    PluginData.rpgSystem.getRpgProfiles().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
+    PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
   }
 
   /**

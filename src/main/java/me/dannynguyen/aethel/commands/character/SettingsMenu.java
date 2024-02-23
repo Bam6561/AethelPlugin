@@ -87,7 +87,7 @@ public class SettingsMenu {
    * Toggles the visibility of the health bar.
    */
   private void addDisplayHealthBar() {
-    if (PluginData.rpgSystem.getRpgProfiles().get(userUUID).getHealthBar().isVisible()) {
+    if (PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealthBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Bar"));
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Bar"));

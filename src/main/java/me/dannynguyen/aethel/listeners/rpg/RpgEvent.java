@@ -11,30 +11,28 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.util.UUID;
-
 /**
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.3
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
   /**
-   * Assigns an RPG profile to a player upon joining the server.
+   * Assigns an RPG player to a player upon joining the server.
    *
    * @param e player join event
    */
   @EventHandler
   private void onJoin(PlayerJoinEvent e) {
-    UUID playerUUID = e.getPlayer().getUniqueId();
-    if (PluginData.rpgSystem.getRpgProfiles().get(playerUUID) == null) {
-      PluginData.rpgSystem.loadRpgPlayer(playerUUID);
+    Player player = e.getPlayer();
+    if (PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()) == null) {
+      PluginData.rpgSystem.loadRpgPlayer(player);
     } else {
-      BossBar healthBar = PluginData.rpgSystem.getRpgProfiles().get(playerUUID).getHealthBar();
+      BossBar healthBar = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar();
       healthBar.removeAll();
-      healthBar.addPlayer(e.getPlayer());
+      healthBar.addPlayer(player);
     }
   }
 
@@ -50,10 +48,10 @@ public class RpgEvent implements Listener {
       switch (e.getModifiedType().getName()) {
         case "ABSORPTION" -> {
           if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgProfiles().get(player.getUniqueId()).updateHealthBar(), 1);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).updateHealthBar(), 1);
           }
         }
-        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgProfiles().get(player.getUniqueId()).updateHealthBar(), 1);
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).updateHealthBar(), 1);
       }
     }
   }
@@ -65,6 +63,6 @@ public class RpgEvent implements Listener {
    */
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
-    PluginData.rpgSystem.getRpgProfiles().get(e.getPlayer().getUniqueId()).resetHealthBar();
+    PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId()).resetHealthBar();
   }
 }

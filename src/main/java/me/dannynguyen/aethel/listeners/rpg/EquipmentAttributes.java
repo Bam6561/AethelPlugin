@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgProfile;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -112,9 +112,9 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   private void onItemHeld(PlayerItemHeldEvent e) {
     Player player = e.getPlayer();
-    RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player.getUniqueId());
-    rpgProfile.readEquipmentSlot(player.getInventory().getItem(e.getNewSlot()), EquipmentSlot.HAND);
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 2);
+    RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId());
+    rpgPlayer.readEquipmentSlot(player.getInventory().getItem(e.getNewSlot()), EquipmentSlot.HAND);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgPlayer::updateHealthBar, 2);
   }
 
   /**
@@ -124,9 +124,9 @@ public class EquipmentAttributes implements Listener {
    */
   @EventHandler
   private void onSwapHandItem(PlayerSwapHandItemsEvent e) {
-    RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getPlayer().getUniqueId());
-    rpgProfile.readEquipmentSlot(e.getOffHandItem(), EquipmentSlot.OFF_HAND);
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 2);
+    RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId());
+    rpgPlayer.readEquipmentSlot(e.getOffHandItem(), EquipmentSlot.OFF_HAND);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgPlayer::updateHealthBar, 2);
   }
 
   /**
@@ -174,13 +174,13 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   private void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
-      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(e.getEntity().getUniqueId());
-      Map<EquipmentSlot, Map<AethelAttribute, Double>> equipment = rpgProfile.getEquipmentAttributes();
+      RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(e.getEntity().getUniqueId());
+      Map<EquipmentSlot, Map<AethelAttribute, Double>> equipment = rpgPlayer.getEquipmentAttributes();
 
-      dropJewelryItems(e.getEntity(), rpgProfile.getJewelrySlots());
+      dropJewelryItems(e.getEntity(), rpgPlayer.getJewelrySlots());
 
       for (EquipmentSlot slot : equipment.keySet()) {
-        rpgProfile.removeEquipmentAttributes(slot);
+        rpgPlayer.removeEquipmentAttributes(slot);
       }
     }
   }
@@ -220,16 +220,16 @@ public class EquipmentAttributes implements Listener {
    */
   private void updateEquipmentAttributesAtSlot(Player player, int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgProfile rpgProfile = PluginData.rpgSystem.getRpgProfiles().get(player.getUniqueId());
+      RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId());
       final ItemStack wornItem = player.getInventory().getItem(slot);
       switch (slot) {
-        case 36 -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.FEET);
-        case 37 -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.LEGS);
-        case 38 -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.CHEST);
-        case 39 -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.HEAD);
-        case 40 -> rpgProfile.readEquipmentSlot(wornItem, EquipmentSlot.OFF_HAND);
+        case 36 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.FEET);
+        case 37 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.LEGS);
+        case 38 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.CHEST);
+        case 39 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.HEAD);
+        case 40 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.OFF_HAND);
       }
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgProfile::updateHealthBar, 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), rpgPlayer::updateHealthBar, 1);
     }, 1);
   }
 

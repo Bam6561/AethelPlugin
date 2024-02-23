@@ -17,7 +17,7 @@ import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgProfile;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -111,7 +111,7 @@ public class Plugin extends JavaPlugin {
       if (playerHeldItemMap.containsKey(playerUUID)) {
         if (!playerHeldItemMap.get(playerUUID).equals(heldItem)) {
           playerHeldItemMap.put(playerUUID, heldItem);
-          PluginData.rpgSystem.getRpgProfiles().get(playerUUID).readEquipmentSlot(heldItem, EquipmentSlot.HAND);
+          PluginData.rpgSystem.getRpgPlayers().get(playerUUID).readEquipmentSlot(heldItem, EquipmentSlot.HAND);
         }
       } else {
         playerHeldItemMap.put(playerUUID, heldItem);
@@ -127,11 +127,11 @@ public class Plugin extends JavaPlugin {
    * </p>
    */
   private void updateOvershield() {
-    Map<UUID, RpgProfile> rpgProfiles = PluginData.rpgSystem.getRpgProfiles();
+    Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
     for (Player player : Bukkit.getOnlinePlayers()) {
-      RpgProfile rpgProfile = rpgProfiles.get(player.getUniqueId());
-      if (rpgProfile.getCurrentHealth() > rpgProfile.getMaxHealth() * 1.2) {
-        rpgProfile.decayOvershield();
+      RpgPlayer rpgPlayer = rpgProfiles.get(player.getUniqueId());
+      if (rpgPlayer.getCurrentHealth() > rpgPlayer.getMaxHealth() * 1.2) {
+        rpgPlayer.decayOvershield();
       }
     }
   }
