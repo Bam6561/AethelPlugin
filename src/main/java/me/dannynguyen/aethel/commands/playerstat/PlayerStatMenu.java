@@ -125,9 +125,9 @@ class PlayerStatMenu {
   }
 
   /**
-   * Sets the menu to load a non-stat requestedCategory page.
+   * Sets the menu to load a non-stat category page.
    *
-   * @param requestedCategory requested requestedCategory
+   * @param requestedCategory requested category
    */
   private void loadStatsPage(String requestedCategory) {
     menu.setContents(PluginData.playerStatRecord.getStatCategories().get(requestedCategory).getContents());

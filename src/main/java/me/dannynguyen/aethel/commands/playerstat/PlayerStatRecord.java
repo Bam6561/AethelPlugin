@@ -14,13 +14,9 @@ import java.util.*;
 
 /**
  * Represents player statistic categories.
- * <p>
- * After the data object's creation, {@link #loadData() loadData}
- * must be called in order to load its stats.
- * </p>
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.12.4
  * @since 1.4.8
  */
 public class PlayerStatRecord {
@@ -54,34 +50,28 @@ public class PlayerStatRecord {
           "INTERACT_WITH_SMOKER", "INTERACT_WITH_STONECUTTER"}));
 
   /**
-   * Loaded player statistic categories represented by groups of inventories.
+   * Player statistic categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    * </p>
    */
-  private final Map<String, Inventory> statCategories = new HashMap<>();
+  private final Map<String, Inventory> statCategories = createStatCategoryPages();
 
   /**
-   * Loaded player substatistic categories represented by groups of inventories.
+   * Player substatistic categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    * </p>
    */
-  private final Map<String, List<Inventory>> substatCategories = new HashMap<>(Map.of("Materials", new ArrayList<>(), "Entity Types", new ArrayList<>()));
-
-  /**
-   * Loads player stat pages into memory.
-   */
-  public void loadData() {
-    createStatCategoryPages();
-    createMaterialPages();
-    createEntityTypeStatPages();
-  }
+  private final Map<String, List<Inventory>> substatCategories = createSubstatCategoryPages();
 
   /**
    * Creates pages of non-substats by category.
+   *
+   * @return pages of non-substats
    */
-  private void createStatCategoryPages() {
+  private Map<String, Inventory> createStatCategoryPages() {
+    Map<String, Inventory> statCategories = new HashMap<>();
     for (String category : playerStatCategories.keySet()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54);
@@ -91,12 +81,27 @@ public class PlayerStatRecord {
       }
       statCategories.put(category, inv);
     }
+    return statCategories;
+  }
+
+  /**
+   * Creates pages of substats by category.
+   *
+   * @return pages of substats
+   */
+  private Map<String, List<Inventory>> createSubstatCategoryPages() {
+    Map<String, List<Inventory>> substatCategories = new HashMap<>(Map.of("Materials", new ArrayList<>(), "Entity Types", new ArrayList<>()));
+    createMaterialPages(substatCategories);
+    createEntityTypeStatPages(substatCategories);
+    return substatCategories;
   }
 
   /**
    * Creates pages of materials.
+   *
+   * @param substatCategories map to add pages to
    */
-  private void createMaterialPages() {
+  private void createMaterialPages(Map<String, List<Inventory>> substatCategories) {
     List<Material> materials = sortMaterials();
     int numberOfMaterials = materials.size();
     int numberOfPages = InventoryPages.calculateTotalPages(numberOfMaterials);
@@ -124,8 +129,10 @@ public class PlayerStatRecord {
 
   /**
    * Creates pages of entities.
+   *
+   * @param substatCategories map to add pages to
    */
-  private void createEntityTypeStatPages() {
+  private void createEntityTypeStatPages(Map<String, List<Inventory>> substatCategories) {
     List<EntityType> entityTypes = sortEntityTypes();
     int numberOfEntityTypes = entityTypes.size();
     int numberOfPages = InventoryPages.calculateTotalPages(numberOfEntityTypes);
@@ -154,18 +161,6 @@ public class PlayerStatRecord {
   }
 
   /**
-   * Sorts entity types.
-   *
-   * @return sorted entity types
-   */
-  private List<EntityType> sortEntityTypes() {
-    List<EntityType> entityTypes = new ArrayList<>(List.of(EntityType.values()));
-    Comparator<EntityType> entityTypeComparator = Comparator.comparing(Enum::name);
-    entityTypes.sort(entityTypeComparator);
-    return entityTypes;
-  }
-
-  /**
    * Sorts materials by name.
    *
    * @return sorted materials
@@ -180,6 +175,18 @@ public class PlayerStatRecord {
     Comparator<Material> materialComparator = Comparator.comparing(Enum::name);
     materials.sort(materialComparator);
     return materials;
+  }
+
+  /**
+   * Sorts entity types.
+   *
+   * @return sorted entity types
+   */
+  private List<EntityType> sortEntityTypes() {
+    List<EntityType> entityTypes = new ArrayList<>(List.of(EntityType.values()));
+    Comparator<EntityType> entityTypeComparator = Comparator.comparing(Enum::name);
+    entityTypes.sort(entityTypeComparator);
+    return entityTypes;
   }
 
   /**

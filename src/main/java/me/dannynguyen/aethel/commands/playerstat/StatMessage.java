@@ -89,7 +89,7 @@ class StatMessage {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
     String category = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
     String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
-    List<String> statValues = loadSubStatValues(category, substat);
+    List<String> statValues = getSubstatValues(category, substat);
 
     StringBuilder message = new StringBuilder(stat);
     for (String value : statValues) {
@@ -152,7 +152,7 @@ class StatMessage {
    * @param substat  substat name
    * @return substat value
    */
-  private List<String> loadSubStatValues(String category, String substat) {
+  private List<String> getSubstatValues(String category, String substat) {
     List<String> statValues = new ArrayList<>();
     if (category.equals("Entity Types")) {
       EntityType entityType = EntityType.valueOf(substat);

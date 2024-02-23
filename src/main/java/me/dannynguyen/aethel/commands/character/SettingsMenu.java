@@ -17,10 +17,10 @@ import java.util.UUID;
  * Represents a menu that shows the player's RPG settings.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.4
  * @since 1.11.5
  */
-public class SettingsMenu {
+class SettingsMenu {
   /**
    * Settings GUI.
    */
@@ -41,7 +41,7 @@ public class SettingsMenu {
    *
    * @param user user
    */
-  public SettingsMenu(@NotNull Player user) {
+  protected SettingsMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.userUUID = user.getUniqueId();
     this.menu = createMenu();
@@ -62,7 +62,7 @@ public class SettingsMenu {
    * @return Settings menu
    */
   @NotNull
-  public Inventory openMenu() {
+  protected Inventory openMenu() {
     addOwner();
     addSettings();
     InventoryPages.addBackButton(menu, 6);

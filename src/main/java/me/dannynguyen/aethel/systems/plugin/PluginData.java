@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.12.4
  * @since 1.1.7
  */
 public class PluginData {
@@ -84,11 +84,6 @@ public class PluginData {
     PluginData.recipeRegistry.loadData();
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(hundredths, start, finish));
-
-    start = System.nanoTime();
-    PluginData.playerStatRecord.loadData();
-    finish = System.nanoTime();
-    log.info("[Aethel] Loaded Player Stats: " + convertToMs(hundredths, start, finish));
 
     File rpgJewelryDirectory = PluginDirectory.JEWELRY.getFile();
     if (!rpgJewelryDirectory.exists()) {

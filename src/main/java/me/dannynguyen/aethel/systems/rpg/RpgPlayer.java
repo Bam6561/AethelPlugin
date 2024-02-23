@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.3
+ * @version 1.12.4
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -40,22 +40,22 @@ public class RpgPlayer {
   /**
    * Total Aethel attributes.
    */
-  private final Map<AethelAttribute, Double> aethelAttributes;
+  private final Map<AethelAttribute, Double> aethelAttributes = createBlankAethelAttributes();
 
   /**
    * Equipment Aethel attributes.
    */
-  private final Map<EquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes;
+  private final Map<EquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = new HashMap<>();
 
   /**
    * Jewelry slots.
    */
-  private final ItemStack[] jewelrySlots;
+  private final ItemStack[] jewelrySlots = new ItemStack[2];
 
   /**
    * Player health bar.
    */
-  private final BossBar healthBar;
+  private final BossBar healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
 
   /**
    * Player health.
@@ -70,17 +70,15 @@ public class RpgPlayer {
   /**
    * Associates a player with a new RPG player.
    *
-   * @param owner interacting player
+   * @param player interacting player
    */
-  public RpgPlayer(@NotNull Player owner) {
-    this.uuid = Objects.requireNonNull(owner, "Null player").getUniqueId();
-    this.aethelAttributes = createBlankAethelAttributes();
-    this.equipmentAttributes = new HashMap<>();
-    this.jewelrySlots = new ItemStack[2];
-    this.healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
-    Player player = Bukkit.getPlayer(uuid);
+  public RpgPlayer(@NotNull Player player) {
+    this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
+    initializeEquipmentAttributes(player);
+    initializeJewelrySlots();
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    initializeHealthBar(player);
   }
 
   /**
@@ -97,10 +95,12 @@ public class RpgPlayer {
   }
 
   /**
-   * Loads the player's equipment-related Aethel attribute modifiers.
+   * Initializes the player's equipment-related Aethel attribute modifiers.
+   *
+   * @param player interacting player
    */
-  public void loadEquipmentAttributes() {
-    PlayerInventory pInv = Bukkit.getPlayer(uuid).getInventory();
+  private void initializeEquipmentAttributes(Player player) {
+    PlayerInventory pInv = player.getInventory();
     readEquipmentSlot(pInv.getItemInMainHand(), EquipmentSlot.HAND);
     readEquipmentSlot(pInv.getItemInOffHand(), EquipmentSlot.OFF_HAND);
     readEquipmentSlot(pInv.getHelmet(), EquipmentSlot.HEAD);
@@ -110,9 +110,9 @@ public class RpgPlayer {
   }
 
   /**
-   * Loads the player's equipped jewelry from a file.
+   * Initializes the player's equipped jewelry from a file if it exists.
    */
-  public void loadJewelry() {
+  private void initializeJewelrySlots() {
     File file = new File(PluginDirectory.JEWELRY.getFile().getPath() + "/" + uuid.toString() + "_jwl.txt");
     if (file.exists()) {
       try {
@@ -127,14 +127,16 @@ public class RpgPlayer {
   }
 
   /**
-   * Loads the player's health bar.
+   * Initializes the player's health bar.
+   *
+   * @param player interacting player
    */
-  public void loadHealthBar() {
+  private void initializeHealthBar(Player player) {
     double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HP) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     processHealthBarProgress();
-    healthBar.addPlayer(Bukkit.getPlayer(uuid));
+    healthBar.addPlayer(player);
   }
 
   /**

@@ -13,7 +13,7 @@ import java.util.UUID;
  * Represents RPG players in memory.
  *
  * @author Danny Nguyen
- * @version 1.12.3
+ * @version 1.12.4
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -33,12 +33,7 @@ public class RpgSystem {
    * @param player interacting player
    */
   public void loadRpgPlayer(@NotNull Player player) {
-    Objects.requireNonNull(player, "Null player");
-    RpgPlayer rpgPlayer = new RpgPlayer(player);
-    rpgPlayer.loadEquipmentAttributes();
-    rpgPlayer.loadJewelry();
-    rpgPlayer.loadHealthBar();
-    rpgPlayers.put(player.getUniqueId(), rpgPlayer);
+    rpgPlayers.put(player.getUniqueId(), new RpgPlayer(Objects.requireNonNull(player, "Null player")));
   }
 
   /**
