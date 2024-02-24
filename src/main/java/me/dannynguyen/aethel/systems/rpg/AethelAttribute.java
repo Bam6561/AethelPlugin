@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.11.7
+ * @version 1.12.5
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -26,24 +26,19 @@ public enum AethelAttribute {
   CRITICAL_DAMAGE,
 
   /**
+   * Counterattack chance.
+   */
+  COUNTER_CHANCE,
+
+  /**
    * Dodge chance.
    */
   DODGE_CHANCE,
 
   /**
-   * Parry chance.
-   */
-  PARRY_CHANCE,
-
-  /**
-   * Percentage of the damage deflected.
-   */
-  DEFLECT,
-
-  /**
    * Flat damage blocked.
    */
-  BLOCK,
+  TOUGHNESS,
 
   /**
    * Item damage multiplier.
@@ -82,14 +77,11 @@ public enum AethelAttribute {
       case "dodge_chance" -> {
         return DODGE_CHANCE;
       }
-      case "parry_chance" -> {
-        return PARRY_CHANCE;
+      case "counter_chance" -> {
+        return COUNTER_CHANCE;
       }
-      case "deflect" -> {
-        return DEFLECT;
-      }
-      case "block" -> {
-        return BLOCK;
+      case "armor_tough" -> {
+        return TOUGHNESS;
       }
       case "item_damage" -> {
         return ITEM_DAMAGE;

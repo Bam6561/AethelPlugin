@@ -24,7 +24,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.5
  * @since 1.6.3
  */
 class SheetMenu {
@@ -201,15 +201,13 @@ class SheetMenu {
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
     String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
-    String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
-    String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue()) + " TOUGH";
-    String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
+    String counterChance = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
     String dodgeChance = ChatColor.DARK_AQUA + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
-    String parryChance = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.PARRY_CHANCE)) + "% PARRY";
-    String deflect = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.DEFLECT)) + "% DEFLECT";
-    String block = ChatColor.BLUE + "" + df2.format(attributes.get(AethelAttribute.BLOCK)) + " BLOCK";
+    String armorToughness = ChatColor.DARK_GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS)) + " TOUGH";
+    String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
+    String knockbackResistance = ChatColor.WHITE + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
 
-    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, armor, armorToughness, knockbackResistance, dodgeChance, parryChance, deflect, block), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, knockbackResistance), ItemFlag.HIDE_ATTRIBUTES));
   }
 
   /**

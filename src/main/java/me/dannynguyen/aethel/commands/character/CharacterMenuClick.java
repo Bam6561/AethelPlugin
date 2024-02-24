@@ -232,7 +232,7 @@ public class CharacterMenuClick {
         case 40 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.OFF_HAND);
         default -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.HAND);
       }
-      PluginData.rpgSystem.getRpgPlayers().get(userUUID).updateHealthBar();
+      rpgPlayer.updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getClickedInventory()).addAttributes(), 1);
     }, 1);
   }
@@ -256,7 +256,7 @@ public class CharacterMenuClick {
           rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.RING);
         }
       }
-      PluginData.rpgSystem.getRpgPlayers().get(userUUID).updateHealthBar();
+      rpgPlayer.updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, menu).addAttributes(), 1);
     }, 1);
   }

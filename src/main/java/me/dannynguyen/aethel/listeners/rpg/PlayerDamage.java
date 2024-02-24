@@ -2,6 +2,9 @@ package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
+import me.dannynguyen.aethel.utility.ItemReader;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +12,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 import java.util.Random;
@@ -18,7 +24,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.5
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -92,9 +98,9 @@ public class PlayerDamage implements Listener {
   private void processDamageDone(EntityDamageByEntityEvent e, Player damager) {
     Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
     Random random = new Random();
-    double finalDamage = e.getDamage();
-    finalDamage = calculateIfCriticallyHit(attributes, random, finalDamage);
-    e.setDamage(finalDamage);
+    double damage = e.getDamage();
+    damage = ifCriticallyHit(attributes, random, damage);
+    e.setDamage(damage);
   }
 
   /**
@@ -104,29 +110,30 @@ public class PlayerDamage implements Listener {
    * @param damagee interacting player
    */
   private void processDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
-    Map<AethelAttribute, Double> aethelAttributes = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
     Random random = new Random();
-    double finalDamage = e.getDamage();
-    if (calculateIfDodged(aethelAttributes, random)) {
+    if (ifCountered(damagee, attributes, random, (LivingEntity) e.getDamager())) {
       return;
-    } else if (calculateIfParried(aethelAttributes, random, finalDamage, (LivingEntity) e.getDamager())) {
+    } else if (ifDodged(attributes, random)) {
       return;
-    } else if (calculateIfBlocked(aethelAttributes, finalDamage)) {
+    } else if (ifTougher(e, damagee, attributes)) {
       return;
     }
+    mitigateArmorProtection(e, damagee);
+    mitigateResistance(e, damagee);
     damagee.damage(0.01);
-    PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
+    PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
   }
 
   /**
-   * Checks if the player deals a critical hit, then multiplies the damage by its modifier.
+   * If the player dealt a critical hit, multiply the damage by its modifier.
    *
    * @param attributes player's attributes
    * @param random     rng
    * @param damage     damage dealt
    * @return damage dealt
    */
-  private double calculateIfCriticallyHit(Map<AethelAttribute, Double> attributes, Random random, double damage) {
+  private double ifCriticallyHit(Map<AethelAttribute, Double> attributes, Random random, double damage) {
     if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
       return (damage * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
     }
@@ -134,45 +141,100 @@ public class PlayerDamage implements Listener {
   }
 
   /**
-   * Checks if the player dodged, then negates the damage taken.
+   * Ignores damage taken if the player killed the damager by counterattacks.
    *
+   * @param damagee    player taking damage
    * @param attributes player's attributes
    * @param random     rng
-   * @return if damage taken dodged
-   */
-  private boolean calculateIfDodged(Map<AethelAttribute, Double> attributes, Random random) {
-    return attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
-  }
-
-  /**
-   * Checks if the player parried, then modifies the damage taken by
-   * the percentage parried and deflects the remainder to the attacker.
-   *
    * @param damager    damager
-   * @param attributes player's attributes
-   * @param random     rng
-   * @param damage     damage taken
-   * @return if damage taken completely parried
+   * @return if the damager died
    */
-  private boolean calculateIfParried(Map<AethelAttribute, Double> attributes, Random random, Double damage, LivingEntity damager) {
-    if (attributes.get(AethelAttribute.PARRY_CHANCE) > random.nextDouble() * 100) {
-      double damageDeflected = damage * (attributes.get(AethelAttribute.DEFLECT) / 100);
-      damage = damage - damageDeflected;
-      damager.damage(damageDeflected);
-      return damage < 0;
+  private boolean ifCountered(Player damagee, Map<AethelAttribute, Double> attributes, Random random, LivingEntity damager) {
+    if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+      damager.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
+      return damager.getHealth() <= 0.0;
     }
     return false;
   }
 
   /**
-   * Checks if the player blocked, then subtracts from the damage taken.
+   * Ignore damage taken if the player dodged.
    *
    * @param attributes player's attributes
-   * @param damage     damage taken
-   * @return if damage taken completely blocked
+   * @param random     rng
+   * @return if damage taken ignored
    */
-  private boolean calculateIfBlocked(Map<AethelAttribute, Double> attributes, double damage) {
-    damage = damage - attributes.get(AethelAttribute.BLOCK);
-    return damage < 0;
+  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random) {
+    return attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
+  }
+
+  /**
+   * Ignore damage taken if the player's toughness is higher,
+   * otherwise toughness mitigates damage by a flat amount.
+   *
+   * @param e          entity damage by entity event
+   * @param damagee    player taking damage
+   * @param attributes player's attributes
+   * @return if damage taken ignored
+   */
+  private boolean ifTougher(EntityDamageByEntityEvent e, Player damagee, Map<AethelAttribute, Double> attributes) {
+    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS);
+    e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
+    return e.getDamage() == 0;
+  }
+
+  /**
+   * Mitigates the damage based on the player's armor value and protection enchantments.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee player taking damage
+   */
+  private void mitigateArmorProtection(EntityDamageByEntityEvent e, Player damagee) {
+    int armor = Math.min((int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue(), 20);
+    int protection = Math.min(totalProtectionLevels(damagee.getInventory()), 20);
+    double damage = e.getDamage();
+    e.setDamage(damage - (damage * (armor * 0.02 + protection * 0.01)));
+  }
+
+  /**
+   * Mitigates the damage based on the player's resistance effect.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee player taking damage
+   */
+  private void mitigateResistance(EntityDamageByEntityEvent e, Player damagee) {
+    int resistance = 0;
+    if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+      resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    }
+    double damage = e.getDamage();
+    e.setDamage(damage - (damage * (resistance * 0.05)));
+  }
+
+  /**
+   * Totals the worn armors' protection enchantment levels.
+   *
+   * @param pInv player inventory
+   * @return total protection enchantment levels
+   */
+  private int totalProtectionLevels(PlayerInventory pInv) {
+    int protection = 0;
+    ItemStack helmet = pInv.getHelmet();
+    ItemStack chestplate = pInv.getChestplate();
+    ItemStack leggings = pInv.getLeggings();
+    ItemStack boots = pInv.getBoots();
+    if (ItemReader.isNotNullOrAir(helmet)) {
+      protection += helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    if (ItemReader.isNotNullOrAir(chestplate)) {
+      protection += chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    if (ItemReader.isNotNullOrAir(leggings)) {
+      protection += leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    if (ItemReader.isNotNullOrAir(boots)) {
+      protection += boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    return protection;
   }
 }
