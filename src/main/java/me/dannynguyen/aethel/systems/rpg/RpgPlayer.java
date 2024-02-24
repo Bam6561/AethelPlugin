@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.4
+ * @version 1.12.7
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -77,7 +77,7 @@ public class RpgPlayer {
     initializeEquipmentAttributes(player);
     initializeJewelrySlots();
     this.currentHealth = player.getHealth();
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP);
     initializeHealthBar(player);
   }
 
@@ -132,7 +132,7 @@ public class RpgPlayer {
    * @param player interacting player
    */
   private void initializeHealthBar(Player player) {
-    double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HP) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     processHealthBarProgress();

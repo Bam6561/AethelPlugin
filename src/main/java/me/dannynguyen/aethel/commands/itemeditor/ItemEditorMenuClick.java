@@ -26,7 +26,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.12.5
+ * @version 1.12.7
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -531,7 +531,7 @@ public class ItemEditorMenuClick {
       case "Movement Speed" -> {
         return attributeContext + "2.0 [Input * 20]";
       }
-      case "Armor Tough", "Luck" -> {
+      case "Toughness", "Luck" -> {
         return attributeContext + "0.0";
       }
       case "Item Damage" -> {

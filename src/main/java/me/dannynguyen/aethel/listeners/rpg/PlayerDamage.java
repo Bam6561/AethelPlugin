@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,36 +26,50 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.12.5
+ * @version 1.12.7
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
   /**
    * Handled damage causes.
    */
-  private static final Set<EntityDamageEvent.DamageCause> handledDamageCause = Set.of(
+  private static final Set<EntityDamageEvent.DamageCause> handledDamageCauses = Set.of(
       EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-      EntityDamageEvent.DamageCause.KILL);
+      EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK,
+      EntityDamageEvent.DamageCause.FALLING_BLOCK, EntityDamageEvent.DamageCause.LIGHTNING,
+      EntityDamageEvent.DamageCause.PROJECTILE, EntityDamageEvent.DamageCause.KILL);
 
   /**
-   * Calculates damage taken by players from non-entity attacks.
+   * Armor durability loss causes.
+   */
+  private static final Set<EntityDamageEvent.DamageCause> armorDurabilityLossCauses = Set.of(
+      EntityDamageEvent.DamageCause.BLOCK_EXPLOSION, EntityDamageEvent.DamageCause.CONTACT,
+      EntityDamageEvent.DamageCause.FIRE, EntityDamageEvent.DamageCause.HOT_FLOOR,
+      EntityDamageEvent.DamageCause.LAVA);
+
+  /**
+   * Processes damage taken by players from non-entity attacks.
    *
    * @param e entity damage event
    */
   @EventHandler
   private void onGeneralDamage(EntityDamageEvent e) {
-    if (e.getEntity() instanceof Player damagee && !handledDamageCause.contains(e.getCause())) {
+    if (e.getEntity() instanceof Player damagee && !handledDamageCauses.contains(e.getCause())) {
       e.setCancelled(true);
       if (damagee.getNoDamageTicks() == 0) {
         damagee.damage(0.01);
         damagee.setNoDamageTicks(10);
-        PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
+        double finalDamage = e.getDamage();
+        if (armorDurabilityLossCauses.contains(e.getCause())) {
+          processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
+        }
+        PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
       }
     }
   }
 
   /**
-   * Calculates damage done or taken by players from other entities.
+   * Processes damage done or taken by players from other entities.
    *
    * @param e entity damaged by entity event
    */
@@ -78,7 +93,7 @@ public class PlayerDamage implements Listener {
   }
 
   /**
-   * Calculates damage healed by players.
+   * Processes damage healed by players.
    *
    * @param e entity regain health event
    */
@@ -114,7 +129,7 @@ public class PlayerDamage implements Listener {
     Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
     Random random = new Random();
 
-    if (ifCountered(damagee, attributes, random, (LivingEntity) e.getDamager())) {
+    if (ifCountered(damagee, attributes, random, e.getDamager())) {
       return;
     } else if (ifDodged(attributes, random)) {
       return;
@@ -154,10 +169,12 @@ public class PlayerDamage implements Listener {
    * @param damager    damager
    * @return if the damager died
    */
-  private boolean ifCountered(Player damagee, Map<AethelAttribute, Double> attributes, Random random, LivingEntity damager) {
-    if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
-      damager.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
-      return damager.getHealth() <= 0.0;
+  private boolean ifCountered(Player damagee, Map<AethelAttribute, Double> attributes, Random random, Entity damager) {
+    if (damager instanceof LivingEntity attacker) {
+      if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+        attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
+        return attacker.getHealth() <= 0.0;
+      }
     }
     return false;
   }
@@ -217,40 +234,13 @@ public class PlayerDamage implements Listener {
   }
 
   /**
-   * Totals the worn armors' protection enchantment levels.
-   *
-   * @param pInv player inventory
-   * @return total protection enchantment levels
-   */
-  private int totalProtectionLevels(PlayerInventory pInv) {
-    int protection = 0;
-    ItemStack helmet = pInv.getHelmet();
-    if (ItemReader.isNotNullOrAir(helmet)) {
-      protection += helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    ItemStack chestplate = pInv.getChestplate();
-    if (ItemReader.isNotNullOrAir(chestplate)) {
-      protection += chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    ItemStack leggings = pInv.getLeggings();
-    if (ItemReader.isNotNullOrAir(leggings)) {
-      protection += leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    ItemStack boots = pInv.getBoots();
-    if (ItemReader.isNotNullOrAir(boots)) {
-      protection += boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    return protection;
-  }
-
-  /**
    * Damages the worn armors' durability based on the damage taken.
    *
    * @param pInv   player inventory
    * @param damage damage taken
    */
   private void processArmorDurabilityDamage(PlayerInventory pInv, double damage) {
-    int durabilityLoss = (int) Math.max(damage / 8, 1);
+    int durabilityLoss = (int) Math.max(damage / 4, 1);
     ItemStack helmet = pInv.getHelmet();
     if (ItemReader.isNotNullOrAir(helmet)) {
       Damageable helmetDurability = (Damageable) helmet.getItemMeta();
@@ -275,5 +265,32 @@ public class PlayerDamage implements Listener {
       bootsDurability.setDamage(bootsDurability.getDamage() + durabilityLoss);
       boots.setItemMeta(bootsDurability);
     }
+  }
+
+  /**
+   * Totals the worn armors' protection enchantment levels.
+   *
+   * @param pInv player inventory
+   * @return total protection enchantment levels
+   */
+  private int totalProtectionLevels(PlayerInventory pInv) {
+    int protection = 0;
+    ItemStack helmet = pInv.getHelmet();
+    if (ItemReader.isNotNullOrAir(helmet)) {
+      protection += helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    ItemStack chestplate = pInv.getChestplate();
+    if (ItemReader.isNotNullOrAir(chestplate)) {
+      protection += chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    ItemStack leggings = pInv.getLeggings();
+    if (ItemReader.isNotNullOrAir(leggings)) {
+      protection += leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    ItemStack boots = pInv.getBoots();
+    if (ItemReader.isNotNullOrAir(boots)) {
+      protection += boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+    }
+    return protection;
   }
 }

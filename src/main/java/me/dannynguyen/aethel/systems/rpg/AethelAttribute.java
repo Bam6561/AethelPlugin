@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.12.5
+ * @version 1.12.7
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -80,7 +80,7 @@ public enum AethelAttribute {
       case "counter_chance" -> {
         return COUNTER_CHANCE;
       }
-      case "armor_tough" -> {
+      case "toughness" -> {
         return TOUGHNESS;
       }
       case "item_damage" -> {
