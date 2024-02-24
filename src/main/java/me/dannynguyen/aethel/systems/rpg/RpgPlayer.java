@@ -11,6 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -28,14 +29,31 @@ import java.util.*;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.7
+ * @version 1.12.8
  * @since 1.8.9
  */
 public class RpgPlayer {
   /**
+   * Tracked equipment enchantments.
+   */
+  private static final Set<Enchantment> trackedEquipmentEnchantments = Set.of(
+      Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS,
+      Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
+
+  /**
    * RPG player's UUID.
    */
   private final UUID uuid;
+
+  /**
+   * Total equipment enchantments.
+   */
+  private final Map<Enchantment, Integer> totalEquipmentEnchantments = createBlankTotalEquipmentEnchantments();
+
+  /**
+   * Equipment enchantments.
+   */
+  private final Map<EquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = new HashMap<>();
 
   /**
    * Total Aethel attributes.
@@ -82,9 +100,22 @@ public class RpgPlayer {
   }
 
   /**
-   * Creates a blank set of Aethel attributes.
+   * Creates a blank map of total enchantment levels.
    *
-   * @return blank set of Aethel attributes
+   * @return blank total enchantment levels
+   */
+  private Map<Enchantment, Integer> createBlankTotalEquipmentEnchantments() {
+    Map<Enchantment, Integer> totalEquipmentEnchantments = new HashMap<>();
+    for (Enchantment enchantment : trackedEquipmentEnchantments) {
+      totalEquipmentEnchantments.put(enchantment, 0);
+    }
+    return totalEquipmentEnchantments;
+  }
+
+  /**
+   * Creates a blank map of Aethel attributes.
+   *
+   * @return blank Aethel attributes
    */
   private Map<AethelAttribute, Double> createBlankAethelAttributes() {
     Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
@@ -140,14 +171,22 @@ public class RpgPlayer {
   }
 
   /**
-   * Checks if the item has Aethel attribute modifiers before
-   * checking whether the item is in the correct equipment slot.
+   * Checks if the item has enchantments and Aethel attribute modifiers
+   * before checking whether the item is in the correct equipment slot.
    *
    * @param item interacting item
    * @param slot slot type
    */
   public void readEquipmentSlot(ItemStack item, EquipmentSlot slot) {
     if (ItemReader.isNotNullOrAir(item)) {
+      if (equipmentEnchantments.containsKey(slot)) {
+        removeEquipmentEnchantments(slot);
+      }
+      if (item.getItemMeta().hasEnchants()) {
+        equipmentEnchantments.put(slot, new HashMap<>());
+        addEquipmentEnchantments(slot, item);
+      }
+
       if (equipmentAttributes.containsKey(slot)) {
         removeEquipmentAttributes(slot);
       }
@@ -155,9 +194,12 @@ public class RpgPlayer {
       NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         equipmentAttributes.put(slot, new HashMap<>());
-        readEquipmentMeta(slot, dataContainer, listKey);
+        readEquipmentAttributes(slot, dataContainer, listKey);
       }
     } else {
+      if (equipmentEnchantments.containsKey(slot)) {
+        removeEquipmentEnchantments(slot);
+      }
       if (equipmentAttributes.containsKey(slot)) {
         removeEquipmentAttributes(slot);
       }
@@ -252,13 +294,38 @@ public class RpgPlayer {
   }
 
   /**
+   * Adds new equipment enchantments.
+   *
+   * @param slot slot type
+   * @param item interacting item
+   */
+  public void addEquipmentEnchantments(EquipmentSlot slot, ItemStack item) {
+    for (Enchantment enchantment : trackedEquipmentEnchantments) {
+      equipmentEnchantments.get(slot).put(enchantment, item.getEnchantmentLevel(enchantment));
+      totalEquipmentEnchantments.put(enchantment, totalEquipmentEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
+    }
+  }
+
+  /**
+   * Removes existing equipment enchantments at an equipment slot.
+   *
+   * @param slot slot type
+   */
+  public void removeEquipmentEnchantments(EquipmentSlot slot) {
+    for (Enchantment enchantment : equipmentEnchantments.get(slot).keySet()) {
+      totalEquipmentEnchantments.put(enchantment, totalEquipmentEnchantments.get(enchantment) - equipmentEnchantments.get(slot).get(enchantment));
+      equipmentEnchantments.get(slot).put(enchantment, 0);
+    }
+  }
+
+  /**
    * Checks if the item is in the correct equipment slot before updating the player's attribute values.
    *
    * @param slot          slot type
    * @param dataContainer item's persistent tags
    * @param listKey       attributes list
    */
-  private void readEquipmentMeta(EquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
+  private void readEquipmentAttributes(EquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
       EquipmentSlot equipmentSlot = EquipmentSlot.asEnum(attribute.substring(attribute.indexOf(".") + 1));
@@ -290,8 +357,8 @@ public class RpgPlayer {
   public void removeEquipmentAttributes(EquipmentSlot slot) {
     for (AethelAttribute attribute : equipmentAttributes.get(slot).keySet()) {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipmentAttributes.get(slot).get(attribute));
+      equipmentAttributes.get(slot).put(attribute, 0.0);
     }
-    equipmentAttributes.remove(slot);
   }
 
   /**
@@ -348,17 +415,27 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the profile's equipment Aethel attributes.
+   * Gets the player's total equipment enchantments.
    *
-   * @return equipment Aethel attributes
+   * @return total equipment enchantments
    */
   @NotNull
-  public Map<EquipmentSlot, Map<AethelAttribute, Double>> getEquipmentAttributes() {
-    return this.equipmentAttributes;
+  public Map<Enchantment, Integer> getTotalEquipmentEnchantments() {
+    return this.totalEquipmentEnchantments;
   }
 
   /**
-   * Gets the profile's total Aethel attributes.
+   * Gets the player's equipment enchantments.
+   *
+   * @return equipment enchantments
+   */
+  @NotNull
+  public Map<EquipmentSlot, Map<Enchantment, Integer>> getEquipmentEnchantments() {
+    return this.equipmentEnchantments;
+  }
+
+  /**
+   * Gets the player's total Aethel attributes.
    *
    * @return total Aethel attributes
    */
@@ -368,7 +445,17 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the profile's jewelry slots,
+   * Gets the player's equipment Aethel attributes.
+   *
+   * @return equipment Aethel attributes
+   */
+  @NotNull
+  public Map<EquipmentSlot, Map<AethelAttribute, Double>> getEquipmentAttributes() {
+    return this.equipmentAttributes;
+  }
+
+  /**
+   * Gets the player's jewelry slots,
    *
    * @return jewelry slots
    */

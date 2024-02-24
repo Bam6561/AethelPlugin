@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.12.7
+ * @version 1.12.8
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -48,12 +48,7 @@ public enum AethelAttribute {
   /**
    * Item cooldown multiplier.
    */
-  ITEM_COOLDOWN,
-
-  /**
-   * Apply status chance multiplier.
-   */
-  STATUS_CHANCE;
+  ITEM_COOLDOWN;
 
   /**
    * Gets the string as an enum.
@@ -88,9 +83,6 @@ public enum AethelAttribute {
       }
       case "item_cooldown" -> {
         return ITEM_COOLDOWN;
-      }
-      case "status_chance" -> {
-        return STATUS_CHANCE;
       }
       default -> {
         return null;

@@ -3,12 +3,14 @@ package me.dannynguyen.aethel.commands.character;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -24,7 +26,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.12.5
+ * @version 1.12.8
  * @since 1.6.3
  */
 class SheetMenu {
@@ -200,14 +202,21 @@ class SheetMenu {
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
-    String maxHealth = ChatColor.RED + "" + df2.format(PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
-    String counterChance = ChatColor.DARK_RED + "" + df2.format(attributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
-    String dodgeChance = ChatColor.DARK_AQUA + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
-    String armorToughness = ChatColor.DARK_GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS)) + " TOUGH";
-    String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
-    String knockbackResistance = ChatColor.WHITE + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
+    RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID);
 
-    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, knockbackResistance), ItemFlag.HIDE_ATTRIBUTES));
+    String maxHealth = ChatColor.RED + "" + df2.format(rpgPlayer.getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
+    String counterChance = ChatColor.YELLOW + "" + df2.format(attributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
+    String dodgeChance = ChatColor.BLUE + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
+    String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS)) + " TOUGH";
+    String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
+
+    String featherFalling = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";
+    String protection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL) + " PROT";
+    String blastProtection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_EXPLOSIONS) + " BLAST PROT";
+    String fireProtection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_FIRE) + " FIRE PROT";
+    String projectileProtection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_PROJECTILE) + " PROJ PROT";
+
+    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, "", featherFalling, protection, blastProtection, fireProtection, projectileProtection), ItemFlag.HIDE_ATTRIBUTES));
   }
 
   /**
@@ -222,11 +231,11 @@ class SheetMenu {
 
     String abilityDamage = ChatColor.LIGHT_PURPLE + "" + df2.format(1.0 + attributes.get(AethelAttribute.ITEM_DAMAGE) / 100) + "x ITEM DMG";
     String abilityCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(attributes.get(AethelAttribute.ITEM_COOLDOWN)) + "% ITEM CD";
-    String applyStatusEffect = ChatColor.YELLOW + "" + df2.format(1.0 + attributes.get(AethelAttribute.STATUS_CHANCE) / 100) + "x STATUS CHANCE";
-    String speed = ChatColor.AQUA + "" + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPEED";
+    String speed = ChatColor.DARK_AQUA + "" + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPEED";
     String luck = ChatColor.GREEN + "" + df2.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
+    String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
 
-    menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(abilityDamage, abilityCooldown, applyStatusEffect, speed, luck)));
+    menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(abilityDamage, abilityCooldown, speed, luck, knockbackResistance)));
   }
 
   /**

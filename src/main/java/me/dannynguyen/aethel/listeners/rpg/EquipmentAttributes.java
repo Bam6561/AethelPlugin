@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +30,7 @@ import java.util.Set;
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.12.8
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -175,11 +176,16 @@ public class EquipmentAttributes implements Listener {
   private void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
       RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(e.getEntity().getUniqueId());
-      Map<EquipmentSlot, Map<AethelAttribute, Double>> equipment = rpgPlayer.getEquipmentAttributes();
+      Map<EquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = rpgPlayer.getEquipmentEnchantments();
+      Map<EquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = rpgPlayer.getEquipmentAttributes();
 
       dropJewelryItems(e.getEntity(), rpgPlayer.getJewelrySlots());
 
-      for (EquipmentSlot slot : equipment.keySet()) {
+      for (EquipmentSlot slot : equipmentEnchantments.keySet()) {
+        rpgPlayer.removeEquipmentEnchantments(slot);
+      }
+
+      for (EquipmentSlot slot : equipmentAttributes.keySet()) {
         rpgPlayer.removeEquipmentAttributes(slot);
       }
     }
