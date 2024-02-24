@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
@@ -112,6 +113,7 @@ public class PlayerDamage implements Listener {
   private void processDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
     Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
     Random random = new Random();
+
     if (ifCountered(damagee, attributes, random, (LivingEntity) e.getDamager())) {
       return;
     } else if (ifDodged(attributes, random)) {
@@ -121,8 +123,11 @@ public class PlayerDamage implements Listener {
     }
     mitigateArmorProtection(e, damagee);
     mitigateResistance(e, damagee);
+
+    double finalDamage = e.getDamage();
+    processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
     damagee.damage(0.01);
-    PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
+    PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
   }
 
   /**
@@ -220,21 +225,55 @@ public class PlayerDamage implements Listener {
   private int totalProtectionLevels(PlayerInventory pInv) {
     int protection = 0;
     ItemStack helmet = pInv.getHelmet();
-    ItemStack chestplate = pInv.getChestplate();
-    ItemStack leggings = pInv.getLeggings();
-    ItemStack boots = pInv.getBoots();
     if (ItemReader.isNotNullOrAir(helmet)) {
       protection += helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
     }
+    ItemStack chestplate = pInv.getChestplate();
     if (ItemReader.isNotNullOrAir(chestplate)) {
       protection += chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
     }
+    ItemStack leggings = pInv.getLeggings();
     if (ItemReader.isNotNullOrAir(leggings)) {
       protection += leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
     }
+    ItemStack boots = pInv.getBoots();
     if (ItemReader.isNotNullOrAir(boots)) {
       protection += boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
     }
     return protection;
+  }
+
+  /**
+   * Damages the worn armors' durability based on the damage taken.
+   *
+   * @param pInv   player inventory
+   * @param damage damage taken
+   */
+  private void processArmorDurabilityDamage(PlayerInventory pInv, double damage) {
+    int durabilityLoss = (int) Math.max(damage / 8, 1);
+    ItemStack helmet = pInv.getHelmet();
+    if (ItemReader.isNotNullOrAir(helmet)) {
+      Damageable helmetDurability = (Damageable) helmet.getItemMeta();
+      helmetDurability.setDamage(helmetDurability.getDamage() + durabilityLoss);
+      helmet.setItemMeta(helmetDurability);
+    }
+    ItemStack chestplate = pInv.getChestplate();
+    if (ItemReader.isNotNullOrAir(chestplate)) {
+      Damageable chestplateDurability = (Damageable) chestplate.getItemMeta();
+      chestplateDurability.setDamage(chestplateDurability.getDamage() + durabilityLoss);
+      chestplate.setItemMeta(chestplateDurability);
+    }
+    ItemStack leggings = pInv.getLeggings();
+    if (ItemReader.isNotNullOrAir(leggings)) {
+      Damageable leggingsDurability = (Damageable) leggings.getItemMeta();
+      leggingsDurability.setDamage(leggingsDurability.getDamage() + durabilityLoss);
+      leggings.setItemMeta(leggingsDurability);
+    }
+    ItemStack boots = pInv.getBoots();
+    if (ItemReader.isNotNullOrAir(boots)) {
+      Damageable bootsDurability = (Damageable) boots.getItemMeta();
+      bootsDurability.setDamage(bootsDurability.getDamage() + durabilityLoss);
+      boots.setItemMeta(bootsDurability);
+    }
   }
 }
