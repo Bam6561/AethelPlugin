@@ -26,7 +26,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.12.7
+ * @version 1.12.9
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -40,14 +40,6 @@ public class PlayerDamage implements Listener {
       EntityDamageEvent.DamageCause.PROJECTILE, EntityDamageEvent.DamageCause.KILL);
 
   /**
-   * Armor durability loss causes.
-   */
-  private static final Set<EntityDamageEvent.DamageCause> armorDurabilityLossCauses = Set.of(
-      EntityDamageEvent.DamageCause.BLOCK_EXPLOSION, EntityDamageEvent.DamageCause.CONTACT,
-      EntityDamageEvent.DamageCause.FIRE, EntityDamageEvent.DamageCause.HOT_FLOOR,
-      EntityDamageEvent.DamageCause.LAVA);
-
-  /**
    * Processes damage taken by players from non-entity attacks.
    *
    * @param e entity damage event
@@ -59,9 +51,14 @@ public class PlayerDamage implements Listener {
       if (damagee.getNoDamageTicks() == 0) {
         damagee.damage(0.01);
         damagee.setNoDamageTicks(10);
+        Map<Enchantment, Integer> totalEquipmentEnchantments = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getTotalEquipmentEnchantments();
+        EntityDamageEvent.DamageCause cause = e.getCause();
+        if (mitigateEnvironmentalDamage(e, cause, totalEquipmentEnchantments)) {
+          return;
+        }
         double finalDamage = e.getDamage();
-        if (armorDurabilityLossCauses.contains(e.getCause())) {
-          processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
+        switch (cause) {
+          case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
         }
         PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
       }
@@ -82,6 +79,7 @@ public class PlayerDamage implements Listener {
         e.setCancelled(true);
         Player damagee = (Player) e.getEntity();
         if (damagee.getNoDamageTicks() == 0) {
+          damagee.damage(0.01);
           damagee.setNoDamageTicks(10);
           if (e.getDamager() instanceof Player) { // PvP, otherwise EvP
             processDamageDone(e, (Player) e.getDamager());
@@ -103,6 +101,54 @@ public class PlayerDamage implements Listener {
       e.setCancelled(true);
       PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).healHealthBar(e.getAmount());
     }
+  }
+
+  /**
+   * Mitigates the damage based on the player's environmental protection enchantments.
+   *
+   * @param e                          entity damage event
+   * @param cause                      damage cause
+   * @param totalEquipmentEnchantments player's equipment enchantments
+   * @return if no damage is taken
+   */
+  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Map<Enchantment, Integer> totalEquipmentEnchantments) {
+    switch (cause) {
+      case FALL -> {
+        int fallProtection = totalEquipmentEnchantments.get(Enchantment.PROTECTION_FALL);
+        if (fallProtection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (fallProtection * .2)));
+        }
+      }
+      case FIRE, FIRE_TICK, HOT_FLOOR, LAVA -> {
+        int fireProtection = totalEquipmentEnchantments.get(Enchantment.PROTECTION_FIRE);
+        if (fireProtection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (fireProtection * .1)));
+        }
+      }
+      case FLY_INTO_WALL, MAGIC, POISON, WITHER -> {
+        int protection = totalEquipmentEnchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
+        if (protection > 0) {
+          protection = Math.max(protection, 20);
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (protection * .04)));
+        }
+      }
+      case BLOCK_EXPLOSION -> {
+        int explosionProtection = totalEquipmentEnchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
+        if (explosionProtection >= 10) {
+          Player player = (Player) e.getEntity();
+          PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).healHealthBar(e.getDamage() * .2);
+          player.setFoodLevel(20);
+          return true;
+        } else if (explosionProtection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(Math.max(damage - (damage * (explosionProtection * .1)), 0));
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -141,7 +187,6 @@ public class PlayerDamage implements Listener {
 
     double finalDamage = e.getDamage();
     processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
-    damagee.damage(0.01);
     PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
   }
 
@@ -213,7 +258,7 @@ public class PlayerDamage implements Listener {
    */
   private void mitigateArmorProtection(EntityDamageByEntityEvent e, Player damagee) {
     int armor = Math.min((int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue(), 20);
-    int protection = Math.min(totalProtectionLevels(damagee.getInventory()), 20);
+    int protection = Math.min(PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
     double damage = e.getDamage();
     e.setDamage(damage - (damage * (armor * 0.02 + protection * 0.01)));
   }
@@ -265,32 +310,5 @@ public class PlayerDamage implements Listener {
       bootsDurability.setDamage(bootsDurability.getDamage() + durabilityLoss);
       boots.setItemMeta(bootsDurability);
     }
-  }
-
-  /**
-   * Totals the worn armors' protection enchantment levels.
-   *
-   * @param pInv player inventory
-   * @return total protection enchantment levels
-   */
-  private int totalProtectionLevels(PlayerInventory pInv) {
-    int protection = 0;
-    ItemStack helmet = pInv.getHelmet();
-    if (ItemReader.isNotNullOrAir(helmet)) {
-      protection += helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    ItemStack chestplate = pInv.getChestplate();
-    if (ItemReader.isNotNullOrAir(chestplate)) {
-      protection += chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    ItemStack leggings = pInv.getLeggings();
-    if (ItemReader.isNotNullOrAir(leggings)) {
-      protection += leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    ItemStack boots = pInv.getBoots();
-    if (ItemReader.isNotNullOrAir(boots)) {
-      protection += boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
-    }
-    return protection;
   }
 }

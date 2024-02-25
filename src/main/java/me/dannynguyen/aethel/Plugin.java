@@ -19,10 +19,13 @@ import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +40,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.2
+ * @version 1.12.9
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -97,7 +100,8 @@ public class Plugin extends JavaPlugin {
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
     scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
-    scheduler.scheduleSyncRepeatingTask(this, this::updateOvershield, 0, 20);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateEnvironmentalProtections, 0, 100);
   }
 
   /**
@@ -126,12 +130,34 @@ public class Plugin extends JavaPlugin {
    * player's maximum health before it starts decaying every second.
    * </p>
    */
-  private void updateOvershield() {
+  private void updateOvershields() {
     Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
     for (Player player : Bukkit.getOnlinePlayers()) {
       RpgPlayer rpgPlayer = rpgProfiles.get(player.getUniqueId());
       if (rpgPlayer.getCurrentHealth() > rpgPlayer.getMaxHealth() * 1.2) {
         rpgPlayer.decayOvershield();
+      }
+    }
+  }
+
+  /**
+   * Adds an interval to apply environmental protections
+   * based on the player's equipment enchantment levels.
+   * <p>
+   * - Feather Falling > 5: Slow falling effect
+   * - Fire Protection > 10: Fire resistance effect
+   * </p>
+   */
+  private void updateEnvironmentalProtections() {
+    Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      Map<Enchantment, Integer> enchantments = rpgProfiles.get(player.getUniqueId()).getTotalEquipmentEnchantments();
+      if (enchantments.get(Enchantment.PROTECTION_FALL) >= 5) {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
+      }
+      if (enchantments.get(Enchantment.PROTECTION_FIRE) >= 10) {
+        player.setFireTicks(-20);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
       }
     }
   }
