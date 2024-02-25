@@ -63,7 +63,7 @@ public class ItemMenuClick {
   /**
    * Either saves an item or opens an item category page.
    */
-  public void interpretMainMenuClick() {
+  public void interpretMenuClick() {
     if (slotClicked == 3) { // Save Item Slot
       e.setCancelled(false);
     } else if (slotClicked == 4) {
@@ -90,7 +90,7 @@ public class ItemMenuClick {
       case 3 -> e.setCancelled(false); // Save Item Slot
       case 4 -> saveItem();
       case 5 -> toggleAction(action);
-      case 6 -> returnToMainMenu();
+      case 6 -> returnToMenu();
       case 8 -> nextPage(action);
       default -> {
         if (slotClicked > 8) {
@@ -173,8 +173,8 @@ public class ItemMenuClick {
   /**
    * Returns to the AethelItem main menu.
    */
-  private void returnToMainMenu() {
-    user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
+  private void returnToMenu() {
+    user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMenu());
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");

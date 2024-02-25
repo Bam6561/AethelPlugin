@@ -88,7 +88,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void openPlayerStatSelf(Player user) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.PLAYER, user.getName());
-    user.openInventory(new PlayerStatMenu(user, user.getName()).openMainMenu());
+    user.openInventory(new PlayerStatMenu(user, user.getName()).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
   }
 
@@ -103,7 +103,7 @@ public class PlayerStatCommand implements CommandExecutor {
     if (player.hasPlayedBefore()) {
       Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
       playerMeta.put(PlayerMeta.PLAYER, player.getName());
-      user.openInventory(new PlayerStatMenu(user, player.getName()).openMainMenu());
+      user.openInventory(new PlayerStatMenu(user, player.getName()).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     } else {
       user.sendMessage(ChatColor.RED + owner + " has never played on this server.");

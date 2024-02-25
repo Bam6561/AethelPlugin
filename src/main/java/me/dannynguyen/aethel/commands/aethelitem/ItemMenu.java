@@ -78,7 +78,7 @@ class ItemMenu {
    * @return AethelItem main menu
    */
   @NotNull
-  protected Inventory openMainMenu() {
+  protected Inventory openMenu() {
     addCategories();
     addContext(null);
     addActions();

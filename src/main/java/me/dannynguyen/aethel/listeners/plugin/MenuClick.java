@@ -82,7 +82,7 @@ public class MenuClick implements Listener {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ItemMenuClick click = new ItemMenuClick(e);
         switch (invType[1]) {
-          case "category" -> click.interpretMainMenuClick();
+          case "category" -> click.interpretMenuClick();
           case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
           case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
         }
@@ -132,7 +132,7 @@ public class MenuClick implements Listener {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ForgeMenuClick click = new ForgeMenuClick(e);
         switch (invType[1]) {
-          case "category" -> click.interpretMainMenuClick();
+          case "category" -> click.interpretMenuClick();
           case "craft" -> click.interpretCategoryClick(ForgeMenuAction.CRAFT);
           case "craft-recipe" -> click.interpretCraftDetailsClick();
           case "edit" -> click.interpretCategoryClick(ForgeMenuAction.EDIT);

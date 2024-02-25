@@ -80,7 +80,7 @@ class RecipeMenu {
    * @return Recipe menu
    */
   @NotNull
-  protected Inventory openMainMenu() {
+  protected Inventory openMenu() {
     addCategories();
     if (action != ForgeMenuAction.CRAFT) {
       addCreateButton();

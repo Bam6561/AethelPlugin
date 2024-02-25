@@ -56,7 +56,7 @@ public class ItemCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args) {
     switch (args.length) {
-      case 0 -> openMainMenu(user);
+      case 0 -> openMenu(user);
       case 1 -> readParameter(user, args[0].toLowerCase());
       default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
@@ -67,10 +67,10 @@ public class ItemCommand implements CommandExecutor {
    *
    * @param user user
    */
-  private void openMainMenu(Player user) {
+  private void openMenu(Player user) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.CATEGORY, " ");
-    user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMainMenu());
+    user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }

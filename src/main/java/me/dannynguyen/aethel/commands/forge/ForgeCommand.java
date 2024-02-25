@@ -100,7 +100,7 @@ public class ForgeCommand implements CommandExecutor {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.FUTURE, "craft");
     playerMeta.put(PlayerMeta.CATEGORY, "");
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMainMenu());
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }
@@ -114,7 +114,7 @@ public class ForgeCommand implements CommandExecutor {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.FUTURE, "edit");
     playerMeta.put(PlayerMeta.CATEGORY, "");
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
+    user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }

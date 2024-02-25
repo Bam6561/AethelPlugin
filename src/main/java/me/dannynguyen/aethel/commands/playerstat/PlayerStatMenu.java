@@ -82,7 +82,7 @@ class PlayerStatMenu {
    * @return PlayerStat main menu
    */
   @NotNull
-  protected Inventory openMainMenu() {
+  protected Inventory openMenu() {
     addCategories();
     addContext(null);
     addOwner();

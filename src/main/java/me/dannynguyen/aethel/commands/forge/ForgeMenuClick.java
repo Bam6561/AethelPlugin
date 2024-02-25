@@ -63,7 +63,7 @@ public class ForgeMenuClick {
   /**
    * Either saves a recipe or opens a recipe category page.
    */
-  public void interpretMainMenuClick() {
+  public void interpretMenuClick() {
     switch (slotClicked) {
       case 2, 4 -> { // Context
       }
@@ -93,7 +93,7 @@ public class ForgeMenuClick {
         }
       }
       case 5 -> openForgeRemoveMenu();
-      case 6 -> returnToMainMenu();
+      case 6 -> returnToMenu();
       case 8 -> nextRecipePage(action);
       default -> {
         if (e.getSlot() > 8) {
@@ -163,7 +163,7 @@ public class ForgeMenuClick {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     if (category.equals("")) {
-      user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMainMenu());
+      user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     } else {
       int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
@@ -186,11 +186,11 @@ public class ForgeMenuClick {
   /**
    * Opens the Recipe menu with the future action in mind.
    */
-  private void returnToMainMenu() {
+  private void returnToMenu() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     ForgeMenuAction action = ForgeMenuAction.asEnum(playerMeta.get(PlayerMeta.FUTURE));
     playerMeta.put(PlayerMeta.CATEGORY, "");
-    user.openInventory(new RecipeMenu(user, action).openMainMenu());
+    user.openInventory(new RecipeMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }

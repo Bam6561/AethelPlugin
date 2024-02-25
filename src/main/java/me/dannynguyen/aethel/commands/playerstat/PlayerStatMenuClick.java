@@ -75,7 +75,7 @@ public class PlayerStatMenuClick {
       case 0 -> previousPage();
       case 3, 4 -> { // Player Heads
       }
-      case 5 -> returnToMainMenu();
+      case 5 -> returnToMenu();
       case 8 -> nextPage();
       default -> new StatMessage(e, user).sendStat();
     }
@@ -92,7 +92,7 @@ public class PlayerStatMenuClick {
       case 0 -> previousPage();
       case 3, 4 -> { // Player Heads
       }
-      case 5 -> returnToMainMenu();
+      case 5 -> returnToMenu();
       case 8 -> nextPage();
       default -> new StatMessage(e, user).sendSubstat();
     }
@@ -114,10 +114,10 @@ public class PlayerStatMenuClick {
   /**
    * Opens a PlayerStat menu.
    */
-  private void returnToMainMenu() {
+  private void returnToMenu() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
-    user.openInventory(new PlayerStatMenu(user, owner).openMainMenu());
+    user.openInventory(new PlayerStatMenu(user, owner).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }

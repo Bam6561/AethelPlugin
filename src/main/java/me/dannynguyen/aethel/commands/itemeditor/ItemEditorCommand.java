@@ -58,7 +58,7 @@ public class ItemEditorCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args, ItemStack item) {
     if (args.length == 0) {
-      openMainMenu(user, item);
+      openMenu(user, item);
     } else {
       user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
     }
@@ -70,7 +70,7 @@ public class ItemEditorCommand implements CommandExecutor {
    * @param user user
    * @param item interacting item
    */
-  private void openMainMenu(Player user, ItemStack item) {
+  private void openMenu(Player user, ItemStack item) {
     PluginData.editedItemCache.getEditedItemMap().put(user.getUniqueId(), item);
     user.openInventory(new CosmeticEditorMenu(user).openMenu());
     PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
