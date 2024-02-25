@@ -108,7 +108,7 @@ public class ForgeMenuClick {
    */
   public void interpretCraftDetailsClick() {
     switch (e.getSlot()) {
-      case 25 -> new RecipeCraft(user, e.getClickedInventory().getItem(0)).craftRecipe();
+      case 25 -> new RecipeCraft(user, e.getClickedInventory().getItem(0)).readRecipeMaterials();
       case 26 -> openForgeCraftMenu();
     }
   }

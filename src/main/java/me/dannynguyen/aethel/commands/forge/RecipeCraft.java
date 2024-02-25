@@ -105,10 +105,10 @@ class RecipeCraft {
   /**
    * Crafts a recipe if the user has enough materials.
    */
-  protected void craftRecipe() {
+  protected void readRecipeMaterials() {
     if (!PluginData.pluginSystem.getPlayerMetadata().get(userUUID).containsKey(PlayerMeta.DEVELOPER)) {
       if (hasEnoughOfAllMaterials()) {
-        processRecipeCraft();
+        craftRecipe();
       } else {
         user.sendMessage(ChatColor.RED + "Not enough materials.");
       }
@@ -150,7 +150,7 @@ class RecipeCraft {
   /**
    * Removes the recipe's materials from the user's inventory and gives the recipe's results.
    */
-  private void processRecipeCraft() {
+  private void craftRecipe() {
     for (InventorySlot invSlot : postCraft) {
       ItemStack item = invSlot.getItem();
       item.setAmount(invSlot.getAmount());

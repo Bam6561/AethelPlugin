@@ -53,7 +53,7 @@ public class RpgPlayer {
   /**
    * Equipment enchantments.
    */
-  private final Map<EquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = new HashMap<>();
 
   /**
    * Total Aethel attributes.
@@ -63,7 +63,7 @@ public class RpgPlayer {
   /**
    * Equipment Aethel attributes.
    */
-  private final Map<EquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = new HashMap<>();
 
   /**
    * Jewelry slots.
@@ -132,12 +132,12 @@ public class RpgPlayer {
    */
   private void initializeEquipmentAttributes(Player player) {
     PlayerInventory pInv = player.getInventory();
-    readEquipmentSlot(pInv.getItemInMainHand(), EquipmentSlot.HAND);
-    readEquipmentSlot(pInv.getItemInOffHand(), EquipmentSlot.OFF_HAND);
-    readEquipmentSlot(pInv.getHelmet(), EquipmentSlot.HEAD);
-    readEquipmentSlot(pInv.getChestplate(), EquipmentSlot.CHEST);
-    readEquipmentSlot(pInv.getLeggings(), EquipmentSlot.LEGS);
-    readEquipmentSlot(pInv.getBoots(), EquipmentSlot.FEET);
+    readEquipmentSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND);
+    readEquipmentSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND);
+    readEquipmentSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);
+    readEquipmentSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST);
+    readEquipmentSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS);
+    readEquipmentSlot(pInv.getBoots(), RpgEquipmentSlot.FEET);
   }
 
   /**
@@ -166,7 +166,7 @@ public class RpgPlayer {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HP) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
-    processHealthBarProgress();
+    updateHealthBarProgress();
     healthBar.addPlayer(player);
   }
 
@@ -177,7 +177,7 @@ public class RpgPlayer {
    * @param item interacting item
    * @param slot slot type
    */
-  public void readEquipmentSlot(ItemStack item, EquipmentSlot slot) {
+  public void readEquipmentSlot(ItemStack item, RpgEquipmentSlot slot) {
     if (ItemReader.isNotNullOrAir(item)) {
       if (equipmentEnchantments.containsKey(slot)) {
         removeEquipmentEnchantments(slot);
@@ -229,7 +229,7 @@ public class RpgPlayer {
     setCurrentHealth(currentHealth + player.getAbsorptionAmount());
     player.setAbsorptionAmount(0);
     setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP));
-    processHealthBarProgress();
+    updateHealthBarProgress();
   }
 
   /**
@@ -240,7 +240,7 @@ public class RpgPlayer {
   public void damageHealthBar(double damage) {
     setCurrentHealth(currentHealth - damage);
     if (currentHealth > 0) {
-      processHealthBarProgress();
+      updateHealthBarProgress();
     } else {
       DecimalFormat dc = new DecimalFormat();
       dc.setMaximumFractionDigits(2);
@@ -259,7 +259,7 @@ public class RpgPlayer {
   public void healHealthBar(double heal) {
     if (!(currentHealth > maxHealth)) {
       setCurrentHealth(Math.min(maxHealth, currentHealth + heal));
-      processHealthBarProgress();
+      updateHealthBarProgress();
     }
   }
 
@@ -269,7 +269,7 @@ public class RpgPlayer {
   public void resetHealthBar() {
     setCurrentHealth(20.0);
     setMaxHealth(20.0);
-    processHealthBarProgress();
+    updateHealthBarProgress();
   }
 
   /**
@@ -283,7 +283,7 @@ public class RpgPlayer {
     double overshieldCap = maxHealth * 1.2;
     double decayRate = Math.max((currentHealth - overshieldCap) / 40, 0.25);
     setCurrentHealth(Math.max(overshieldCap, currentHealth - decayRate));
-    processHealthBarProgress();
+    updateHealthBarProgress();
   }
 
   /**
@@ -299,7 +299,7 @@ public class RpgPlayer {
    * @param slot slot type
    * @param item interacting item
    */
-  public void addEquipmentEnchantments(EquipmentSlot slot, ItemStack item) {
+  public void addEquipmentEnchantments(RpgEquipmentSlot slot, ItemStack item) {
     for (Enchantment enchantment : trackedEquipmentEnchantments) {
       equipmentEnchantments.get(slot).put(enchantment, item.getEnchantmentLevel(enchantment));
       totalEquipmentEnchantments.put(enchantment, totalEquipmentEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
@@ -311,7 +311,7 @@ public class RpgPlayer {
    *
    * @param slot slot type
    */
-  public void removeEquipmentEnchantments(EquipmentSlot slot) {
+  public void removeEquipmentEnchantments(RpgEquipmentSlot slot) {
     for (Enchantment enchantment : equipmentEnchantments.get(slot).keySet()) {
       totalEquipmentEnchantments.put(enchantment, totalEquipmentEnchantments.get(enchantment) - equipmentEnchantments.get(slot).get(enchantment));
       equipmentEnchantments.get(slot).put(enchantment, 0);
@@ -325,10 +325,10 @@ public class RpgPlayer {
    * @param dataContainer item's persistent tags
    * @param listKey       attributes list
    */
-  private void readEquipmentAttributes(EquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
+  private void readEquipmentAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
-      EquipmentSlot equipmentSlot = EquipmentSlot.asEnum(attribute.substring(attribute.indexOf(".") + 1));
+      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.asEnum(attribute.substring(attribute.indexOf(".") + 1));
       if (equipmentSlot == slot) {
         addEquipmentAttributes(slot, dataContainer, attribute);
       }
@@ -342,7 +342,7 @@ public class RpgPlayer {
    * @param dataContainer item's persistent tags
    * @param attribute     attribute modifier
    */
-  private void addEquipmentAttributes(EquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
+  private void addEquipmentAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
     AethelAttribute attributeType = AethelAttribute.asEnum(attribute.substring(0, attribute.indexOf(".")));
     equipmentAttributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
@@ -354,7 +354,7 @@ public class RpgPlayer {
    *
    * @param slot slot type
    */
-  public void removeEquipmentAttributes(EquipmentSlot slot) {
+  public void removeEquipmentAttributes(RpgEquipmentSlot slot) {
     for (AethelAttribute attribute : equipmentAttributes.get(slot).keySet()) {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - equipmentAttributes.get(slot).get(attribute));
       equipmentAttributes.get(slot).put(attribute, 0.0);
@@ -382,7 +382,7 @@ public class RpgPlayer {
   /**
    * Sets the progress of the health bar based on the current health : max health.
    */
-  private void processHealthBarProgress() {
+  private void updateHealthBarProgress() {
     Player player = Bukkit.getPlayer(uuid);
     double maxHealthScale = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     if (currentHealth < maxHealth) {
@@ -430,7 +430,7 @@ public class RpgPlayer {
    * @return equipment enchantments
    */
   @NotNull
-  public Map<EquipmentSlot, Map<Enchantment, Integer>> getEquipmentEnchantments() {
+  public Map<RpgEquipmentSlot, Map<Enchantment, Integer>> getEquipmentEnchantments() {
     return this.equipmentEnchantments;
   }
 
@@ -450,7 +450,7 @@ public class RpgPlayer {
    * @return equipment Aethel attributes
    */
   @NotNull
-  public Map<EquipmentSlot, Map<AethelAttribute, Double>> getEquipmentAttributes() {
+  public Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> getEquipmentAttributes() {
     return this.equipmentAttributes;
   }
 

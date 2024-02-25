@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -122,7 +122,7 @@ public class CharacterMenuClick {
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
           RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(userUUID);
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
-          rpgPlayer.readEquipmentSlot(item, EquipmentSlot.HAND);
+          rpgPlayer.readEquipmentSlot(item, RpgEquipmentSlot.HAND);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getInventory()).addAttributes(), 1);
         }, 1);
       }, 1);
@@ -225,12 +225,12 @@ public class CharacterMenuClick {
       ItemStack wornItem = user.getInventory().getItem(slot);
 
       switch (slot) {
-        case 39 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.HEAD);
-        case 38 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.CHEST);
-        case 37 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.LEGS);
-        case 36 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.FEET);
-        case 40 -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.OFF_HAND);
-        default -> rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.HAND);
+        case 39 -> rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.HEAD);
+        case 38 -> rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.CHEST);
+        case 37 -> rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.LEGS);
+        case 36 -> rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.FEET);
+        case 40 -> rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.OFF_HAND);
+        default -> rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.HAND);
       }
       rpgPlayer.updateHealthBar();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new SheetMenu(user, e.getClickedInventory()).addAttributes(), 1);
@@ -249,11 +249,11 @@ public class CharacterMenuClick {
       switch (slotClicked) {
         case 20 -> {
           rpgPlayer.getJewelrySlots()[0] = wornItem;
-          rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.NECKLACE);
+          rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.NECKLACE);
         }
         case 29 -> {
           rpgPlayer.getJewelrySlots()[1] = wornItem;
-          rpgPlayer.readEquipmentSlot(wornItem, EquipmentSlot.RING);
+          rpgPlayer.readEquipmentSlot(wornItem, RpgEquipmentSlot.RING);
         }
       }
       rpgPlayer.updateHealthBar();

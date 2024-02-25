@@ -16,7 +16,7 @@ import me.dannynguyen.aethel.listeners.rpg.EquipmentAttributes;
 import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.rpg.EquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -36,7 +36,7 @@ import java.util.UUID;
  * Represents the plugin as an object.
  * <p>
  * Through event listeners and command executors, the plugin can
- * process various requests given to it by its users and the server.
+ * handle various requests given to it by its users and the server.
  * </p>
  *
  * @author Danny Nguyen
@@ -115,7 +115,7 @@ public class Plugin extends JavaPlugin {
       if (playerHeldItemMap.containsKey(playerUUID)) {
         if (!playerHeldItemMap.get(playerUUID).equals(heldItem)) {
           playerHeldItemMap.put(playerUUID, heldItem);
-          PluginData.rpgSystem.getRpgPlayers().get(playerUUID).readEquipmentSlot(heldItem, EquipmentSlot.HAND);
+          PluginData.rpgSystem.getRpgPlayers().get(playerUUID).readEquipmentSlot(heldItem, RpgEquipmentSlot.HAND);
         }
       } else {
         playerHeldItemMap.put(playerUUID, heldItem);

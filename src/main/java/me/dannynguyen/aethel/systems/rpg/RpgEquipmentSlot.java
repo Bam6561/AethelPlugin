@@ -3,16 +3,16 @@ package me.dannynguyen.aethel.systems.rpg;
 import javax.annotation.Nullable;
 
 /**
- * Types of equipment slots.
+ * Types of RPG equipment slots.
  * <p>
  * Necklace and ring are only equippable in the Sheet menu.
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.12.10
  * @since 1.11.6
  */
-public enum EquipmentSlot {
+public enum RpgEquipmentSlot {
   /**
    * Head.
    */
@@ -66,7 +66,7 @@ public enum EquipmentSlot {
    * @return enum value of string
    */
   @Nullable
-  public static EquipmentSlot asEnum(String slot) {
+  public static RpgEquipmentSlot asEnum(String slot) {
     slot = slot.toLowerCase();
     switch (slot) {
       case "head" -> {

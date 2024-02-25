@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -13,9 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
@@ -26,7 +24,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.12.9
+ * @version 1.12.10
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -40,33 +38,30 @@ public class PlayerDamage implements Listener {
       EntityDamageEvent.DamageCause.PROJECTILE, EntityDamageEvent.DamageCause.KILL);
 
   /**
-   * Processes damage taken by players from non-entity attacks.
+   * Calculates damage taken by players from non-entity attacks.
    *
    * @param e entity damage event
    */
   @EventHandler
   private void onGeneralDamage(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player damagee && !handledDamageCauses.contains(e.getCause())) {
-      e.setCancelled(true);
-      if (damagee.getNoDamageTicks() == 0) {
-        damagee.damage(0.01);
-        damagee.setNoDamageTicks(10);
-        Map<Enchantment, Integer> totalEquipmentEnchantments = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getTotalEquipmentEnchantments();
-        EntityDamageEvent.DamageCause cause = e.getCause();
-        if (mitigateEnvironmentalDamage(e, cause, totalEquipmentEnchantments)) {
-          return;
-        }
-        double finalDamage = e.getDamage();
-        switch (cause) {
-          case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
-        }
-        PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
+      Map<Enchantment, Integer> totalEquipmentEnchantments = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getTotalEquipmentEnchantments();
+      EntityDamageEvent.DamageCause cause = e.getCause();
+      if (mitigateEnvironmentalDamage(e, cause, totalEquipmentEnchantments)) {
+        e.setCancelled(true);
+        return;
       }
+      double finalDamage = e.getDamage();
+      e.setDamage(0);
+      switch (cause) {
+        case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(damagee, finalDamage);
+      }
+      PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
     }
   }
 
   /**
-   * Processes damage done or taken by players from other entities.
+   * Calculates damage done or taken by players from other entities.
    *
    * @param e entity damaged by entity event
    */
@@ -74,24 +69,19 @@ public class PlayerDamage implements Listener {
   private void onEntityDamage(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Player || e.getEntity() instanceof Player) {
       if (e.getDamager() instanceof Player damager && !(e.getEntity() instanceof Player)) { // PvE
-        processDamageDone(e, damager);
+        calculateDamageDone(e, damager);
       } else {
-        e.setCancelled(true);
         Player damagee = (Player) e.getEntity();
-        if (damagee.getNoDamageTicks() == 0) {
-          damagee.damage(0.01);
-          damagee.setNoDamageTicks(10);
-          if (e.getDamager() instanceof Player) { // PvP, otherwise EvP
-            processDamageDone(e, (Player) e.getDamager());
-          }
-          processDamageTaken(e, damagee);
+        if (e.getDamager() instanceof Player) { // PvP, otherwise EvP
+          calculateDamageDone(e, (Player) e.getDamager());
         }
+        calculateDamageTaken(e, damagee);
       }
     }
   }
 
   /**
-   * Processes damage healed by players.
+   * Calculates damage healed by players.
    *
    * @param e entity regain health event
    */
@@ -127,7 +117,7 @@ public class PlayerDamage implements Listener {
           e.setDamage(damage - (damage * (fireProtection * .1)));
         }
       }
-      case FLY_INTO_WALL, MAGIC, POISON, WITHER -> {
+      case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> {
         int protection = totalEquipmentEnchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
         if (protection > 0) {
           protection = Math.max(protection, 20);
@@ -157,7 +147,7 @@ public class PlayerDamage implements Listener {
    * @param e       entity damage by entity event
    * @param damager interacting player
    */
-  private void processDamageDone(EntityDamageByEntityEvent e, Player damager) {
+  private void calculateDamageDone(EntityDamageByEntityEvent e, Player damager) {
     Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
     Random random = new Random();
     double damage = e.getDamage();
@@ -171,23 +161,63 @@ public class PlayerDamage implements Listener {
    * @param e       entity damage by entity event
    * @param damagee interacting player
    */
-  private void processDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
-    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
+  public void calculateDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
+    RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId());
+    switch (e.getDamager().getType()) {
+      case ARROW, DRAGON_FIREBALL, EGG, ENDER_PEARL, FIREBALL, FIREWORK,
+          FISHING_HOOK, LLAMA_SPIT, SHULKER_BULLET, SMALL_FIREBALL, SNOWBALL,
+          SPECTRAL_ARROW, THROWN_EXP_BOTTLE, TRIDENT, WITHER_SKULL -> {
+        int projectileProtection = rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_PROJECTILE);
+        if (projectileProtection > 0) {
+          if (projectileProtection >= 10) {
+            // TO DO
+          } else if (projectileProtection > 0) {
+            projectileProtection = Math.max(projectileProtection, 10);
+            double damage = e.getDamage();
+            e.setDamage(damage - (damage * (projectileProtection * .05)));
+          }
+        }
+      }
+      case SPLASH_POTION -> {
+        int protection = rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL);
+        if (protection > 0) {
+          protection = Math.max(protection, 20);
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (protection * .04)));
+          double finalDamage = e.getDamage();
+          e.setDamage(0);
+          rpgPlayer.damageHealthBar(finalDamage);
+          return;
+        }
+      }
+      case PRIMED_TNT -> {
+        if (mitigatePrimedTNTDamage(e, damagee)) {
+          e.setCancelled(true);
+          return;
+        }
+      }
+    }
+
+    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes();
     Random random = new Random();
 
     if (ifCountered(damagee, attributes, random, e.getDamager())) {
+      e.setCancelled(true);
       return;
     } else if (ifDodged(attributes, random)) {
+      e.setCancelled(true);
       return;
     } else if (ifTougher(e, damagee, attributes)) {
+      e.setCancelled(true);
       return;
     }
     mitigateArmorProtection(e, damagee);
     mitigateResistance(e, damagee);
 
     double finalDamage = e.getDamage();
-    processArmorDurabilityDamage(damagee.getInventory(), finalDamage);
-    PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
+    e.setDamage(0);
+    damageArmorDurability(damagee, finalDamage);
+    rpgPlayer.damageHealthBar(finalDamage);
   }
 
   /**
@@ -281,34 +311,36 @@ public class PlayerDamage implements Listener {
   /**
    * Damages the worn armors' durability based on the damage taken.
    *
-   * @param pInv   player inventory
-   * @param damage damage taken
+   * @param damagee player taking damage
+   * @param damage  damage taken
    */
-  private void processArmorDurabilityDamage(PlayerInventory pInv, double damage) {
-    int durabilityLoss = (int) Math.max(damage / 4, 1);
-    ItemStack helmet = pInv.getHelmet();
-    if (ItemReader.isNotNullOrAir(helmet)) {
-      Damageable helmetDurability = (Damageable) helmet.getItemMeta();
-      helmetDurability.setDamage(helmetDurability.getDamage() + durabilityLoss);
-      helmet.setItemMeta(helmetDurability);
+  private void damageArmorDurability(Player damagee, double damage) {
+    DurabilityDamage durabilityDamage = new DurabilityDamage(damagee, damage);
+    durabilityDamage.damageDurability(EquipmentSlot.HEAD);
+    durabilityDamage.damageDurability(EquipmentSlot.CHEST);
+    durabilityDamage.damageDurability(EquipmentSlot.LEGS);
+    durabilityDamage.damageDurability(EquipmentSlot.FEET);
+  }
+
+  /**
+   * Mitigates damage done by primed TNT based on the
+   * player's total blast protection enchantment.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee player taking damage
+   * @return if no damage was taken
+   */
+  private boolean mitigatePrimedTNTDamage(EntityDamageByEntityEvent e, Player damagee) {
+    int explosionProtection = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_EXPLOSIONS);
+    if (explosionProtection >= 10) {
+      Player player = (Player) e.getEntity();
+      PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).healHealthBar(e.getDamage() * .2);
+      player.setFoodLevel(20);
+      return true;
+    } else if (explosionProtection > 0) {
+      double damage = e.getDamage();
+      e.setDamage(Math.max(damage - (damage * (explosionProtection * .1)), 0));
     }
-    ItemStack chestplate = pInv.getChestplate();
-    if (ItemReader.isNotNullOrAir(chestplate)) {
-      Damageable chestplateDurability = (Damageable) chestplate.getItemMeta();
-      chestplateDurability.setDamage(chestplateDurability.getDamage() + durabilityLoss);
-      chestplate.setItemMeta(chestplateDurability);
-    }
-    ItemStack leggings = pInv.getLeggings();
-    if (ItemReader.isNotNullOrAir(leggings)) {
-      Damageable leggingsDurability = (Damageable) leggings.getItemMeta();
-      leggingsDurability.setDamage(leggingsDurability.getDamage() + durabilityLoss);
-      leggings.setItemMeta(leggingsDurability);
-    }
-    ItemStack boots = pInv.getBoots();
-    if (ItemReader.isNotNullOrAir(boots)) {
-      Damageable bootsDurability = (Damageable) boots.getItemMeta();
-      bootsDurability.setDamage(bootsDurability.getDamage() + durabilityLoss);
-      boots.setItemMeta(bootsDurability);
-    }
+    return false;
   }
 }
