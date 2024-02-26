@@ -105,11 +105,11 @@ public class RpgPlayer {
    * @return blank total enchantment levels
    */
   private Map<Enchantment, Integer> createBlankTotalEquipmentEnchantments() {
-    Map<Enchantment, Integer> totalEquipmentEnchantments = new HashMap<>();
+    Map<Enchantment, Integer> enchantments = new HashMap<>();
     for (Enchantment enchantment : trackedEquipmentEnchantments) {
-      totalEquipmentEnchantments.put(enchantment, 0);
+      enchantments.put(enchantment, 0);
     }
-    return totalEquipmentEnchantments;
+    return enchantments;
   }
 
   /**

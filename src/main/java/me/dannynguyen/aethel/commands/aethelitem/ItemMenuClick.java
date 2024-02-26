@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.13.0
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -212,11 +212,8 @@ public class ItemMenuClick {
       }
       case REMOVE -> {
         PersistentItem aethelItem = PluginData.itemRegistry.getItemMap().get(ItemReader.readName(clickedItem));
-        if (aethelItem.delete()) {
-          user.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + aethelItem.getName());
-        } else {
-          user.sendMessage(ChatColor.WHITE + aethelItem.getName() + ChatColor.RED + " has already been removed.");
-        }
+        aethelItem.delete();
+        user.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + aethelItem.getName());
       }
     }
   }

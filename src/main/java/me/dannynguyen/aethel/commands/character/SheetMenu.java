@@ -26,7 +26,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.12.8
+ * @version 1.13.0
  * @since 1.6.3
  */
 class SheetMenu {
@@ -203,6 +203,7 @@ class SheetMenu {
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
     RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID);
+    Map<Enchantment, Integer> enchantments = rpgPlayer.getTotalEquipmentEnchantments();
 
     String maxHealth = ChatColor.RED + "" + df2.format(rpgPlayer.getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
     String counterChance = ChatColor.YELLOW + "" + df2.format(attributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
@@ -210,11 +211,11 @@ class SheetMenu {
     String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS)) + " TOUGH";
     String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
 
-    String featherFalling = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";
-    String protection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL) + " PROT";
-    String blastProtection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_EXPLOSIONS) + " BLAST PROT";
-    String fireProtection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_FIRE) + " FIRE PROT";
-    String projectileProtection = ChatColor.GRAY + "" + rpgPlayer.getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_PROJECTILE) + " PROJ PROT";
+    String featherFalling = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";
+    String protection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) + " PROT";
+    String blastProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_EXPLOSIONS) + " BLAST PROT";
+    String fireProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FIRE) + " FIRE PROT";
+    String projectileProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_PROJECTILE) + " PROJ PROT";
 
     menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, "", featherFalling, protection, blastProtection, fireProtection, projectileProtection), ItemFlag.HIDE_ATTRIBUTES));
   }

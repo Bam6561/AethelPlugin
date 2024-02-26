@@ -27,7 +27,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.13.0
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -322,8 +322,8 @@ public class ItemEditorMessageSent {
         dataContainer.remove(listKey);
       }
       dataContainer.remove(attributeKey);
-      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
     }
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }
 
 

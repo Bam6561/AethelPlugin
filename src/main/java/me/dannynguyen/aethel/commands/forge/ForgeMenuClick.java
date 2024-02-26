@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.13.0
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -262,11 +262,8 @@ public class ForgeMenuClick {
    */
   private void removeRecipe() {
     PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(e.getCurrentItem()));
-    if (recipe.delete()) {
-      user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());
-    } else {
-      user.sendMessage(ChatColor.WHITE + recipe.getName() + ChatColor.RED + " has already been removed.");
-    }
+    recipe.delete();
+    user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());
   }
 
   /**
