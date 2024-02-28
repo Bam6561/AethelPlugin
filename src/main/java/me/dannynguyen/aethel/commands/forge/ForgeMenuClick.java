@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.13.0
+ * @version 1.13.1
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -131,13 +131,13 @@ public class ForgeMenuClick {
    */
   private void viewRecipeCategory() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
-    ForgeMenuAction action = ForgeMenuAction.asEnum(playerMeta.get(PlayerMeta.FUTURE));
+    ForgeMenuAction action = ForgeMenuAction.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
     String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     playerMeta.put(PlayerMeta.CATEGORY, item);
     user.openInventory(new RecipeMenu(user, action).openCategoryPage(item, requestedPage));
-    playerMeta.put(PlayerMeta.INVENTORY, "forge." + ForgeMenuAction.asString(action));
+    playerMeta.put(PlayerMeta.INVENTORY, "forge." + action.name().toLowerCase());
   }
 
   /**
@@ -150,7 +150,7 @@ public class ForgeMenuClick {
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
     user.openInventory(new RecipeMenu(user, action).openCategoryPage(category, requestedPage - 1));
-    playerMeta.put(PlayerMeta.INVENTORY, "forge." + ForgeMenuAction.asString(action));
+    playerMeta.put(PlayerMeta.INVENTORY, "forge." + action.name().toLowerCase());
   }
 
   /**
@@ -188,7 +188,7 @@ public class ForgeMenuClick {
    */
   private void returnToMenu() {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
-    ForgeMenuAction action = ForgeMenuAction.asEnum(playerMeta.get(PlayerMeta.FUTURE));
+    ForgeMenuAction action = ForgeMenuAction.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
@@ -216,7 +216,7 @@ public class ForgeMenuClick {
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
     user.openInventory(new RecipeMenu(user, action).openCategoryPage(category, requestedPage + 1));
-    playerMeta.put(PlayerMeta.INVENTORY, "forge." + ForgeMenuAction.asString(action));
+    playerMeta.put(PlayerMeta.INVENTORY, "forge." + action.name().toLowerCase());
   }
 
   /**

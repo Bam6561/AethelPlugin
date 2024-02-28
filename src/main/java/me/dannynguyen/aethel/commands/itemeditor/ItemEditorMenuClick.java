@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.commands.character.AttributeHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginConstant;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
@@ -12,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -20,13 +22,14 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.12.7
+ * @version 1.13.1
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -260,9 +263,7 @@ public class ItemEditorMenuClick {
   private void generateLore() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
-    boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
-
-    if (hasAttributes) {
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       List<String> lore;
       if (meta.hasLore()) {
@@ -270,20 +271,10 @@ public class ItemEditorMenuClick {
       } else {
         lore = new ArrayList<>();
       }
-
-      for (String attribute : attributes) {
-        String attributeType = attribute.substring(0, attribute.indexOf("."));
-        String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
-        NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
-
-        switch (attributeSlot) {
-          case "head", "chest", "legs", "feet", "necklace", "ring" -> attributeSlot = ChatColor.GRAY + "When on " + TextFormatter.capitalizeWord(attributeSlot) + ": ";
-          case "hand" -> attributeSlot = ChatColor.GRAY + "When in Hand: ";
-          case "off_hand" -> attributeSlot = ChatColor.GRAY + "When in Off Hand: ";
-        }
-
-        lore.add(ChatColor.GRAY + attributeSlot + ChatColor.DARK_GREEN + dataContainer.get(attributeKey, PersistentDataType.DOUBLE) + " " + TextFormatter.capitalizePhrase(attributeType));
-      }
+      Map<String, AttributeHeader> attributeHeaders = new HashMap<>();
+      createAttributeHeaders(attributes, lore, attributeHeaders);
+      sortAttributeHeaders(dataContainer, attributes, attributeHeaders);
+      addAttributeHeaders(lore, attributeHeaders);
       meta.setLore(lore);
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
@@ -442,7 +433,7 @@ public class ItemEditorMenuClick {
    */
   private void setMode(AttributeEditorAction action) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
-    String equipmentSlot = AttributeEditorAction.asString(action);
+    String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
     user.openInventory(new AttributeEditorMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
@@ -455,7 +446,16 @@ public class ItemEditorMenuClick {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     String attributeType;
     if (PluginConstant.minecraftAttributes.contains(attribute)) {
-      attributeType = "GENERIC_" + TextFormatter.formatEnum(attribute);
+      String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+      try {
+        EquipmentSlot.valueOf(slot.toUpperCase());
+        attributeType = "GENERIC_" + TextFormatter.formatEnum(attribute);
+      } catch (IllegalArgumentException e) {
+        user.sendMessage(ChatColor.RED + "Minecraft attribute does not exist for that slot.");
+        user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.valueOf(slot.toUpperCase())).openMenu());
+        PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
+        return;
+      }
     } else {
       attributeType = "aethel.attribute." + TextFormatter.formatId(attribute);
     }
@@ -513,7 +513,7 @@ public class ItemEditorMenuClick {
       case "Attack Speed" -> {
         return attributeContext + "4.0";
       }
-      case "Critical Chance", "Counter Chance", "Dodge Chance", "Status Chance" -> {
+      case "Critical Chance", "Counter Chance", "Dodge Chance" -> {
         return attributeContext + "0.0%";
       }
       case "Critical Damage" -> {
@@ -531,7 +531,7 @@ public class ItemEditorMenuClick {
       case "Movement Speed" -> {
         return attributeContext + "2.0 [Input * 20]";
       }
-      case "Toughness", "Luck" -> {
+      case "Luck", "Toughness" -> {
         return attributeContext + "0.0";
       }
       case "Item Damage" -> {
@@ -543,6 +543,116 @@ public class ItemEditorMenuClick {
       default -> {
         return null;
       }
+    }
+  }
+
+  /**
+   * Creates lore headers to put attributes under.
+   *
+   * @param attributes       item attributes
+   * @param lore             item lore
+   * @param attributeHeaders attribute headers
+   */
+  private void createAttributeHeaders(List<String> attributes, List<String> lore, Map<String, AttributeHeader> attributeHeaders) {
+    Set<String> attributeSlots = new HashSet<>();
+    for (String attribute : attributes) {
+      attributeSlots.add(attribute.substring(attribute.indexOf(".") + 1));
+    }
+    if (attributeSlots.contains("head")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When on Head:");
+      attributeHeaders.put("head", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("chest")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When on Chest:");
+      attributeHeaders.put("chest", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("legs")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When on Legs:");
+      attributeHeaders.put("legs", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("feet")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When on Feet:");
+      attributeHeaders.put("feet", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("necklace")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When on Necklace:");
+      attributeHeaders.put("necklace", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("ring")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When on Ring:");
+      attributeHeaders.put("ring", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("hand")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When in Hand:");
+      attributeHeaders.put("hand", new AttributeHeader(lore.size()));
+    }
+    if (attributeSlots.contains("off_hand")) {
+      lore.add("");
+      lore.add(ChatColor.GRAY + "When in Off Hand:");
+      attributeHeaders.put("off_hand", new AttributeHeader(lore.size()));
+    }
+  }
+
+  /**
+   * Sorts attributes under attribute headers.
+   *
+   * @param dataContainer    item's persistent tags
+   * @param attributes       attributes
+   * @param attributeHeaders attribute headers
+   */
+  private void sortAttributeHeaders(PersistentDataContainer dataContainer, List<String> attributes, Map<String, AttributeHeader> attributeHeaders) {
+    DecimalFormat df3 = new DecimalFormat();
+    df3.setMaximumFractionDigits(3);
+    for (String attribute : attributes) {
+      String attributeType = attribute.substring(0, attribute.indexOf("."));
+      String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
+      NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+      switch (attributeType) {
+        case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> {
+          attributeHeaders.get(attributeSlot).getText().add(ChatColor.BLUE + "+" + df3.format(dataContainer.get(attributeKey, PersistentDataType.DOUBLE)) + "% " + TextFormatter.capitalizePhrase(attributeType));
+        }
+        default -> attributeHeaders.get(attributeSlot).getText().add(ChatColor.BLUE + "+" + df3.format(dataContainer.get(attributeKey, PersistentDataType.DOUBLE)) + " " + TextFormatter.capitalizePhrase(attributeType));
+      }
+    }
+  }
+
+  /**
+   * Puts attribute headers in the item's lore.
+   *
+   * @param lore             item lore
+   * @param attributeHeaders attribute headers
+   */
+  private void addAttributeHeaders(List<String> lore, Map<String, AttributeHeader> attributeHeaders) {
+    if (attributeHeaders.containsKey("off_hand")) {
+      lore.addAll(attributeHeaders.get("off_hand").getLine(), attributeHeaders.get("off_hand").getText());
+    }
+    if (attributeHeaders.containsKey("hand")) {
+      lore.addAll(attributeHeaders.get("hand").getLine(), attributeHeaders.get("hand").getText());
+    }
+    if (attributeHeaders.containsKey("ring")) {
+      lore.addAll(attributeHeaders.get("ring").getLine(), attributeHeaders.get("ring").getText());
+    }
+    if (attributeHeaders.containsKey("necklace")) {
+      lore.addAll(attributeHeaders.get("necklace").getLine(), attributeHeaders.get("necklace").getText());
+    }
+    if (attributeHeaders.containsKey("feet")) {
+      lore.addAll(attributeHeaders.get("feet").getLine(), attributeHeaders.get("feet").getText());
+    }
+    if (attributeHeaders.containsKey("legs")) {
+      lore.addAll(attributeHeaders.get("legs").getLine(), attributeHeaders.get("legs").getText());
+    }
+    if (attributeHeaders.containsKey("chest")) {
+      lore.addAll(attributeHeaders.get("chest").getLine(), attributeHeaders.get("chest").getText());
+    }
+    if (attributeHeaders.containsKey("head")) {
+      lore.addAll(attributeHeaders.get("head").getLine(), attributeHeaders.get("head").getText());
     }
   }
 }

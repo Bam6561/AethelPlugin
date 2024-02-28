@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.13.0
+ * @version 1.13.1
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -148,7 +148,7 @@ public class ItemMenuClick {
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     user.openInventory(new ItemMenu(user, action).openCategoryPage(category, pageRequest - 1));
-    playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + ItemMenuAction.asString(action));
+    playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + action.name().toLowerCase());
   }
 
   /**
@@ -191,7 +191,7 @@ public class ItemMenuClick {
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     user.openInventory(new ItemMenu(user, action).openCategoryPage(category, pageRequest + 1));
-    playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + ItemMenuAction.asString(action));
+    playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + action.name().toLowerCase());
   }
 
   /**

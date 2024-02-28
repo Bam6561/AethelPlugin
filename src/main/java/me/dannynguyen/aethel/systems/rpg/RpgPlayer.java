@@ -29,7 +29,7 @@ import java.util.*;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.8
+ * @version 1.13.1
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -328,7 +328,7 @@ public class RpgPlayer {
   private void readEquipmentAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
-      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.asEnum(attribute.substring(attribute.indexOf(".") + 1));
+      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
       if (equipmentSlot == slot) {
         addEquipmentAttributes(slot, dataContainer, attribute);
       }
@@ -344,7 +344,7 @@ public class RpgPlayer {
    */
   private void addEquipmentAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
-    AethelAttribute attributeType = AethelAttribute.asEnum(attribute.substring(0, attribute.indexOf(".")));
+    AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
     equipmentAttributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }

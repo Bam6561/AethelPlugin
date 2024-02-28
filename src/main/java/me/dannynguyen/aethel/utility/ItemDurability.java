@@ -17,7 +17,7 @@ import java.util.Random;
  * Modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.13.0
+ * @version 1.13.1
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -53,7 +53,7 @@ public class ItemDurability {
       if (durability.getDamage() > item.getType().getMaxDurability()) {
         pInv.setItem(slot, new ItemStack(Material.AIR));
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-        PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).readEquipmentSlot(null, RpgEquipmentSlot.asEnum(slot.name()));
+        PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).readEquipmentSlot(null, RpgEquipmentSlot.valueOf(slot.name().toUpperCase()));
       } else {
         item.setItemMeta(durability);
       }

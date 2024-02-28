@@ -27,7 +27,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.13.0
+ * @version 1.13.1
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -178,7 +178,7 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's enchantment.
    */
   public void setEnchant() {
-    if (!e.getMessage().equals("0")) {
+    if (!e.getMessage().equals("-")) {
       try {
         int level = Integer.parseInt(e.getMessage());
         if (level > 0 && level < 32768) {
@@ -226,15 +226,16 @@ public class ItemEditorMessageSent {
   private void setMinecraftAttribute(String type) {
     try {
       Attribute attribute = Attribute.valueOf(type);
-      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT).toUpperCase());
-      if (!e.getMessage().equals("0")) {
+      String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(slot.toUpperCase());
+      if (!e.getMessage().equals("-")) {
         AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
         removeExistingAttributeModifiers(attribute, equipmentSlot);
         meta.addAttributeModifier(attribute, attributeModifier);
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
+        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
       } else {
         removeExistingAttributeModifiers(attribute, equipmentSlot);
-        user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
+        user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
@@ -257,7 +258,7 @@ public class ItemEditorMessageSent {
 
     try {
       String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
-      if (!e.getMessage().equals("0")) {
+      if (!e.getMessage().equals("-")) {
         setAethelAttributeModifier(type, attribute, attributeKey, attributeValue);
       } else {
         removeAethelAttributeModifier(type, attribute, attributeKey);
@@ -279,6 +280,7 @@ public class ItemEditorMessageSent {
   private void setAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey, String attributeValue) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
+    String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -293,7 +295,7 @@ public class ItemEditorMessageSent {
       dataContainer.set(listKey, PersistentDataType.STRING, attribute);
     }
     dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
-    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }
 
   /**
@@ -306,6 +308,7 @@ public class ItemEditorMessageSent {
   private void removeAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
+    String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -315,7 +318,6 @@ public class ItemEditorMessageSent {
           newAttributes.append(itemAttribute).append(" ");
         }
       }
-
       if (!newAttributes.isEmpty()) {
         dataContainer.set(listKey, PersistentDataType.STRING, newAttributes.toString().trim());
       } else {
@@ -323,7 +325,7 @@ public class ItemEditorMessageSent {
       }
       dataContainer.remove(attributeKey);
     }
-    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
   }
 
 
@@ -362,7 +364,7 @@ public class ItemEditorMessageSent {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.asEnum(playerMeta.get(PlayerMeta.SLOT))).openMenu());
+      user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
     });
   }

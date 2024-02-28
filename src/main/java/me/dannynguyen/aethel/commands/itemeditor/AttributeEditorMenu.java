@@ -29,7 +29,7 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.12.5
+ * @version 1.13.1
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -39,7 +39,7 @@ class AttributeEditorMenu {
   private static final Map<String, String[]> aethelAttributeCategories = Map.of(
       "offense", new String[]{"Attack Damage", "Attack Speed", "Critical Chance", "Critical Damage"},
       "defense", new String[]{"Max HP", "Max Health", "Counter Chance", "Dodge Chance", "Toughness", "Armor Toughness", "Armor", "Knockback Resistance"},
-      "other", new String[]{"Item Damage", "Item Cooldown", "Status Chance", "Movement Speed", "Luck"});
+      "other", new String[]{"Item Damage", "Item Cooldown", "Movement Speed", "Luck"});
 
   /**
    * AttributeEditor GUI.
@@ -98,7 +98,7 @@ class AttributeEditorMenu {
    * @return AttributeEditor menu
    */
   private Inventory createMenu() {
-    String actionString = AttributeEditorAction.asString(action);
+    String actionString = action.name().toLowerCase();
     switch (actionString) {
       case "head", "chest", "legs", "feet", "hand", "necklace", "ring" -> actionString = TextFormatter.capitalizeWord(actionString);
       case "off_hand" -> actionString = "Off Hand";
@@ -135,7 +135,7 @@ class AttributeEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"0\".")));
+    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(45, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));

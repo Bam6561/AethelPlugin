@@ -28,7 +28,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.13.0
+ * @version 1.13.1
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -231,7 +231,7 @@ public class PlayerDamage implements Listener {
    */
   private boolean mitigateSpecificEntityTypeDamage(EntityDamageByEntityEvent e, Map<Enchantment, Integer> enchantments, Entity damager, Player damagee) {
     switch (damager.getType()) {
-      case PRIMED_TNT -> {
+      case PRIMED_TNT, ENDER_CRYSTAL -> {
         int explosionProtection = enchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
         if (explosionProtection >= 10) {
           PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).healHealthBar(e.getDamage() * .2);
