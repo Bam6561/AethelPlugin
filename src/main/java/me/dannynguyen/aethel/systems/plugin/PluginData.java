@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.12.4
+ * @version 1.13.4
  * @since 1.1.7
  */
 public class PluginData {
@@ -105,7 +105,7 @@ public class PluginData {
 
     start = System.nanoTime();
     for (RpgPlayer rpgPlayer : PluginData.rpgSystem.getRpgPlayers().values()) {
-      rpgPlayer.saveJewelry();
+      rpgPlayer.getEquipment().saveJewelry();
     }
     finish = System.nanoTime();
     log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(df2, start, finish));

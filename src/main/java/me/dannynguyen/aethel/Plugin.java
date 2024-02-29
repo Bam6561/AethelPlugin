@@ -17,6 +17,7 @@ import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.RpgHealthBar;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -40,7 +41,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.9
+ * @version 1.13.4
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -115,7 +116,7 @@ public class Plugin extends JavaPlugin {
       if (playerHeldItemMap.containsKey(playerUUID)) {
         if (!playerHeldItemMap.get(playerUUID).equals(heldItem)) {
           playerHeldItemMap.put(playerUUID, heldItem);
-          PluginData.rpgSystem.getRpgPlayers().get(playerUUID).readEquipmentSlot(heldItem, RpgEquipmentSlot.HAND);
+          PluginData.rpgSystem.getRpgPlayers().get(playerUUID).getEquipment().readSlot(heldItem, RpgEquipmentSlot.HAND);
         }
       } else {
         playerHeldItemMap.put(playerUUID, heldItem);
@@ -133,9 +134,9 @@ public class Plugin extends JavaPlugin {
   private void updateOvershields() {
     Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
     for (Player player : Bukkit.getOnlinePlayers()) {
-      RpgPlayer rpgPlayer = rpgProfiles.get(player.getUniqueId());
-      if (rpgPlayer.getCurrentHealth() > rpgPlayer.getMaxHealth() * 1.2) {
-        rpgPlayer.decayOvershield();
+      RpgHealthBar rpgHealthBar = rpgProfiles.get(player.getUniqueId()).getHealthBar();
+      if (rpgHealthBar.getCurrentHealth() > rpgHealthBar.getMaxHealth() * 1.2) {
+        rpgHealthBar.decayOvershield();
       }
     }
   }
@@ -151,7 +152,7 @@ public class Plugin extends JavaPlugin {
   private void updateEnvironmentalProtections() {
     Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
     for (Player player : Bukkit.getOnlinePlayers()) {
-      Map<Enchantment, Integer> enchantments = rpgProfiles.get(player.getUniqueId()).getTotalEquipmentEnchantments();
+      Map<Enchantment, Integer> enchantments = rpgProfiles.get(player.getUniqueId()).getEquipment().getTotalEnchantments();
       if (enchantments.get(Enchantment.PROTECTION_FALL) >= 5) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
       }

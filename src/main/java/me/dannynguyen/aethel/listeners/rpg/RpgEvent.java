@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.12.3
+ * @version 1.13.4
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -30,7 +30,7 @@ public class RpgEvent implements Listener {
     if (PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()) == null) {
       PluginData.rpgSystem.loadRpgPlayer(player);
     } else {
-      BossBar healthBar = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar();
+      BossBar healthBar = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().getHealthBar();
       healthBar.removeAll();
       healthBar.addPlayer(player);
     }
@@ -48,10 +48,10 @@ public class RpgEvent implements Listener {
       switch (e.getModifiedType().getName()) {
         case "ABSORPTION" -> {
           if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).updateHealthBar(), 1);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().update(), 1);
           }
         }
-        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).updateHealthBar(), 1);
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().update(), 1);
       }
     }
   }
@@ -63,6 +63,6 @@ public class RpgEvent implements Listener {
    */
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
-    PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId()).resetHealthBar();
+    PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealthBar().reset();
   }
 }

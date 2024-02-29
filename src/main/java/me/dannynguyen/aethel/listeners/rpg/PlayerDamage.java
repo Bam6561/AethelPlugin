@@ -28,7 +28,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.13.2
+ * @version 1.13.4
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -59,7 +59,7 @@ public class PlayerDamage implements Listener {
       switch (cause) {
         case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(damagee, finalDamage);
       }
-      PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(finalDamage);
+      PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getHealthBar().damage(finalDamage);
       e.setDamage(0);
     }
   }
@@ -93,7 +93,7 @@ public class PlayerDamage implements Listener {
   private void onRegainHealth(EntityRegainHealthEvent e) {
     if (e.getEntity() instanceof Player player) {
       e.setCancelled(true);
-      PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).healHealthBar(e.getAmount());
+      PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().heal(e.getAmount());
     }
   }
 
@@ -119,7 +119,7 @@ public class PlayerDamage implements Listener {
    */
   private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
     RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId());
-    Map<Enchantment, Integer> enchantments = rpgPlayer.getTotalEquipmentEnchantments();
+    Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
     Entity damager = e.getDamager();
 
     if (mitigateSpecificEntityTypeDamage(e, enchantments, damager, damagee)) {
@@ -153,7 +153,7 @@ public class PlayerDamage implements Listener {
 
     double finalDamage = e.getDamage();
     damageArmorDurability(damagee, finalDamage);
-    rpgPlayer.damageHealthBar(finalDamage);
+    rpgPlayer.getHealthBar().damage(finalDamage);
     e.setDamage(0);
   }
 
@@ -181,7 +181,7 @@ public class PlayerDamage implements Listener {
    * @return if no damage is taken
    */
   private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee) {
-    Map<Enchantment, Integer> enchantments = PluginData.rpgSystem.getRpgPlayers().get(e.getEntity().getUniqueId()).getTotalEquipmentEnchantments();
+    Map<Enchantment, Integer> enchantments = PluginData.rpgSystem.getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment().getTotalEnchantments();
     switch (cause) {
       case FALL -> {
         int fallProtection = enchantments.get(Enchantment.PROTECTION_FALL);
@@ -208,7 +208,7 @@ public class PlayerDamage implements Listener {
       case BLOCK_EXPLOSION -> {
         int explosionProtection = enchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
         if (explosionProtection >= 10) {
-          PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).healHealthBar(e.getDamage() * .2);
+          PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getHealthBar().heal(e.getDamage() * .2);
           damagee.setFoodLevel(20);
           return true;
         } else if (explosionProtection > 0) {
@@ -234,7 +234,7 @@ public class PlayerDamage implements Listener {
       case PRIMED_TNT, ENDER_CRYSTAL -> {
         int explosionProtection = enchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
         if (explosionProtection >= 10) {
-          PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).healHealthBar(e.getDamage() * .2);
+          PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getHealthBar().heal(e.getDamage() * .2);
           damagee.setFoodLevel(20);
           return true;
         } else if (explosionProtection > 0) {
@@ -249,7 +249,7 @@ public class PlayerDamage implements Listener {
           double damage = e.getDamage();
           e.setDamage(damage - (damage * (protection * .04)));
         }
-        PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
+        PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getHealthBar().damage(e.getDamage());
         e.setDamage(0);
         return true;
       }
@@ -304,7 +304,7 @@ public class PlayerDamage implements Listener {
           protection = Math.max(protection, 20);
           double damage = e.getDamage();
           e.setDamage(damage - (damage * (protection * .04)));
-          PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).damageHealthBar(e.getDamage());
+          PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getHealthBar().damage(e.getDamage());
           e.setDamage(0);
           return true;
         }
@@ -366,7 +366,7 @@ public class PlayerDamage implements Listener {
    */
   private void mitigateArmorProtection(EntityDamageByEntityEvent e, Player damagee) {
     int armor = Math.min((int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue(), 20);
-    int protection = Math.min(PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getTotalEquipmentEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
+    int protection = Math.min(PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
     double damage = e.getDamage();
     e.setDamage(damage - (damage * (armor * 0.02 + protection * 0.01)));
   }
