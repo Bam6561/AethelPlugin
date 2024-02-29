@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +28,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.13.1
+ * @version 1.13.3
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -90,6 +91,32 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.GREEN + "[Set Custom Model Data] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid custom model data.");
+    }
+    returnToCosmeticEditor();
+  }
+
+  /**
+   * Sets the item's damage.
+   */
+  public void setDamage() {
+    try {
+      ItemDurability.setDamage(item, Integer.parseInt(e.getMessage()));
+      user.sendMessage(ChatColor.GREEN + "[Set Item Damage] " + ChatColor.WHITE + e.getMessage());
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid item damage.");
+    }
+    returnToCosmeticEditor();
+  }
+
+  /**
+   * Sets the item's durability.
+   */
+  public void setDurability(){
+    try {
+      ItemDurability.setDurability(item, Integer.parseInt(e.getMessage()));
+      user.sendMessage(ChatColor.GREEN + "[Set Item Durability] " + ChatColor.WHITE + e.getMessage());
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid item durability.");
     }
     returnToCosmeticEditor();
   }

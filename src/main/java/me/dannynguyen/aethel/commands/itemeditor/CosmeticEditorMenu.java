@@ -24,7 +24,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.13.3
  * @since 1.6.7
  */
 class CosmeticEditorMenu {
@@ -81,6 +81,8 @@ class CosmeticEditorMenu {
     addContext();
     addDisplayName();
     addCustomModelData();
+    addDamage();
+    addDurability();
     addLore();
     addGameplay();
     addItemFlags();
@@ -136,6 +138,20 @@ class CosmeticEditorMenu {
     menu.setItem(12, !meta.hasCustomModelData() ?
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data") :
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data", List.of(ChatColor.WHITE + String.valueOf(meta.getCustomModelData()))));
+  }
+
+  /**
+   * Adds the item damage button.
+   */
+  private void addDamage() {
+    menu.setItem(20, ItemCreator.createItem(Material.COBBLESTONE, ChatColor.AQUA + "Item Damage"));
+  }
+
+  /**
+   * Adds the item durability button.
+   */
+  private void addDurability() {
+    menu.setItem(21, ItemCreator.createItem(Material.STONE, ChatColor.AQUA + "Item Durability"));
   }
 
   /**

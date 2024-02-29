@@ -26,7 +26,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.13.2
+ * @version 1.13.3
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -90,6 +90,8 @@ public class ItemEditorMenuClick {
       case 14 -> openAttributeEditor();
       case 15 -> openEnchantmentEditor();
       case 16 -> openTagEditor();
+      case 20 -> setDamage();
+      case 21 -> setDurability();
       case 28 -> { // Lore Context
       }
       case 29 -> setLore();
@@ -199,6 +201,22 @@ public class ItemEditorMenuClick {
     playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new TagEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
+  }
+
+  /**
+   * Sets an item's damage.
+   */
+  private void setDamage() {
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item damage value.");
+    awaitMessageResponse("damage");
+  }
+
+  /**
+   * Sets an item's durability.
+   */
+  private void setDurability() {
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item durability value.");
+    awaitMessageResponse("durability");
   }
 
   /**

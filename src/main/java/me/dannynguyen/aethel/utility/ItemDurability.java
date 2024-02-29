@@ -17,7 +17,7 @@ import java.util.Random;
  * Modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.13.1
+ * @version 1.13.3
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -58,6 +58,26 @@ public class ItemDurability {
         item.setItemMeta(durability);
       }
     }
+  }
+
+  /**
+   * Sets an item's durability.
+   * <p>
+   * If the durability to be set exceeds the material type's max durability,
+   * the durability is set to match the material type's max durability instead.
+   * </p>
+   *
+   * @param item                interacting item
+   * @param requestedDurability requested durability
+   */
+  public static void setDurability(ItemStack item, int requestedDurability) {
+    Damageable durability = (Damageable) item.getItemMeta();
+    if (requestedDurability > item.getType().getMaxDurability()) {
+      durability.setDamage(0);
+    } else {
+      durability.setDamage(Math.abs(requestedDurability - item.getType().getMaxDurability()));
+    }
+    item.setItemMeta(durability);
   }
 
   /**
