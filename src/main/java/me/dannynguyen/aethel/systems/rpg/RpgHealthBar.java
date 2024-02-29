@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.systems.rpg;
 
+import me.dannynguyen.aethel.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * Represents an RPG player's health bar.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.13.5
  * @since 1.13.4
  */
 public class RpgHealthBar {
@@ -94,12 +95,14 @@ public class RpgHealthBar {
     if (currentHealth > 0) {
       updateProgress();
     } else {
-      DecimalFormat df2 = new DecimalFormat();
-      df2.setMaximumFractionDigits(2);
-      setCurrentHealth(0.0);
-      Bukkit.getPlayer(uuid).setHealth(0.0);
-      healthBar.setProgress(0.0);
-      healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        DecimalFormat df2 = new DecimalFormat();
+        df2.setMaximumFractionDigits(2);
+        setCurrentHealth(0.0);
+        Bukkit.getPlayer(uuid).setHealth(currentHealth);
+        healthBar.setProgress(0.0);
+        healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+      }, 1);
     }
   }
 

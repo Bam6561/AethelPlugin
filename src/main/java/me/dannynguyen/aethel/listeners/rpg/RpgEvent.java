@@ -36,7 +36,6 @@ public class RpgEvent implements Listener {
     }
   }
 
-
   /**
    * Updates the player's health bar to account for absorption and health boost status effects.
    *
