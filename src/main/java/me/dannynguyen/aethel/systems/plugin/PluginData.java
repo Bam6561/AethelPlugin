@@ -70,20 +70,20 @@ public class PluginData {
     Logger log = Bukkit.getLogger();
     long start;
     long finish;
-    DecimalFormat hundredths = new DecimalFormat();
-    hundredths.setMaximumFractionDigits(2);
+    DecimalFormat df2 = new DecimalFormat();
+    df2.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Loading Resources");
 
     start = System.nanoTime();
     PluginData.itemRegistry.loadData();
     finish = System.nanoTime();
-    log.info("[Aethel] Loaded Aethel Items: " + convertToMs(hundredths, start, finish));
+    log.info("[Aethel] Loaded Aethel Items: " + convertToMs(df2, start, finish));
 
     start = System.nanoTime();
     PluginData.recipeRegistry.loadData();
     finish = System.nanoTime();
-    log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(hundredths, start, finish));
+    log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(df2, start, finish));
 
     File rpgJewelryDirectory = PluginDirectory.JEWELRY.getFile();
     if (!rpgJewelryDirectory.exists()) {
@@ -98,8 +98,8 @@ public class PluginData {
     Logger log = Bukkit.getLogger();
     long start;
     long finish;
-    DecimalFormat hundredths = new DecimalFormat();
-    hundredths.setMaximumFractionDigits(2);
+    DecimalFormat df2 = new DecimalFormat();
+    df2.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Saving Resources");
 
@@ -108,18 +108,18 @@ public class PluginData {
       rpgPlayer.saveJewelry();
     }
     finish = System.nanoTime();
-    log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(hundredths, start, finish));
+    log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(df2, start, finish));
   }
 
   /**
    * Converts the time duration of a process in nanoseconds to milliseconds.
    *
-   * @param dc     decimal format
+   * @param df2    0.00
    * @param start  start time
    * @param finish finish time
    * @return milliseconds elapsed
    */
-  private static String convertToMs(DecimalFormat dc, long start, long finish) {
-    return dc.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
+  private static String convertToMs(DecimalFormat df2, long start, long finish) {
+    return df2.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
   }
 }

@@ -28,7 +28,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.13.1
+ * @version 1.13.2
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -117,7 +117,7 @@ public class PlayerDamage implements Listener {
    * @param e       entity damage by entity event
    * @param damagee interacting player
    */
-  public void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
+  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
     RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(damagee.getUniqueId());
     Map<Enchantment, Integer> enchantments = rpgPlayer.getTotalEquipmentEnchantments();
     Entity damager = e.getDamager();

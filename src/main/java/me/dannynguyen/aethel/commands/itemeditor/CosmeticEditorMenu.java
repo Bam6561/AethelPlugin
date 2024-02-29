@@ -44,7 +44,7 @@ class CosmeticEditorMenu {
   private final ItemStack item;
 
   /**
-   * ItemStack meta.
+   * ItemStack's meta.
    */
   private final ItemMeta meta;
 

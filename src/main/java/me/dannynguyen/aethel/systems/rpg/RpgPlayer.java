@@ -242,12 +242,12 @@ public class RpgPlayer {
     if (currentHealth > 0) {
       updateHealthBarProgress();
     } else {
-      DecimalFormat dc = new DecimalFormat();
-      dc.setMaximumFractionDigits(2);
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
       setCurrentHealth(0.0);
       Bukkit.getPlayer(uuid).setHealth(currentHealth);
       healthBar.setProgress(0.0);
-      healthBar.setTitle(0 + " / " + dc.format(maxHealth) + " HP");
+      healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
     }
   }
 
@@ -399,9 +399,9 @@ public class RpgPlayer {
       healthBar.setProgress(1.0);
       healthBar.setColor(BarColor.YELLOW);
     }
-    DecimalFormat dc = new DecimalFormat();
-    dc.setMaximumFractionDigits(2);
-    healthBar.setTitle(dc.format(currentHealth) + " / " + dc.format(maxHealth) + " HP");
+    DecimalFormat df2 = new DecimalFormat();
+    df2.setMaximumFractionDigits(2);
+    healthBar.setTitle(df2.format(currentHealth) + " / " + df2.format(maxHealth) + " HP");
   }
 
   /**
