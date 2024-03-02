@@ -19,7 +19,7 @@ import java.util.Objects;
  * Reads and decodes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.0
+ * @version 1.13.8
  * @since 1.1.4
  */
 public class ItemReader {
@@ -46,8 +46,7 @@ public class ItemReader {
    * @return effective item name
    */
   public static String readName(@NotNull ItemStack item) {
-    Objects.requireNonNull(item, "Null item");
-    if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+    if (Objects.requireNonNull(item, "Null item").hasItemMeta() && item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
     } else {
       return TextFormatter.capitalizePhrase(item.getType().name());
@@ -61,8 +60,7 @@ public class ItemReader {
    * @return item's Aethel tags
    */
   public static String readAethelTags(@NotNull ItemStack item) {
-    Objects.requireNonNull(item, "Null item");
-    PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+    PersistentDataContainer dataContainer = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
     StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey key : dataContainer.getKeys()) {
       String keyName = key.getKey();
@@ -92,9 +90,8 @@ public class ItemReader {
    */
   @Nullable
   public static ItemStack decodeItem(@NotNull String data) {
-    Objects.requireNonNull(data, "Null data");
     try {
-      ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+      ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(Objects.requireNonNull(data, "Null data")));
       BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
       return (ItemStack) bois.readObject();
     } catch (IOException | ClassNotFoundException ex) {

@@ -8,7 +8,7 @@ import java.util.Objects;
  * Formats text.
  *
  * @author Danny Nguyen
- * @version 1.10.0
+ * @version 1.13.8
  * @since 1.6.16
  */
 public class TextFormatter {
@@ -25,8 +25,7 @@ public class TextFormatter {
    * @return enum formatted phrase
    */
   public static String formatEnum(@NotNull String phrase) {
-    Objects.requireNonNull(phrase, "Null phrase");
-    return phrase.replace(" ", "_").toUpperCase();
+    return Objects.requireNonNull(phrase, "Null phrase").replace(" ", "_").toUpperCase();
   }
 
   /**
@@ -36,8 +35,7 @@ public class TextFormatter {
    * @return id formatted phrase
    */
   public static String formatId(@NotNull String phrase) {
-    Objects.requireNonNull(phrase, "Null phrase");
-    return phrase.replace(" ", "_").toLowerCase();
+    return Objects.requireNonNull(phrase, "Null phrase").replace(" ", "_").toLowerCase();
   }
 
   /**
@@ -47,8 +45,7 @@ public class TextFormatter {
    * @return proper word
    */
   public static String capitalizeWord(@NotNull String word) {
-    Objects.requireNonNull(word, "Null word");
-    return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+    return Objects.requireNonNull(word, "Null word").substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
   }
 
   /**
@@ -58,8 +55,7 @@ public class TextFormatter {
    * @return proper phrase
    */
   public static String capitalizePhrase(@NotNull String phrase) {
-    Objects.requireNonNull(phrase, "Null phrase");
-    phrase = phrase.replace("_", " ").toUpperCase();
+    phrase = Objects.requireNonNull(phrase, "Null phrase").replace("_", " ").toUpperCase();
     String[] words = phrase.split(" ");
 
     StringBuilder properPhrase = new StringBuilder();
@@ -77,10 +73,8 @@ public class TextFormatter {
    * @return proper phrase
    */
   public static String capitalizePhrase(@NotNull String phrase, @NotNull String delimiter) {
-    Objects.requireNonNull(phrase, "Null phrase");
-    Objects.requireNonNull(delimiter, "Null delimiter");
-    phrase = phrase.replace("_", " ").toUpperCase();
-    phrase = phrase.replace(delimiter, " ").toUpperCase();
+    phrase = Objects.requireNonNull(phrase, "Null phrase").replace("_", " ").toUpperCase();
+    phrase = phrase.replace(Objects.requireNonNull(delimiter, "Null delimiter"), " ").toUpperCase();
     String[] words = phrase.split(" ");
 
     StringBuilder properPhrase = new StringBuilder();

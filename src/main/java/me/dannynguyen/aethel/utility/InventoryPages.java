@@ -11,7 +11,7 @@ import java.util.Objects;
  * Provides double chest sized inventories with useful methods.
  *
  * @author Danny Nguyen
- * @version 1.10.0
+ * @version 1.13.7
  * @since 1.4.2
  */
 public class InventoryPages {

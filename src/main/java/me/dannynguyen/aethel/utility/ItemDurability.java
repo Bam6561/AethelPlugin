@@ -19,7 +19,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.13.7
+ * @version 1.13.8
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -39,8 +39,7 @@ public class ItemDurability {
    * @return item durability
    */
   public static int getDurability(@NotNull ItemStack item) {
-    Objects.requireNonNull(item, "Null item");
-    if (item.getItemMeta() instanceof Damageable durability) {
+    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
       return item.getType().getMaxDurability() - durability.getDamage();
     } else {
       return -1;
@@ -57,8 +56,7 @@ public class ItemDurability {
    * @return item damage
    */
   public static int getDamage(@NotNull ItemStack item) {
-    Objects.requireNonNull(item, "Null item");
-    if (item.getItemMeta() instanceof Damageable durability) {
+    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
       return durability.getDamage();
     } else {
       return -1;
@@ -72,8 +70,7 @@ public class ItemDurability {
    * @return remaining : maximum durability
    */
   public static String displayDurability(@NotNull ItemStack item) {
-    Objects.requireNonNull(item, "Null item");
-    if (item.getItemMeta() instanceof Damageable durability) {
+    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
       short maxDurability = item.getType().getMaxDurability();
       int durabilityValue = maxDurability - durability.getDamage();
       return durabilityValue + " / " + maxDurability;
@@ -91,9 +88,9 @@ public class ItemDurability {
    * @param slot   slot type
    * @param damage durability damage
    */
-  public static void increaseDamage(Player player, EquipmentSlot slot, int damage) {
-    PlayerInventory pInv = player.getInventory();
-    ItemStack item = pInv.getItem(slot);
+  public static void increaseDamage(@NotNull Player player, @NotNull EquipmentSlot slot, int damage) {
+    PlayerInventory pInv = Objects.requireNonNull(player, "Null player").getInventory();
+    ItemStack item = pInv.getItem(Objects.requireNonNull(slot, "Null slot"));
     if (ItemReader.isNotNullOrAir(item)) {
       if (item.getItemMeta() instanceof Damageable durability) {
         int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
@@ -125,8 +122,8 @@ public class ItemDurability {
    * @param item                interacting item
    * @param requestedDurability requested durability
    */
-  public static void setDurability(ItemStack item, int requestedDurability) {
-    if (item.getItemMeta() instanceof Damageable durability) {
+  public static void setDurability(@NotNull ItemStack item, int requestedDurability) {
+    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
       if (requestedDurability > item.getType().getMaxDurability()) {
         durability.setDamage(0);
       } else {
@@ -146,8 +143,8 @@ public class ItemDurability {
    * @param item   interacting item
    * @param damage durability damage
    */
-  public static void setDamage(ItemStack item, int damage) {
-    if (item.getItemMeta() instanceof Damageable durability) {
+  public static void setDamage(@NotNull ItemStack item, int damage) {
+    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
       durability.setDamage(Math.min(damage, item.getType().getMaxDurability()));
       item.setItemMeta(durability);
     }

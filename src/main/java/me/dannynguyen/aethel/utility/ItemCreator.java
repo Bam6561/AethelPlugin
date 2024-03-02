@@ -20,7 +20,7 @@ import java.util.Objects;
  * Creates and serializes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.13.8
  * @since 1.1.5
  */
 public class ItemCreator {
@@ -38,11 +38,9 @@ public class ItemCreator {
    * @return named item
    */
   public static ItemStack createItem(@NotNull Material material, @NotNull String name) {
-    Objects.requireNonNull(material, "Null material");
-    Objects.requireNonNull(name, "Null name");
-    ItemStack item = new ItemStack(material, 1);
+    ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(name);
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
     item.setItemMeta(meta);
     return item;
   }
@@ -56,13 +54,10 @@ public class ItemCreator {
    * @return named item with lore
    */
   public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull List<String> lore) {
-    Objects.requireNonNull(material, "Null material");
-    Objects.requireNonNull(name, "Null name");
-    Objects.requireNonNull(lore, "Null lore");
-    ItemStack item = new ItemStack(material, 1);
+    ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(name);
-    meta.setLore(lore);
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
+    meta.setLore(Objects.requireNonNull(lore, "Null lore"));
     item.setItemMeta(meta);
     return item;
   }
@@ -78,15 +73,11 @@ public class ItemCreator {
    */
   public static ItemStack createItem(@NotNull Material material, @NotNull String name,
                                      @NotNull List<String> lore, @NotNull ItemFlag itemFlag) {
-    Objects.requireNonNull(material, "Null material");
-    Objects.requireNonNull(name, "Null name");
-    Objects.requireNonNull(lore, "Null lore");
-    Objects.requireNonNull(itemFlag, "Null item flag");
-    ItemStack item = new ItemStack(material, 1);
+    ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(name);
-    meta.setLore(lore);
-    meta.addItemFlags(itemFlag);
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
+    meta.setLore(Objects.requireNonNull(lore, "Null lore"));
+    meta.addItemFlags(Objects.requireNonNull(itemFlag, "Null item flag"));
     item.setItemMeta(meta);
     return item;
   }
@@ -100,13 +91,10 @@ public class ItemCreator {
    * @return named item with an item flag disabled
    */
   public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull ItemFlag itemFlag) {
-    Objects.requireNonNull(material, "Null material");
-    Objects.requireNonNull(name, "Null name");
-    Objects.requireNonNull(itemFlag, "Null item flag");
-    ItemStack item = new ItemStack(material, 1);
+    ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(name);
-    meta.addItemFlags(itemFlag);
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
+    meta.addItemFlags(Objects.requireNonNull(itemFlag, "Null item flag"));
     item.setItemMeta(meta);
     return item;
   }
@@ -118,10 +106,9 @@ public class ItemCreator {
    * @return named player head
    */
   public static ItemStack createPlayerHead(@NotNull Player player) {
-    Objects.requireNonNull(player, "Null player");
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
-    meta.setOwningPlayer(player);
+    meta.setOwningPlayer(Objects.requireNonNull(player, "Null player"));
     meta.setDisplayName(ChatColor.DARK_PURPLE + player.getName());
     item.setItemMeta(meta);
     return item;
@@ -135,13 +122,11 @@ public class ItemCreator {
    * @return named player head with lore
    */
   public static ItemStack createPlayerHead(@NotNull Player player, @NotNull List<String> lore) {
-    Objects.requireNonNull(player, "Null player");
-    Objects.requireNonNull(lore, "Null lore");
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
-    meta.setOwningPlayer(player);
+    meta.setOwningPlayer(Objects.requireNonNull(player, "Null player"));
     meta.setDisplayName(ChatColor.DARK_PURPLE + player.getName());
-    meta.setLore(lore);
+    meta.setLore(Objects.requireNonNull(lore, "Null lore"));
     item.setItemMeta(meta);
     return item;
   }
@@ -154,11 +139,9 @@ public class ItemCreator {
    * @return named player head texture
    */
   public static ItemStack createPluginPlayerHead(@NotNull ItemStack head, @NotNull String name) {
-    Objects.requireNonNull(head, "Null head");
-    Objects.requireNonNull(name, "Null name");
-    ItemStack item = head.clone();
+    ItemStack item = Objects.requireNonNull(head, "Null head").clone();
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(name);
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
     item.setItemMeta(meta);
     return item;
   }
@@ -172,13 +155,10 @@ public class ItemCreator {
    * @return named player head texture with lore
    */
   public static ItemStack createPluginPlayerHead(@NotNull ItemStack head, @NotNull String name, @NotNull List<String> lore) {
-    Objects.requireNonNull(head, "Null head");
-    Objects.requireNonNull(name, "Null name");
-    Objects.requireNonNull(lore, "Null lore");
-    ItemStack item = head.clone();
+    ItemStack item = Objects.requireNonNull(head, "Null head").clone();
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(name);
-    meta.setLore(lore);
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
+    meta.setLore(Objects.requireNonNull(lore, "Null lore"));
     item.setItemMeta(meta);
     return item;
   }
@@ -190,11 +170,10 @@ public class ItemCreator {
    * @return encoded item string
    */
   public static String encodeItem(@NotNull ItemStack item) {
-    Objects.requireNonNull(item, "Null item");
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);
-      boos.writeObject(item);
+      boos.writeObject(Objects.requireNonNull(item, "Null item"));
       boos.flush();
       return Base64.getEncoder().encodeToString(baos.toByteArray());
     } catch (IOException ex) {
