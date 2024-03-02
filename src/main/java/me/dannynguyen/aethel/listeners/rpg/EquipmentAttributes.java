@@ -22,60 +22,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.13.6
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
-  /**
-   * All wearable items.
-   */
-  private static final Set<String> wornAll = Set.of(
-      "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS",
-      "CHAINMAIL_HELMET", "CHAINMAIL_CHESTPLATE", "CHAINMAIL_LEGGINGS", "CHAINMAIL_BOOTS",
-      "IRON_HELMET", "IRON_CHESTPLATE", "IRON_LEGGINGS", "IRON_BOOTS",
-      "GOLDEN_HELMET", "GOLDEN_CHESTPLATE", "GOLDEN_LEGGINGS", "GOLDEN_BOOTS",
-      "DIAMOND_HELMET", "DIAMOND_CHESTPLATE", "DIAMOND_LEGGINGS", "DIAMOND_BOOTS",
-      "NETHERITE_HELMET", "NETHERITE_CHESTPLATE", "NETHERITE_LEGGINGS", "NETHERITE_BOOTS",
-      "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL", "PLAYER_HEAD",
-      "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN", "ELYTRA", "SHIELD");
-
-  /**
-   * Items worn on the head slot.
-   */
-  private static final Set<String> wornHead = Set.of(
-      "LEATHER_HELMET", "CHAINMAIL_HELMET", "IRON_HELMET",
-      "GOLDEN_HELMET", "DIAMOND_HELMET", "NETHERITE_HELMET",
-      "CREEPER_HEAD", "ZOMBIE_HEAD", "SKELETON_SKULL", "WITHER_SKELETON_SKULL",
-      "PLAYER_HEAD", "DRAGON_HEAD", "TURTLE_HELMET", "PUMPKIN");
-
-  /**
-   * Items worn on the chest slot.
-   */
-  private static final Set<String> wornChest = Set.of(
-      "LEATHER_CHESTPLATE", "CHAINMAIL_CHESTPLATE", "IRON_CHESTPLATE",
-      "GOLDEN_CHESTPLATE", "DIAMOND_CHESTPLATE", "NETHERITE_CHESTPLATE",
-      "ELYTRA");
-
-  /**
-   * Items worn on the leg slot.
-   */
-  private static final Set<String> wornLegs = Set.of(
-      "LEATHER_LEGGINGS", "CHAINMAIL_LEGGINGS", "IRON_LEGGINGS",
-      "GOLDEN_LEGGINGS", "DIAMOND_LEGGINGS", "NETHERITE_LEGGINGS");
-
-  /**
-   * Items worn on the feet slot.
-   */
-  private static final Set<String> wornFeet = Set.of(
-      "LEATHER_BOOTS", "CHAINMAIL_BOOTS", "IRON_BOOTS",
-      "GOLDEN_BOOTS", "DIAMOND_BOOTS", "NETHERITE_BOOTS");
-
   /**
    * Checks clicks within player inventories to determine whether to update a player's equipment attributes.
    *
@@ -196,19 +151,17 @@ public class EquipmentAttributes implements Listener {
    * @param item   interacting item
    */
   private void updateIfWornItem(Player player, ItemStack item) {
-    String itemType = item.getType().name();
-    if (wornAll.contains(itemType)) {
-      if (wornHead.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, 39);
-      } else if (wornChest.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, 38);
-      } else if (wornLegs.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, 37);
-      } else if (wornFeet.contains(itemType)) {
-        updateEquipmentAttributesAtSlot(player, 36);
-      } else if (itemType.equals("SHIELD")) {
-        updateEquipmentAttributesAtSlot(player, 40);
-      }
+    switch (item.getType()) {
+      case LEATHER_HELMET, CHAINMAIL_HELMET, IRON_HELMET, GOLDEN_HELMET, DIAMOND_HELMET, NETHERITE_HELMET,
+          CREEPER_HEAD, ZOMBIE_HEAD, SKELETON_SKULL, WITHER_SKELETON_SKULL, PLAYER_HEAD, DRAGON_HEAD,
+          TURTLE_HELMET, PUMPKIN -> updateEquipmentAttributesAtSlot(player, 39);
+      case LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, IRON_CHESTPLATE, GOLDEN_CHESTPLATE,
+          DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE, ELYTRA -> updateEquipmentAttributesAtSlot(player, 38);
+      case LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, IRON_LEGGINGS, GOLDEN_LEGGINGS,
+          DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> updateEquipmentAttributesAtSlot(player, 37);
+      case LEATHER_BOOTS, CHAINMAIL_BOOTS, IRON_BOOTS, GOLDEN_BOOTS,
+          DIAMOND_BOOTS, NETHERITE_BOOTS -> updateEquipmentAttributesAtSlot(player, 36);
+      case SHIELD -> updateEquipmentAttributesAtSlot(player, 40);
     }
   }
 

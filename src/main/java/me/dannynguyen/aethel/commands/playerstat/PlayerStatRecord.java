@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -16,38 +17,48 @@ import java.util.*;
  * Represents player statistic categories.
  *
  * @author Danny Nguyen
- * @version 1.12.4
+ * @version 1.13.6
  * @since 1.4.8
  */
 public class PlayerStatRecord {
   /**
    * Player stat categories.
    */
-  private final Map<String, String[]> playerStatCategories = new HashMap<>(Map.of(
-      "Activities", new String[]{
-          "ANIMALS_BRED", "ARMOR_CLEANED", "BANNER_CLEANED", "BELL_RING",
-          "CAKE_SLICES_EATEN", "CAULDRON_FILLED", "CAULDRON_USED", "CLEAN_SHULKER_BOX",
-          "DROP_COUNT", "FISH_CAUGHT", "FLOWER_POTTED", "ITEM_ENCHANTED", "NOTEBLOCK_PLAYED",
-          "NOTEBLOCK_TUNED", "RAID_TRIGGER", "RAID_WIN", "RECORD_PLAYED", "SLEEP_IN_BED",
-          "TALKED_TO_VILLAGER", "TARGET_HIT", "TRADED_WITH_VILLAGER"},
-      "Containers", new String[]{
-          "CHEST_OPENED", "DISPENSER_INSPECTED", "DROPPER_INSPECTED", "ENDERCHEST_OPENED",
-          "HOPPER_INSPECTED", "OPEN_BARREL", "SHULKER_BOX_OPENED", "TRAPPED_CHEST_TRIGGERED"},
-      "Damage", new String[]{
-          "DAMAGE_ABSORBED", "DAMAGE_BLOCKED_BY_SHIELD", "DAMAGE_DEALT", "DAMAGE_DEALT_ABSORBED",
-          "DAMAGE_DEALT_RESISTED", "DAMAGE_RESISTED", "DAMAGE_TAKEN"},
-      "General", new String[]{
-          "DEATHS", "LEAVE_GAME", "PLAY_ONE_MINUTE", "TIME_SINCE_DEATH", "TIME_SINCE_REST", "TOTAL_WORLD_TIME"},
-      "Movement", new String[]{
-          "AVIATE_ONE_CM", "BOAT_ONE_CM", "CLIMB_ONE_CM", "CROUCH_ONE_CM", "FALL_ONE_CM", "FLY_ONE_CM",
-          "HORSE_ONE_CM", "JUMP", "MINECART_ONE_CM", "PIG_ONE_CM", "SNEAK_TIME", "SPRINT_ONE_CM",
-          "STRIDER_ONE_CM", "SWIM_ONE_CM", "WALK_ON_WATER_ONE_CM", "WALK_ONE_CM", "WALK_UNDER_WATER_ONE_CM"},
-      "Interactions", new String[]{
-          "BEACON_INTERACTION", "BREWINGSTAND_INTERACTION", "CRAFTING_TABLE_INTERACTION",
-          "FURNACE_INTERACTION", "INTERACT_WITH_ANVIL", "INTERACT_WITH_BLAST_FURNACE",
-          "INTERACT_WITH_CAMPFIRE", "INTERACT_WITH_CARTOGRAPHY_TABLE", "INTERACT_WITH_GRINDSTONE",
-          "INTERACT_WITH_LECTERN", "INTERACT_WITH_LOOM", "INTERACT_WITH_SMITHING_TABLE",
-          "INTERACT_WITH_SMOKER", "INTERACT_WITH_STONECUTTER"}));
+  private final Map<String, Statistic[]> playerStatCategories = new HashMap<>(Map.of(
+      "Activities", new Statistic[]{
+          Statistic.ANIMALS_BRED, Statistic.ARMOR_CLEANED, Statistic.BANNER_CLEANED,
+          Statistic.BELL_RING, Statistic.CAKE_SLICES_EATEN, Statistic.CAULDRON_FILLED,
+          Statistic.CAULDRON_USED, Statistic.CLEAN_SHULKER_BOX, Statistic.DROP_COUNT,
+          Statistic.FISH_CAUGHT, Statistic.FLOWER_POTTED, Statistic.ITEM_ENCHANTED,
+          Statistic.NOTEBLOCK_PLAYED, Statistic.NOTEBLOCK_TUNED, Statistic.RAID_TRIGGER,
+          Statistic.RAID_WIN, Statistic.RECORD_PLAYED, Statistic.SLEEP_IN_BED,
+          Statistic.TALKED_TO_VILLAGER, Statistic.TARGET_HIT, Statistic.TRADED_WITH_VILLAGER},
+      "Containers", new Statistic[]{
+          Statistic.CHEST_OPENED, Statistic.DISPENSER_INSPECTED, Statistic.DROPPER_INSPECTED,
+          Statistic.ENDERCHEST_OPENED, Statistic.HOPPER_INSPECTED, Statistic.OPEN_BARREL,
+          Statistic.SHULKER_BOX_OPENED, Statistic.TRAPPED_CHEST_TRIGGERED},
+      "Damage", new Statistic[]{
+          Statistic.DAMAGE_ABSORBED, Statistic.DAMAGE_BLOCKED_BY_SHIELD, Statistic.DAMAGE_DEALT,
+          Statistic.DAMAGE_DEALT_ABSORBED, Statistic.DAMAGE_DEALT_RESISTED,
+          Statistic.DAMAGE_RESISTED, Statistic.DAMAGE_TAKEN},
+      "General", new Statistic[]{
+          Statistic.DEATHS, Statistic.LEAVE_GAME, Statistic.PLAY_ONE_MINUTE,
+          Statistic.TIME_SINCE_DEATH, Statistic.TIME_SINCE_REST, Statistic.TOTAL_WORLD_TIME},
+      "Movement", new Statistic[]{
+          Statistic.AVIATE_ONE_CM, Statistic.BOAT_ONE_CM, Statistic.CLIMB_ONE_CM,
+          Statistic.CROUCH_ONE_CM, Statistic.FALL_ONE_CM, Statistic.FLY_ONE_CM,
+          Statistic.HORSE_ONE_CM, Statistic.JUMP, Statistic.MINECART_ONE_CM,
+          Statistic.PIG_ONE_CM, Statistic.SNEAK_TIME, Statistic.SPRINT_ONE_CM,
+          Statistic.STRIDER_ONE_CM, Statistic.SWIM_ONE_CM, Statistic.WALK_ON_WATER_ONE_CM,
+          Statistic.WALK_ONE_CM, Statistic.WALK_UNDER_WATER_ONE_CM},
+      "Interactions", new Statistic[]{
+          Statistic.BEACON_INTERACTION, Statistic.BREWINGSTAND_INTERACTION,
+          Statistic.CRAFTING_TABLE_INTERACTION, Statistic.FURNACE_INTERACTION,
+          Statistic.INTERACT_WITH_ANVIL, Statistic.INTERACT_WITH_BLAST_FURNACE,
+          Statistic.INTERACT_WITH_CAMPFIRE, Statistic.INTERACT_WITH_CARTOGRAPHY_TABLE,
+          Statistic.INTERACT_WITH_GRINDSTONE, Statistic.INTERACT_WITH_LECTERN,
+          Statistic.INTERACT_WITH_LOOM, Statistic.INTERACT_WITH_SMITHING_TABLE,
+          Statistic.INTERACT_WITH_SMOKER, Statistic.INTERACT_WITH_STONECUTTER}));
 
   /**
    * Player statistic categories represented by groups of inventories.
@@ -75,8 +86,8 @@ public class PlayerStatRecord {
     for (String category : playerStatCategories.keySet()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54);
-      for (String stat : playerStatCategories.get(category)) {
-        inv.setItem(i, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + TextFormatter.capitalizePhrase(stat)));
+      for (Statistic stat : playerStatCategories.get(category)) {
+        inv.setItem(i, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + TextFormatter.capitalizePhrase(stat.name())));
         i++;
       }
       statCategories.put(category, inv);

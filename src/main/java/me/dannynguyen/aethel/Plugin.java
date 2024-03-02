@@ -41,7 +41,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.13.6
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -64,6 +64,7 @@ public class Plugin extends JavaPlugin {
    * - Saves persistent plugin data.
    */
   public void onDisable() {
+    Bukkit.getScheduler().cancelTasks(this);
     PluginData.saveResources();
   }
 

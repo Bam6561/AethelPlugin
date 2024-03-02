@@ -28,14 +28,14 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.13.6
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
   /**
    * Handled damage causes.
    */
-  private static final Set<EntityDamageEvent.DamageCause> handledDamageCauses = Set.of(
+  private final Set<EntityDamageEvent.DamageCause> handledDamageCauses = Set.of(
       EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.ENTITY_ATTACK,
       EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK,
       EntityDamageEvent.DamageCause.FALLING_BLOCK, EntityDamageEvent.DamageCause.LIGHTNING,

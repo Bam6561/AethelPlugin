@@ -29,7 +29,7 @@ import java.util.*;
  * Represents a menu that edits an item's attributes.
  *
  * @author Danny Nguyen
- * @version 1.13.1
+ * @version 1.13.6
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -98,10 +98,10 @@ class AttributeEditorMenu {
    * @return AttributeEditor menu
    */
   private Inventory createMenu() {
-    String actionString = action.name().toLowerCase();
-    switch (actionString) {
-      case "head", "chest", "legs", "feet", "hand", "necklace", "ring" -> actionString = TextFormatter.capitalizeWord(actionString);
-      case "off_hand" -> actionString = "Off Hand";
+    String actionString = "";
+    switch (action) {
+      case HEAD, CHEST, LEGS, FEET, HAND, NECKLACE, RING -> actionString = TextFormatter.capitalizeWord(action.name());
+      case OFF_HAND -> actionString = "Off Hand";
     }
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Attributes " + ChatColor.YELLOW + actionString);
     inv.setItem(1, item);
