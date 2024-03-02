@@ -7,11 +7,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * Reads and decodes ItemStacks with metadata.
@@ -43,7 +45,8 @@ public class ItemReader {
    * @param item interacting item
    * @return effective item name
    */
-  public static String readName(ItemStack item) {
+  public static String readName(@NotNull ItemStack item) {
+    Objects.requireNonNull(item, "Null item");
     if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
     } else {
@@ -57,7 +60,8 @@ public class ItemReader {
    * @param item interacting item
    * @return item's Aethel tags
    */
-  public static String readAethelTags(ItemStack item) {
+  public static String readAethelTags(@NotNull ItemStack item) {
+    Objects.requireNonNull(item, "Null item");
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
     StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey key : dataContainer.getKeys()) {
@@ -87,7 +91,8 @@ public class ItemReader {
    * @return item
    */
   @Nullable
-  public static ItemStack decodeItem(String data) {
+  public static ItemStack decodeItem(@NotNull String data) {
+    Objects.requireNonNull(data, "Null data");
     try {
       ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(data));
       BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);

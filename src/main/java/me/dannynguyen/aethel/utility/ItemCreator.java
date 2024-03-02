@@ -8,11 +8,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Creates and serializes ItemStacks with metadata.
@@ -35,7 +37,9 @@ public class ItemCreator {
    * @param name     item name
    * @return named item
    */
-  public static ItemStack createItem(Material material, String name) {
+  public static ItemStack createItem(@NotNull Material material, @NotNull String name) {
+    Objects.requireNonNull(material, "Null material");
+    Objects.requireNonNull(name, "Null name");
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(name);
@@ -51,7 +55,10 @@ public class ItemCreator {
    * @param lore     item lore
    * @return named item with lore
    */
-  public static ItemStack createItem(Material material, String name, List<String> lore) {
+  public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull List<String> lore) {
+    Objects.requireNonNull(material, "Null material");
+    Objects.requireNonNull(name, "Null name");
+    Objects.requireNonNull(lore, "Null lore");
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(name);
@@ -69,8 +76,12 @@ public class ItemCreator {
    * @param itemFlag item flag
    * @return named item with an item flag
    */
-  public static ItemStack createItem(Material material, String name,
-                                     List<String> lore, ItemFlag itemFlag) {
+  public static ItemStack createItem(@NotNull Material material, @NotNull String name,
+                                     @NotNull List<String> lore, @NotNull ItemFlag itemFlag) {
+    Objects.requireNonNull(material, "Null material");
+    Objects.requireNonNull(name, "Null name");
+    Objects.requireNonNull(lore, "Null lore");
+    Objects.requireNonNull(itemFlag, "Null item flag");
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(name);
@@ -88,7 +99,10 @@ public class ItemCreator {
    * @param itemFlag item flag
    * @return named item with an item flag disabled
    */
-  public static ItemStack createItem(Material material, String name, ItemFlag itemFlag) {
+  public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull ItemFlag itemFlag) {
+    Objects.requireNonNull(material, "Null material");
+    Objects.requireNonNull(name, "Null name");
+    Objects.requireNonNull(itemFlag, "Null item flag");
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(name);
@@ -103,7 +117,8 @@ public class ItemCreator {
    * @param player interacting player
    * @return named player head
    */
-  public static ItemStack createPlayerHead(Player player) {
+  public static ItemStack createPlayerHead(@NotNull Player player) {
+    Objects.requireNonNull(player, "Null player");
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
     meta.setOwningPlayer(player);
@@ -119,7 +134,9 @@ public class ItemCreator {
    * @param lore   item lore
    * @return named player head with lore
    */
-  public static ItemStack createPlayerHead(Player player, List<String> lore) {
+  public static ItemStack createPlayerHead(@NotNull Player player, @NotNull List<String> lore) {
+    Objects.requireNonNull(player, "Null player");
+    Objects.requireNonNull(lore, "Null lore");
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
     meta.setOwningPlayer(player);
@@ -136,7 +153,9 @@ public class ItemCreator {
    * @param name item name
    * @return named player head texture
    */
-  public static ItemStack createPluginPlayerHead(ItemStack head, String name) {
+  public static ItemStack createPluginPlayerHead(@NotNull ItemStack head, @NotNull String name) {
+    Objects.requireNonNull(head, "Null head");
+    Objects.requireNonNull(name, "Null name");
     ItemStack item = head.clone();
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(name);
@@ -152,7 +171,10 @@ public class ItemCreator {
    * @param lore item lore
    * @return named player head texture with lore
    */
-  public static ItemStack createPluginPlayerHead(ItemStack head, String name, List<String> lore) {
+  public static ItemStack createPluginPlayerHead(@NotNull ItemStack head, @NotNull String name, @NotNull List<String> lore) {
+    Objects.requireNonNull(head, "Null head");
+    Objects.requireNonNull(name, "Null name");
+    Objects.requireNonNull(lore, "Null lore");
     ItemStack item = head.clone();
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(name);
@@ -167,7 +189,8 @@ public class ItemCreator {
    * @param item item to encode
    * @return encoded item string
    */
-  public static String encodeItem(ItemStack item) {
+  public static String encodeItem(@NotNull ItemStack item) {
+    Objects.requireNonNull(item, "Null item");
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       BukkitObjectOutputStream boos = new BukkitObjectOutputStream(baos);

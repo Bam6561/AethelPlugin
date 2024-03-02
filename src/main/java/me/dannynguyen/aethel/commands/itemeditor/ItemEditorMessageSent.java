@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemDurability;
+import me.dannynguyen.aethel.utility.ItemRepairCost;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +29,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.13.3
+ * @version 1.13.7
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -96,27 +97,33 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets the item's damage.
+   * Sets the item's damage or durability.
    */
-  public void setDamage() {
+  public void setDurability() {
     try {
-      ItemDurability.setDamage(item, Integer.parseInt(e.getMessage()));
-      user.sendMessage(ChatColor.GREEN + "[Set Item Damage] " + ChatColor.WHITE + e.getMessage());
+      int value = Integer.parseInt(e.getMessage());
+      if (value >= 0) {
+        ItemDurability.setDurability(item, value);
+        user.sendMessage(ChatColor.GREEN + "[Set Durability] " + ChatColor.WHITE + e.getMessage());
+      } else {
+        ItemDurability.setDamage(item, Math.abs(value));
+        user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
+      }
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid item damage.");
+      user.sendMessage(ChatColor.RED + "Invalid value.");
     }
     returnToCosmeticEditor();
   }
 
   /**
-   * Sets the item's durability.
+   * Sets the item's repair cost.
    */
-  public void setDurability(){
+  public void setRepairCost() {
     try {
-      ItemDurability.setDurability(item, Integer.parseInt(e.getMessage()));
-      user.sendMessage(ChatColor.GREEN + "[Set Item Durability] " + ChatColor.WHITE + e.getMessage());
+      ItemRepairCost.setRepairCost(item, Integer.parseInt(e.getMessage()));
+      user.sendMessage(ChatColor.GREEN + "[Set Repair Cost] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid item durability.");
+      user.sendMessage(ChatColor.RED + "Invalid value.");
     }
     returnToCosmeticEditor();
   }

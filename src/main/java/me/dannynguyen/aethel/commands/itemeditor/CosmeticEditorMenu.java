@@ -3,7 +3,9 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
+import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.utility.ItemRepairCost;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +26,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.3
+ * @version 1.13.7
  * @since 1.6.7
  */
 class CosmeticEditorMenu {
@@ -81,8 +83,8 @@ class CosmeticEditorMenu {
     addContext();
     addDisplayName();
     addCustomModelData();
-    addDamage();
     addDurability();
+    addRepairCost();
     addLore();
     addGameplay();
     addItemFlags();
@@ -120,38 +122,38 @@ class CosmeticEditorMenu {
             ChatColor.WHITE + "&d " + ChatColor.LIGHT_PURPLE + "Light Purple",
             ChatColor.WHITE + "&e " + ChatColor.YELLOW + "Yellow",
             ChatColor.WHITE + "&f " + ChatColor.WHITE + "White"));
-    menu.setItem(9, formatCodes);
-    menu.setItem(10, colorCodes);
+    menu.setItem(0, formatCodes);
+    menu.setItem(1, colorCodes);
   }
 
   /**
    * Adds the display name button.
    */
   private void addDisplayName() {
-    menu.setItem(11, ItemCreator.createItem(Material.NAME_TAG, ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readName(item))));
+    menu.setItem(9, ItemCreator.createItem(Material.NAME_TAG, ChatColor.AQUA + "Display Name", List.of(ChatColor.WHITE + ItemReader.readName(item))));
   }
 
   /**
    * Adds the custom model data button.
    */
   private void addCustomModelData() {
-    menu.setItem(12, !meta.hasCustomModelData() ?
+    menu.setItem(10, !meta.hasCustomModelData() ?
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data") :
         ItemCreator.createItem(Material.OXEYE_DAISY, ChatColor.AQUA + "Custom Model Data", List.of(ChatColor.WHITE + String.valueOf(meta.getCustomModelData()))));
   }
 
   /**
-   * Adds the item damage button.
+   * Adds the durability button.
    */
-  private void addDamage() {
-    menu.setItem(20, ItemCreator.createItem(Material.COBBLESTONE, ChatColor.AQUA + "Item Damage"));
+  private void addDurability() {
+    menu.setItem(11, ItemCreator.createItem(Material.OBSIDIAN, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + ItemDurability.displayDurability(item))));
   }
 
   /**
-   * Adds the item durability button.
+   * Adds the repair cost button.
    */
-  private void addDurability() {
-    menu.setItem(21, ItemCreator.createItem(Material.STONE, ChatColor.AQUA + "Item Durability"));
+  private void addRepairCost() {
+    menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + ItemRepairCost.getRepairCost(item))));
   }
 
   /**
@@ -168,13 +170,13 @@ class CosmeticEditorMenu {
       }
       lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", loreLines);
     }
-    menu.setItem(28, lore);
-    menu.setItem(29, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Set Lore", List.of(ChatColor.WHITE + "Separate lines by \",, \".")));
-    menu.setItem(30, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Clear Lore"));
-    menu.setItem(37, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Add Lore"));
-    menu.setItem(38, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Edit Lore", List.of(ChatColor.WHITE + "Specify line, then new text.")));
-    menu.setItem(39, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Remove Lore", List.of(ChatColor.WHITE + "Specify line.")));
-    menu.setItem(47, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Generate Lore", List.of(ChatColor.WHITE + "Generates plugin-related lore.")));
+    menu.setItem(36, lore);
+    menu.setItem(37, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Set Lore", List.of(ChatColor.WHITE + "Separate lines by \",, \".")));
+    menu.setItem(38, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Clear Lore"));
+    menu.setItem(45, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Add Lore"));
+    menu.setItem(46, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Edit Lore", List.of(ChatColor.WHITE + "Specify line, then new text.")));
+    menu.setItem(47, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Remove Lore", List.of(ChatColor.WHITE + "Specify line.")));
+    menu.setItem(48, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Generate Lore", List.of(ChatColor.WHITE + "Generates plugin-related lore.")));
   }
 
   /**
@@ -209,7 +211,7 @@ class CosmeticEditorMenu {
   protected static void addUnbreakable(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.isUnbreakable();
     String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(52, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK, ChatColor.AQUA + "Unbreakable", List.of(unbreakable)));
+    menu.setItem(20, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK, ChatColor.AQUA + "Unbreakable", List.of(unbreakable)));
   }
 
   /**
@@ -221,7 +223,7 @@ class CosmeticEditorMenu {
   protected static void addHideArmorTrim(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM);
     String armorTrim = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(32, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Armor Trims", List.of(armorTrim)));
+    menu.setItem(41, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Armor Trim", List.of(armorTrim)));
   }
 
   /**
@@ -233,7 +235,7 @@ class CosmeticEditorMenu {
   protected static void addHideAttributes(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES);
     String attributes = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(33, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(attributes)));
+    menu.setItem(42, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(attributes)));
   }
 
   /**
@@ -245,7 +247,7 @@ class CosmeticEditorMenu {
   protected static void addHideDestroys(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DESTROYS);
     String destroys = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(34, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Destroys", List.of(destroys)));
+    menu.setItem(43, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Destroys", List.of(destroys)));
   }
 
   /**
@@ -257,7 +259,7 @@ class CosmeticEditorMenu {
   protected static void addHideDye(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DYE);
     String dye = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(41, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Dyes", List.of(dye)));
+    menu.setItem(44, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Dye", List.of(dye)));
   }
 
   /**
@@ -269,7 +271,7 @@ class CosmeticEditorMenu {
   protected static void addHideEnchants(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
     String enchants = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(42, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Enchants", List.of(enchants)));
+    menu.setItem(50, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Enchants", List.of(enchants)));
   }
 
   /**
@@ -281,7 +283,7 @@ class CosmeticEditorMenu {
   protected static void addHidePlacedOn(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON);
     String placedOn = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(43, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Placed On", List.of(placedOn)));
+    menu.setItem(51, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Placed On", List.of(placedOn)));
   }
 
   /**
@@ -293,7 +295,7 @@ class CosmeticEditorMenu {
   protected static void addHidePotionEffects(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS);
     String potionEffects = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(50, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
+    menu.setItem(52, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
   }
 
   /**
@@ -305,6 +307,6 @@ class CosmeticEditorMenu {
   protected static void addHideUnbreakable(Inventory menu, ItemMeta meta) {
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE);
     String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    menu.setItem(51, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Unbreakable", List.of(unbreakable)));
+    menu.setItem(53, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Unbreakable", List.of(unbreakable)));
   }
 }

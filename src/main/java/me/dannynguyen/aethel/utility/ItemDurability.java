@@ -10,14 +10,16 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Random;
 
 /**
- * Modifies existing items' durabilities.
+ * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.13.7
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -25,6 +27,58 @@ public class ItemDurability {
    * Utility methods only.
    */
   private ItemDurability() {
+  }
+
+  /**
+   * Gets the item's durability.
+   * <p>
+   * Returns -1 if the item's meta cannot be type cast to a Damageable.
+   * </p>
+   *
+   * @param item interacting item
+   * @return item durability
+   */
+  public static int getDurability(@NotNull ItemStack item) {
+    Objects.requireNonNull(item, "Null item");
+    if (item.getItemMeta() instanceof Damageable durability) {
+      return item.getType().getMaxDurability() - durability.getDamage();
+    } else {
+      return -1;
+    }
+  }
+
+  /**
+   * Gets the item's damage.
+   * <p>
+   * Returns -1 if the item's meta cannot be type cast to a Damageable.
+   * </p>
+   *
+   * @param item interacting item
+   * @return item damage
+   */
+  public static int getDamage(@NotNull ItemStack item) {
+    Objects.requireNonNull(item, "Null item");
+    if (item.getItemMeta() instanceof Damageable durability) {
+      return durability.getDamage();
+    } else {
+      return -1;
+    }
+  }
+
+  /**
+   * Displays the item's remaining to maximum durability.
+   *
+   * @param item interacting item
+   * @return remaining : maximum durability
+   */
+  public static String displayDurability(@NotNull ItemStack item) {
+    Objects.requireNonNull(item, "Null item");
+    if (item.getItemMeta() instanceof Damageable durability) {
+      short maxDurability = item.getType().getMaxDurability();
+      int durabilityValue = maxDurability - durability.getDamage();
+      return durabilityValue + " / " + maxDurability;
+    }
+    return "";
   }
 
   /**
@@ -41,21 +95,22 @@ public class ItemDurability {
     PlayerInventory pInv = player.getInventory();
     ItemStack item = pInv.getItem(slot);
     if (ItemReader.isNotNullOrAir(item)) {
-      int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
-      if (unbreaking > 0) {
-        double damageChance = 1.0 / (unbreaking + 1);
-        if (damageChance < new Random().nextDouble()) {
-          return;
+      if (item.getItemMeta() instanceof Damageable durability) {
+        int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
+        if (unbreaking > 0) {
+          double damageChance = 1.0 / (unbreaking + 1);
+          if (damageChance < new Random().nextDouble()) {
+            return;
+          }
         }
-      }
-      Damageable durability = (Damageable) item.getItemMeta();
-      durability.setDamage(durability.getDamage() + damage);
-      if (durability.getDamage() > item.getType().getMaxDurability()) {
-        pInv.setItem(slot, new ItemStack(Material.AIR));
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-        PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(slot.name().toUpperCase()));
-      } else {
-        item.setItemMeta(durability);
+        durability.setDamage(durability.getDamage() + damage);
+        if (durability.getDamage() > item.getType().getMaxDurability()) {
+          pInv.setItem(slot, new ItemStack(Material.AIR));
+          player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+          PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(slot.name().toUpperCase()));
+        } else {
+          item.setItemMeta(durability);
+        }
       }
     }
   }
@@ -71,13 +126,14 @@ public class ItemDurability {
    * @param requestedDurability requested durability
    */
   public static void setDurability(ItemStack item, int requestedDurability) {
-    Damageable durability = (Damageable) item.getItemMeta();
-    if (requestedDurability > item.getType().getMaxDurability()) {
-      durability.setDamage(0);
-    } else {
-      durability.setDamage(Math.abs(requestedDurability - item.getType().getMaxDurability()));
+    if (item.getItemMeta() instanceof Damageable durability) {
+      if (requestedDurability > item.getType().getMaxDurability()) {
+        durability.setDamage(0);
+      } else {
+        durability.setDamage(Math.abs(requestedDurability - item.getType().getMaxDurability()));
+      }
+      item.setItemMeta(durability);
     }
-    item.setItemMeta(durability);
   }
 
   /**
@@ -91,8 +147,9 @@ public class ItemDurability {
    * @param damage durability damage
    */
   public static void setDamage(ItemStack item, int damage) {
-    Damageable durability = (Damageable) item.getItemMeta();
-    durability.setDamage(Math.min(damage, item.getType().getMaxDurability()));
-    item.setItemMeta(durability);
+    if (item.getItemMeta() instanceof Damageable durability) {
+      durability.setDamage(Math.min(damage, item.getType().getMaxDurability()));
+      item.setItemMeta(durability);
+    }
   }
 }

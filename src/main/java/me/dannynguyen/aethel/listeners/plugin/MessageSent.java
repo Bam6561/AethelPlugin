@@ -16,7 +16,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.3
+ * @version 1.13.7
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -48,8 +48,8 @@ public class MessageSent implements Listener {
     switch (msgType[1]) {
       case "display_name" -> msg.setDisplayName();
       case "custom_model_data" -> msg.setCustomModelData();
-      case "damage" -> msg.setDamage();
       case "durability" -> msg.setDurability();
+      case "repair_cost" -> msg.setRepairCost();
       case "lore-set" -> msg.setLore();
       case "lore-add" -> msg.addLore();
       case "lore-edit" -> msg.editLore();

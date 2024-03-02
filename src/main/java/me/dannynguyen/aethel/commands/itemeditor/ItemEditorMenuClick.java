@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginMessage;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -26,7 +27,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.13.3
+ * @version 1.13.7
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -85,30 +86,25 @@ public class ItemEditorMenuClick {
    */
   public void interpretCosmeticEditorClick() {
     switch (slotClicked) {
-      case 11 -> setDisplayName();
-      case 12 -> setCustomModelData();
+      case 0, 1 -> { // Color Code Context
+      }
+      case 9 -> setDisplayName();
+      case 10 -> setCustomModelData();
+      case 11 -> setDurability();
+      case 12 -> setRepairCost();
       case 14 -> openAttributeEditor();
       case 15 -> openEnchantmentEditor();
       case 16 -> openTagEditor();
-      case 20 -> setDamage();
-      case 21 -> setDurability();
-      case 28 -> { // Lore Context
+      case 20 -> toggleUnbreakable();
+      case 36 -> { // Lore Context
       }
-      case 29 -> setLore();
-      case 30 -> clearLore();
-      case 37 -> addLore();
-      case 38 -> editLore();
-      case 39 -> removeLore();
-      case 47 -> generateLore();
-      case 32 -> toggleHideArmorTrim();
-      case 33 -> toggleHideAttributes();
-      case 34 -> toggleHideDestroys();
-      case 41 -> toggleHideDye();
-      case 42 -> toggleHideEnchants();
-      case 43 -> toggleHidePlacedOn();
-      case 50 -> toggleHidePotionEffects();
-      case 51 -> toggleHideUnbreakable();
-      case 52 -> toggleUnbreakable();
+      case 37 -> setLore();
+      case 38 -> clearLore();
+      case 45 -> addLore();
+      case 46 -> editLore();
+      case 47 -> removeLore();
+      case 48 -> generateLore();
+      case 41, 42, 43, 44, 50, 51, 52, 53 -> toggleItemFlag();
     }
   }
 
@@ -173,6 +169,21 @@ public class ItemEditorMenuClick {
   }
 
   /**
+   * Toggles an item's ability to be broken.
+   */
+  private void toggleUnbreakable() {
+    if (!meta.isUnbreakable()) {
+      meta.setUnbreakable(true);
+      user.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
+    } else {
+      meta.setUnbreakable(false);
+      user.sendMessage(ChatColor.RED + "[Set Unbreakable]");
+    }
+    item.setItemMeta(meta);
+    CosmeticEditorMenu.addUnbreakable(menu, meta);
+  }
+
+  /**
    * Opens an AttributeEditor menu.
    */
   private void openAttributeEditor() {
@@ -204,19 +215,19 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Sets an item's damage.
-   */
-  private void setDamage() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item damage value.");
-    awaitMessageResponse("damage");
-  }
-
-  /**
    * Sets an item's durability.
    */
   private void setDurability() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item durability value.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
     awaitMessageResponse("durability");
+  }
+
+  /**
+   * Sets an item's repair cost.
+   */
+  private void setRepairCost() {
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
+    awaitMessageResponse("repair_cost");
   }
 
   /**
@@ -253,7 +264,7 @@ public class ItemEditorMenuClick {
    */
   private void editLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and lore to edit.");
+      user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and new lore.");
       awaitMessageResponse("lore-edit");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -276,11 +287,22 @@ public class ItemEditorMenuClick {
    * Generates an item's lore based on its plugin-related data.
    */
   private void generateLore() {
+    boolean generatedLore = false;
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+
+    NamespacedKey recipeId = PluginNamespacedKey.RECIPE_ID.getNamespacedKey();
+    if (dataContainer.has(recipeId, PersistentDataType.STRING)) {
+      generatedLore = true;
+      displayRecipeId(dataContainer, recipeId);
+    }
+
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
-      new ItemAttributeTotals(item, attributes).addAttributeHeaders();
+      generatedLore = true;
+      new ItemAttributeTotals(item, new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")))).addAttributeHeaders();
+    }
+
+    if (generatedLore) {
       user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
     } else {
       user.sendMessage(ChatColor.RED + "Not modified by plugin.");
@@ -288,138 +310,29 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Toggles an item's hide armor trim flag.
+   * Toggles an item's item flag.
    */
-  private void toggleHideArmorTrim() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM)) {
-      meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-      user.sendMessage(ChatColor.GREEN + "[Hide Armor Trim]");
+  private void toggleItemFlag() {
+    String itemFlagName = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+    ItemFlag itemFlag = ItemFlag.valueOf(TextFormatter.formatEnum(itemFlagName));
+    if (!meta.hasItemFlag(itemFlag)) {
+      meta.addItemFlags(itemFlag);
+      user.sendMessage(ChatColor.GREEN + "[Hide " + itemFlagName + "]");
     } else {
-      meta.removeItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-      user.sendMessage(ChatColor.RED + "[Hide Armor Trim]");
+      meta.removeItemFlags(itemFlag);
+      user.sendMessage(ChatColor.RED + "[Hide " + itemFlagName + "]");
     }
     item.setItemMeta(meta);
-    CosmeticEditorMenu.addHideArmorTrim(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide attributes flag.
-   */
-  private void toggleHideAttributes() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)) {
-      meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-      user.sendMessage(ChatColor.GREEN + "[Hide Attributes]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-      user.sendMessage(ChatColor.RED + "[Hide Attributes]");
+    switch (itemFlag) {
+      case HIDE_ARMOR_TRIM -> CosmeticEditorMenu.addHideArmorTrim(menu, meta);
+      case HIDE_ATTRIBUTES -> CosmeticEditorMenu.addHideAttributes(menu, meta);
+      case HIDE_DESTROYS -> CosmeticEditorMenu.addHideDestroys(menu, meta);
+      case HIDE_DYE -> CosmeticEditorMenu.addHideDye(menu, meta);
+      case HIDE_ENCHANTS -> CosmeticEditorMenu.addHideEnchants(menu, meta);
+      case HIDE_PLACED_ON -> CosmeticEditorMenu.addHidePlacedOn(menu, meta);
+      case HIDE_POTION_EFFECTS -> CosmeticEditorMenu.addHidePotionEffects(menu, meta);
+      case HIDE_UNBREAKABLE -> CosmeticEditorMenu.addHideUnbreakable(menu, meta);
     }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHideAttributes(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide destroys flag.
-   */
-  private void toggleHideDestroys() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_DESTROYS)) {
-      meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-      user.sendMessage(ChatColor.GREEN + "[Hide Destroys]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_DESTROYS);
-      user.sendMessage(ChatColor.RED + "[Hide Destroys]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHideDestroys(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide dye flag.
-   */
-  private void toggleHideDye() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_DYE)) {
-      meta.addItemFlags(ItemFlag.HIDE_DYE);
-      user.sendMessage(ChatColor.GREEN + "[Hide Dye]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_DYE);
-      user.sendMessage(ChatColor.RED + "[Hide Dye]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHideDye(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide enchants flag.
-   */
-  private void toggleHideEnchants() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
-      meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-      user.sendMessage(ChatColor.GREEN + "[Hide Enchants]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-      user.sendMessage(ChatColor.RED + "[Hide Enchants]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHideEnchants(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide placed on flag.
-   */
-  private void toggleHidePlacedOn() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON)) {
-      meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-      user.sendMessage(ChatColor.GREEN + "[Hide Placed On]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_PLACED_ON);
-      user.sendMessage(ChatColor.RED + "[Hide Placed On]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHidePlacedOn(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide potion effects flag.
-   */
-  private void toggleHidePotionEffects() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS)) {
-      meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-      user.sendMessage(ChatColor.GREEN + "[Hide Potion Effects]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-      user.sendMessage(ChatColor.RED + "[Hide Potion Effects]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHidePotionEffects(menu, meta);
-  }
-
-  /**
-   * Toggles an item's hide unbreakable flag.
-   */
-  private void toggleHideUnbreakable() {
-    if (!meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)) {
-      meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-      user.sendMessage(ChatColor.GREEN + "[Hide Unbreakable]");
-    } else {
-      meta.removeItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-      user.sendMessage(ChatColor.RED + "[Hide Unbreakable]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addHideUnbreakable(menu, meta);
-  }
-
-  /**
-   * Toggles an item's ability to be broken.
-   */
-  private void toggleUnbreakable() {
-    if (!meta.isUnbreakable()) {
-      meta.setUnbreakable(true);
-      user.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
-    } else {
-      meta.setUnbreakable(false);
-      user.sendMessage(ChatColor.RED + "[Set Unbreakable]");
-    }
-    item.setItemMeta(meta);
-    CosmeticEditorMenu.addUnbreakable(menu, meta);
   }
 
   /**
@@ -548,5 +461,23 @@ public class ItemEditorMenuClick {
         return null;
       }
     }
+  }
+
+  /**
+   * Adds the recipe ID to the item's lore.
+   *
+   * @param dataContainer item's persistent tags
+   * @param recipeId      recipe id
+   */
+  private void displayRecipeId(PersistentDataContainer dataContainer, NamespacedKey recipeId) {
+    List<String> lore;
+    if (meta.hasLore()) {
+      lore = meta.getLore();
+    } else {
+      lore = new ArrayList<>();
+    }
+    lore.add(ChatColor.GRAY + "Recipe ID: " + ChatColor.DARK_GRAY + dataContainer.get(recipeId, PersistentDataType.STRING));
+    meta.setLore(lore);
+    item.setItemMeta(meta);
   }
 }

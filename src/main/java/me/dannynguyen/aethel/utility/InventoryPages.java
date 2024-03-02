@@ -3,6 +3,9 @@ package me.dannynguyen.aethel.utility;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginPlayerHead;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Provides double chest sized inventories with useful methods.
@@ -57,7 +60,8 @@ public class InventoryPages {
    * @param inv     interacting inventory
    * @param invSlot inventory slot
    */
-  public static void addBackButton(Inventory inv, int invSlot) {
+  public static void addBackButton(@NotNull Inventory inv, int invSlot) {
+    Objects.requireNonNull(inv, "Null inventory");
     inv.setItem(invSlot, ItemCreator.createPluginPlayerHead(PluginPlayerHead.CHISELED_BOOKSHELF.getHead(), ChatColor.AQUA + "Back"));
   }
 
@@ -68,7 +72,8 @@ public class InventoryPages {
    * @param numberOfPages number of pages
    * @param pageViewed    page viewed
    */
-  public static void addPageButtons(Inventory inv, int numberOfPages, int pageViewed) {
+  public static void addPageButtons(@NotNull Inventory inv, int numberOfPages, int pageViewed) {
+    Objects.requireNonNull(inv, "Null inventory");
     if (pageViewed > 0) {
       inv.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.BACKWARD_RED.getHead(), ChatColor.AQUA + "Previous Page"));
     }

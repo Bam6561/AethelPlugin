@@ -1,5 +1,9 @@
 package me.dannynguyen.aethel.utility;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 /**
  * Formats text.
  *
@@ -20,7 +24,8 @@ public class TextFormatter {
    * @param phrase phrase
    * @return enum formatted phrase
    */
-  public static String formatEnum(String phrase) {
+  public static String formatEnum(@NotNull String phrase) {
+    Objects.requireNonNull(phrase, "Null phrase");
     return phrase.replace(" ", "_").toUpperCase();
   }
 
@@ -30,7 +35,8 @@ public class TextFormatter {
    * @param phrase phrase
    * @return id formatted phrase
    */
-  public static String formatId(String phrase) {
+  public static String formatId(@NotNull String phrase) {
+    Objects.requireNonNull(phrase, "Null phrase");
     return phrase.replace(" ", "_").toLowerCase();
   }
 
@@ -40,7 +46,8 @@ public class TextFormatter {
    * @param word word
    * @return proper word
    */
-  public static String capitalizeWord(String word) {
+  public static String capitalizeWord(@NotNull String word) {
+    Objects.requireNonNull(word, "Null word");
     return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
   }
 
@@ -50,7 +57,8 @@ public class TextFormatter {
    * @param phrase phrase
    * @return proper phrase
    */
-  public static String capitalizePhrase(String phrase) {
+  public static String capitalizePhrase(@NotNull String phrase) {
+    Objects.requireNonNull(phrase, "Null phrase");
     phrase = phrase.replace("_", " ").toUpperCase();
     String[] words = phrase.split(" ");
 
@@ -68,7 +76,9 @@ public class TextFormatter {
    * @param delimiter 2nd delimiter
    * @return proper phrase
    */
-  public static String capitalizePhrase(String phrase, String delimiter) {
+  public static String capitalizePhrase(@NotNull String phrase, @NotNull String delimiter) {
+    Objects.requireNonNull(phrase, "Null phrase");
+    Objects.requireNonNull(delimiter, "Null delimiter");
     phrase = phrase.replace("_", " ").toUpperCase();
     phrase = phrase.replace(delimiter, " ").toUpperCase();
     String[] words = phrase.split(" ");
