@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.commands.AethelTagsCommand;
+import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
 import me.dannynguyen.aethel.commands.DeveloperModeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
@@ -41,7 +41,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.6
+ * @version 1.13.9
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -86,7 +86,7 @@ public class Plugin extends JavaPlugin {
    */
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
-    this.getCommand("aetheltags").setExecutor(new AethelTagsCommand());
+    this.getCommand("aetheltag").setExecutor(new AethelTagCommand());
     this.getCommand("character").setExecutor(new CharacterCommand());
     this.getCommand("developermode").setExecutor(new DeveloperModeCommand());
     this.getCommand("forge").setExecutor(new ForgeCommand());

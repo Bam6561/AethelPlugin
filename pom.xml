@@ -6,7 +6,7 @@
 
     <groupId>ndanny09</groupId>
     <artifactId>AethelPlugin</artifactId>
-    <version>1.13.8</version>
+    <version>1.13.9</version>
 
     <build>
         <plugins>
@@ -46,6 +46,5 @@
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
     </properties>
-
 </project>
 

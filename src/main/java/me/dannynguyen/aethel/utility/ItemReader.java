@@ -66,15 +66,12 @@ public class ItemReader {
       String keyName = key.getKey();
       if (keyName.startsWith("aethel.")) {
         if (!keyName.startsWith("aethel.attribute.")) {
-          aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
-              append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+          aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
         } else {
           if (keyName.matches("aethel.attribute.list")) {
-            aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
-                append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+            aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
           } else {
-            aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).
-                append(dataContainer.get(key, PersistentDataType.DOUBLE)).append(" ");
+            aethelTags.append(ChatColor.AQUA).append(keyName.substring(7)).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.DOUBLE)).append(" ");
           }
         }
       }
