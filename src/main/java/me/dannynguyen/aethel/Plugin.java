@@ -17,7 +17,7 @@ import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgHealthBar;
+import me.dannynguyen.aethel.systems.rpg.RpgHealth;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -135,9 +135,9 @@ public class Plugin extends JavaPlugin {
   private void updateOvershields() {
     Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
     for (Player player : Bukkit.getOnlinePlayers()) {
-      RpgHealthBar rpgHealthBar = rpgProfiles.get(player.getUniqueId()).getHealthBar();
-      if (rpgHealthBar.getCurrentHealth() > rpgHealthBar.getMaxHealth() * 1.2) {
-        rpgHealthBar.decayOvershield();
+      RpgHealth rpgHealth = rpgProfiles.get(player.getUniqueId()).getHealth();
+      if (rpgHealth.getCurrentHealth() > rpgHealth.getMaxHealth() * 1.2) {
+        rpgHealth.decayOvershield();
       }
     }
   }

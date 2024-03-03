@@ -68,7 +68,7 @@ public class EquipmentAttributes implements Listener {
     Player player = e.getPlayer();
     RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId());
     rpgPlayer.getEquipment().readSlot(player.getInventory().getItem(e.getNewSlot()), RpgEquipmentSlot.HAND);
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> rpgPlayer.getHealthBar().update(), 2);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> rpgPlayer.getHealth().updateMaxHealth(), 2);
   }
 
   /**
@@ -80,7 +80,7 @@ public class EquipmentAttributes implements Listener {
   private void onSwapHandItem(PlayerSwapHandItemsEvent e) {
     RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId());
     rpgPlayer.getEquipment().readSlot(e.getOffHandItem(), RpgEquipmentSlot.OFF_HAND);
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> rpgPlayer.getHealthBar().update(), 2);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> rpgPlayer.getHealth().updateMaxHealth(), 2);
   }
 
   /**
@@ -179,7 +179,7 @@ public class EquipmentAttributes implements Listener {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId());
       RpgEquipment rpgEquipment = rpgPlayer.getEquipment();
-      RpgHealthBar rpgHealthBar = rpgPlayer.getHealthBar();
+      RpgHealth rpgHealth = rpgPlayer.getHealth();
       final ItemStack wornItem = player.getInventory().getItem(slot);
       switch (slot) {
         case 36 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.FEET);
@@ -188,7 +188,7 @@ public class EquipmentAttributes implements Listener {
         case 39 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.HEAD);
         case 40 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND);
       }
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> rpgHealthBar.update(), 1);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> rpgHealth.updateMaxHealth(), 1);
     }, 1);
   }
 

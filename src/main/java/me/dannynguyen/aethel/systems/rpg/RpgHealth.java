@@ -15,13 +15,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents an RPG player's health bar.
+ * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.13.5
+ * @version 1.13.10
  * @since 1.13.4
  */
-public class RpgHealthBar {
+public class RpgHealth {
   /**
    * Player's UUID.
    */
@@ -48,41 +48,49 @@ public class RpgHealthBar {
   private double maxHealth;
 
   /**
-   * Associates RPG health bar with a player.
+   * Associates RPG health with a player.
    *
    * @param player           interacting player
    * @param aethelAttributes total Aethel attributes
    */
-  public RpgHealthBar(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
+  public RpgHealth(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP);
-    initializeHealthBar(player);
+    initializeHealth(player);
   }
 
   /**
-   * Initializes the player's health bar.
+   * Initializes the player's health.
    *
    * @param player interacting player
    */
-  private void initializeHealthBar(Player player) {
+  private void initializeHealth(Player player) {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HP) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
-    updateProgress();
+    updateDisplays();
     healthBar.addPlayer(player);
   }
 
   /**
-   * Updates the health bar and display.
+   * Updates the max health.
    */
-  public void update() {
+  public void updateMaxHealth() {
+    Player player = Bukkit.getPlayer(uuid);
+    setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP));
+    updateDisplays();
+  }
+
+  /**
+   * Updates the current health from an absorption effect.
+   */
+  public void updateOvershield() {
     Player player = Bukkit.getPlayer(uuid);
     setCurrentHealth(currentHealth + player.getAbsorptionAmount());
     player.setAbsorptionAmount(0);
-    setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP));
-    updateProgress();
+    updateDisplays();
   }
 
   /**
@@ -93,15 +101,17 @@ public class RpgHealthBar {
   public void damage(double damage) {
     setCurrentHealth(currentHealth - damage);
     if (currentHealth > 0) {
-      updateProgress();
+      updateDisplays();
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        DecimalFormat df2 = new DecimalFormat();
-        df2.setMaximumFractionDigits(2);
         setCurrentHealth(0.0);
         Bukkit.getPlayer(uuid).setHealth(currentHealth);
-        healthBar.setProgress(0.0);
-        healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+        if (healthBar.isVisible()) {
+          DecimalFormat df2 = new DecimalFormat();
+          df2.setMaximumFractionDigits(2);
+          healthBar.setProgress(0.0);
+          healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+        }
       }, 1);
     }
   }
@@ -114,79 +124,106 @@ public class RpgHealthBar {
   public void heal(double heal) {
     if (!(currentHealth > maxHealth)) {
       setCurrentHealth(Math.min(maxHealth, currentHealth + heal));
-      updateProgress();
+      updateDisplays();
     }
   }
 
   /**
-   * Resets the health bar.
+   * Resets the health.
    */
   public void reset() {
     setCurrentHealth(20.0);
     setMaxHealth(20.0);
-    updateProgress();
+    updateDisplays();
   }
 
   /**
-   * Decays a player's current health.
+   * Decays current health.
    * <p>
-   * This method should only be used when a player's overshield
-   * (current health > max health) exceeds x1.2 their max health.
+   * This method should only be used when an overshield
+   * (current health > max health) exceeds x1.2 max health.
    * </p>
    */
   public void decayOvershield() {
     double overshieldCap = maxHealth * 1.2;
     double decayRate = Math.max((currentHealth - overshieldCap) / 40, 0.25);
     setCurrentHealth(Math.max(overshieldCap, currentHealth - decayRate));
-    updateProgress();
+    updateDisplays();
   }
 
   /**
    * Toggles the visibility of the health bar.
    */
-  public void toggleVisibility() {
-    healthBar.setVisible(!healthBar.isVisible());
+  public void toggleBarVisibility() {
+    if (healthBar.isVisible()) {
+      healthBar.setVisible(false);
+    } else {
+      healthBar.setVisible(true);
+      updateDisplays();
+    }
   }
 
   /**
-   * Sets the progress of the health bar based on the current health : max health.
+   * Updates health bar displays.
    */
-  private void updateProgress() {
+  private void updateDisplays() {
     Player player = Bukkit.getPlayer(uuid);
     double maxHealthScale = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
       player.setHealth(lifeRatio * maxHealthScale);
-      healthBar.setProgress(lifeRatio);
-      healthBar.setColor(BarColor.RED);
+      updateBarDisplay(RpgHealthCondition.WOUNDED, lifeRatio);
     } else if (currentHealth == maxHealth) {
       player.setHealth(maxHealthScale);
-      healthBar.setProgress(1.0);
-      healthBar.setColor(BarColor.RED);
+      updateBarDisplay(RpgHealthCondition.NORMAL, 1.0);
     } else if (currentHealth > maxHealth) {
       player.setHealth(maxHealthScale);
-      healthBar.setProgress(1.0);
-      healthBar.setColor(BarColor.YELLOW);
+      updateBarDisplay(RpgHealthCondition.OVERSHIELD, 1.0);
     }
-    DecimalFormat df2 = new DecimalFormat();
-    df2.setMaximumFractionDigits(2);
-    healthBar.setTitle(df2.format(currentHealth) + " / " + df2.format(maxHealth) + " HP");
+  }
+
+  /**
+   * Updates the health bar display.
+   *
+   * @param condition health condition
+   * @param lifeRatio hearts displayed : true max health
+   */
+  private void updateBarDisplay(RpgHealthCondition condition, Double lifeRatio) {
+    if (healthBar.isVisible()) {
+      switch (condition) {
+        case WOUNDED -> {
+          healthBar.setProgress(lifeRatio);
+          healthBar.setColor(BarColor.RED);
+        }
+        case NORMAL -> {
+          healthBar.setProgress(1.0);
+          healthBar.setColor(BarColor.RED);
+        }
+        case OVERSHIELD -> {
+          healthBar.setProgress(1.0);
+          healthBar.setColor(BarColor.YELLOW);
+        }
+      }
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
+      healthBar.setTitle(df2.format(currentHealth) + " / " + df2.format(maxHealth) + " HP");
+    }
   }
 
   /**
    * Gets the health bar.
    *
-   * @return player's health bar
+   * @return health bar
    */
   @NotNull
-  public BossBar getHealthBar() {
+  public BossBar getBar() {
     return this.healthBar;
   }
 
   /**
    * Gets the current health.
    *
-   * @return player's current health
+   * @return current health
    */
   public double getCurrentHealth() {
     return this.currentHealth;
@@ -195,7 +232,7 @@ public class RpgHealthBar {
   /**
    * Gets the max health.
    *
-   * @return player's max health
+   * @return max health
    */
   public double getMaxHealth() {
     return this.maxHealth;
@@ -203,7 +240,7 @@ public class RpgHealthBar {
 
 
   /**
-   * Sets the player's current health.
+   * Sets the current health.
    *
    * @param currentHealth new current health value
    */
@@ -212,7 +249,7 @@ public class RpgHealthBar {
   }
 
   /**
-   * Sets the player's max health.
+   * Sets the max health.
    *
    * @param maxHealth new max health value
    */

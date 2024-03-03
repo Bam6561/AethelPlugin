@@ -32,9 +32,9 @@ public class RpgPlayer {
   private final RpgEquipment equipment;
 
   /**
-   * Player's health bar.
+   * Player's health.
    */
-  private final RpgHealthBar healthBar;
+  private final RpgHealth health;
 
   /**
    * Associates a player with RPG metadata.
@@ -44,7 +44,7 @@ public class RpgPlayer {
   public RpgPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.equipment = new RpgEquipment(player, aethelAttributes);
-    this.healthBar = new RpgHealthBar(player, aethelAttributes);
+    this.health = new RpgHealth(player, aethelAttributes);
   }
 
   /**
@@ -91,12 +91,12 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the player's RPG health bar.
+   * Gets the player's RPG health.
    *
-   * @return player's RPG health bar
+   * @return player's RPG health
    */
   @NotNull
-  public RpgHealthBar getHealthBar() {
-    return this.healthBar;
+  public RpgHealth getHealth() {
+    return this.health;
   }
 }

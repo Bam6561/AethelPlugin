@@ -30,14 +30,14 @@ public class RpgEvent implements Listener {
     if (PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()) == null) {
       PluginData.rpgSystem.loadRpgPlayer(player);
     } else {
-      BossBar healthBar = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().getHealthBar();
+      BossBar healthBar = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealth().getBar();
       healthBar.removeAll();
       healthBar.addPlayer(player);
     }
   }
 
   /**
-   * Updates the player's health bar to account for absorption and health boost status effects.
+   * Updates the player's health to account for absorption and health boost status effects.
    *
    * @param e entity potion effect event
    */
@@ -47,21 +47,21 @@ public class RpgEvent implements Listener {
       switch (e.getModifiedType().getName()) {
         case "ABSORPTION" -> {
           if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().update(), 1);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealth().updateOvershield(), 1);
           }
         }
-        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealthBar().update(), 1);
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealth().updateMaxHealth(), 1);
       }
     }
   }
 
   /**
-   * Resets the player's health bar.
+   * Resets the player's health.
    *
    * @param e player respawn event
    */
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
-    PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealthBar().reset();
+    PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
   }
 }
