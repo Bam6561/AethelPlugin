@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
 import me.dannynguyen.aethel.commands.DeveloperModeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
+import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
@@ -18,6 +18,7 @@ import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgHealth;
+import me.dannynguyen.aethel.systems.rpg.RpgHealthCondition;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -41,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.9
+ * @version 1.13.11
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -103,6 +104,7 @@ public class Plugin extends JavaPlugin {
     BukkitScheduler scheduler = Bukkit.getScheduler();
     scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
     scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateActionDisplay, 0, 40);
     scheduler.scheduleSyncRepeatingTask(this, this::updateEnvironmentalProtections, 0, 100);
   }
 
@@ -122,6 +124,17 @@ public class Plugin extends JavaPlugin {
       } else {
         playerHeldItemMap.put(playerUUID, heldItem);
       }
+    }
+  }
+
+  /**
+   * Adds an interval to update the player's action bar health display.
+   */
+  private void updateActionDisplay() {
+    Map<UUID, RpgPlayer> rpgPlayers = PluginData.rpgSystem.getRpgPlayers();
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      UUID uuid = player.getUniqueId();
+      rpgPlayers.get(uuid).getHealth().updateActionDisplay(RpgHealthCondition.getCondition(uuid));
     }
   }
 

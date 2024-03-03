@@ -1,7 +1,10 @@
 package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -18,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.13.10
+ * @version 1.13.11
  * @since 1.13.4
  */
 public class RpgHealth {
@@ -172,13 +175,29 @@ public class RpgHealth {
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
       player.setHealth(lifeRatio * maxHealthScale);
+      updateActionDisplay(RpgHealthCondition.WOUNDED);
       updateBarDisplay(RpgHealthCondition.WOUNDED, lifeRatio);
     } else if (currentHealth == maxHealth) {
       player.setHealth(maxHealthScale);
+      updateActionDisplay(RpgHealthCondition.NORMAL);
       updateBarDisplay(RpgHealthCondition.NORMAL, 1.0);
     } else if (currentHealth > maxHealth) {
       player.setHealth(maxHealthScale);
+      updateActionDisplay(RpgHealthCondition.OVERSHIELD);
       updateBarDisplay(RpgHealthCondition.OVERSHIELD, 1.0);
+    }
+  }
+
+  /**
+   * Updates the action bar display.
+   */
+  public void updateActionDisplay(@NotNull RpgHealthCondition condition) {
+    Objects.requireNonNull(condition, "Null condition");
+    DecimalFormat df2 = new DecimalFormat();
+    df2.setMaximumFractionDigits(2);
+    switch (condition) {
+      case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+      case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
     }
   }
 
@@ -190,23 +209,25 @@ public class RpgHealth {
    */
   private void updateBarDisplay(RpgHealthCondition condition, Double lifeRatio) {
     if (healthBar.isVisible()) {
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
       switch (condition) {
         case WOUNDED -> {
           healthBar.setProgress(lifeRatio);
           healthBar.setColor(BarColor.RED);
+          healthBar.setTitle(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤");
         }
         case NORMAL -> {
           healthBar.setProgress(1.0);
           healthBar.setColor(BarColor.RED);
+          healthBar.setTitle(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤");
         }
         case OVERSHIELD -> {
           healthBar.setProgress(1.0);
           healthBar.setColor(BarColor.YELLOW);
+          healthBar.setTitle(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤");
         }
       }
-      DecimalFormat df2 = new DecimalFormat();
-      df2.setMaximumFractionDigits(2);
-      healthBar.setTitle(df2.format(currentHealth) + " / " + df2.format(maxHealth) + " HP");
     }
   }
 
