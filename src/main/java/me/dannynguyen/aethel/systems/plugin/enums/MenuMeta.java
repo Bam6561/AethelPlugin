@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin menu metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.5
+ * @version 1.14.0
  * @since 1.10.1
  */
 public enum MenuMeta {
@@ -79,6 +79,11 @@ public enum MenuMeta {
    * Edit item enchantments.
    */
   ITEMEDITOR_ENCHANTMENT("itemeditor.enchantment"),
+
+  /**
+   * Edit item potion effects.
+   */
+  ITEMEDITOR_POTION("itemeditor.potion"),
 
   /**
    * Edit item tags.

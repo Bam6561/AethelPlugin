@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.13.12
+ * @version 1.14.0
  * @since 1.13.4
  */
 public class RpgHealth {
@@ -43,7 +43,7 @@ public class RpgHealth {
   /**
    * Whether to display health in the action bar.
    */
-  private boolean isHealthActionVisible;
+  private boolean healthActionVisible;
 
   /**
    * Player's health.
@@ -64,7 +64,7 @@ public class RpgHealth {
   public RpgHealth(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
-    this.isHealthActionVisible = true;
+    this.healthActionVisible = true;
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP);
     initializeHealth(player);
@@ -176,10 +176,10 @@ public class RpgHealth {
    * Toggles the visibility of health in the action bar.
    */
   public void toggleActionVisibility() {
-    if (isHealthActionVisible) {
-      isHealthActionVisible = false;
+    if (healthActionVisible) {
+      healthActionVisible = false;
     } else {
-      isHealthActionVisible = true;
+      healthActionVisible = true;
     }
   }
 
@@ -209,12 +209,14 @@ public class RpgHealth {
    * Updates the action bar display.
    */
   public void updateActionDisplay(@NotNull RpgHealthCondition condition) {
-    Objects.requireNonNull(condition, "Null condition");
-    DecimalFormat df2 = new DecimalFormat();
-    df2.setMaximumFractionDigits(2);
-    switch (condition) {
-      case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
-      case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+    if (healthActionVisible) {
+      Objects.requireNonNull(condition, "Null condition");
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
+      switch (condition) {
+        case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+        case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+      }
     }
   }
 
@@ -264,7 +266,7 @@ public class RpgHealth {
    * @return if health in the action bar displayed
    */
   public boolean isHealthActionVisible() {
-    return this.isHealthActionVisible;
+    return this.healthActionVisible;
   }
 
   /**

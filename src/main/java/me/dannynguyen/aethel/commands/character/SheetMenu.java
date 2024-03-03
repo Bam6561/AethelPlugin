@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.14.0
  * @since 1.6.3
  */
 class SheetMenu {
@@ -163,11 +163,10 @@ class SheetMenu {
   private void addStatusEffects() {
     List<String> lore = new ArrayList<>();
     for (PotionEffect potionEffect : owner.getActivePotionEffects()) {
-      String effectDuration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
-      String effectType = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
-      String effectAmplifier = (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
-
-      lore.add(effectDuration + " " + effectType + " " + effectAmplifier);
+      String duration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
+      String type = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
+      String amplifier = ChatColor.YELLOW + (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
+      lore.add(duration + " " + type + " " + amplifier);
     }
     menu.setItem(42, ItemCreator.createItem(Material.POTION, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Status Effects", lore, ItemFlag.HIDE_POTION_EFFECTS));
   }

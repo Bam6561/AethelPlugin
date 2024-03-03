@@ -19,8 +19,11 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -29,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.13.7
+ * @version 1.14.0
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -196,6 +199,36 @@ public class ItemEditorMessageSent {
   }
 
   /**
+   * Sets the potion color.
+   */
+  public void setPotionColor() {
+    String[] input = e.getMessage().split(" ", 3);
+    if (input.length == 3) {
+      PotionMeta potion = (PotionMeta) meta;
+      try {
+        int red = Integer.parseInt(input[0]);
+        try {
+          int green = Integer.parseInt(input[1]);
+          try {
+            int blue = Integer.parseInt(input[2]);
+            potion.setColor(org.bukkit.Color.fromRGB(red, green, blue));
+            item.setItemMeta(potion);
+            user.sendMessage(ChatColor.GREEN + "[Set Potion Color]");
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid Blue value.");
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(ChatColor.RED + "Invalid Green value.");
+        }
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid Red value.");
+      }
+    } else {
+      user.sendMessage(ChatColor.RED + "Invalid RGB value.");
+    }
+  }
+
+  /**
    * Sets or removes an item's attribute modifier.
    */
   public void setAttribute() {
@@ -231,6 +264,41 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToEnchantmentEditor);
+  }
+
+  /**
+   * Sets or removes an item's potion effect.
+   */
+  public void setPotionEffect() {
+    PotionMeta potion = (PotionMeta) meta;
+    NamespacedKey potionEffectKey = NamespacedKey.minecraft(PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
+    PotionEffectType potionEffectType = PotionEffectType.getByKey(potionEffectKey);
+    if (!e.getMessage().equals("-")) {
+      String[] input = e.getMessage().split(" ", 3);
+      if (input.length == 3) {
+        try {
+          int duration = Integer.parseInt(input[0]);
+          try {
+            int amplifier = Integer.parseInt(input[1]);
+            boolean ambient = Boolean.parseBoolean(input[2]);
+            PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, ambient);
+            potion.addCustomEffect(potionEffect, true);
+            user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid amplifier.");
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(ChatColor.RED + "Invalid duration.");
+        }
+      } else {
+        user.sendMessage(ChatColor.RED + "Invalid potion effect.");
+      }
+    } else {
+      potion.removeCustomEffect(potionEffectType);
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
+    }
+    item.setItemMeta(potion);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPotionEditor);
   }
 
   /**
@@ -412,6 +480,18 @@ public class ItemEditorMessageSent {
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentEditorMenu(user).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
+    });
+  }
+
+  /**
+   * Returns to the PotionEditor.
+   */
+  private void returnToPotionEditor() {
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new PotionEditorMenu(user).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
     });
   }
 

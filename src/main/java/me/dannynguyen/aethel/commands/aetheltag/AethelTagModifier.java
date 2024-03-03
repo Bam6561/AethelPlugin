@@ -21,10 +21,10 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.13.9
+ * @version 1.14.0
  * @since 1.13.9
  */
-public class AethelTagModifier {
+class AethelTagModifier {
   /**
    * ItemStack being modified.
    */

@@ -16,7 +16,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.7
+ * @version 1.14.0
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -54,8 +54,10 @@ public class MessageSent implements Listener {
       case "lore-add" -> msg.addLore();
       case "lore-edit" -> msg.editLore();
       case "lore-remove" -> msg.removeLore();
+      case "potion-color" -> msg.setPotionColor();
       case "attribute" -> msg.setAttribute();
       case "enchantment" -> msg.setEnchant();
+      case "potion-effect" -> msg.setPotionEffect();
       case "tag" -> msg.setTag();
     }
   }

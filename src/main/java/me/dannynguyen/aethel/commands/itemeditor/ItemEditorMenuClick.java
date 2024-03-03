@@ -8,6 +8,7 @@ import me.dannynguyen.aethel.systems.plugin.enums.PluginMessage;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.13.7
+ * @version 1.14.0
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -94,8 +95,9 @@ public class ItemEditorMenuClick {
       case 12 -> setRepairCost();
       case 14 -> openAttributeEditor();
       case 15 -> openEnchantmentEditor();
-      case 16 -> openTagEditor();
+      case 17 -> openPotionEditor();
       case 20 -> toggleUnbreakable();
+      case 23 -> openTagEditor();
       case 36 -> { // Lore Context
       }
       case 37 -> setLore();
@@ -137,6 +139,19 @@ public class ItemEditorMenuClick {
       }
       case 6 -> returnToCosmeticEditor();
       default -> readEnchantment();
+    }
+  }
+
+  /**
+   * Sets an item's potion effect.
+   */
+  public void interpretPotionEditorClick() {
+    switch (e.getSlot()) {
+      case 2, 4 -> { // Context, Item
+      }
+      case 5 -> setPotionColor();
+      case 6 -> returnToCosmeticEditor();
+      default -> readPotionEffect();
     }
   }
 
@@ -202,6 +217,16 @@ public class ItemEditorMenuClick {
     playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new EnchantmentEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
+  }
+
+  /**
+   * Opens a PotionEditor menu.
+   */
+  private void openPotionEditor() {
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    user.openInventory(new PotionEditorMenu(user).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
   }
 
   /**
@@ -336,6 +361,14 @@ public class ItemEditorMenuClick {
   }
 
   /**
+   * Sets the potion's color.
+   */
+  private void setPotionColor() {
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input potion color value.");
+    awaitMessageResponse("potion-color");
+  }
+
+  /**
    * Returns to the CosmeticEditor menu.
    */
   private void returnToCosmeticEditor() {
@@ -390,6 +423,16 @@ public class ItemEditorMenuClick {
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, enchantment);
     awaitMessageResponse("enchantment");
+  }
+
+  /**
+   * Determines the potion effect to be set and prompts the user for an input.
+   */
+  private void readPotionEffect() {
+    String potionEffect = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, potionEffect);
+    awaitMessageResponse("potion-effect");
   }
 
   /**

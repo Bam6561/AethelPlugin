@@ -26,7 +26,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.7
+ * @version 1.14.0
  * @since 1.6.7
  */
 class CosmeticEditorMenu {
@@ -185,7 +185,8 @@ class CosmeticEditorMenu {
   private void addGameplay() {
     menu.setItem(14, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Attributes", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(15, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchantments"));
-    menu.setItem(16, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
+    menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
+    menu.setItem(23, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
   }
 
   /**
