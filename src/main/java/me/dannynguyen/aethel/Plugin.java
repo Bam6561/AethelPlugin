@@ -42,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.11
+ * @version 1.13.12
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -134,7 +134,10 @@ public class Plugin extends JavaPlugin {
     Map<UUID, RpgPlayer> rpgPlayers = PluginData.rpgSystem.getRpgPlayers();
     for (Player player : Bukkit.getOnlinePlayers()) {
       UUID uuid = player.getUniqueId();
-      rpgPlayers.get(uuid).getHealth().updateActionDisplay(RpgHealthCondition.getCondition(uuid));
+      RpgHealth rpgHealth = rpgPlayers.get(uuid).getHealth();
+      if (rpgHealth.isHealthActionVisible()) {
+        rpgHealth.updateActionDisplay(RpgHealthCondition.getCondition(uuid));
+      }
     }
   }
 

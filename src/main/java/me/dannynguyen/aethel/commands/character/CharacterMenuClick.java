@@ -31,7 +31,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.13.12
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -109,6 +109,7 @@ public class CharacterMenuClick {
         }
         case 6 -> returnToSheet();
         case 9 -> toggleHealthBar();
+        case 10 -> toggleHealthAction();
       }
     }
   }
@@ -282,11 +283,27 @@ public class CharacterMenuClick {
     Inventory menu = e.getInventory();
     if (rpgHealth.getBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Bar"));
-      user.sendMessage(ChatColor.RED + "[Display Health Bar]");
+      user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Bar"));
-      user.sendMessage(ChatColor.GREEN + "[Display Health Bar]");
+      user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
     }
     rpgHealth.toggleBarVisibility();
+  }
+
+  /**
+   * Toggles the player's health in action bar.
+   */
+  private void toggleHealthAction() {
+    RpgHealth rpgHealth = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth();
+    Inventory menu = e.getInventory();
+    if (rpgHealth.isHealthActionVisible()) {
+      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, net.md_5.bungee.api.ChatColor.WHITE + "Display Health Action Bar"));
+      user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
+    } else {
+      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, net.md_5.bungee.api.ChatColor.WHITE + "Display Health Action Bar"));
+      user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
+    }
+    rpgHealth.toggleActionVisibility();
   }
 }

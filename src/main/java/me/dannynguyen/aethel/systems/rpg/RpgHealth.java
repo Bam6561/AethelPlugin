@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.13.11
+ * @version 1.13.12
  * @since 1.13.4
  */
 public class RpgHealth {
@@ -36,9 +36,14 @@ public class RpgHealth {
   private final Map<AethelAttribute, Double> aethelAttributes;
 
   /**
-   * Health bar.
+   * Health bar display.
    */
   private final BossBar healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
+
+  /**
+   * Whether to display health in the action bar.
+   */
+  private boolean isHealthActionVisible;
 
   /**
    * Player's health.
@@ -59,6 +64,7 @@ public class RpgHealth {
   public RpgHealth(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
+    this.isHealthActionVisible = true;
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP);
     initializeHealth(player);
@@ -167,6 +173,17 @@ public class RpgHealth {
   }
 
   /**
+   * Toggles the visibility of health in the action bar.
+   */
+  public void toggleActionVisibility() {
+    if (isHealthActionVisible) {
+      isHealthActionVisible = false;
+    } else {
+      isHealthActionVisible = true;
+    }
+  }
+
+  /**
    * Updates health bar displays.
    */
   private void updateDisplays() {
@@ -242,6 +259,15 @@ public class RpgHealth {
   }
 
   /**
+   * Gets if health in the action bar is displayed.
+   *
+   * @return if health in the action bar displayed
+   */
+  public boolean isHealthActionVisible() {
+    return this.isHealthActionVisible;
+  }
+
+  /**
    * Gets the current health.
    *
    * @return current health
@@ -258,7 +284,6 @@ public class RpgHealth {
   public double getMaxHealth() {
     return this.maxHealth;
   }
-
 
   /**
    * Sets the current health.
