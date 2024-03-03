@@ -89,9 +89,9 @@ class SettingsMenu {
    */
   private void addDisplayHealthBar() {
     if (PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth().getBar().isVisible()) {
-      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Boss Bar"));
+      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     } else {
-      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Boss Bar"));
+      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     }
   }
 
@@ -100,9 +100,9 @@ class SettingsMenu {
    */
   private void addDisplayHealthAction() {
     if (PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth().isHealthActionVisible()) {
-      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Action Bar"));
+      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     } else {
-      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Action Bar"));
+      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     }
   }
 }

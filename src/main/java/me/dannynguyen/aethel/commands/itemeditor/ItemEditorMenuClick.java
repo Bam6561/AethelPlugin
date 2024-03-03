@@ -8,7 +8,6 @@ import me.dannynguyen.aethel.systems.plugin.enums.PluginMessage;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -28,7 +27,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.0.1
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -94,7 +93,7 @@ public class ItemEditorMenuClick {
       case 11 -> setDurability();
       case 12 -> setRepairCost();
       case 14 -> openAttributeEditor();
-      case 15 -> openEnchantmentEditor();
+      case 16 -> openEnchantmentEditor();
       case 17 -> openPotionEditor();
       case 20 -> toggleUnbreakable();
       case 23 -> openTagEditor();
@@ -364,7 +363,7 @@ public class ItemEditorMenuClick {
    * Sets the potion's color.
    */
   private void setPotionColor() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input potion color value.");
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input RGB value.");
     awaitMessageResponse("potion-color");
   }
 

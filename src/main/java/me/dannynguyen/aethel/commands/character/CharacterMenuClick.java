@@ -282,10 +282,10 @@ public class CharacterMenuClick {
     RpgHealth rpgHealth = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth();
     Inventory menu = e.getInventory();
     if (rpgHealth.getBar().isVisible()) {
-      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.WHITE + "Display Health Bar"));
+      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
     } else {
-      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.WHITE + "Display Health Bar"));
+      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
     }
     rpgHealth.toggleBarVisibility();
@@ -298,10 +298,10 @@ public class CharacterMenuClick {
     RpgHealth rpgHealth = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth();
     Inventory menu = e.getInventory();
     if (rpgHealth.isHealthActionVisible()) {
-      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, net.md_5.bungee.api.ChatColor.WHITE + "Display Health Action Bar"));
+      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
     } else {
-      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, net.md_5.bungee.api.ChatColor.WHITE + "Display Health Action Bar"));
+      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
     }
     rpgHealth.toggleActionVisibility();
