@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.2
  * @since 1.13.4
  */
 public class RpgHealth {
@@ -87,8 +87,7 @@ public class RpgHealth {
    * Updates the max health.
    */
   public void updateMaxHealth() {
-    Player player = Bukkit.getPlayer(uuid);
-    setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HEALTH));
+    setMaxHealth(Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HEALTH));
     updateDisplays();
   }
 
@@ -147,17 +146,15 @@ public class RpgHealth {
   }
 
   /**
-   * Decays current health.
-   * <p>
-   * This method should only be used when an overshield
-   * (current health > max health) exceeds x1.2 max health.
-   * </p>
+   * Decays current health based on the overshield amount.
    */
   public void decayOvershield() {
     double overshieldCap = maxHealth * 1.2;
-    double decayRate = Math.max((currentHealth - overshieldCap) / 40, 0.25);
-    setCurrentHealth(Math.max(overshieldCap, currentHealth - decayRate));
-    updateDisplays();
+    if (currentHealth > overshieldCap) {
+      double decayRate = Math.max((currentHealth - overshieldCap) / 40, 0.25);
+      setCurrentHealth(Math.max(overshieldCap, currentHealth - decayRate));
+      updateDisplays();
+    }
   }
 
   /**
@@ -210,10 +207,23 @@ public class RpgHealth {
    */
   public void updateActionDisplay(@NotNull RpgHealthCondition condition) {
     if (healthActionVisible) {
-      Objects.requireNonNull(condition, "Null condition");
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
-      switch (condition) {
+      switch (Objects.requireNonNull(condition, "Null condition")) {
+        case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+        case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+      }
+    }
+  }
+
+  /**
+   * Updates the action bar display.
+   */
+  public void updateActionDisplay() {
+    if (healthActionVisible) {
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
+      switch (getCondition()) {
         case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
         case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
       }
@@ -248,6 +258,22 @@ public class RpgHealth {
         }
       }
     }
+  }
+
+  /**
+   * Gets the RPG player's health condition.
+   *
+   * @return RPG health condition
+   */
+  private RpgHealthCondition getCondition() {
+    if (currentHealth < maxHealth) {
+      return RpgHealthCondition.WOUNDED;
+    } else if (currentHealth == maxHealth) {
+      return RpgHealthCondition.NORMAL;
+    } else if (currentHealth > maxHealth) {
+      return RpgHealthCondition.OVERSHIELD;
+    }
+    return null;
   }
 
   /**

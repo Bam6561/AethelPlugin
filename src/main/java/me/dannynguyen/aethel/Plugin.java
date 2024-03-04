@@ -16,10 +16,9 @@ import me.dannynguyen.aethel.listeners.rpg.EquipmentAttributes;
 import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipment;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgHealth;
-import me.dannynguyen.aethel.systems.rpg.RpgHealthCondition;
-import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
+import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -32,6 +31,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -42,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.12
+ * @version 1.14.2
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -109,73 +109,65 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to store the player's main hand item into memory for future comparisons.
+   * Adds an interval to compare the player's main hand item for updating equipment attributes.
    */
   private void updateMainHandEquipmentAttributes() {
-    Map<UUID, ItemStack> playerHeldItemMap = PluginData.rpgSystem.getPlayerHeldItemMap();
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      ItemStack heldItem = player.getInventory().getItemInMainHand();
-      UUID playerUUID = player.getUniqueId();
-      if (playerHeldItemMap.containsKey(playerUUID)) {
-        if (!playerHeldItemMap.get(playerUUID).equals(heldItem)) {
-          playerHeldItemMap.put(playerUUID, heldItem);
-          PluginData.rpgSystem.getRpgPlayers().get(playerUUID).getEquipment().readSlot(heldItem, RpgEquipmentSlot.HAND);
-        }
-      } else {
-        playerHeldItemMap.put(playerUUID, heldItem);
+    RpgSystem rpgSystem = PluginData.rpgSystem;
+    for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
+      RpgEquipment equipment = rpgSystem.getRpgPlayers().get(uuid).getEquipment();
+      ItemStack heldItem = Bukkit.getPlayer(uuid).getInventory().getItemInMainHand();
+      if (!heldItem.equals(equipment.getHeldItem())) {
+        equipment.setHeldItem(heldItem);
+        equipment.readSlot(heldItem, RpgEquipmentSlot.HAND, true);
       }
     }
   }
 
   /**
-   * Adds an interval to update the player's action bar health display.
+   * Adds an interval to update players' action bar health display.
    */
   private void updateActionDisplay() {
-    Map<UUID, RpgPlayer> rpgPlayers = PluginData.rpgSystem.getRpgPlayers();
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      UUID uuid = player.getUniqueId();
-      RpgHealth rpgHealth = rpgPlayers.get(uuid).getHealth();
-      if (rpgHealth.isHealthActionVisible()) {
-        rpgHealth.updateActionDisplay(RpgHealthCondition.getCondition(uuid));
-      }
+    RpgSystem rpgSystem = PluginData.rpgSystem;
+    for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
+      rpgSystem.getRpgPlayers().get(uuid).getHealth().updateActionDisplay();
     }
   }
 
   /**
-   * Adds an interval to check whether a player's current health decays.
+   * Adds an interval to decay players' overcapped overshields.
    * <p>
-   * Overshields (current health > maximum health) are capped to x1.2 a
-   * player's maximum health before it starts decaying every second.
+   * An overshield begins to decay when current health
+   * exceeds max health by a factor greater than x1.2.
    * </p>
    */
   private void updateOvershields() {
-    Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      RpgHealth rpgHealth = rpgProfiles.get(player.getUniqueId()).getHealth();
-      if (rpgHealth.getCurrentHealth() > rpgHealth.getMaxHealth() * 1.2) {
-        rpgHealth.decayOvershield();
-      }
+    RpgSystem rpgSystem = PluginData.rpgSystem;
+    for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
+      rpgSystem.getRpgPlayers().get(uuid).getHealth().decayOvershield();
     }
   }
 
   /**
-   * Adds an interval to apply environmental protections
-   * based on the player's equipment enchantment levels.
+   * Adds an interval to apply environmental potion effects
+   * to players who've met enchantment level requirements.
    * <p>
    * - Feather Falling > 5: Slow falling effect
    * - Fire Protection > 10: Fire resistance effect
    * </p>
    */
   private void updateEnvironmentalProtections() {
-    Map<UUID, RpgPlayer> rpgProfiles = PluginData.rpgSystem.getRpgPlayers();
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      Map<Enchantment, Integer> enchantments = rpgProfiles.get(player.getUniqueId()).getEquipment().getTotalEnchantments();
-      if (enchantments.get(Enchantment.PROTECTION_FALL) >= 5) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
-      }
-      if (enchantments.get(Enchantment.PROTECTION_FIRE) >= 10) {
-        player.setFireTicks(-20);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
+    Map<Enchantment, Set<UUID>> sufficientEnchantments = PluginData.rpgSystem.getSufficientEnchantments();
+    for (Enchantment enchantment : sufficientEnchantments.keySet()) {
+      if (enchantment == Enchantment.PROTECTION_FALL) {
+        for (UUID uuid : sufficientEnchantments.get(enchantment)) {
+          Bukkit.getPlayer(uuid).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
+        }
+      } else if (enchantment == Enchantment.PROTECTION_FIRE) {
+        for (UUID uuid : sufficientEnchantments.get(enchantment)) {
+          Player player = Bukkit.getPlayer(uuid);
+          player.setFireTicks(-20);
+          player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
+        }
       }
     }
   }

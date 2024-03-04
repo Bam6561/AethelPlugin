@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -24,7 +25,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.14.2
  * @since 1.13.4
  */
 public class RpgEquipment {
@@ -66,6 +67,11 @@ public class RpgEquipment {
   private final ItemStack[] jewelry = new ItemStack[2];
 
   /**
+   * Held item.
+   */
+  private ItemStack heldItem;
+
+  /**
    * Associates RPG equipment with a player.
    *
    * @param player           interacting player
@@ -74,6 +80,7 @@ public class RpgEquipment {
   public RpgEquipment(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
+    this.heldItem = player.getInventory().getItemInMainHand();
     initializeEquipmentAttributes(player);
     initializeJewelrySlots();
   }
@@ -98,12 +105,12 @@ public class RpgEquipment {
    */
   private void initializeEquipmentAttributes(Player player) {
     PlayerInventory pInv = player.getInventory();
-    readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND);
-    readSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND);
-    readSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);
-    readSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST);
-    readSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS);
-    readSlot(pInv.getBoots(), RpgEquipmentSlot.FEET);
+    readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND, false);
+    readSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND, false);
+    readSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD, false);
+    readSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST, false);
+    readSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS, false);
+    readSlot(pInv.getBoots(), RpgEquipmentSlot.FEET, false);
   }
 
   /**
@@ -126,11 +133,16 @@ public class RpgEquipment {
   /**
    * Checks if the item has enchantments and Aethel attribute modifiers
    * before checking whether the item is in the correct equipment slot.
+   * <p>
+   * A 2 tick delay is added to max health updates due to items containing
+   * Minecraft's Generic Health attribute requiring 1 tick to update.
+   * </p>
    *
    * @param item interacting item
    * @param slot slot type
    */
-  public void readSlot(ItemStack item, RpgEquipmentSlot slot) {
+  public void readSlot(ItemStack item, @NotNull RpgEquipmentSlot slot, boolean maxHealthUpdate) {
+    Objects.requireNonNull(slot, "Null RPG equipment slot");
     if (ItemReader.isNotNullOrAir(item)) {
       if (enchantments.containsKey(slot)) {
         removeEnchantments(slot);
@@ -156,6 +168,9 @@ public class RpgEquipment {
       if (attributes.containsKey(slot)) {
         removeAttributes(slot);
       }
+    }
+    if (maxHealthUpdate) {
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(uuid).getHealth().updateMaxHealth(), 2);
     }
   }
 
@@ -185,6 +200,8 @@ public class RpgEquipment {
       enchantments.get(slot).put(enchantment, item.getEnchantmentLevel(enchantment));
       totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
     }
+    readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
+    readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
   }
 
   /**
@@ -196,6 +213,22 @@ public class RpgEquipment {
     for (Enchantment enchantment : enchantments.get(slot).keySet()) {
       totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) - enchantments.get(slot).get(enchantment));
       enchantments.get(slot).put(enchantment, 0);
+    }
+    readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
+    readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
+  }
+
+  /**
+   * Checks if the player has met a certain enchantment level.
+   *
+   * @param enchantment enchantment to be checked
+   * @param requirement required level to be sufficient
+   */
+  private void readEnchantmentLevel(Enchantment enchantment, int requirement) {
+    if (totalEnchantments.get(enchantment) >= requirement) {
+      PluginData.rpgSystem.getSufficientEnchantments().get(enchantment).add(uuid);
+    } else {
+      PluginData.rpgSystem.getSufficientEnchantments().get(enchantment).remove(uuid);
     }
   }
 
@@ -261,6 +294,15 @@ public class RpgEquipment {
   }
 
   /**
+   * Sets the player's held item tracked by RPG system.
+   *
+   * @param item item to be set
+   */
+  public void setHeldItem(ItemStack item) {
+    this.heldItem = item;
+  }
+
+  /**
    * Gets the player's total equipment enchantments.
    *
    * @return total equipment enchantments
@@ -298,5 +340,19 @@ public class RpgEquipment {
   @NotNull
   public ItemStack[] getJewelry() {
     return this.jewelry;
+  }
+
+  /**
+   * Gets the player's held item tracked by the RPG system.
+   * <p>
+   * Held item is not synchronous with in-game events,
+   * as it is only updated every 10 tick interval.
+   * </p>
+   *
+   * @return held item tracked by the RPG system
+   */
+  @NotNull
+  public ItemStack getHeldItem() {
+    return this.heldItem;
   }
 }

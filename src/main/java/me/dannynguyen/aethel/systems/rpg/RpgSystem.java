@@ -1,19 +1,16 @@
 package me.dannynguyen.aethel.systems.rpg;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents RPG players in memory.
  *
  * @author Danny Nguyen
- * @version 1.13.8
+ * @version 1.14.2
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -23,9 +20,11 @@ public class RpgSystem {
   private final Map<UUID, RpgPlayer> rpgPlayers = new HashMap<>();
 
   /**
-   * Player held items.
+   * Players with sufficient enchantment level requirements.
    */
-  private final Map<UUID, ItemStack> playerHeldItemMap = new HashMap<>();
+  private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
+      Enchantment.PROTECTION_FALL, new HashSet<>(),
+      Enchantment.PROTECTION_FIRE, new HashSet<>()));
 
   /**
    * Loads an RPG player into memory.
@@ -47,12 +46,12 @@ public class RpgSystem {
   }
 
   /**
-   * Gets player held items.
+   * Gets players with sufficient enchantment level requirements.
    *
-   * @return player held items
+   * @return players with sufficient enchantment level requirements
    */
   @NotNull
-  public Map<UUID, ItemStack> getPlayerHeldItemMap() {
-    return this.playerHeldItemMap;
+  public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
+    return this.sufficientEnchantments;
   }
 }

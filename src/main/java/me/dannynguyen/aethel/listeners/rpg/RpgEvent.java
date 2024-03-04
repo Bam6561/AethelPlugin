@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -11,11 +12,13 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.util.UUID;
+
 /**
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.14.2
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -26,11 +29,15 @@ public class RpgEvent implements Listener {
    */
   @EventHandler
   private void onJoin(PlayerJoinEvent e) {
+    RpgSystem rpgSystem = PluginData.rpgSystem;
     Player player = e.getPlayer();
-    if (PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()) == null) {
-      PluginData.rpgSystem.loadRpgPlayer(player);
+    UUID uuid = player.getUniqueId();
+
+    if (rpgSystem.getRpgPlayers().get(uuid) == null) {
+      rpgSystem.loadRpgPlayer(player);
+      rpgSystem.getRpgPlayers().get(uuid).getEquipment().setHeldItem(player.getInventory().getItemInMainHand());
     } else {
-      BossBar healthBar = PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealth().getBar();
+      BossBar healthBar = rpgSystem.getRpgPlayers().get(uuid).getHealth().getBar();
       healthBar.removeAll();
       healthBar.addPlayer(player);
     }

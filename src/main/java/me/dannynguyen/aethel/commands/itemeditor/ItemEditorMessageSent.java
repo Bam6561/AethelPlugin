@@ -33,7 +33,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.2
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -260,7 +260,7 @@ public class ItemEditorMessageSent {
   public void setAethelAttribute() {
     String type = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
     String attribute = type + "." + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
-    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attribute);
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
     try {
       if (!e.getMessage().equals("-")) {
         String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
@@ -286,7 +286,7 @@ public class ItemEditorMessageSent {
           item.addUnsafeEnchantment(Enchantment.getByKey(enchant), level);
           user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
         } else {
-          user.sendMessage(ChatColor.RED + "Specify a level between 0 - 32767.");
+          user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
         }
       } catch (NumberFormatException ex) {
         user.sendMessage(ChatColor.RED + "Invalid value.");
