@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.ItemRepairCost;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -32,7 +33,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.1
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -229,16 +230,48 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's attribute modifier.
+   * Sets or removes an item's Minecraft attribute modifier.
    */
-  public void setAttribute() {
-    String type = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
-    if (!type.contains("aethel.")) {
-      setMinecraftAttribute(type);
-    } else {
-      setAethelAttribute(type);
+  public void setMinecraftAttribute() {
+    try {
+      String type = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+      Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
+      String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
+      if (!e.getMessage().equals("-")) {
+        AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
+        removeExistingAttributeModifiers(attribute, equipmentSlot);
+        meta.addAttributeModifier(attribute, attributeModifier);
+        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
+      } else {
+        removeExistingAttributeModifiers(attribute, equipmentSlot);
+        user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
+      }
+      item.setItemMeta(meta);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid value.");
     }
     returnToAttributeEditor();
+  }
+
+  /**
+   * Sets or removes an item's Aethel attribute modifier.
+   */
+  public void setAethelAttribute() {
+    String type = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+    String attribute = type + "." + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attribute);
+    try {
+      if (!e.getMessage().equals("-")) {
+        String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
+        setAethelAttributeModifier(type, attribute, attributeKey, attributeValue);
+      } else {
+        removeAethelAttributeModifier(type, attribute, attributeKey);
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid value.");
+    }
+    returnToAethelAttributeEditor();
   }
 
   /**
@@ -321,60 +354,9 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets a Minecraft attribute.
-   *
-   * @param type attribute derived from inventory click
-   */
-  private void setMinecraftAttribute(String type) {
-    try {
-      Attribute attribute = Attribute.valueOf(type);
-      String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
-      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(slot.toUpperCase());
-      if (!e.getMessage().equals("-")) {
-        AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
-        removeExistingAttributeModifiers(attribute, equipmentSlot);
-        meta.addAttributeModifier(attribute, attributeModifier);
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
-      } else {
-        removeExistingAttributeModifiers(attribute, equipmentSlot);
-        user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(attribute.getKey().getKey(), ".").substring(8) + "]");
-      }
-      item.setItemMeta(meta);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
-    }
-  }
-
-  /**
-   * Sets an Aethel attribute.
-   *
-   * @param type attribute derived from inventory click
-   */
-  private void setAethelAttribute(String type) {
-    String equipmentSlot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
-    String attribute = type + "." + equipmentSlot;
-    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), attribute);
-
-    // Remove "aethel.attribute."
-    attribute = attribute.substring(17);
-
-    try {
-      String attributeValue = String.valueOf(Double.parseDouble(e.getMessage()));
-      if (!e.getMessage().equals("-")) {
-        setAethelAttributeModifier(type, attribute, attributeKey, attributeValue);
-      } else {
-        removeAethelAttributeModifier(type, attribute, attributeKey);
-      }
-      item.setItemMeta(meta);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
-    }
-  }
-
-  /**
    * Sets an item's Aethel attribute modifier based on the equipment slot mode.
    *
-   * @param type           attribute derived from inventory click
+   * @param type           attribute type derived from click
    * @param attribute      attribute name
    * @param attributeKey   attribute key
    * @param attributeValue attribute value
@@ -397,13 +379,14 @@ public class ItemEditorMessageSent {
       dataContainer.set(listKey, PersistentDataType.STRING, attribute);
     }
     dataContainer.set(attributeKey, PersistentDataType.DOUBLE, Double.parseDouble(attributeValue));
-    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
   }
 
   /**
    * Removes an item's Aethel attribute modifier based on the equipment slot mode.
    *
-   * @param type         attribute derived from inventory click
+   * @param type         attribute type derived from click
    * @param attribute    attribute name
    * @param attributeKey attribute key
    */
@@ -427,7 +410,8 @@ public class ItemEditorMessageSent {
       }
       dataContainer.remove(attributeKey);
     }
-    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type.substring(17)) + "]");
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
   }
 
 
@@ -466,8 +450,20 @@ public class ItemEditorMessageSent {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
+      user.openInventory(new AttributeEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
+    });
+  }
+
+  /**
+   * Returns to the AethelAttributeEditor.
+   */
+  private void returnToAethelAttributeEditor() {
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new AethelAttributeEditorMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
     });
   }
 

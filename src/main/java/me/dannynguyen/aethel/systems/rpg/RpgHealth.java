@@ -66,7 +66,7 @@ public class RpgHealth {
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
     this.healthActionVisible = true;
     this.currentHealth = player.getHealth();
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP);
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HEALTH);
     initializeHealth(player);
   }
 
@@ -77,7 +77,7 @@ public class RpgHealth {
    */
   private void initializeHealth(Player player) {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HP) + minecraftMaxHealth) / minecraftMaxHealth;
+    double healthScale = (aethelAttributes.get(AethelAttribute.MAX_HEALTH) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     updateDisplays();
     healthBar.addPlayer(player);
@@ -88,7 +88,7 @@ public class RpgHealth {
    */
   public void updateMaxHealth() {
     Player player = Bukkit.getPlayer(uuid);
-    setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HP));
+    setMaxHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HEALTH));
     updateDisplays();
   }
 

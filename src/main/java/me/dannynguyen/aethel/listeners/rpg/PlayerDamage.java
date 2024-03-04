@@ -353,7 +353,7 @@ public class PlayerDamage implements Listener {
    * @return if tougher than damage
    */
   private boolean ifTougher(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
-    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS);
+    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
     return e.getDamage() == 0;
   }

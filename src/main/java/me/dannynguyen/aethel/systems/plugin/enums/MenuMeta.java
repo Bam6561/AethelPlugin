@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin menu metadata.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.1
  * @since 1.10.1
  */
 public enum MenuMeta {
@@ -66,9 +66,14 @@ public enum MenuMeta {
   FORGE_SAVE("forge.save"),
 
   /**
-   * Edit item attributes.
+   * Edit item Minecraft attributes.
    */
-  ITEMEDITOR_ATTRIBUTE("itemeditor.attribute"),
+  ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor.minecraft_attribute"),
+
+  /**
+   * Edit item Aethel attributes.
+   */
+  ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor.aethel_attribute"),
 
   /**
    * Edit item cosmetics.

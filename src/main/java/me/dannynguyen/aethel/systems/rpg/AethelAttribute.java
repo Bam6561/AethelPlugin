@@ -4,14 +4,14 @@ package me.dannynguyen.aethel.systems.rpg;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.13.1
+ * @version 1.14.1
  * @since 1.9.10
  */
 public enum AethelAttribute {
   /**
    * Max health.
    */
-  MAX_HP,
+  MAX_HEALTH,
 
   /**
    * Critical hit chance.
@@ -36,7 +36,7 @@ public enum AethelAttribute {
   /**
    * Flat damage blocked.
    */
-  TOUGHNESS,
+  ARMOR_TOUGHNESS,
 
   /**
    * Item damage multiplier.

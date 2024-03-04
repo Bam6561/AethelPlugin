@@ -1,11 +1,11 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.systems.plugin.PluginConstant;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginMessage;
 import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
@@ -27,7 +27,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.14.0.1
+ * @version 1.14.1
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -93,6 +93,7 @@ public class ItemEditorMenuClick {
       case 11 -> setDurability();
       case 12 -> setRepairCost();
       case 14 -> openAttributeEditor();
+      case 15 -> openAethelAttributeEditor();
       case 16 -> openEnchantmentEditor();
       case 17 -> openPotionEditor();
       case 20 -> toggleUnbreakable();
@@ -110,22 +111,44 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Either changes the equipment slot mode or sets an item's attribute.
+   * Either changes the equipment slot mode or sets an item's Minecraft attribute.
    */
   public void interpretAttributeEditorClick() {
     switch (e.getSlot()) {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmeticEditor();
-      case 5 -> setMode(AttributeEditorAction.HEAD);
-      case 6 -> setMode(AttributeEditorAction.CHEST);
-      case 7 -> setMode(AttributeEditorAction.LEGS);
-      case 8 -> setMode(AttributeEditorAction.FEET);
-      case 14 -> setMode(AttributeEditorAction.HAND);
-      case 15 -> setMode(AttributeEditorAction.OFF_HAND);
-      case 16 -> setMode(AttributeEditorAction.NECKLACE);
-      case 17 -> setMode(AttributeEditorAction.RING);
-      default -> readAttribute();
+      case 5 -> setMode(EquipmentSlot.HEAD);
+      case 6 -> setMode(EquipmentSlot.CHEST);
+      case 7 -> setMode(EquipmentSlot.LEGS);
+      case 8 -> setMode(EquipmentSlot.FEET);
+      case 14 -> setMode(EquipmentSlot.HAND);
+      case 15 -> setMode(EquipmentSlot.OFF_HAND);
+      case 18, 27, 36 -> { // Context
+      }
+      default -> readMinecraftAttribute();
+    }
+  }
+
+  /**
+   * Either changes the RPG equipment slot mode or sets an item's Aethel attribute.
+   */
+  public void interpretAethelAttributeEditorClick() {
+    switch (e.getSlot()) {
+      case 0, 1 -> { // Context, Item
+      }
+      case 2 -> returnToCosmeticEditor();
+      case 5 -> setMode(RpgEquipmentSlot.HEAD);
+      case 6 -> setMode(RpgEquipmentSlot.CHEST);
+      case 7 -> setMode(RpgEquipmentSlot.LEGS);
+      case 8 -> setMode(RpgEquipmentSlot.FEET);
+      case 14 -> setMode(RpgEquipmentSlot.HAND);
+      case 15 -> setMode(RpgEquipmentSlot.OFF_HAND);
+      case 16 -> setMode(RpgEquipmentSlot.NECKLACE);
+      case 17 -> setMode(RpgEquipmentSlot.RING);
+      case 18, 27, 36 -> { // Context
+      }
+      default -> readAethelAttribute();
     }
   }
 
@@ -204,8 +227,19 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.HEAD).openMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
+    user.openInventory(new AttributeEditorMenu(user, EquipmentSlot.HEAD).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
+  }
+
+  /**
+   * Opens an AethelAttributeEditor menu.
+   */
+  private void openAethelAttributeEditor() {
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    playerMeta.put(PlayerMeta.SLOT, "head");
+    user.openInventory(new AethelAttributeEditorMenu(user, RpgEquipmentSlot.HEAD).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
   }
 
   /**
@@ -380,38 +414,47 @@ public class ItemEditorMenuClick {
    *
    * @param action type of interaction
    */
-  private void setMode(AttributeEditorAction action) {
+  private void setMode(EquipmentSlot action) {
     Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
     String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
     user.openInventory(new AttributeEditorMenu(user, action).openMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
   }
 
   /**
-   * Determines the attribute to be set and prompts the user for an input.
+   * Sets the user's interacting RPG equipment slot.
+   *
+   * @param action type of interaction
    */
-  private void readAttribute() {
+  private void setMode(RpgEquipmentSlot action) {
+    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    String rpgEquipmentSlot = action.name().toLowerCase();
+    playerMeta.put(PlayerMeta.SLOT, rpgEquipmentSlot);
+    user.openInventory(new AethelAttributeEditorMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
+  }
+
+  /**
+   * Determines the Minecraft attribute to be set and prompts the user for an input.
+   */
+  private void readMinecraftAttribute() {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    String attributeType;
-    if (PluginConstant.minecraftAttributes.contains(attribute)) {
-      String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
-      try {
-        EquipmentSlot.valueOf(slot.toUpperCase());
-        attributeType = "GENERIC_" + TextFormatter.formatEnum(attribute);
-      } catch (IllegalArgumentException e) {
-        user.sendMessage(ChatColor.RED + "Minecraft attribute does not exist for that slot.");
-        user.openInventory(new AttributeEditorMenu(user, AttributeEditorAction.valueOf(slot.toUpperCase())).openMenu());
-        PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ATTRIBUTE.getMeta());
-        return;
-      }
-    } else {
-      attributeType = "aethel.attribute." + TextFormatter.formatId(attribute);
-    }
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
-    user.sendMessage(getAttributeValueContext(attribute));
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attributeType);
-    awaitMessageResponse("attribute");
+    user.sendMessage(getMinecraftAttributeValueContext(attribute));
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attribute);
+    awaitMessageResponse("minecraft_attribute");
+  }
+
+  /**
+   * Determines the Aethel attribute to be set and prompts the user for an input.
+   */
+  private void readAethelAttribute() {
+    String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
+    user.sendMessage(getAethelAttributeValueContext(attribute));
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
+    awaitMessageResponse("aethel_attribute");
   }
 
   /**
@@ -455,49 +498,70 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Sends a contextual base value for the attribute being edited.
+   * Sends a contextual base value for the Minecraft attribute being edited.
    *
    * @param attribute attribute name
    * @return base attribute value
    */
-  private String getAttributeValueContext(String attribute) {
-    String attributeContext = PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
+  private String getMinecraftAttributeValueContext(String attribute) {
+    String context = PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
-      case "Max HP", "Max Health" -> {
-        return attributeContext + "20.0";
+      case "Generic Max Health" -> {
+        return context + "20.0";
       }
-      case "Attack Damage" -> {
-        return attributeContext + "1.0";
+      case "Generic Attack Damage" -> {
+        return context + "1.0";
       }
-      case "Attack Speed" -> {
-        return attributeContext + "4.0";
+      case "Generic Attack Speed" -> {
+        return context + "4.0";
+      }
+      case "Generic Armor" -> {
+        return context + "0.0 [Max: 30.0]";
+      }
+      case "Generic Armor Toughness" -> {
+        return context + "0.0 [Max: 20.0]";
+      }
+      case "Generic Knockback Resistance" -> {
+        return context + "0.0 [Max: 1.0]";
+      }
+      case "Generic Movement Speed" -> {
+        return context + "2.0 [Input * 20]";
+      }
+      case "Generic Luck" -> {
+        return context + "0.0";
+      }
+      default -> {
+        return null;
+      }
+    }
+  }
+
+  /**
+   * Sends a contextual base value for the Aethel attribute being edited.
+   *
+   * @param attribute attribute name
+   * @return base attribute value
+   */
+  private String getAethelAttributeValueContext(String attribute) {
+    String context = PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
+    switch (attribute) {
+      case "Max Health" -> {
+        return context + "20.0";
       }
       case "Critical Chance", "Counter Chance", "Dodge Chance" -> {
-        return attributeContext + "0.0%";
+        return context + "0.0%";
       }
       case "Critical Damage" -> {
-        return attributeContext + "1.25x [Input / 100]";
-      }
-      case "Armor" -> {
-        return attributeContext + "0.0 [Max: 30.0]";
+        return context + "1.25x [Input / 100]";
       }
       case "Armor Toughness" -> {
-        return attributeContext + "0.0 [Max: 20.0]";
-      }
-      case "Knockback Resistance" -> {
-        return attributeContext + "0.0 [Max: 1.0]";
-      }
-      case "Movement Speed" -> {
-        return attributeContext + "2.0 [Input * 20]";
-      }
-      case "Luck", "Toughness" -> {
-        return attributeContext + "0.0";
+        return context + "0.0";
       }
       case "Item Damage" -> {
-        return attributeContext + "1.0x [Input / 100]";
+        return context + "1.0x [Input / 100]";
       }
       case "Item Cooldown" -> {
-        return attributeContext + "-0.0%";
+        return context + "-0.0%";
       }
       default -> {
         return null;

@@ -206,10 +206,10 @@ class SheetMenu {
     RpgHealth rpgHealth = rpgPlayer.getHealth();
     Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
 
-    String maxHealth = ChatColor.RED + "" + df2.format(rpgHealth.getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HP)) + " HP";
+    String maxHealth = ChatColor.RED + "" + df2.format(rpgHealth.getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HEALTH)) + " HP";
     String counterChance = ChatColor.YELLOW + "" + df2.format(attributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
     String dodgeChance = ChatColor.BLUE + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
-    String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.TOUGHNESS)) + " TOUGH";
+    String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS)) + " TOUGH";
     String armor = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
 
     String featherFalling = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";

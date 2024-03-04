@@ -24,7 +24,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.1
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -163,7 +163,8 @@ public class MenuClick implements Listener {
         ItemEditorMenuClick click = new ItemEditorMenuClick(e);
         switch (invType[1]) {
           case "cosmetic" -> click.interpretCosmeticEditorClick();
-          case "attribute" -> click.interpretAttributeEditorClick();
+          case "minecraft_attribute" -> click.interpretAttributeEditorClick();
+          case "aethel_attribute" -> click.interpretAethelAttributeEditorClick();
           case "enchantment" -> click.interpretEnchantmentEditorClick();
           case "potion" -> click.interpretPotionEditorClick();
           case "tag" -> click.interpretTagEditorClick();
