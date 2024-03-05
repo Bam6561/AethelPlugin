@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.plugin;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

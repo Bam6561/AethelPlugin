@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin.enums;
+package me.dannynguyen.aethel.systems.plugin;
 
 import me.dannynguyen.aethel.Plugin;
 import org.bukkit.NamespacedKey;

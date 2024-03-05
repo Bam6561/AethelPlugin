@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.plugin.enums.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.enums.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.MenuMeta;
+import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
+import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

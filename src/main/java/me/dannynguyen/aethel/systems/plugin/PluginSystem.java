@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.systems.plugin;
 
-import me.dannynguyen.aethel.systems.plugin.enums.PlayerMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

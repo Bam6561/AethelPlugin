@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin.enums;
+package me.dannynguyen.aethel.systems.plugin;
 
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;

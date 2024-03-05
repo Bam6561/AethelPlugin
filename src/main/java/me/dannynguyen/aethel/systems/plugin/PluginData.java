@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatRecord;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
-import me.dannynguyen.aethel.systems.plugin.enums.PluginDirectory;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;

@@ -1,25 +1,14 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
-import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.enums.PluginMessage;
-import me.dannynguyen.aethel.systems.plugin.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Command invocation that allows the user to retrieve,

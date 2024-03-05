@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin.enums;
+package me.dannynguyen.aethel.systems.plugin;
 
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
