@@ -24,7 +24,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.3
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -110,10 +110,12 @@ public class MenuClick implements Listener {
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
         switch (invType[1]) {
           case "sheet" -> click.interpretSheetClick();
+          case "quests" -> click.interpretQuestsClick();
+          case "collectibles" -> click.interpretCollectiblesClick();
           case "settings" -> click.interpretSettingsClick();
         }
       } else {
-        if (!e.isShiftClick()) {
+        if (invType[1].equals("sheet") && !e.isShiftClick()) {
           e.setCancelled(false);
           click.interpretPlayerInventoryClick();
         }
@@ -143,9 +145,7 @@ public class MenuClick implements Listener {
         new ForgeMenuClick(e).interpretSaveClick();
       }
     } else {
-      if (e.isShiftClick() && invType[1].equals("save")) {
-        e.setCancelled(false);
-      } else if (!e.isShiftClick()) {
+      if ((e.isShiftClick() && invType[1].equals("save")) || !e.isShiftClick()) {
         e.setCancelled(false);
       }
     }

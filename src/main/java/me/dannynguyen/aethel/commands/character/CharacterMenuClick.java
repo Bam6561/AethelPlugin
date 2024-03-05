@@ -30,7 +30,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.3
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -74,10 +74,8 @@ public class CharacterMenuClick {
       switch (slotClicked) {
         case 4, 9, 15, 24, 33, 42 -> { // Player Head & Attributes
         }
-        case 25 -> { // Quests
-        }
-        case 34 -> { // Collectibles
-        }
+        case 25 -> openQuests();
+        case 34 -> openCollectibles();
         case 43 -> openSettings();
         case 10, 11, 12, 19, 28, 37 -> {
           e.setCancelled(false);
@@ -99,7 +97,33 @@ public class CharacterMenuClick {
   }
 
   /**
-   * Toggles the player's health bar.
+   * Views the player's quests.
+   */
+  public void interpretQuestsClick() {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+      switch (slotClicked) {
+        case 4 -> { // Player Head
+        }
+        case 6 -> returnToSheet();
+      }
+    }
+  }
+
+  /**
+   * Views the player's collectibles.
+   */
+  public void interpretCollectiblesClick() {
+    if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+      switch (slotClicked) {
+        case 4 -> { // Player Head
+        }
+        case 6 -> returnToSheet();
+      }
+    }
+  }
+
+  /**
+   * Toggles the player's settings.
    */
   public void interpretSettingsClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
@@ -128,6 +152,22 @@ public class CharacterMenuClick {
         }, 1);
       }, 1);
     }
+  }
+
+  /**
+   * Opens a Quests menu.
+   */
+  private void openQuests() {
+    user.openInventory(new QuestsMenu(user).openMenu());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_QUESTS.getMeta());
+  }
+
+  /**
+   * Opens a Collectibles menu.
+   */
+  private void openCollectibles() {
+    user.openInventory(new CollectiblesMenu(user).openMenu());
+    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_COLLECTIBLES.getMeta());
   }
 
   /**

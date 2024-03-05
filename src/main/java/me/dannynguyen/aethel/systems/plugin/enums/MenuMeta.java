@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin menu metadata.
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.3
  * @since 1.10.1
  */
 public enum MenuMeta {
@@ -29,6 +29,16 @@ public enum MenuMeta {
    * Interact with character sheet.
    */
   CHARACTER_SHEET("character.sheet"),
+
+  /**
+   * View quests.
+   */
+  CHARACTER_QUESTS("character.quests"),
+
+  /**
+   * View collectibles.
+   */
+  CHARACTER_COLLECTIBLES("character.collectibles"),
 
   /**
    * Interact with RPG settings.
