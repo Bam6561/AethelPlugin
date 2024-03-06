@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.14.6
  * @since 1.0.9
  */
 public class ForgeMenuClick {
@@ -81,7 +81,8 @@ public class ForgeMenuClick {
    *
    * @param action type of interaction
    */
-  public void interpretCategoryClick(ForgeMenuAction action) {
+  public void interpretCategoryClick(@NotNull ForgeMenuAction action) {
+    Objects.requireNonNull(action, "Null action");
     switch (slotClicked) {
       case 0 -> previousRecipePage(action);
       case 2 -> { // Context

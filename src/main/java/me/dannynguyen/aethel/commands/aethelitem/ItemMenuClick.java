@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.14.6
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -83,6 +83,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   public void interpretCategoryClick(@NotNull ItemMenuAction action) {
+    Objects.requireNonNull(action, "Null action");
     switch (slotClicked) {
       case 0 -> previousPage(action);
       case 2 -> { // Context

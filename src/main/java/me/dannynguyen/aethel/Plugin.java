@@ -69,6 +69,7 @@ public class Plugin extends JavaPlugin {
    * On disable:
    * - Saves persistent plugin data.
    */
+  @Override
   public void onDisable() {
     Bukkit.getScheduler().cancelTasks(this);
     data.saveResources();

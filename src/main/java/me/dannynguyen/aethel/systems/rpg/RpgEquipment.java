@@ -14,6 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,7 +25,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.14.6
  * @since 1.13.4
  */
 public class RpgEquipment {
@@ -140,7 +141,7 @@ public class RpgEquipment {
    * @param item interacting item
    * @param slot slot type
    */
-  public void readSlot(ItemStack item, @NotNull RpgEquipmentSlot slot, boolean maxHealthUpdate) {
+  public void readSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot slot, boolean maxHealthUpdate) {
     Objects.requireNonNull(slot, "Null RPG equipment slot");
     if (ItemReader.isNotNullOrAir(item)) {
       if (enchantments.containsKey(slot)) {
@@ -194,7 +195,9 @@ public class RpgEquipment {
    * @param slot slot type
    * @param item interacting item
    */
-  public void addEnchantments(RpgEquipmentSlot slot, ItemStack item) {
+  public void addEnchantments(@NotNull RpgEquipmentSlot slot, @NotNull ItemStack item) {
+    Objects.requireNonNull(slot, "Null slot");
+    Objects.requireNonNull(item, "Null item");
     for (Enchantment enchantment : trackedEnchantments) {
       enchantments.get(slot).put(enchantment, item.getEnchantmentLevel(enchantment));
       totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
@@ -208,8 +211,8 @@ public class RpgEquipment {
    *
    * @param slot slot type
    */
-  public void removeEnchantments(RpgEquipmentSlot slot) {
-    for (Enchantment enchantment : enchantments.get(slot).keySet()) {
+  public void removeEnchantments(@NotNull RpgEquipmentSlot slot) {
+    for (Enchantment enchantment : enchantments.get(Objects.requireNonNull(slot, "Null slot")).keySet()) {
       totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) - enchantments.get(slot).get(enchantment));
       enchantments.get(slot).put(enchantment, 0);
     }
@@ -267,8 +270,8 @@ public class RpgEquipment {
    *
    * @param slot slot type
    */
-  public void removeAttributes(RpgEquipmentSlot slot) {
-    for (AethelAttribute attribute : attributes.get(slot).keySet()) {
+  public void removeAttributes(@NotNull RpgEquipmentSlot slot) {
+    for (AethelAttribute attribute : attributes.get(Objects.requireNonNull(slot, "Null slot")).keySet()) {
       aethelAttributes.put(attribute, aethelAttributes.get(attribute) - attributes.get(slot).get(attribute));
       attributes.get(slot).put(attribute, 0.0);
     }
@@ -297,7 +300,7 @@ public class RpgEquipment {
    *
    * @param item item to be set
    */
-  public void setHeldItem(ItemStack item) {
+  public void setHeldItem(@Nullable ItemStack item) {
     this.heldItem = item;
   }
 

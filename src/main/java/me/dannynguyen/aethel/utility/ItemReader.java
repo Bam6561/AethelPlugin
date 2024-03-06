@@ -35,7 +35,7 @@ public class ItemReader {
    * @param item interacting item
    * @return item is not null or air
    */
-  public static boolean isNotNullOrAir(ItemStack item) {
+  public static boolean isNotNullOrAir(@Nullable ItemStack item) {
     return item != null && item.getType() != Material.AIR;
   }
 
