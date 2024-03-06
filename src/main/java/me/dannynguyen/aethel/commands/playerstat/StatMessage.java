@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -20,7 +20,7 @@ import java.util.UUID;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.10
  */
 class StatMessage {
@@ -64,7 +64,7 @@ class StatMessage {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
     this.userUUID = user.getUniqueId();
-    this.ownerName = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
+    this.ownerName = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
     this.owner = Bukkit.getOfflinePlayer(ownerName);
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     this.isGlobalBroadcast = e.isShiftClick();
@@ -87,7 +87,7 @@ class StatMessage {
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
-    String category = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+    String category = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
     String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
     List<String> statValues = getSubstatValues(category, substat);
 
@@ -119,7 +119,7 @@ class StatMessage {
           onlinePlayer.sendMessage(PluginMessage.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
         }
       }
-      PluginData.pastStatHistory.addPastStat(stat, statValues);
+      Plugin.getData().getPastStatHistory().addPastStat(stat, statValues);
     }
   }
 

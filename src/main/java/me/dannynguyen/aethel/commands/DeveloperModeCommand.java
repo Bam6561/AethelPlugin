@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ import java.util.Map;
  * bypass conditions for various interactions.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.6
  */
 public class DeveloperModeCommand implements CommandExecutor {
@@ -65,7 +65,7 @@ public class DeveloperModeCommand implements CommandExecutor {
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     if (!playerMeta.containsKey(PlayerMeta.DEVELOPER)) {
       playerMeta.put(PlayerMeta.DEVELOPER, "1");
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");

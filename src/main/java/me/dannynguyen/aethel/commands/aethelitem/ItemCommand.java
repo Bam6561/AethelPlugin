@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -21,7 +21,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -68,7 +68,7 @@ public class ItemCommand implements CommandExecutor {
    * @param user user
    */
   private void openMenu(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.CATEGORY, " ");
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
@@ -84,7 +84,7 @@ public class ItemCommand implements CommandExecutor {
   private void readParameter(Player user, String action) {
     switch (action) {
       case "reload", "r" -> {
-        PluginData.itemRegistry.loadData();
+        Plugin.getData().getItemRegistry().loadData();
         user.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
       }
       default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -29,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.5
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -78,7 +78,7 @@ public class ItemEditorMenuClick {
     this.menu = e.getInventory();
     this.user = (Player) e.getWhoClicked();
     this.userUUID = user.getUniqueId();
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.meta = item.getItemMeta();
     this.slotClicked = e.getSlot();
   }
@@ -226,7 +226,7 @@ public class ItemEditorMenuClick {
    * Opens an AttributeEditor menu.
    */
   private void openAttributeEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
     user.openInventory(new AttributeEditorMenu(user, EquipmentSlot.HEAD).openMenu());
@@ -237,7 +237,7 @@ public class ItemEditorMenuClick {
    * Opens an AethelAttributeEditor menu.
    */
   private void openAethelAttributeEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
     user.openInventory(new AethelAttributeEditorMenu(user, RpgEquipmentSlot.HEAD).openMenu());
@@ -248,7 +248,7 @@ public class ItemEditorMenuClick {
    * Opens an EnchantmentEditor menu.
    */
   private void openEnchantmentEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new EnchantmentEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
@@ -258,7 +258,7 @@ public class ItemEditorMenuClick {
    * Opens a PotionEditor menu.
    */
   private void openPotionEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new PotionEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
@@ -268,7 +268,7 @@ public class ItemEditorMenuClick {
    * Opens a TagEditor menu.
    */
   private void openTagEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new TagEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
@@ -409,7 +409,7 @@ public class ItemEditorMenuClick {
    */
   private void returnToCosmeticEditor() {
     user.openInventory(new CosmeticEditorMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
   }
 
   /**
@@ -418,7 +418,7 @@ public class ItemEditorMenuClick {
    * @param action type of interaction
    */
   private void setMode(EquipmentSlot action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
     user.openInventory(new AttributeEditorMenu(user, action).openMenu());
@@ -431,7 +431,7 @@ public class ItemEditorMenuClick {
    * @param action type of interaction
    */
   private void setMode(RpgEquipmentSlot action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String rpgEquipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, rpgEquipmentSlot);
     user.openInventory(new AethelAttributeEditorMenu(user, action).openMenu());
@@ -445,7 +445,7 @@ public class ItemEditorMenuClick {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getMinecraftAttributeValueContext(attribute));
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attribute);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attribute);
     awaitMessageResponse("minecraft_attribute");
   }
 
@@ -456,7 +456,7 @@ public class ItemEditorMenuClick {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAethelAttributeValueContext(attribute));
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
     awaitMessageResponse("aethel_attribute");
   }
 
@@ -466,7 +466,7 @@ public class ItemEditorMenuClick {
   private void readEnchantment() {
     String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, enchantment);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, enchantment);
     awaitMessageResponse("enchantment");
   }
 
@@ -476,7 +476,7 @@ public class ItemEditorMenuClick {
   private void readPotionEffect() {
     String potionEffect = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, potionEffect);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, potionEffect);
     awaitMessageResponse("potion-effect");
   }
 
@@ -486,7 +486,7 @@ public class ItemEditorMenuClick {
   private void readTag() {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, tag);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, tag);
     awaitMessageResponse("tag");
   }
 
@@ -497,7 +497,7 @@ public class ItemEditorMenuClick {
    */
   private void awaitMessageResponse(String metadata) {
     user.closeInventory();
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.MESSAGE, "itemeditor." + metadata);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.MESSAGE, "itemeditor." + metadata);
   }
 
   /**

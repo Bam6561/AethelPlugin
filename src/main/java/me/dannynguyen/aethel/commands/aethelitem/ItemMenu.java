@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.0
  */
 class ItemMenu {
@@ -66,8 +66,8 @@ class ItemMenu {
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
-      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
     }
     return Bukkit.createInventory(user, 54, title);
   }
@@ -94,10 +94,10 @@ class ItemMenu {
    */
   @NotNull
   protected Inventory openCategoryPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = PluginData.itemRegistry.getCategoryMap().get(requestedCategory);
+    List<Inventory> category = Plugin.getData().getItemRegistry().getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext(requestedCategory);
@@ -157,7 +157,7 @@ class ItemMenu {
    * Adds item categories.
    */
   private void addCategories() {
-    Set<String> categories = PluginData.itemRegistry.getCategoryMap().keySet();
+    Set<String> categories = Plugin.getData().getItemRegistry().getCategoryMap().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {

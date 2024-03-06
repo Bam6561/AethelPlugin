@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -23,7 +23,7 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.7
  */
 class PlayerStatMenu {
@@ -115,10 +115,10 @@ class PlayerStatMenu {
    * @param requestedPage     requested page
    */
   private void loadSubstatPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = PluginData.playerStatRecord.getSubstatCategories().get(requestedCategory);
+    List<Inventory> category = Plugin.getData().getPlayerStatRecord().getSubstatCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
@@ -130,7 +130,7 @@ class PlayerStatMenu {
    * @param requestedCategory requested category
    */
   private void loadStatsPage(String requestedCategory) {
-    menu.setContents(PluginData.playerStatRecord.getStatCategories().get(requestedCategory).getContents());
+    menu.setContents(Plugin.getData().getPlayerStatRecord().getStatCategories().get(requestedCategory).getContents());
   }
 
   /**
@@ -157,7 +157,7 @@ class PlayerStatMenu {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
+    String statOwner = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
     OfflinePlayer owner = Bukkit.getOfflinePlayer(statOwner);
 
     meta.setOwningPlayer(owner);

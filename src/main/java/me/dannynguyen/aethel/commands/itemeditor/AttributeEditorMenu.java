@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -27,7 +27,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.5
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -72,7 +72,7 @@ class AttributeEditorMenu {
    */
   protected AttributeEditorMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.slot = slot;
     this.attributeModifiers = item.getItemMeta().getAttributeModifiers();
     this.menu = createMenu();

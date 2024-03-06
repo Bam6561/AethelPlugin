@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgHealth;
@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.5
  * @since 1.6.3
  */
 class SheetMenu {
@@ -131,7 +131,7 @@ class SheetMenu {
    */
   private void addEquipment() {
     PlayerInventory pInv = owner.getInventory();
-    ItemStack[] jewelry = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getEquipment().getJewelry();
+    ItemStack[] jewelry = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID).getEquipment().getJewelry();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -147,7 +147,7 @@ class SheetMenu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<AethelAttribute, Double> attributes = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID).getAethelAttributes();
 
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
@@ -202,7 +202,7 @@ class SheetMenu {
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
-    RpgPlayer rpgPlayer = PluginData.rpgSystem.getRpgPlayers().get(ownerUUID);
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID);
     RpgHealth rpgHealth = rpgPlayer.getHealth();
     Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
 

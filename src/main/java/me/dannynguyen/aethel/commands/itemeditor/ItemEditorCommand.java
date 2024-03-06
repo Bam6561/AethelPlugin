@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * edit their main hand item's metadata.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -71,8 +71,8 @@ public class ItemEditorCommand implements CommandExecutor {
    * @param item interacting item
    */
   private void openMenu(Player user, ItemStack item) {
-    PluginData.editedItemCache.getEditedItemMap().put(user.getUniqueId(), item);
+    Plugin.getData().getEditedItemCache().getEditedItemMap().put(user.getUniqueId(), item);
     user.openInventory(new CosmeticEditorMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
   }
 }

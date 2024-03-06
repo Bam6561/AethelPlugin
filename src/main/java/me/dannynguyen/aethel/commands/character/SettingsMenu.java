@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
@@ -17,7 +17,7 @@ import java.util.UUID;
  * Represents a menu that shows the player's RPG settings.
  *
  * @author Danny Nguyen
- * @version 1.13.12
+ * @version 1.14.5
  * @since 1.11.5
  */
 class SettingsMenu {
@@ -88,7 +88,7 @@ class SettingsMenu {
    * Toggles the visibility of the health bar.
    */
   private void addDisplayHealthBar() {
-    if (PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth().getBar().isVisible()) {
+    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth().getBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
@@ -99,7 +99,7 @@ class SettingsMenu {
    * Toggles the visibility of health in the action bar.
    */
   private void addDisplayHealthAction() {
-    if (PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth().isHealthActionVisible()) {
+    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth().isHealthActionVisible()) {
       menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     } else {
       menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));

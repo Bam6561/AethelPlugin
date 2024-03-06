@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -89,7 +89,7 @@ class RecipeDetailsMenu {
     this.user = Objects.requireNonNull(user, "Null user");
     this.userUUID = user.getUniqueId();
     this.type = Objects.requireNonNull(type, "Null type");
-    this.recipe = Objects.requireNonNull(PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
+    this.recipe = Objects.requireNonNull(Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
     this.menu = createMenu(this.type);
   }
 
@@ -121,7 +121,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT_RECIPE.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT_RECIPE.getMeta());
   }
 
   /**
@@ -132,7 +132,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
   }
 
   /**
@@ -142,7 +142,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
   }
 
   /**

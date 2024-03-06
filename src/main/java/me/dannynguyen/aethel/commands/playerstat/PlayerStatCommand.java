@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -23,7 +23,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.7
  */
 public class PlayerStatCommand implements CommandExecutor {
@@ -74,7 +74,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).openMenu());
-      PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
+      Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -86,7 +86,7 @@ public class PlayerStatCommand implements CommandExecutor {
    * @param user user
    */
   private void openPlayerStatSelf(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.PLAYER, user.getName());
     user.openInventory(new PlayerStatMenu(user, user.getName()).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
@@ -101,7 +101,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void openPlayerStatOther(Player user, String owner) {
     OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
     if (player.hasPlayedBefore()) {
-      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
       playerMeta.put(PlayerMeta.PLAYER, player.getName());
       user.openInventory(new PlayerStatMenu(user, player.getName()).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());

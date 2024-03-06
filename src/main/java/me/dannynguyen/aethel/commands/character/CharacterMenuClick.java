@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipment;
@@ -30,7 +29,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.3
+ * @version 1.14.5
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -147,7 +146,7 @@ public class CharacterMenuClick {
         e.getInventory().setItem(11, user.getInventory().getItem(e.getSlot()));
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
-          PluginData.rpgSystem.getRpgPlayers().get(userUUID).getEquipment().readSlot(item, RpgEquipmentSlot.HAND, true);
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment().readSlot(item, RpgEquipmentSlot.HAND, true);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, e.getInventory())::addAttributes, 3);
         }, 1);
       }, 1);
@@ -159,7 +158,7 @@ public class CharacterMenuClick {
    */
   private void openQuests() {
     user.openInventory(new QuestsMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_QUESTS.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_QUESTS.getMeta());
   }
 
   /**
@@ -167,7 +166,7 @@ public class CharacterMenuClick {
    */
   private void openCollectibles() {
     user.openInventory(new CollectiblesMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_COLLECTIBLES.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_COLLECTIBLES.getMeta());
   }
 
   /**
@@ -175,7 +174,7 @@ public class CharacterMenuClick {
    */
   private void openSettings() {
     user.openInventory(new SettingsMenu(user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
   }
 
   /**
@@ -262,7 +261,7 @@ public class CharacterMenuClick {
    */
   private void updateArmorHandsAttributes(int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgEquipment rpgEquipment = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getEquipment();
+      RpgEquipment rpgEquipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
       ItemStack wornItem = user.getInventory().getItem(slot);
       switch (slot) {
         case 39 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
@@ -281,7 +280,7 @@ public class CharacterMenuClick {
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgEquipment rpgEquipment = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getEquipment();
+      RpgEquipment rpgEquipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
       Inventory menu = e.getClickedInventory();
       ItemStack wornItem = menu.getItem(slotClicked);
       switch (slotClicked) {
@@ -303,14 +302,14 @@ public class CharacterMenuClick {
    */
   private void returnToSheet() {
     user.openInventory(new SheetMenu(user, user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 
   /**
    * Toggles the player's health bar.
    */
   private void toggleHealthBar() {
-    RpgHealth rpgHealth = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth();
+    RpgHealth rpgHealth = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
     Inventory menu = e.getInventory();
     if (rpgHealth.getBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
@@ -326,7 +325,7 @@ public class CharacterMenuClick {
    * Toggles the player's health in action bar.
    */
   private void toggleHealthAction() {
-    RpgHealth rpgHealth = PluginData.rpgSystem.getRpgPlayers().get(userUUID).getHealth();
+    RpgHealth rpgHealth = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
     Inventory menu = e.getInventory();
     if (rpgHealth.isHealthActionVisible()) {
       menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));

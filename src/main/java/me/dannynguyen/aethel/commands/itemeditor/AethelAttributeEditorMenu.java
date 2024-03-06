@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
@@ -27,7 +26,7 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.5
  * @since 1.14.1
  */
 public class AethelAttributeEditorMenu {
@@ -77,7 +76,7 @@ public class AethelAttributeEditorMenu {
    */
   protected AethelAttributeEditorMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.slot = slot;
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
     this.aethelAttributesMap = mapAethelAttributes();

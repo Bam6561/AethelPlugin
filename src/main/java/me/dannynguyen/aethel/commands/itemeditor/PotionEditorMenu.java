@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -23,7 +23,7 @@ import java.util.*;
  * Represents a menu that edits an item's potion effects.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.14.5
  * @since 1.14.0
  */
 class PotionEditorMenu {
@@ -49,7 +49,7 @@ class PotionEditorMenu {
    */
   protected PotionEditorMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.menu = createMenu();
   }
 

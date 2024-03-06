@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.systems.plugin;
 
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
 import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
@@ -18,54 +19,54 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.13.4
+ * @version 1.14.5
  * @since 1.1.7
  */
 public class PluginData {
   /**
    * Registered items.
    */
-  public static final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.getFile());
+  private final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.getFile());
 
   /**
    * Registered recipes.
    */
-  public static final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.getFile());
+  private final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.getFile());
 
   /**
    * Available player stats.
    */
-  public static final PlayerStatRecord playerStatRecord = new PlayerStatRecord();
+  private final PlayerStatRecord playerStatRecord = new PlayerStatRecord();
 
   /**
    * Currently editing items.
    */
-  public static final EditedItemCache editedItemCache = new EditedItemCache();
+  private final EditedItemCache editedItemCache = new EditedItemCache();
 
   /**
    * Past shown item history.
    */
-  public static final PastItemHistory pastItemHistory = new PastItemHistory();
+  private final PastItemHistory pastItemHistory = new PastItemHistory();
 
   /**
    * Past shared stat history.
    */
-  public static final PastStatHistory pastStatHistory = new PastStatHistory();
+  private final PastStatHistory pastStatHistory = new PastStatHistory();
 
   /**
    * Plugin system data.
    */
-  public static final PluginSystem pluginSystem = new PluginSystem();
+  private final PluginSystem pluginSystem = new PluginSystem();
 
   /**
    * RPG system data.
    */
-  public static final RpgSystem rpgSystem = new RpgSystem();
+  private final RpgSystem rpgSystem = new RpgSystem();
 
   /**
    * Loads persistent plugin data. Creates data directories if they do not already exist.
    */
-  public static void loadResources() {
+  public void loadResources() {
     Logger log = Bukkit.getLogger();
     long start;
     long finish;
@@ -75,12 +76,12 @@ public class PluginData {
     log.info("[Aethel] Loading Resources");
 
     start = System.nanoTime();
-    PluginData.itemRegistry.loadData();
+    Plugin.getData().getItemRegistry().loadData();
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Aethel Items: " + convertToMs(df2, start, finish));
 
     start = System.nanoTime();
-    PluginData.recipeRegistry.loadData();
+    Plugin.getData().getRecipeRegistry().loadData();
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(df2, start, finish));
 
@@ -93,7 +94,7 @@ public class PluginData {
   /**
    * Saves persistent plugin data.
    */
-  public static void saveResources() {
+  public void saveResources() {
     Logger log = Bukkit.getLogger();
     long start;
     long finish;
@@ -103,7 +104,7 @@ public class PluginData {
     log.info("[Aethel] Saving Resources");
 
     start = System.nanoTime();
-    for (RpgPlayer rpgPlayer : PluginData.rpgSystem.getRpgPlayers().values()) {
+    for (RpgPlayer rpgPlayer : Plugin.getData().getRpgSystem().getRpgPlayers().values()) {
       rpgPlayer.getEquipment().saveJewelry();
     }
     finish = System.nanoTime();
@@ -120,5 +121,77 @@ public class PluginData {
    */
   private static String convertToMs(DecimalFormat df2, long start, long finish) {
     return df2.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
+  }
+
+  /**
+   * Gets the plugin's item registry.
+   *
+   * @return plugin's item registry
+   */
+  public ItemRegistry getItemRegistry() {
+    return this.itemRegistry;
+  }
+
+  /**
+   * Gets the plugin's recipe registry.
+   *
+   * @return plugin's recipe registry
+   */
+  public RecipeRegistry getRecipeRegistry() {
+    return this.recipeRegistry;
+  }
+
+  /**
+   * Gets the plugin's player stat record.
+   *
+   * @return plugin's player stat record
+   */
+  public PlayerStatRecord getPlayerStatRecord() {
+    return this.playerStatRecord;
+  }
+
+  /**
+   * Gets the plugin's edited item cache
+   *
+   * @return plugin's edited item cache
+   */
+  public EditedItemCache getEditedItemCache() {
+    return this.editedItemCache;
+  }
+
+  /**
+   * Gets the plugin's past item history.
+   *
+   * @return plugin's past item history
+   */
+  public PastItemHistory getPastItemHistory() {
+    return this.pastItemHistory;
+  }
+
+  /**
+   * Gets the plugin's past stat history.
+   *
+   * @return plugin's past stat history
+   */
+  public PastStatHistory getPastStatHistory() {
+    return this.pastStatHistory;
+  }
+
+  /**
+   * Gets the plugin's plugin system.
+   *
+   * @return plugin's plugin system
+   */
+  public PluginSystem getPluginSystem() {
+    return this.pluginSystem;
+  }
+
+  /**
+   * Gets the plugin's RPG system.
+   *
+   * @return plugin's RPG system
+   */
+  public RpgSystem getRpgSystem() {
+    return this.rpgSystem;
   }
 }

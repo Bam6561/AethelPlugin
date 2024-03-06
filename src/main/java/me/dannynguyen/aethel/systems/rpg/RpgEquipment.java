@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -25,7 +24,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.5
  * @since 1.13.4
  */
 public class RpgEquipment {
@@ -170,7 +169,7 @@ public class RpgEquipment {
       }
     }
     if (maxHealthUpdate) {
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(uuid).getHealth().updateMaxHealth(), 2);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().updateMaxHealth(), 2);
     }
   }
 
@@ -226,9 +225,9 @@ public class RpgEquipment {
    */
   private void readEnchantmentLevel(Enchantment enchantment, int requirement) {
     if (totalEnchantments.get(enchantment) >= requirement) {
-      PluginData.rpgSystem.getSufficientEnchantments().get(enchantment).add(uuid);
+      Plugin.getData().getRpgSystem().getSufficientEnchantments().get(enchantment).add(uuid);
     } else {
-      PluginData.rpgSystem.getSufficientEnchantments().get(enchantment).remove(uuid);
+      Plugin.getData().getRpgSystem().getSufficientEnchantments().get(enchantment).remove(uuid);
     }
   }
 

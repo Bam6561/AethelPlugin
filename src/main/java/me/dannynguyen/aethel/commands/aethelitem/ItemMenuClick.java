@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
@@ -24,7 +24,7 @@ import java.util.UUID;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.13.1
+ * @version 1.14.5
  * @since 1.4.0
  */
 public class ItemMenuClick {
@@ -128,7 +128,7 @@ public class ItemMenuClick {
    * Views an item category.
    */
   private void viewItemCategory() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -143,7 +143,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void previousPage(ItemMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -157,7 +157,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void toggleAction(ItemMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -175,7 +175,7 @@ public class ItemMenuClick {
    */
   private void returnToMenu() {
     user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMenu());
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }
@@ -186,7 +186,7 @@ public class ItemMenuClick {
    * @param action type of interaction
    */
   private void nextPage(ItemMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -203,7 +203,7 @@ public class ItemMenuClick {
     ItemStack clickedItem = e.getCurrentItem();
     switch (action) {
       case GET -> {
-        ItemStack item = PluginData.itemRegistry.getItemMap().get(ItemReader.readName(clickedItem)).getItem();
+        ItemStack item = Plugin.getData().getItemRegistry().getItemMap().get(ItemReader.readName(clickedItem)).getItem();
         if (user.getInventory().firstEmpty() != -1) {
           user.getInventory().addItem(item);
         } else {
@@ -211,7 +211,7 @@ public class ItemMenuClick {
         }
       }
       case REMOVE -> {
-        PersistentItem aethelItem = PluginData.itemRegistry.getItemMap().get(ItemReader.readName(clickedItem));
+        PersistentItem aethelItem = Plugin.getData().getItemRegistry().getItemMap().get(ItemReader.readName(clickedItem));
         aethelItem.delete();
         user.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + aethelItem.getName());
       }

@@ -42,10 +42,15 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.4
+ * @version 1.14.5
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
+  /**
+   * Plugin data.
+   */
+  private static final PluginData data = new PluginData();
+
   /**
    * On enable:
    * - Loads existing plugin data.
@@ -54,7 +59,7 @@ public class Plugin extends JavaPlugin {
    */
   @Override
   public void onEnable() {
-    PluginData.loadResources();
+    data.loadResources();
     registerEventListeners();
     registerCommands();
     scheduleRepeatingTasks();
@@ -66,7 +71,7 @@ public class Plugin extends JavaPlugin {
    */
   public void onDisable() {
     Bukkit.getScheduler().cancelTasks(this);
-    PluginData.saveResources();
+    data.saveResources();
   }
 
   /**
@@ -112,7 +117,7 @@ public class Plugin extends JavaPlugin {
    * Adds an interval to compare the player's main hand item for updating equipment attributes.
    */
   private void updateMainHandEquipmentAttributes() {
-    RpgSystem rpgSystem = PluginData.rpgSystem;
+    RpgSystem rpgSystem = data.getRpgSystem();
     for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
@@ -130,7 +135,7 @@ public class Plugin extends JavaPlugin {
    * Adds an interval to update players' action bar health display.
    */
   private void updateActionDisplay() {
-    RpgSystem rpgSystem = PluginData.rpgSystem;
+    RpgSystem rpgSystem = data.getRpgSystem();
     for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
       if (Bukkit.getPlayer(uuid) != null) {
         rpgSystem.getRpgPlayers().get(uuid).getHealth().updateActionDisplay();
@@ -146,7 +151,7 @@ public class Plugin extends JavaPlugin {
    * </p>
    */
   private void updateOvershields() {
-    RpgSystem rpgSystem = PluginData.rpgSystem;
+    RpgSystem rpgSystem = data.getRpgSystem();
     for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
       if (Bukkit.getPlayer(uuid) != null) {
         rpgSystem.getRpgPlayers().get(uuid).getHealth().decayOvershield();
@@ -163,7 +168,7 @@ public class Plugin extends JavaPlugin {
    * </p>
    */
   private void updateEnvironmentalProtections() {
-    Map<Enchantment, Set<UUID>> sufficientEnchantments = PluginData.rpgSystem.getSufficientEnchantments();
+    Map<Enchantment, Set<UUID>> sufficientEnchantments = data.getRpgSystem().getSufficientEnchantments();
     for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FALL)) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
@@ -177,6 +182,15 @@ public class Plugin extends JavaPlugin {
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
       }
     }
+  }
+
+  /**
+   * Gets the plugin's data.
+   *
+   * @return plugin data
+   */
+  public static PluginData getData() {
+    return data;
   }
 
   /**

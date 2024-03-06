@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemDurability;
@@ -26,7 +26,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.5
  * @since 1.6.7
  */
 class CosmeticEditorMenu {
@@ -57,7 +57,7 @@ class CosmeticEditorMenu {
    */
   protected CosmeticEditorMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.meta = Objects.requireNonNull(item.getItemMeta(), "Null meta");
     this.menu = createMenu();
   }

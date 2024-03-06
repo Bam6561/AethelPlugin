@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
@@ -18,7 +17,7 @@ import java.util.UUID;
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.5
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -29,7 +28,7 @@ public class RpgEvent implements Listener {
    */
   @EventHandler
   private void onJoin(PlayerJoinEvent e) {
-    RpgSystem rpgSystem = PluginData.rpgSystem;
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
     Player player = e.getPlayer();
     UUID uuid = player.getUniqueId();
 
@@ -54,10 +53,10 @@ public class RpgEvent implements Listener {
       switch (e.getModifiedType().getName()) {
         case "ABSORPTION" -> {
           if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealth().updateOvershield(), 1);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().updateOvershield(), 1);
           }
         }
-        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getHealth().updateMaxHealth(), 1);
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().updateMaxHealth(), 1);
       }
     }
   }
@@ -69,6 +68,6 @@ public class RpgEvent implements Listener {
    */
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
-    PluginData.rpgSystem.getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
+    Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
   }
 }

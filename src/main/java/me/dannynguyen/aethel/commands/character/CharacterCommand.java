@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -21,7 +21,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -68,9 +68,9 @@ public class CharacterCommand implements CommandExecutor {
    * @param user user
    */
   private void openSheetSelf(Player user) {
-    PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.PLAYER, user.getName());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.PLAYER, user.getName());
     user.openInventory(new SheetMenu(user, user).openMenu());
-    PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 
   /**
@@ -82,7 +82,7 @@ public class CharacterCommand implements CommandExecutor {
   private void openSheetOther(Player user, String owner) {
     for (Player player : Bukkit.getOnlinePlayers()) {
       if (player.getName().equals(owner)) {
-        Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+        Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
         playerMeta.put(PlayerMeta.PLAYER, player.getName());
         user.openInventory(new SheetMenu(user, player).openMenu());
         playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());

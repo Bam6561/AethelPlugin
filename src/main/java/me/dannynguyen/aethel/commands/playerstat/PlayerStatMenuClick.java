@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -16,7 +16,7 @@ import java.util.Objects;
  * Inventory click event listener for PlayerStat menus.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.7
  */
 public class PlayerStatMenuClick {
@@ -51,7 +51,7 @@ public class PlayerStatMenuClick {
    */
   public void readMainClick() {
     if (slotClicked > 8) {
-      Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
       String owner = playerMeta.get(PlayerMeta.PLAYER);
       String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
       playerMeta.put(PlayerMeta.CATEGORY, item);
@@ -102,7 +102,7 @@ public class PlayerStatMenuClick {
    * Opens the previous stat category page.
    */
   private void previousPage() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
@@ -115,7 +115,7 @@ public class PlayerStatMenuClick {
    * Opens a PlayerStat menu.
    */
   private void returnToMenu() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
     user.openInventory(new PlayerStatMenu(user, owner).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
@@ -126,7 +126,7 @@ public class PlayerStatMenuClick {
    * Opens the next stat category page.
    */
   private void nextPage() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     String owner = playerMeta.get(PlayerMeta.PLAYER);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));

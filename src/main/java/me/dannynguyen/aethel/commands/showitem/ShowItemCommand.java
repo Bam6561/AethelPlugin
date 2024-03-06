@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.showitem;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -79,7 +79,7 @@ public class ShowItemCommand implements CommandExecutor {
       for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
         onlinePlayer.spigot().sendMessage(message);
       }
-      PluginData.pastItemHistory.addPastItem(user, item);
+      Plugin.getData().getPastItemHistory().addPastItem(user, item);
     } else {
       user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.getMessage());
     }
@@ -94,7 +94,7 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
       user.openInventory(new PastItemMenu(user).openMenu());
-      PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
+      Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
     } else {
       user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
     }

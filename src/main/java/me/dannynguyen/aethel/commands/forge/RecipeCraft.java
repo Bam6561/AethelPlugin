@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -24,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -72,7 +72,7 @@ class RecipeCraft {
   protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.userUUID = user.getUniqueId();
-    PersistentRecipe recipe = PluginData.recipeRegistry.getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
+    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
     this.pInv = user.getInventory();
@@ -106,7 +106,7 @@ class RecipeCraft {
    * Crafts a recipe if the user has enough materials.
    */
   protected void readRecipeMaterials() {
-    if (!PluginData.pluginSystem.getPlayerMetadata().get(userUUID).containsKey(PlayerMeta.DEVELOPER)) {
+    if (!Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).containsKey(PlayerMeta.DEVELOPER)) {
       if (hasEnoughOfAllMaterials()) {
         craftRecipe();
       } else {

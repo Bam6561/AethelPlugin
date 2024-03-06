@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginMessage;
@@ -22,7 +22,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -81,7 +81,7 @@ public class ForgeCommand implements CommandExecutor {
       }
       case "reload", "r" -> {
         if (user.hasPermission("aethel.forge.editor")) {
-          PluginData.recipeRegistry.loadData();
+          Plugin.getData().getRecipeRegistry().loadData();
           user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
         } else {
           user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
@@ -97,7 +97,7 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openCraftingMenu(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.FUTURE, "craft");
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMenu());
@@ -111,7 +111,7 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openEditorMenu(Player user) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(user.getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.FUTURE, "edit");
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMenu());

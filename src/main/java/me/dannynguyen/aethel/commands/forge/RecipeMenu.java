@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.0.6
  */
 class RecipeMenu {
@@ -65,7 +65,7 @@ class RecipeMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -97,10 +97,10 @@ class RecipeMenu {
    */
   @NotNull
   protected Inventory openCategoryPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = PluginData.recipeRegistry.getCategoryMap().get(requestedCategory);
+    List<Inventory> category = Plugin.getData().getRecipeRegistry().getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    PluginData.pluginSystem.getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();
@@ -156,7 +156,7 @@ class RecipeMenu {
    * Adds recipe categories.
    */
   private void addCategories() {
-    Set<String> categories = PluginData.recipeRegistry.getCategoryMap().keySet();
+    Set<String> categories = Plugin.getData().getRecipeRegistry().getCategoryMap().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {

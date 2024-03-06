@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.plugin;
 
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +16,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.1
+ * @version 1.14.5
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -27,7 +27,7 @@ public class MessageSent implements Listener {
    */
   @EventHandler
   private void onPlayerChat(AsyncPlayerChatEvent e) {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(e.getPlayer().getUniqueId());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(e.getPlayer().getUniqueId());
     if (playerMeta.containsKey(PlayerMeta.MESSAGE)) {
       e.setCancelled(true);
       String[] msgType = playerMeta.get(PlayerMeta.MESSAGE).split("\\.");

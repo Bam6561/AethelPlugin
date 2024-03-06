@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
@@ -33,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.5
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -72,7 +71,7 @@ public class ItemEditorMessageSent {
     this.e = Objects.requireNonNull(e, "Null message sent event");
     this.user = e.getPlayer();
     this.userUUID = user.getUniqueId();
-    this.item = PluginData.editedItemCache.getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.meta = item.getItemMeta();
   }
 
@@ -234,9 +233,9 @@ public class ItemEditorMessageSent {
    */
   public void setMinecraftAttribute() {
     try {
-      String type = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+      String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
       Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
-      String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+      String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
       EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
       if (!e.getMessage().equals("-")) {
         AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
@@ -258,8 +257,8 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's Aethel attribute modifier.
    */
   public void setAethelAttribute() {
-    String type = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
-    String attribute = type + "." + PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+    String attribute = type + "." + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
     try {
       if (!e.getMessage().equals("-")) {
@@ -282,7 +281,7 @@ public class ItemEditorMessageSent {
       try {
         int level = Integer.parseInt(e.getMessage());
         if (level > 0 && level < 32768) {
-          NamespacedKey enchant = NamespacedKey.minecraft(PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
+          NamespacedKey enchant = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
           item.addUnsafeEnchantment(Enchantment.getByKey(enchant), level);
           user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
         } else {
@@ -292,7 +291,7 @@ public class ItemEditorMessageSent {
         user.sendMessage(ChatColor.RED + "Invalid value.");
       }
     } else {
-      NamespacedKey enchantment = NamespacedKey.minecraft(PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
+      NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
       item.removeEnchantment(Enchantment.getByKey(enchantment));
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
@@ -304,7 +303,7 @@ public class ItemEditorMessageSent {
    */
   public void setPotionEffect() {
     PotionMeta potion = (PotionMeta) meta;
-    NamespacedKey potionEffectKey = NamespacedKey.minecraft(PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
+    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
     PotionEffectType potionEffectType = PotionEffectType.getByKey(potionEffectKey);
     if (!e.getMessage().equals("-")) {
       String[] input = e.getMessage().split(" ", 3);
@@ -339,7 +338,7 @@ public class ItemEditorMessageSent {
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String tagType = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+    String tagType = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tagType);
 
     if (!e.getMessage().equals("-")) {
@@ -364,7 +363,7 @@ public class ItemEditorMessageSent {
   private void setAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey, String attributeValue) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
-    String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -393,7 +392,7 @@ public class ItemEditorMessageSent {
   private void removeAethelAttributeModifier(String type, String attribute, NamespacedKey attributeKey) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
-    String slot = PluginData.pluginSystem.getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> itemAttributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -435,7 +434,7 @@ public class ItemEditorMessageSent {
    * Returns to the CosmeticEditor menu.
    */
   private void returnToCosmeticEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticEditorMenu(user).openMenu());
@@ -447,7 +446,7 @@ public class ItemEditorMessageSent {
    * Returns to the AttributeEditor.
    */
   private void returnToAttributeEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AttributeEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
@@ -459,7 +458,7 @@ public class ItemEditorMessageSent {
    * Returns to the AethelAttributeEditor.
    */
   private void returnToAethelAttributeEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AethelAttributeEditorMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
@@ -471,7 +470,7 @@ public class ItemEditorMessageSent {
    * Returns to the EnchantmentEditor.
    */
   private void returnToEnchantmentEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentEditorMenu(user).openMenu());
@@ -483,7 +482,7 @@ public class ItemEditorMessageSent {
    * Returns to the PotionEditor.
    */
   private void returnToPotionEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionEditorMenu(user).openMenu());
@@ -495,7 +494,7 @@ public class ItemEditorMessageSent {
    * Returns to the TagEditor.
    */
   private void returnToTagEditor() {
-    Map<PlayerMeta, String> playerMeta = PluginData.pluginSystem.getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new TagEditorMenu(user).openMenu());

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.utility;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,7 +19,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.5
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -104,7 +104,7 @@ public class ItemDurability {
         if (durability.getDamage() > item.getType().getMaxDurability()) {
           pInv.setItem(slot, new ItemStack(Material.AIR));
           player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-          PluginData.rpgSystem.getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(slot.name().toUpperCase()), true);
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(slot.name().toUpperCase()), true);
         } else {
           item.setItemMeta(durability);
         }

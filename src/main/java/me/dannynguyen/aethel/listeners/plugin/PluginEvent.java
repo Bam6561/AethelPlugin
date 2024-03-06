@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.listeners.plugin;
 
-import me.dannynguyen.aethel.systems.plugin.PluginData;
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +14,7 @@ import java.util.UUID;
  * Collection of listeners for plugin system functionality.
  *
  * @author Danny Nguyen
- * @version 1.12.0
+ * @version 1.14.5
  * @since 1.10.1
  */
 public class PluginEvent implements Listener {
@@ -26,7 +26,7 @@ public class PluginEvent implements Listener {
   @EventHandler
   private void onJoin(PlayerJoinEvent e) {
     UUID playerUUID = e.getPlayer().getUniqueId();
-    Map<UUID, Map<PlayerMeta, String>> playerMetadata = PluginData.pluginSystem.getPlayerMetadata();
+    Map<UUID, Map<PlayerMeta, String>> playerMetadata = Plugin.getData().getPluginSystem().getPlayerMetadata();
     if (!playerMetadata.containsKey(playerUUID)) {
       playerMetadata.put(playerUUID, new HashMap<>());
     }
