@@ -42,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.4
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -114,11 +114,14 @@ public class Plugin extends JavaPlugin {
   private void updateMainHandEquipmentAttributes() {
     RpgSystem rpgSystem = PluginData.rpgSystem;
     for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
-      RpgEquipment equipment = rpgSystem.getRpgPlayers().get(uuid).getEquipment();
-      ItemStack heldItem = Bukkit.getPlayer(uuid).getInventory().getItemInMainHand();
-      if (!heldItem.equals(equipment.getHeldItem())) {
-        equipment.setHeldItem(heldItem);
-        equipment.readSlot(heldItem, RpgEquipmentSlot.HAND, true);
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        RpgEquipment equipment = rpgSystem.getRpgPlayers().get(uuid).getEquipment();
+        ItemStack heldItem = player.getInventory().getItemInMainHand();
+        if (!heldItem.equals(equipment.getHeldItem())) {
+          equipment.setHeldItem(heldItem);
+          equipment.readSlot(heldItem, RpgEquipmentSlot.HAND, true);
+        }
       }
     }
   }
@@ -129,7 +132,9 @@ public class Plugin extends JavaPlugin {
   private void updateActionDisplay() {
     RpgSystem rpgSystem = PluginData.rpgSystem;
     for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
-      rpgSystem.getRpgPlayers().get(uuid).getHealth().updateActionDisplay();
+      if (Bukkit.getPlayer(uuid) != null) {
+        rpgSystem.getRpgPlayers().get(uuid).getHealth().updateActionDisplay();
+      }
     }
   }
 
@@ -143,7 +148,9 @@ public class Plugin extends JavaPlugin {
   private void updateOvershields() {
     RpgSystem rpgSystem = PluginData.rpgSystem;
     for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
-      rpgSystem.getRpgPlayers().get(uuid).getHealth().decayOvershield();
+      if (Bukkit.getPlayer(uuid) != null) {
+        rpgSystem.getRpgPlayers().get(uuid).getHealth().decayOvershield();
+      }
     }
   }
 
@@ -157,17 +164,17 @@ public class Plugin extends JavaPlugin {
    */
   private void updateEnvironmentalProtections() {
     Map<Enchantment, Set<UUID>> sufficientEnchantments = PluginData.rpgSystem.getSufficientEnchantments();
-    for (Enchantment enchantment : sufficientEnchantments.keySet()) {
-      if (enchantment == Enchantment.PROTECTION_FALL) {
-        for (UUID uuid : sufficientEnchantments.get(enchantment)) {
-          Bukkit.getPlayer(uuid).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
-        }
-      } else if (enchantment == Enchantment.PROTECTION_FIRE) {
-        for (UUID uuid : sufficientEnchantments.get(enchantment)) {
-          Player player = Bukkit.getPlayer(uuid);
-          player.setFireTicks(-20);
-          player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
-        }
+    for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FALL)) {
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
+      }
+    }
+    for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FIRE)) {
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        player.setFireTicks(-20);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
       }
     }
   }
