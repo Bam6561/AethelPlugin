@@ -204,6 +204,8 @@ public class RpgHealth {
 
   /**
    * Updates the action bar display.
+   *
+   * @param condition health condition
    */
   public void updateActionDisplay(@NotNull RpgHealthCondition condition) {
     if (healthActionVisible) {

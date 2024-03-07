@@ -10,7 +10,7 @@ import java.util.*;
  * Represents RPG players in memory.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.14.7
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -25,6 +25,11 @@ public class RpgSystem {
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
       Enchantment.PROTECTION_FALL, new HashSet<>(),
       Enchantment.PROTECTION_FIRE, new HashSet<>()));
+
+  /**
+   * Living entities affected by statuses.
+   */
+  private final Map<UUID, Map<RpgStatusType, RpgStatus>> statuses = new HashMap<>();
 
   /**
    * Loads an RPG player into memory.
@@ -53,5 +58,15 @@ public class RpgSystem {
   @NotNull
   public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
     return this.sufficientEnchantments;
+  }
+
+  /**
+   * Gets entities affected by statuses.
+   *
+   * @return entities with statuses
+   */
+  @NotNull
+  public Map<UUID, Map<RpgStatusType, RpgStatus>> getStatuses() {
+    return this.statuses;
   }
 }

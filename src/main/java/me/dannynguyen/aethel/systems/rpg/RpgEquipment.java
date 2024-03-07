@@ -138,8 +138,9 @@ public class RpgEquipment {
    * Minecraft's Generic Health attribute requiring 1 tick to update.
    * </p>
    *
-   * @param item interacting item
-   * @param slot slot type
+   * @param item            interacting item
+   * @param slot            slot type
+   * @param maxHealthUpdate whether to update the player's max health
    */
   public void readSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot slot, boolean maxHealthUpdate) {
     Objects.requireNonNull(slot, "Null RPG equipment slot");
