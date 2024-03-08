@@ -2,6 +2,7 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.DeveloperModeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
+import me.dannynguyen.aethel.commands.status.StatusCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
@@ -42,7 +43,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.14.8
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -100,6 +101,7 @@ public class Plugin extends JavaPlugin {
     this.getCommand("itemeditor").setExecutor(new ItemEditorCommand());
     this.getCommand("ping").setExecutor(new PingCommand());
     this.getCommand("showitem").setExecutor(new ShowItemCommand());
+    this.getCommand("status").setExecutor(new StatusCommand());
     this.getCommand("playerstat").setExecutor(new PlayerStatCommand());
   }
 

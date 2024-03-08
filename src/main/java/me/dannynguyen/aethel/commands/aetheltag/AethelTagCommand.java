@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.13.9
+ * @version 1.14.8
  * @since 1.2.6
  */
 public class AethelTagCommand implements CommandExecutor {
@@ -69,24 +69,21 @@ public class AethelTagCommand implements CommandExecutor {
     switch (numberOfParameters) {
       case 0 -> user.sendMessage(PluginMessage.NO_PARAMETERS.getMessage());
       case 1 -> {
-        if (action.equals("g") || action.equals("get")) {
-          getAethelTags(user, item);
-        } else {
-          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
+        switch (action) {
+          case "g", "get" -> getAethelTags(user, item);
+          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
         }
       }
       case 2 -> {
-        if (action.equals("r") || action.equals("remove")) {
-          removeAethelTag(user, args[1], item);
-        } else {
-          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+        switch (action) {
+          case "r", "remove" -> removeAethelTag(user, args[1], item);
+          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 3 -> {
-        if (action.equals("set") || action.equals("s")) {
-          setAethelTag(user, args, item);
-        } else {
-          user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+        switch (action) {
+          case "s", "set" -> setAethelTag(user, args, item);
+          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
