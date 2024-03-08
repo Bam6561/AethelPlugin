@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.14.8
+version: 1.14.9
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -42,7 +42,7 @@ commands:
   status:
     description: Edits an entity's statuses.
     usage: /status [get <playerName|UUID>|remove <playerName|UUID>|remove <playerName|UUID> <status>|set <playerName|UUID> <status> <stacks> <ticks>]
-    aliases: /s
+    aliases: [ s ]
   playerstat:
     description: Gets a player's statistics.
     usage: /stats [<playerName>]

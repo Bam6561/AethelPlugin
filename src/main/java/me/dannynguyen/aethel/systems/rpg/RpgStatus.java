@@ -1,20 +1,31 @@
 package me.dannynguyen.aethel.systems.rpg;
 
+import me.dannynguyen.aethel.Plugin;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents statuses that affect Living Entities.
  *
  * @author Danny Nguyen
- * @version 1.14.8
+ * @version 1.14.9
  * @since 1.14.7
  */
 public class RpgStatus {
   /**
-   * Number of status stacks.
+   * Entity UUID.
    */
-  private int stackAmount;
+  private final UUID uuid;
+
+  /**
+   * Status type.
+   */
+  private final RpgStatusType statusType;
 
   /**
    * Status's individual stack applications.
@@ -25,23 +36,42 @@ public class RpgStatus {
   private final Map<Integer, Integer> stackApplications = new HashMap<>();
 
   /**
+   * Number of status stacks.
+   */
+  private int stackAmount;
+
+  /**
    * Associates a new status with its initial stacks and application.
    *
-   * @param stackAmount initial amount of stacks
-   * @param taskId      initial stack task ID
+   * @param uuid   entity uuid
+   * @param stacks initial amount of stacks
+   * @param ticks  initial stack application duration
    */
-  public RpgStatus(int stackAmount, int taskId) {
-    this.stackAmount = stackAmount;
-    this.stackApplications.put(taskId, stackAmount);
+  public RpgStatus(@NotNull UUID uuid, @NotNull RpgStatusType statusType, int stacks, int ticks) {
+    this.uuid = Objects.requireNonNull(uuid, "Null uuid");
+    this.statusType = Objects.requireNonNull(statusType, "Null status type");
+    int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      removeStacks(stacks);
+    }, ticks).getTaskId();
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      stackApplications.remove(taskId);
+    }, ticks);
+    this.stackAmount = stacks;
+    this.stackApplications.put(taskId, stacks);
   }
 
   /**
    * Adds a number of stacks to the status.
    *
    * @param stacks number of stacks to add
-   * @param taskId stack task ID
    */
-  public void addStacks(int stacks, int taskId) {
+  public void addStacks(int stacks, int ticks) {
+    int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      removeStacks(stacks);
+    }, ticks).getTaskId();
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      stackApplications.remove(taskId);
+    }, ticks);
     setStackAmount(stackAmount + stacks);
     stackApplications.put(taskId, stacks);
   }
@@ -53,15 +83,14 @@ public class RpgStatus {
    */
   public void removeStacks(int stacks) {
     setStackAmount(stackAmount - stacks);
-  }
-
-  /**
-   * Gets the status's number of stacks.
-   *
-   * @return number of status stacks
-   */
-  public int getStackAmount() {
-    return this.stackAmount;
+    if (stackAmount == 0) {
+      Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+      statuses.remove(statusType);
+      if (statuses.isEmpty()) {
+        entityStatuses.remove(uuid);
+      }
+    }
   }
 
   /**
@@ -71,6 +100,15 @@ public class RpgStatus {
    */
   public Map<Integer, Integer> getStackApplications() {
     return this.stackApplications;
+  }
+
+  /**
+   * Gets the status's number of stacks.
+   *
+   * @return number of status stacks
+   */
+  public int getStackAmount() {
+    return this.stackAmount;
   }
 
   /**

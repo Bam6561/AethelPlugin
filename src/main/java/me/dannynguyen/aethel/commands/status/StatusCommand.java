@@ -30,7 +30,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.8
+ * @version 1.14.9
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -136,7 +136,7 @@ public class StatusCommand implements CommandExecutor {
     if (entityStatuses.get(uuid) != null) {
       Map<RpgStatusType, RpgStatus> statusTypes = entityStatuses.get(uuid);
       StringBuilder statusesBuilder = new StringBuilder();
-      statusesBuilder.append(ChatColor.GREEN + "[Get Statuses] " + ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
+      statusesBuilder.append(ChatColor.GREEN).append("[Get Statuses] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
       for (RpgStatusType statusType : statusTypes.keySet()) {
         RpgStatus status = statusTypes.get(statusType);
         statusesBuilder.append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(statusType.name())).append(" ");
@@ -234,31 +234,9 @@ public class StatusCommand implements CommandExecutor {
     }
     Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
     if (statuses.containsKey(statusType)) {
-      RpgStatus status = statuses.get(statusType);
-      Map<Integer, Integer> stackApplications = status.getStackApplications();
-      int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        if (entityStatuses.containsKey(uuid) && statuses.containsKey(statusType)) {
-          status.removeStacks(stacks);
-        }
-      }, ticks).getTaskId();
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        if (entityStatuses.containsKey(uuid) && statuses.containsKey(statusType)) {
-          stackApplications.remove(taskId);
-        }
-      }, ticks);
-      status.addStacks(stacks, taskId);
+      statuses.get(statusType).addStacks(stacks, ticks);
     } else {
-      int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        if (entityStatuses.containsKey(uuid) && statuses.containsKey(statusType)) {
-          statuses.get(statusType).removeStacks(stacks);
-        }
-      }, ticks).getTaskId();
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        if (entityStatuses.containsKey(uuid) && statuses.containsKey(statusType)) {
-          statuses.get(statusType).getStackApplications().remove(taskId);
-        }
-      }, ticks);
-      statuses.put(statusType, new RpgStatus(stacks, taskId));
+      statuses.put(statusType, new RpgStatus(uuid, statusType, stacks, ticks));
     }
     user.sendMessage(ChatColor.GREEN + "[Status Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + TextFormatter.capitalizePhrase(statusType.name()) + " " + ChatColor.WHITE + stacks + " " + ticks);
   }
