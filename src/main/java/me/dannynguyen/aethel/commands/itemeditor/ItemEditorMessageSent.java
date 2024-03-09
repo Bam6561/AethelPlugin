@@ -82,7 +82,7 @@ public class ItemEditorMessageSent {
     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Named Item] " + ChatColor.WHITE + e.getMessage());
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -96,7 +96,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid custom model data.");
     }
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -115,7 +115,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
     }
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -128,7 +128,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
     }
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -138,7 +138,7 @@ public class ItemEditorMessageSent {
     meta.setLore(List.of(ChatColor.translateAlternateColorCodes('&', e.getMessage()).split(",, ")));
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Lore]");
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -154,7 +154,7 @@ public class ItemEditorMessageSent {
     }
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Added Lore]");
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -177,7 +177,7 @@ public class ItemEditorMessageSent {
     } else {
       user.sendMessage(ChatColor.RED + "Invalid input.");
     }
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -195,7 +195,7 @@ public class ItemEditorMessageSent {
     } catch (IndexOutOfBoundsException ex) {
       user.sendMessage(ChatColor.RED + "Line does not exist.");
     }
-    returnToCosmeticEditor();
+    returnToCosmetic();
   }
 
   /**
@@ -250,7 +250,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
     }
-    returnToAttributeEditor();
+    returnToAttribute();
   }
 
   /**
@@ -270,7 +270,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
     }
-    returnToAethelAttributeEditor();
+    returnToAethelAttribute();
   }
 
   /**
@@ -295,7 +295,7 @@ public class ItemEditorMessageSent {
       item.removeEnchantment(Enchantment.getByKey(enchantment));
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToEnchantmentEditor);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToEnchantment);
   }
 
   /**
@@ -330,21 +330,21 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
     }
     item.setItemMeta(potion);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPotionEditor);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPotion);
   }
 
   /**
    * Sets or removes an item's passive ability.
    */
   public void setPassive() {
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassiveEditor);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassive);
   }
 
   /**
    * Sets or removes an item's active ability.
    */
   public void setActive() {
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActiveEditor);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActive);
   }
 
   /**
@@ -363,7 +363,7 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToTagEditor);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToTag);
   }
 
   /**
@@ -444,97 +444,97 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the CosmeticEditor menu.
+   * Returns to the Cosmetic menu.
    */
-  private void returnToCosmeticEditor() {
+  private void returnToCosmetic() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new CosmeticEditorMenu(user).openMenu());
+      user.openInventory(new CosmeticMenu(user).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
     });
   }
 
   /**
-   * Returns to the AttributeEditor.
+   * Returns to the Attribute menu.
    */
-  private void returnToAttributeEditor() {
+  private void returnToAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
     });
   }
 
   /**
-   * Returns to the AethelAttributeEditor.
+   * Returns to the AethelAttribute menu.
    */
-  private void returnToAethelAttributeEditor() {
+  private void returnToAethelAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AethelAttributeEditorMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
     });
   }
 
   /**
-   * Returns to the EnchantmentEditor.
+   * Returns to the Enchantment menu.
    */
-  private void returnToEnchantmentEditor() {
+  private void returnToEnchantment() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new EnchantmentEditorMenu(user).openMenu());
+      user.openInventory(new EnchantmentMenu(user).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
     });
   }
 
   /**
-   * Returns to the PotionEditor.
+   * Returns to the Potion menu.
    */
-  private void returnToPotionEditor() {
+  private void returnToPotion() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PotionEditorMenu(user).openMenu());
+      user.openInventory(new PotionMenu(user).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
     });
   }
 
   /**
-   * Returns to the PassiveEditor.
+   * Returns to the Passive menu.
    */
-  private void returnToPassiveEditor() {
+  private void returnToPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new PassiveMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
     });
   }
 
   /**
-   * Returns to the ActiveEditor.
+   * Returns to the Active menu.
    */
-  private void returnToActiveEditor() {
+  private void returnToActive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new ActiveMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
     });
   }
 
   /**
-   * Returns to the TagEditor.
+   * Returns to the Tag menu.
    */
-  private void returnToTagEditor() {
+  private void returnToTag() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new TagEditorMenu(user).openMenu());
+      user.openInventory(new TagMenu(user).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
     });
   }

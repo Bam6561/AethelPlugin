@@ -7,7 +7,7 @@ package me.dannynguyen.aethel.systems.rpg;
  * @version 1.14.2
  * @since 1.13.10
  */
-public enum RpgHealthCondition {
+public enum HealthCondition {
   /**
    * Below max health.
    */

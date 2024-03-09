@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
+import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -110,7 +110,7 @@ public class ItemMenuClick {
       String encodedItem = ItemCreator.encodeItem(item);
       if (encodedItem != null) {
         try {
-          FileWriter fw = new FileWriter(PluginDirectory.AETHELITEM.getFile().getPath() + "/" + nameItemFile(item) + "_itm.txt");
+          FileWriter fw = new FileWriter(Directory.AETHELITEM.getFile().getPath() + "/" + nameItemFile(item) + "_itm.txt");
           fw.write(encodedItem);
           fw.close();
           user.sendMessage(ChatColor.GREEN + "[Saved Aethel Item] " + ChatColor.WHITE + ItemReader.readName(item));

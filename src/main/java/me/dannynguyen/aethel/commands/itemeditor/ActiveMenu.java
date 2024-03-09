@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -19,15 +19,15 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a menu that allows the user to edit an item's passive abilities.
+ * Represents a menu that allows the user to edit an item's active abilities.
  *
  * @author Danny Nguyen
  * @version 1.15.1
  * @since 1.15.1
  */
-class PassiveEditorMenu {
+class ActiveMenu {
   /**
-   * PassiveEditor GUI.
+   * Active GUI.
    */
   private final Inventory menu;
 
@@ -47,12 +47,12 @@ class PassiveEditorMenu {
   private final EquipmentSlot slot;
 
   /**
-   * Associates a new PassiveEditor menu with its user and item.
+   * Associates a new Active menu with its user and item.
    *
    * @param user user
    * @param slot equipment slot
    */
-  protected PassiveEditorMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
+  protected ActiveMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.slot = Objects.requireNonNull(slot, "Null slot");
@@ -60,9 +60,9 @@ class PassiveEditorMenu {
   }
 
   /**
-   * Creates and names a new PassiveEditor menu with its action.
+   * Creates and names a new Active menu with its action.
    *
-   * @return PassiveEditor menu
+   * @return Active menu
    */
   private Inventory createMenu() {
     String actionString = "";
@@ -70,7 +70,7 @@ class PassiveEditorMenu {
       case HEAD, CHEST, LEGS, FEET, HAND -> actionString = TextFormatter.capitalizeWord(slot.name());
       case OFF_HAND -> actionString = "Off Hand";
     }
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Passive " + ChatColor.YELLOW + actionString);
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Active " + ChatColor.YELLOW + actionString);
     inv.setItem(1, item);
     return inv;
   }
@@ -78,10 +78,10 @@ class PassiveEditorMenu {
   /**
    * Sets the menu to display interactions with passive abilities.
    *
-   * @return PassiveEditor menu
+   * @return Active menu
    */
   protected Inventory openMenu() {
-    addPassives();
+    addActives();
     addContext();
     addActions();
     InventoryPages.addBackButton(menu, 2);
@@ -89,12 +89,12 @@ class PassiveEditorMenu {
   }
 
   /**
-   * Adds passive abilities.
+   * Adds active abilities.
    */
-  private void addPassives() {
+  private void addActives() {
     int invSlot = 18;
-    for (PassiveAbility ability : PassiveAbility.values()) {
-      menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + TextFormatter.capitalizePhrase(ability.name())));
+    for (ActiveAbility ability : ActiveAbility.values()) {
+      menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + TextFormatter.capitalizePhrase(ability.name())));
       invSlot++;
     }
   }
@@ -103,7 +103,7 @@ class PassiveEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a passive ability, input \"-\".")));
+    menu.setItem(0, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove an active ability, input \"-\".")));
   }
 
   /**

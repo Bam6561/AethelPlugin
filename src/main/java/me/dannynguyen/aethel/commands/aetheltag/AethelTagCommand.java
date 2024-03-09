@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -42,13 +42,13 @@ public class AethelTagCommand implements CommandExecutor {
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
         } else {
-          user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.getMessage());
+          user.sendMessage(Message.NO_MAIN_HAND_ITEM.getMessage());
         }
       } else {
-        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -67,26 +67,26 @@ public class AethelTagCommand implements CommandExecutor {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(PluginMessage.NO_PARAMETERS.getMessage());
+      case 0 -> user.sendMessage(Message.NO_PARAMETERS.getMessage());
       case 1 -> {
         switch (action) {
           case "g", "get" -> getAethelTags(user, item);
-          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
+          default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
         }
       }
       case 2 -> {
         switch (action) {
           case "r", "remove" -> removeAethelTag(user, args[1], item);
-          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+          default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 3 -> {
         switch (action) {
           case "s", "set" -> setAethelTag(user, args, item);
-          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+          default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

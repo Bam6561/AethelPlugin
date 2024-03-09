@@ -162,14 +162,14 @@ public class MenuClick implements Listener {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ItemEditorMenuClick click = new ItemEditorMenuClick(e);
         switch (invType[1]) {
-          case "cosmetic" -> click.interpretCosmeticEditorClick();
-          case "minecraft_attribute" -> click.interpretAttributeEditorClick();
-          case "aethel_attribute" -> click.interpretAethelAttributeEditorClick();
-          case "enchantment" -> click.interpretEnchantmentEditorClick();
-          case "potion" -> click.interpretPotionEditorClick();
-          case "passive" -> click.interpretPassiveEditorClick();
-          case "active" -> click.interpretActiveEditorClick();
-          case "tag" -> click.interpretTagEditorClick();
+          case "cosmetic" -> click.interpretCosmeticClick();
+          case "minecraft_attribute" -> click.interpretAttributeClick();
+          case "aethel_attribute" -> click.interpretAethelAttributeClick();
+          case "enchantment" -> click.interpretEnchantmentClick();
+          case "potion" -> click.interpretPotionClick();
+          case "passive" -> click.interpretPassiveClick();
+          case "active" -> click.interpretActiveClick();
+          case "tag" -> click.interpretTagClick();
         }
       }
     } else {

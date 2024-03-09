@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.status;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.rpg.RpgStatus;
 import me.dannynguyen.aethel.systems.rpg.RpgStatusType;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -49,10 +49,10 @@ public class StatusCommand implements CommandExecutor {
       if (user.hasPermission("aethel.status")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -70,27 +70,27 @@ public class StatusCommand implements CommandExecutor {
       action = args[0].toLowerCase();
     }
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(PluginMessage.NO_PARAMETERS.getMessage());
+      case 0 -> user.sendMessage(Message.NO_PARAMETERS.getMessage());
       case 2 -> {
         switch (action) {
           case "g", "get" -> readEntityTarget(user, StatusCommandAction.GET, args);
           case "r", "remove" -> readEntityTarget(user, StatusCommandAction.REMOVE_ALL, args);
-          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+          default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 3 -> {
         switch (action) {
           case "r", "remove" -> readEntityTarget(user, StatusCommandAction.REMOVE, args);
-          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+          default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 5 -> {
         switch (action) {
           case "s", "set" -> readEntityTarget(user, StatusCommandAction.SET, args);
-          default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+          default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 

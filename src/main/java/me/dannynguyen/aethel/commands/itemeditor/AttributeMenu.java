@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -30,7 +30,7 @@ import java.util.Objects;
  * @version 1.15.0
  * @since 1.7.0
  */
-class AttributeEditorMenu {
+class AttributeMenu {
   /**
    * Categorized Minecraft attributes.
    */
@@ -40,7 +40,7 @@ class AttributeEditorMenu {
       "other", new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK});
 
   /**
-   * AttributeEditor GUI.
+   * Attribute GUI.
    */
   private final Inventory menu;
 
@@ -65,12 +65,12 @@ class AttributeEditorMenu {
   private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
   /**
-   * Associates a new AttributeEditor menu with its user and editing item.
+   * Associates a new Attribute menu with its user and editing item.
    *
    * @param user user
    * @param slot type of interaction
    */
-  protected AttributeEditorMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
+  protected AttributeMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.slot = Objects.requireNonNull(slot, "Null slot");
@@ -79,9 +79,9 @@ class AttributeEditorMenu {
   }
 
   /**
-   * Creates and names a new AttributeEditor menu with its action.
+   * Creates and names a new Attribute menu with its action.
    *
-   * @return AttributeEditor menu
+   * @return Attribute menu
    */
   private Inventory createMenu() {
     String actionString = "";
@@ -97,7 +97,7 @@ class AttributeEditorMenu {
   /**
    * Sets the menu to display interactions with attributes.
    *
-   * @return AttributeEditor menu
+   * @return Attribute menu
    */
   @NotNull
   protected Inventory openMenu() {
@@ -121,7 +121,7 @@ class AttributeEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
+    menu.setItem(0, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(36, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));

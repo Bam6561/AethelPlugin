@@ -23,7 +23,7 @@ import java.util.UUID;
  * @version 1.11.9
  * @since 1.11.9
  **/
-public enum PluginPlayerHead {
+public enum PlayerHead {
   /**
    * Brown backpack.
    */
@@ -84,7 +84,7 @@ public enum PluginPlayerHead {
    *
    * @param head player head
    */
-  PluginPlayerHead(@NotNull ItemStack head) {
+  PlayerHead(@NotNull ItemStack head) {
     this.head = Objects.requireNonNull(head, "Null item");
   }
 

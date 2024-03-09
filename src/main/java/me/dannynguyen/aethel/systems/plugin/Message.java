@@ -12,7 +12,7 @@ import java.util.Objects;
  * @version 1.11.9
  * @since 1.11.9
  **/
-public enum PluginMessage {
+public enum Message {
   /**
    * Globally sent.
    */
@@ -63,7 +63,7 @@ public enum PluginMessage {
    *
    * @param message message content
    */
-  PluginMessage(@NotNull String message) {
+  Message(@NotNull String message) {
     this.message = Objects.requireNonNull(message, "Null message");
   }
 

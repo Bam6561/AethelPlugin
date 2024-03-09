@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,10 +41,10 @@ public class ForgeCommand implements CommandExecutor {
       if (user.hasPermission("aethel.forge")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -60,7 +60,7 @@ public class ForgeCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> openCraftingMenu(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -76,7 +76,7 @@ public class ForgeCommand implements CommandExecutor {
         if (user.hasPermission("aethel.forge.editor")) {
           openEditorMenu(user);
         } else {
-          user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+          user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
         }
       }
       case "reload", "r" -> {
@@ -84,10 +84,10 @@ public class ForgeCommand implements CommandExecutor {
           Plugin.getData().getRecipeRegistry().loadData();
           user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
         } else {
-          user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+          user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
         }
       }
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
+      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
     }
   }
 

@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
@@ -26,7 +26,7 @@ import java.util.Objects;
  * @version 1.14.5
  * @since 1.6.15
  */
-class TagEditorMenu {
+class TagMenu {
   /**
    * Aethel tags managed by the GUI.
    */
@@ -36,7 +36,7 @@ class TagEditorMenu {
       PluginNamespacedKey.RECIPE_ID.getNamespacedKey()};
 
   /**
-   * TagEditor GUI.
+   * Tag GUI.
    */
   private final Inventory menu;
 
@@ -51,20 +51,20 @@ class TagEditorMenu {
   private final ItemStack item;
 
   /**
-   * Associates a new TagEditor menu with its user and editing item.
+   * Associates a new Tag menu with its user and editing item.
    *
    * @param user user
    */
-  protected TagEditorMenu(@NotNull Player user) {
+  protected TagMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.menu = createMenu();
   }
 
   /**
-   * Creates and names a TagEditor menu.
+   * Creates and names a Tag menu.
    *
-   * @return TagEditor menu
+   * @return Tag menu
    */
   private Inventory createMenu() {
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Aethel Tags");
@@ -75,7 +75,7 @@ class TagEditorMenu {
   /**
    * Sets the menu to display interactions with Aethel tags.
    *
-   * @return TagEditor menu
+   * @return Tag menu
    */
   @NotNull
   protected Inventory openMenu() {
@@ -104,6 +104,6 @@ class TagEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a tag, input \"-\".")));
   }
 }

@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -86,7 +86,7 @@ public class ItemEditorMenuClick {
   /**
    * Sets an item's cosmetic metadata or opens a gameplay metadata editor menu.
    */
-  public void interpretCosmeticEditorClick() {
+  public void interpretCosmeticClick() {
     switch (slotClicked) {
       case 0, 1 -> { // Color Code Context
       }
@@ -94,14 +94,14 @@ public class ItemEditorMenuClick {
       case 10 -> setCustomModelData();
       case 11 -> setDurability();
       case 12 -> setRepairCost();
-      case 14 -> openAttributeEditor();
-      case 15 -> openAethelAttributeEditor();
-      case 16 -> openEnchantmentEditor();
-      case 17 -> openPotionEditor();
+      case 14 -> openAttribute();
+      case 15 -> openAethelAttribute();
+      case 16 -> openEnchantment();
+      case 17 -> openPotion();
       case 20 -> toggleUnbreakable();
-      case 23 -> openPassiveEditor();
-      case 24 -> openActiveEditor();
-      case 25 -> openTagEditor();
+      case 23 -> openPassive();
+      case 24 -> openActive();
+      case 25 -> openTag();
       case 36 -> { // Lore Context
       }
       case 37 -> setLore();
@@ -117,11 +117,11 @@ public class ItemEditorMenuClick {
   /**
    * Either changes the equipment slot mode or sets an item's Minecraft attribute.
    */
-  public void interpretAttributeEditorClick() {
+  public void interpretAttributeClick() {
     switch (e.getSlot()) {
       case 0, 1 -> { // Context, Item
       }
-      case 2 -> returnToCosmeticEditor();
+      case 2 -> returnToCosmetic();
       case 5 -> setAttributeMode(EquipmentSlot.HEAD);
       case 6 -> setAttributeMode(EquipmentSlot.CHEST);
       case 7 -> setAttributeMode(EquipmentSlot.LEGS);
@@ -137,11 +137,11 @@ public class ItemEditorMenuClick {
   /**
    * Either changes the RPG equipment slot mode or sets an item's Aethel attribute.
    */
-  public void interpretAethelAttributeEditorClick() {
+  public void interpretAethelAttributeClick() {
     switch (e.getSlot()) {
       case 0, 1 -> { // Context, Item
       }
-      case 2 -> returnToCosmeticEditor();
+      case 2 -> returnToCosmetic();
       case 5 -> setAethelAttributeMode(RpgEquipmentSlot.HEAD);
       case 6 -> setAethelAttributeMode(RpgEquipmentSlot.CHEST);
       case 7 -> setAethelAttributeMode(RpgEquipmentSlot.LEGS);
@@ -159,11 +159,11 @@ public class ItemEditorMenuClick {
   /**
    * Sets an item's enchant.
    */
-  public void interpretEnchantmentEditorClick() {
+  public void interpretEnchantmentClick() {
     switch (e.getSlot()) {
       case 2, 4 -> { // Context, Item
       }
-      case 6 -> returnToCosmeticEditor();
+      case 6 -> returnToCosmetic();
       default -> readEnchantment();
     }
   }
@@ -171,12 +171,12 @@ public class ItemEditorMenuClick {
   /**
    * Sets an item's potion effect.
    */
-  public void interpretPotionEditorClick() {
+  public void interpretPotionClick() {
     switch (e.getSlot()) {
       case 2, 4 -> { // Context, Item
       }
       case 5 -> setPotionColor();
-      case 6 -> returnToCosmeticEditor();
+      case 6 -> returnToCosmetic();
       default -> readPotionEffect();
     }
   }
@@ -184,11 +184,11 @@ public class ItemEditorMenuClick {
   /**
    * Sets an item's passive ability.
    */
-  public void interpretPassiveEditorClick() {
+  public void interpretPassiveClick() {
     switch (e.getSlot()) {
       case 0, 1 -> { // Context, Item
       }
-      case 2 -> returnToCosmeticEditor();
+      case 2 -> returnToCosmetic();
       case 5 -> setPassiveMode(EquipmentSlot.HEAD);
       case 6 -> setPassiveMode(EquipmentSlot.CHEST);
       case 7 -> setPassiveMode(EquipmentSlot.LEGS);
@@ -202,11 +202,11 @@ public class ItemEditorMenuClick {
   /**
    * Sets an item's active ability.
    */
-  public void interpretActiveEditorClick() {
+  public void interpretActiveClick() {
     switch (e.getSlot()) {
       case 0, 1 -> { // Context, Item
       }
-      case 2 -> returnToCosmeticEditor();
+      case 2 -> returnToCosmetic();
       case 5 -> setActiveMode(EquipmentSlot.HEAD);
       case 6 -> setActiveMode(EquipmentSlot.CHEST);
       case 7 -> setActiveMode(EquipmentSlot.LEGS);
@@ -220,11 +220,11 @@ public class ItemEditorMenuClick {
   /**
    * Sets an item's Aethel tag.
    */
-  public void interpretTagEditorClick() {
+  public void interpretTagClick() {
     switch (e.getSlot()) {
       case 2, 4 -> { // Context, Item
       }
-      case 6 -> returnToCosmeticEditor();
+      case 6 -> returnToCosmetic();
       default -> readTag();
     }
   }
@@ -233,7 +233,7 @@ public class ItemEditorMenuClick {
    * Sets an item's display name.
    */
   private void setDisplayName() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
     awaitMessageResponse("display_name");
   }
 
@@ -241,7 +241,7 @@ public class ItemEditorMenuClick {
    * Sets an item's custom model data.
    */
   private void setCustomModelData() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
     awaitMessageResponse("custom_model_data");
   }
 
@@ -257,80 +257,80 @@ public class ItemEditorMenuClick {
       user.sendMessage(ChatColor.RED + "[Set Unbreakable]");
     }
     item.setItemMeta(meta);
-    CosmeticEditorMenu.addUnbreakable(menu, meta);
+    CosmeticMenu.addUnbreakable(menu, meta);
   }
 
   /**
-   * Opens an AttributeEditor menu.
+   * Opens an Attribute menu.
    */
-  private void openAttributeEditor() {
+  private void openAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new AttributeEditorMenu(user, EquipmentSlot.HEAD).openMenu());
+    user.openInventory(new AttributeMenu(user, EquipmentSlot.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
   }
 
   /**
-   * Opens an AethelAttributeEditor menu.
+   * Opens an AethelAttribute menu.
    */
-  private void openAethelAttributeEditor() {
+  private void openAethelAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new AethelAttributeEditorMenu(user, RpgEquipmentSlot.HEAD).openMenu());
+    user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
   }
 
   /**
-   * Opens an EnchantmentEditor menu.
+   * Opens an Enchantment menu.
    */
-  private void openEnchantmentEditor() {
+  private void openEnchantment() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
-    user.openInventory(new EnchantmentEditorMenu(user).openMenu());
+    user.openInventory(new EnchantmentMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
   }
 
   /**
-   * Opens a PotionEditor menu.
+   * Opens a Potion menu.
    */
-  private void openPotionEditor() {
+  private void openPotion() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
-    user.openInventory(new PotionEditorMenu(user).openMenu());
+    user.openInventory(new PotionMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
   }
 
   /**
-   * Opens a PassiveEditor menu.
+   * Opens a Passive menu.
    */
-  private void openPassiveEditor() {
+  private void openPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new PassiveEditorMenu(user, EquipmentSlot.HEAD).openMenu());
+    user.openInventory(new PassiveMenu(user, EquipmentSlot.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
   /**
-   * Opens an ActiveEditor menu.
+   * Opens an Active menu.
    */
-  private void openActiveEditor() {
+  private void openActive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new ActiveEditorMenu(user, EquipmentSlot.HEAD).openMenu());
+    user.openInventory(new ActiveMenu(user, EquipmentSlot.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
   /**
-   * Opens a TagEditor menu.
+   * Opens a Tag menu.
    */
-  private void openTagEditor() {
+  private void openTag() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
-    user.openInventory(new TagEditorMenu(user).openMenu());
+    user.openInventory(new TagMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
   }
 
@@ -338,7 +338,7 @@ public class ItemEditorMenuClick {
    * Sets an item's durability.
    */
   private void setDurability() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
     awaitMessageResponse("durability");
   }
 
@@ -346,7 +346,7 @@ public class ItemEditorMenuClick {
    * Sets an item's repair cost.
    */
   private void setRepairCost() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
     awaitMessageResponse("repair_cost");
   }
 
@@ -354,7 +354,7 @@ public class ItemEditorMenuClick {
    * Sets an item's lore.
    */
   private void setLore() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
     awaitMessageResponse("lore-set");
   }
 
@@ -375,7 +375,7 @@ public class ItemEditorMenuClick {
    * Adds a line of text to an item's lore.
    */
   private void addLore() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
     awaitMessageResponse("lore-add");
   }
 
@@ -384,7 +384,7 @@ public class ItemEditorMenuClick {
    */
   private void editLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and new lore.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and new lore.");
       awaitMessageResponse("lore-edit");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -396,7 +396,7 @@ public class ItemEditorMenuClick {
    */
   private void removeLore() {
     if (meta.hasLore()) {
-      user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
       awaitMessageResponse("lore-remove");
     } else {
       user.sendMessage(ChatColor.RED + "Item has no lore.");
@@ -445,14 +445,14 @@ public class ItemEditorMenuClick {
     }
     item.setItemMeta(meta);
     switch (itemFlag) {
-      case HIDE_ARMOR_TRIM -> CosmeticEditorMenu.addHideArmorTrim(menu, meta);
-      case HIDE_ATTRIBUTES -> CosmeticEditorMenu.addHideAttributes(menu, meta);
-      case HIDE_DESTROYS -> CosmeticEditorMenu.addHideDestroys(menu, meta);
-      case HIDE_DYE -> CosmeticEditorMenu.addHideDye(menu, meta);
-      case HIDE_ENCHANTS -> CosmeticEditorMenu.addHideEnchants(menu, meta);
-      case HIDE_PLACED_ON -> CosmeticEditorMenu.addHidePlacedOn(menu, meta);
-      case HIDE_POTION_EFFECTS -> CosmeticEditorMenu.addHidePotionEffects(menu, meta);
-      case HIDE_UNBREAKABLE -> CosmeticEditorMenu.addHideUnbreakable(menu, meta);
+      case HIDE_ARMOR_TRIM -> CosmeticMenu.addHideArmorTrim(menu, meta);
+      case HIDE_ATTRIBUTES -> CosmeticMenu.addHideAttributes(menu, meta);
+      case HIDE_DESTROYS -> CosmeticMenu.addHideDestroys(menu, meta);
+      case HIDE_DYE -> CosmeticMenu.addHideDye(menu, meta);
+      case HIDE_ENCHANTS -> CosmeticMenu.addHideEnchants(menu, meta);
+      case HIDE_PLACED_ON -> CosmeticMenu.addHidePlacedOn(menu, meta);
+      case HIDE_POTION_EFFECTS -> CosmeticMenu.addHidePotionEffects(menu, meta);
+      case HIDE_UNBREAKABLE -> CosmeticMenu.addHideUnbreakable(menu, meta);
     }
   }
 
@@ -460,15 +460,15 @@ public class ItemEditorMenuClick {
    * Sets the potion's color.
    */
   private void setPotionColor() {
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input RGB value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input RGB value.");
     awaitMessageResponse("potion-color");
   }
 
   /**
-   * Returns to the CosmeticEditor menu.
+   * Returns to the Cosmetic menu.
    */
-  private void returnToCosmeticEditor() {
-    user.openInventory(new CosmeticEditorMenu(user).openMenu());
+  private void returnToCosmetic() {
+    user.openInventory(new CosmeticMenu(user).openMenu());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
   }
 
@@ -481,7 +481,7 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new AttributeEditorMenu(user, action).openMenu());
+    user.openInventory(new AttributeMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
   }
 
@@ -494,7 +494,7 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String rpgEquipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, rpgEquipmentSlot);
-    user.openInventory(new AethelAttributeEditorMenu(user, action).openMenu());
+    user.openInventory(new AethelAttributeMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
   }
 
@@ -507,7 +507,7 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new PassiveEditorMenu(user, action).openMenu());
+    user.openInventory(new PassiveMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -520,7 +520,7 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new ActiveEditorMenu(user, action).openMenu());
+    user.openInventory(new ActiveMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
@@ -529,7 +529,7 @@ public class ItemEditorMenuClick {
    */
   private void readMinecraftAttribute() {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getMinecraftAttributeValueContext(attribute));
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attribute);
     awaitMessageResponse("minecraft_attribute");
@@ -540,7 +540,7 @@ public class ItemEditorMenuClick {
    */
   private void readAethelAttribute() {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAethelAttributeValueContext(attribute));
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
     awaitMessageResponse("aethel_attribute");
@@ -551,7 +551,7 @@ public class ItemEditorMenuClick {
    */
   private void readEnchantment() {
     String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, enchantment);
     awaitMessageResponse("enchantment");
   }
@@ -561,7 +561,7 @@ public class ItemEditorMenuClick {
    */
   private void readPotionEffect() {
     String potionEffect = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, potionEffect);
     awaitMessageResponse("potion-effect");
   }
@@ -571,7 +571,7 @@ public class ItemEditorMenuClick {
    */
   private void readPassive() {
     String passive = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(passive) + ChatColor.WHITE + " value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(passive) + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, passive);
     awaitMessageResponse("passive_ability");
   }
@@ -581,7 +581,7 @@ public class ItemEditorMenuClick {
    */
   private void readActive() {
     String active = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(active) + ChatColor.WHITE + " value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(active) + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, active);
     awaitMessageResponse("active_ability");
   }
@@ -591,7 +591,7 @@ public class ItemEditorMenuClick {
    */
   private void readTag() {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, tag);
     awaitMessageResponse("tag");
   }
@@ -613,7 +613,7 @@ public class ItemEditorMenuClick {
    * @return base attribute value
    */
   private String getMinecraftAttributeValueContext(String attribute) {
-    String context = PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
+    String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
       case "Generic Max Health" -> {
         return context + "20.0";
@@ -652,7 +652,7 @@ public class ItemEditorMenuClick {
    * @return base attribute value
    */
   private String getAethelAttributeValueContext(String attribute) {
-    String context = PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
+    String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
       case "Max Health" -> {
         return context + "20.0";

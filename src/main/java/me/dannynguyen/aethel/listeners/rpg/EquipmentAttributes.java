@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipment;
+import me.dannynguyen.aethel.systems.rpg.Equipment;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -128,18 +128,18 @@ public class EquipmentAttributes implements Listener {
   @EventHandler
   private void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
-      RpgEquipment rpgEquipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment();
-      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = rpgEquipment.getEnchantments();
-      Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = rpgEquipment.getAttributes();
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment();
+      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = equipment.getEnchantments();
+      Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = equipment.getAttributes();
 
-      dropJewelryItems(e.getEntity(), rpgEquipment.getJewelry());
+      dropJewelryItems(e.getEntity(), equipment.getJewelry());
 
       for (RpgEquipmentSlot slot : equipmentEnchantments.keySet()) {
-        rpgEquipment.removeEnchantments(slot);
+        equipment.removeEnchantments(slot);
       }
 
       for (RpgEquipmentSlot slot : equipmentAttributes.keySet()) {
-        rpgEquipment.removeAttributes(slot);
+        equipment.removeAttributes(slot);
       }
     }
   }
@@ -178,14 +178,14 @@ public class EquipmentAttributes implements Listener {
   private void updateEquipmentAttributesAtSlot(Player player, int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
-      RpgEquipment rpgEquipment = rpgPlayer.getEquipment();
+      Equipment equipment = rpgPlayer.getEquipment();
       final ItemStack wornItem = player.getInventory().getItem(slot);
       switch (slot) {
-        case 36 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.FEET, true);
-        case 37 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
-        case 38 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
-        case 39 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
-        case 40 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
+        case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET, true);
+        case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
+        case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
+        case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
+        case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
       }
     }, 1);
   }

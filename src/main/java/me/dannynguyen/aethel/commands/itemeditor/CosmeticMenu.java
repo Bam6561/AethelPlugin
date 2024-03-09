@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -29,9 +29,9 @@ import java.util.Objects;
  * @version 1.15.0
  * @since 1.6.7
  */
-class CosmeticEditorMenu {
+class CosmeticMenu {
   /**
-   * CosmeticEditor GUI.
+   * Cosmetic GUI.
    */
   private final Inventory menu;
 
@@ -51,11 +51,11 @@ class CosmeticEditorMenu {
   private final ItemMeta meta;
 
   /**
-   * Associates a new CosmeticEditor menu with its user and item.
+   * Associates a new Cosmetic menu with its user and item.
    *
    * @param user user
    */
-  protected CosmeticEditorMenu(@NotNull Player user) {
+  protected CosmeticMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.meta = Objects.requireNonNull(item.getItemMeta(), "Null meta");
@@ -63,9 +63,9 @@ class CosmeticEditorMenu {
   }
 
   /**
-   * Creates and names an CosmeticEditor menu with its item being edited.
+   * Creates and names a Cosmetic menu with its item being edited.
    *
-   * @return CosmeticEditor menu
+   * @return Cosmetic menu
    */
   private Inventory createMenu() {
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor");
@@ -76,7 +76,7 @@ class CosmeticEditorMenu {
   /**
    * Sets the menu to display interactions with cosmetic metadata.
    *
-   * @return CosmeticEditor menu
+   * @return Cosmetic menu
    */
   @NotNull
   protected Inventory openMenu() {
@@ -96,7 +96,7 @@ class CosmeticEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(),
+    ItemStack formatCodes = ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(),
         ChatColor.GREEN + "Format Codes", List.of(
             ChatColor.WHITE + "&k " + ChatColor.MAGIC + "Magic",
             ChatColor.WHITE + "&l " + ChatColor.BOLD + "Bold",
@@ -104,7 +104,7 @@ class CosmeticEditorMenu {
             ChatColor.WHITE + "&n " + ChatColor.UNDERLINE + "Underline",
             ChatColor.WHITE + "&o " + ChatColor.ITALIC + "Italic",
             ChatColor.WHITE + "&r " + ChatColor.RESET + "Reset"));
-    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(),
+    ItemStack colorCodes = ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(),
         ChatColor.GREEN + "Color Codes", List.of(
             ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
             ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
@@ -162,13 +162,13 @@ class CosmeticEditorMenu {
   private void addLore() {
     ItemStack lore;
     if (!meta.hasLore()) {
-      lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
+      lore = ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", List.of(ChatColor.GRAY + "None set."));
     } else {
       List<String> loreLines = meta.getLore();
       for (int i = 0; i < loreLines.size(); i++) {
         loreLines.set(i, ChatColor.WHITE + "" + (i + 1) + " " + ChatColor.RESET + loreLines.get(i));
       }
-      lore = ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", loreLines);
+      lore = ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Lore", loreLines);
     }
     menu.setItem(36, lore);
     menu.setItem(37, ItemCreator.createItem(Material.PAPER, ChatColor.AQUA + "Set Lore", List.of(ChatColor.WHITE + "Separate lines by \",, \".")));
@@ -180,7 +180,7 @@ class CosmeticEditorMenu {
   }
 
   /**
-   * Adds attribute, enchantment, and Aethel tags editor menu buttons.
+   * Adds attribute, enchantment, and Aethel tags menu buttons.
    */
   private void addGameplay() {
     menu.setItem(14, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Minecraft Attributes", ItemFlag.HIDE_ATTRIBUTES));
@@ -209,7 +209,7 @@ class CosmeticEditorMenu {
   /**
    * Adds the unbreakable toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addUnbreakable(Inventory menu, ItemMeta meta) {
@@ -221,7 +221,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide armor trim toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHideArmorTrim(Inventory menu, ItemMeta meta) {
@@ -233,7 +233,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide attributes toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHideAttributes(Inventory menu, ItemMeta meta) {
@@ -245,7 +245,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide destroys toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHideDestroys(Inventory menu, ItemMeta meta) {
@@ -257,7 +257,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide dye toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHideDye(Inventory menu, ItemMeta meta) {
@@ -269,7 +269,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide enchants toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHideEnchants(Inventory menu, ItemMeta meta) {
@@ -281,7 +281,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide placed on toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHidePlacedOn(Inventory menu, ItemMeta meta) {
@@ -293,7 +293,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide potion effects toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHidePotionEffects(Inventory menu, ItemMeta meta) {
@@ -305,7 +305,7 @@ class CosmeticEditorMenu {
   /**
    * Adds hide unbreakable toggle button.
    *
-   * @param menu CosmeticEditor menu
+   * @param menu Cosmetic menu
    * @param meta item meta
    */
   protected static void addHideUnbreakable(Inventory menu, ItemMeta meta) {

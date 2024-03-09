@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,19 +38,19 @@ public class ItemEditorCommand implements CommandExecutor {
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
         } else {
-          user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.getMessage());
+          user.sendMessage(Message.NO_MAIN_HAND_ITEM.getMessage());
         }
       } else {
-        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening an CosmeticEditor menu.
+   * Checks if the command request was formatted correctly before opening a Cosmetic menu.
    *
    * @param user user
    * @param args user provided parameters
@@ -60,19 +60,19 @@ public class ItemEditorCommand implements CommandExecutor {
     if (args.length == 0) {
       openMenu(user, item);
     } else {
-      user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
   /**
-   * Opens the CosmeticEditor menu.
+   * Opens the Cosmetic menu.
    *
    * @param user user
    * @param item interacting item
    */
   private void openMenu(Player user, ItemStack item) {
     Plugin.getData().getEditedItemCache().getEditedItemMap().put(user.getUniqueId(), item);
-    user.openInventory(new CosmeticEditorMenu(user).openMenu());
+    user.openInventory(new CosmeticMenu(user).openMenu());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
   }
 }

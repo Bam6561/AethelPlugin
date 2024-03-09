@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.*;
@@ -112,11 +112,11 @@ class StatMessage {
     } else {
       if (user.getUniqueId().equals(owner.getUniqueId())) {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-          onlinePlayer.sendMessage(PluginMessage.NOTIFICATION_GLOBAL.getMessage() + message);
+          onlinePlayer.sendMessage(Message.NOTIFICATION_GLOBAL.getMessage() + message);
         }
       } else {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-          onlinePlayer.sendMessage(PluginMessage.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
+          onlinePlayer.sendMessage(Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
         }
       }
       Plugin.getData().getPastStatHistory().addPastStat(stat, statValues);

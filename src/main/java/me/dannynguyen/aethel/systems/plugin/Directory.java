@@ -12,7 +12,7 @@ import java.util.Objects;
  * @version 1.12.1
  * @since 1.11.9
  */
-public enum PluginDirectory {
+public enum Directory {
   /**
    * Resources directory.
    */
@@ -43,7 +43,7 @@ public enum PluginDirectory {
    *
    * @param file file
    */
-  PluginDirectory(@NotNull File file) {
+  Directory(@NotNull File file) {
     this.file = Objects.requireNonNull(file, "Null file");
   }
 

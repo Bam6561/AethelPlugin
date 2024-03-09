@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
+import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -28,7 +28,7 @@ import java.util.*;
  * @version 1.14.6
  * @since 1.13.4
  */
-public class RpgEquipment {
+public class Equipment {
   /**
    * Tracked equipment enchantments.
    */
@@ -77,7 +77,7 @@ public class RpgEquipment {
    * @param player           interacting player
    * @param aethelAttributes total Aethel attributes
    */
-  public RpgEquipment(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
+  public Equipment(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
     this.heldItem = player.getInventory().getItemInMainHand();
@@ -117,7 +117,7 @@ public class RpgEquipment {
    * Initializes the player's equipped jewelry from a file if it exists.
    */
   private void initializeJewelrySlots() {
-    File file = new File(PluginDirectory.JEWELRY.getFile().getPath() + "/" + uuid.toString() + "_jwl.txt");
+    File file = new File(Directory.JEWELRY.getFile().getPath() + "/" + uuid.toString() + "_jwl.txt");
     if (file.exists()) {
       try {
         Scanner scanner = new Scanner(file);
@@ -179,7 +179,7 @@ public class RpgEquipment {
    * Saves the player's jewelry items to a file.
    */
   public void saveJewelry() {
-    File file = new File(PluginDirectory.JEWELRY.getFile().getPath() + "/" + uuid + "_jwl.txt");
+    File file = new File(Directory.JEWELRY.getFile().getPath() + "/" + uuid + "_jwl.txt");
     String encodedJewelry = encodeJewelry();
     try {
       FileWriter fw = new FileWriter(file);

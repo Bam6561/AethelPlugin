@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -29,7 +29,7 @@ import java.util.*;
  * @version 1.15.0
  * @since 1.14.1
  */
-public class AethelAttributeEditorMenu {
+public class AethelAttributeMenu {
   /**
    * Categorized Aethel attributes.
    */
@@ -39,7 +39,7 @@ public class AethelAttributeEditorMenu {
       "other", new AethelAttribute[]{AethelAttribute.ITEM_DAMAGE, AethelAttribute.ITEM_COOLDOWN});
 
   /**
-   * AethelAttributeEditor GUI.
+   * AethelAttribute GUI.
    */
   private final Inventory menu;
 
@@ -69,12 +69,12 @@ public class AethelAttributeEditorMenu {
   private final Map<String, List<String>> aethelAttributesMap;
 
   /**
-   * Associates a new AethelAttributeEditor menu with its user and editing item.
+   * Associates a new AethelAttribute menu with its user and editing item.
    *
    * @param user user
    * @param slot type of interaction
    */
-  protected AethelAttributeEditorMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot) {
+  protected AethelAttributeMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.slot = Objects.requireNonNull(slot, "Null slot");
@@ -84,9 +84,9 @@ public class AethelAttributeEditorMenu {
   }
 
   /**
-   * Creates and names a new AethelAttributeEditor menu with its action.
+   * Creates and names a new AethelAttribute menu with its action.
    *
-   * @return AethelAttributeEditor menu
+   * @return AethelAttribute menu
    */
   private Inventory createMenu() {
     String actionString = "";
@@ -102,7 +102,7 @@ public class AethelAttributeEditorMenu {
   /**
    * Sets the menu to display interactions with attributes.
    *
-   * @return AethelAttributeEditor menu
+   * @return AethelAttribute menu
    */
   @NotNull
   protected Inventory openMenu() {
@@ -126,7 +126,7 @@ public class AethelAttributeEditorMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(0, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
+    menu.setItem(0, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(36, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));

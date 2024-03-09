@@ -3,9 +3,9 @@ package me.dannynguyen.aethel.commands.character;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipment;
+import me.dannynguyen.aethel.systems.rpg.Equipment;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgHealth;
+import me.dannynguyen.aethel.systems.rpg.Health;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -261,15 +261,15 @@ public class CharacterMenuClick {
    */
   private void updateArmorHandsAttributes(int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgEquipment rpgEquipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
       ItemStack wornItem = user.getInventory().getItem(slot);
       switch (slot) {
-        case 39 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
-        case 38 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
-        case 37 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
-        case 36 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.FEET, true);
-        case 40 -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
-        default -> rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.HAND, true);
+        case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
+        case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
+        case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
+        case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET, true);
+        case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
+        default -> equipment.readSlot(wornItem, RpgEquipmentSlot.HAND, true);
       }
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, e.getClickedInventory())::addAttributes, 3);
     }, 1);
@@ -280,17 +280,17 @@ public class CharacterMenuClick {
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      RpgEquipment rpgEquipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
       Inventory menu = e.getClickedInventory();
       ItemStack wornItem = menu.getItem(slotClicked);
       switch (slotClicked) {
         case 20 -> {
-          rpgEquipment.getJewelry()[0] = wornItem;
-          rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.NECKLACE, true);
+          equipment.getJewelry()[0] = wornItem;
+          equipment.readSlot(wornItem, RpgEquipmentSlot.NECKLACE, true);
         }
         case 29 -> {
-          rpgEquipment.getJewelry()[1] = wornItem;
-          rpgEquipment.readSlot(wornItem, RpgEquipmentSlot.RING, true);
+          equipment.getJewelry()[1] = wornItem;
+          equipment.readSlot(wornItem, RpgEquipmentSlot.RING, true);
         }
       }
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, menu)::addAttributes, 3);
@@ -309,31 +309,31 @@ public class CharacterMenuClick {
    * Toggles the player's health bar.
    */
   private void toggleHealthBar() {
-    RpgHealth rpgHealth = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
+    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
     Inventory menu = e.getInventory();
-    if (rpgHealth.getBar().isVisible()) {
+    if (health.getBar().isVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
     }
-    rpgHealth.toggleBarVisibility();
+    health.toggleBarVisibility();
   }
 
   /**
    * Toggles the player's health in action bar.
    */
   private void toggleHealthAction() {
-    RpgHealth rpgHealth = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
+    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
     Inventory menu = e.getInventory();
-    if (rpgHealth.isHealthActionVisible()) {
+    if (health.isHealthActionVisible()) {
       menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
     } else {
       menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
     }
-    rpgHealth.toggleActionVisibility();
+    health.toggleActionVisibility();
   }
 }

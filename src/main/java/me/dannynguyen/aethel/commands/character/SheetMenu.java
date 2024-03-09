@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.RpgHealth;
+import me.dannynguyen.aethel.systems.rpg.Health;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -112,7 +112,7 @@ class SheetMenu {
         ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
         ChatColor.GRAY + "Boots");
 
-    menu.setItem(9, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.WHITE + "Equipment", context));
+    menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.WHITE + "Equipment", context));
   }
 
   /**
@@ -203,10 +203,10 @@ class SheetMenu {
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID);
-    RpgHealth rpgHealth = rpgPlayer.getHealth();
+    Health health = rpgPlayer.getHealth();
     Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
 
-    String maxHealth = ChatColor.RED + "" + df2.format(rpgHealth.getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HEALTH)) + " HP";
+    String maxHealth = ChatColor.RED + "" + df2.format(health.getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.get(AethelAttribute.MAX_HEALTH)) + " HP";
     String counterChance = ChatColor.YELLOW + "" + df2.format(attributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
     String dodgeChance = ChatColor.BLUE + "" + df2.format(attributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
     String armorToughness = ChatColor.GRAY + "" + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS)) + " TOUGH";

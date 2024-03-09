@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginPlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -26,9 +26,9 @@ import java.util.*;
  * @version 1.14.5
  * @since 1.14.0
  */
-class PotionEditorMenu {
+class PotionMenu {
   /**
-   * PotionEditor GUI.
+   * Potion GUI.
    */
   private final Inventory menu;
 
@@ -43,20 +43,20 @@ class PotionEditorMenu {
   private final ItemStack item;
 
   /**
-   * Associates a new PotionEditor menu with its user and editing item.
+   * Associates a new Potion menu with its user and editing item.
    *
    * @param user user
    */
-  protected PotionEditorMenu(@NotNull Player user) {
+  protected PotionMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.menu = createMenu();
   }
 
   /**
-   * Creates and names a PotionEditor menu.
+   * Creates and names a Potion menu.
    *
-   * @return PotionEditor menu
+   * @return Potion menu
    */
   private Inventory createMenu() {
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Potion Effects");
@@ -67,7 +67,7 @@ class PotionEditorMenu {
   /**
    * Sets the menu to display interactions with potion effects.
    *
-   * @return PotionEditor menu
+   * @return Potion menu
    */
   @NotNull
   protected Inventory openMenu() {
@@ -116,7 +116,7 @@ class PotionEditorMenu {
         ChatColor.WHITE + "ticks, amplifier, and ambient (true/false).",
         ChatColor.WHITE + "To remove an effect, input \"-\"."
     ));
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PluginPlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
   }
 
   /**

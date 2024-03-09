@@ -24,7 +24,7 @@ import java.util.UUID;
  * @version 1.14.2
  * @since 1.13.4
  */
-public class RpgHealth {
+public class Health {
   /**
    * Player's UUID.
    */
@@ -61,7 +61,7 @@ public class RpgHealth {
    * @param player           interacting player
    * @param aethelAttributes total Aethel attributes
    */
-  public RpgHealth(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
+  public Health(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
     this.healthActionVisible = true;
@@ -189,16 +189,16 @@ public class RpgHealth {
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
       player.setHealth(lifeRatio * maxHealthScale);
-      updateActionDisplay(RpgHealthCondition.WOUNDED);
-      updateBarDisplay(RpgHealthCondition.WOUNDED, lifeRatio);
+      updateActionDisplay(HealthCondition.WOUNDED);
+      updateBarDisplay(HealthCondition.WOUNDED, lifeRatio);
     } else if (currentHealth == maxHealth) {
       player.setHealth(maxHealthScale);
-      updateActionDisplay(RpgHealthCondition.NORMAL);
-      updateBarDisplay(RpgHealthCondition.NORMAL, 1.0);
+      updateActionDisplay(HealthCondition.NORMAL);
+      updateBarDisplay(HealthCondition.NORMAL, 1.0);
     } else if (currentHealth > maxHealth) {
       player.setHealth(maxHealthScale);
-      updateActionDisplay(RpgHealthCondition.OVERSHIELD);
-      updateBarDisplay(RpgHealthCondition.OVERSHIELD, 1.0);
+      updateActionDisplay(HealthCondition.OVERSHIELD);
+      updateBarDisplay(HealthCondition.OVERSHIELD, 1.0);
     }
   }
 
@@ -207,7 +207,7 @@ public class RpgHealth {
    *
    * @param condition health condition
    */
-  public void updateActionDisplay(@NotNull RpgHealthCondition condition) {
+  public void updateActionDisplay(@NotNull HealthCondition condition) {
     if (healthActionVisible) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
@@ -238,7 +238,7 @@ public class RpgHealth {
    * @param condition health condition
    * @param lifeRatio hearts displayed : true max health
    */
-  private void updateBarDisplay(RpgHealthCondition condition, Double lifeRatio) {
+  private void updateBarDisplay(HealthCondition condition, Double lifeRatio) {
     if (healthBar.isVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
@@ -267,13 +267,13 @@ public class RpgHealth {
    *
    * @return RPG health condition
    */
-  private RpgHealthCondition getCondition() {
+  private HealthCondition getCondition() {
     if (currentHealth < maxHealth) {
-      return RpgHealthCondition.WOUNDED;
+      return HealthCondition.WOUNDED;
     } else if (currentHealth == maxHealth) {
-      return RpgHealthCondition.NORMAL;
+      return HealthCondition.NORMAL;
     } else if (currentHealth > maxHealth) {
-      return RpgHealthCondition.OVERSHIELD;
+      return HealthCondition.OVERSHIELD;
     }
     return null;
   }

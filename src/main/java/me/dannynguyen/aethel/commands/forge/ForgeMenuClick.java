@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginDirectory;
+import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -243,7 +243,7 @@ public class ForgeMenuClick {
       String encodedRecipe = encodeRecipe(menuContents);
       if (encodedRecipe != null) {
         try {
-          FileWriter fw = new FileWriter(PluginDirectory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
+          FileWriter fw = new FileWriter(Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
           fw.write(encodedRecipe);
           fw.close();
           user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(file));

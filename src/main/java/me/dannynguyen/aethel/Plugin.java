@@ -124,7 +124,7 @@ public class Plugin extends JavaPlugin {
     for (UUID uuid : rpgPlayers.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
-        RpgEquipment equipment = rpgPlayers.get(uuid).getEquipment();
+        Equipment equipment = rpgPlayers.get(uuid).getEquipment();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         if (!heldItem.equals(equipment.getHeldItem())) {
           equipment.setHeldItem(heldItem);

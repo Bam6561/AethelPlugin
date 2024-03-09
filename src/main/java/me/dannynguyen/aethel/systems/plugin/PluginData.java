@@ -26,12 +26,12 @@ public class PluginData {
   /**
    * Registered items.
    */
-  private final ItemRegistry itemRegistry = new ItemRegistry(PluginDirectory.AETHELITEM.getFile());
+  private final ItemRegistry itemRegistry = new ItemRegistry(Directory.AETHELITEM.getFile());
 
   /**
    * Registered recipes.
    */
-  private final RecipeRegistry recipeRegistry = new RecipeRegistry(PluginDirectory.FORGE.getFile());
+  private final RecipeRegistry recipeRegistry = new RecipeRegistry(Directory.FORGE.getFile());
 
   /**
    * Available player stats.
@@ -85,7 +85,7 @@ public class PluginData {
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(df2, start, finish));
 
-    File rpgJewelryDirectory = PluginDirectory.JEWELRY.getFile();
+    File rpgJewelryDirectory = Directory.JEWELRY.getFile();
     if (!rpgJewelryDirectory.exists()) {
       rpgJewelryDirectory.mkdirs();
     }

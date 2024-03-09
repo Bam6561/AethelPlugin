@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.showitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginMessage;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.utility.ItemReader;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.ItemTag;
@@ -45,10 +45,10 @@ public class ShowItemCommand implements CommandExecutor {
       if (user.hasPermission("aethel.showitem")) {
         readRequest(user, args);
       } else {
-        user.sendMessage(PluginMessage.INSUFFICIENT_PERMISSION.getMessage());
+        user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
     } else {
-      sender.sendMessage(PluginMessage.PLAYER_ONLY_COMMAND.getMessage());
+      sender.sendMessage(Message.PLAYER_ONLY_COMMAND.getMessage());
     }
     return true;
   }
@@ -63,7 +63,7 @@ public class ShowItemCommand implements CommandExecutor {
     switch (args.length) {
       case 0 -> showItem(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETERS.getMessage());
+      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -81,7 +81,7 @@ public class ShowItemCommand implements CommandExecutor {
       }
       Plugin.getData().getPastItemHistory().addPastItem(user, item);
     } else {
-      user.sendMessage(PluginMessage.NO_MAIN_HAND_ITEM.getMessage());
+      user.sendMessage(Message.NO_MAIN_HAND_ITEM.getMessage());
     }
   }
 
@@ -96,7 +96,7 @@ public class ShowItemCommand implements CommandExecutor {
       user.openInventory(new PastItemMenu(user).openMenu());
       Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
     } else {
-      user.sendMessage(PluginMessage.UNRECOGNIZED_PARAMETER.getMessage());
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
     }
   }
 
@@ -109,7 +109,7 @@ public class ShowItemCommand implements CommandExecutor {
    */
   private TextComponent createShowItemTextComponent(Player user, ItemStack item) {
     // [!] <ItemName> [PlayerName]
-    TextComponent message = new TextComponent(PluginMessage.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + " ");
+    TextComponent message = new TextComponent(Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + " ");
 
     TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readName(item) + " ");
     ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
