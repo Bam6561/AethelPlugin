@@ -131,7 +131,7 @@ public class RpgHealth {
    */
   public void heal(double heal) {
     if (!(currentHealth > maxHealth)) {
-      setCurrentHealth(Math.min(maxHealth, currentHealth + heal));
+      setCurrentHealth(Math.min(currentHealth + heal, maxHealth));
       updateDisplays();
     }
   }

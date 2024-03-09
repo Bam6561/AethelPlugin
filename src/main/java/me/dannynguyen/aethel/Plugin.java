@@ -13,8 +13,8 @@ import me.dannynguyen.aethel.commands.status.StatusCommand;
 import me.dannynguyen.aethel.listeners.plugin.MenuClick;
 import me.dannynguyen.aethel.listeners.plugin.MessageSent;
 import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
+import me.dannynguyen.aethel.listeners.rpg.EntityDamage;
 import me.dannynguyen.aethel.listeners.rpg.EquipmentAttributes;
-import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
@@ -81,7 +81,7 @@ public class Plugin extends JavaPlugin {
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
     manager.registerEvents(new EquipmentAttributes(), this);
-    manager.registerEvents(new PlayerDamage(), this);
+    manager.registerEvents(new EntityDamage(), this);
     manager.registerEvents(new MenuClick(), this);
     manager.registerEvents(new MessageSent(), this);
     manager.registerEvents(new PluginEvent(), this);
@@ -215,7 +215,7 @@ public class Plugin extends JavaPlugin {
    */
   private void handlePlayerDamageOverTime(UUID uuid, Map<RpgStatusType, RpgStatus> statuses, Player player) {
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
-    int protection = Math.min(20, rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL));
+    int protection = Math.min(rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
     int resistance = 0;
     if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
       resistance = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;

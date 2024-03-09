@@ -3,6 +3,8 @@ package me.dannynguyen.aethel.listeners.rpg;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
+import me.dannynguyen.aethel.systems.rpg.RpgStatus;
+import me.dannynguyen.aethel.systems.rpg.RpgStatusType;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -23,15 +25,16 @@ import org.bukkit.potion.PotionType;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 /**
- * Player damage done, taken, and healed listener.
+ * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.14.12
+ * @version 1.14.13
  * @since 1.9.4
  */
-public class PlayerDamage implements Listener {
+public class EntityDamage implements Listener {
   /**
    * Handled damage causes.
    */
@@ -106,9 +109,10 @@ public class PlayerDamage implements Listener {
   private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
     Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
     Random random = new Random();
-    double damage = e.getDamage();
-    damage = ifCriticallyHit(attributes, random, damage);
-    e.setDamage(damage);
+    ifCriticallyHit(e, attributes, random);
+    ifVulnerable(e);
+    double finalDamage = e.getDamage();
+    e.setDamage(finalDamage);
   }
 
   /**
@@ -160,16 +164,31 @@ public class PlayerDamage implements Listener {
   /**
    * If the player dealt a critical hit, multiply the damage by its modifier.
    *
+   * @param e          entity damage by entity event
    * @param attributes player's attributes
    * @param random     rng
-   * @param damage     damage dealt
-   * @return damage dealt
    */
-  private double ifCriticallyHit(Map<AethelAttribute, Double> attributes, Random random, double damage) {
+  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Random random) {
     if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
-      return (damage * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
+      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
     }
-    return damage;
+  }
+
+  /**
+   * If the target has the Vulnerable status, multiply the damage by its number of stacks.
+   *
+   * @param e entity damage by entity event
+   */
+  private void ifVulnerable(EntityDamageByEntityEvent e) {
+    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    UUID uuid = e.getEntity().getUniqueId();
+    if (entityStatuses.containsKey(uuid)) {
+      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+      if (statuses.containsKey(RpgStatusType.VULNERABLE)) {
+        int vulnerable = statuses.get(RpgStatusType.VULNERABLE).getStackAmount();
+        e.setDamage(e.getDamage() * (1 + (vulnerable * 0.025)));
+      }
+    }
   }
 
   /**
@@ -193,9 +212,8 @@ public class PlayerDamage implements Listener {
       case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> {
         int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
         if (protection > 0) {
-          protection = Math.max(protection, 20);
           double damage = e.getDamage();
-          e.setDamage(damage - (damage * (protection * .04)));
+          e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
         }
       }
       case FIRE, FIRE_TICK, HOT_FLOOR, LAVA -> {
@@ -246,9 +264,8 @@ public class PlayerDamage implements Listener {
       case AREA_EFFECT_CLOUD -> {
         int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
         if (protection > 0) {
-          protection = Math.max(protection, 20);
           double damage = e.getDamage();
-          e.setDamage(damage - (damage * (protection * .04)));
+          e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
         }
         mitigateResistance(e, damagee);
         Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(e.getDamage());
@@ -295,17 +312,15 @@ public class PlayerDamage implements Listener {
             case SPECTRAL_ARROW -> pInv.addItem(new ItemStack(Material.SPECTRAL_ARROW));
           }
         } else if (projectileProtection > 0) {
-          projectileProtection = Math.max(projectileProtection, 10);
           double damage = e.getDamage();
-          e.setDamage(damage - (damage * (projectileProtection * .05)));
+          e.setDamage(damage - (damage * (Math.min(projectileProtection * .05, .5))));
         }
       }
       case SPLASH_POTION -> {
         int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
         if (protection > 0) {
-          protection = Math.max(protection, 20);
           double damage = e.getDamage();
-          e.setDamage(damage - (damage * (protection * .04)));
+          e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
           mitigateResistance(e, damagee);
           Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(e.getDamage());
           e.setDamage(0);
@@ -368,10 +383,17 @@ public class PlayerDamage implements Listener {
    * @param damagee player taking damage
    */
   private void mitigateArmorProtection(EntityDamageByEntityEvent e, Player damagee) {
-    int armor = Math.min((int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue(), 20);
-    int protection = Math.min(Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
+    int armor = (int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+    int protection = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL);
+    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    if (entityStatuses.containsKey(damagee.getUniqueId())) {
+      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(damagee.getUniqueId());
+      if (statuses.containsKey(RpgStatusType.FRACTURE)) {
+        armor = armor - statuses.get(RpgStatusType.FRACTURE).getStackAmount();
+      }
+    }
     double damage = e.getDamage();
-    e.setDamage(damage - (damage * (armor * 0.02 + protection * 0.01)));
+    e.setDamage(damage - (damage * (Math.min(armor * 0.02, .4) + Math.min(protection * 0.01, .2))));
   }
 
   /**
