@@ -28,7 +28,7 @@ import java.util.Set;
  * Player damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.14.12
  * @since 1.9.4
  */
 public class PlayerDamage implements Listener {
@@ -217,6 +217,7 @@ public class PlayerDamage implements Listener {
         }
       }
     }
+    mitigateResistance(e, damagee);
     return false;
   }
 
@@ -249,6 +250,7 @@ public class PlayerDamage implements Listener {
           double damage = e.getDamage();
           e.setDamage(damage - (damage * (protection * .04)));
         }
+        mitigateResistance(e, damagee);
         Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(e.getDamage());
         e.setDamage(0);
         return true;
@@ -304,6 +306,7 @@ public class PlayerDamage implements Listener {
           protection = Math.max(protection, 20);
           double damage = e.getDamage();
           e.setDamage(damage - (damage * (protection * .04)));
+          mitigateResistance(e, damagee);
           Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(e.getDamage());
           e.setDamage(0);
           return true;
@@ -369,6 +372,20 @@ public class PlayerDamage implements Listener {
     int protection = Math.min(Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
     double damage = e.getDamage();
     e.setDamage(damage - (damage * (armor * 0.02 + protection * 0.01)));
+  }
+
+  /**
+   * Mitigates the damage taken based on the player's resistance effect.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee player taking damage
+   */
+  private void mitigateResistance(EntityDamageEvent e, Player damagee) {
+    if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+      int resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+      double damage = e.getDamage();
+      e.setDamage(damage - (damage * (resistance * 0.05)));
+    }
   }
 
   /**

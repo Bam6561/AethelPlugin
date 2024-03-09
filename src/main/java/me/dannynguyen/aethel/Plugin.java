@@ -42,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.11
+ * @version 1.14.12
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -216,15 +216,19 @@ public class Plugin extends JavaPlugin {
   private void handlePlayerDamageOverTime(UUID uuid, Map<RpgStatusType, RpgStatus> statuses, Player player) {
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
     int protection = Math.min(20, rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL));
+    int resistance = 0;
+    if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+      resistance = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    }
     if (statuses.containsKey(RpgStatusType.BLEED)) {
-      double bleedDamage = statuses.get(RpgStatusType.BLEED).getStackAmount() * 0.2;
+      double damage = statuses.get(RpgStatusType.BLEED).getStackAmount() * 0.2;
       player.damage(0.1);
-      rpgPlayer.getHealth().damage(bleedDamage - (bleedDamage * (protection * 0.04)));
+      rpgPlayer.getHealth().damage(mitigateDamageOverTime(damage, protection, resistance));
     }
     if (statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
-      double electrocuteDamage = statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2;
+      double damage = statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2;
       player.damage(0.1);
-      rpgPlayer.getHealth().damage(electrocuteDamage - (electrocuteDamage * (protection * 0.04)));
+      rpgPlayer.getHealth().damage(mitigateDamageOverTime(damage, protection, resistance));
     }
   }
 
@@ -244,6 +248,20 @@ public class Plugin extends JavaPlugin {
       entity.damage(0.1);
       entity.setHealth(entity.getHealth() + 0.1 - statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2);
     }
+  }
+
+  /**
+   * Mitigates damage over time damage based on protection and resistance levels.
+   *
+   * @param damage     damage
+   * @param protection protection levels
+   * @param resistance resistance levels
+   * @return damage taken
+   */
+  private double mitigateDamageOverTime(double damage, int protection, int resistance) {
+    damage = damage - (damage * (protection * 0.04));
+    damage = damage - (damage * (resistance * 0.05));
+    return damage;
   }
 
   /**
