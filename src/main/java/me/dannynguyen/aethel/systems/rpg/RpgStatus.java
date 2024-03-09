@@ -13,7 +13,7 @@ import java.util.UUID;
  * Represents statuses that affect Living Entities.
  *
  * @author Danny Nguyen
- * @version 1.14.9
+ * @version 1.14.10
  * @since 1.14.7
  */
 public class RpgStatus {
@@ -28,12 +28,17 @@ public class RpgStatus {
   private final RpgStatusType statusType;
 
   /**
+   * Whether stacks are calculated cumulatively.
+   */
+  private final boolean isCumulative;
+
+  /**
    * Status's individual stack applications.
    * <p>
-   * Stack applications are represented by their Bukkit task ID.
+   * Stack instances are represented by their Bukkit task ID.
    * </p>
    */
-  private final Map<Integer, Integer> stackApplications = new HashMap<>();
+  private final Map<Integer, Integer> stackInstances = new HashMap<>();
 
   /**
    * Number of status stacks.
@@ -50,14 +55,18 @@ public class RpgStatus {
   public RpgStatus(@NotNull UUID uuid, @NotNull RpgStatusType statusType, int stacks, int ticks) {
     this.uuid = Objects.requireNonNull(uuid, "Null uuid");
     this.statusType = Objects.requireNonNull(statusType, "Null status type");
+    switch (statusType) {
+      case BLEED, BRITTLE, ELECTROCUTE, SOAK -> this.isCumulative = true;
+      default -> this.isCumulative = false;
+    }
     int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       removeStacks(stacks);
     }, ticks).getTaskId();
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      stackApplications.remove(taskId);
+      stackInstances.remove(taskId);
     }, ticks);
     this.stackAmount = stacks;
-    this.stackApplications.put(taskId, stacks);
+    this.stackInstances.put(taskId, stacks);
   }
 
   /**
@@ -70,10 +79,16 @@ public class RpgStatus {
       removeStacks(stacks);
     }, ticks).getTaskId();
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      stackApplications.remove(taskId);
+      stackInstances.remove(taskId);
     }, ticks);
-    setStackAmount(stackAmount + stacks);
-    stackApplications.put(taskId, stacks);
+    if (isCumulative) {
+      setStackAmount(stackAmount + stacks);
+    } else {
+      if (stacks > stackAmount) {
+        setStackAmount(stacks);
+      }
+    }
+    stackInstances.put(taskId, stacks);
   }
 
   /**
@@ -82,15 +97,36 @@ public class RpgStatus {
    * @param stacks number of stacks to remove
    */
   public void removeStacks(int stacks) {
-    setStackAmount(stackAmount - stacks);
-    if (stackAmount == 0) {
-      Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
-      statuses.remove(statusType);
-      if (statuses.isEmpty()) {
-        entityStatuses.remove(uuid);
-      }
+    if (isCumulative) {
+      setStackAmount(stackAmount - stacks);
+    } else {
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        int highest = Integer.MIN_VALUE;
+        for (int stackInstance : stackInstances.values()) {
+          if (stackInstance >= highest) {
+            highest = stackInstance;
+          }
+        }
+        setStackAmount(highest);
+      }, 1);
     }
+    removeStatusTypeIfEmpty();
+  }
+
+  /**
+   * Removes the status type if no stack instances remain.
+   */
+  private void removeStatusTypeIfEmpty() {
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      if (stackInstances.isEmpty()) {
+        Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+        Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+        statuses.remove(statusType);
+        if (statuses.isEmpty()) {
+          entityStatuses.remove(uuid);
+        }
+      }
+    }, 1);
   }
 
   /**
@@ -98,8 +134,8 @@ public class RpgStatus {
    *
    * @return status's stack durations
    */
-  public Map<Integer, Integer> getStackApplications() {
-    return this.stackApplications;
+  public Map<Integer, Integer> getStackInstances() {
+    return this.stackInstances;
   }
 
   /**

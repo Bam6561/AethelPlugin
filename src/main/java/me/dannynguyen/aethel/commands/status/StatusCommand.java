@@ -141,10 +141,10 @@ public class StatusCommand implements CommandExecutor {
         RpgStatus status = statusTypes.get(statusType);
         statusesBuilder.append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(statusType.name())).append(" ");
         statusesBuilder.append(ChatColor.WHITE).append(status.getStackAmount()).append(" ");
-        Map<Integer, Integer> stackApplications = status.getStackApplications();
-        if (!stackApplications.isEmpty()) {
+        Map<Integer, Integer> stackInstances = status.getStackInstances();
+        if (!stackInstances.isEmpty()) {
           statusesBuilder.append("[");
-          for (Integer stackAmount : stackApplications.values()) {
+          for (Integer stackAmount : stackInstances.values()) {
             statusesBuilder.append(stackAmount).append(", ");
           }
           statusesBuilder.delete(statusesBuilder.length() - 2, statusesBuilder.length());
