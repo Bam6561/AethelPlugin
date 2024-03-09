@@ -16,7 +16,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.1
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -59,6 +59,8 @@ public class MessageSent implements Listener {
       case "aethel_attribute" -> msg.setAethelAttribute();
       case "enchantment" -> msg.setEnchant();
       case "potion-effect" -> msg.setPotionEffect();
+      case "passive_ability" -> msg.setPassive();
+      case "active_ability" -> msg.setActive();
       case "tag" -> msg.setTag();
     }
   }

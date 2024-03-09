@@ -22,8 +22,8 @@ import java.util.Objects;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.0
- * @since 1.15.0
+ * @version 1.15.1
+ * @since 1.15.1
  */
 class PassiveEditorMenu {
   /**
@@ -50,6 +50,7 @@ class PassiveEditorMenu {
    * Associates a new PassiveEditor menu with its user and item.
    *
    * @param user user
+   * @param slot equipment slot
    */
   protected PassiveEditorMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -91,7 +92,11 @@ class PassiveEditorMenu {
    * Adds passive abilities.
    */
   private void addPassives() {
-
+    int invSlot = 18;
+    for (PassiveAbility ability : PassiveAbility.values()) {
+      menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + TextFormatter.capitalizePhrase(ability.name())));
+      invSlot++;
+    }
   }
 
   /**

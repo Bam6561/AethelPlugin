@@ -22,8 +22,8 @@ import java.util.Objects;
  * Represents a menu that allows the user to edit an item's active abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.0
- * @since 1.15.0
+ * @version 1.15.1
+ * @since 1.15.1
  */
 class ActiveEditorMenu {
   /**
@@ -50,6 +50,7 @@ class ActiveEditorMenu {
    * Associates a new ActiveEditor menu with its user and item.
    *
    * @param user user
+   * @param slot equipment slot
    */
   protected ActiveEditorMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -91,7 +92,11 @@ class ActiveEditorMenu {
    * Adds active abilities.
    */
   private void addActives() {
-
+    int invSlot = 18;
+    for (ActiveAbility ability : ActiveAbility.values()) {
+      menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + TextFormatter.capitalizePhrase(ability.name())));
+      invSlot++;
+    }
   }
 
   /**

@@ -48,9 +48,10 @@ public class RpgStatus {
   /**
    * Associates a new status with its initial stacks and application.
    *
-   * @param uuid   entity uuid
-   * @param stacks initial amount of stacks
-   * @param ticks  initial stack application duration
+   * @param uuid       entity uuid
+   * @param statusType type of status
+   * @param stacks     initial amount of stacks
+   * @param ticks      initial stack application duration
    */
   public RpgStatus(@NotNull UUID uuid, @NotNull RpgStatusType statusType, int stacks, int ticks) {
     this.uuid = Objects.requireNonNull(uuid, "Null uuid");
@@ -73,6 +74,7 @@ public class RpgStatus {
    * Adds a number of stacks to the status.
    *
    * @param stacks number of stacks to add
+   * @param ticks  duration in ticks
    */
   public void addStacks(int stacks, int ticks) {
     int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {

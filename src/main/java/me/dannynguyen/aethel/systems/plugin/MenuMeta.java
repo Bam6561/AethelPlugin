@@ -101,12 +101,12 @@ public enum MenuMeta {
   ITEMEDITOR_POTION("itemeditor.potion"),
 
   /**
-   * Edit item passives.
+   * Edit item passive abilities.
    */
   ITEMEDITOR_PASSIVE("itemeditor.passive"),
 
   /**
-   * Edit item actives.
+   * Edit item active abilities.
    */
   ITEMEDITOR_ACTIVE("itemeditor.active"),
 

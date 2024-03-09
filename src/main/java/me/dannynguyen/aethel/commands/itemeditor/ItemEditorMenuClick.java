@@ -29,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.0
+ * @version 1.15.1
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -100,7 +100,7 @@ public class ItemEditorMenuClick {
       case 17 -> openPotionEditor();
       case 20 -> toggleUnbreakable();
       case 23 -> openPassiveEditor();
-      case 24 -> openAbilityEditor();
+      case 24 -> openActiveEditor();
       case 25 -> openTagEditor();
       case 36 -> { // Lore Context
       }
@@ -195,8 +195,7 @@ public class ItemEditorMenuClick {
       case 8 -> setPassiveMode(EquipmentSlot.FEET);
       case 14 -> setPassiveMode(EquipmentSlot.HAND);
       case 15 -> setPassiveMode(EquipmentSlot.OFF_HAND);
-      default -> {
-      }
+      default -> readPassive();
     }
   }
 
@@ -214,8 +213,7 @@ public class ItemEditorMenuClick {
       case 8 -> setActiveMode(EquipmentSlot.FEET);
       case 14 -> setActiveMode(EquipmentSlot.HAND);
       case 15 -> setActiveMode(EquipmentSlot.OFF_HAND);
-      default -> {
-      }
+      default -> readActive();
     }
   }
 
@@ -318,7 +316,7 @@ public class ItemEditorMenuClick {
   /**
    * Opens an ActiveEditor menu.
    */
-  private void openAbilityEditor() {
+  private void openActiveEditor() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
@@ -501,6 +499,32 @@ public class ItemEditorMenuClick {
   }
 
   /**
+   * Sets the user's interacting equipment slot for passive abilities.
+   *
+   * @param action type of interaction
+   */
+  private void setPassiveMode(EquipmentSlot action) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    String equipmentSlot = action.name().toLowerCase();
+    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
+    user.openInventory(new PassiveEditorMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+  }
+
+  /**
+   * Sets the user's interacting equipment slot for active abilities.
+   *
+   * @param action type of interaction
+   */
+  private void setActiveMode(EquipmentSlot action) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    String equipmentSlot = action.name().toLowerCase();
+    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
+    user.openInventory(new ActiveEditorMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
+  }
+
+  /**
    * Determines the Minecraft attribute to be set and prompts the user for an input.
    */
   private void readMinecraftAttribute() {
@@ -543,29 +567,23 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Sets the user's interacting equipment slot for passive abilities.
-   *
-   * @param action type of interaction
+   * Determines the passive ability to be set and prompts the user for an input.
    */
-  private void setPassiveMode(EquipmentSlot action) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String equipmentSlot = action.name().toLowerCase();
-    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new PassiveEditorMenu(user, action).openMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+  private void readPassive() {
+    String passive = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(passive) + ChatColor.WHITE + " value.");
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, passive);
+    awaitMessageResponse("passive_ability");
   }
 
   /**
-   * Sets the user's interacting equipment slot for active abilities.
-   *
-   * @param action type of interaction
+   * Determines the active ability to be set and prompts the user for an input.
    */
-  private void setActiveMode(EquipmentSlot action) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String equipmentSlot = action.name().toLowerCase();
-    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new ActiveEditorMenu(user, action).openMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
+  private void readActive() {
+    String active = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(active) + ChatColor.WHITE + " value.");
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, active);
+    awaitMessageResponse("active_ability");
   }
 
   /**

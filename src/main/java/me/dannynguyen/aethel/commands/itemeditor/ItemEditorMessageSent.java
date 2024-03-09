@@ -32,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.1
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -334,6 +334,20 @@ public class ItemEditorMessageSent {
   }
 
   /**
+   * Sets or removes an item's passive ability.
+   */
+  public void setPassive() {
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassiveEditor);
+  }
+
+  /**
+   * Sets or removes an item's active ability.
+   */
+  public void setActive() {
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActiveEditor);
+  }
+
+  /**
    * Sets or removes an item's Aethel tag.
    */
   public void setTag() {
@@ -413,7 +427,6 @@ public class ItemEditorMessageSent {
     user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
   }
 
-
   /**
    * Removes existing attribute modifiers in the same slot.
    *
@@ -487,6 +500,30 @@ public class ItemEditorMessageSent {
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionEditorMenu(user).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
+    });
+  }
+
+  /**
+   * Returns to the PassiveEditor.
+   */
+  private void returnToPassiveEditor() {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new PassiveEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+    });
+  }
+
+  /**
+   * Returns to the ActiveEditor.
+   */
+  private void returnToActiveEditor() {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      user.openInventory(new ActiveEditorMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
     });
   }
 
