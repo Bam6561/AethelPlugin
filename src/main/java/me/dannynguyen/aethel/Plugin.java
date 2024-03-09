@@ -2,7 +2,6 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.DeveloperModeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
-import me.dannynguyen.aethel.commands.status.StatusCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
@@ -10,6 +9,7 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
+import me.dannynguyen.aethel.commands.status.StatusCommand;
 import me.dannynguyen.aethel.listeners.plugin.MenuClick;
 import me.dannynguyen.aethel.listeners.plugin.MessageSent;
 import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
@@ -17,11 +17,10 @@ import me.dannynguyen.aethel.listeners.rpg.EquipmentAttributes;
 import me.dannynguyen.aethel.listeners.rpg.PlayerDamage;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipment;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgSystem;
+import me.dannynguyen.aethel.systems.rpg.*;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -43,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.8
+ * @version 1.14.11
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -111,6 +110,7 @@ public class Plugin extends JavaPlugin {
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
     scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateDamageOverTimeStatuses, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateActionDisplay, 0, 40);
     scheduler.scheduleSyncRepeatingTask(this, this::updateEnvironmentalProtections, 0, 100);
@@ -120,11 +120,11 @@ public class Plugin extends JavaPlugin {
    * Adds an interval to compare the player's main hand item for updating equipment attributes.
    */
   private void updateMainHandEquipmentAttributes() {
-    RpgSystem rpgSystem = data.getRpgSystem();
-    for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
+    Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
+    for (UUID uuid : rpgPlayers.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
-        RpgEquipment equipment = rpgSystem.getRpgPlayers().get(uuid).getEquipment();
+        RpgEquipment equipment = rpgPlayers.get(uuid).getEquipment();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         if (!heldItem.equals(equipment.getHeldItem())) {
           equipment.setHeldItem(heldItem);
@@ -135,13 +135,32 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
+   * Adds an interval to calculate damage taken from damage over time statuses.
+   */
+  private void updateDamageOverTimeStatuses() {
+    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = data.getRpgSystem().getStatuses();
+    for (UUID uuid : entityStatuses.keySet()) {
+      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+      if (statuses.containsKey(RpgStatusType.BLEED) || statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
+        if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
+          if (entity instanceof Player player) {
+            handlePlayerDamageOverTime(uuid, statuses, player);
+          } else {
+            handleEntityDamageOverTime(uuid, statuses, entity);
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Adds an interval to update players' action bar health display.
    */
   private void updateActionDisplay() {
-    RpgSystem rpgSystem = data.getRpgSystem();
-    for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
+    Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
+    for (UUID uuid : rpgPlayers.keySet()) {
       if (Bukkit.getPlayer(uuid) != null) {
-        rpgSystem.getRpgPlayers().get(uuid).getHealth().updateActionDisplay();
+        rpgPlayers.get(uuid).getHealth().updateActionDisplay();
       }
     }
   }
@@ -154,10 +173,10 @@ public class Plugin extends JavaPlugin {
    * </p>
    */
   private void updateOvershields() {
-    RpgSystem rpgSystem = data.getRpgSystem();
-    for (UUID uuid : rpgSystem.getRpgPlayers().keySet()) {
+    Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
+    for (UUID uuid : rpgPlayers.keySet()) {
       if (Bukkit.getPlayer(uuid) != null) {
-        rpgSystem.getRpgPlayers().get(uuid).getHealth().decayOvershield();
+        rpgPlayers.get(uuid).getHealth().decayOvershield();
       }
     }
   }
@@ -184,6 +203,46 @@ public class Plugin extends JavaPlugin {
         player.setFireTicks(-20);
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
       }
+    }
+  }
+
+  /**
+   * Deals damage from damage over time statuses to players.
+   *
+   * @param uuid     player uuid
+   * @param statuses player statuses
+   * @param player   interacting player
+   */
+  private void handlePlayerDamageOverTime(UUID uuid, Map<RpgStatusType, RpgStatus> statuses, Player player) {
+    RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
+    int protection = Math.min(20, rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL));
+    if (statuses.containsKey(RpgStatusType.BLEED)) {
+      double bleedDamage = statuses.get(RpgStatusType.BLEED).getStackAmount() * 0.2;
+      player.damage(0.1);
+      rpgPlayer.getHealth().damage(bleedDamage - (bleedDamage * (protection * 0.04)));
+    }
+    if (statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
+      double electrocuteDamage = statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2;
+      player.damage(0.1);
+      rpgPlayer.getHealth().damage(electrocuteDamage - (electrocuteDamage * (protection * 0.04)));
+    }
+  }
+
+  /**
+   * Deals damage from damage over time statuses to entities.
+   *
+   * @param uuid     entity uuid
+   * @param statuses entity statuses
+   * @param entity   interacting entity
+   */
+  private void handleEntityDamageOverTime(UUID uuid, Map<RpgStatusType, RpgStatus> statuses, LivingEntity entity) {
+    if (statuses.containsKey(RpgStatusType.BLEED)) {
+      entity.damage(0.1);
+      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(RpgStatusType.BLEED).getStackAmount() * 0.2);
+    }
+    if (statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
+      entity.damage(0.1);
+      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2);
     }
   }
 
