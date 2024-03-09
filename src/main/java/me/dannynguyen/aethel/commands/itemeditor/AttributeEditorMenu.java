@@ -27,7 +27,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.0
  * @since 1.7.0
  */
 class AttributeEditorMenu {
@@ -73,7 +73,7 @@ class AttributeEditorMenu {
   protected AttributeEditorMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
-    this.slot = slot;
+    this.slot = Objects.requireNonNull(slot, "Null slot");
     this.attributeModifiers = item.getItemMeta().getAttributeModifiers();
     this.menu = createMenu();
   }

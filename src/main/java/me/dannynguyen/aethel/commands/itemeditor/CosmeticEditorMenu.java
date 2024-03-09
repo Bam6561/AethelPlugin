@@ -26,7 +26,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.0
  * @since 1.6.7
  */
 class CosmeticEditorMenu {
@@ -187,7 +187,9 @@ class CosmeticEditorMenu {
     menu.setItem(15, ItemCreator.createItem(Material.DIAMOND_HELMET, ChatColor.AQUA + "Aethel Attributes", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(16, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchantments"));
     menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
-    menu.setItem(23, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
+    menu.setItem(23, ItemCreator.createItem(Material.SUGAR, ChatColor.AQUA + "Passive Abilities"));
+    menu.setItem(24, ItemCreator.createItem(Material.BLAZE_POWDER, ChatColor.AQUA + "Active Abilities"));
+    menu.setItem(25, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
   }
 
   /**

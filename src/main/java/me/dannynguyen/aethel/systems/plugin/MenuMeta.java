@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin menu metadata.
  *
  * @author Danny Nguyen
- * @version 1.14.3
+ * @version 1.15.0
  * @since 1.10.1
  */
 public enum MenuMeta {
@@ -76,6 +76,11 @@ public enum MenuMeta {
   FORGE_SAVE("forge.save"),
 
   /**
+   * Edit item cosmetics.
+   */
+  ITEMEDITOR_COSMETIC("itemeditor.cosmetic"),
+
+  /**
    * Edit item Minecraft attributes.
    */
   ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor.minecraft_attribute"),
@@ -86,11 +91,6 @@ public enum MenuMeta {
   ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor.aethel_attribute"),
 
   /**
-   * Edit item cosmetics.
-   */
-  ITEMEDITOR_COSMETIC("itemeditor.cosmetic"),
-
-  /**
    * Edit item enchantments.
    */
   ITEMEDITOR_ENCHANTMENT("itemeditor.enchantment"),
@@ -99,6 +99,16 @@ public enum MenuMeta {
    * Edit item potion effects.
    */
   ITEMEDITOR_POTION("itemeditor.potion"),
+
+  /**
+   * Edit item passives.
+   */
+  ITEMEDITOR_PASSIVE("itemeditor.passive"),
+
+  /**
+   * Edit item actives.
+   */
+  ITEMEDITOR_ACTIVE("itemeditor.active"),
 
   /**
    * Edit item tags.

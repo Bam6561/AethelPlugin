@@ -29,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.0
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -99,7 +99,9 @@ public class ItemEditorMenuClick {
       case 16 -> openEnchantmentEditor();
       case 17 -> openPotionEditor();
       case 20 -> toggleUnbreakable();
-      case 23 -> openTagEditor();
+      case 23 -> openPassiveEditor();
+      case 24 -> openAbilityEditor();
+      case 25 -> openTagEditor();
       case 36 -> { // Lore Context
       }
       case 37 -> setLore();
@@ -120,12 +122,12 @@ public class ItemEditorMenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmeticEditor();
-      case 5 -> setMode(EquipmentSlot.HEAD);
-      case 6 -> setMode(EquipmentSlot.CHEST);
-      case 7 -> setMode(EquipmentSlot.LEGS);
-      case 8 -> setMode(EquipmentSlot.FEET);
-      case 14 -> setMode(EquipmentSlot.HAND);
-      case 15 -> setMode(EquipmentSlot.OFF_HAND);
+      case 5 -> setAttributeMode(EquipmentSlot.HEAD);
+      case 6 -> setAttributeMode(EquipmentSlot.CHEST);
+      case 7 -> setAttributeMode(EquipmentSlot.LEGS);
+      case 8 -> setAttributeMode(EquipmentSlot.FEET);
+      case 14 -> setAttributeMode(EquipmentSlot.HAND);
+      case 15 -> setAttributeMode(EquipmentSlot.OFF_HAND);
       case 18, 27, 36 -> { // Context
       }
       default -> readMinecraftAttribute();
@@ -140,14 +142,14 @@ public class ItemEditorMenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmeticEditor();
-      case 5 -> setMode(RpgEquipmentSlot.HEAD);
-      case 6 -> setMode(RpgEquipmentSlot.CHEST);
-      case 7 -> setMode(RpgEquipmentSlot.LEGS);
-      case 8 -> setMode(RpgEquipmentSlot.FEET);
-      case 14 -> setMode(RpgEquipmentSlot.HAND);
-      case 15 -> setMode(RpgEquipmentSlot.OFF_HAND);
-      case 16 -> setMode(RpgEquipmentSlot.NECKLACE);
-      case 17 -> setMode(RpgEquipmentSlot.RING);
+      case 5 -> setAethelAttributeMode(RpgEquipmentSlot.HEAD);
+      case 6 -> setAethelAttributeMode(RpgEquipmentSlot.CHEST);
+      case 7 -> setAethelAttributeMode(RpgEquipmentSlot.LEGS);
+      case 8 -> setAethelAttributeMode(RpgEquipmentSlot.FEET);
+      case 14 -> setAethelAttributeMode(RpgEquipmentSlot.HAND);
+      case 15 -> setAethelAttributeMode(RpgEquipmentSlot.OFF_HAND);
+      case 16 -> setAethelAttributeMode(RpgEquipmentSlot.NECKLACE);
+      case 17 -> setAethelAttributeMode(RpgEquipmentSlot.RING);
       case 18, 27, 36 -> { // Context
       }
       default -> readAethelAttribute();
@@ -176,6 +178,44 @@ public class ItemEditorMenuClick {
       case 5 -> setPotionColor();
       case 6 -> returnToCosmeticEditor();
       default -> readPotionEffect();
+    }
+  }
+
+  /**
+   * Sets an item's passive ability.
+   */
+  public void interpretPassiveEditorClick() {
+    switch (e.getSlot()) {
+      case 0, 1 -> { // Context, Item
+      }
+      case 2 -> returnToCosmeticEditor();
+      case 5 -> setPassiveMode(EquipmentSlot.HEAD);
+      case 6 -> setPassiveMode(EquipmentSlot.CHEST);
+      case 7 -> setPassiveMode(EquipmentSlot.LEGS);
+      case 8 -> setPassiveMode(EquipmentSlot.FEET);
+      case 14 -> setPassiveMode(EquipmentSlot.HAND);
+      case 15 -> setPassiveMode(EquipmentSlot.OFF_HAND);
+      default -> {
+      }
+    }
+  }
+
+  /**
+   * Sets an item's active ability.
+   */
+  public void interpretActiveEditorClick() {
+    switch (e.getSlot()) {
+      case 0, 1 -> { // Context, Item
+      }
+      case 2 -> returnToCosmeticEditor();
+      case 5 -> setActiveMode(EquipmentSlot.HEAD);
+      case 6 -> setActiveMode(EquipmentSlot.CHEST);
+      case 7 -> setActiveMode(EquipmentSlot.LEGS);
+      case 8 -> setActiveMode(EquipmentSlot.FEET);
+      case 14 -> setActiveMode(EquipmentSlot.HAND);
+      case 15 -> setActiveMode(EquipmentSlot.OFF_HAND);
+      default -> {
+      }
     }
   }
 
@@ -262,6 +302,28 @@ public class ItemEditorMenuClick {
     playerMeta.remove(PlayerMeta.MESSAGE);
     user.openInventory(new PotionEditorMenu(user).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
+  }
+
+  /**
+   * Opens a PassiveEditor menu.
+   */
+  private void openPassiveEditor() {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    playerMeta.put(PlayerMeta.SLOT, "head");
+    user.openInventory(new PassiveEditorMenu(user, EquipmentSlot.HEAD).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+  }
+
+  /**
+   * Opens an ActiveEditor menu.
+   */
+  private void openAbilityEditor() {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    playerMeta.remove(PlayerMeta.MESSAGE);
+    playerMeta.put(PlayerMeta.SLOT, "head");
+    user.openInventory(new ActiveEditorMenu(user, EquipmentSlot.HEAD).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
   /**
@@ -413,11 +475,11 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Sets the user's interacting equipment slot.
+   * Sets the user's interacting equipment slot for attributes.
    *
    * @param action type of interaction
    */
-  private void setMode(EquipmentSlot action) {
+  private void setAttributeMode(EquipmentSlot action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String equipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
@@ -426,11 +488,11 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Sets the user's interacting RPG equipment slot.
+   * Sets the user's interacting RPG equipment slot for Aethel attributes.
    *
    * @param action type of interaction
    */
-  private void setMode(RpgEquipmentSlot action) {
+  private void setAethelAttributeMode(RpgEquipmentSlot action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String rpgEquipmentSlot = action.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, rpgEquipmentSlot);
@@ -478,6 +540,32 @@ public class ItemEditorMenuClick {
     user.sendMessage(PluginMessage.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, potionEffect);
     awaitMessageResponse("potion-effect");
+  }
+
+  /**
+   * Sets the user's interacting equipment slot for passive abilities.
+   *
+   * @param action type of interaction
+   */
+  private void setPassiveMode(EquipmentSlot action) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    String equipmentSlot = action.name().toLowerCase();
+    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
+    user.openInventory(new PassiveEditorMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+  }
+
+  /**
+   * Sets the user's interacting equipment slot for active abilities.
+   *
+   * @param action type of interaction
+   */
+  private void setActiveMode(EquipmentSlot action) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    String equipmentSlot = action.name().toLowerCase();
+    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
+    user.openInventory(new ActiveEditorMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
   /**
