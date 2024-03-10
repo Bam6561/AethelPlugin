@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.15.5
  * @since 1.13.4
  */
 public class Health {
@@ -173,11 +173,7 @@ public class Health {
    * Toggles the visibility of health in the action bar.
    */
   public void toggleActionVisibility() {
-    if (healthActionVisible) {
-      healthActionVisible = false;
-    } else {
-      healthActionVisible = true;
-    }
+    healthActionVisible = !healthActionVisible;
   }
 
   /**

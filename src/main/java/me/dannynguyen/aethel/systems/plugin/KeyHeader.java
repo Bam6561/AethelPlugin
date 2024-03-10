@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin key headers.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.15.5
  * @since 1.15.3
  */
 public enum KeyHeader {
@@ -43,7 +43,7 @@ public enum KeyHeader {
   /**
    * Key header.
    */
-  private String header;
+  private final String header;
 
   /**
    * Associates a key header ID with its header.

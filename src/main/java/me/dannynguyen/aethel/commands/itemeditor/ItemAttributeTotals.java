@@ -21,7 +21,7 @@ import java.util.*;
  * Represents Minecraft and Aethel attribute totals.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.15.5
  * @since 1.13.2
  */
 class ItemAttributeTotals {
@@ -58,13 +58,13 @@ class ItemAttributeTotals {
    */
   protected ItemAttributeTotals(@NotNull ItemStack item, @NotNull List<String> attributes) {
     this.item = Objects.requireNonNull(item, "Null item");
+    this.attributes = Objects.requireNonNull(attributes, "Null attributes");
     this.meta = item.getItemMeta();
     if (meta.hasLore()) {
       this.lore = meta.getLore();
     } else {
       this.lore = new ArrayList<>();
     }
-    this.attributes = Objects.requireNonNull(attributes, "Null attributes");
     this.attributeValues = totalAttributeValues();
   }
 

@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.5
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -73,8 +73,8 @@ class RecipeDetailsMenu {
    */
   protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
     this.type = Objects.requireNonNull(type, "Null type");
+    this.userUUID = user.getUniqueId();
     this.menu = createMenu(this.type);
   }
 
@@ -87,9 +87,9 @@ class RecipeDetailsMenu {
    */
   protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
     this.type = Objects.requireNonNull(type, "Null type");
     this.recipe = Objects.requireNonNull(Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
+    this.userUUID = user.getUniqueId();
     this.menu = createMenu(this.type);
   }
 

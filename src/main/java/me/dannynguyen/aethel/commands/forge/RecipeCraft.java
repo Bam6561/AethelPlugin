@@ -24,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.5
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -71,8 +71,8 @@ class RecipeCraft {
    */
   protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
     PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
+    this.userUUID = user.getUniqueId();
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
     this.pInv = user.getInventory();

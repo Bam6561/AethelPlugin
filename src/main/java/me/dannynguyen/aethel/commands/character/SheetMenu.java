@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.5
  * @since 1.6.3
  */
 class SheetMenu {
@@ -72,9 +72,9 @@ class SheetMenu {
    */
   protected SheetMenu(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.menu = Objects.requireNonNull(menu, "Null menu");
     this.owner = user;
     this.ownerUUID = owner.getUniqueId();
-    this.menu = Objects.requireNonNull(menu, "Null menu");
   }
 
   /**

@@ -23,7 +23,7 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.5
  * @since 1.4.7
  */
 class PlayerStatMenu {
@@ -62,8 +62,8 @@ class PlayerStatMenu {
    */
   protected PlayerStatMenu(@NotNull Player user, @NotNull String owner) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
     this.owner = Objects.requireNonNull(owner, "Null owner");
+    this.userUUID = user.getUniqueId();
     this.menu = createMenu();
   }
 

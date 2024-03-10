@@ -24,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.15.5
  * @since 1.1.11
  */
 public class RecipeRegistry {
@@ -53,9 +53,9 @@ public class RecipeRegistry {
    * @throws IllegalArgumentException provided file is not a directory
    */
   public RecipeRegistry(@NotNull File directory) {
-    if (directory.exists()) {
+    if (Objects.requireNonNull(directory, "Null directory").exists()) {
       if (directory.isDirectory()) {
-        this.directory = Objects.requireNonNull(directory, "Null directory");
+        this.directory = directory;
       } else {
         throw new IllegalArgumentException("Non-directory");
       }

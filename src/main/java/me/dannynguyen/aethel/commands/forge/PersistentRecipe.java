@@ -12,7 +12,7 @@ import java.util.Objects;
  * Represents a recipe stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.15.5
  * @since 1.0.3
  */
 class PersistentRecipe {
@@ -49,10 +49,10 @@ class PersistentRecipe {
    * @throws IllegalArgumentException provided file is not a file
    */
   protected PersistentRecipe(@NotNull File file, @NotNull List<ItemStack> results, @NotNull List<ItemStack> materials) {
-    if (file.isFile()) {
-      this.file = Objects.requireNonNull(file, "Null file");
+    if (Objects.requireNonNull(file, "Null file").isFile()) {
       this.results = Objects.requireNonNull(results, "Null results");
       this.materials = Objects.requireNonNull(materials, "Null materials");
+      this.file = file;
       this.name = ItemReader.readName(results.get(0));
     } else {
       throw new IllegalArgumentException("Non-file");

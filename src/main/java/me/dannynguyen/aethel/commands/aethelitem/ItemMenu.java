@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.5
  * @since 1.4.0
  */
 class ItemMenu {
@@ -53,8 +53,8 @@ class ItemMenu {
    */
   protected ItemMenu(@NotNull Player user, @NotNull ItemMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
     this.action = Objects.requireNonNull(action, "Null action");
+    this.userUUID = user.getUniqueId();
     this.menu = createMenu();
   }
 

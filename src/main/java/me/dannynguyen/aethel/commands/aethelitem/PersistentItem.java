@@ -11,7 +11,7 @@ import java.util.Objects;
  * Represents an ItemStack stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.11.6
+ * @version 1.15.5
  * @since 1.3.2
  */
 class PersistentItem {
@@ -42,9 +42,9 @@ class PersistentItem {
    * @throws IllegalArgumentException provided file is not a file
    */
   public PersistentItem(@NotNull File file, @NotNull ItemStack item) throws IllegalArgumentException {
-    if (file.isFile()) {
-      this.file = Objects.requireNonNull(file, "Null file");
+    if (Objects.requireNonNull(file, "Null file").isFile()) {
       this.item = Objects.requireNonNull(item, "Null item");
+      this.file = file;
       this.name = ItemReader.readName(item);
     } else {
       throw new IllegalArgumentException("Non-file");

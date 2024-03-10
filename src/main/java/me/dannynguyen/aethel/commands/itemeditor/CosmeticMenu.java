@@ -26,7 +26,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.0
+ * @version 1.15.5
  * @since 1.6.7
  */
 class CosmeticMenu {
@@ -58,7 +58,7 @@ class CosmeticMenu {
   protected CosmeticMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
-    this.meta = Objects.requireNonNull(item.getItemMeta(), "Null meta");
+    this.meta = item.getItemMeta();
     this.menu = createMenu();
   }
 

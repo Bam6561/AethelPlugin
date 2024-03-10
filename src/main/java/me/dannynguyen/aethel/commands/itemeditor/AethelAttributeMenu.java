@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.15.5
  * @since 1.14.1
  */
 public class AethelAttributeMenu {
@@ -77,8 +77,8 @@ public class AethelAttributeMenu {
    */
   protected AethelAttributeMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.slot = Objects.requireNonNull(slot, "Null slot");
+    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
     this.aethelAttributesMap = mapAethelAttributes();
     this.menu = createMenu();

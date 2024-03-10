@@ -14,7 +14,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.9.19
+ * @version 1.15.5
  * @since 1.2.4
  */
 class InventorySlot {
@@ -41,8 +41,8 @@ class InventorySlot {
    * @param amount amount of ItemStack
    */
   protected InventorySlot(int slot, @NotNull ItemStack item, int amount) {
-    this.slot = slot;
     this.item = Objects.requireNonNull(item, "Item is null");
+    this.slot = slot;
     this.amount = amount;
   }
 

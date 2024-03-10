@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.5
  * @since 1.0.6
  */
 class RecipeMenu {
@@ -53,8 +53,8 @@ class RecipeMenu {
    */
   protected RecipeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
     this.action = Objects.requireNonNull(action, "Null action");
+    this.userUUID = user.getUniqueId();
     this.menu = createMenu();
   }
 

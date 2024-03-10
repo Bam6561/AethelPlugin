@@ -23,7 +23,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.15.5
  * @since 1.3.2
  */
 public class ItemRegistry {
@@ -52,9 +52,9 @@ public class ItemRegistry {
    * @throws IllegalArgumentException provided file is not a directory
    */
   public ItemRegistry(@NotNull File directory) throws IllegalArgumentException {
-    if (directory.exists()) {
+    if (Objects.requireNonNull(directory, "Null directory").exists()) {
       if (directory.isDirectory()) {
-        this.directory = Objects.requireNonNull(directory, "Null directory");
+        this.directory = directory;
       } else {
         throw new IllegalArgumentException("Non-directory");
       }
