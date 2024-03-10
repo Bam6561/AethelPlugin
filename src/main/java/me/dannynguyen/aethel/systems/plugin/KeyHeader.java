@@ -48,7 +48,7 @@ public enum KeyHeader {
   /**
    * Associates a key header ID with its header.
    *
-   * @param header
+   * @param header key header
    */
   KeyHeader(@NotNull String header) {
     this.header = header;

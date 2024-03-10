@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.8
+ * @version 1.15.6
  * @since 1.2.6
  */
 public class AethelTagCommand implements CommandExecutor {
@@ -80,13 +80,12 @@ public class AethelTagCommand implements CommandExecutor {
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      case 3 -> {
+      default -> {
         switch (action) {
           case "s", "set" -> setAethelTag(user, args, item);
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -113,7 +112,7 @@ public class AethelTagCommand implements CommandExecutor {
    * @param item main hand item
    */
   private void removeAethelTag(Player user, String tag, ItemStack item) {
-    if (new AethelTagModifier(item).removeTag(tag)) {
+    if (new AethelTagModifier(user, item, tag).removeTag()) {
       user.sendMessage(ChatColor.RED + "[Removed Tag] " + ChatColor.AQUA + tag);
     } else {
       user.sendMessage(ChatColor.RED + "Tag does not exist.");
@@ -129,7 +128,14 @@ public class AethelTagCommand implements CommandExecutor {
    */
   private void setAethelTag(Player user, String[] args, ItemStack item) {
     String tag = args[1];
-    String value = args[2];
-    new AethelTagModifier(item).setTag(user, tag, value);
+    StringBuilder value = new StringBuilder();
+    if (args.length == 3) {
+      value = new StringBuilder(args[2]);
+    } else {
+      for (int i = 2; i < args.length; i++) {
+        value.append(args[i]).append(" ");
+      }
+    }
+    new AethelTagModifier(user, item, tag).setTag(value.toString());
   }
 }

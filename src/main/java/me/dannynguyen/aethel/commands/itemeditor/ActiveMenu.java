@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;

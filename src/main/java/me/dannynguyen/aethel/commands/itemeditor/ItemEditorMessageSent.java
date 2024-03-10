@@ -2,6 +2,8 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.*;
+import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
+import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.ItemRepairCost;

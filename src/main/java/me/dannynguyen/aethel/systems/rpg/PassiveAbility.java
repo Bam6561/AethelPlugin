@@ -1,13 +1,13 @@
-package me.dannynguyen.aethel.commands.itemeditor;
+package me.dannynguyen.aethel.systems.rpg;
 
 /**
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.1
+ * @version 1.15.6
  * @since 1.15.1
  */
-enum PassiveAbility {
+public enum PassiveAbility {
   /**
    * Applies stacks of Brittle status.
    */
