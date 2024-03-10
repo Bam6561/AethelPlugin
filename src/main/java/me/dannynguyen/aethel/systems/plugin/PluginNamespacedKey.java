@@ -10,7 +10,7 @@ import java.util.Objects;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.11.9
+ * @version 1.15.2
  * @since 1.11.9
  **/
 public enum PluginNamespacedKey {
@@ -18,6 +18,16 @@ public enum PluginNamespacedKey {
    * Aethel attribute list.
    */
   ATTRIBUTE_LIST(new NamespacedKey(Plugin.getInstance(), "aethel.attribute.list")),
+
+  /**
+   * Item passive ability list.
+   */
+  PASSIVE_LIST(new NamespacedKey(Plugin.getInstance(), "aethel.passive.list")),
+
+  /**
+   * Item active ability list.
+   */
+  ACTIVE_LIST(new NamespacedKey(Plugin.getInstance(), "aethel.passive.list")),
 
   /**
    * Item category.

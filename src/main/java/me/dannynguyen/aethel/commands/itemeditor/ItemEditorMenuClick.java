@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.Message;
+import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -29,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.1
+ * @version 1.15.2
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -550,9 +550,9 @@ public class ItemEditorMenuClick {
    * Determines the enchantment to be set and prompts the user for an input.
    */
   private void readEnchantment() {
-    String enchantment = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    String enchantment = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, enchantment);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(enchantment));
     awaitMessageResponse("enchantment");
   }
 
@@ -560,9 +560,9 @@ public class ItemEditorMenuClick {
    * Determines the potion effect to be set and prompts the user for an input.
    */
   private void readPotionEffect() {
-    String potionEffect = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
+    String potionEffect = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, potionEffect);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(potionEffect));
     awaitMessageResponse("potion-effect");
   }
 
@@ -570,9 +570,10 @@ public class ItemEditorMenuClick {
    * Determines the passive ability to be set and prompts the user for an input.
    */
   private void readPassive() {
-    String passive = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(passive) + ChatColor.WHITE + " value.");
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, passive);
+    String passive = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(passive) + ChatColor.WHITE + " ability values:");
+    user.sendMessage(getPassiveContext(passive));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(passive));
     awaitMessageResponse("passive_ability");
   }
 
@@ -580,9 +581,9 @@ public class ItemEditorMenuClick {
    * Determines the active ability to be set and prompts the user for an input.
    */
   private void readActive() {
-    String active = ChatColor.stripColor(TextFormatter.formatId(e.getCurrentItem().getItemMeta().getDisplayName()));
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(active) + ChatColor.WHITE + " value.");
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, active);
+    String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(active) + ChatColor.WHITE + " ability values:");
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(active));
     awaitMessageResponse("active_ability");
   }
 
@@ -671,6 +672,27 @@ public class ItemEditorMenuClick {
       }
       case "Item Cooldown" -> {
         return context + "-0.0%";
+      }
+      default -> {
+        return null;
+      }
+    }
+  }
+
+  /**
+   * Sends a contextual value for the passive ability being edited.
+   *
+   * @param passive passive ability
+   * @return passive ability context
+   */
+  private String getPassiveContext(String passive) {
+    String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE;
+    switch (passive) {
+      case "Chill", "Dampen", "Rupture" -> {
+        return context + "Stacks, Duration in Ticks";
+      }
+      case "Spark" -> {
+        return context + "Damage, Distance in Meters";
       }
       default -> {
         return null;

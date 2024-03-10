@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
@@ -32,7 +33,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.1
+ * @version 1.15.2
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -305,6 +306,7 @@ public class ItemEditorMessageSent {
     PotionMeta potion = (PotionMeta) meta;
     NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
     PotionEffectType potionEffectType = PotionEffectType.getByKey(potionEffectKey);
+
     if (!e.getMessage().equals("-")) {
       String[] input = e.getMessage().split(" ", 3);
       if (input.length == 3) {
@@ -337,6 +339,56 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's passive ability.
    */
   public void setPassive() {
+    String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+    String passive = type + "." + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String passiveKeyString = "aethel.passive." + passive;
+    PassiveAbility passiveAbilityType = PassiveAbility.valueOf(type.toUpperCase());
+
+    if (!e.getMessage().equals("-")) {
+      String[] args = e.getMessage().split(" ");
+      switch (passiveAbilityType) {
+        case CHILL, DAMPEN, RUPTURE -> {
+          user.sendMessage();
+          if (args.length == 2) {
+            try {
+              int stacks = Integer.parseInt(args[0]);
+              try {
+                int ticks = Integer.parseInt(args[1]);
+                setPassiveStackApplicationAbility(type, passive, passiveKeyString, stacks, ticks);
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid number of ticks.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid number of stacks.");
+            }
+          } else {
+            user.sendMessage(ChatColor.RED + "Unrecognized arguments.");
+          }
+        }
+        case SPARK -> {
+          if (args.length == 2) {
+            try {
+              double damage = Integer.parseInt(args[0]);
+              try {
+                double distance = Integer.parseInt(args[1]);
+                setPassiveDamageDistanceAbility(type, passive, passiveKeyString, damage, distance);
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid distance.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid damage.");
+            }
+          } else {
+            user.sendMessage(ChatColor.RED + "Unrecognized arguments.");
+          }
+        }
+      }
+    } else {
+      switch (passiveAbilityType) {
+        case CHILL, DAMPEN, RUPTURE -> removePassiveStackApplicationAbility(type, passive, passiveKeyString);
+        case SPARK -> removePassiveDamageDistanceAbility(type, passive, passiveKeyString);
+      }
+    }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassive);
   }
 
@@ -344,6 +396,15 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's active ability.
    */
   public void setActive() {
+    String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+    String active = type + "." + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), "aethel.active." + active);
+
+    if (!e.getMessage().equals("-")) {
+      //setActiveAbility(type, active, activeKey, activeValue);
+    } else {
+      //removeActiveAbility(type, active, activeKey);
+    }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActive);
   }
 
@@ -364,6 +425,22 @@ public class ItemEditorMessageSent {
     }
     item.setItemMeta(meta);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToTag);
+  }
+
+  /**
+   * Removes existing attribute modifiers in the same slot.
+   *
+   * @param attribute     attribute
+   * @param equipmentSlot equipment slot
+   */
+  private void removeExistingAttributeModifiers(Attribute attribute, EquipmentSlot equipmentSlot) {
+    if (meta.getAttributeModifiers() != null) {
+      for (AttributeModifier attributeModifier : meta.getAttributeModifiers().get(attribute)) {
+        if (attributeModifier.getSlot() == equipmentSlot) {
+          meta.removeAttributeModifier(attribute, attributeModifier);
+        }
+      }
+    }
   }
 
   /**
@@ -428,19 +505,192 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Removes existing attribute modifiers in the same slot.
+   * Sets an item's passive stack application ability based on the equipment slot mode.
    *
-   * @param attribute     attribute
-   * @param equipmentSlot equipment slot
+   * @param type             passive type derived from click
+   * @param passive          passive name
+   * @param passiveKeyString passive key string
+   * @param stacks           stack application instance
+   * @param ticks            stack instance duration
    */
-  private void removeExistingAttributeModifiers(Attribute attribute, EquipmentSlot equipmentSlot) {
-    if (meta.getAttributeModifiers() != null) {
-      for (AttributeModifier attributeModifier : meta.getAttributeModifiers().get(attribute)) {
-        if (attributeModifier.getSlot() == equipmentSlot) {
-          meta.removeAttributeModifier(attribute, attributeModifier);
+  private void setPassiveStackApplicationAbility(String type, String passive, String passiveKeyString, int stacks, int ticks) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> itemPassives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      StringBuilder newPassives = new StringBuilder();
+      for (String itemPassive : itemPassives) {
+        if (!itemPassive.equals(passive)) {
+          newPassives.append(itemPassive).append(" ");
         }
       }
+      dataContainer.set(listKey, PersistentDataType.STRING, newPassives + passive);
+    } else {
+      dataContainer.set(listKey, PersistentDataType.STRING, passive);
     }
+    dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".stacks"), PersistentDataType.INTEGER, stacks);
+    dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".ticks"), PersistentDataType.INTEGER, ticks);
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
+  }
+
+  /**
+   * Sets an item's passive damage distance ability based on the equipment slot mode.
+   *
+   * @param type             passive type derived from click
+   * @param passive          passive name
+   * @param passiveKeyString passive key string
+   * @param damage           damage per instance
+   * @param meters           radius of effect
+   */
+  private void setPassiveDamageDistanceAbility(String type, String passive, String passiveKeyString, double damage, double meters) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> itemPassives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      StringBuilder newPassives = new StringBuilder();
+      for (String itemPassive : itemPassives) {
+        if (!itemPassive.equals(passive)) {
+          newPassives.append(itemPassive).append(" ");
+        }
+      }
+      dataContainer.set(listKey, PersistentDataType.STRING, newPassives + passive);
+    } else {
+      dataContainer.set(listKey, PersistentDataType.STRING, passive);
+    }
+    dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".damage"), PersistentDataType.DOUBLE, damage);
+    dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".meters"), PersistentDataType.DOUBLE, meters);
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
+  }
+
+  /**
+   * Removes an item's passive stack application ability based on the equipment slot mode.
+   *
+   * @param type             passive type derived from click
+   * @param passive          passive name
+   * @param passiveKeyString passive key string
+   */
+  private void removePassiveStackApplicationAbility(String type, String passive, String passiveKeyString) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> itemPassives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      StringBuilder newPassives = new StringBuilder();
+      for (String itemPassive : itemPassives) {
+        if (!itemPassive.equals(passive)) {
+          newPassives.append(itemPassive).append(" ");
+        }
+      }
+      if (!newPassives.isEmpty()) {
+        dataContainer.set(listKey, PersistentDataType.STRING, newPassives.toString().trim());
+      } else {
+        dataContainer.remove(listKey);
+      }
+      dataContainer.remove(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".damage"));
+      dataContainer.remove(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".distance"));
+    }
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
+  }
+
+  /**
+   * Removes an item's passive damage distance ability based on the equipment slot mode.
+   *
+   * @param type             passive type derived from click
+   * @param passive          passive name
+   * @param passiveKeyString passive key string
+   */
+  private void removePassiveDamageDistanceAbility(String type, String passive, String passiveKeyString) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> itemPassives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      StringBuilder newPassives = new StringBuilder();
+      for (String itemPassive : itemPassives) {
+        if (!itemPassive.equals(passive)) {
+          newPassives.append(itemPassive).append(" ");
+        }
+      }
+      if (!newPassives.isEmpty()) {
+        dataContainer.set(listKey, PersistentDataType.STRING, newPassives.toString().trim());
+      } else {
+        dataContainer.remove(listKey);
+      }
+      dataContainer.remove(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".stacks"));
+      dataContainer.remove(new NamespacedKey(Plugin.getInstance(), passiveKeyString + ".ticks"));
+    }
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
+  }
+
+  /**
+   * Sets an item's active ability based on the equipment slot mode.
+   *
+   * @param type        active type derived from click
+   * @param active      active name
+   * @param activeKey   active key
+   * @param activeValue active value
+   */
+  private void setActiveAbility(String type, String active, NamespacedKey activeKey, String activeValue) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey();
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> itemActives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      StringBuilder newActives = new StringBuilder();
+      for (String itemActive : itemActives) {
+        if (!itemActive.equals(active)) {
+          newActives.append(itemActive).append(" ");
+        }
+      }
+      dataContainer.set(listKey, PersistentDataType.STRING, newActives + active);
+    } else {
+      dataContainer.set(listKey, PersistentDataType.STRING, active);
+    }
+    dataContainer.set(activeKey, PersistentDataType.DOUBLE, Double.parseDouble(activeValue));
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
+  }
+
+  /**
+   * Removes an item's active ability based on the equipment slot mode.
+   *
+   * @param type      active type derived from click
+   * @param active    active name
+   * @param activeKey active key
+   */
+  private void removeActiveAbility(String type, String active, NamespacedKey activeKey) {
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    NamespacedKey listKey = PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey();
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+
+    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+      List<String> itemActives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      StringBuilder newActives = new StringBuilder();
+      for (String itemActive : itemActives) {
+        if (!itemActive.equals(active)) {
+          newActives.append(itemActive).append(" ");
+        }
+      }
+      if (!newActives.isEmpty()) {
+        dataContainer.set(listKey, PersistentDataType.STRING, newActives.toString().trim());
+      } else {
+        dataContainer.remove(listKey);
+      }
+      dataContainer.remove(activeKey);
+    }
+    item.setItemMeta(meta);
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
   }
 
   /**
