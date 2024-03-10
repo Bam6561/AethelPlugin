@@ -33,7 +33,7 @@ class TagMenu {
   private static final NamespacedKey[] aethelTags = {
       PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey(),
       PluginNamespacedKey.RECIPE_CATEGORY.getNamespacedKey(),
-      PluginNamespacedKey.RECIPE_ID.getNamespacedKey()};
+      PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey()};
 
   /**
    * Tag GUI.

@@ -192,7 +192,7 @@ public class RecipeRegistry {
   }
 
   /**
-   * Sorts a recipe into a category based on its recipe category id.
+   * Sorts a recipe into a category based on its recipe category ID.
    *
    * @param categories recipe categories
    * @param results    interacting recipe

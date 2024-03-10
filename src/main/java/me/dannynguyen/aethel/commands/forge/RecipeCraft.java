@@ -123,20 +123,20 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughOfAllMaterials() {
-    NamespacedKey recipeId = PluginNamespacedKey.RECIPE_ID.getNamespacedKey();
+    NamespacedKey forgeId = PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey();
     for (ItemStack item : materials) {
       Material requiredMaterial = item.getType();
       if (invMap.containsKey(requiredMaterial)) {
         int requiredAmount = item.getAmount();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        boolean hasForgeId = dataContainer.has(recipeId, PersistentDataType.STRING);
+        boolean hasForgeId = dataContainer.has(forgeId, PersistentDataType.STRING);
         if (!hasForgeId) {
-          if (!hasEnoughMatchingMaterials(recipeId, requiredMaterial, requiredAmount)) {
+          if (!hasEnoughMatchingMaterials(forgeId, requiredMaterial, requiredAmount)) {
             return false;
           }
         } else {
-          String requiredId = dataContainer.get(recipeId, PersistentDataType.STRING);
-          if (!hasEnoughMatchingIds(recipeId, requiredMaterial, requiredAmount, requiredId)) {
+          String requiredId = dataContainer.get(forgeId, PersistentDataType.STRING);
+          if (!hasEnoughMatchingIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
             return false;
           }
         }
@@ -176,15 +176,15 @@ class RecipeCraft {
   /**
    * Determines if the user has enough of the required material by matching type.
    *
-   * @param recipeId         recipe id
+   * @param forgeId          forge ID
    * @param requiredMaterial required material
    * @param requiredAmount   required amount
    * @return has enough materials
    */
-  private boolean hasEnoughMatchingMaterials(NamespacedKey recipeId, Material requiredMaterial, int requiredAmount) {
+  private boolean hasEnoughMatchingMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
     for (InventorySlot invSlot : invMap.get(requiredMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
-      if (!dataContainer.has(recipeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
+      if (!dataContainer.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
         if (invSlot.getAmount() > 0) {
           requiredAmount -= invSlot.getAmount();
           if (hasRequiredAmount(invSlot, requiredAmount)) {
@@ -197,18 +197,18 @@ class RecipeCraft {
   }
 
   /**
-   * Determines if the user has enough of the required material by matching type and recipe id.
+   * Determines if the user has enough of the required material by matching type and forge ID.
    *
-   * @param recipeId    recipe id
+   * @param forgeId     forge ID
    * @param reqMaterial required material
    * @param reqAmount   required amount
-   * @param reqForgeId  required recipe id
+   * @param reqForgeId  required forge ID
    * @return has enough materials
    */
-  private boolean hasEnoughMatchingIds(NamespacedKey recipeId, Material reqMaterial, int reqAmount, String reqForgeId) {
+  private boolean hasEnoughMatchingIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
     for (InventorySlot invSlot : invMap.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
-      if (dataContainer.has(recipeId, PersistentDataType.STRING) && dataContainer.get(recipeId, PersistentDataType.STRING).equals(reqForgeId)) {
+      if (dataContainer.has(forgeId, PersistentDataType.STRING) && dataContainer.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {
         if (invSlot.getAmount() > 0) {
           reqAmount -= invSlot.getAmount();
           if (hasRequiredAmount(invSlot, reqAmount)) {

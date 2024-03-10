@@ -33,7 +33,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.4
+ * @version 1.15.7
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -414,10 +414,10 @@ public class ItemEditorMenuClick {
     boolean generatedLore = false;
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-    NamespacedKey recipeId = PluginNamespacedKey.RECIPE_ID.getNamespacedKey();
-    if (dataContainer.has(recipeId, PersistentDataType.STRING)) {
+    NamespacedKey forgeId = PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey();
+    if (dataContainer.has(forgeId, PersistentDataType.STRING)) {
       generatedLore = true;
-      displayRecipeId(dataContainer, recipeId);
+      displayForgeId(dataContainer, forgeId);
     }
 
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
@@ -730,19 +730,19 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Adds the recipe ID to the item's lore.
+   * Adds the forge ID to the item's lore.
    *
    * @param dataContainer item's persistent tags
-   * @param recipeId      recipe id
+   * @param forgeId       forge ID
    */
-  private void displayRecipeId(PersistentDataContainer dataContainer, NamespacedKey recipeId) {
+  private void displayForgeId(PersistentDataContainer dataContainer, NamespacedKey forgeId) {
     List<String> lore;
     if (meta.hasLore()) {
       lore = meta.getLore();
     } else {
       lore = new ArrayList<>();
     }
-    lore.add(ChatColor.GRAY + "Recipe ID: " + ChatColor.DARK_GRAY + dataContainer.get(recipeId, PersistentDataType.STRING));
+    lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(forgeId, PersistentDataType.STRING));
     meta.setLore(lore);
     item.setItemMeta(meta);
   }

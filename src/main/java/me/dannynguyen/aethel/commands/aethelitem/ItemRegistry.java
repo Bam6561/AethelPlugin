@@ -150,7 +150,7 @@ public class ItemRegistry {
   }
 
   /**
-   * Sorts an item into a category based on its item category id.
+   * Sorts an item into a category based on its item category ID.
    *
    * @param categories item categories
    * @param item       interacting item

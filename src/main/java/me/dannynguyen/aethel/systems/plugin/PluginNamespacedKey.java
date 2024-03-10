@@ -10,7 +10,7 @@ import java.util.Objects;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.15.7
  * @since 1.11.9
  **/
 public enum PluginNamespacedKey {
@@ -40,9 +40,9 @@ public enum PluginNamespacedKey {
   RECIPE_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "category")),
 
   /**
-   * Recipe id.
+   * Recipe Forge ID.
    */
-  RECIPE_ID(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "id"));
+  RECIPE_FORGE_ID(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "id"));
 
   /**
    * Namespaced key.
@@ -50,7 +50,7 @@ public enum PluginNamespacedKey {
   private final NamespacedKey namespacedKey;
 
   /**
-   * Associates a NamespacedKey with its id.
+   * Associates a NamespacedKey with its ID.
    *
    * @param namespacedKey namespaced key
    */

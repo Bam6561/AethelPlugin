@@ -29,10 +29,10 @@ public class TextFormatter {
   }
 
   /**
-   * Formats a phrase like an id.
+   * Formats a phrase like an ID.
    *
    * @param phrase phrase
-   * @return id formatted phrase
+   * @return ID formatted phrase
    */
   public static String formatId(@NotNull String phrase) {
     return Objects.requireNonNull(phrase, "Null phrase").replace(" ", "_").toLowerCase();
