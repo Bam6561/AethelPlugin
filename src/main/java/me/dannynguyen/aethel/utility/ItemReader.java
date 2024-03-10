@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.utility;
 
-import org.bukkit.Bukkit;
+import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -20,7 +20,7 @@ import java.util.Objects;
  * Reads and decodes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.15.2
+ * @version 1.15.3
  * @since 1.1.4
  */
 public class ItemReader {
@@ -65,20 +65,11 @@ public class ItemReader {
     StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey key : dataContainer.getKeys()) {
       String keyName = key.getKey();
-      if (keyName.startsWith("aethel.")) {
+      if (keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
         keyName = keyName.substring(7);
-        Bukkit.getLogger().warning(keyName);
         if (keyName.startsWith("attribute.")) {
           if (keyName.matches("attribute.list")) {
             aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
-          } else {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.DOUBLE)).append(" ");
-          }
-        } else if (keyName.startsWith("passive.")) {
-          if (keyName.matches("passive.list")) {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
-          } else if (keyName.endsWith(".stacks") || keyName.endsWith(".ticks")) {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.INTEGER)).append(" ");
           } else {
             aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.DOUBLE)).append(" ");
           }

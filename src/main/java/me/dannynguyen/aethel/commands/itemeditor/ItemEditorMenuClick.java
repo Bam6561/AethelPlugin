@@ -530,7 +530,7 @@ public class ItemEditorMenuClick {
   private void readMinecraftAttribute() {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
-    user.sendMessage(getMinecraftAttributeValueContext(attribute));
+    user.sendMessage(getAttributeContext(attribute));
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, attribute);
     awaitMessageResponse("minecraft_attribute");
   }
@@ -541,7 +541,7 @@ public class ItemEditorMenuClick {
   private void readAethelAttribute() {
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + attribute + ChatColor.WHITE + " value.");
-    user.sendMessage(getAethelAttributeValueContext(attribute));
+    user.sendMessage(getAethelAttributeContext(attribute));
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
     awaitMessageResponse("aethel_attribute");
   }
@@ -613,7 +613,7 @@ public class ItemEditorMenuClick {
    * @param attribute attribute name
    * @return base attribute value
    */
-  private String getMinecraftAttributeValueContext(String attribute) {
+  private String getAttributeContext(String attribute) {
     String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
       case "Generic Max Health" -> {
@@ -652,7 +652,7 @@ public class ItemEditorMenuClick {
    * @param attribute attribute name
    * @return base attribute value
    */
-  private String getAethelAttributeValueContext(String attribute) {
+  private String getAethelAttributeContext(String attribute) {
     String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
     switch (attribute) {
       case "Max Health" -> {

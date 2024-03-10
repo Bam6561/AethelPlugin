@@ -1,8 +1,9 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
+import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -26,7 +27,7 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.0
+ * @version 1.15.3
  * @since 1.14.1
  */
 public class AethelAttributeMenu {
@@ -186,7 +187,7 @@ public class AethelAttributeMenu {
         if (enabled) {
           List<String> lore = new ArrayList<>();
           for (String itemAttribute : aethelAttributesMap.get(attributeMapKey)) {
-            NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attributeMapKey + "." + itemAttribute);
+            NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeMapKey + "." + itemAttribute);
             double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(itemAttribute + ": " + attributeValue));
           }

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -20,7 +21,7 @@ import java.util.*;
  * Represents Minecraft and Aethel attribute totals.
  *
  * @author Danny Nguyen
- * @version 1.13.2
+ * @version 1.15.3
  * @since 1.13.2
  */
 class ItemAttributeTotals {
@@ -166,7 +167,7 @@ class ItemAttributeTotals {
     for (String attribute : attributes) {
       String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
       String attributeName = attribute.substring(0, attribute.indexOf("."));
-      NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+      NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
       if (attributeValues.containsKey(attributeSlot)) {
         if (attributeValues.get(attributeSlot).containsKey(attributeName)) {
           attributeValues.get(attributeSlot).put(attributeName, attributeValues.get(attributeSlot).get(attributeName) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
@@ -21,7 +22,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.14.0
+ * @version 1.15.3
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -58,7 +59,7 @@ class AethelTagModifier {
    * @return if the tag was removed
    */
   protected boolean removeTag(String tag) {
-    NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), "aethel." + tag);
+    NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag);
     if (dataContainer.has(tagKey, PersistentDataType.STRING) || dataContainer.has(tagKey, PersistentDataType.DOUBLE)) {
       dataContainer.remove(tagKey);
       if (tag.startsWith("attribute.")) {
@@ -79,7 +80,7 @@ class AethelTagModifier {
    */
   protected void setTag(Player user, String tag, String value) {
     if (!tag.startsWith("attribute.")) {
-      dataContainer.set(new NamespacedKey(Plugin.getInstance(), "aethel." + tag), PersistentDataType.STRING, value);
+      dataContainer.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.STRING, value);
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + tag.toLowerCase() + " " + ChatColor.WHITE + value);
     } else {
@@ -120,7 +121,7 @@ class AethelTagModifier {
       }
     } else {
       for (NamespacedKey key : dataContainer.getKeys()) {
-        if (key.getKey().startsWith("aethel.attribute.")) {
+        if (key.getKey().startsWith(KeyHeader.ATTRIBUTE.getHeader())) {
           dataContainer.remove(key);
         }
       }
@@ -162,7 +163,7 @@ class AethelTagModifier {
    * @param value tag value
    */
   private void setAttributeTag(Player user, String tag, Double value) {
-    NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + tag);
+    NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + tag);
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
 
     dataContainer.set(tagKey, PersistentDataType.DOUBLE, value);

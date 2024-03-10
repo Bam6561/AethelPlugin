@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.Objects;
 
 /**
- * Represents a ItemStack stored in the file system.
+ * Represents an ItemStack stored in the file system.
  *
  * @author Danny Nguyen
  * @version 1.11.6

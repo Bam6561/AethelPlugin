@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.systems.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.Directory;
+import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -25,7 +26,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.14.6
+ * @version 1.15.3
  * @since 1.13.4
  */
 public class Equipment {
@@ -260,7 +261,7 @@ public class Equipment {
    * @param attribute     attribute modifier
    */
   private void addAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
-    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), "aethel.attribute." + attribute);
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
     AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
     attributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
