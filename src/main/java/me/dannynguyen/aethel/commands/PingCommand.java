@@ -22,7 +22,7 @@ public class PingCommand implements CommandExecutor {
    * @param sender  command source
    * @param command executed command
    * @param label   command alias used
-   * @param args    command arguments
+   * @param args    command parameters
    * @return true if a valid command
    */
   @Override

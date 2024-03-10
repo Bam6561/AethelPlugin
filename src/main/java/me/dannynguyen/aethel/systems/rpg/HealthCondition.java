@@ -4,10 +4,10 @@ package me.dannynguyen.aethel.systems.rpg;
  * Types of health conditions.
  *
  * @author Danny Nguyen
- * @version 1.14.2
+ * @version 1.15.4
  * @since 1.13.10
  */
-public enum HealthCondition {
+enum HealthCondition {
   /**
    * Below max health.
    */

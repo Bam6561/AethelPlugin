@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -12,6 +13,7 @@ import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -29,7 +31,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.2
+ * @version 1.15.4
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -583,6 +585,7 @@ public class ItemEditorMenuClick {
   private void readActive() {
     String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(active) + ChatColor.WHITE + " ability values:");
+    user.sendMessage(getActiveContext(active));
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(active));
     awaitMessageResponse("active_ability");
   }
@@ -615,29 +618,29 @@ public class ItemEditorMenuClick {
    */
   private String getAttributeContext(String attribute) {
     String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
-    switch (attribute) {
-      case "Generic Max Health" -> {
+    switch (Attribute.valueOf(TextFormatter.formatEnum(attribute))) {
+      case GENERIC_MAX_HEALTH -> {
         return context + "20.0";
       }
-      case "Generic Attack Damage" -> {
+      case GENERIC_ATTACK_DAMAGE -> {
         return context + "1.0";
       }
-      case "Generic Attack Speed" -> {
+      case GENERIC_ATTACK_SPEED -> {
         return context + "4.0";
       }
-      case "Generic Armor" -> {
+      case GENERIC_ARMOR -> {
         return context + "0.0 [Max: 30.0]";
       }
-      case "Generic Armor Toughness" -> {
+      case GENERIC_ARMOR_TOUGHNESS -> {
         return context + "0.0 [Max: 20.0]";
       }
-      case "Generic Knockback Resistance" -> {
+      case GENERIC_KNOCKBACK_RESISTANCE -> {
         return context + "0.0 [Max: 1.0]";
       }
-      case "Generic Movement Speed" -> {
+      case GENERIC_MOVEMENT_SPEED -> {
         return context + "2.0 [Input * 20]";
       }
-      case "Generic Luck" -> {
+      case GENERIC_LUCK -> {
         return context + "0.0";
       }
       default -> {
@@ -654,23 +657,23 @@ public class ItemEditorMenuClick {
    */
   private String getAethelAttributeContext(String attribute) {
     String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: ";
-    switch (attribute) {
-      case "Max Health" -> {
+    switch (AethelAttribute.valueOf(TextFormatter.formatEnum(attribute))) {
+      case MAX_HEALTH -> {
         return context + "20.0";
       }
-      case "Critical Chance", "Counter Chance", "Dodge Chance" -> {
+      case CRITICAL_CHANCE, COUNTER_CHANCE, DODGE_CHANCE -> {
         return context + "0.0%";
       }
-      case "Critical Damage" -> {
+      case CRITICAL_DAMAGE -> {
         return context + "1.25x [Input / 100]";
       }
-      case "Armor Toughness" -> {
+      case ARMOR_TOUGHNESS -> {
         return context + "0.0";
       }
-      case "Item Damage" -> {
+      case ITEM_DAMAGE -> {
         return context + "1.0x [Input / 100]";
       }
-      case "Item Cooldown" -> {
+      case ITEM_COOLDOWN -> {
         return context + "-0.0%";
       }
       default -> {
@@ -687,12 +690,36 @@ public class ItemEditorMenuClick {
    */
   private String getPassiveContext(String passive) {
     String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE;
-    switch (passive) {
-      case "Chill", "Dampen", "Rupture" -> {
-        return context + "Stacks, Duration in Ticks";
+    switch (PassiveAbility.valueOf(passive.toUpperCase())) {
+      case CHILL, DAMPEN, RUPTURE -> {
+        return context + "Stacks, Duration(t)";
       }
-      case "Spark" -> {
-        return context + "Damage, Distance in Meters";
+      case SPARK -> {
+        return context + "Damage, Radius(m)";
+      }
+      default -> {
+        return null;
+      }
+    }
+  }
+
+  /**
+   * Sends a contextual value for the active ability being edited.
+   *
+   * @param active active ability
+   * @return passive ability context
+   */
+  private String getActiveContext(String active) {
+    String context = Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE;
+    switch (ActiveAbility.valueOf(active.toUpperCase())) {
+      case BLINK, DASH -> {
+        return context + "Distance(m), Cooldown(t)";
+      }
+      case PROJECTION -> {
+        return context + "Distance(m), Delay(t), Cooldown(t)";
+      }
+      case SHATTER -> {
+        return context + "Radius(m), Cooldown(t)";
       }
       default -> {
         return null;

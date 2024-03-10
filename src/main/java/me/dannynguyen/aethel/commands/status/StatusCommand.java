@@ -40,7 +40,7 @@ public class StatusCommand implements CommandExecutor {
    * @param sender  command source
    * @param command executed command
    * @param label   command alias used
-   * @param args    command arguments
+   * @param args    command parameters
    * @return true if a valid command
    */
   @Override
@@ -99,7 +99,7 @@ public class StatusCommand implements CommandExecutor {
    *
    * @param user   user
    * @param action type of interaction
-   * @param args   user provided arguments
+   * @param args   user provided parameters
    */
   private void readEntityTarget(Player user, StatusCommandAction action, String[] args) {
     UUID uuid = null;
@@ -173,7 +173,7 @@ public class StatusCommand implements CommandExecutor {
    *
    * @param user user
    * @param uuid entity uuid
-   * @param args user provided arguments
+   * @param args user provided parameters
    */
   private void removeStatus(Player user, UUID uuid, String[] args) {
     try {
@@ -197,7 +197,7 @@ public class StatusCommand implements CommandExecutor {
    *
    * @param user user
    * @param uuid entity uuid
-   * @param args user provided arguments
+   * @param args user provided parameters
    */
   private void readSetStatusRequest(Player user, UUID uuid, String[] args) {
     try {
@@ -208,10 +208,10 @@ public class StatusCommand implements CommandExecutor {
           int ticks = Integer.parseInt(args[4]);
           setStatus(user, uuid, statusType, stacks, ticks);
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid number of ticks.");
+          user.sendMessage(ChatColor.RED + "Invalid ticks.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid number of stacks.");
+        user.sendMessage(ChatColor.RED + "Invalid stacks.");
       }
     } catch (IllegalArgumentException ex) {
       user.sendMessage(ChatColor.RED + "Status type does not exist.");

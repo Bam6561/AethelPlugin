@@ -1,10 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.KeyHeader;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.ItemRepairCost;
@@ -33,7 +30,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.15.4
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -114,7 +111,7 @@ public class ItemEditorMessageSent {
         user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
       }
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
+      user.sendMessage(ChatColor.RED + "Invalid durability/damage.");
     }
     returnToCosmetic();
   }
@@ -127,7 +124,7 @@ public class ItemEditorMessageSent {
       ItemRepairCost.setRepairCost(item, Integer.parseInt(e.getMessage()));
       user.sendMessage(ChatColor.GREEN + "[Set Repair Cost] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
+      user.sendMessage(ChatColor.RED + "Invalid repair cost.");
     }
     returnToCosmetic();
   }
@@ -171,12 +168,12 @@ public class ItemEditorMessageSent {
         item.setItemMeta(meta);
         user.sendMessage(ChatColor.GREEN + "[Edited Lore]");
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid line number.");
+        user.sendMessage(ChatColor.RED + "Invalid line.");
       } catch (IndexOutOfBoundsException ex) {
         user.sendMessage(ChatColor.RED + "Line does not exist.");
       }
     } else {
-      user.sendMessage(ChatColor.RED + "Invalid input.");
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
     returnToCosmetic();
   }
@@ -192,7 +189,7 @@ public class ItemEditorMessageSent {
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Removed Lore]");
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid line number.");
+      user.sendMessage(ChatColor.RED + "Invalid line.");
     } catch (IndexOutOfBoundsException ex) {
       user.sendMessage(ChatColor.RED + "Line does not exist.");
     }
@@ -216,16 +213,16 @@ public class ItemEditorMessageSent {
             item.setItemMeta(potion);
             user.sendMessage(ChatColor.GREEN + "[Set Potion Color]");
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid Blue value.");
+            user.sendMessage(ChatColor.RED + "Invalid Blue.");
           }
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid Green value.");
+          user.sendMessage(ChatColor.RED + "Invalid Green.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid Red value.");
+        user.sendMessage(ChatColor.RED + "Invalid Red.");
       }
     } else {
-      user.sendMessage(ChatColor.RED + "Invalid RGB value.");
+      user.sendMessage(ChatColor.RED + "Invalid RGB.");
     }
   }
 
@@ -286,7 +283,7 @@ public class ItemEditorMessageSent {
           user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid value.");
+        user.sendMessage(ChatColor.RED + "Invalid level.");
       }
     } else {
       NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
@@ -322,7 +319,7 @@ public class ItemEditorMessageSent {
           user.sendMessage(ChatColor.RED + "Invalid duration.");
         }
       } else {
-        user.sendMessage(ChatColor.RED + "Invalid potion effect.");
+        user.sendMessage(ChatColor.RED + "Invalid effect.");
       }
     } else {
       potion.removeCustomEffect(potionEffectType);
@@ -355,12 +352,9 @@ public class ItemEditorMessageSent {
     if (!e.getMessage().equals("-")) {
       String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE).toUpperCase();
       switch (ActiveAbility.valueOf(type)) {
-        case BLINK, DASH -> {
-        }
-        case PROJECTION -> {
-        }
-        case SHATTER -> {
-        }
+        case BLINK, DASH -> readActiveMovement();
+        case PROJECTION -> readActiveProjection();
+        case SHATTER -> readActiveShatter();
       }
     } else {
       removeKeyFromList(KeyHeader.ACTIVE.getHeader(), PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
@@ -415,13 +409,13 @@ public class ItemEditorMessageSent {
           int ticks = Integer.parseInt(args[1]);
           setKeyStringToList(KeyHeader.PASSIVE.getHeader(), stacks + " " + ticks, PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid number of ticks.");
+          user.sendMessage(ChatColor.RED + "Invalid ticks.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid number of stacks.");
+        user.sendMessage(ChatColor.RED + "Invalid stacks.");
       }
     } else {
-      user.sendMessage(ChatColor.RED + "Unrecognized arguments.");
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
@@ -434,21 +428,92 @@ public class ItemEditorMessageSent {
       try {
         double damage = Integer.parseInt(args[0]);
         try {
-          double distance = Integer.parseInt(args[1]);
+          double distance = Double.parseDouble(args[1]);
           setKeyStringToList(KeyHeader.PASSIVE.getHeader(), damage + " " + distance, PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid number of meters.");
+          user.sendMessage(ChatColor.RED + "Invalid radius.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid damage amount.");
+        user.sendMessage(ChatColor.RED + "Invalid damage.");
       }
     } else {
-      user.sendMessage(ChatColor.RED + "Unrecognized arguments.");
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
   /**
-   * Sets a key to a key header's list of keys.
+   * Checks if the input was formatted correctly before setting the active movement.
+   */
+  private void readActiveMovement() {
+    String[] args = e.getMessage().split(" ");
+    if (args.length == 2) {
+      try {
+        double distance = Double.parseDouble(args[0]);
+        try {
+          int cooldown = Integer.parseInt(args[1]);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+        } catch (NumberFormatException ex) {
+          user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        }
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid distance.");
+      }
+    } else {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    }
+  }
+
+  /**
+   * Checks if the input was formatted correctly before setting the active projection.
+   */
+  private void readActiveProjection() {
+    String[] args = e.getMessage().split(" ");
+    if (args.length == 3) {
+      try {
+        double distance = Double.parseDouble(args[0]);
+        try {
+          int delay = Integer.parseInt(args[1]);
+          try {
+            int cooldown = Integer.parseInt(args[2]);
+            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + delay + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(ChatColor.RED + "Invalid delay.");
+        }
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid distance.");
+      }
+    } else {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    }
+  }
+
+  /**
+   * Checks if the input was formatted correctly before setting the active shatter.
+   */
+  private void readActiveShatter() {
+    String[] args = e.getMessage().split(" ");
+    if (args.length == 2) {
+      try {
+        double radius = Double.parseDouble(args[0]);
+        try {
+          int cooldown = Integer.parseInt(args[1]);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), radius + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+        } catch (NumberFormatException ex) {
+          user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        }
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid radius.");
+      }
+    } else {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    }
+  }
+
+  /**
+   * Sets a key with a double value to a key header's list of keys.
    *
    * @param keyHeader key header
    * @param keyValue  key value
@@ -479,7 +544,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets a key to a key header's list of keys.
+   * Sets a key with a String value to a key header's list of keys.
    *
    * @param keyHeader key header
    * @param keyValue  key value

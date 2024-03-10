@@ -88,7 +88,7 @@ class AethelTagModifier {
         try {
           readAttributeModifier(user, tag, Double.parseDouble(value));
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid attribute value.");
+          user.sendMessage(ChatColor.RED + "Invalid value.");
         }
       } else {
         user.sendMessage(ChatColor.RED + "Cannot set attribute.list directly.");

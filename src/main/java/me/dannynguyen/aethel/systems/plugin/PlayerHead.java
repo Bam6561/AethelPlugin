@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.systems.plugin;
 
 import me.dannynguyen.aethel.utility.ItemCreator;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -113,7 +114,7 @@ public enum PlayerHead {
       head.setItemMeta(meta);
       return head;
     } else {
-      return ItemCreator.createItem(Material.BARRIER, net.md_5.bungee.api.ChatColor.RED + "[!] Error", List.of(net.md_5.bungee.api.ChatColor.RED + "Invalid texture."));
+      return ItemCreator.createItem(Material.BARRIER, ChatColor.RED + "[!] Error", List.of(ChatColor.RED + "Invalid texture."));
     }
   }
 
