@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
