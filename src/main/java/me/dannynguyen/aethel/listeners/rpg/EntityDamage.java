@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.listeners.rpg;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
-import me.dannynguyen.aethel.systems.rpg.RpgStatus;
-import me.dannynguyen.aethel.systems.rpg.RpgStatusType;
+import me.dannynguyen.aethel.systems.rpg.Status;
+import me.dannynguyen.aethel.systems.rpg.StatusType;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -180,12 +180,12 @@ public class EntityDamage implements Listener {
    * @param e entity damage by entity event
    */
   private void ifVulnerable(EntityDamageByEntityEvent e) {
-    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     UUID uuid = e.getEntity().getUniqueId();
     if (entityStatuses.containsKey(uuid)) {
-      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
-      if (statuses.containsKey(RpgStatusType.VULNERABLE)) {
-        int vulnerable = statuses.get(RpgStatusType.VULNERABLE).getStackAmount();
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      if (statuses.containsKey(StatusType.VULNERABLE)) {
+        int vulnerable = statuses.get(StatusType.VULNERABLE).getStackAmount();
         e.setDamage(e.getDamage() * (1 + (vulnerable * 0.025)));
       }
     }
@@ -385,11 +385,11 @@ public class EntityDamage implements Listener {
   private void mitigateArmorProtection(EntityDamageByEntityEvent e, Player damagee) {
     int armor = (int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     int protection = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL);
-    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     if (entityStatuses.containsKey(damagee.getUniqueId())) {
-      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(damagee.getUniqueId());
-      if (statuses.containsKey(RpgStatusType.FRACTURE)) {
-        armor = armor - statuses.get(RpgStatusType.FRACTURE).getStackAmount();
+      Map<StatusType, Status> statuses = entityStatuses.get(damagee.getUniqueId());
+      if (statuses.containsKey(StatusType.FRACTURE)) {
+        armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
       }
     }
     double damage = e.getDamage();

@@ -1,9 +1,9 @@
-package me.dannynguyen.aethel.commands.status;
+package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.Message;
-import me.dannynguyen.aethel.systems.rpg.RpgStatus;
-import me.dannynguyen.aethel.systems.rpg.RpgStatusType;
+import me.dannynguyen.aethel.systems.rpg.Status;
+import me.dannynguyen.aethel.systems.rpg.StatusType;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +30,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.9
+ * @version 1.15.8
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -73,20 +73,20 @@ public class StatusCommand implements CommandExecutor {
       case 0 -> user.sendMessage(Message.NO_PARAMETERS.getMessage());
       case 2 -> {
         switch (action) {
-          case "g", "get" -> readEntityTarget(user, StatusCommandAction.GET, args);
-          case "r", "remove" -> readEntityTarget(user, StatusCommandAction.REMOVE_ALL, args);
+          case "g", "get" -> readEntityTarget(user, Action.GET, args);
+          case "r", "remove" -> readEntityTarget(user, Action.REMOVE_ALL, args);
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 3 -> {
         switch (action) {
-          case "r", "remove" -> readEntityTarget(user, StatusCommandAction.REMOVE, args);
+          case "r", "remove" -> readEntityTarget(user, Action.REMOVE, args);
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
       case 5 -> {
         switch (action) {
-          case "s", "set" -> readEntityTarget(user, StatusCommandAction.SET, args);
+          case "s", "set" -> readEntityTarget(user, Action.SET, args);
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
@@ -101,7 +101,7 @@ public class StatusCommand implements CommandExecutor {
    * @param action type of interaction
    * @param args   user provided parameters
    */
-  private void readEntityTarget(Player user, StatusCommandAction action, String[] args) {
+  private void readEntityTarget(Player user, Action action, String[] args) {
     UUID uuid = null;
     String target = args[1];
     if (Bukkit.getPlayer(target) != null) {
@@ -132,13 +132,13 @@ public class StatusCommand implements CommandExecutor {
    * @param uuid entity uuid
    */
   private void getStatuses(Player user, UUID uuid) {
-    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     if (entityStatuses.get(uuid) != null) {
-      Map<RpgStatusType, RpgStatus> statusTypes = entityStatuses.get(uuid);
+      Map<StatusType, Status> statusTypes = entityStatuses.get(uuid);
       StringBuilder statusesBuilder = new StringBuilder();
       statusesBuilder.append(ChatColor.GREEN).append("[Get Statuses] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
-      for (RpgStatusType statusType : statusTypes.keySet()) {
-        RpgStatus status = statusTypes.get(statusType);
+      for (StatusType statusType : statusTypes.keySet()) {
+        Status status = statusTypes.get(statusType);
         statusesBuilder.append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(statusType.name())).append(" ");
         statusesBuilder.append(ChatColor.WHITE).append(status.getStackAmount()).append(" ");
         Map<Integer, Integer> stackInstances = status.getStackInstances();
@@ -177,10 +177,10 @@ public class StatusCommand implements CommandExecutor {
    */
   private void removeStatus(Player user, UUID uuid, String[] args) {
     try {
-      RpgStatusType statusType = RpgStatusType.valueOf(args[2].toUpperCase());
-      Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      StatusType statusType = StatusType.valueOf(args[2].toUpperCase());
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
       if (entityStatuses.get(uuid) != null) {
-        Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
         statuses.remove(statusType);
         if (statuses.isEmpty()) {
           entityStatuses.remove(uuid);
@@ -201,7 +201,7 @@ public class StatusCommand implements CommandExecutor {
    */
   private void readSetStatusRequest(Player user, UUID uuid, String[] args) {
     try {
-      RpgStatusType statusType = RpgStatusType.valueOf(args[2].toUpperCase());
+      StatusType statusType = StatusType.valueOf(args[2].toUpperCase());
       try {
         int stacks = Integer.parseInt(args[3]);
         try {
@@ -227,17 +227,42 @@ public class StatusCommand implements CommandExecutor {
    * @param stacks     number of status to apply
    * @param ticks      status duration
    */
-  private void setStatus(Player user, UUID uuid, RpgStatusType statusType, int stacks, int ticks) {
-    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+  private void setStatus(Player user, UUID uuid, StatusType statusType, int stacks, int ticks) {
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     if (!entityStatuses.containsKey(uuid)) {
       entityStatuses.put(uuid, new HashMap<>());
     }
-    Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+    Map<StatusType, Status> statuses = entityStatuses.get(uuid);
     if (statuses.containsKey(statusType)) {
       statuses.get(statusType).addStacks(stacks, ticks);
     } else {
-      statuses.put(statusType, new RpgStatus(uuid, statusType, stacks, ticks));
+      statuses.put(statusType, new Status(uuid, statusType, stacks, ticks));
     }
     user.sendMessage(ChatColor.GREEN + "[Status Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + TextFormatter.capitalizePhrase(statusType.name()) + " " + ChatColor.WHITE + stacks + " " + ticks);
+  }
+
+  /**
+   * Types of Status command actions.
+   */
+  private enum Action {
+    /**
+     * Reads the entity's statuses.
+     */
+    GET,
+
+    /**
+     * Sets a status on the entity.
+     */
+    SET,
+
+    /**
+     * Removes a status from the entity.
+     */
+    REMOVE,
+
+    /**
+     * Removes all statuses from the entity.
+     */
+    REMOVE_ALL
   }
 }

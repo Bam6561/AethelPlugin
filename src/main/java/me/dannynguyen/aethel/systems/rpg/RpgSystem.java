@@ -29,7 +29,7 @@ public class RpgSystem {
   /**
    * Living entities affected by statuses.
    */
-  private final Map<UUID, Map<RpgStatusType, RpgStatus>> statuses = new HashMap<>();
+  private final Map<UUID, Map<StatusType, Status>> statuses = new HashMap<>();
 
   /**
    * Loads an RPG player into memory.
@@ -66,7 +66,7 @@ public class RpgSystem {
    * @return entities with statuses
    */
   @NotNull
-  public Map<UUID, Map<RpgStatusType, RpgStatus>> getStatuses() {
+  public Map<UUID, Map<StatusType, Status>> getStatuses() {
     return this.statuses;
   }
 }

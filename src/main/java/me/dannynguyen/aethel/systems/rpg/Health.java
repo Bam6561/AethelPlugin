@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.15.8
  * @since 1.13.4
  */
 public class Health {
@@ -185,16 +185,16 @@ public class Health {
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
       player.setHealth(lifeRatio * maxHealthScale);
-      updateActionDisplay(HealthCondition.WOUNDED);
-      updateBarDisplay(HealthCondition.WOUNDED, lifeRatio);
+      updateActionDisplay(Condition.WOUNDED);
+      updateBarDisplay(Condition.WOUNDED, lifeRatio);
     } else if (currentHealth == maxHealth) {
       player.setHealth(maxHealthScale);
-      updateActionDisplay(HealthCondition.NORMAL);
-      updateBarDisplay(HealthCondition.NORMAL, 1.0);
+      updateActionDisplay(Condition.NORMAL);
+      updateBarDisplay(Condition.NORMAL, 1.0);
     } else if (currentHealth > maxHealth) {
       player.setHealth(maxHealthScale);
-      updateActionDisplay(HealthCondition.OVERSHIELD);
-      updateBarDisplay(HealthCondition.OVERSHIELD, 1.0);
+      updateActionDisplay(Condition.OVERSHIELD);
+      updateBarDisplay(Condition.OVERSHIELD, 1.0);
     }
   }
 
@@ -203,7 +203,7 @@ public class Health {
    *
    * @param condition health condition
    */
-  public void updateActionDisplay(@NotNull HealthCondition condition) {
+  public void updateActionDisplay(@NotNull Health.Condition condition) {
     if (healthActionVisible) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
@@ -234,7 +234,7 @@ public class Health {
    * @param condition health condition
    * @param lifeRatio hearts displayed : true max health
    */
-  private void updateBarDisplay(HealthCondition condition, Double lifeRatio) {
+  private void updateBarDisplay(Condition condition, Double lifeRatio) {
     if (healthBar.isVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
@@ -263,13 +263,13 @@ public class Health {
    *
    * @return RPG health condition
    */
-  private HealthCondition getCondition() {
+  private Condition getCondition() {
     if (currentHealth < maxHealth) {
-      return HealthCondition.WOUNDED;
+      return Condition.WOUNDED;
     } else if (currentHealth == maxHealth) {
-      return HealthCondition.NORMAL;
+      return Condition.NORMAL;
     } else if (currentHealth > maxHealth) {
-      return HealthCondition.OVERSHIELD;
+      return Condition.OVERSHIELD;
     }
     return null;
   }
@@ -327,5 +327,25 @@ public class Health {
    */
   private void setMaxHealth(Double maxHealth) {
     this.maxHealth = maxHealth;
+  }
+
+  /**
+   * Types of health conditions.
+   */
+  private enum Condition {
+    /**
+     * Below max health.
+     */
+    WOUNDED,
+
+    /**
+     * At max health.
+     */
+    NORMAL,
+
+    /**
+     * Above max health.
+     */
+    OVERSHIELD
   }
 }

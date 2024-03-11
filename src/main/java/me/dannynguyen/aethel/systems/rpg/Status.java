@@ -13,10 +13,10 @@ import java.util.UUID;
  * Represents statuses that affect Living Entities.
  *
  * @author Danny Nguyen
- * @version 1.14.10
+ * @version 1.15.8
  * @since 1.14.7
  */
-public class RpgStatus {
+public class Status {
   /**
    * Entity UUID.
    */
@@ -25,7 +25,7 @@ public class RpgStatus {
   /**
    * Status type.
    */
-  private final RpgStatusType statusType;
+  private final StatusType statusType;
 
   /**
    * Whether stacks are calculated cumulatively.
@@ -53,7 +53,7 @@ public class RpgStatus {
    * @param stacks     initial amount of stacks
    * @param ticks      initial stack application duration
    */
-  public RpgStatus(@NotNull UUID uuid, @NotNull RpgStatusType statusType, int stacks, int ticks) {
+  public Status(@NotNull UUID uuid, @NotNull StatusType statusType, int stacks, int ticks) {
     this.uuid = Objects.requireNonNull(uuid, "Null uuid");
     this.statusType = Objects.requireNonNull(statusType, "Null status type");
     switch (statusType) {
@@ -121,8 +121,8 @@ public class RpgStatus {
   private void removeStatusTypeIfEmpty() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       if (stackInstances.isEmpty()) {
-        Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-        Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
+        Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
         statuses.remove(statusType);
         if (statuses.isEmpty()) {
           entityStatuses.remove(uuid);

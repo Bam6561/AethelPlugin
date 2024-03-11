@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.15.8
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -43,7 +43,7 @@ class RecipeDetailsMenu {
   /**
    * Recipe details menu type.
    */
-  private final RecipeDetailsType type;
+  private final Type type;
 
   /**
    * Recipe.
@@ -51,27 +51,12 @@ class RecipeDetailsMenu {
   private PersistentRecipe recipe;
 
   /**
-   * Type of recipe details menu.
-   */
-  protected enum RecipeDetailsType {
-    /**
-     * Craft a recipe.
-     */
-    CRAFT,
-
-    /**
-     * Edit or save a recipe.
-     */
-    SAVE
-  }
-
-  /**
    * Associates a new RecipeDetails menu with its user.
    *
    * @param user user
    * @param type recipe details type
    */
-  protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type) {
+  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
     this.userUUID = user.getUniqueId();
@@ -85,7 +70,7 @@ class RecipeDetailsMenu {
    * @param type recipe details type
    * @param item requested item
    */
-  protected RecipeDetailsMenu(@NotNull Player user, @NotNull RecipeDetailsType type, @NotNull ItemStack item) {
+  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
     this.recipe = Objects.requireNonNull(Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(item)), "Null recipe");
@@ -99,7 +84,7 @@ class RecipeDetailsMenu {
    * @param type details menu type
    * @return RecipeDetails menu
    */
-  private Inventory createMenu(RecipeDetailsType type) {
+  private Inventory createMenu(Type type) {
     switch (type) {
       case CRAFT -> {
         return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft");
@@ -180,5 +165,20 @@ class RecipeDetailsMenu {
     for (int i = 0; i < materials.size(); i++) {
       menu.setItem(i + 9, materials.get(i));
     }
+  }
+
+  /**
+   * Type of recipe details menu.
+   */
+  protected enum Type {
+    /**
+     * Craft a recipe.
+     */
+    CRAFT,
+
+    /**
+     * Edit or save a recipe.
+     */
+    SAVE
   }
 }

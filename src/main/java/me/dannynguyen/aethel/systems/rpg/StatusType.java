@@ -4,10 +4,10 @@ package me.dannynguyen.aethel.systems.rpg;
  * Types of statuses.
  *
  * @author Danny Nguyen
- * @version 1.14.7
+ * @version 1.15.8
  * @since 1.14.7
  */
-public enum RpgStatusType {
+public enum StatusType {
   /**
    * Cumulative stacking damage over time.
    */

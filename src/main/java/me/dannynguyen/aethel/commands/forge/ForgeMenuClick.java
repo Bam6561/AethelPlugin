@@ -67,7 +67,7 @@ public class ForgeMenuClick {
     switch (slotClicked) {
       case 2, 4 -> { // Context
       }
-      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.RecipeDetailsType.SAVE).saveRecipeDetails();
+      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
       default -> viewRecipeCategory();
     }
   }
@@ -87,7 +87,7 @@ public class ForgeMenuClick {
       case 0 -> previousRecipePage(action);
       case 2 -> { // Context
       }
-      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.RecipeDetailsType.SAVE).saveRecipeDetails();
+      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
       case 4 -> {
         if (Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.FUTURE).equals("edit")) {
           openForgeEditMenu();
@@ -227,8 +227,8 @@ public class ForgeMenuClick {
    */
   private void interpretContextualClick(ForgeMenuAction action) {
     switch (action) {
-      case CRAFT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.RecipeDetailsType.CRAFT, e.getCurrentItem()).craftRecipeDetails();
-      case EDIT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.RecipeDetailsType.SAVE, e.getCurrentItem()).editRecipeDetails();
+      case CRAFT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.CRAFT, e.getCurrentItem()).craftRecipeDetails();
+      case EDIT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE, e.getCurrentItem()).editRecipeDetails();
       case REMOVE -> removeRecipe();
     }
   }

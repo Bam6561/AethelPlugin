@@ -2,6 +2,7 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.commands.DeveloperModeCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
+import me.dannynguyen.aethel.commands.StatusCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
@@ -9,7 +10,6 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
-import me.dannynguyen.aethel.commands.status.StatusCommand;
 import me.dannynguyen.aethel.listeners.plugin.MenuClick;
 import me.dannynguyen.aethel.listeners.plugin.MessageSent;
 import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
@@ -138,10 +138,10 @@ public class Plugin extends JavaPlugin {
    * Adds an interval to calculate damage taken from damage over time statuses.
    */
   private void updateDamageOverTimeStatuses() {
-    Map<UUID, Map<RpgStatusType, RpgStatus>> entityStatuses = data.getRpgSystem().getStatuses();
+    Map<UUID, Map<StatusType, Status>> entityStatuses = data.getRpgSystem().getStatuses();
     for (UUID uuid : entityStatuses.keySet()) {
-      Map<RpgStatusType, RpgStatus> statuses = entityStatuses.get(uuid);
-      if (statuses.containsKey(RpgStatusType.BLEED) || statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE)) {
         if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
           if (entity instanceof Player player) {
             handlePlayerDamageOverTime(uuid, statuses, player);
@@ -213,20 +213,20 @@ public class Plugin extends JavaPlugin {
    * @param statuses player statuses
    * @param player   interacting player
    */
-  private void handlePlayerDamageOverTime(UUID uuid, Map<RpgStatusType, RpgStatus> statuses, Player player) {
+  private void handlePlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player player) {
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
     int protection = Math.min(rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
     int resistance = 0;
     if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
       resistance = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
     }
-    if (statuses.containsKey(RpgStatusType.BLEED)) {
-      double damage = statuses.get(RpgStatusType.BLEED).getStackAmount() * 0.2;
+    if (statuses.containsKey(StatusType.BLEED)) {
+      double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
       player.damage(0.1);
       rpgPlayer.getHealth().damage(mitigateDamageOverTime(damage, protection, resistance));
     }
-    if (statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
-      double damage = statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2;
+    if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+      double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       player.damage(0.1);
       rpgPlayer.getHealth().damage(mitigateDamageOverTime(damage, protection, resistance));
     }
@@ -239,14 +239,14 @@ public class Plugin extends JavaPlugin {
    * @param statuses entity statuses
    * @param entity   interacting entity
    */
-  private void handleEntityDamageOverTime(UUID uuid, Map<RpgStatusType, RpgStatus> statuses, LivingEntity entity) {
-    if (statuses.containsKey(RpgStatusType.BLEED)) {
+  private void handleEntityDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, LivingEntity entity) {
+    if (statuses.containsKey(StatusType.BLEED)) {
       entity.damage(0.1);
-      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(RpgStatusType.BLEED).getStackAmount() * 0.2);
+      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2);
     }
-    if (statuses.containsKey(RpgStatusType.ELECTROCUTE)) {
+    if (statuses.containsKey(StatusType.ELECTROCUTE)) {
       entity.damage(0.1);
-      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(RpgStatusType.ELECTROCUTE).getStackAmount() * 0.2);
+      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2);
     }
   }
 
