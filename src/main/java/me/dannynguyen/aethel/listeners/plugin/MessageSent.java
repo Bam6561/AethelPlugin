@@ -57,7 +57,7 @@ public class MessageSent implements Listener {
       case "potion-color" -> msg.setPotionColor();
       case "minecraft_attribute" -> msg.setMinecraftAttribute();
       case "aethel_attribute" -> msg.setAethelAttribute();
-      case "enchantment" -> msg.setEnchant();
+      case "enchantment" -> msg.setEnchantment();
       case "potion-effect" -> msg.setPotionEffect();
       case "passive_ability" -> msg.setPassive();
       case "active_ability" -> msg.setActive();

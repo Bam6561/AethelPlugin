@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.15.9
  * @since 1.15.1
  */
 class PassiveMenu {
@@ -112,8 +112,8 @@ class PassiveMenu {
     int invSlot = 18;
     if (passivesMap != null) {
       for (PassiveAbility passive : PassiveAbility.values()) {
-        String passiveName = TextFormatter.capitalizePhrase(passive.name());
-        String passiveMapKey = TextFormatter.formatId(passiveName);
+        String passiveName = passive.getProperName();
+        String passiveMapKey = passive.getId();
         boolean enabled = passivesMap.containsKey(passiveMapKey);
         if (enabled) {
           List<String> lore = new ArrayList<>();
@@ -130,8 +130,7 @@ class PassiveMenu {
       }
     } else {
       for (PassiveAbility passive : PassiveAbility.values()) {
-        String passiveName = TextFormatter.capitalizePhrase(passive.name());
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passiveName));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passive.getProperName()));
         invSlot++;
       }
     }

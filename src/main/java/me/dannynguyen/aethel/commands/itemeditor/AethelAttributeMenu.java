@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.15.9
  * @since 1.14.1
  */
 public class AethelAttributeMenu {
@@ -181,8 +181,8 @@ public class AethelAttributeMenu {
   private void addAttributeCategory(String category, int invSlot) {
     if (aethelAttributesMap != null) {
       for (AethelAttribute attribute : attributeCategories.get(category)) {
-        String attributeName = TextFormatter.capitalizePhrase(attribute.name());
-        String attributeMapKey = TextFormatter.formatId(attributeName);
+        String attributeName = attribute.getProperName();
+        String attributeMapKey = attribute.getId();
         boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
         if (enabled) {
           List<String> lore = new ArrayList<>();
@@ -199,8 +199,7 @@ public class AethelAttributeMenu {
       }
     } else {
       for (AethelAttribute attribute : attributeCategories.get(category)) {
-        String attributeName = TextFormatter.capitalizePhrase(attribute.name());
-        menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attribute.getProperName()));
         invSlot++;
       }
     }

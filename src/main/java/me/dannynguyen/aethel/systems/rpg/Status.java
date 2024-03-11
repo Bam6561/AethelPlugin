@@ -13,7 +13,7 @@ import java.util.UUID;
  * Represents statuses that affect Living Entities.
  *
  * @author Danny Nguyen
- * @version 1.15.8
+ * @version 1.15.9
  * @since 1.14.7
  */
 public class Status {
@@ -28,7 +28,7 @@ public class Status {
   private final StatusType statusType;
 
   /**
-   * Whether stacks are calculated cumulatively.
+   * If stack instances are cumulative.
    */
   private final boolean isCumulative;
 
@@ -56,10 +56,7 @@ public class Status {
   public Status(@NotNull UUID uuid, @NotNull StatusType statusType, int stacks, int ticks) {
     this.uuid = Objects.requireNonNull(uuid, "Null uuid");
     this.statusType = Objects.requireNonNull(statusType, "Null status type");
-    switch (statusType) {
-      case BLEED, BRITTLE, ELECTROCUTE, SOAK -> this.isCumulative = true;
-      default -> this.isCumulative = false;
-    }
+    this.isCumulative = statusType.isCumulative();
     int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       removeStacks(stacks);
     }, ticks).getTaskId();

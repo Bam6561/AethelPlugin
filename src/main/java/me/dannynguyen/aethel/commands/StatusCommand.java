@@ -30,7 +30,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.8
+ * @version 1.15.9
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -139,7 +139,7 @@ public class StatusCommand implements CommandExecutor {
       statusesBuilder.append(ChatColor.GREEN).append("[Get Statuses] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
       for (StatusType statusType : statusTypes.keySet()) {
         Status status = statusTypes.get(statusType);
-        statusesBuilder.append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(statusType.name())).append(" ");
+        statusesBuilder.append(ChatColor.AQUA).append(statusType.getProperName()).append(" ");
         statusesBuilder.append(ChatColor.WHITE).append(status.getStackAmount()).append(" ");
         Map<Integer, Integer> stackInstances = status.getStackInstances();
         if (!stackInstances.isEmpty()) {
@@ -186,7 +186,7 @@ public class StatusCommand implements CommandExecutor {
           entityStatuses.remove(uuid);
         }
       }
-      user.sendMessage(ChatColor.RED + "[Status Removed] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + TextFormatter.capitalizePhrase(statusType.name()));
+      user.sendMessage(ChatColor.RED + "[Status Removed] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + statusType.getProperName());
     } catch (IllegalArgumentException ex) {
       user.sendMessage(ChatColor.RED + "Status type does not exist.");
     }
@@ -238,7 +238,7 @@ public class StatusCommand implements CommandExecutor {
     } else {
       statuses.put(statusType, new Status(uuid, statusType, stacks, ticks));
     }
-    user.sendMessage(ChatColor.GREEN + "[Status Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + TextFormatter.capitalizePhrase(statusType.name()) + " " + ChatColor.WHITE + stacks + " " + ticks);
+    user.sendMessage(ChatColor.GREEN + "[Status Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + statusType.getProperName() + " " + ChatColor.WHITE + stacks + " " + ticks);
   }
 
   /**

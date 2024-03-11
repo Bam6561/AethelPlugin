@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's active abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.15.9
  * @since 1.15.1
  */
 class ActiveMenu {
@@ -112,8 +112,8 @@ class ActiveMenu {
     int invSlot = 18;
     if (activesMap != null) {
       for (ActiveAbility active : ActiveAbility.values()) {
-        String activeName = TextFormatter.capitalizePhrase(active.name());
-        String activeMapKey = TextFormatter.formatId(activeName);
+        String activeName = active.getProperName();
+        String activeMapKey = active.getId();
         boolean enabled = activesMap.containsKey(activeMapKey);
         if (enabled) {
           List<String> lore = new ArrayList<>();
@@ -130,8 +130,7 @@ class ActiveMenu {
       }
     } else {
       for (ActiveAbility active : ActiveAbility.values()) {
-        String activeName = TextFormatter.capitalizePhrase(active.name());
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + activeName));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + active.getProperName()));
         invSlot++;
       }
     }

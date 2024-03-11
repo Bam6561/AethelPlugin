@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.15.6
+ * @version 1.15.9
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -222,8 +222,8 @@ class AethelTagModifier {
         PassiveAbility passive = PassiveAbility.valueOf(tagMeta[0].toUpperCase());
         try {
           RpgEquipmentSlot.valueOf(tagMeta[1].toUpperCase());
-          switch (passive) {
-            case CHILL, DAMPEN, RUPTURE -> readPassiveStackInstance(value);
+          switch (passive.getEffect()) {
+            case STACK_INSTANCE -> readPassiveStackInstance(value);
             case SPARK -> readPassiveSpark(value);
           }
         } catch (IllegalArgumentException ex) {
@@ -250,8 +250,8 @@ class AethelTagModifier {
         ActiveAbility active = ActiveAbility.valueOf(tagMeta[0].toUpperCase());
         try {
           RpgEquipmentSlot.valueOf(tagMeta[1].toUpperCase());
-          switch (active) {
-            case BLINK, DASH -> readActiveMovement(value);
+          switch (active.getEffect()) {
+            case MOVEMENT -> readActiveMovement(value);
             case PROJECTION -> readActiveProjection(value);
             case SHATTER -> readActiveShatter(value);
           }

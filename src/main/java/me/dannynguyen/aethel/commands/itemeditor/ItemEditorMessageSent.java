@@ -32,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.4
+ * @version 1.15.9
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -273,14 +273,14 @@ public class ItemEditorMessageSent {
   /**
    * Sets or removes an item's enchantment.
    */
-  public void setEnchant() {
+  public void setEnchantment() {
     if (!e.getMessage().equals("-")) {
       try {
         int level = Integer.parseInt(e.getMessage());
         if (level > 0 && level < 32768) {
-          NamespacedKey enchant = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
-          item.addUnsafeEnchantment(Enchantment.getByKey(enchant), level);
-          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchant.getKey()) + "]");
+          NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
+          item.addUnsafeEnchantment(Enchantment.getByKey(enchantment), level);
+          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
         } else {
           user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
         }
@@ -337,8 +337,8 @@ public class ItemEditorMessageSent {
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
       String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE).toUpperCase();
-      switch (PassiveAbility.valueOf(type)) {
-        case CHILL, DAMPEN, RUPTURE -> readPassiveStackInstance();
+      switch (PassiveAbility.valueOf(type).getEffect()) {
+        case STACK_INSTANCE -> readPassiveStackInstance();
         case SPARK -> readPassiveSpark();
       }
     } else {
@@ -353,8 +353,8 @@ public class ItemEditorMessageSent {
   public void setActive() {
     if (!e.getMessage().equals("-")) {
       String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE).toUpperCase();
-      switch (ActiveAbility.valueOf(type)) {
-        case BLINK, DASH -> readActiveMovement();
+      switch (ActiveAbility.valueOf(type).getEffect()) {
+        case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
       }
