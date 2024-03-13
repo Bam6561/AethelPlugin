@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.15.10
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -191,18 +191,18 @@ class AethelTagModifier {
       String[] tagMeta = tag.split("\\.", 2);
       if (tagMeta.length == 2) {
         try {
-          AethelAttribute.valueOf(tagMeta[0].toUpperCase());
+          RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
           try {
-            RpgEquipmentSlot.valueOf(tagMeta[1].toUpperCase());
+            AethelAttribute.valueOf(tagMeta[1].toUpperCase());
             setAttributeTag(attributeValue);
           } catch (IllegalArgumentException ex) {
-            user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
+            user.sendMessage(ChatColor.RED + "Aethel attribute does not exist.");
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Aethel attribute does not exist.");
+          user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
         }
       } else {
-        user.sendMessage(ChatColor.RED + "Did not provide attribute and equipment slot.");
+        user.sendMessage(ChatColor.RED + "Did not provide equipment slot and attribute.");
       }
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
@@ -219,21 +219,21 @@ class AethelTagModifier {
     String[] tagMeta = tag.split("\\.", 2);
     if (tagMeta.length == 2) {
       try {
-        PassiveAbility passive = PassiveAbility.valueOf(tagMeta[0].toUpperCase());
+        RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
         try {
-          RpgEquipmentSlot.valueOf(tagMeta[1].toUpperCase());
+          PassiveAbility passive = PassiveAbility.valueOf(tagMeta[1].toUpperCase());
           switch (passive.getEffect()) {
             case STACK_INSTANCE -> readPassiveStackInstance(value);
             case SPARK -> readPassiveSpark(value);
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
+          user.sendMessage(ChatColor.RED + "Passive ability does not exist.");
         }
       } catch (IllegalArgumentException ex) {
-        user.sendMessage(ChatColor.RED + "Passive ability does not exist.");
+        user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
       }
     } else {
-      user.sendMessage(ChatColor.RED + "Did not provide attribute and equipment slot.");
+      user.sendMessage(ChatColor.RED + "Did not provide equipment slot and passive ability.");
     }
   }
 
@@ -247,22 +247,22 @@ class AethelTagModifier {
     String[] tagMeta = tag.split("\\.", 2);
     if (tagMeta.length == 2) {
       try {
-        ActiveAbility active = ActiveAbility.valueOf(tagMeta[0].toUpperCase());
+        RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
         try {
-          RpgEquipmentSlot.valueOf(tagMeta[1].toUpperCase());
+          ActiveAbility active = ActiveAbility.valueOf(tagMeta[1].toUpperCase());
           switch (active.getEffect()) {
             case MOVEMENT -> readActiveMovement(value);
             case PROJECTION -> readActiveProjection(value);
             case SHATTER -> readActiveShatter(value);
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
+          user.sendMessage(ChatColor.RED + "Active ability does not exist.");
         }
       } catch (IllegalArgumentException ex) {
-        user.sendMessage(ChatColor.RED + "Active ability does not exist.");
+        user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
       }
     } else {
-      user.sendMessage(ChatColor.RED + "Did not provide attribute and equipment slot.");
+      user.sendMessage(ChatColor.RED + "Did not provide equipment slot and active ability.");
     }
   }
 

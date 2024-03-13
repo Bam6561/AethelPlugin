@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's active abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.15.10
  * @since 1.15.1
  */
 class ActiveMenu {
@@ -117,10 +117,10 @@ class ActiveMenu {
         boolean enabled = activesMap.containsKey(activeMapKey);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String itemActive : activesMap.get(activeMapKey)) {
-            NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + activeMapKey + "." + itemActive);
+          for (String slot : activesMap.get(activeMapKey)) {
+            NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + activeMapKey);
             String activeValue = dataContainer.get(activeKey, PersistentDataType.STRING);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(itemActive + ": " + activeValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + activeValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.GOLD_INGOT, ChatColor.AQUA + activeName, lore));
         } else {
@@ -167,11 +167,11 @@ class ActiveMenu {
       Map<String, List<String>> activesMap = new HashMap<>();
       List<String> actives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String active : actives) {
-        String activeType = active.substring(0, active.indexOf("."));
+        String activeType = active.substring(active.indexOf(".") + 1);
         if (activesMap.containsKey(activeType)) {
-          activesMap.get(activeType).add(active.substring(active.indexOf(".") + 1));
+          activesMap.get(activeType).add(active.substring(0, active.indexOf(".")));
         } else {
-          activesMap.put(activeType, new ArrayList<>(List.of(active.substring(active.indexOf(".") + 1))));
+          activesMap.put(activeType, new ArrayList<>(List.of(active.substring(0, active.indexOf(".")))));
         }
       }
       return activesMap;

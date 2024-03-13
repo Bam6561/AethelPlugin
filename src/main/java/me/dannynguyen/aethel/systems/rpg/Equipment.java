@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.15.10
  * @since 1.13.4
  */
 public class Equipment {
@@ -246,7 +246,7 @@ public class Equipment {
   private void readAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
     String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
-      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
+      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
       if (equipmentSlot == slot) {
         addAttributes(slot, dataContainer, attribute);
       }
@@ -262,7 +262,7 @@ public class Equipment {
    */
   private void addAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
-    AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
+    AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
     attributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }

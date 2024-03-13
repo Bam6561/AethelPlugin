@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.15.10
  * @since 1.14.1
  */
 public class AethelAttributeMenu {
@@ -159,11 +159,11 @@ public class AethelAttributeMenu {
       Map<String, List<String>> attributesMap = new HashMap<>();
       List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String attribute : attributes) {
-        String attributeType = attribute.substring(0, attribute.indexOf("."));
+        String attributeType = attribute.substring(attribute.indexOf(".") + 1);
         if (attributesMap.containsKey(attributeType)) {
-          attributesMap.get(attributeType).add(attribute.substring(attribute.indexOf(".") + 1));
+          attributesMap.get(attributeType).add(attribute.substring(0, attribute.indexOf(".")));
         } else {
-          attributesMap.put(attributeType, new ArrayList<>(List.of(attribute.substring(attribute.indexOf(".") + 1))));
+          attributesMap.put(attributeType, new ArrayList<>(List.of(attribute.substring(0, attribute.indexOf(".")))));
         }
       }
       return attributesMap;
@@ -186,10 +186,10 @@ public class AethelAttributeMenu {
         boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String itemAttribute : aethelAttributesMap.get(attributeMapKey)) {
-            NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeMapKey + "." + itemAttribute);
+          for (String slot : aethelAttributesMap.get(attributeMapKey)) {
+            NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slot + "." + attributeMapKey);
             double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(itemAttribute + ": " + attributeValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + attributeValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));
         } else {

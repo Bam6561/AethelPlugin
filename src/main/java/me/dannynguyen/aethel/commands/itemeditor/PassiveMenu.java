@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.15.10
  * @since 1.15.1
  */
 class PassiveMenu {
@@ -117,10 +117,10 @@ class PassiveMenu {
         boolean enabled = passivesMap.containsKey(passiveMapKey);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String itemPassive : passivesMap.get(passiveMapKey)) {
-            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passiveMapKey + "." + itemPassive);
+          for (String slot : passivesMap.get(passiveMapKey)) {
+            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + passiveMapKey);
             String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(itemPassive + ": " + passiveValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + passiveValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
         } else {
@@ -167,11 +167,11 @@ class PassiveMenu {
       Map<String, List<String>> passivesMap = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
-        String passiveType = passive.substring(0, passive.indexOf("."));
+        String passiveType = passive.substring(passive.indexOf(".") + 1);
         if (passivesMap.containsKey(passiveType)) {
-          passivesMap.get(passiveType).add(passive.substring(passive.indexOf(".") + 1));
+          passivesMap.get(passiveType).add(passive.substring(0, passive.indexOf(".")));
         } else {
-          passivesMap.put(passiveType, new ArrayList<>(List.of(passive.substring(passive.indexOf(".") + 1))));
+          passivesMap.put(passiveType, new ArrayList<>(List.of(passive.substring(0, passive.indexOf(".")))));
         }
       }
       return passivesMap;

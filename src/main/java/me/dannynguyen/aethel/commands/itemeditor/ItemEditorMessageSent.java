@@ -32,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.15.10
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -522,11 +522,11 @@ public class ItemEditorMessageSent {
    * @param listKey   list key
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
     String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
-    String stringKeyToSet = type + "." + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -553,11 +553,11 @@ public class ItemEditorMessageSent {
    * @param listKey   list key
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
     String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
-    String stringKeyToSet = type + "." + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
@@ -586,11 +586,11 @@ public class ItemEditorMessageSent {
    * @param listKey   list key
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
+    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
     String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
-    String stringKeyToRemove = type + "." + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
+    String stringKeyToRemove = slot + "." + type;
     NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
 
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
