@@ -61,7 +61,7 @@ class EnchantmentMenu {
    * @return Enchantment menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Enchantments");
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Enchantments");
     inv.setItem(4, item);
     return inv;
   }

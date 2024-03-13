@@ -67,7 +67,7 @@ class TagMenu {
    * @return Tag menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Aethel Tags");
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Aethel Tags");
     inv.setItem(4, item);
     return inv;
   }

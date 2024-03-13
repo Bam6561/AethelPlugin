@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.10
+ * @version 1.15.11
  * @since 1.14.1
  */
 public class AethelAttributeMenu {
@@ -90,12 +90,7 @@ public class AethelAttributeMenu {
    * @return AethelAttribute menu
    */
   private Inventory createMenu() {
-    String actionString = "";
-    switch (slot) {
-      case HEAD, CHEST, LEGS, FEET, HAND, NECKLACE, RING -> actionString = TextFormatter.capitalizeWord(slot.name());
-      case OFF_HAND -> actionString = "Off Hand";
-    }
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Attributes " + ChatColor.YELLOW + actionString);
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Aethel Attributes " + ChatColor.DARK_AQUA + slot.getProperName());
     inv.setItem(1, item);
     return inv;
   }

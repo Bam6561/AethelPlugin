@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -13,7 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +27,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's active abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.10
+ * @version 1.15.11
  * @since 1.15.1
  */
 class ActiveMenu {
@@ -47,9 +47,9 @@ class ActiveMenu {
   private final ItemStack item;
 
   /**
-   * GUI action.
+   * GUI equipment slot.
    */
-  private final EquipmentSlot slot;
+  private final RpgEquipmentSlot slot;
 
   /**
    * ItemStack data container.
@@ -67,7 +67,7 @@ class ActiveMenu {
    * @param user user
    * @param slot equipment slot
    */
-  protected ActiveMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
+  protected ActiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.slot = Objects.requireNonNull(slot, "Null slot");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
@@ -82,12 +82,7 @@ class ActiveMenu {
    * @return Active menu
    */
   private Inventory createMenu() {
-    String actionString = "";
-    switch (slot) {
-      case HEAD, CHEST, LEGS, FEET, HAND -> actionString = TextFormatter.capitalizeWord(slot.name());
-      case OFF_HAND -> actionString = "Off Hand";
-    }
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Active " + ChatColor.YELLOW + actionString);
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Actives " + ChatColor.DARK_AQUA + slot.getProperName());
     inv.setItem(1, item);
     return inv;
   }
@@ -153,6 +148,8 @@ class ActiveMenu {
     menu.setItem(8, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(14, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Hand", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(15, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace"));
+    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring"));
   }
 
   /**

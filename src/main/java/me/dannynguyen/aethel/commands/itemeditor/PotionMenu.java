@@ -23,7 +23,7 @@ import java.util.*;
  * Represents a menu that edits an item's potion effects.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.15.11
  * @since 1.14.0
  */
 class PotionMenu {
@@ -59,7 +59,7 @@ class PotionMenu {
    * @return Potion menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Potion Effects");
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Potion Effects");
     inv.setItem(4, item);
     return inv;
   }
@@ -82,7 +82,9 @@ class PotionMenu {
    * Adds potion color.
    */
   private void addColor() {
-    menu.setItem(5, ItemCreator.createItem(Material.NETHER_WART, ChatColor.AQUA + "Set Color"));
+    if (item.getItemMeta() instanceof PotionMeta) {
+      menu.setItem(5, ItemCreator.createItem(Material.NETHER_WART, ChatColor.AQUA + "Set Color"));
+    }
   }
 
   /**

@@ -28,26 +28,26 @@ public enum ActiveAbilityEffect {
   SHATTER("Radius(m), Cooldown(t)");
 
   /**
-   * Active ability effect's fields.
+   * Active ability effect's data.
    */
-  private String fields;
+  private String data;
 
   /**
-   * Associates an active ability effect with its fields.
+   * Associates an active ability effect with its data.
    *
-   * @param fields effect's fields
+   * @param data effect's data
    */
-  ActiveAbilityEffect(@NotNull String fields) {
-    this.fields = Objects.requireNonNull(fields, "Null fields");
+  ActiveAbilityEffect(@NotNull String data) {
+    this.data = Objects.requireNonNull(data, "Null data");
   }
 
   /**
-   * Gets the effect's fields.
+   * Gets the effect's data.
    *
-   * @return effect's fields
+   * @return effect's data
    */
   @NotNull
-  public String getFields() {
-    return this.fields;
+  public String getData() {
+    return this.data;
   }
 }

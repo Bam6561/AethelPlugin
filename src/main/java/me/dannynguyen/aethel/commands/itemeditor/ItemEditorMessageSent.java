@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
 import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import me.dannynguyen.aethel.utility.ItemRepairCost;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -32,7 +33,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.10
+ * @version 1.15.11
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -678,7 +679,7 @@ public class ItemEditorMessageSent {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new PassiveMenu(user, Trigger.valueOf(playerMeta.get(PlayerMeta.TYPE).toUpperCase()), RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
     });
   }
@@ -690,7 +691,7 @@ public class ItemEditorMessageSent {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
     });
   }

@@ -5,6 +5,8 @@ import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -13,7 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +28,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.10
+ * @version 1.15.11
  * @since 1.15.1
  */
 class PassiveMenu {
@@ -47,9 +48,14 @@ class PassiveMenu {
   private final ItemStack item;
 
   /**
-   * GUI action.
+   * GUI trigger condition.
    */
-  private final EquipmentSlot slot;
+  private final Trigger trigger;
+
+  /**
+   * GUI equipment slot.
+   */
+  private final RpgEquipmentSlot slot;
 
   /**
    * ItemStack data container.
@@ -64,11 +70,13 @@ class PassiveMenu {
   /**
    * Associates a new Passive menu with its user and item.
    *
-   * @param user user
-   * @param slot equipment slot
+   * @param user    user
+   * @param trigger trigger condition
+   * @param slot    equipment slot
    */
-  protected PassiveMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
+  protected PassiveMenu(@NotNull Player user, @NotNull Trigger trigger, @NotNull RpgEquipmentSlot slot) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.slot = Objects.requireNonNull(slot, "Null slot");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
@@ -82,12 +90,7 @@ class PassiveMenu {
    * @return Passive menu
    */
   private Inventory createMenu() {
-    String actionString = "";
-    switch (slot) {
-      case HEAD, CHEST, LEGS, FEET, HAND -> actionString = TextFormatter.capitalizeWord(slot.name());
-      case OFF_HAND -> actionString = "Off Hand";
-    }
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "ItemEditor " + ChatColor.DARK_AQUA + "Passive " + ChatColor.YELLOW + actionString);
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + slot.getProperName() + " " + ChatColor.YELLOW + trigger.getProperName());
     inv.setItem(1, item);
     return inv;
   }
@@ -101,6 +104,7 @@ class PassiveMenu {
     addPassives();
     addContext();
     addActions();
+    addTriggers();
     InventoryPages.addBackButton(menu, 2);
     return menu;
   }
@@ -153,6 +157,18 @@ class PassiveMenu {
     menu.setItem(8, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(14, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Hand", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(15, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace"));
+    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring"));
+  }
+
+  /**
+   * Adds trigger condition buttons.
+   */
+  private void addTriggers() {
+    menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
+    menu.setItem(10, ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Deal Damage"));
+    menu.setItem(11, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "Kill"));
+    menu.setItem(12, ItemCreator.createItem(Material.GRAY_DYE, ChatColor.AQUA + "Take Damage"));
   }
 
   /**

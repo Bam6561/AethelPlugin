@@ -5,10 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -33,7 +30,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.15.11
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -193,12 +190,18 @@ public class ItemEditorMenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmetic();
-      case 5 -> setPassiveMode(EquipmentSlot.HEAD);
-      case 6 -> setPassiveMode(EquipmentSlot.CHEST);
-      case 7 -> setPassiveMode(EquipmentSlot.LEGS);
-      case 8 -> setPassiveMode(EquipmentSlot.FEET);
-      case 14 -> setPassiveMode(EquipmentSlot.HAND);
-      case 15 -> setPassiveMode(EquipmentSlot.OFF_HAND);
+      case 5 -> setPassiveMode(RpgEquipmentSlot.HEAD);
+      case 6 -> setPassiveMode(RpgEquipmentSlot.CHEST);
+      case 7 -> setPassiveMode(RpgEquipmentSlot.LEGS);
+      case 8 -> setPassiveMode(RpgEquipmentSlot.FEET);
+      case 14 -> setPassiveMode(RpgEquipmentSlot.HAND);
+      case 15 -> setPassiveMode(RpgEquipmentSlot.OFF_HAND);
+      case 16 -> setPassiveMode(RpgEquipmentSlot.NECKLACE);
+      case 17 -> setPassiveMode(RpgEquipmentSlot.RING);
+      case 9 -> setTriggerMode(Trigger.BELOW_HP);
+      case 10 -> setTriggerMode(Trigger.DEAL_DAMAGE);
+      case 11 -> setTriggerMode(Trigger.KILL);
+      case 12 -> setTriggerMode(Trigger.TAKE_DAMAGE);
       default -> readPassive();
     }
   }
@@ -211,12 +214,14 @@ public class ItemEditorMenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmetic();
-      case 5 -> setActiveMode(EquipmentSlot.HEAD);
-      case 6 -> setActiveMode(EquipmentSlot.CHEST);
-      case 7 -> setActiveMode(EquipmentSlot.LEGS);
-      case 8 -> setActiveMode(EquipmentSlot.FEET);
-      case 14 -> setActiveMode(EquipmentSlot.HAND);
-      case 15 -> setActiveMode(EquipmentSlot.OFF_HAND);
+      case 5 -> setActiveMode(RpgEquipmentSlot.HEAD);
+      case 6 -> setActiveMode(RpgEquipmentSlot.CHEST);
+      case 7 -> setActiveMode(RpgEquipmentSlot.LEGS);
+      case 8 -> setActiveMode(RpgEquipmentSlot.FEET);
+      case 14 -> setActiveMode(RpgEquipmentSlot.HAND);
+      case 15 -> setActiveMode(RpgEquipmentSlot.OFF_HAND);
+      case 16 -> setActiveMode(RpgEquipmentSlot.NECKLACE);
+      case 17 -> setActiveMode(RpgEquipmentSlot.RING);
       default -> readActive();
     }
   }
@@ -312,8 +317,9 @@ public class ItemEditorMenuClick {
   private void openPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
+    playerMeta.put(PlayerMeta.TYPE, "below_hp");
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new PassiveMenu(user, EquipmentSlot.HEAD).openMenu());
+    user.openInventory(new PassiveMenu(user, Trigger.BELOW_HP, RpgEquipmentSlot.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -324,7 +330,7 @@ public class ItemEditorMenuClick {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new ActiveMenu(user, EquipmentSlot.HEAD).openMenu());
+    user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HEAD).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
@@ -479,39 +485,49 @@ public class ItemEditorMenuClick {
   /**
    * Sets the user's interacting equipment slot for attributes.
    *
-   * @param action type of interaction
+   * @param slot equipment slot
    */
-  private void setAttributeMode(EquipmentSlot action) {
+  private void setAttributeMode(EquipmentSlot slot) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String equipmentSlot = action.name().toLowerCase();
-    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new AttributeMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.SLOT, slot.name().toLowerCase());
+    user.openInventory(new AttributeMenu(user, slot).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
   }
 
   /**
    * Sets the user's interacting RPG equipment slot for Aethel attributes.
    *
-   * @param action type of interaction
+   * @param slot equipment slot
    */
-  private void setAethelAttributeMode(RpgEquipmentSlot action) {
+  private void setAethelAttributeMode(RpgEquipmentSlot slot) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String rpgEquipmentSlot = action.name().toLowerCase();
+    String rpgEquipmentSlot = slot.name().toLowerCase();
     playerMeta.put(PlayerMeta.SLOT, rpgEquipmentSlot);
-    user.openInventory(new AethelAttributeMenu(user, action).openMenu());
+    user.openInventory(new AethelAttributeMenu(user, slot).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
   }
 
   /**
    * Sets the user's interacting equipment slot for passive abilities.
    *
-   * @param action type of interaction
+   * @param slot equipment slot
    */
-  private void setPassiveMode(EquipmentSlot action) {
+  private void setPassiveMode(RpgEquipmentSlot slot) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String equipmentSlot = action.name().toLowerCase();
-    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
-    user.openInventory(new PassiveMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.SLOT, slot.name().toLowerCase());
+    user.openInventory(new PassiveMenu(user, Trigger.valueOf(playerMeta.get(PlayerMeta.TYPE).toUpperCase()), slot).openMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+  }
+
+  /**
+   * Sets the user's interacting trigger condition for passive abilities.
+   *
+   * @param trigger trigger condition
+   */
+  private void setTriggerMode(Trigger trigger) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    playerMeta.put(PlayerMeta.TYPE, trigger.name().toLowerCase());
+    user.openInventory(new PassiveMenu(user, trigger, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -520,10 +536,9 @@ public class ItemEditorMenuClick {
    *
    * @param action type of interaction
    */
-  private void setActiveMode(EquipmentSlot action) {
+  private void setActiveMode(RpgEquipmentSlot action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String equipmentSlot = action.name().toLowerCase();
-    playerMeta.put(PlayerMeta.SLOT, equipmentSlot);
+    playerMeta.put(PlayerMeta.SLOT, action.name().toLowerCase());
     user.openInventory(new ActiveMenu(user, action).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
@@ -587,7 +602,7 @@ public class ItemEditorMenuClick {
   private void readActive() {
     String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + active + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbility.valueOf(TextFormatter.formatEnum(active)).getEffect().getFields());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbility.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(active));
     awaitMessageResponse("active_ability");
   }

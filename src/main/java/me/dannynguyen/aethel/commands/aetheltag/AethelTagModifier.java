@@ -25,7 +25,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.15.10
+ * @version 1.15.11
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -52,6 +52,11 @@ class AethelTagModifier {
   /**
    * Tag to be modified.
    */
+  private final String originalTag;
+
+  /**
+   * Modified tag.
+   */
   private String tag;
 
   /**
@@ -64,7 +69,8 @@ class AethelTagModifier {
   protected AethelTagModifier(@NotNull Player user, @NotNull ItemStack item, @NotNull String tag) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Objects.requireNonNull(item, "Null item");
-    this.tag = Objects.requireNonNull(tag, "Null tag");
+    this.originalTag = Objects.requireNonNull(tag, "Null tag");
+    this.tag = originalTag;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
   }
@@ -118,7 +124,7 @@ class AethelTagModifier {
     } else {
       dataContainer.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.STRING, value);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + tag.toLowerCase() + " " + ChatColor.WHITE + value);
+      user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
     }
   }
 
@@ -401,7 +407,7 @@ class AethelTagModifier {
     dataContainer.set(tagKey, PersistentDataType.DOUBLE, value);
     setKeyToList(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + tag.toLowerCase() + " " + ChatColor.WHITE + value);
+    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
 
   /**
@@ -414,7 +420,7 @@ class AethelTagModifier {
     dataContainer.set(tagKey, PersistentDataType.STRING, value);
     setKeyToList(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + tag.toLowerCase() + " " + ChatColor.WHITE + value);
+    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
 
   /**
@@ -427,7 +433,7 @@ class AethelTagModifier {
     dataContainer.set(tagKey, PersistentDataType.STRING, value);
     setKeyToList(PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + tag.toLowerCase() + " " + ChatColor.WHITE + value);
+    user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
 
   /**
