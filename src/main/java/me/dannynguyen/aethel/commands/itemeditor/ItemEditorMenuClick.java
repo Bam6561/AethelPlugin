@@ -30,7 +30,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.15.12
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -317,9 +317,9 @@ public class ItemEditorMenuClick {
   private void openPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.remove(PlayerMeta.MESSAGE);
-    playerMeta.put(PlayerMeta.TYPE, "below_hp");
+    playerMeta.put(PlayerMeta.CONDITION, "below_hp");
     playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new PassiveMenu(user, Trigger.BELOW_HP, RpgEquipmentSlot.HEAD).openMenu());
+    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HEAD, Trigger.BELOW_HP).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -515,7 +515,7 @@ public class ItemEditorMenuClick {
   private void setPassiveMode(RpgEquipmentSlot slot) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     playerMeta.put(PlayerMeta.SLOT, slot.name().toLowerCase());
-    user.openInventory(new PassiveMenu(user, Trigger.valueOf(playerMeta.get(PlayerMeta.TYPE).toUpperCase()), slot).openMenu());
+    user.openInventory(new PassiveMenu(user, slot, Trigger.valueOf(playerMeta.get(PlayerMeta.CONDITION).toUpperCase())).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -526,8 +526,8 @@ public class ItemEditorMenuClick {
    */
   private void setTriggerMode(Trigger trigger) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    playerMeta.put(PlayerMeta.TYPE, trigger.name().toLowerCase());
-    user.openInventory(new PassiveMenu(user, trigger, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+    playerMeta.put(PlayerMeta.CONDITION, trigger.name().toLowerCase());
+    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase()), trigger).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 

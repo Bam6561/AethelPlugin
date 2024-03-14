@@ -108,12 +108,12 @@ class ActiveMenu {
     if (activesMap != null) {
       for (ActiveAbility active : ActiveAbility.values()) {
         String activeName = active.getProperName();
-        String activeMapKey = active.getId();
-        boolean enabled = activesMap.containsKey(activeMapKey);
+        String activeId = active.getId();
+        boolean enabled = activesMap.containsKey(activeId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String slot : activesMap.get(activeMapKey)) {
-            NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + activeMapKey);
+          for (String slot : activesMap.get(activeId)) {
+            NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + activeId);
             String activeValue = dataContainer.get(activeKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + activeValue));
           }

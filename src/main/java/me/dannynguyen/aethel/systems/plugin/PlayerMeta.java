@@ -4,7 +4,7 @@ package me.dannynguyen.aethel.systems.plugin;
  * Plugin player metadata.
  *
  * @author Danny Nguyen
- * @version 1.10.1
+ * @version 1.15.12
  * @since 1.10.1
  */
 public enum PlayerMeta {
@@ -47,6 +47,11 @@ public enum PlayerMeta {
    * Equipment slot.
    */
   SLOT,
+
+  /**
+   * Type of condition.
+   */
+  CONDITION,
 
   /**
    * Type of interacting object.

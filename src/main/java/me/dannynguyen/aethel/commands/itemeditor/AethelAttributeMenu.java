@@ -177,12 +177,12 @@ public class AethelAttributeMenu {
     if (aethelAttributesMap != null) {
       for (AethelAttribute attribute : attributeCategories.get(category)) {
         String attributeName = attribute.getProperName();
-        String attributeMapKey = attribute.getId();
-        boolean enabled = aethelAttributesMap.containsKey(attributeMapKey);
+        String attributeId = attribute.getId();
+        boolean enabled = aethelAttributesMap.containsKey(attributeId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String slot : aethelAttributesMap.get(attributeMapKey)) {
-            NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slot + "." + attributeMapKey);
+          for (String slot : aethelAttributesMap.get(attributeId)) {
+            NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slot + "." + attributeId);
             double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + attributeValue));
           }

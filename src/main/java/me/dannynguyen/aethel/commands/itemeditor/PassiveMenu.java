@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.15.12
  * @since 1.15.1
  */
 class PassiveMenu {
@@ -65,7 +65,7 @@ class PassiveMenu {
   /**
    * ItemStack passive abilities.
    */
-  private final Map<String, List<String>> passivesMap;
+  private final Map<String, List<SlotCondition>> passivesMap;
 
   /**
    * Associates a new Passive menu with its user and item.
@@ -74,10 +74,10 @@ class PassiveMenu {
    * @param trigger trigger condition
    * @param slot    equipment slot
    */
-  protected PassiveMenu(@NotNull Player user, @NotNull Trigger trigger, @NotNull RpgEquipmentSlot slot) {
+  protected PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot, @NotNull Trigger trigger) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.slot = Objects.requireNonNull(slot, "Null slot");
+    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
     this.passivesMap = mapPassives();
@@ -117,14 +117,14 @@ class PassiveMenu {
     if (passivesMap != null) {
       for (PassiveAbility passive : PassiveAbility.values()) {
         String passiveName = passive.getProperName();
-        String passiveMapKey = passive.getId();
-        boolean enabled = passivesMap.containsKey(passiveMapKey);
+        String passiveId = passive.getId();
+        boolean enabled = passivesMap.containsKey(passiveId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String slot : passivesMap.get(passiveMapKey)) {
-            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + passiveMapKey);
+          for (SlotCondition slotCondition : passivesMap.get(passiveId)) {
+            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slotCondition.getSlot() + "." + slotCondition.getCondition() + "." + passiveId);
             String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + passiveValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slotCondition.getSlot() + " " + slotCondition.getCondition() + ": " + passiveValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
         } else {
@@ -176,18 +176,21 @@ class PassiveMenu {
    *
    * @return item's passives map
    */
-  private Map<String, List<String>> mapPassives() {
+  private Map<String, List<SlotCondition>> mapPassives() {
     NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
     boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
-      Map<String, List<String>> passivesMap = new HashMap<>();
+      Map<String, List<SlotCondition>> passivesMap = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
-        String passiveType = passive.substring(passive.indexOf(".") + 1);
+        String[] passiveData = passive.split("\\.");
+        String slot = passiveData[0];
+        String condition = passiveData[1];
+        String passiveType = passiveData[2];
         if (passivesMap.containsKey(passiveType)) {
-          passivesMap.get(passiveType).add(passive.substring(0, passive.indexOf(".")));
+          passivesMap.get(passiveType).add(new SlotCondition(slot, condition));
         } else {
-          passivesMap.put(passiveType, new ArrayList<>(List.of(passive.substring(0, passive.indexOf(".")))));
+          passivesMap.put(passiveType, new ArrayList<>(List.of(new SlotCondition(slot, condition))));
         }
       }
       return passivesMap;
