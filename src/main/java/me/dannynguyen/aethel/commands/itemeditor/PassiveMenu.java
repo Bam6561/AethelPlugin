@@ -48,7 +48,7 @@ class PassiveMenu {
   private final ItemStack item;
 
   /**
-   * GUI trigger condition.
+   * GUI trigger type.
    */
   private final Trigger trigger;
 
@@ -71,7 +71,7 @@ class PassiveMenu {
    * Associates a new Passive menu with its user and item.
    *
    * @param user    user
-   * @param trigger trigger condition
+   * @param trigger trigger type
    * @param slot    equipment slot
    */
   protected PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot, @NotNull Trigger trigger) {
@@ -162,7 +162,7 @@ class PassiveMenu {
   }
 
   /**
-   * Adds trigger condition buttons.
+   * Adds trigger type buttons.
    */
   private void addTriggers() {
     menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));

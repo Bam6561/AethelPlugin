@@ -30,7 +30,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.12
+ * @version 1.15.13
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -520,9 +520,9 @@ public class ItemEditorMenuClick {
   }
 
   /**
-   * Sets the user's interacting trigger condition for passive abilities.
+   * Sets the user's interacting trigger type for passive abilities.
    *
-   * @param trigger trigger condition
+   * @param trigger trigger type
    */
   private void setTriggerMode(Trigger trigger) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
@@ -534,12 +534,12 @@ public class ItemEditorMenuClick {
   /**
    * Sets the user's interacting equipment slot for active abilities.
    *
-   * @param action type of interaction
+   * @param slot equipment slot
    */
-  private void setActiveMode(RpgEquipmentSlot action) {
+  private void setActiveMode(RpgEquipmentSlot slot) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    playerMeta.put(PlayerMeta.SLOT, action.name().toLowerCase());
-    user.openInventory(new ActiveMenu(user, action).openMenu());
+    playerMeta.put(PlayerMeta.SLOT, slot.name().toLowerCase());
+    user.openInventory(new ActiveMenu(user, slot).openMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
@@ -589,9 +589,11 @@ public class ItemEditorMenuClick {
    * Determines the passive ability to be set and prompts the user for an input.
    */
   private void readPassive() {
+    Trigger trigger = Trigger.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CONDITION)));
     String passive = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + passive + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbility.valueOf(TextFormatter.formatEnum(passive)).getEffect().getFields());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + trigger.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + trigger.getCondition().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbility.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(passive));
     awaitMessageResponse("passive_ability");
   }

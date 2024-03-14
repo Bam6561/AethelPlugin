@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.*;
 import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
@@ -33,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.12
+ * @version 1.15.13
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -264,7 +263,7 @@ public class ItemEditorMessageSent {
       if (!e.getMessage().equals("-")) {
         setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), Double.parseDouble(e.getMessage()), PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
       } else {
-        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), false);
+        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
       }
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid value.");
@@ -339,13 +338,9 @@ public class ItemEditorMessageSent {
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
-      String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE).toUpperCase();
-      switch (PassiveAbility.valueOf(type).getEffect()) {
-        case STACK_INSTANCE -> readPassiveStackInstance();
-        case SPARK -> readPassiveSpark();
-      }
+      new PassiveAbilityTag(e.getMessage(), user, item).interpretKeyToBeSet();
     } else {
-      removeKeyFromList(KeyHeader.PASSIVE.getHeader(), PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), true);
+      new PassiveAbilityTag(e.getMessage(), user, item).removeKeyFromList();
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassive);
   }
@@ -362,7 +357,7 @@ public class ItemEditorMessageSent {
         case SHATTER -> readActiveShatter();
       }
     } else {
-      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey(), false);
+      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActive);
   }
@@ -403,50 +398,6 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the passive stack instance.
-   */
-  private void readPassiveStackInstance() {
-    String[] args = e.getMessage().split(" ");
-    if (args.length == 2) {
-      try {
-        int stacks = Integer.parseInt(args[0]);
-        try {
-          int ticks = Integer.parseInt(args[1]);
-          setKeyStringToList(KeyHeader.PASSIVE.getHeader(), stacks + " " + ticks, PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), true);
-        } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid ticks.");
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid stacks.");
-      }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Checks if the input was formatted correctly before setting the passive spark.
-   */
-  private void readPassiveSpark() {
-    String[] args = e.getMessage().split(" ");
-    if (args.length == 2) {
-      try {
-        double damage = Integer.parseInt(args[0]);
-        try {
-          double distance = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.PASSIVE.getHeader(), damage + " " + distance, PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), true);
-        } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid radius.");
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid damage.");
-      }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
    * Checks if the input was formatted correctly before setting the active movement.
    */
   private void readActiveMovement() {
@@ -456,7 +407,7 @@ public class ItemEditorMessageSent {
         double distance = Double.parseDouble(args[0]);
         try {
           int cooldown = Integer.parseInt(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey(), false);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(ChatColor.RED + "Invalid cooldown.");
         }
@@ -480,7 +431,7 @@ public class ItemEditorMessageSent {
           int delay = Integer.parseInt(args[1]);
           try {
             int cooldown = Integer.parseInt(args[2]);
-            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + delay + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey(), false);
+            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + delay + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
           } catch (NumberFormatException ex) {
             user.sendMessage(ChatColor.RED + "Invalid cooldown.");
           }
@@ -505,7 +456,7 @@ public class ItemEditorMessageSent {
         double radius = Double.parseDouble(args[0]);
         try {
           int cooldown = Integer.parseInt(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), radius + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey(), false);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), radius + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(ChatColor.RED + "Invalid cooldown.");
         }
@@ -552,20 +503,14 @@ public class ItemEditorMessageSent {
   /**
    * Sets a key with a String value to a key header's list of keys.
    *
-   * @param keyHeader        key header
-   * @param keyValue         key value
-   * @param listKey          list key
-   * @param includeCondition whether to include condition
+   * @param keyHeader key header
+   * @param keyValue  key value
+   * @param listKey   list key
    */
-  private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey, boolean includeCondition) {
+  private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
     String slot = playerMeta.get(PlayerMeta.SLOT);
-    String type;
-    if (includeCondition) {
-      type = playerMeta.get(PlayerMeta.CONDITION) + "." + playerMeta.get(PlayerMeta.TYPE);
-    } else {
-      type = playerMeta.get(PlayerMeta.TYPE);
-    }
+    String type = playerMeta.get(PlayerMeta.TYPE);
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -593,19 +538,13 @@ public class ItemEditorMessageSent {
    * If the list is empty after the operation, the list is also removed.
    * </p>
    *
-   * @param keyHeader        key header
-   * @param listKey          list key
-   * @param includeCondition whether to include condition
+   * @param keyHeader key header
+   * @param listKey   list key
    */
-  private void removeKeyFromList(String keyHeader, NamespacedKey listKey, boolean includeCondition) {
+  private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    String slot = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.SLOT);
-    String type;
-    if (includeCondition) {
-      type = playerMeta.get(PlayerMeta.CONDITION) + "." + playerMeta.get(PlayerMeta.TYPE);
-    } else {
-      type = playerMeta.get(PlayerMeta.TYPE);
-    }
+    String slot = playerMeta.get(PlayerMeta.SLOT);
+    String type = playerMeta.get(PlayerMeta.TYPE);
     String stringKeyToRemove = slot + "." + type;
     NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();

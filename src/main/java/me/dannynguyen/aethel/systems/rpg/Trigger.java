@@ -8,29 +8,29 @@ import java.util.Objects;
  * Types of ability trigger conditions.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.15.13
  * @since 1.15.11
  */
 public enum Trigger {
   /**
    * Below a % of max health.
    */
-  BELOW_HP("Below % HP", "below_hp"),
+  BELOW_HP("Below % HP", "below_hp", TriggerCondition.HP_CHANCE_COOLDOWN),
 
   /**
    * Damage dealt.
    */
-  DEAL_DAMAGE("Deal Damage", "deal_damage"),
+  DEAL_DAMAGE("Deal Damage", "deal_damage", TriggerCondition.CHANCE_COOLDOWN),
 
   /**
    * Killed an entity.
    */
-  KILL("Kill", "kill"),
+  KILL("Kill", "kill", TriggerCondition.CHANCE_COOLDOWN),
 
   /**
    * Damage taken.
    */
-  TAKE_DAMAGE("Take Damage", "take_damage");
+  TAKE_DAMAGE("Take Damage", "take_damage", TriggerCondition.CHANCE_COOLDOWN);
 
   /**
    * Trigger's proper name.
@@ -43,14 +43,21 @@ public enum Trigger {
   private final String id;
 
   /**
+   * Trigger condition.
+   */
+  private final TriggerCondition condition;
+
+  /**
    * Associates an equipment slot with its proper name and id.
    *
    * @param properName proper name
    * @param id         trigger id
+   * @param condition  trigger condition
    */
-  Trigger(@NotNull String properName, @NotNull String id) {
+  Trigger(@NotNull String properName, @NotNull String id, @NotNull TriggerCondition condition) {
     this.properName = Objects.requireNonNull(properName, "Null name");
     this.id = Objects.requireNonNull(id, "Null ID");
+    this.condition = Objects.requireNonNull(condition, "Null condition");
   }
 
   /**
@@ -69,5 +76,14 @@ public enum Trigger {
    */
   public String getId() {
     return this.id;
+  }
+
+  /**
+   * Gets the trigger's condition.
+   *
+   * @return trigger's condition
+   */
+  public TriggerCondition getCondition() {
+    return this.condition;
   }
 }

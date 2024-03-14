@@ -23,26 +23,26 @@ public enum PassiveAbilityEffect {
   SPARK("Damage, Radius(m)");
 
   /**
-   * Passive ability effect's fields.
+   * Passive ability effect's data.
    */
-  private String fields;
+  private String data;
 
   /**
-   * Associates a passive ability effect with its fields.
+   * Associates a passive ability effect with its data.
    *
-   * @param fields effect's fields
+   * @param data effect's data
    */
-  PassiveAbilityEffect(@NotNull String fields) {
-    this.fields = Objects.requireNonNull(fields, "Null fields");
+  PassiveAbilityEffect(@NotNull String data) {
+    this.data = Objects.requireNonNull(data, "Null data");
   }
 
   /**
-   * Gets the effect's fields.
+   * Gets the effect's data.
    *
-   * @return effect's fields
+   * @return effect's data
    */
   @NotNull
-  public String getFields() {
-    return this.fields;
+  public String getData() {
+    return this.data;
   }
 }
