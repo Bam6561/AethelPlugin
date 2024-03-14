@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
+import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -18,13 +19,13 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
- * Represents Minecraft and Aethel attribute totals.
+ * Represents an item's Minecraft and Aethel attribute lore generation.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.15.15
  * @since 1.13.2
  */
-class ItemAttributeTotals {
+class ItemAttributeLore {
   /**
    * ItemStack whose attributes are being totalled.
    */
@@ -46,20 +47,20 @@ class ItemAttributeTotals {
   private final List<String> attributes;
 
   /**
-   * ItemStack's total Minecraft and Aethel attribute values.
+   * ItemStack's total Minecraft and Aethel attribute
+   * values categorized by equipment slot.
    */
   private final Map<String, Map<String, Double>> attributeValues;
 
   /**
    * Associates an ItemStack with its Aethel attribute list.
    *
-   * @param item       ItemStack
-   * @param attributes Aethel attribute list
+   * @param item interacting item
    */
-  protected ItemAttributeTotals(@NotNull ItemStack item, @NotNull List<String> attributes) {
+  protected ItemAttributeLore(@NotNull ItemStack item) {
     this.item = Objects.requireNonNull(item, "Null item");
-    this.attributes = Objects.requireNonNull(attributes, "Null attributes");
     this.meta = item.getItemMeta();
+    this.attributes = new ArrayList<>(List.of(meta.getPersistentDataContainer().get(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")));
     if (meta.hasLore()) {
       this.lore = meta.getLore();
     } else {
@@ -100,7 +101,8 @@ class ItemAttributeTotals {
   }
 
   /**
-   * Adds an attribute header if it exists for the equipment slot with its associated attribute values.
+   * Adds an attribute header if it exists for the
+   * equipment slot with its associated attribute values.
    *
    * @param slot equipment slot
    */
@@ -114,7 +116,7 @@ class ItemAttributeTotals {
         case "feet" -> attributeHeader.add(ChatColor.GRAY + "When on Feet:");
         case "necklace" -> attributeHeader.add(ChatColor.GRAY + "When on Necklace:");
         case "ring" -> attributeHeader.add(ChatColor.GRAY + "When on Ring:");
-        case "hand" -> attributeHeader.add(ChatColor.GRAY + "When in Hand:");
+        case "hand" -> attributeHeader.add(ChatColor.GRAY + "When in Main Hand:");
         case "off_hand" -> attributeHeader.add(ChatColor.GRAY + "When in Off Hand:");
       }
       DecimalFormat df3 = new DecimalFormat();
@@ -165,8 +167,8 @@ class ItemAttributeTotals {
   private void sortAethelAttributes(Map<String, Map<String, Double>> attributeValues) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
     for (String attribute : attributes) {
-      String attributeSlot = attribute.substring(attribute.indexOf(".") + 1);
-      String attributeName = attribute.substring(0, attribute.indexOf("."));
+      String attributeSlot = attribute.substring(0, attribute.indexOf("."));
+      String attributeName = attribute.substring(attribute.indexOf(".") + 1);
       NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
       if (attributeValues.containsKey(attributeSlot)) {
         if (attributeValues.get(attributeSlot).containsKey(attributeName)) {

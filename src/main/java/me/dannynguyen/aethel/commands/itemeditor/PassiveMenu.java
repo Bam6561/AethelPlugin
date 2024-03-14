@@ -183,10 +183,10 @@ class PassiveMenu {
       Map<String, List<SlotCondition>> passivesMap = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
-        String[] passiveData = passive.split("\\.");
-        String slot = passiveData[0];
-        String condition = passiveData[1];
-        String passiveType = passiveData[2];
+        String[] passiveMeta = passive.split("\\.");
+        String slot = passiveMeta[0];
+        String condition = passiveMeta[1];
+        String passiveType = passiveMeta[2];
         if (passivesMap.containsKey(passiveType)) {
           passivesMap.get(passiveType).add(new SlotCondition(slot, condition));
         } else {

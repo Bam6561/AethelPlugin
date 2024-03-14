@@ -25,7 +25,7 @@ import java.util.*;
  * Represents a passive ability tag set or remove operation.
  *
  * @author Danny Nguyen
- * @version 1.15.13
+ * @version 1.15.15
  * @since 1.15.13
  */
 class PassiveAbilityTag {
@@ -116,20 +116,20 @@ class PassiveAbilityTag {
   public void interpretKeyToBeSet() {
     TriggerCondition triggerCondition = Trigger.valueOf(condition.toUpperCase()).getCondition();
     PassiveAbilityEffect abilityEffect = PassiveAbility.valueOf(type.toUpperCase()).getEffect();
-    switch (abilityEffect) {
-      case STACK_INSTANCE -> readStackInstance(triggerCondition);
-      case SPARK -> readPassiveSpark(triggerCondition);
+    switch (triggerCondition) {
+      case CHANCE_COOLDOWN -> readChanceCooldown(abilityEffect);
+      case HP_CHANCE_COOLDOWN -> readHpChanceCooldown(abilityEffect);
     }
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the passive stack instance.
+   * Checks if the input was formatted correctly before setting the effect's chance and cooldown.
    *
-   * @param condition trigger condition
+   * @param abilityEffect ability effect
    */
-  private void readStackInstance(TriggerCondition condition) {
-    switch (condition) {
-      case CHANCE_COOLDOWN -> {
+  private void readChanceCooldown(PassiveAbilityEffect abilityEffect) {
+    switch (abilityEffect) {
+      case STACK_INSTANCE -> {
         if (args.length == 4) {
           try {
             double chance = Double.parseDouble(args[0]);
@@ -156,7 +156,44 @@ class PassiveAbilityTag {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      case HP_CHANCE_COOLDOWN -> {
+      case SPARK -> {
+        if (args.length == 4) {
+          try {
+            double chance = Double.parseDouble(args[0]);
+            try {
+              int cooldown = Integer.parseInt(args[1]);
+              try {
+                double damage = Integer.parseInt(args[2]);
+                try {
+                  double distance = Double.parseDouble(args[3]);
+                  setKeyStringToList(chance + " " + cooldown + " " + damage + " " + distance);
+                } catch (NumberFormatException ex) {
+                  user.sendMessage(ChatColor.RED + "Invalid radius.");
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid damage.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid chance.");
+          }
+        } else {
+          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks if the input was formatted correctly before setting the effect's HP, chance, and cooldown.
+   *
+   * @param abilityEffect ability effect
+   */
+  private void readHpChanceCooldown(PassiveAbilityEffect abilityEffect) {
+    switch (abilityEffect) {
+      case STACK_INSTANCE -> {
         if (args.length == 5) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
@@ -188,44 +225,7 @@ class PassiveAbilityTag {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-    }
-  }
-
-  /**
-   * Checks if the input was formatted correctly before setting the passive spark.
-   *
-   * @param condition trigger condition
-   */
-  private void readPassiveSpark(TriggerCondition condition) {
-    switch (condition) {
-      case CHANCE_COOLDOWN -> {
-        if (args.length == 4) {
-          try {
-            double chance = Double.parseDouble(args[0]);
-            try {
-              int cooldown = Integer.parseInt(args[1]);
-              try {
-                double damage = Integer.parseInt(args[2]);
-                try {
-                  double distance = Double.parseDouble(args[3]);
-                  setKeyStringToList(chance + " " + cooldown + " " + damage + " " + distance);
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid radius.");
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid damage.");
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
-            }
-          } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid chance.");
-          }
-        } else {
-          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-        }
-      }
-      case HP_CHANCE_COOLDOWN -> {
+      case SPARK -> {
         if (args.length == 5) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
@@ -280,7 +280,7 @@ class PassiveAbilityTag {
     }
     dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey), PersistentDataType.STRING, keyValue);
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(condition) + " " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(condition) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
   }
 
   /**

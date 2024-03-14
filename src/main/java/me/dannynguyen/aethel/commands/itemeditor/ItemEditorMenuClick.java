@@ -11,7 +11,6 @@ import me.dannynguyen.aethel.utility.ItemReader;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.13
+ * @version 1.15.15
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -420,16 +419,17 @@ public class ItemEditorMenuClick {
     boolean generatedLore = false;
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-    NamespacedKey forgeId = PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey();
-    if (dataContainer.has(forgeId, PersistentDataType.STRING)) {
+    if (dataContainer.has(PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
-      displayForgeId(dataContainer, forgeId);
+      displayForgeId(dataContainer);
     }
-
-    NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
-    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+    if (dataContainer.has(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
-      new ItemAttributeTotals(item, new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")))).addAttributeHeaders();
+      new ItemAttributeLore(item).addAttributeHeaders();
+    }
+    if (dataContainer.has(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      generatedLore = true;
+      new ItemPassiveLore(item).addPassiveHeaders();
     }
 
     if (generatedLore) {
@@ -672,16 +672,15 @@ public class ItemEditorMenuClick {
    * Adds the forge ID to the item's lore.
    *
    * @param dataContainer item's persistent tags
-   * @param forgeId       forge ID
    */
-  private void displayForgeId(PersistentDataContainer dataContainer, NamespacedKey forgeId) {
+  private void displayForgeId(PersistentDataContainer dataContainer) {
     List<String> lore;
     if (meta.hasLore()) {
       lore = meta.getLore();
     } else {
       lore = new ArrayList<>();
     }
-    lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(forgeId, PersistentDataType.STRING));
+    lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
     meta.setLore(lore);
     item.setItemMeta(meta);
   }
