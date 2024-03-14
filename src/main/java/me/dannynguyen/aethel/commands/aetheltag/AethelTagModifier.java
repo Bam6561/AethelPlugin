@@ -4,10 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.*;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -25,7 +22,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.15.14
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -222,18 +219,23 @@ class AethelTagModifier {
    */
   private void readPassive(String value) {
     tag = tag.substring(8);
-    String[] tagMeta = tag.split("\\.", 2);
-    if (tagMeta.length == 2) {
+    String[] tagMeta = tag.split("\\.", 3);
+    if (tagMeta.length == 3) {
       try {
         RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
         try {
-          PassiveAbility passive = PassiveAbility.valueOf(tagMeta[1].toUpperCase());
-          switch (passive.getEffect()) {
-            case STACK_INSTANCE -> readPassiveStackInstance(value);
-            case SPARK -> readPassiveSpark(value);
+          TriggerCondition triggerCondition = Trigger.valueOf(tagMeta[1].toUpperCase()).getCondition();
+          try {
+            PassiveAbility passive = PassiveAbility.valueOf(tagMeta[2].toUpperCase());
+            switch (passive.getEffect()) {
+              case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
+              case SPARK -> readPassiveSpark(value, triggerCondition);
+            }
+          } catch (IllegalArgumentException ex) {
+            user.sendMessage(ChatColor.RED + "Passive ability does not exist.");
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Passive ability does not exist.");
+          user.sendMessage(ChatColor.RED + "Trigger condition does not exist.");
         }
       } catch (IllegalArgumentException ex) {
         user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
@@ -275,48 +277,142 @@ class AethelTagModifier {
   /**
    * Checks if the input was formatted correctly before setting the passive stack instance.
    *
-   * @param value tag value
+   * @param value     tag value
+   * @param condition trigger condition
    */
-  private void readPassiveStackInstance(String value) {
+  private void readPassiveStackInstance(String value, TriggerCondition condition) {
     String[] args = value.split(" ");
-    if (args.length == 2) {
-      try {
-        int stacks = Integer.parseInt(args[0]);
-        try {
-          int ticks = Integer.parseInt(args[1]);
-          setPassiveTag(stacks + " " + ticks);
-        } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid ticks.");
+    switch (condition) {
+      case CHANCE_COOLDOWN -> {
+        if (args.length == 4) {
+          try {
+            double chance = Double.parseDouble(args[0]);
+            try {
+              int cooldown = Integer.parseInt(args[1]);
+              try {
+                int stacks = Integer.parseInt(args[2]);
+                try {
+                  int ticks = Integer.parseInt(args[3]);
+                  setPassiveTag(chance + " " + cooldown + " " + stacks + " " + ticks);
+                } catch (NumberFormatException ex) {
+                  user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid stacks.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid chance.");
+          }
+        } else {
+          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid stacks.");
       }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      case HP_CHANCE_COOLDOWN -> {
+        if (args.length == 5) {
+          try {
+            double percentHealth = Double.parseDouble(args[0]);
+            try {
+              double chance = Double.parseDouble(args[1]);
+              try {
+                int cooldown = Integer.parseInt(args[2]);
+                try {
+                  int stacks = Integer.parseInt(args[3]);
+                  try {
+                    int ticks = Integer.parseInt(args[4]);
+                    setPassiveTag(percentHealth + " " + chance + " " + cooldown + " " + stacks + " " + ticks);
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                  }
+                } catch (NumberFormatException ex) {
+                  user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid chance.");
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid % health.");
+          }
+        } else {
+          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        }
+      }
     }
   }
 
   /**
    * Checks if the input was formatted correctly before setting the passive spark.
    *
-   * @param value tag value
+   * @param value     tag value
+   * @param condition trigger condition
    */
-  private void readPassiveSpark(String value) {
+  private void readPassiveSpark(String value, TriggerCondition condition) {
     String[] args = value.split(" ");
-    if (args.length == 2) {
-      try {
-        double damage = Integer.parseInt(args[0]);
-        try {
-          double distance = Double.parseDouble(args[1]);
-          setPassiveTag(damage + " " + distance);
-        } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid radius.");
+    switch (condition) {
+      case CHANCE_COOLDOWN -> {
+        if (args.length == 4) {
+          try {
+            double chance = Double.parseDouble(args[0]);
+            try {
+              int cooldown = Integer.parseInt(args[1]);
+              try {
+                double damage = Integer.parseInt(args[2]);
+                try {
+                  double distance = Double.parseDouble(args[3]);
+                  setPassiveTag(chance + " " + cooldown + " " + damage + " " + distance);
+                } catch (NumberFormatException ex) {
+                  user.sendMessage(ChatColor.RED + "Invalid radius.");
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid damage.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid chance.");
+          }
+        } else {
+          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid damage.");
       }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      case HP_CHANCE_COOLDOWN -> {
+        if (args.length == 5) {
+          try {
+            double percentHealth = Double.parseDouble(args[0]);
+            try {
+              double chance = Double.parseDouble(args[1]);
+              try {
+                int cooldown = Integer.parseInt(args[2]);
+                try {
+                  double damage = Integer.parseInt(args[3]);
+                  try {
+                    double distance = Double.parseDouble(args[4]);
+                    setPassiveTag(percentHealth + " " + chance + " " + cooldown + " " + damage + " " + distance);
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid radius.");
+                  }
+                } catch (NumberFormatException ex) {
+                  user.sendMessage(ChatColor.RED + "Invalid damage.");
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(ChatColor.RED + "Invalid chance.");
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(ChatColor.RED + "Invalid % health.");
+          }
+        } else {
+          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        }
+      }
     }
   }
 
