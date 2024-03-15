@@ -10,6 +10,7 @@ import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -128,6 +129,7 @@ public class PluginData {
    *
    * @return plugin's item registry
    */
+  @NotNull
   public ItemRegistry getItemRegistry() {
     return this.itemRegistry;
   }
@@ -137,6 +139,7 @@ public class PluginData {
    *
    * @return plugin's recipe registry
    */
+  @NotNull
   public RecipeRegistry getRecipeRegistry() {
     return this.recipeRegistry;
   }
@@ -146,6 +149,7 @@ public class PluginData {
    *
    * @return plugin's player stat record
    */
+  @NotNull
   public PlayerStatRecord getPlayerStatRecord() {
     return this.playerStatRecord;
   }
@@ -164,6 +168,7 @@ public class PluginData {
    *
    * @return plugin's past item history
    */
+  @NotNull
   public PastItemHistory getPastItemHistory() {
     return this.pastItemHistory;
   }
@@ -173,6 +178,7 @@ public class PluginData {
    *
    * @return plugin's past stat history
    */
+  @NotNull
   public PastStatHistory getPastStatHistory() {
     return this.pastStatHistory;
   }
@@ -182,6 +188,7 @@ public class PluginData {
    *
    * @return plugin's plugin system
    */
+  @NotNull
   public PluginSystem getPluginSystem() {
     return this.pluginSystem;
   }
@@ -191,6 +198,7 @@ public class PluginData {
    *
    * @return plugin's RPG system
    */
+  @NotNull
   public RpgSystem getRpgSystem() {
     return this.rpgSystem;
   }

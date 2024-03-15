@@ -69,6 +69,7 @@ public class ItemDurability {
    * @param item interacting item
    * @return remaining : maximum durability
    */
+  @NotNull
   public static String displayDurability(@NotNull ItemStack item) {
     if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
       short maxDurability = item.getType().getMaxDurability();

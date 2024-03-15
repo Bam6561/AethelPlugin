@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.PassiveAbilityEffect;
+import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.TextFormatter;
 import org.bukkit.ChatColor;
@@ -142,7 +142,7 @@ class ItemPassiveLore {
           }
           switch (abilityEffect) {
             case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(convertTicksToSeconds(abilityData[3])).append("s)");
-            case SPARK -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append("Spark ").append(ChatColor.WHITE).append("(").append(abilityData[3]).append("m)");
+            case CHAIN -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(abilityData[3]).append("m)");
           }
         }
         case HP_CHANCE_COOLDOWN -> {
@@ -158,7 +158,7 @@ class ItemPassiveLore {
           }
           switch (abilityEffect) {
             case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(convertTicksToSeconds(abilityData[4])).append("s)");
-            case SPARK -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append("Spark ").append(ChatColor.WHITE).append("(").append(abilityData[4]).append("m)");
+            case CHAIN -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(abilityData[4]).append("m)");
           }
         }
       }

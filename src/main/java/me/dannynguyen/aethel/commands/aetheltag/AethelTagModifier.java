@@ -229,7 +229,7 @@ class AethelTagModifier {
             PassiveAbilityType passive = PassiveAbilityType.valueOf(tagMeta[2].toUpperCase());
             switch (passive.getEffect()) {
               case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
-              case SPARK -> readPassiveSpark(value, triggerCondition);
+              case CHAIN -> readPassiveChain(value, triggerCondition);
             }
           } catch (IllegalArgumentException ex) {
             user.sendMessage(ChatColor.RED + "Passive ability does not exist.");
@@ -346,12 +346,12 @@ class AethelTagModifier {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the passive spark.
+   * Checks if the input was formatted correctly before setting the passive chain.
    *
    * @param value     tag value
    * @param condition trigger condition
    */
-  private void readPassiveSpark(String value, TriggerCondition condition) {
+  private void readPassiveChain(String value, TriggerCondition condition) {
     String[] args = value.split(" ");
     switch (condition) {
       case CHANCE_COOLDOWN -> {

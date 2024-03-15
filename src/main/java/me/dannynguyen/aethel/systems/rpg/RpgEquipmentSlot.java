@@ -87,6 +87,7 @@ public enum RpgEquipmentSlot {
    *
    * @return equipment slot's proper name
    */
+  @NotNull
   public String getProperName() {
     return this.properName;
   }
@@ -96,6 +97,7 @@ public enum RpgEquipmentSlot {
    *
    * @return equipment slot's ID
    */
+  @NotNull
   public String getId() {
     return this.id;
   }

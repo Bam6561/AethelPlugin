@@ -13,22 +13,22 @@ import java.util.Objects;
  */
 public enum PassiveAbilityType {
   /**
-   * Applies stacks of Brittle status.
+   * Applies stacks of Brittle.
    */
   BRITTLE("Brittle", "brittle", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
-   * Apply stacks of Soaked status.
+   * Apply stacks of Soaked.
    */
   SOAKED("Soaked", "soak", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
-   * Attacks chain to enemies with stacks of Soaked status.
+   * Attacks chain to entities with stacks of Soaked.
    */
-  SPARK("Spark", "spark", PassiveAbilityEffect.SPARK),
+  SPARK("Spark", "spark", PassiveAbilityEffect.CHAIN),
 
   /**
-   * Applies stacks of Bleed status.
+   * Applies stacks of Bleed.
    */
   BLEED("Bleed", "bleed", PassiveAbilityEffect.STACK_INSTANCE);
 

@@ -351,6 +351,7 @@ public class Equipment {
    *
    * @return equipment passive abilities
    */
+  @NotNull
   public Map<Trigger, List<PassiveAbility>> getTotalPassives() {
     return this.totalPassives;
   }
@@ -360,6 +361,7 @@ public class Equipment {
    *
    * @return equipment passive abilities
    */
+  @NotNull
   public Map<RpgEquipmentSlot, List<ConditionAbility>> getPassives() {
     return this.passives;
   }

@@ -26,6 +26,7 @@ public class ItemRepairCost {
    * @param item interacting item
    * @return repair cost
    */
+  @NotNull
   public static String getRepairCost(@NotNull ItemStack item) {
     if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Repairable repair) {
       return String.valueOf(repair.getRepairCost());

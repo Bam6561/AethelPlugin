@@ -269,6 +269,7 @@ public class Plugin extends JavaPlugin {
    *
    * @return plugin data
    */
+  @NotNull
   public static PluginData getData() {
     return data;
   }

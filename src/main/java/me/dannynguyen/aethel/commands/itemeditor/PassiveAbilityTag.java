@@ -156,7 +156,7 @@ class PassiveAbilityTag {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      case SPARK -> {
+      case CHAIN -> {
         if (args.length == 4) {
           try {
             double chance = Double.parseDouble(args[0]);
@@ -225,7 +225,7 @@ class PassiveAbilityTag {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      case SPARK -> {
+      case CHAIN -> {
         if (args.length == 5) {
           try {
             double percentHealth = Double.parseDouble(args[0]);

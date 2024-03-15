@@ -24,6 +24,7 @@ public class TextFormatter {
    * @param phrase phrase
    * @return enum formatted phrase
    */
+  @NotNull
   public static String formatEnum(@NotNull String phrase) {
     return Objects.requireNonNull(phrase, "Null phrase").replace(" ", "_").toUpperCase();
   }
@@ -34,6 +35,7 @@ public class TextFormatter {
    * @param phrase phrase
    * @return ID formatted phrase
    */
+  @NotNull
   public static String formatId(@NotNull String phrase) {
     return Objects.requireNonNull(phrase, "Null phrase").replace(" ", "_").toLowerCase();
   }
@@ -44,6 +46,7 @@ public class TextFormatter {
    * @param word word
    * @return proper word
    */
+  @NotNull
   public static String capitalizeWord(@NotNull String word) {
     return Objects.requireNonNull(word, "Null word").substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
   }
@@ -54,6 +57,7 @@ public class TextFormatter {
    * @param phrase phrase
    * @return proper phrase
    */
+  @NotNull
   public static String capitalizePhrase(@NotNull String phrase) {
     phrase = Objects.requireNonNull(phrase, "Null phrase").replace("_", " ").toUpperCase();
     String[] words = phrase.split(" ");
@@ -72,6 +76,7 @@ public class TextFormatter {
    * @param delimiter 2nd delimiter
    * @return proper phrase
    */
+  @NotNull
   public static String capitalizePhrase(@NotNull String phrase, @NotNull String delimiter) {
     phrase = Objects.requireNonNull(phrase, "Null phrase").replace("_", " ").toUpperCase();
     phrase = phrase.replace(Objects.requireNonNull(delimiter, "Null delimiter"), " ").toUpperCase();

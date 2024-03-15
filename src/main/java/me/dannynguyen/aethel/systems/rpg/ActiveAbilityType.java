@@ -24,7 +24,7 @@ public enum ActiveAbilityType {
 
   /**
    * Forward facing teleport that after a delay,
-   * teleports the player back to their original location.
+   * teleports the user back to their original location.
    */
   PROJECTION("Projection", "projection", ActiveAbilityEffect.PROJECTION),
 

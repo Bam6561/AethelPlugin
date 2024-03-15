@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class ItemCreator {
    * @param name     item name
    * @return named item
    */
+  @NotNull
   public static ItemStack createItem(@NotNull Material material, @NotNull String name) {
     ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
@@ -53,6 +55,7 @@ public class ItemCreator {
    * @param lore     item lore
    * @return named item with lore
    */
+  @NotNull
   public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull List<String> lore) {
     ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
@@ -71,6 +74,7 @@ public class ItemCreator {
    * @param itemFlag item flag
    * @return named item with an item flag
    */
+  @NotNull
   public static ItemStack createItem(@NotNull Material material, @NotNull String name,
                                      @NotNull List<String> lore, @NotNull ItemFlag itemFlag) {
     ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
@@ -90,6 +94,7 @@ public class ItemCreator {
    * @param itemFlag item flag
    * @return named item with an item flag disabled
    */
+  @NotNull
   public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull ItemFlag itemFlag) {
     ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
     ItemMeta meta = item.getItemMeta();
@@ -105,6 +110,7 @@ public class ItemCreator {
    * @param player interacting player
    * @return named player head
    */
+  @NotNull
   public static ItemStack createPlayerHead(@NotNull Player player) {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
@@ -121,6 +127,7 @@ public class ItemCreator {
    * @param lore   item lore
    * @return named player head with lore
    */
+  @NotNull
   public static ItemStack createPlayerHead(@NotNull Player player, @NotNull List<String> lore) {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
@@ -138,6 +145,7 @@ public class ItemCreator {
    * @param name item name
    * @return named player head texture
    */
+  @NotNull
   public static ItemStack createPluginPlayerHead(@NotNull ItemStack head, @NotNull String name) {
     ItemStack item = Objects.requireNonNull(head, "Null head").clone();
     ItemMeta meta = item.getItemMeta();
@@ -154,6 +162,7 @@ public class ItemCreator {
    * @param lore item lore
    * @return named player head texture with lore
    */
+  @NotNull
   public static ItemStack createPluginPlayerHead(@NotNull ItemStack head, @NotNull String name, @NotNull List<String> lore) {
     ItemStack item = Objects.requireNonNull(head, "Null head").clone();
     ItemMeta meta = item.getItemMeta();
@@ -169,6 +178,7 @@ public class ItemCreator {
    * @param item item to encode
    * @return encoded item string
    */
+  @Nullable
   public static String encodeItem(@NotNull ItemStack item) {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();

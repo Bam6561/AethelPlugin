@@ -46,6 +46,7 @@ public class ItemReader {
    * @param item interacting item
    * @return effective item name
    */
+  @NotNull
   public static String readName(@NotNull ItemStack item) {
     if (Objects.requireNonNull(item, "Null item").hasItemMeta() && item.getItemMeta().hasDisplayName()) {
       return item.getItemMeta().getDisplayName();
@@ -60,6 +61,7 @@ public class ItemReader {
    * @param item interacting item
    * @return item's Aethel tags
    */
+  @NotNull
   public static String readAethelTags(@NotNull ItemStack item) {
     PersistentDataContainer dataContainer = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
     StringBuilder aethelTags = new StringBuilder();

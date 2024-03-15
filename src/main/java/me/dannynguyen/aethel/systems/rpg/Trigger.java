@@ -65,6 +65,7 @@ public enum Trigger {
    *
    * @return trigger's proper name
    */
+  @NotNull
   public String getProperName() {
     return this.properName;
   }
@@ -74,6 +75,7 @@ public enum Trigger {
    *
    * @return trigger's ID
    */
+  @NotNull
   public String getId() {
     return this.id;
   }
@@ -83,6 +85,7 @@ public enum Trigger {
    *
    * @return trigger's condition
    */
+  @NotNull
   public TriggerCondition getCondition() {
     return this.condition;
   }

@@ -13,14 +13,14 @@ import java.util.Objects;
  */
 public enum PassiveAbilityEffect {
   /**
-   * Causes Stack instances.
+   * Causes stack instances.
    */
   STACK_INSTANCE("Stacks, Duration(t)"),
 
   /**
-   * Causes Spark.
+   * Causes chain damage.
    */
-  SPARK("Damage, Radius(m)");
+  CHAIN("Damage, Radius(m)");
 
   /**
    * Passive ability effect's data.

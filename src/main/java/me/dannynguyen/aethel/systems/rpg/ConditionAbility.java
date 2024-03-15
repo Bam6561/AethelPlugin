@@ -38,6 +38,7 @@ public class ConditionAbility {
    *
    * @return trigger condition
    */
+  @NotNull
   public TriggerCondition getCondition() {
     return this.condition;
   }
@@ -47,6 +48,7 @@ public class ConditionAbility {
    *
    * @return passive ability
    */
+  @NotNull
   public PassiveAbilityType getAbility() {
     return this.ability;
   }

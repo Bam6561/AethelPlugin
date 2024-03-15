@@ -133,6 +133,7 @@ public class Status {
    *
    * @return status's stack durations
    */
+  @NotNull
   public Map<Integer, Integer> getStackInstances() {
     return this.stackInstances;
   }
