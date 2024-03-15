@@ -163,7 +163,7 @@ class SheetMenu {
   private void addStatusEffects() {
     List<String> lore = new ArrayList<>();
     for (PotionEffect potionEffect : owner.getActivePotionEffects()) {
-      String duration = ChatColor.WHITE + tickTimeConversion(potionEffect.getDuration());
+      String duration = ChatColor.WHITE + convertToMinutesSeconds(potionEffect.getDuration());
       String type = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
       String amplifier = ChatColor.YELLOW + (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
       lore.add(duration + " " + type + " " + amplifier);
@@ -241,12 +241,12 @@ class SheetMenu {
   }
 
   /**
-   * Gets a time duration in ticks and converts it to readable conventional time.
+   * Gets a time duration in ticks and converts it to minutes and seconds.
    *
    * @param ticks ticks
-   * @return conventional time duration
+   * @return minutes and seconds
    */
-  private String tickTimeConversion(int ticks) {
+  private String convertToMinutesSeconds(int ticks) {
     int minutes = ticks / 1200 % 60;
     int seconds = ticks / 20 % 60;
     return (minutes == 0 ? "0:" : minutes + ":") + (seconds > 10 ? seconds : "0" + seconds);

@@ -26,7 +26,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.16.0
  * @since 1.6.7
  */
 class CosmeticMenu {
@@ -109,8 +109,8 @@ class CosmeticMenu {
             ChatColor.WHITE + "&0 " + ChatColor.BLACK + "Black",
             ChatColor.WHITE + "&1 " + ChatColor.DARK_BLUE + "Dark Blue",
             ChatColor.WHITE + "&2 " + ChatColor.DARK_GREEN + "Dark Green",
-            ChatColor.WHITE + "&3 " + ChatColor.DARK_RED + "Dark Aqua",
-            ChatColor.WHITE + "&4 " + ChatColor.DARK_AQUA + "Dark Red",
+            ChatColor.WHITE + "&3 " + ChatColor.DARK_AQUA + "Dark Aqua",
+            ChatColor.WHITE + "&4 " + ChatColor.DARK_RED + "Dark Red",
             ChatColor.WHITE + "&5 " + ChatColor.DARK_PURPLE + "Dark Purple",
             ChatColor.WHITE + "&6 " + ChatColor.GOLD + "Gold",
             ChatColor.WHITE + "&7 " + ChatColor.GRAY + "Gray",

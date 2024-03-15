@@ -22,7 +22,7 @@ import java.util.*;
  * Represents an item's Minecraft and Aethel attribute lore generation.
  *
  * @author Danny Nguyen
- * @version 1.15.15
+ * @version 1.16.0
  * @since 1.13.2
  */
 class ItemAttributeLore {
@@ -42,11 +42,6 @@ class ItemAttributeLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's Aethel attributes.
-   */
-  private final List<String> attributes;
-
-  /**
    * ItemStack's total Minecraft and Aethel attribute
    * values categorized by equipment slot.
    */
@@ -60,7 +55,6 @@ class ItemAttributeLore {
   protected ItemAttributeLore(@NotNull ItemStack item) {
     this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
-    this.attributes = new ArrayList<>(List.of(meta.getPersistentDataContainer().get(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")));
     if (meta.hasLore()) {
       this.lore = meta.getLore();
     } else {
@@ -123,8 +117,8 @@ class ItemAttributeLore {
       df3.setMaximumFractionDigits(3);
       for (String attribute : attributeValues.get(slot).keySet()) {
         switch (attribute) {
-          case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> attributeHeader.add(ChatColor.BLUE + "+" + df3.format(attributeValues.get(slot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
-          default -> attributeHeader.add(ChatColor.BLUE + "+" + df3.format(attributeValues.get(slot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
+          case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> attributeHeader.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(slot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
+          default -> attributeHeader.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(slot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
         }
       }
       lore.addAll(attributeHeader);
@@ -166,7 +160,7 @@ class ItemAttributeLore {
    */
   private void sortAethelAttributes(Map<String, Map<String, Double>> attributeValues) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    for (String attribute : attributes) {
+    for (String attribute : meta.getPersistentDataContainer().get(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
       String attributeSlot = attribute.substring(0, attribute.indexOf("."));
       String attributeName = attribute.substring(attribute.indexOf(".") + 1);
       NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);

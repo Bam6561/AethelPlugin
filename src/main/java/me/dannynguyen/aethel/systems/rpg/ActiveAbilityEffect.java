@@ -8,24 +8,24 @@ import java.util.Objects;
  * Effects of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.16.0
  * @since 1.15.9
  */
 public enum ActiveAbilityEffect {
   /**
    * Causes movement.
    */
-  MOVEMENT("Distance(m), Cooldown(t)"),
+  MOVEMENT("Cooldown(t), Distance(m)"),
 
   /**
    * Causes movement that returns to the original location after a delay.
    */
-  PROJECTION("Distance(m), Delay(t), Cooldown(t)"),
+  PROJECTION("Cooldown(t), Distance(m), Delay(t)"),
 
   /**
    * Causes Shatter.
    */
-  SHATTER("Radius(m), Cooldown(t)");
+  SHATTER("Cooldown(t), Radius(m)");
 
   /**
    * Active ability effect's data.

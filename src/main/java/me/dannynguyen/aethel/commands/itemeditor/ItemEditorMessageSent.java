@@ -32,7 +32,7 @@ import java.util.*;
  * Message sent listener for ItemEditor text inputs.
  *
  * @author Danny Nguyen
- * @version 1.15.13
+ * @version 1.16.0
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -404,15 +404,15 @@ public class ItemEditorMessageSent {
     String[] args = e.getMessage().split(" ");
     if (args.length == 2) {
       try {
-        double distance = Double.parseDouble(args[0]);
+        int cooldown = Integer.parseInt(args[0]);
         try {
-          int cooldown = Integer.parseInt(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+          double distance = Double.parseDouble(args[1]);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+          user.sendMessage(ChatColor.RED + "Invalid distance.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid distance.");
+        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -426,20 +426,20 @@ public class ItemEditorMessageSent {
     String[] args = e.getMessage().split(" ");
     if (args.length == 3) {
       try {
-        double distance = Double.parseDouble(args[0]);
+        int cooldown = Integer.parseInt(args[0]);
         try {
-          int delay = Integer.parseInt(args[1]);
+          double distance = Double.parseDouble(args[1]);
           try {
-            int cooldown = Integer.parseInt(args[2]);
-            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), distance + " " + delay + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+            int delay = Integer.parseInt(args[2]);
+            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+            user.sendMessage(ChatColor.RED + "Invalid delay.");
           }
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid delay.");
+          user.sendMessage(ChatColor.RED + "Invalid distance.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid distance.");
+        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -453,15 +453,15 @@ public class ItemEditorMessageSent {
     String[] args = e.getMessage().split(" ");
     if (args.length == 2) {
       try {
-        double radius = Double.parseDouble(args[0]);
+        int cooldown = Integer.parseInt(args[0]);
         try {
-          int cooldown = Integer.parseInt(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), radius + " " + cooldown, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+          double radius = Double.parseDouble(args[1]);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+          user.sendMessage(ChatColor.RED + "Invalid radius.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid radius.");
+        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());

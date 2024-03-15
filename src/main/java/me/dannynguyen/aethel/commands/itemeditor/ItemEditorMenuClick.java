@@ -29,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.15.15
+ * @version 1.16.0
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -426,14 +426,18 @@ public class ItemEditorMenuClick {
     if (dataContainer.has(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
       new ItemAttributeLore(item).addAttributeHeaders();
+      menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
     }
     if (dataContainer.has(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
       new ItemPassiveLore(item).addPassiveHeaders();
     }
+    if (dataContainer.has(PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      generatedLore = true;
+      new ItemActiveLore(item).addActiveHeaders();
+    }
 
     if (generatedLore) {
-      menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
       user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
     } else {
       user.sendMessage(ChatColor.RED + "Not modified by plugin.");

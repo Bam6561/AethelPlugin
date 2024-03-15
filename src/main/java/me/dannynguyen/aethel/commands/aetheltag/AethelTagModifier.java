@@ -22,7 +22,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.15.14
+ * @version 1.16.0
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -425,15 +425,15 @@ class AethelTagModifier {
     String[] args = value.split(" ");
     if (args.length == 2) {
       try {
-        double distance = Double.parseDouble(args[0]);
+        int cooldown = Integer.parseInt(args[0]);
         try {
-          int cooldown = Integer.parseInt(args[1]);
-          setActiveTag(distance + " " + cooldown);
+          double distance = Double.parseDouble(args[1]);
+          setActiveTag(cooldown + " " + distance);
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+          user.sendMessage(ChatColor.RED + "Invalid distance.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid distance.");
+        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -449,20 +449,20 @@ class AethelTagModifier {
     String[] args = value.split(" ");
     if (args.length == 3) {
       try {
-        double distance = Double.parseDouble(args[0]);
+        int cooldown = Integer.parseInt(args[0]);
         try {
-          int delay = Integer.parseInt(args[1]);
+          double distance = Double.parseDouble(args[1]);
           try {
-            int cooldown = Integer.parseInt(args[2]);
-            setActiveTag(distance + " " + delay + " " + cooldown);
+            int delay = Integer.parseInt(args[2]);
+            setActiveTag(cooldown + " " + distance + " " + delay);
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+            user.sendMessage(ChatColor.RED + "Invalid delay.");
           }
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid delay.");
+          user.sendMessage(ChatColor.RED + "Invalid distance.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid distance.");
+        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -478,15 +478,15 @@ class AethelTagModifier {
     String[] args = value.split(" ");
     if (args.length == 2) {
       try {
-        double radius = Double.parseDouble(args[0]);
+        int cooldown = Integer.parseInt(args[0]);
         try {
-          int cooldown = Integer.parseInt(args[1]);
-          setActiveTag(radius + " " + cooldown);
+          double radius = Double.parseDouble(args[1]);
+          setActiveTag(cooldown + " " + radius);
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+          user.sendMessage(ChatColor.RED + "Invalid radius.");
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid radius.");
+        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());

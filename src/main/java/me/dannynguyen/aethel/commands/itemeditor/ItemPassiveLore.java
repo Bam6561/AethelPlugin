@@ -21,12 +21,12 @@ import java.util.*;
  * Represents an item's passive ability lore generation.
  *
  * @author Danny Nguyen
- * @version 1.15.15
+ * @version 1.16.0
  * @since 1.15.15
  */
 class ItemPassiveLore {
   /**
-   * ItemStack whose passives are being written.
+   * ItemStack whose passive abilities are being written.
    */
   private final ItemStack item;
 
@@ -46,11 +46,6 @@ class ItemPassiveLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's passive abilities.
-   */
-  private final List<String> passives;
-
-  /**
    * ItemStack's passive abilities categorized by equipment slot.
    */
   private final Map<String, List<String>> passiveAbilities;
@@ -64,7 +59,6 @@ class ItemPassiveLore {
     this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
-    this.passives = new ArrayList<>(List.of(dataContainer.get(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")));
     if (meta.hasLore()) {
       this.lore = meta.getLore();
     } else {
@@ -122,7 +116,7 @@ class ItemPassiveLore {
    */
   private Map<String, List<String>> sortPassiveAbilities() {
     Map<String, List<String>> passiveAbilities = new HashMap<>();
-    for (String passive : passives) {
+    for (String passive : dataContainer.get(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
       String[] passiveMeta = passive.split("\\.");
       String slot = passiveMeta[0];
       String condition = passiveMeta[1];
@@ -132,38 +126,39 @@ class ItemPassiveLore {
       PassiveAbilityEffect abilityEffect = PassiveAbility.valueOf(type.toUpperCase()).getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
-      StringBuilder abilityLore = new StringBuilder(ChatColor.GRAY + "");
+      StringBuilder abilityLore = new StringBuilder();
 
+      abilityLore.append(ChatColor.DARK_AQUA);
       switch (trigger.getCondition()) {
         case CHANCE_COOLDOWN -> {
+          addTriggerLore(abilityLore, trigger);
           // Chance
           if (!abilityData[0].equals("100.0")) {
-            abilityLore.append(abilityData[0]).append("% ");
+            abilityLore.append(ChatColor.WHITE).append(abilityData[0]).append("% ");
           }
           // Cooldown
           if (!abilityData[1].equals("0")) {
-            abilityLore.append("(").append(convertTicksToSeconds(abilityData[1])).append("s) ");
+            abilityLore.append(ChatColor.WHITE).append("(").append(convertTicksToSeconds(abilityData[1])).append("s) ");
           }
-          addTriggerLore(abilityLore, trigger);
           switch (abilityEffect) {
-            case STACK_INSTANCE -> abilityLore.append("Apply ").append(abilityData[2]).append(" ").append(TextFormatter.capitalizePhrase(type)).append(" (").append(convertTicksToSeconds(abilityData[3])).append("s)");
-            case SPARK -> abilityLore.append("Spark ").append(abilityData[2]).append(" damage (").append(abilityData[3]).append("m radius)");
+            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(convertTicksToSeconds(abilityData[3])).append("s)");
+            case SPARK -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append("Spark ").append(ChatColor.WHITE).append("(").append(abilityData[3]).append("m)");
           }
         }
         case HP_CHANCE_COOLDOWN -> {
+          abilityLore.append("Below ").append(abilityData[0]).append("% HP: ");
+          addTriggerLore(abilityLore, trigger);
           // Chance
           if (!abilityData[1].equals("100.0")) {
-            abilityLore.append(abilityData[1]).append("% ");
+            abilityLore.append(ChatColor.WHITE).append(abilityData[1]).append("% ");
           }
           // Cooldown
           if (!abilityData[2].equals("0")) {
-            abilityLore.append("(").append(convertTicksToSeconds(abilityData[2])).append("s) ");
+            abilityLore.append(ChatColor.WHITE).append("(").append(convertTicksToSeconds(abilityData[2])).append("s) ");
           }
-          abilityLore.append("Below ").append(abilityData[0]).append("% HP ");
-          addTriggerLore(abilityLore, trigger);
           switch (abilityEffect) {
-            case STACK_INSTANCE -> abilityLore.append("Apply ").append(abilityData[3]).append(" ").append(TextFormatter.capitalizePhrase(type)).append(" (").append(convertTicksToSeconds(abilityData[4])).append("s)");
-            case SPARK -> abilityLore.append("Spark ").append(abilityData[3]).append(" damage (").append(abilityData[4]).append("m radius)");
+            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(convertTicksToSeconds(abilityData[4])).append("s)");
+            case SPARK -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append("Spark ").append(ChatColor.WHITE).append("(").append(abilityData[4]).append("m)");
           }
         }
       }
@@ -184,9 +179,9 @@ class ItemPassiveLore {
    */
   private void addTriggerLore(StringBuilder abilityLore, Trigger trigger) {
     switch (trigger) {
-      case DEAL_DAMAGE -> abilityLore.append("Dealing Damage ");
-      case TAKE_DAMAGE -> abilityLore.append("Taking Damage ");
-      case KILL -> abilityLore.append("On Kill ");
+      case DEAL_DAMAGE -> abilityLore.append("Damage Dealt: ");
+      case TAKE_DAMAGE -> abilityLore.append("Damage Taken: ");
+      case KILL -> abilityLore.append("On Kill: ");
     }
   }
 
