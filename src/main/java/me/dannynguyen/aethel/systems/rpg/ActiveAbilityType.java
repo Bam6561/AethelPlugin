@@ -8,10 +8,10 @@ import java.util.Objects;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.16.1
  * @since 1.15.1
  */
-public enum ActiveAbility {
+public enum ActiveAbilityType {
   /**
    * Forward facing teleport.
    */
@@ -55,7 +55,7 @@ public enum ActiveAbility {
    * @param id         ability id
    * @param effect     ability effect
    */
-  ActiveAbility(@NotNull String properName, @NotNull String id, @NotNull ActiveAbilityEffect effect) {
+  ActiveAbilityType(@NotNull String properName, @NotNull String id, @NotNull ActiveAbilityEffect effect) {
     this.properName = Objects.requireNonNull(properName, "Null name");
     this.id = Objects.requireNonNull(id, "Null id");
     this.effect = Objects.requireNonNull(effect, "Null effect");

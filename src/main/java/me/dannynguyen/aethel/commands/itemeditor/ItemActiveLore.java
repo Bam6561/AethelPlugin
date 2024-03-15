@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ActiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.ActiveAbilityEffect;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -118,7 +118,7 @@ class ItemActiveLore {
       String slot = active.substring(0, active.indexOf("."));
       String type = active.substring(active.indexOf(".") + 1);
 
-      ActiveAbility ability = ActiveAbility.valueOf(type.toUpperCase());
+      ActiveAbilityType ability = ActiveAbilityType.valueOf(type.toUpperCase());
       ActiveAbilityEffect abilityEffect = ability.getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");

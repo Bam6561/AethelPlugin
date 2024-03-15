@@ -597,7 +597,7 @@ public class ItemEditorMenuClick {
     String passive = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + trigger.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + trigger.getCondition().getData());
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbility.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbilityType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(passive));
     awaitMessageResponse("passive_ability");
   }
@@ -608,7 +608,7 @@ public class ItemEditorMenuClick {
   private void readActive() {
     String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + active + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbility.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbilityType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.TYPE, TextFormatter.formatId(active));
     awaitMessageResponse("active_ability");
   }

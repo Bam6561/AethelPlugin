@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.PassiveAbilityEffect;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -123,7 +123,7 @@ class ItemPassiveLore {
       String type = passiveMeta[2];
 
       Trigger trigger = Trigger.valueOf(condition.toUpperCase());
-      PassiveAbilityEffect abilityEffect = PassiveAbility.valueOf(type.toUpperCase()).getEffect();
+      PassiveAbilityEffect abilityEffect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
       StringBuilder abilityLore = new StringBuilder();

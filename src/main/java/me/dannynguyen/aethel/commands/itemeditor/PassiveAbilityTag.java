@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.PassiveAbilityEffect;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.systems.rpg.TriggerCondition;
@@ -115,7 +115,7 @@ class PassiveAbilityTag {
    */
   public void interpretKeyToBeSet() {
     TriggerCondition triggerCondition = Trigger.valueOf(condition.toUpperCase()).getCondition();
-    PassiveAbilityEffect abilityEffect = PassiveAbility.valueOf(type.toUpperCase()).getEffect();
+    PassiveAbilityEffect abilityEffect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
     switch (triggerCondition) {
       case CHANCE_COOLDOWN -> readChanceCooldown(abilityEffect);
       case HP_CHANCE_COOLDOWN -> readHpChanceCooldown(abilityEffect);

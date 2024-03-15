@@ -8,19 +8,19 @@ import java.util.Objects;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.16.1
  * @since 1.15.1
  */
-public enum PassiveAbility {
+public enum PassiveAbilityType {
   /**
    * Applies stacks of Brittle status.
    */
-  CHILL("Chill", "chill", PassiveAbilityEffect.STACK_INSTANCE),
+  BRITTLE("Brittle", "brittle", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
    * Apply stacks of Soaked status.
    */
-  DAMPEN("Dampen", "dampen", PassiveAbilityEffect.STACK_INSTANCE),
+  SOAKED("Soaked", "soak", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
    * Attacks chain to enemies with stacks of Soaked status.
@@ -30,7 +30,7 @@ public enum PassiveAbility {
   /**
    * Applies stacks of Bleed status.
    */
-  RUPTURE("Rupture", "rupture", PassiveAbilityEffect.STACK_INSTANCE);
+  BLEED("Bleed", "bleed", PassiveAbilityEffect.STACK_INSTANCE);
 
   /**
    * Proper name.
@@ -54,7 +54,7 @@ public enum PassiveAbility {
    * @param id         ability id
    * @param effect     ability effect
    */
-  PassiveAbility(@NotNull String properName, @NotNull String id, @NotNull PassiveAbilityEffect effect) {
+  PassiveAbilityType(@NotNull String properName, @NotNull String id, @NotNull PassiveAbilityEffect effect) {
     this.properName = Objects.requireNonNull(properName, "Null name");
     this.id = Objects.requireNonNull(id, "Null id");
     this.effect = Objects.requireNonNull(effect, "Null effect");

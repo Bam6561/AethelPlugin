@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.*;
-import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ActiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
@@ -351,7 +351,7 @@ public class ItemEditorMessageSent {
   public void setActive() {
     if (!e.getMessage().equals("-")) {
       String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE).toUpperCase();
-      switch (ActiveAbility.valueOf(type).getEffect()) {
+      switch (ActiveAbilityType.valueOf(type).getEffect()) {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();

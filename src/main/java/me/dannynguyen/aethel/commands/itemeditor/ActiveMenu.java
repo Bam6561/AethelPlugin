@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.ActiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ActiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -106,7 +106,7 @@ class ActiveMenu {
   private void addActives() {
     int invSlot = 18;
     if (activesMap != null) {
-      for (ActiveAbility active : ActiveAbility.values()) {
+      for (ActiveAbilityType active : ActiveAbilityType.values()) {
         String activeName = active.getProperName();
         String activeId = active.getId();
         boolean enabled = activesMap.containsKey(activeId);
@@ -124,7 +124,7 @@ class ActiveMenu {
         invSlot++;
       }
     } else {
-      for (ActiveAbility active : ActiveAbility.values()) {
+      for (ActiveAbilityType active : ActiveAbilityType.values()) {
         menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + active.getProperName()));
         invSlot++;
       }

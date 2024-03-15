@@ -226,7 +226,7 @@ class AethelTagModifier {
         try {
           TriggerCondition triggerCondition = Trigger.valueOf(tagMeta[1].toUpperCase()).getCondition();
           try {
-            PassiveAbility passive = PassiveAbility.valueOf(tagMeta[2].toUpperCase());
+            PassiveAbilityType passive = PassiveAbilityType.valueOf(tagMeta[2].toUpperCase());
             switch (passive.getEffect()) {
               case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
               case SPARK -> readPassiveSpark(value, triggerCondition);
@@ -257,7 +257,7 @@ class AethelTagModifier {
       try {
         RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
         try {
-          ActiveAbility active = ActiveAbility.valueOf(tagMeta[1].toUpperCase());
+          ActiveAbilityType active = ActiveAbilityType.valueOf(tagMeta[1].toUpperCase());
           switch (active.getEffect()) {
             case MOVEMENT -> readActiveMovement(value);
             case PROJECTION -> readActiveProjection(value);

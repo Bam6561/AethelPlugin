@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.15.10
+ * @version 1.16.1
  * @since 1.13.4
  */
 public class Equipment {
@@ -48,6 +48,11 @@ public class Equipment {
   private final Map<AethelAttribute, Double> aethelAttributes;
 
   /**
+   * Equipment Aethel attributes.
+   */
+  private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> attributes = new HashMap<>();
+
+  /**
    * Total equipment enchantments.
    */
   private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
@@ -58,9 +63,14 @@ public class Equipment {
   private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> enchantments = new HashMap<>();
 
   /**
-   * Equipment Aethel attributes.
+   * Total equipment passive abilities.
    */
-  private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> attributes = new HashMap<>();
+  private final Map<Trigger, List<PassiveAbility>> totalPassives = new HashMap<>();
+
+  /**
+   * Equipment passive abilities.
+   */
+  private final Map<RpgEquipmentSlot, List<ConditionAbility>> passives = new HashMap<>();
 
   /**
    * Jewelry slots.
@@ -192,6 +202,49 @@ public class Equipment {
   }
 
   /**
+   * Checks if the item is in the correct equipment slot before updating the player's attribute values.
+   *
+   * @param slot          slot type
+   * @param dataContainer item's persistent tags
+   * @param listKey       attributes list
+   */
+  private void readAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
+    String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
+    for (String attribute : attributes) {
+      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
+      if (equipmentSlot == slot) {
+        addAttributes(slot, dataContainer, attribute);
+      }
+    }
+  }
+
+  /**
+   * Adds new equipment attribute modifiers.
+   *
+   * @param slot          slot type
+   * @param dataContainer item's persistent tags
+   * @param attribute     attribute modifier
+   */
+  private void addAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
+    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
+    AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
+    attributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
+    aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
+  }
+
+  /**
+   * Removes existing equipment attribute modifiers at an equipment slot.
+   *
+   * @param slot slot type
+   */
+  public void removeAttributes(@NotNull RpgEquipmentSlot slot) {
+    for (AethelAttribute attribute : attributes.get(Objects.requireNonNull(slot, "Null slot")).keySet()) {
+      aethelAttributes.put(attribute, aethelAttributes.get(attribute) - attributes.get(slot).get(attribute));
+      attributes.get(slot).put(attribute, 0.0);
+    }
+  }
+
+  /**
    * Adds new equipment enchantments.
    *
    * @param slot slot type
@@ -237,49 +290,6 @@ public class Equipment {
   }
 
   /**
-   * Checks if the item is in the correct equipment slot before updating the player's attribute values.
-   *
-   * @param slot          slot type
-   * @param dataContainer item's persistent tags
-   * @param listKey       attributes list
-   */
-  private void readAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, NamespacedKey listKey) {
-    String[] attributes = dataContainer.get(listKey, PersistentDataType.STRING).split(" ");
-    for (String attribute : attributes) {
-      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
-      if (equipmentSlot == slot) {
-        addAttributes(slot, dataContainer, attribute);
-      }
-    }
-  }
-
-  /**
-   * Adds new equipment attribute modifiers.
-   *
-   * @param slot          slot type
-   * @param dataContainer item's persistent tags
-   * @param attribute     attribute modifier
-   */
-  private void addAttributes(RpgEquipmentSlot slot, PersistentDataContainer dataContainer, String attribute) {
-    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
-    AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
-    attributes.get(slot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
-    aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
-  }
-
-  /**
-   * Removes existing equipment attribute modifiers at an equipment slot.
-   *
-   * @param slot slot type
-   */
-  public void removeAttributes(@NotNull RpgEquipmentSlot slot) {
-    for (AethelAttribute attribute : attributes.get(Objects.requireNonNull(slot, "Null slot")).keySet()) {
-      aethelAttributes.put(attribute, aethelAttributes.get(attribute) - attributes.get(slot).get(attribute));
-      attributes.get(slot).put(attribute, 0.0);
-    }
-  }
-
-  /**
    * Encodes the player's jewelry items.
    *
    * @return encoded jewelry string
@@ -307,6 +317,16 @@ public class Equipment {
   }
 
   /**
+   * Gets the player's equipment Aethel attributes.
+   *
+   * @return equipment Aethel attributes
+   */
+  @NotNull
+  public Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> getAttributes() {
+    return this.attributes;
+  }
+
+  /**
    * Gets the player's total equipment enchantments.
    *
    * @return total equipment enchantments
@@ -327,13 +347,21 @@ public class Equipment {
   }
 
   /**
-   * Gets the player's equipment Aethel attributes.
+   * Gets the player's total equipment passive abilities.
    *
-   * @return equipment Aethel attributes
+   * @return equipment passive abilities
    */
-  @NotNull
-  public Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> getAttributes() {
-    return this.attributes;
+  public Map<Trigger, List<PassiveAbility>> getTotalPassives() {
+    return this.totalPassives;
+  }
+
+  /**
+   * Gets the player's equipment passive abilities.
+   *
+   * @return equipment passive abilities
+   */
+  public Map<RpgEquipmentSlot, List<ConditionAbility>> getPassives() {
+    return this.passives;
   }
 
   /**

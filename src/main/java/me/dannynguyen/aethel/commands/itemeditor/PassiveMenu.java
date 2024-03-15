@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -115,7 +115,7 @@ class PassiveMenu {
   private void addPassives() {
     int invSlot = 18;
     if (passivesMap != null) {
-      for (PassiveAbility passive : PassiveAbility.values()) {
+      for (PassiveAbilityType passive : PassiveAbilityType.values()) {
         String passiveName = passive.getProperName();
         String passiveId = passive.getId();
         boolean enabled = passivesMap.containsKey(passiveId);
@@ -133,7 +133,7 @@ class PassiveMenu {
         invSlot++;
       }
     } else {
-      for (PassiveAbility passive : PassiveAbility.values()) {
+      for (PassiveAbilityType passive : PassiveAbilityType.values()) {
         menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passive.getProperName()));
         invSlot++;
       }
