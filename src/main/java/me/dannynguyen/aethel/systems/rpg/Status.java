@@ -13,7 +13,7 @@ import java.util.UUID;
  * Represents statuses that affect Living Entities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.16.7
  * @since 1.14.7
  */
 public class Status {
@@ -57,12 +57,8 @@ public class Status {
     this.uuid = Objects.requireNonNull(uuid, "Null uuid");
     this.statusType = Objects.requireNonNull(statusType, "Null status type");
     this.isCumulative = statusType.isCumulative();
-    int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      removeStacks(stacks);
-    }, ticks).getTaskId();
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      stackInstances.remove(taskId);
-    }, ticks);
+    int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeStacks(stacks), ticks).getTaskId();
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> stackInstances.remove(taskId), ticks);
     this.stackAmount = stacks;
     this.stackInstances.put(taskId, stacks);
   }
@@ -74,12 +70,8 @@ public class Status {
    * @param ticks  duration in ticks
    */
   public void addStacks(int stacks, int ticks) {
-    int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      removeStacks(stacks);
-    }, ticks).getTaskId();
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      stackInstances.remove(taskId);
-    }, ticks);
+    int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeStacks(stacks), ticks).getTaskId();
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> stackInstances.remove(taskId), ticks);
     if (isCumulative) {
       setStackAmount(stackAmount + stacks);
     } else {
@@ -119,10 +111,12 @@ public class Status {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       if (stackInstances.isEmpty()) {
         Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-        statuses.remove(statusType);
-        if (statuses.isEmpty()) {
-          entityStatuses.remove(uuid);
+        if (entityStatuses.get(uuid) != null) {
+          Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+          statuses.remove(statusType);
+          if (statuses.isEmpty()) {
+            entityStatuses.remove(uuid);
+          }
         }
       }
     }, 1);

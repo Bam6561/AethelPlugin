@@ -22,7 +22,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.16.7
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -284,21 +284,27 @@ class AethelTagModifier {
     String[] args = value.split(" ");
     switch (condition) {
       case CHANCE_COOLDOWN -> {
-        if (args.length == 4) {
+        if (args.length == 5) {
           try {
             double chance = Double.parseDouble(args[0]);
             try {
               int cooldown = Integer.parseInt(args[1]);
-              try {
-                int stacks = Integer.parseInt(args[2]);
-                try {
-                  int ticks = Integer.parseInt(args[3]);
-                  setPassiveTag(chance + " " + cooldown + " " + stacks + " " + ticks);
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid ticks.");
+              switch (args[2]) {
+                case "true", "false" -> {
+                  boolean self = Boolean.parseBoolean(args[2]);
+                  try {
+                    int stacks = Integer.parseInt(args[3]);
+                    try {
+                      int ticks = Integer.parseInt(args[4]);
+                      setPassiveTag(chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
+                    } catch (NumberFormatException ex) {
+                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                    }
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                  }
                 }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
               }
             } catch (NumberFormatException ex) {
               user.sendMessage(ChatColor.RED + "Invalid cooldown.");
@@ -311,23 +317,29 @@ class AethelTagModifier {
         }
       }
       case HP_CHANCE_COOLDOWN -> {
-        if (args.length == 5) {
+        if (args.length == 6) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
             try {
               double chance = Double.parseDouble(args[1]);
               try {
                 int cooldown = Integer.parseInt(args[2]);
-                try {
-                  int stacks = Integer.parseInt(args[3]);
-                  try {
-                    int ticks = Integer.parseInt(args[4]);
-                    setPassiveTag(percentHealth + " " + chance + " " + cooldown + " " + stacks + " " + ticks);
-                  } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                switch (args[3]) {
+                  case "true", "false" -> {
+                    boolean self = Boolean.parseBoolean(args[3]);
+                    try {
+                      int stacks = Integer.parseInt(args[4]);
+                      try {
+                        int ticks = Integer.parseInt(args[5]);
+                        setPassiveTag(percentHealth + " " + chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
+                      } catch (NumberFormatException ex) {
+                        user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                      }
+                    } catch (NumberFormatException ex) {
+                      user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                    }
                   }
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                  default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
                 }
               } catch (NumberFormatException ex) {
                 user.sendMessage(ChatColor.RED + "Invalid cooldown.");
@@ -343,6 +355,7 @@ class AethelTagModifier {
         }
       }
     }
+
   }
 
   /**

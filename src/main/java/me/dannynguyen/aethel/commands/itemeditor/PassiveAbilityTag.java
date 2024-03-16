@@ -5,8 +5,8 @@ import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.PassiveAbilityEffect;
+import me.dannynguyen.aethel.systems.rpg.PassiveAbilityType;
 import me.dannynguyen.aethel.systems.rpg.Trigger;
 import me.dannynguyen.aethel.systems.rpg.TriggerCondition;
 import me.dannynguyen.aethel.utility.TextFormatter;
@@ -25,7 +25,7 @@ import java.util.*;
  * Represents a passive ability tag set or remove operation.
  *
  * @author Danny Nguyen
- * @version 1.15.15
+ * @version 1.16.7
  * @since 1.15.13
  */
 class PassiveAbilityTag {
@@ -130,21 +130,27 @@ class PassiveAbilityTag {
   private void readChanceCooldown(PassiveAbilityEffect abilityEffect) {
     switch (abilityEffect) {
       case STACK_INSTANCE -> {
-        if (args.length == 4) {
+        if (args.length == 5) {
           try {
             double chance = Double.parseDouble(args[0]);
             try {
               int cooldown = Integer.parseInt(args[1]);
-              try {
-                int stacks = Integer.parseInt(args[2]);
-                try {
-                  int ticks = Integer.parseInt(args[3]);
-                  setKeyStringToList(chance + " " + cooldown + " " + stacks + " " + ticks);
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid ticks.");
+              switch (args[2]) {
+                case "true", "false" -> {
+                  boolean self = Boolean.parseBoolean(args[2]);
+                  try {
+                    int stacks = Integer.parseInt(args[3]);
+                    try {
+                      int ticks = Integer.parseInt(args[4]);
+                      setKeyStringToList(chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
+                    } catch (NumberFormatException ex) {
+                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                    }
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                  }
                 }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
               }
             } catch (NumberFormatException ex) {
               user.sendMessage(ChatColor.RED + "Invalid cooldown.");
@@ -194,23 +200,29 @@ class PassiveAbilityTag {
   private void readHpChanceCooldown(PassiveAbilityEffect abilityEffect) {
     switch (abilityEffect) {
       case STACK_INSTANCE -> {
-        if (args.length == 5) {
+        if (args.length == 6) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
             try {
               double chance = Double.parseDouble(args[1]);
               try {
                 int cooldown = Integer.parseInt(args[2]);
-                try {
-                  int stacks = Integer.parseInt(args[3]);
-                  try {
-                    int ticks = Integer.parseInt(args[4]);
-                    setKeyStringToList(percentHealth + " " + chance + " " + cooldown + " " + stacks + " " + ticks);
-                  } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                switch (args[3]) {
+                  case "true", "false" -> {
+                    boolean self = Boolean.parseBoolean(args[3]);
+                    try {
+                      int stacks = Integer.parseInt(args[4]);
+                      try {
+                        int ticks = Integer.parseInt(args[5]);
+                        setKeyStringToList(percentHealth + " " + chance + " " + self + " " + cooldown + " " + stacks + " " + ticks);
+                      } catch (NumberFormatException ex) {
+                        user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                      }
+                    } catch (NumberFormatException ex) {
+                      user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                    }
                   }
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                  default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
                 }
               } catch (NumberFormatException ex) {
                 user.sendMessage(ChatColor.RED + "Invalid cooldown.");

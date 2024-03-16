@@ -60,6 +60,7 @@ public class Health {
    *
    * @param player           interacting player
    * @param aethelAttributes total Aethel attributes
+   * @param settings         player's settings
    */
   public Health(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();

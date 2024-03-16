@@ -9,7 +9,7 @@ import java.util.List;
  * Represents an item's passive ability.
  *
  * @author Danny Nguyen
- * @version 1.16.6
+ * @version 1.16.7
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -58,7 +58,12 @@ public class PassiveAbility {
         triggerData.add(dataValues[0]);
         triggerData.add(dataValues[1]);
         switch (abilityEffect) {
-          case STACK_INSTANCE, CHAIN -> {
+          case STACK_INSTANCE -> {
+            effectData.add(dataValues[2]);
+            effectData.add(dataValues[3]);
+            effectData.add(dataValues[4]);
+          }
+          case CHAIN -> {
             effectData.add(dataValues[2]);
             effectData.add(dataValues[3]);
           }
@@ -69,7 +74,12 @@ public class PassiveAbility {
         triggerData.add(dataValues[1]);
         triggerData.add(dataValues[2]);
         switch (abilityEffect) {
-          case STACK_INSTANCE, CHAIN -> {
+          case STACK_INSTANCE -> {
+            effectData.add(dataValues[3]);
+            effectData.add(dataValues[4]);
+            effectData.add(dataValues[5]);
+          }
+          case CHAIN -> {
             effectData.add(dataValues[3]);
             effectData.add(dataValues[4]);
           }

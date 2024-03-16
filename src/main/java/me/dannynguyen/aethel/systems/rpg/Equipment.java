@@ -198,6 +198,7 @@ public class Equipment {
    * Sets new data stored about an equipment slot.
    *
    * @param slot slot type
+   * @param item interacting item
    */
   private void setSlotData(RpgEquipmentSlot slot, ItemStack item) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();

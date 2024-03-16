@@ -26,7 +26,7 @@ import java.util.*;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.6
+ * @version 1.16.7
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -109,19 +109,59 @@ public class EntityDamage implements Listener {
     if (!damageDealtTriggers.isEmpty()) {
       if (e.getEntity() instanceof LivingEntity damagee) {
         Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-        UUID damageeUUID = damagee.getUniqueId();
-        if (!entityStatuses.containsKey(damageeUUID)) {
-          entityStatuses.put(damageeUUID, new HashMap<>());
-        }
-        Map<StatusType, Status> statuses = entityStatuses.get(damageeUUID);
         Random random = new Random();
         for (PassiveAbility ability : damageDealtTriggers.values()) {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
-              case STACK_INSTANCE -> applyStackInstance(damageeUUID, statuses, random, ability);
+              case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, damager.getUniqueId(), damagee.getUniqueId());
             }
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Applies stack instances by chance.
+   *
+   * @param entityStatuses entity statuses
+   * @param random         rng
+   * @param ability        passive ability
+   * @param damagerUUID    damager UUID
+   * @param damageeUUID    damagee UUID
+   */
+  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID damagerUUID, UUID damageeUUID) {
+    List<String> triggerData = ability.getTriggerData();
+    double chance = Double.parseDouble(triggerData.get(0));
+
+    if (chance > random.nextDouble() * 100) {
+      List<String> effectData = ability.getEffectData();
+      boolean self = Boolean.parseBoolean(effectData.get(0));
+      UUID targetUUID;
+      if (self) {
+        targetUUID = damagerUUID;
+      } else {
+        targetUUID = damageeUUID;
+      }
+      Map<StatusType, Status> statuses;
+      if (!entityStatuses.containsKey(targetUUID)) {
+        entityStatuses.put(targetUUID, new HashMap<>());
+      }
+      statuses = entityStatuses.get(targetUUID);
+
+      StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
+      int stacks = Integer.parseInt(effectData.get(1));
+      int ticks = Integer.parseInt(effectData.get(2));
+      if (statuses.containsKey(statusType)) {
+        statuses.get(statusType).addStacks(stacks, ticks);
+      } else {
+        statuses.put(statusType, new Status(targetUUID, statusType, stacks, ticks));
+      }
+
+      int cooldown = Integer.parseInt(triggerData.get(1));
+      if (cooldown > 0) {
+        ability.setOnCooldown(true);
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
       }
     }
   }
@@ -195,35 +235,6 @@ public class EntityDamage implements Listener {
     damageArmorDurability(damagee, finalDamage);
     rpgPlayer.getHealth().damage(finalDamage);
     e.setDamage(0);
-  }
-
-  /**
-   * Applies stack instance abilities by chance.
-   *
-   * @param damagee  attacked entity's UUID
-   * @param statuses attacked entity's statuses
-   * @param random   rng
-   * @param ability  passive ability
-   */
-  private void applyStackInstance(UUID damagee, Map<StatusType, Status> statuses, Random random, PassiveAbility ability) {
-    List<String> triggerData = ability.getTriggerData();
-    double chance = Double.parseDouble(triggerData.get(0));
-    int cooldown = Integer.parseInt(triggerData.get(1));
-    if (chance > random.nextDouble() * 100) {
-      StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
-      List<String> effectData = ability.getEffectData();
-      int stacks = Integer.parseInt(effectData.get(0));
-      int ticks = Integer.parseInt(effectData.get(1));
-      if (statuses.containsKey(statusType)) {
-        statuses.get(statusType).addStacks(stacks, ticks);
-      } else {
-        statuses.put(statusType, new Status(damagee, statusType, stacks, ticks));
-      }
-      if (cooldown > 0) {
-        ability.setOnCooldown(true);
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
-      }
-    }
   }
 
   /**

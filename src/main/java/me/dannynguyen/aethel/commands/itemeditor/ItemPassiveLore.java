@@ -21,7 +21,7 @@ import java.util.*;
  * Represents an item's passive ability lore generation.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.16.7
  * @since 1.15.15
  */
 class ItemPassiveLore {
@@ -141,7 +141,7 @@ class ItemPassiveLore {
             abilityLore.append(ChatColor.WHITE).append("(").append(convertTicksToSeconds(abilityData[1])).append("s) ");
           }
           switch (abilityEffect) {
-            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(convertTicksToSeconds(abilityData[3])).append("s)");
+            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(convertTicksToSeconds(abilityData[4])).append("s)");
             case CHAIN -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(abilityData[3]).append("m)");
           }
         }
@@ -157,7 +157,7 @@ class ItemPassiveLore {
             abilityLore.append(ChatColor.WHITE).append("(").append(convertTicksToSeconds(abilityData[2])).append("s) ");
           }
           switch (abilityEffect) {
-            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(convertTicksToSeconds(abilityData[4])).append("s)");
+            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[4]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[3].equals("true") ? "Self] (" : "Target] (").append(convertTicksToSeconds(abilityData[5])).append("s)");
             case CHAIN -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" (").append(abilityData[4]).append("m)");
           }
         }

@@ -8,14 +8,14 @@ import java.util.Objects;
  * Effects of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.16.7
  * @since 1.15.9
  */
 public enum PassiveAbilityEffect {
   /**
    * Causes stack instances.
    */
-  STACK_INSTANCE("Stacks, Duration(t)"),
+  STACK_INSTANCE("Self, Stacks, Duration(t)"),
 
   /**
    * Causes chain damage.
