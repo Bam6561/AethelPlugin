@@ -1,11 +1,9 @@
 package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
-import me.dannynguyen.aethel.systems.rpg.Status;
-import me.dannynguyen.aethel.systems.rpg.StatusType;
+import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.utility.ItemDurability;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -22,16 +20,13 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.14.13
+ * @version 1.16.6
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -76,12 +71,15 @@ public class EntityDamage implements Listener {
   private void onEntityDamage(EntityDamageByEntityEvent e) {
     if (e.getDamager() instanceof Player || e.getEntity() instanceof Player) {
       if (e.getDamager() instanceof Player damager && !(e.getEntity() instanceof Player)) { // PvE
+        triggerDamageDealtPassives(e, damager);
         calculatePlayerDamageDone(e, damager);
       } else {
         Player damagee = (Player) e.getEntity();
-        if (e.getDamager() instanceof Player) { // PvP, otherwise EvP
-          calculatePlayerDamageDone(e, (Player) e.getDamager());
+        if (e.getDamager() instanceof Player damager) { // PvP, otherwise EvP
+          triggerDamageDealtPassives(e, damager);
+          calculatePlayerDamageDone(e, damager);
         }
+        triggerDamageTakenPassives(e, damagee);
         calculatePlayerDamageTaken(e, damagee);
       }
     }
@@ -98,6 +96,44 @@ public class EntityDamage implements Listener {
       e.setCancelled(true);
       Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().heal(e.getAmount());
     }
+  }
+
+  /**
+   * Triggers damage dealt passive abilities.
+   *
+   * @param e       entity damage by entity event
+   * @param damager interacting player
+   */
+  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
+    Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
+    if (!damageDealtTriggers.isEmpty()) {
+      if (e.getEntity() instanceof LivingEntity damagee) {
+        Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+        UUID damageeUUID = damagee.getUniqueId();
+        if (!entityStatuses.containsKey(damageeUUID)) {
+          entityStatuses.put(damageeUUID, new HashMap<>());
+        }
+        Map<StatusType, Status> statuses = entityStatuses.get(damageeUUID);
+        Random random = new Random();
+        for (PassiveAbility ability : damageDealtTriggers.values()) {
+          if (!ability.isOnCooldown()) {
+            switch (ability.getAbility().getEffect()) {
+              case STACK_INSTANCE -> applyStackInstance(damageeUUID, statuses, random, ability);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Triggers damage taken passive abilities.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee interacting player
+   */
+  private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
+    // TO DO
   }
 
   /**
@@ -159,6 +195,35 @@ public class EntityDamage implements Listener {
     damageArmorDurability(damagee, finalDamage);
     rpgPlayer.getHealth().damage(finalDamage);
     e.setDamage(0);
+  }
+
+  /**
+   * Applies stack instance abilities by chance.
+   *
+   * @param damagee  attacked entity's UUID
+   * @param statuses attacked entity's statuses
+   * @param random   rng
+   * @param ability  passive ability
+   */
+  private void applyStackInstance(UUID damagee, Map<StatusType, Status> statuses, Random random, PassiveAbility ability) {
+    List<String> triggerData = ability.getTriggerData();
+    double chance = Double.parseDouble(triggerData.get(0));
+    int cooldown = Integer.parseInt(triggerData.get(1));
+    if (chance > random.nextDouble() * 100) {
+      StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
+      List<String> effectData = ability.getEffectData();
+      int stacks = Integer.parseInt(effectData.get(0));
+      int ticks = Integer.parseInt(effectData.get(1));
+      if (statuses.containsKey(statusType)) {
+        statuses.get(statusType).addStacks(stacks, ticks);
+      } else {
+        statuses.put(statusType, new Status(damagee, statusType, stacks, ticks));
+      }
+      if (cooldown > 0) {
+        ability.setOnCooldown(true);
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
+      }
+    }
   }
 
   /**

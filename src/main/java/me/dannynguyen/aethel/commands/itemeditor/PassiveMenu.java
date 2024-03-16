@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.15.12
+ * @version 1.16.6
  * @since 1.15.1
  */
 class PassiveMenu {
@@ -166,9 +166,9 @@ class PassiveMenu {
    */
   private void addTriggers() {
     menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
-    menu.setItem(10, ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Deal Damage"));
-    menu.setItem(11, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "Kill"));
-    menu.setItem(12, ItemCreator.createItem(Material.GRAY_DYE, ChatColor.AQUA + "Take Damage"));
+    menu.setItem(10, ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Damage Dealt"));
+    menu.setItem(11, ItemCreator.createItem(Material.GRAY_DYE, ChatColor.AQUA + "Damage Taken"));
+    menu.setItem(12, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "Kill"));
   }
 
   /**

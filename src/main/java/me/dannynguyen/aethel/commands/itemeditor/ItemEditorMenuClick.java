@@ -29,7 +29,7 @@ import java.util.*;
  * Inventory click event listener for ItemEditor menus.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.16.6
  * @since 1.6.7
  */
 public class ItemEditorMenuClick {
@@ -198,9 +198,9 @@ public class ItemEditorMenuClick {
       case 16 -> setPassiveMode(RpgEquipmentSlot.NECKLACE);
       case 17 -> setPassiveMode(RpgEquipmentSlot.RING);
       case 9 -> setTriggerMode(Trigger.BELOW_HP);
-      case 10 -> setTriggerMode(Trigger.DEAL_DAMAGE);
-      case 11 -> setTriggerMode(Trigger.KILL);
-      case 12 -> setTriggerMode(Trigger.TAKE_DAMAGE);
+      case 10 -> setTriggerMode(Trigger.DAMAGE_DEALT);
+      case 11 -> setTriggerMode(Trigger.DAMAGE_TAKEN);
+      case 12 -> setTriggerMode(Trigger.KILL);
       default -> readPassive();
     }
   }

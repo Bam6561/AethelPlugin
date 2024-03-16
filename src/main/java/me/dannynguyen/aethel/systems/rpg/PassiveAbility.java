@@ -9,15 +9,10 @@ import java.util.List;
  * Represents an item's passive ability.
  *
  * @author Danny Nguyen
- * @version 1.16.3
+ * @version 1.16.6
  * @since 1.16.2
  */
 public class PassiveAbility {
-  /**
-   * Type of trigger.
-   */
-  private final Trigger trigger;
-
   /**
    * Type of passive ability.
    */
@@ -46,19 +41,18 @@ public class PassiveAbility {
    * @param dataValues ability data
    */
   public PassiveAbility(@NotNull Trigger trigger, @NotNull PassiveAbilityType ability, @NotNull String[] dataValues) {
-    this.trigger = trigger;
     this.ability = ability;
-    initializeAbilityData(dataValues);
+    initializeAbilityData(trigger.getCondition(), ability.getEffect(), dataValues);
   }
 
   /**
    * Initializes the passive ability's trigger and ability data.
    *
-   * @param dataValues ability data
+   * @param condition     trigger condition
+   * @param abilityEffect ability effect
+   * @param dataValues    ability data
    */
-  private void initializeAbilityData(String[] dataValues) {
-    TriggerCondition condition = trigger.getCondition();
-    PassiveAbilityEffect abilityEffect = ability.getEffect();
+  private void initializeAbilityData(TriggerCondition condition, PassiveAbilityEffect abilityEffect, String[] dataValues) {
     switch (condition) {
       case CHANCE_COOLDOWN -> {
         triggerData.add(dataValues[0]);
@@ -91,6 +85,15 @@ public class PassiveAbility {
    */
   public void setOnCooldown(boolean onCooldown) {
     isOnCooldown = onCooldown;
+  }
+
+  /**
+   * Gets the passive ability type.
+   *
+   * @return passive ability type
+   */
+  public PassiveAbilityType getAbility() {
+    return this.ability;
   }
 
   /**

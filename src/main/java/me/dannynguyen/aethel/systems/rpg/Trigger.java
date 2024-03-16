@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of ability trigger conditions.
  *
  * @author Danny Nguyen
- * @version 1.15.13
+ * @version 1.16.6
  * @since 1.15.11
  */
 public enum Trigger {
@@ -20,7 +20,7 @@ public enum Trigger {
   /**
    * Damage dealt.
    */
-  DEAL_DAMAGE("Deal Damage", "deal_damage", TriggerCondition.CHANCE_COOLDOWN),
+  DAMAGE_DEALT("Damage Dealt", "damage_dealt", TriggerCondition.CHANCE_COOLDOWN),
 
   /**
    * Killed an entity.
@@ -30,7 +30,7 @@ public enum Trigger {
   /**
    * Damage taken.
    */
-  TAKE_DAMAGE("Take Damage", "take_damage", TriggerCondition.CHANCE_COOLDOWN);
+  DAMAGE_TAKEN("Damage Taken", "damage_taken", TriggerCondition.CHANCE_COOLDOWN);
 
   /**
    * Trigger's proper name.

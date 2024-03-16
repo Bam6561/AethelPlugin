@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of statuses.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.16.6
  * @since 1.14.7
  */
 public enum StatusType {
@@ -36,7 +36,7 @@ public enum StatusType {
   /**
    * Cumulative stacks that allow and increase chain damage between entities.
    */
-  SOAK("Soak", "soak", true),
+  SOAKED("Soaked", "soaked", true),
 
   /**
    * Highest instance stack that increases the damage taken by the entity.

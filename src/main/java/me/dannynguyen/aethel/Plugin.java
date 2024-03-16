@@ -44,7 +44,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.5.1
+ * @version 1.16.6
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -247,11 +247,11 @@ public class Plugin extends JavaPlugin {
   private void handleEntityDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, LivingEntity entity) {
     if (statuses.containsKey(StatusType.BLEED)) {
       entity.damage(0.1);
-      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2);
+      entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
       entity.damage(0.1);
-      entity.setHealth(entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2);
+      entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2));
     }
   }
 
