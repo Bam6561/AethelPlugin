@@ -16,6 +16,7 @@ import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
 import me.dannynguyen.aethel.listeners.rpg.EntityDamage;
 import me.dannynguyen.aethel.listeners.rpg.EquipmentUpdate;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
+import me.dannynguyen.aethel.listeners.rpg.StatusUpdate;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.5
+ * @version 1.16.5.1
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -81,12 +82,13 @@ public class Plugin extends JavaPlugin {
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
-    manager.registerEvents(new EquipmentUpdate(), this);
-    manager.registerEvents(new EntityDamage(), this);
     manager.registerEvents(new MenuClick(), this);
     manager.registerEvents(new MessageSent(), this);
     manager.registerEvents(new PluginEvent(), this);
+    manager.registerEvents(new EntityDamage(), this);
+    manager.registerEvents(new EquipmentUpdate(), this);
     manager.registerEvents(new RpgEvent(), this);
+    manager.registerEvents(new StatusUpdate(), this);
   }
 
   /**
