@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Collection of equipment attribute update listeners.
+ * Collection of equipment data update listeners.
  *
  * @author Danny Nguyen
  * @version 1.16.3
  * @since 1.9.0
  */
-public class EquipmentAttributes implements Listener {
+public class EquipmentUpdate implements Listener {
   /**
-   * Checks clicks within player inventories to determine whether to update a player's equipment attributes.
+   * Checks clicks within player inventories to determine whether to update a player's equipment data.
    *
    * @param e inventory click event
    */
@@ -48,7 +48,7 @@ public class EquipmentAttributes implements Listener {
         switch (slot) {
           case 36, 37, 38, 39, 40 -> {
             if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-              updateEquipmentAttributesAtSlot(player, slot);
+              updateEquipmentDataAtSlot(player, slot);
               Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
               }, 1);
             }
@@ -59,7 +59,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates a player's equipment attributes when items are held.
+   * Updates a player's equipment data when items are held.
    *
    * @param e player held item event
    */
@@ -71,7 +71,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates a player's equipment attributes when items are swapped.
+   * Updates a player's equipment data when items are swapped.
    *
    * @param e player swap hand items event
    */
@@ -82,7 +82,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates a player's equipment attributes when a wearable item is interacted with.
+   * Updates a player's equipment data when a wearable item is interacted with.
    *
    * @param e player interact event
    */
@@ -97,7 +97,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates a player's equipment attributes when a dispenser equips them with armor.
+   * Updates a player's equipment data when a dispenser equips them with armor.
    *
    * @param e block dispense armor event
    */
@@ -109,7 +109,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates a player's equipment attributes when a wearable item is broken.
+   * Updates a player's equipment data when a wearable item is broken.
    *
    * @param e player item break event
    */
@@ -119,7 +119,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates a player's equipment attributes when they die unless they have keep inventory on.
+   * Updates a player's equipment data when they die unless they have keep inventory on.
    *
    * @param e player death event
    */
@@ -146,7 +146,7 @@ public class EquipmentAttributes implements Listener {
   }
 
   /**
-   * Updates the player's equipment attributes if the item is a worn item.
+   * Updates the player's equipment data if the item is a worn item.
    *
    * @param player interacting player
    * @param item   interacting item
@@ -155,19 +155,19 @@ public class EquipmentAttributes implements Listener {
     switch (item.getType()) {
       case LEATHER_HELMET, CHAINMAIL_HELMET, IRON_HELMET, GOLDEN_HELMET, DIAMOND_HELMET, NETHERITE_HELMET,
           CREEPER_HEAD, ZOMBIE_HEAD, SKELETON_SKULL, WITHER_SKELETON_SKULL, PLAYER_HEAD, DRAGON_HEAD,
-          TURTLE_HELMET, PUMPKIN -> updateEquipmentAttributesAtSlot(player, 39);
+          TURTLE_HELMET, PUMPKIN -> updateEquipmentDataAtSlot(player, 39);
       case LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, IRON_CHESTPLATE, GOLDEN_CHESTPLATE,
-          DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE, ELYTRA -> updateEquipmentAttributesAtSlot(player, 38);
+          DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE, ELYTRA -> updateEquipmentDataAtSlot(player, 38);
       case LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, IRON_LEGGINGS, GOLDEN_LEGGINGS,
-          DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> updateEquipmentAttributesAtSlot(player, 37);
+          DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> updateEquipmentDataAtSlot(player, 37);
       case LEATHER_BOOTS, CHAINMAIL_BOOTS, IRON_BOOTS, GOLDEN_BOOTS,
-          DIAMOND_BOOTS, NETHERITE_BOOTS -> updateEquipmentAttributesAtSlot(player, 36);
-      case SHIELD -> updateEquipmentAttributesAtSlot(player, 40);
+          DIAMOND_BOOTS, NETHERITE_BOOTS -> updateEquipmentDataAtSlot(player, 36);
+      case SHIELD -> updateEquipmentDataAtSlot(player, 40);
     }
   }
 
   /**
-   * Updates the player's equipment attributes at the slot they interacted with.
+   * Updates the player's equipment data at the slot they interacted with.
    * <p>
    * A 1 tick delay is used for because only the item that exists in the
    * corresponding slot after the interaction happens should be read.
@@ -176,7 +176,7 @@ public class EquipmentAttributes implements Listener {
    * @param player interacting player
    * @param slot   slot type
    */
-  private void updateEquipmentAttributesAtSlot(Player player, int slot) {
+  private void updateEquipmentDataAtSlot(Player player, int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
       Equipment equipment = rpgPlayer.getEquipment();

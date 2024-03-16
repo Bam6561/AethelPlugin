@@ -124,7 +124,7 @@ class ItemActiveLore {
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
       StringBuilder activeLore = new StringBuilder();
 
-      activeLore.append(ChatColor.WHITE).append("(").append(convertTicksToSeconds(abilityData[0])).append("s) ");
+      activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
       switch (abilityEffect) {
         case MOVEMENT -> {
           switch (ability) {
@@ -133,7 +133,7 @@ class ItemActiveLore {
           }
           activeLore.append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
         }
-        case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(convertTicksToSeconds(abilityData[2])).append("s)");
+        case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
         case SHATTER -> activeLore.append(ChatColor.AQUA).append("Shatter ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
       }
       if (activeAbilities.containsKey(slot)) {
@@ -151,7 +151,7 @@ class ItemActiveLore {
    * @param ticks ticks
    * @return seconds
    */
-  private String convertTicksToSeconds(String ticks) {
+  private String ticksToSeconds(String ticks) {
     return String.valueOf(Double.parseDouble(ticks) / 20);
   }
 }

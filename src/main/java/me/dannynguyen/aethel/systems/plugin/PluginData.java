@@ -80,12 +80,12 @@ public class PluginData {
     start = System.nanoTime();
     Plugin.getData().getItemRegistry().loadData();
     finish = System.nanoTime();
-    log.info("[Aethel] Loaded Aethel Items: " + convertToMs(df2, start, finish));
+    log.info("[Aethel] Loaded Aethel Items: " + longToMs(df2, start, finish));
 
     start = System.nanoTime();
     Plugin.getData().getRecipeRegistry().loadData();
     finish = System.nanoTime();
-    log.info("[Aethel] Loaded Forge Recipes: " + convertToMs(df2, start, finish));
+    log.info("[Aethel] Loaded Forge Recipes: " + longToMs(df2, start, finish));
 
     File rpgJewelryDirectory = Directory.JEWELRY.getFile();
     if (!rpgJewelryDirectory.exists()) {
@@ -117,14 +117,14 @@ public class PluginData {
       rpgPlayer.getEquipment().saveJewelry();
     }
     finish = System.nanoTime();
-    log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(df2, start, finish));
+    log.info("[Aethel] Saved RPG Jewelry: " + longToMs(df2, start, finish));
 
     start = System.nanoTime();
     for (RpgPlayer rpgPlayer : rpgPlayers) {
       rpgPlayer.getSettings().saveSettings();
     }
     finish = System.nanoTime();
-    log.info("[Aethel] Saved RPG Settings: " + convertToMs(df2, start, finish));
+    log.info("[Aethel] Saved RPG Settings: " + longToMs(df2, start, finish));
   }
 
   /**
@@ -135,7 +135,7 @@ public class PluginData {
    * @param finish finish time
    * @return milliseconds elapsed
    */
-  private static String convertToMs(DecimalFormat df2, long start, long finish) {
+  private static String longToMs(DecimalFormat df2, long start, long finish) {
     return df2.format(Double.parseDouble(String.valueOf(finish - start)) / 1000000) + " ms";
   }
 

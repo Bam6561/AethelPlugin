@@ -14,11 +14,12 @@ import me.dannynguyen.aethel.listeners.plugin.MenuClick;
 import me.dannynguyen.aethel.listeners.plugin.MessageSent;
 import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
 import me.dannynguyen.aethel.listeners.rpg.EntityDamage;
-import me.dannynguyen.aethel.listeners.rpg.EquipmentAttributes;
+import me.dannynguyen.aethel.listeners.rpg.EquipmentUpdate;
 import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.12
+ * @version 1.16.5
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -80,7 +81,7 @@ public class Plugin extends JavaPlugin {
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
-    manager.registerEvents(new EquipmentAttributes(), this);
+    manager.registerEvents(new EquipmentUpdate(), this);
     manager.registerEvents(new EntityDamage(), this);
     manager.registerEvents(new MenuClick(), this);
     manager.registerEvents(new MessageSent(), this);
@@ -144,7 +145,9 @@ public class Plugin extends JavaPlugin {
       if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE)) {
         if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
           if (entity instanceof Player player) {
-            handlePlayerDamageOverTime(uuid, statuses, player);
+            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+              handlePlayerDamageOverTime(uuid, statuses, player);
+            }
           } else {
             handleEntityDamageOverTime(uuid, statuses, entity);
           }

@@ -133,7 +133,7 @@ class StatMessage {
   private String formatStatValue(String item, Statistic stat) {
     switch (item) {
       case "Play One Minute", "Time Since Death", "Time Since Rest", "Total World Time" -> {
-        return ChatColor.WHITE + convertToDaysHoursMinutes(owner.getStatistic(stat));
+        return ChatColor.WHITE + ticksToDaysHoursMinutes(owner.getStatistic(stat));
       }
       default -> {
         if (!item.contains("One Cm")) {
@@ -188,7 +188,7 @@ class StatMessage {
    * @param ticks ticks
    * @return days, hours, and minutes
    */
-  private String convertToDaysHoursMinutes(long ticks) {
+  private String ticksToDaysHoursMinutes(long ticks) {
     long days = ticks / 1728000L % 30;
     long hours = ticks / 72000L % 24;
     long minutes = ticks / 1200L % 60;

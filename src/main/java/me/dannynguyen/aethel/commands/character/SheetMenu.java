@@ -2,11 +2,8 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.Health;
-import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
+import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.utility.ItemCreator;
-import me.dannynguyen.aethel.utility.TextFormatter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,7 +14,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -27,7 +23,7 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.16.5
  * @since 1.6.3
  */
 class SheetMenu {
@@ -97,7 +93,7 @@ class SheetMenu {
     addActions();
     addEquipment();
     addAttributes();
-    addStatusEffects();
+    addStatuses();
     addExtras();
     return menu;
   }
@@ -158,17 +154,26 @@ class SheetMenu {
   }
 
   /**
-   * Adds the player's status effects.
+   * Adds the player's statuses.
    */
-  private void addStatusEffects() {
+  private void addStatuses() {
     List<String> lore = new ArrayList<>();
-    for (PotionEffect potionEffect : owner.getActivePotionEffects()) {
-      String duration = ChatColor.WHITE + convertToMinutesSeconds(potionEffect.getDuration());
-      String type = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect.getType().getName());
-      String amplifier = ChatColor.YELLOW + (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
-      lore.add(duration + " " + type + " " + amplifier);
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    if (entityStatuses.containsKey(ownerUUID)) {
+      Map<StatusType, Status> statuses = entityStatuses.get(ownerUUID);
+      for (StatusType statusType : statuses.keySet()) {
+        Status status = statuses.get(statusType);
+        StringBuilder instancesBuilder = new StringBuilder();
+        instancesBuilder.append("[");
+        for (int instance : status.getStackInstances().values()) {
+          instancesBuilder.append(instance).append(", ");
+        }
+        instancesBuilder.delete(instancesBuilder.length() - 2, instancesBuilder.length());
+        instancesBuilder.append("]");
+        lore.add(ChatColor.AQUA + statusType.getProperName() + " " + ChatColor.WHITE + status.getStackAmount() + " " + instancesBuilder);
+      }
     }
-    menu.setItem(42, ItemCreator.createItem(Material.POTION, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Status Effects", lore, ItemFlag.HIDE_POTION_EFFECTS));
+    menu.setItem(42, ItemCreator.createItem(Material.POTION, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Statuses", lore, ItemFlag.HIDE_POTION_EFFECTS));
   }
 
   /**
@@ -238,17 +243,5 @@ class SheetMenu {
     String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
 
     menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(abilityDamage, abilityCooldown, speed, luck, knockbackResistance)));
-  }
-
-  /**
-   * Gets a time duration in ticks and converts it to minutes and seconds.
-   *
-   * @param ticks ticks
-   * @return minutes and seconds
-   */
-  private String convertToMinutesSeconds(int ticks) {
-    int minutes = ticks / 1200 % 60;
-    int seconds = ticks / 20 % 60;
-    return (minutes == 0 ? "0:" : minutes + ":") + (seconds > 10 ? seconds : "0" + seconds);
   }
 }
