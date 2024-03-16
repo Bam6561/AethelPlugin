@@ -9,7 +9,7 @@ import java.util.Objects;
  * Plugin directories.
  *
  * @author Danny Nguyen
- * @version 1.12.1
+ * @version 1.16.4
  * @since 1.11.9
  */
 public enum Directory {
@@ -31,7 +31,12 @@ public enum Directory {
   /**
    * RPG jewelry directory.
    */
-  JEWELRY(new File(RESOURCES.getFile().getPath() + "/rpg/jewelry"));
+  JEWELRY(new File(RESOURCES.getFile().getPath() + "/rpg/jewelry")),
+
+  /**
+   * RPG settings directory.
+   */
+  SETTINGS(new File(RESOURCES.getFile().getPath() + "/rpg/settings"));
 
   /**
    * Directory file.

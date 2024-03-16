@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.15.8
+ * @version 1.16.4
  * @since 1.13.4
  */
 public class Health {
@@ -36,14 +36,14 @@ public class Health {
   private final Map<AethelAttribute, Double> aethelAttributes;
 
   /**
+   * Player's settings.
+   */
+  private final Settings settings;
+
+  /**
    * Health bar display.
    */
   private final BossBar healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
-
-  /**
-   * Whether to display health in the action bar.
-   */
-  private boolean healthActionVisible;
 
   /**
    * Player's health.
@@ -61,10 +61,11 @@ public class Health {
    * @param player           interacting player
    * @param aethelAttributes total Aethel attributes
    */
-  public Health(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
+  public Health(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
-    this.healthActionVisible = true;
+    this.settings = settings;
+    healthBar.setVisible(settings.isHealthBarVisible());
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HEALTH);
     initializeHealth(player);
@@ -158,28 +159,9 @@ public class Health {
   }
 
   /**
-   * Toggles the visibility of the health bar.
-   */
-  public void toggleBarVisibility() {
-    if (healthBar.isVisible()) {
-      healthBar.setVisible(false);
-    } else {
-      healthBar.setVisible(true);
-      updateDisplays();
-    }
-  }
-
-  /**
-   * Toggles the visibility of health in the action bar.
-   */
-  public void toggleActionVisibility() {
-    healthActionVisible = !healthActionVisible;
-  }
-
-  /**
    * Updates health bar displays.
    */
-  private void updateDisplays() {
+  void updateDisplays() {
     Player player = Bukkit.getPlayer(uuid);
     double maxHealthScale = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     if (currentHealth < maxHealth) {
@@ -204,7 +186,7 @@ public class Health {
    * @param condition health condition
    */
   public void updateActionDisplay(@NotNull Health.Condition condition) {
-    if (healthActionVisible) {
+    if (settings.isHealthActionVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
       switch (Objects.requireNonNull(condition, "Null condition")) {
@@ -218,7 +200,7 @@ public class Health {
    * Updates the action bar display.
    */
   public void updateActionDisplay() {
-    if (healthActionVisible) {
+    if (settings.isHealthActionVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
       switch (getCondition()) {
@@ -282,15 +264,6 @@ public class Health {
   @NotNull
   public BossBar getBar() {
     return this.healthBar;
-  }
-
-  /**
-   * Gets if health in the action bar is displayed.
-   *
-   * @return if health in the action bar displayed
-   */
-  public boolean isHealthActionVisible() {
-    return this.healthActionVisible;
   }
 
   /**

@@ -14,13 +14,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.16.4
  * @since 1.1.7
  */
 public class PluginData {
@@ -90,6 +91,11 @@ public class PluginData {
     if (!rpgJewelryDirectory.exists()) {
       rpgJewelryDirectory.mkdirs();
     }
+
+    File rpgSettingsDirectory = Directory.SETTINGS.getFile();
+    if (!rpgSettingsDirectory.exists()) {
+      rpgSettingsDirectory.mkdirs();
+    }
   }
 
   /**
@@ -104,12 +110,21 @@ public class PluginData {
 
     log.info("[Aethel] Saving Resources");
 
+    Collection<RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers().values();
+
     start = System.nanoTime();
-    for (RpgPlayer rpgPlayer : Plugin.getData().getRpgSystem().getRpgPlayers().values()) {
+    for (RpgPlayer rpgPlayer : rpgPlayers) {
       rpgPlayer.getEquipment().saveJewelry();
     }
     finish = System.nanoTime();
     log.info("[Aethel] Saved RPG Jewelry: " + convertToMs(df2, start, finish));
+
+    start = System.nanoTime();
+    for (RpgPlayer rpgPlayer : rpgPlayers) {
+      rpgPlayer.getSettings().saveSettings();
+    }
+    finish = System.nanoTime();
+    log.info("[Aethel] Saved RPG Settings: " + convertToMs(df2, start, finish));
   }
 
   /**

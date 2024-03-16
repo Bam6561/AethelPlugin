@@ -4,8 +4,8 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.rpg.Equipment;
-import me.dannynguyen.aethel.systems.rpg.Health;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.Settings;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.16.4
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -309,31 +309,31 @@ public class CharacterMenuClick {
    * Toggles the player's health bar.
    */
   private void toggleHealthBar() {
-    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
+    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings();
     Inventory menu = e.getInventory();
-    if (health.getBar().isVisible()) {
+    if (settings.isHealthBarVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
     }
-    health.toggleBarVisibility();
+    settings.toggleHealthBarVisibility();
   }
 
   /**
    * Toggles the player's health in action bar.
    */
   private void toggleHealthAction() {
-    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth();
+    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings();
     Inventory menu = e.getInventory();
-    if (health.isHealthActionVisible()) {
+    if (settings.isHealthActionVisible()) {
       menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
     } else {
       menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
     }
-    health.toggleActionVisibility();
+    settings.toggleHealthActionVisibility();
   }
 }

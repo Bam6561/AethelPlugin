@@ -17,7 +17,7 @@ import java.util.UUID;
  * Represents a menu that shows the player's RPG settings.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.16.4
  * @since 1.11.5
  */
 class SettingsMenu {
@@ -88,7 +88,7 @@ class SettingsMenu {
    * Toggles the visibility of the health bar.
    */
   private void addDisplayHealthBar() {
-    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth().getBar().isVisible()) {
+    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().isHealthBarVisible()) {
       menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     } else {
       menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
@@ -99,7 +99,7 @@ class SettingsMenu {
    * Toggles the visibility of health in the action bar.
    */
   private void addDisplayHealthAction() {
-    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getHealth().isHealthActionVisible()) {
+    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().isHealthActionVisible()) {
       menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     } else {
       menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
