@@ -1,10 +1,7 @@
 package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.Equipment;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
+import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -23,13 +20,14 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Collection of equipment attribute update listeners.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.16.3
  * @since 1.9.0
  */
 public class EquipmentAttributes implements Listener {
@@ -131,15 +129,18 @@ public class EquipmentAttributes implements Listener {
       Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment();
       Map<RpgEquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = equipment.getEnchantments();
       Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = equipment.getAttributes();
+      Map<RpgEquipmentSlot, List<TriggerAbility>> equipmentPassives = equipment.getSlotPassives();
 
       dropJewelryItems(e.getEntity(), equipment.getJewelry());
 
+      for (RpgEquipmentSlot slot : equipmentAttributes.keySet()) {
+        equipment.removeAttributes(slot);
+      }
       for (RpgEquipmentSlot slot : equipmentEnchantments.keySet()) {
         equipment.removeEnchantments(slot);
       }
-
-      for (RpgEquipmentSlot slot : equipmentAttributes.keySet()) {
-        equipment.removeAttributes(slot);
+      for (RpgEquipmentSlot slot : equipmentPassives.keySet()) {
+        equipment.removePassives(slot);
       }
     }
   }

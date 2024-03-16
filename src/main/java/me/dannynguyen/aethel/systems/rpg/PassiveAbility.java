@@ -9,19 +9,19 @@ import java.util.List;
  * Represents an item's passive ability.
  *
  * @author Danny Nguyen
- * @version 1.16.2
+ * @version 1.16.3
  * @since 1.16.2
  */
 public class PassiveAbility {
   /**
-   * Type of passive ability.
+   * Type of trigger.
    */
-  private final PassiveAbilityType abilityType;
+  private final Trigger trigger;
 
   /**
-   * Type of trigger condition.
+   * Type of passive ability.
    */
-  private final TriggerCondition condition;
+  private final PassiveAbilityType ability;
 
   /**
    * Trigger data.
@@ -41,12 +41,13 @@ public class PassiveAbility {
   /**
    * Associates a passive ability with its data.
    *
+   * @param trigger    trigger type
    * @param ability    ability type
    * @param dataValues ability data
    */
-  public PassiveAbility(@NotNull TriggerCondition condition, @NotNull PassiveAbilityType ability, @NotNull String[] dataValues) {
-    this.abilityType = ability;
-    this.condition = condition;
+  public PassiveAbility(@NotNull Trigger trigger, @NotNull PassiveAbilityType ability, @NotNull String[] dataValues) {
+    this.trigger = trigger;
+    this.ability = ability;
     initializeAbilityData(dataValues);
   }
 
@@ -56,11 +57,13 @@ public class PassiveAbility {
    * @param dataValues ability data
    */
   private void initializeAbilityData(String[] dataValues) {
+    TriggerCondition condition = trigger.getCondition();
+    PassiveAbilityEffect abilityEffect = ability.getEffect();
     switch (condition) {
       case CHANCE_COOLDOWN -> {
         triggerData.add(dataValues[0]);
         triggerData.add(dataValues[1]);
-        switch (abilityType.getEffect()) {
+        switch (abilityEffect) {
           case STACK_INSTANCE, CHAIN -> {
             effectData.add(dataValues[2]);
             effectData.add(dataValues[3]);
@@ -71,7 +74,7 @@ public class PassiveAbility {
         triggerData.add(dataValues[0]);
         triggerData.add(dataValues[1]);
         triggerData.add(dataValues[2]);
-        switch (abilityType.getEffect()) {
+        switch (abilityEffect) {
           case STACK_INSTANCE, CHAIN -> {
             effectData.add(dataValues[3]);
             effectData.add(dataValues[4]);
@@ -82,22 +85,12 @@ public class PassiveAbility {
   }
 
   /**
-   * Sets if the ability is on cooldown
+   * Sets if the ability is on cooldown.
    *
    * @param onCooldown is on cooldown
    */
   public void setOnCooldown(boolean onCooldown) {
     isOnCooldown = onCooldown;
-  }
-
-  /**
-   * Gets the ability's type.
-   *
-   * @return ability's type
-   */
-  @NotNull
-  public PassiveAbilityType getAbilityType() {
-    return abilityType;
   }
 
   /**

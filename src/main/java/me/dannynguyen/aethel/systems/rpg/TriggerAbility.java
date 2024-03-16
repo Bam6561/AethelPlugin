@@ -5,17 +5,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents a condition ability pair.
+ * Represents a trigger ability pair.
  *
  * @author Danny Nguyen
- * @version 1.16.1
+ * @version 1.16.3
  * @since 1.16.1
  */
-public class ConditionAbility {
+public class TriggerAbility {
   /**
-   * Trigger condition.
+   * Type of ability trigger.
    */
-  private final TriggerCondition condition;
+  private final Trigger trigger;
 
   /**
    * Passive ability.
@@ -23,13 +23,13 @@ public class ConditionAbility {
   private final PassiveAbilityType ability;
 
   /**
-   * Associates a trigger condition with an ability.
+   * Associates a trigger with an ability.
    *
-   * @param condition trigger condition
-   * @param ability   passive ability
+   * @param trigger trigger
+   * @param ability passive ability
    */
-  public ConditionAbility(@NotNull TriggerCondition condition, @NotNull PassiveAbilityType ability) {
-    this.condition = Objects.requireNonNull(condition, "Null condition");
+  public TriggerAbility(@NotNull Trigger trigger, @NotNull PassiveAbilityType ability) {
+    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.ability = Objects.requireNonNull(ability, "Null ability");
   }
 
@@ -39,8 +39,8 @@ public class ConditionAbility {
    * @return trigger condition
    */
   @NotNull
-  public TriggerCondition getCondition() {
-    return this.condition;
+  public Trigger getTrigger() {
+    return this.trigger;
   }
 
   /**

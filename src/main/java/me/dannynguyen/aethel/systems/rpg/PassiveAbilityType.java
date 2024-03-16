@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.1
+ * @version 1.16.3
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
@@ -20,7 +20,7 @@ public enum PassiveAbilityType {
   /**
    * Apply stacks of Soaked.
    */
-  SOAKED("Soaked", "soak", PassiveAbilityEffect.STACK_INSTANCE),
+  SOAKED("Soaked", "soaked", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
    * Attacks chain to entities with stacks of Soaked.
