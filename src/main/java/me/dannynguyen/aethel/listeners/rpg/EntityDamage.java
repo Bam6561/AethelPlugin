@@ -26,7 +26,7 @@ import java.util.*;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.8
+ * @version 1.16.9
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -92,15 +92,17 @@ public class EntityDamage implements Listener {
    * @param damager interacting player
    */
   private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
-    Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
-    if (!damageDealtTriggers.isEmpty()) {
-      if (e.getEntity() instanceof LivingEntity damagee) {
-        Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-        Random random = new Random();
-        for (PassiveAbility ability : damageDealtTriggers.values()) {
-          if (!ability.isOnCooldown()) {
-            switch (ability.getAbility().getEffect()) {
-              case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, damager.getUniqueId(), damagee.getUniqueId());
+    if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+      Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
+      if (!damageDealtTriggers.isEmpty()) {
+        if (e.getEntity() instanceof LivingEntity damagee) {
+          Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+          Random random = new Random();
+          for (PassiveAbility ability : damageDealtTriggers.values()) {
+            if (!ability.isOnCooldown()) {
+              switch (ability.getAbility().getEffect()) {
+                case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, damager.getUniqueId(), damagee.getUniqueId());
+              }
             }
           }
         }
