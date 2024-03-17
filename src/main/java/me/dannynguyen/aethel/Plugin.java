@@ -19,7 +19,6 @@ import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.listeners.rpg.StatusUpdate;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
-import me.dannynguyen.aethel.utility.DamageCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
@@ -43,7 +42,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.13
+ * @version 1.16.14
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -236,24 +235,20 @@ public class Plugin extends JavaPlugin {
    *
    * @param uuid     player uuid
    * @param statuses player statuses
-   * @param player   interacting player
+   * @param damagee  player taking damage
    */
-  private void handlePlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player player) {
+  private void handlePlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
-    int protection = Math.min(rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
-    int resistance = 0;
-    if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      resistance = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
-    }
+    PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
     if (statuses.containsKey(StatusType.BLEED)) {
       double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
-      player.damage(0.1);
-      rpgPlayer.getHealth().damage(DamageCalculator.mitigateProtectionResistance(damage, protection, resistance));
+      damagee.damage(0.1);
+      rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
       double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
-      player.damage(0.1);
-      rpgPlayer.getHealth().damage(DamageCalculator.mitigateProtectionResistance(damage, protection, resistance));
+      damagee.damage(0.1);
+      rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
     }
   }
 
