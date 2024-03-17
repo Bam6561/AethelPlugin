@@ -15,14 +15,14 @@ import java.util.UUID;
  * Represents player damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.16.15
+ * @version 1.16.16
  * @since 1.16.14
  */
 public class PlayerDamageMitigation {
   /**
    * RPG system.
    */
-  private final RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+  private static final RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
 
   /**
    * Player taking damage.

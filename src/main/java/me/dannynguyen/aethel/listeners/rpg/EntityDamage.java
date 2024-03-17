@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.listeners.rpg;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
@@ -29,7 +30,7 @@ import java.util.*;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.15
+ * @version 1.16.16
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -107,7 +108,7 @@ public class EntityDamage implements Listener {
           for (PassiveAbility ability : damageDealtTriggers.values()) {
             if (!ability.isOnCooldown()) {
               switch (ability.getAbility().getEffect()) {
-                case STACK_INSTANCE -> applyStackInstanceEffect(Plugin.getData().getRpgSystem().getStatuses(), random, ability, damager.getUniqueId(), damagee.getUniqueId());
+                case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damager.getUniqueId(), damagee.getUniqueId());
                 case CHAIN -> applyChainEffect(random, ability, damager.getUniqueId(), damagee.getUniqueId(), mitigation);
               }
             }
@@ -127,12 +128,11 @@ public class EntityDamage implements Listener {
     Map<SlotAbility, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
     if (!damageTakenTriggers.isEmpty()) {
       if (e.getDamager() instanceof LivingEntity damager) {
-        Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
         Random random = new Random();
         for (PassiveAbility ability : damageTakenTriggers.values()) {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
-              case STACK_INSTANCE -> applyStackInstanceEffect(entityStatuses, random, ability, damagee.getUniqueId(), damager.getUniqueId());
+              case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damagee.getUniqueId(), damager.getUniqueId());
             }
           }
         }
@@ -226,47 +226,24 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Applies stack instances by chance.
+   * Checks if the stack instance effect was successful before applying stack instances.
    *
-   * @param entityStatuses entity statuses
-   * @param random         rng
-   * @param ability        passive ability
-   * @param selfUUID       self UUID
-   * @param otherUUID      entity UUID
+   * @param random    rng
+   * @param ability   passive ability
+   * @param selfUUID  self UUID
+   * @param otherUUID entity UUID
    */
-  private void applyStackInstanceEffect(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
-    List<String> triggerData = ability.getTriggerData();
-    double chance = Double.parseDouble(triggerData.get(0));
-
+  private void readOnDamageStackInstance(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
+    double chance = Double.parseDouble(ability.getTriggerData().get(0));
     if (chance > random.nextDouble() * 100) {
-      List<String> effectData = ability.getEffectData();
-      boolean self = Boolean.parseBoolean(effectData.get(0));
+      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       UUID targetUUID;
       if (self) {
         targetUUID = selfUUID;
       } else {
         targetUUID = otherUUID;
       }
-      Map<StatusType, Status> statuses;
-      if (!entityStatuses.containsKey(targetUUID)) {
-        entityStatuses.put(targetUUID, new HashMap<>());
-      }
-      statuses = entityStatuses.get(targetUUID);
-
-      StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
-      int stacks = Integer.parseInt(effectData.get(1));
-      int ticks = Integer.parseInt(effectData.get(2));
-      if (statuses.containsKey(statusType)) {
-        statuses.get(statusType).addStacks(stacks, ticks);
-      } else {
-        statuses.put(statusType, new Status(targetUUID, statusType, stacks, ticks));
-      }
-
-      int cooldown = Integer.parseInt(triggerData.get(1));
-      if (cooldown > 0) {
-        ability.setOnCooldown(true);
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
-      }
+      new PassiveAbilityTrigger(ability).applyStackInstance(targetUUID);
     }
   }
 

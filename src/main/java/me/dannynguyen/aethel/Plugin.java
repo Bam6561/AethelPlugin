@@ -20,6 +20,7 @@ import me.dannynguyen.aethel.listeners.rpg.StatusUpdate;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import org.bukkit.Bukkit;
@@ -35,7 +36,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents the plugin as an object.
@@ -45,7 +48,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.14
+ * @version 1.16.16
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -192,15 +195,13 @@ public class Plugin extends JavaPlugin {
    * Adds an interval to trigger below health passive abilities.
    */
   private void updateBelowHealthPassives() {
-    RpgSystem rpgSystem = data.getRpgSystem();
-    for (RpgPlayer rpgPlayer : rpgSystem.getRpgPlayers().values()) {
+    for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
       Map<SlotAbility, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
       if (!belowHealthTriggers.isEmpty()) {
-        Map<UUID, Map<StatusType, Status>> entityStatuses = rpgSystem.getStatuses();
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
-              case STACK_INSTANCE -> applyStackInstanceEffect(entityStatuses, ability, rpgPlayer);
+              case STACK_INSTANCE -> readBelowHealthStackInstance(ability, rpgPlayer);
             }
           }
         }
@@ -273,41 +274,17 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Applies stack instances by chance.
+   * Checks if the stack instance effect was successful before applying stack instances.
    *
-   * @param entityStatuses entity statuses
-   * @param ability        passive ability
-   * @param rpgPlayer      interacting player
+   * @param ability   passive ability
+   * @param rpgPlayer interacting player
    */
-  private void applyStackInstanceEffect(Map<UUID, Map<StatusType, Status>> entityStatuses, PassiveAbility ability, RpgPlayer rpgPlayer) {
-    List<String> triggerData = ability.getTriggerData();
-    double healthPercent = Double.parseDouble(triggerData.get(0));
-
+  private void readBelowHealthStackInstance(PassiveAbility ability, RpgPlayer rpgPlayer) {
+    double healthPercent = Double.parseDouble(ability.getTriggerData().get(0));
     if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
-      List<String> effectData = ability.getEffectData();
-      boolean self = Boolean.parseBoolean(effectData.get(0));
+      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       if (self) {
-        UUID selfUUID = rpgPlayer.getUUID();
-        Map<StatusType, Status> statuses;
-        if (!entityStatuses.containsKey(selfUUID)) {
-          entityStatuses.put(selfUUID, new HashMap<>());
-        }
-        statuses = entityStatuses.get(selfUUID);
-
-        StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
-        int stacks = Integer.parseInt(effectData.get(1));
-        int ticks = Integer.parseInt(effectData.get(2));
-        if (statuses.containsKey(statusType)) {
-          statuses.get(statusType).addStacks(stacks, ticks);
-        } else {
-          statuses.put(statusType, new Status(selfUUID, statusType, stacks, ticks));
-        }
-
-        int cooldown = Integer.parseInt(triggerData.get(1));
-        if (cooldown > 0) {
-          ability.setOnCooldown(true);
-          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
-        }
+        new PassiveAbilityTrigger(ability).applyStackInstance(rpgPlayer.getUUID());
       }
     }
   }
