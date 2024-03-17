@@ -32,9 +32,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents the plugin as an object.
@@ -44,7 +42,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.6
+ * @version 1.16.12
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -115,6 +113,7 @@ public class Plugin extends JavaPlugin {
     scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
     scheduler.scheduleSyncRepeatingTask(this, this::updateDamageOverTimeStatuses, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateBelowHealthPassives, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateActionDisplay, 0, 40);
     scheduler.scheduleSyncRepeatingTask(this, this::updateEnvironmentalProtections, 0, 100);
   }
@@ -151,7 +150,7 @@ public class Plugin extends JavaPlugin {
               handlePlayerDamageOverTime(uuid, statuses, player);
             }
           } else {
-            handleEntityDamageOverTime(uuid, statuses, entity);
+            handleEntityDamageOverTime(statuses, entity);
           }
         }
       }
@@ -182,6 +181,27 @@ public class Plugin extends JavaPlugin {
     for (UUID uuid : rpgPlayers.keySet()) {
       if (Bukkit.getPlayer(uuid) != null) {
         rpgPlayers.get(uuid).getHealth().decayOvershield();
+      }
+    }
+  }
+
+  /**
+   * Adds an interval to trigger below health passive abilities.
+   */
+  private void updateBelowHealthPassives() {
+    RpgSystem rpgSystem = data.getRpgSystem();
+    for (RpgPlayer rpgPlayer : rpgSystem.getRpgPlayers().values()) {
+      Map<SlotAbility, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
+      if (!belowHealthTriggers.isEmpty()) {
+        Map<UUID, Map<StatusType, Status>> entityStatuses = rpgSystem.getStatuses();
+        Random random = new Random();
+        for (PassiveAbility ability : belowHealthTriggers.values()) {
+          if (!ability.isOnCooldown()) {
+            switch (ability.getAbility().getEffect()) {
+              case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, rpgPlayer);
+            }
+          }
+        }
       }
     }
   }
@@ -240,11 +260,10 @@ public class Plugin extends JavaPlugin {
   /**
    * Deals damage from damage over time statuses to entities.
    *
-   * @param uuid     entity uuid
    * @param statuses entity statuses
    * @param entity   interacting entity
    */
-  private void handleEntityDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, LivingEntity entity) {
+  private void handleEntityDamageOverTime(Map<StatusType, Status> statuses, LivingEntity entity) {
     if (statuses.containsKey(StatusType.BLEED)) {
       entity.damage(0.1);
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));
@@ -252,6 +271,47 @@ public class Plugin extends JavaPlugin {
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
       entity.damage(0.1);
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2));
+    }
+  }
+
+  /**
+   * Applies stack instances by chance.
+   *
+   * @param entityStatuses entity statuses
+   * @param random         rng
+   * @param ability        passive ability
+   * @param rpgPlayer      interacting player
+   */
+  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, RpgPlayer rpgPlayer) {
+    List<String> triggerData = ability.getTriggerData();
+    double healthPercent = Double.parseDouble(triggerData.get(0));
+
+    if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
+      List<String> effectData = ability.getEffectData();
+      boolean self = Boolean.parseBoolean(effectData.get(0));
+      if (self) {
+        UUID selfUUID = rpgPlayer.getUUID();
+        Map<StatusType, Status> statuses;
+        if (!entityStatuses.containsKey(selfUUID)) {
+          entityStatuses.put(selfUUID, new HashMap<>());
+        }
+        statuses = entityStatuses.get(selfUUID);
+
+        StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
+        int stacks = Integer.parseInt(effectData.get(1));
+        int ticks = Integer.parseInt(effectData.get(2));
+        if (statuses.containsKey(statusType)) {
+          statuses.get(statusType).addStacks(stacks, ticks);
+        } else {
+          statuses.put(statusType, new Status(selfUUID, statusType, stacks, ticks));
+        }
+
+        int cooldown = Integer.parseInt(triggerData.get(1));
+        if (cooldown > 0) {
+          ability.setOnCooldown(true);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
+        }
+      }
     }
   }
 

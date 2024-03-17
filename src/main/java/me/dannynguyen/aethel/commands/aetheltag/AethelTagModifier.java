@@ -22,7 +22,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.16.7
+ * @version 1.16.12
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -316,36 +316,31 @@ class AethelTagModifier {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      case HP_CHANCE_COOLDOWN -> {
-        if (args.length == 6) {
+      case HEALTH_COOLDOWN -> {
+        if (args.length == 5) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
             try {
-              double chance = Double.parseDouble(args[1]);
-              try {
-                int cooldown = Integer.parseInt(args[2]);
-                switch (args[3]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[3]);
+              int cooldown = Integer.parseInt(args[1]);
+              switch (args[2]) {
+                case "true", "false" -> {
+                  boolean self = Boolean.parseBoolean(args[2]);
+                  try {
+                    int stacks = Integer.parseInt(args[3]);
                     try {
-                      int stacks = Integer.parseInt(args[4]);
-                      try {
-                        int ticks = Integer.parseInt(args[5]);
-                        setPassiveTag(percentHealth + " " + chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
-                      } catch (NumberFormatException ex) {
-                        user.sendMessage(ChatColor.RED + "Invalid ticks.");
-                      }
+                      int ticks = Integer.parseInt(args[4]);
+                      setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + stacks + " " + ticks);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
                     }
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
                   }
-                  default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
                 }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid chance.");
+              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
             }
           } catch (NumberFormatException ex) {
             user.sendMessage(ChatColor.RED + "Invalid % health.");
@@ -355,7 +350,6 @@ class AethelTagModifier {
         }
       }
     }
-
   }
 
   /**
@@ -394,30 +388,25 @@ class AethelTagModifier {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
-      case HP_CHANCE_COOLDOWN -> {
-        if (args.length == 5) {
+      case HEALTH_COOLDOWN -> {
+        if (args.length == 4) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
             try {
-              double chance = Double.parseDouble(args[1]);
+              int cooldown = Integer.parseInt(args[1]);
               try {
-                int cooldown = Integer.parseInt(args[2]);
+                double damage = Integer.parseInt(args[2]);
                 try {
-                  double damage = Integer.parseInt(args[3]);
-                  try {
-                    double distance = Double.parseDouble(args[4]);
-                    setPassiveTag(percentHealth + " " + chance + " " + cooldown + " " + damage + " " + distance);
-                  } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid radius.");
-                  }
+                  double distance = Double.parseDouble(args[3]);
+                  setPassiveTag(percentHealth + " " + cooldown + " " + damage + " " + distance);
                 } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid damage.");
+                  user.sendMessage(ChatColor.RED + "Invalid radius.");
                 }
               } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+                user.sendMessage(ChatColor.RED + "Invalid damage.");
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid chance.");
+              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
             }
           } catch (NumberFormatException ex) {
             user.sendMessage(ChatColor.RED + "Invalid % health.");

@@ -72,7 +72,7 @@ public class RpgPlayer {
    * @return RPG player owner
    */
   @NotNull
-  public UUID getUuid() {
+  public UUID getUUID() {
     return this.uuid;
   }
 

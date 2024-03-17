@@ -8,7 +8,7 @@ import java.util.Objects;
  * Conditions of ability triggers.
  *
  * @author Danny Nguyen
- * @version 1.15.13
+ * @version 1.16.12
  * @since 1.15.13
  */
 public enum TriggerCondition {
@@ -18,9 +18,9 @@ public enum TriggerCondition {
   CHANCE_COOLDOWN("% Chance, Cooldown(t)"),
 
   /**
-   * % of max HP, chance, and cooldown.
+   * % of max HP and cooldown.
    */
-  HP_CHANCE_COOLDOWN("% HP, % Chance, Cooldown(t)");
+  HEALTH_COOLDOWN("% HP, Cooldown(t)");
 
   /**
    * Trigger condition's data.

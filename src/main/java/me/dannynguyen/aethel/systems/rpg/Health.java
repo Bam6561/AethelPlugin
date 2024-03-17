@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an RPG player's health.
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.16.12
  * @since 1.13.4
  */
 public class Health {
@@ -255,6 +255,15 @@ public class Health {
       return Condition.OVERSHIELD;
     }
     return null;
+  }
+
+  /**
+   * Gets remaining health out of a 100% scale.
+   *
+   * @return remaining health
+   */
+  public double getHealthPercent() {
+    return (currentHealth / maxHealth) * 100;
   }
 
   /**

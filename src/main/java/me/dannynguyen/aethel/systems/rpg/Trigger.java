@@ -15,7 +15,7 @@ public enum Trigger {
   /**
    * Below a % of max health.
    */
-  BELOW_HP("Below % HP", "below_hp", TriggerCondition.HP_CHANCE_COOLDOWN),
+  BELOW_HP("Below % HP", "below_hp", TriggerCondition.HEALTH_COOLDOWN),
 
   /**
    * Damage dealt.
