@@ -200,7 +200,7 @@ public class ItemEditorMenuClick {
       case 9 -> setTriggerMode(Trigger.BELOW_HP);
       case 10 -> setTriggerMode(Trigger.DAMAGE_DEALT);
       case 11 -> setTriggerMode(Trigger.DAMAGE_TAKEN);
-      case 12 -> setTriggerMode(Trigger.KILL);
+      case 12 -> setTriggerMode(Trigger.ON_KILL);
       default -> readPassive();
     }
   }

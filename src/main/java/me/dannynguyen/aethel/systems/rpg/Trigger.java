@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of ability trigger conditions.
  *
  * @author Danny Nguyen
- * @version 1.16.6
+ * @version 1.16.11
  * @since 1.15.11
  */
 public enum Trigger {
@@ -30,7 +30,7 @@ public enum Trigger {
   /**
    * Killed an entity.
    */
-  KILL("Kill", "kill", TriggerCondition.CHANCE_COOLDOWN);
+  ON_KILL("On Kill", "on_kill", TriggerCondition.CHANCE_COOLDOWN);
 
   /**
    * Trigger's proper name.

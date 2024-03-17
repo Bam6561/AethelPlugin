@@ -181,7 +181,7 @@ class ItemPassiveLore {
     switch (trigger) {
       case DAMAGE_DEALT -> abilityLore.append("Damage Dealt: ");
       case DAMAGE_TAKEN -> abilityLore.append("Damage Taken: ");
-      case KILL -> abilityLore.append("On Kill: ");
+      case ON_KILL -> abilityLore.append("On Kill: ");
     }
   }
 

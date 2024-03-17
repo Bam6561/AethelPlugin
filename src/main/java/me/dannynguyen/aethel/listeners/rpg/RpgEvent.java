@@ -1,23 +1,24 @@
 package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.rpg.RpgSystem;
+import me.dannynguyen.aethel.systems.rpg.*;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.16.11
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -69,5 +70,77 @@ public class RpgEvent implements Listener {
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
     Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
+  }
+
+  /**
+   * Triggers on kill passives if the player has any.
+   *
+   * @param e entity death event
+   */
+  @EventHandler
+  private void onEntityDeath(EntityDeathEvent e) {
+    if (e.getEntity().getKiller() != null) {
+      triggerOnKillPassives(e.getEntity().getKiller());
+    }
+  }
+
+  /**
+   * Triggers on kill passive abilities.
+   *
+   * @param killer killer
+   */
+  private void triggerOnKillPassives(Player killer) {
+    Map<SlotAbility, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(killer.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.ON_KILL);
+    if (!killTriggers.isEmpty()) {
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      Random random = new Random();
+      for (PassiveAbility ability : killTriggers.values()) {
+        if (!ability.isOnCooldown()) {
+          switch (ability.getAbility().getEffect()) {
+            case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, killer.getUniqueId());
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Applies stack instances by chance.
+   *
+   * @param entityStatuses entity statuses
+   * @param random         rng
+   * @param ability        passive ability
+   * @param selfUUID       self UUID
+   */
+  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID) {
+    List<String> triggerData = ability.getTriggerData();
+    double chance = Double.parseDouble(triggerData.get(0));
+
+    if (chance > random.nextDouble() * 100) {
+      List<String> effectData = ability.getEffectData();
+      boolean self = Boolean.parseBoolean(effectData.get(0));
+      if (self) {
+        Map<StatusType, Status> statuses;
+        if (!entityStatuses.containsKey(selfUUID)) {
+          entityStatuses.put(selfUUID, new HashMap<>());
+        }
+        statuses = entityStatuses.get(selfUUID);
+
+        StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
+        int stacks = Integer.parseInt(effectData.get(1));
+        int ticks = Integer.parseInt(effectData.get(2));
+        if (statuses.containsKey(statusType)) {
+          statuses.get(statusType).addStacks(stacks, ticks);
+        } else {
+          statuses.put(statusType, new Status(selfUUID, statusType, stacks, ticks));
+        }
+
+        int cooldown = Integer.parseInt(triggerData.get(1));
+        if (cooldown > 0) {
+          ability.setOnCooldown(true);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
+        }
+      }
+    }
   }
 }
