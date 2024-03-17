@@ -26,62 +26,49 @@ import java.util.*;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.7
+ * @version 1.16.8
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
   /**
-   * Handled damage causes.
+   * Ignored damage causes.
    */
-  private final Set<EntityDamageEvent.DamageCause> handledDamageCauses = Set.of(
-      EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-      EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK,
-      EntityDamageEvent.DamageCause.FALLING_BLOCK, EntityDamageEvent.DamageCause.LIGHTNING,
-      EntityDamageEvent.DamageCause.PROJECTILE, EntityDamageEvent.DamageCause.KILL);
+  private final Set<EntityDamageEvent.DamageCause> ignoredDamageCauses = Set.of(EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.KILL);
 
   /**
-   * Calculates damage taken by players from non-entity attacks.
+   * Calculates player damage dealt and taken interactions.
    *
    * @param e entity damage event
    */
   @EventHandler
-  private void onGeneralDamage(EntityDamageEvent e) {
-    if (e.getEntity() instanceof Player damagee && !handledDamageCauses.contains(e.getCause())) {
+  private void onEntityDamage(EntityDamageEvent e) {
+    if (e instanceof EntityDamageByEntityEvent event) {
+      if (event.getDamager() instanceof Player || event.getEntity() instanceof Player) {
+        if (event.getDamager() instanceof Player damager && !(event.getEntity() instanceof Player)) { // PvE
+          triggerDamageDealtPassives(event, damager);
+          calculatePlayerDamageDone(event, damager);
+        } else {
+          Player damagee = (Player) event.getEntity();
+          if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
+            triggerDamageDealtPassives(event, damager);
+            calculatePlayerDamageDone(event, damager);
+          }
+          triggerDamageTakenPassives(event, damagee);
+          calculatePlayerDamageTaken(event, damagee);
+        }
+      }
+    } else if (e.getEntity() instanceof Player damagee && !ignoredDamageCauses.contains(e.getCause())) {
       EntityDamageEvent.DamageCause cause = e.getCause();
       if (mitigateEnvironmentalDamage(e, cause, damagee)) {
         e.setCancelled(true);
         return;
       }
-
       double finalDamage = e.getDamage();
       switch (cause) {
         case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(damagee, finalDamage);
       }
       Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(finalDamage);
       e.setDamage(0);
-    }
-  }
-
-  /**
-   * Calculates damage done or taken by players from other entities.
-   *
-   * @param e entity damaged by entity event
-   */
-  @EventHandler
-  private void onEntityDamage(EntityDamageByEntityEvent e) {
-    if (e.getDamager() instanceof Player || e.getEntity() instanceof Player) {
-      if (e.getDamager() instanceof Player damager && !(e.getEntity() instanceof Player)) { // PvE
-        triggerDamageDealtPassives(e, damager);
-        calculatePlayerDamageDone(e, damager);
-      } else {
-        Player damagee = (Player) e.getEntity();
-        if (e.getDamager() instanceof Player damager) { // PvP, otherwise EvP
-          triggerDamageDealtPassives(e, damager);
-          calculatePlayerDamageDone(e, damager);
-        }
-        triggerDamageTakenPassives(e, damagee);
-        calculatePlayerDamageTaken(e, damagee);
-      }
     }
   }
 
@@ -119,6 +106,127 @@ public class EntityDamage implements Listener {
         }
       }
     }
+  }
+
+  /**
+   * Triggers damage taken passive abilities.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee interacting player
+   */
+  private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
+    // TO DO
+  }
+
+  /**
+   * Calculates damage done to the entity by the player.
+   *
+   * @param e       entity damage by entity event
+   * @param damager interacting player
+   */
+  private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
+    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
+    Random random = new Random();
+    ifCriticallyHit(e, attributes, random);
+    ifVulnerable(e);
+    double finalDamage = e.getDamage();
+    e.setDamage(finalDamage);
+  }
+
+  /**
+   * Calculates damage taken by the player.
+   *
+   * @param e       entity damage by entity event
+   * @param damagee interacting player
+   */
+  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
+    Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
+    Entity damager = e.getDamager();
+
+    if (mitigateSpecificCauseDamage(e, enchantments, damager, damagee)) {
+      e.setCancelled(true);
+      return;
+    }
+
+    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes();
+    Random random = new Random();
+
+    if (ifCountered(e.getCause(), attributes, random, damager, damagee)) {
+      e.setCancelled(true);
+      return;
+    } else if (ifDodged(attributes, random)) {
+      e.setCancelled(true);
+      return;
+    } else if (ifTougher(e, attributes, damagee)) {
+      e.setCancelled(true);
+      return;
+    }
+
+    mitigateArmorProtection(e, damagee);
+    mitigateResistance(e, damagee);
+
+    double finalDamage = e.getDamage();
+    damageArmorDurability(damagee, finalDamage);
+    rpgPlayer.getHealth().damage(finalDamage);
+    e.setDamage(0);
+  }
+
+  /**
+   * Mitigates environmental damage taken based on the player's environmental protection enchantments.
+   *
+   * @param e       entity damage event
+   * @param cause   damage cause
+   * @param damagee player taking damage
+   * @return if no damage is taken
+   */
+  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee) {
+    Map<Enchantment, Integer> enchantments = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment().getTotalEnchantments();
+    switch (cause) {
+      case FALL -> {
+        int fallProtection = enchantments.get(Enchantment.PROTECTION_FALL);
+        if (fallProtection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (fallProtection * .2)));
+        }
+      }
+      case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> {
+        int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
+        if (protection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
+        }
+      }
+      case FIRE, FIRE_TICK, HOT_FLOOR, LAVA -> {
+        int fireProtection = enchantments.get(Enchantment.PROTECTION_FIRE);
+        if (fireProtection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(damage - (damage * (fireProtection * .1)));
+        }
+      }
+      case BLOCK_EXPLOSION -> {
+        int explosionProtection = enchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
+        if (explosionProtection >= 10) {
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().heal(e.getDamage() * .2);
+          damagee.setFoodLevel(20);
+          return true;
+        } else if (explosionProtection > 0) {
+          double damage = e.getDamage();
+          e.setDamage(Math.max(damage - (damage * (explosionProtection * .1)), 0));
+        }
+        Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
+        if (ifDodged(attributes, new Random())) {
+          e.setCancelled(true);
+          return true;
+        } else if (ifTougher(e, attributes, damagee)) {
+          e.setCancelled(true);
+          return true;
+        }
+        mitigateArmorProtection(e, damagee);
+      }
+    }
+    mitigateResistance(e, damagee);
+    return false;
   }
 
   /**
@@ -167,77 +275,6 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Triggers damage taken passive abilities.
-   *
-   * @param e       entity damage by entity event
-   * @param damagee interacting player
-   */
-  private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
-    // TO DO
-  }
-
-  /**
-   * Calculates damage done to the entity by the player.
-   *
-   * @param e       entity damage by entity event
-   * @param damager interacting player
-   */
-  private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
-    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
-    Random random = new Random();
-    ifCriticallyHit(e, attributes, random);
-    ifVulnerable(e);
-    double finalDamage = e.getDamage();
-    e.setDamage(finalDamage);
-  }
-
-  /**
-   * Calculates damage taken by the player.
-   *
-   * @param e       entity damage by entity event
-   * @param damagee interacting player
-   */
-  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
-    Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
-    Entity damager = e.getDamager();
-
-    if (mitigateSpecificEntityTypeDamage(e, enchantments, damager, damagee)) {
-      e.setCancelled(true);
-      return;
-    }
-
-    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes();
-    Random random = new Random();
-
-    if (damager instanceof Projectile) {
-      if (mitigateProjectileEntityDamage(e, enchantments, damager, damagee)) {
-        e.setDamage(0);
-        return;
-      }
-    } else if (ifCountered(attributes, random, damager, damagee)) {
-      e.setCancelled(true);
-      return;
-    }
-
-    if (ifDodged(attributes, random)) {
-      e.setCancelled(true);
-      return;
-    } else if (ifTougher(e, attributes, damagee)) {
-      e.setCancelled(true);
-      return;
-    }
-
-    mitigateArmorProtection(e, damagee);
-    mitigateResistance(e, damagee);
-
-    double finalDamage = e.getDamage();
-    damageArmorDurability(damagee, finalDamage);
-    rpgPlayer.getHealth().damage(finalDamage);
-    e.setDamage(0);
-  }
-
-  /**
    * If the player dealt a critical hit, multiply the damage by its modifier.
    *
    * @param e          entity damage by entity event
@@ -268,55 +305,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Mitigates environmental damage taken based on the player's environmental protection enchantments.
-   *
-   * @param e       entity damage event
-   * @param cause   damage cause
-   * @param damagee player taking damage
-   * @return if no damage is taken
-   */
-  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee) {
-    Map<Enchantment, Integer> enchantments = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment().getTotalEnchantments();
-    switch (cause) {
-      case FALL -> {
-        int fallProtection = enchantments.get(Enchantment.PROTECTION_FALL);
-        if (fallProtection > 0) {
-          double damage = e.getDamage();
-          e.setDamage(damage - (damage * (fallProtection * .2)));
-        }
-      }
-      case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> {
-        int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
-        if (protection > 0) {
-          double damage = e.getDamage();
-          e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
-        }
-      }
-      case FIRE, FIRE_TICK, HOT_FLOOR, LAVA -> {
-        int fireProtection = enchantments.get(Enchantment.PROTECTION_FIRE);
-        if (fireProtection > 0) {
-          double damage = e.getDamage();
-          e.setDamage(damage - (damage * (fireProtection * .1)));
-        }
-      }
-      case BLOCK_EXPLOSION -> {
-        int explosionProtection = enchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
-        if (explosionProtection >= 10) {
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().heal(e.getDamage() * .2);
-          damagee.setFoodLevel(20);
-          return true;
-        } else if (explosionProtection > 0) {
-          double damage = e.getDamage();
-          e.setDamage(Math.max(damage - (damage * (explosionProtection * .1)), 0));
-        }
-      }
-    }
-    mitigateResistance(e, damagee);
-    return false;
-  }
-
-  /**
-   * Mitigates specific entity type damage taken based on their respective protection enchantment.
+   * Mitigates specific cause damage taken based on their respective protection enchantment.
    *
    * @param e            entity damage by entity event
    * @param enchantments player's enchantments
@@ -324,9 +313,9 @@ public class EntityDamage implements Listener {
    * @param damagee      player taking damage
    * @return if no damage taken or magic damage was taken/mitigated
    */
-  private boolean mitigateSpecificEntityTypeDamage(EntityDamageByEntityEvent e, Map<Enchantment, Integer> enchantments, Entity damager, Player damagee) {
-    switch (damager.getType()) {
-      case PRIMED_TNT, ENDER_CRYSTAL -> {
+  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Map<Enchantment, Integer> enchantments, Entity damager, Player damagee) {
+    switch (e.getCause()) {
+      case ENTITY_EXPLOSION -> {
         int explosionProtection = enchantments.get(Enchantment.PROTECTION_EXPLOSIONS);
         if (explosionProtection >= 10) {
           Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().heal(e.getDamage() * .2);
@@ -337,7 +326,7 @@ public class EntityDamage implements Listener {
           e.setDamage(Math.max(damage - (damage * (explosionProtection * .1)), 0));
         }
       }
-      case AREA_EFFECT_CLOUD -> {
+      case MAGIC -> {
         int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
         if (protection > 0) {
           double damage = e.getDamage();
@@ -348,29 +337,11 @@ public class EntityDamage implements Listener {
         e.setDamage(0);
         return true;
       }
-    }
-    return false;
-  }
-
-  /**
-   * Mitigates projectile damage taken based on the player's Projectile Protection enchantment.
-   *
-   * @param e            entity damage by entity event
-   * @param enchantments player's enchantments
-   * @param damager      damaging entity
-   * @param damagee      player taking damage
-   * @return if splash potion projectile damage mitigated
-   */
-  private boolean mitigateProjectileEntityDamage(EntityDamageByEntityEvent e, Map<Enchantment, Integer> enchantments, Entity damager, Player damagee) {
-    EntityType damagerType = damager.getType();
-    switch (damagerType) {
-      case ARROW, DRAGON_FIREBALL, EGG, ENDER_PEARL, FIREBALL, FIREWORK,
-          FISHING_HOOK, LLAMA_SPIT, SHULKER_BULLET, SMALL_FIREBALL, SNOWBALL,
-          SPECTRAL_ARROW, THROWN_EXP_BOTTLE, TRIDENT, WITHER_SKULL -> {
+      case PROJECTILE -> {
         int projectileProtection = enchantments.get(Enchantment.PROTECTION_PROJECTILE);
         if (projectileProtection >= 10) {
           PlayerInventory pInv = damagee.getInventory();
-          switch (damagerType) {
+          switch (damager.getType()) {
             case ARROW -> {
               PotionType potionType = ((Arrow) damager).getBasePotionType();
               if (potionType == PotionType.UNCRAFTABLE) {
@@ -392,32 +363,36 @@ public class EntityDamage implements Listener {
           e.setDamage(damage - (damage * (Math.min(projectileProtection * .05, .5))));
         }
       }
-      case SPLASH_POTION -> {
-        int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
-        if (protection > 0) {
-          double damage = e.getDamage();
-          e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
-          mitigateResistance(e, damagee);
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(e.getDamage());
-          e.setDamage(0);
-          return true;
-        }
+    }
+    if (damager.getType() == EntityType.AREA_EFFECT_CLOUD) {
+      int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
+      if (protection > 0) {
+        double damage = e.getDamage();
+        e.setDamage(damage - (damage * (Math.min(protection * .04, .8))));
       }
+      mitigateResistance(e, damagee);
+      Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getHealth().damage(e.getDamage());
+      e.setDamage(0);
+      return true;
     }
     return false;
   }
 
   /**
    * Ignores damage taken if the player killed the damager by counterattacks.
+   * <p>
+   * Projectile attacks cannot trigger counter attacks.
+   * </p>
    *
+   * @param cause      damage cause
    * @param attributes player's attributes
    * @param random     rng
    * @param damager    damager
    * @param damagee    player taking damage
    * @return if the damager died
    */
-  private boolean ifCountered(Map<AethelAttribute, Double> attributes, Random random, Entity damager, Player damagee) {
-    if (damager instanceof LivingEntity attacker) {
+  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Random random, Entity damager, Player damagee) {
+    if (cause != EntityDamageEvent.DamageCause.PROJECTILE && damager instanceof LivingEntity attacker) {
       if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
         attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
         return attacker.getHealth() <= 0.0;
@@ -441,12 +416,12 @@ public class EntityDamage implements Listener {
    * Ignore damage taken if the player's toughness is higher,
    * otherwise toughness mitigates damage by a flat amount.
    *
-   * @param e          entity damage by entity event
+   * @param e          entity damage event
    * @param attributes player's attributes
    * @param damagee    player taking damage
    * @return if tougher than damage
    */
-  private boolean ifTougher(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
+  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
     double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
     return e.getDamage() == 0;
@@ -455,10 +430,10 @@ public class EntityDamage implements Listener {
   /**
    * Mitigates the damage taken based on the player's armor value and protection enchantments.
    *
-   * @param e       entity damage by entity event
+   * @param e       entity damage event
    * @param damagee player taking damage
    */
-  private void mitigateArmorProtection(EntityDamageByEntityEvent e, Player damagee) {
+  private void mitigateArmorProtection(EntityDamageEvent e, Player damagee) {
     int armor = (int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     int protection = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL);
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
@@ -475,24 +450,10 @@ public class EntityDamage implements Listener {
   /**
    * Mitigates the damage taken based on the player's resistance effect.
    *
-   * @param e       entity damage by entity event
+   * @param e       entity damage event
    * @param damagee player taking damage
    */
   private void mitigateResistance(EntityDamageEvent e, Player damagee) {
-    if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
-      double damage = e.getDamage();
-      e.setDamage(damage - (damage * (resistance * 0.05)));
-    }
-  }
-
-  /**
-   * Mitigates the damage taken based on the player's resistance effect.
-   *
-   * @param e       entity damage by entity event
-   * @param damagee player taking damage
-   */
-  private void mitigateResistance(EntityDamageByEntityEvent e, Player damagee) {
     if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
       int resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
       double damage = e.getDamage();

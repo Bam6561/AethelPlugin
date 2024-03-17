@@ -99,7 +99,7 @@ class EnchantmentMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove an enchant, input \"0\".")));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove an enchant, input \"-\".")));
   }
 
   /**
