@@ -8,7 +8,7 @@ import java.util.Objects;
  * Effects of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.7
+ * @version 1.16.13
  * @since 1.15.9
  */
 public enum PassiveAbilityEffect {
@@ -20,7 +20,7 @@ public enum PassiveAbilityEffect {
   /**
    * Causes chain damage.
    */
-  CHAIN("Damage, Radius(m)");
+  CHAIN("Self, Damage, Radius(m)");
 
   /**
    * Passive ability effect's data.

@@ -97,7 +97,7 @@ public class RpgEvent implements Listener {
       for (PassiveAbility ability : killTriggers.values()) {
         if (!ability.isOnCooldown()) {
           switch (ability.getAbility().getEffect()) {
-            case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, killer.getUniqueId());
+            case STACK_INSTANCE -> applyStackInstanceEffect(entityStatuses, random, ability, killer.getUniqueId());
           }
         }
       }
@@ -112,7 +112,7 @@ public class RpgEvent implements Listener {
    * @param ability        passive ability
    * @param selfUUID       self UUID
    */
-  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID) {
+  private void applyStackInstanceEffect(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID) {
     List<String> triggerData = ability.getTriggerData();
     double chance = Double.parseDouble(triggerData.get(0));
 

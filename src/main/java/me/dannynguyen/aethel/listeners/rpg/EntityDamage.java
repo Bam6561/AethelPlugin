@@ -2,8 +2,10 @@ package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.*;
+import me.dannynguyen.aethel.utility.DamageCalculator;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +28,7 @@ import java.util.*;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.9
+ * @version 1.16.13
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -96,12 +98,12 @@ public class EntityDamage implements Listener {
       Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
         if (e.getEntity() instanceof LivingEntity damagee) {
-          Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
           Random random = new Random();
           for (PassiveAbility ability : damageDealtTriggers.values()) {
             if (!ability.isOnCooldown()) {
               switch (ability.getAbility().getEffect()) {
-                case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, damager.getUniqueId(), damagee.getUniqueId());
+                case STACK_INSTANCE -> applyStackInstanceEffect(Plugin.getData().getRpgSystem().getStatuses(), random, ability, damager.getUniqueId(), damagee.getUniqueId());
+                case CHAIN -> applyChainEffect(random, ability, damager.getUniqueId(), damagee.getUniqueId());
               }
             }
           }
@@ -125,7 +127,7 @@ public class EntityDamage implements Listener {
         for (PassiveAbility ability : damageTakenTriggers.values()) {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
-              case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, damagee.getUniqueId(), damager.getUniqueId());
+              case STACK_INSTANCE -> applyStackInstanceEffect(entityStatuses, random, ability, damagee.getUniqueId(), damager.getUniqueId());
             }
           }
         }
@@ -253,7 +255,7 @@ public class EntityDamage implements Listener {
    * @param selfUUID       self UUID
    * @param otherUUID      entity UUID
    */
-  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
+  private void applyStackInstanceEffect(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
     List<String> triggerData = ability.getTriggerData();
     double chance = Double.parseDouble(triggerData.get(0));
 
@@ -279,6 +281,65 @@ public class EntityDamage implements Listener {
         statuses.get(statusType).addStacks(stacks, ticks);
       } else {
         statuses.put(statusType, new Status(targetUUID, statusType, stacks, ticks));
+      }
+
+      int cooldown = Integer.parseInt(triggerData.get(1));
+      if (cooldown > 0) {
+        ability.setOnCooldown(true);
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
+      }
+    }
+  }
+
+  /**
+   * Applies chain damage by chance.
+   *
+   * @param random    rng
+   * @param ability   passive ability
+   * @param selfUUID  self UUID
+   * @param otherUUID entity UUID
+   */
+  private void applyChainEffect(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
+    List<String> triggerData = ability.getTriggerData();
+    double chance = Double.parseDouble(triggerData.get(0));
+
+    if (chance > random.nextDouble() * 100) {
+      List<String> effectData = ability.getEffectData();
+      boolean self = Boolean.parseBoolean(effectData.get(0));
+      UUID targetUUID;
+      if (self) {
+        targetUUID = selfUUID;
+      } else {
+        targetUUID = otherUUID;
+      }
+
+      double chainDamage = Double.parseDouble(effectData.get(1));
+      double meters = Double.parseDouble(effectData.get(2));
+
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
+        if (entity instanceof LivingEntity livingEntity) {
+          UUID livingEntityUUID = livingEntity.getUniqueId();
+          if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
+            Map<StatusType, Status> statuses = entityStatuses.get(livingEntityUUID);
+            if (livingEntity instanceof Player player) {
+              if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+                RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntityUUID);
+                int protection = Math.min(rpgPlayer.getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_ENVIRONMENTAL), 20);
+                int resistance = 0;
+                if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+                  resistance = player.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+                }
+                double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
+                player.damage(0.1);
+                rpgPlayer.getHealth().damage(DamageCalculator.mitigateProtectionResistance(damage, protection, resistance));
+              }
+            } else {
+              livingEntity.damage(0.1);
+              livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0)));
+            }
+          }
+        }
       }
 
       int cooldown = Integer.parseInt(triggerData.get(1));

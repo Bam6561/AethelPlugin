@@ -19,6 +19,7 @@ import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
 import me.dannynguyen.aethel.listeners.rpg.StatusUpdate;
 import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
+import me.dannynguyen.aethel.utility.DamageCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
@@ -42,7 +43,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.12
+ * @version 1.16.13
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -194,11 +195,10 @@ public class Plugin extends JavaPlugin {
       Map<SlotAbility, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
       if (!belowHealthTriggers.isEmpty()) {
         Map<UUID, Map<StatusType, Status>> entityStatuses = rpgSystem.getStatuses();
-        Random random = new Random();
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
-              case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, rpgPlayer);
+              case STACK_INSTANCE -> applyStackInstanceEffect(entityStatuses, ability, rpgPlayer);
             }
           }
         }
@@ -248,12 +248,12 @@ public class Plugin extends JavaPlugin {
     if (statuses.containsKey(StatusType.BLEED)) {
       double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
       player.damage(0.1);
-      rpgPlayer.getHealth().damage(mitigateDamageOverTime(damage, protection, resistance));
+      rpgPlayer.getHealth().damage(DamageCalculator.mitigateProtectionResistance(damage, protection, resistance));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
       double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       player.damage(0.1);
-      rpgPlayer.getHealth().damage(mitigateDamageOverTime(damage, protection, resistance));
+      rpgPlayer.getHealth().damage(DamageCalculator.mitigateProtectionResistance(damage, protection, resistance));
     }
   }
 
@@ -278,11 +278,10 @@ public class Plugin extends JavaPlugin {
    * Applies stack instances by chance.
    *
    * @param entityStatuses entity statuses
-   * @param random         rng
    * @param ability        passive ability
    * @param rpgPlayer      interacting player
    */
-  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, RpgPlayer rpgPlayer) {
+  private void applyStackInstanceEffect(Map<UUID, Map<StatusType, Status>> entityStatuses, PassiveAbility ability, RpgPlayer rpgPlayer) {
     List<String> triggerData = ability.getTriggerData();
     double healthPercent = Double.parseDouble(triggerData.get(0));
 
@@ -313,20 +312,6 @@ public class Plugin extends JavaPlugin {
         }
       }
     }
-  }
-
-  /**
-   * Mitigates damage over time damage based on protection and resistance levels.
-   *
-   * @param damage     damage
-   * @param protection protection levels
-   * @param resistance resistance levels
-   * @return damage taken
-   */
-  private double mitigateDamageOverTime(double damage, int protection, int resistance) {
-    damage = damage - (damage * (protection * 0.04));
-    damage = damage - (damage * (resistance * 0.05));
-    return damage;
   }
 
   /**

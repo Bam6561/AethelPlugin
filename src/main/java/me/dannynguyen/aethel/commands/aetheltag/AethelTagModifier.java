@@ -22,7 +22,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.16.12
+ * @version 1.16.13
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -362,21 +362,27 @@ class AethelTagModifier {
     String[] args = value.split(" ");
     switch (condition) {
       case CHANCE_COOLDOWN -> {
-        if (args.length == 4) {
+        if (args.length == 5) {
           try {
             double chance = Double.parseDouble(args[0]);
             try {
               int cooldown = Integer.parseInt(args[1]);
-              try {
-                double damage = Integer.parseInt(args[2]);
-                try {
-                  double distance = Double.parseDouble(args[3]);
-                  setPassiveTag(chance + " " + cooldown + " " + damage + " " + distance);
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid radius.");
+              switch (args[2]) {
+                case "true", "false" -> {
+                  boolean self = Boolean.parseBoolean(args[2]);
+                  try {
+                    double damage = Integer.parseInt(args[3]);
+                    try {
+                      double distance = Double.parseDouble(args[4]);
+                      setPassiveTag(chance + " " + cooldown + " " + self + " " + damage + " " + distance);
+                    } catch (NumberFormatException ex) {
+                      user.sendMessage(ChatColor.RED + "Invalid radius.");
+                    }
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid damage.");
+                  }
                 }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid damage.");
+                default -> user.sendMessage(ChatColor.RED + "Invalid true/false");
               }
             } catch (NumberFormatException ex) {
               user.sendMessage(ChatColor.RED + "Invalid cooldown.");
@@ -389,21 +395,27 @@ class AethelTagModifier {
         }
       }
       case HEALTH_COOLDOWN -> {
-        if (args.length == 4) {
+        if (args.length == 5) {
           try {
             double percentHealth = Double.parseDouble(args[0]);
             try {
               int cooldown = Integer.parseInt(args[1]);
-              try {
-                double damage = Integer.parseInt(args[2]);
-                try {
-                  double distance = Double.parseDouble(args[3]);
-                  setPassiveTag(percentHealth + " " + cooldown + " " + damage + " " + distance);
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(ChatColor.RED + "Invalid radius.");
+              switch (args[2]) {
+                case "true", "false" -> {
+                  boolean self = Boolean.parseBoolean(args[2]);
+                  try {
+                    double damage = Integer.parseInt(args[3]);
+                    try {
+                      double distance = Double.parseDouble(args[4]);
+                      setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + damage + " " + distance);
+                    } catch (NumberFormatException ex) {
+                      user.sendMessage(ChatColor.RED + "Invalid radius.");
+                    }
+                  } catch (NumberFormatException ex) {
+                    user.sendMessage(ChatColor.RED + "Invalid damage.");
+                  }
                 }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(ChatColor.RED + "Invalid damage.");
+                default -> user.sendMessage(ChatColor.RED + "Invalid true/false");
               }
             } catch (NumberFormatException ex) {
               user.sendMessage(ChatColor.RED + "Invalid cooldown.");
