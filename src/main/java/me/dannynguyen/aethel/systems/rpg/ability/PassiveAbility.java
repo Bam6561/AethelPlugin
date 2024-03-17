@@ -58,7 +58,7 @@ public class PassiveAbility {
         triggerData.add(dataValues[0]);
         triggerData.add(dataValues[1]);
         switch (abilityEffect) {
-          case STACK_INSTANCE, CHAIN -> {
+          case STACK_INSTANCE, CHAIN_DAMAGE -> {
             effectData.add(dataValues[2]);
             effectData.add(dataValues[3]);
             effectData.add(dataValues[4]);

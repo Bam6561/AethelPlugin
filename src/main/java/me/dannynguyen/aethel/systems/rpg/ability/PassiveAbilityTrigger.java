@@ -1,9 +1,15 @@
 package me.dannynguyen.aethel.systems.rpg.ability;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.rpg.PlayerDamageMitigation;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
 import me.dannynguyen.aethel.systems.rpg.Status;
 import me.dannynguyen.aethel.systems.rpg.StatusType;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -12,7 +18,7 @@ import java.util.*;
  * Represents a triggered passive ability.
  *
  * @author Danny Nguyen
- * @version 1.16.16
+ * @version 1.16.17
  * @since 1.16.16
  */
 public class PassiveAbilityTrigger {
@@ -72,6 +78,71 @@ public class PassiveAbilityTrigger {
     if (cooldown > 0) {
       ability.setOnCooldown(true);
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
+    }
+  }
+
+  /**
+   * Chains damage between entities.
+   *
+   * @param targetUUID source of chain damage location
+   */
+  public void chainDamage(UUID targetUUID) {
+    double chainDamage = Double.parseDouble(effectData.get(1));
+    double meters = Double.parseDouble(effectData.get(2));
+
+    Map<LivingEntity, Integer> soakedTargets = new HashMap<>();
+    getSoakedTargets(soakedTargets, targetUUID, meters);
+
+    for (LivingEntity livingEntity : soakedTargets.keySet()) {
+      Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
+      if (livingEntity instanceof Player player) {
+        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+          RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
+          double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
+          player.damage(0.1);
+          rpgPlayer.getHealth().damage(new PlayerDamageMitigation(player).mitigateProtectionResistance(damage));
+        }
+      } else {
+        livingEntity.damage(0.1);
+        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0)));
+      }
+    }
+
+    int cooldown = Integer.parseInt(triggerData.get(1));
+    if (cooldown > 0) {
+      ability.setOnCooldown(true);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
+    }
+  }
+
+  /**
+   * Recursively finds new soaked targets around the source entity.
+   *
+   * @param soakedTargets soaked targets
+   * @param targetUUID    source entity
+   * @param meters        distance
+   */
+  private void getSoakedTargets(Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, Double meters) {
+    List<LivingEntity> newSoakedTargets = new ArrayList<>();
+    for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
+      if (entity instanceof LivingEntity livingEntity) {
+        UUID livingEntityUUID = livingEntity.getUniqueId();
+        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
+          if (!soakedTargets.containsKey(livingEntity)) {
+            Bukkit.getLogger().warning("New entity: " + livingEntity.getName());
+            newSoakedTargets.add(livingEntity);
+            soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
+          } else {
+            Bukkit.getLogger().warning("Already contains entity: " + livingEntity.getName());
+          }
+        }
+      }
+    }
+    if (newSoakedTargets.isEmpty()) {
+      return;
+    }
+    for (LivingEntity livingEntity : newSoakedTargets) {
+      getSoakedTargets(soakedTargets, livingEntity.getUniqueId(), meters);
     }
   }
 }

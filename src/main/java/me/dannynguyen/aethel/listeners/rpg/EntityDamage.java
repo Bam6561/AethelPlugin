@@ -7,8 +7,6 @@ import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -24,13 +22,16 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.16
+ * @version 1.16.17
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -49,14 +50,13 @@ public class EntityDamage implements Listener {
     if (e instanceof EntityDamageByEntityEvent event) {
       if (event.getDamager() instanceof Player || event.getEntity() instanceof Player) {
         if (event.getDamager() instanceof Player damager && !(event.getEntity() instanceof Player)) { // PvE
-          PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damager);
-          triggerDamageDealtPassives(event, damager, mitigation);
+          triggerDamageDealtPassives(event, damager);
           calculatePlayerDamageDone(event, damager);
         } else {
           Player damagee = (Player) event.getEntity();
           PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
           if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
-            triggerDamageDealtPassives(event, damager, mitigation);
+            triggerDamageDealtPassives(event, damager);
             calculatePlayerDamageDone(event, damager);
           }
           triggerDamageTakenPassives(event, damagee);
@@ -95,11 +95,10 @@ public class EntityDamage implements Listener {
   /**
    * Triggers damage dealt passive abilities.
    *
-   * @param e          entity damage by entity event
-   * @param damager    interacting player
-   * @param mitigation player damage mitgation
+   * @param e       entity damage by entity event
+   * @param damager interacting player
    */
-  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager, PlayerDamageMitigation mitigation) {
+  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
       Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
@@ -109,7 +108,7 @@ public class EntityDamage implements Listener {
             if (!ability.isOnCooldown()) {
               switch (ability.getAbility().getEffect()) {
                 case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damager.getUniqueId(), damagee.getUniqueId());
-                case CHAIN -> applyChainEffect(random, ability, damager.getUniqueId(), damagee.getUniqueId(), mitigation);
+                case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
               }
             }
           }
@@ -248,57 +247,25 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Applies chain damage by chance.
+   * Checks if the chain effect was successful before dealing chain damage.
    *
-   * @param random     rng
-   * @param ability    passive ability
-   * @param selfUUID   self UUID
-   * @param otherUUID  entity UUID
-   * @param mitigation player damage mitigation
+   * @param random    rng
+   * @param ability   passive ability
+   * @param selfUUID  self UUID
+   * @param otherUUID entity UUID
    */
-  private void applyChainEffect(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID, PlayerDamageMitigation mitigation) {
-    List<String> triggerData = ability.getTriggerData();
-    double chance = Double.parseDouble(triggerData.get(0));
+  private void readOnDamageChainDamage(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
+    double chance = Double.parseDouble(ability.getTriggerData().get(0));
 
     if (chance > random.nextDouble() * 100) {
-      List<String> effectData = ability.getEffectData();
-      boolean self = Boolean.parseBoolean(effectData.get(0));
+      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       UUID targetUUID;
       if (self) {
         targetUUID = selfUUID;
       } else {
         targetUUID = otherUUID;
       }
-
-      double chainDamage = Double.parseDouble(effectData.get(1));
-      double meters = Double.parseDouble(effectData.get(2));
-
-      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-      for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
-        if (entity instanceof LivingEntity livingEntity) {
-          UUID livingEntityUUID = livingEntity.getUniqueId();
-          if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
-            Map<StatusType, Status> statuses = entityStatuses.get(livingEntityUUID);
-            if (livingEntity instanceof Player player) {
-              if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
-                RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntityUUID);
-                double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
-                player.damage(0.1);
-                rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
-              }
-            } else {
-              livingEntity.damage(0.1);
-              livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0)));
-            }
-          }
-        }
-      }
-
-      int cooldown = Integer.parseInt(triggerData.get(1));
-      if (cooldown > 0) {
-        ability.setOnCooldown(true);
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> ability.setOnCooldown(false), cooldown);
-      }
+      new PassiveAbilityTrigger(ability).chainDamage(targetUUID);
     }
   }
 

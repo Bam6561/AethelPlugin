@@ -20,7 +20,7 @@ public enum PassiveAbilityEffect {
   /**
    * Causes chain damage.
    */
-  CHAIN("Self, Damage, Radius(m)");
+  CHAIN_DAMAGE("Self, Damage, Radius(m)");
 
   /**
    * Passive ability effect's data.

@@ -25,7 +25,7 @@ public enum PassiveAbilityType {
   /**
    * Attacks chain to entities with stacks of Soaked.
    */
-  SPARK("Spark", "spark", PassiveAbilityEffect.CHAIN),
+  SPARK("Spark", "spark", PassiveAbilityEffect.CHAIN_DAMAGE),
 
   /**
    * Applies stacks of Bleed.
