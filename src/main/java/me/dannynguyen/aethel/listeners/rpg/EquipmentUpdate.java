@@ -1,7 +1,11 @@
 package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.rpg.*;
+import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
+import me.dannynguyen.aethel.systems.rpg.Equipment;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
+import me.dannynguyen.aethel.systems.rpg.ability.TriggerAbility;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;

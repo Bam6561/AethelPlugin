@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.rpg;
+package me.dannynguyen.aethel.systems.rpg.ability;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
  * Effects of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.16.14.1
  * @since 1.15.9
  */
 public enum ActiveAbilityEffect {
@@ -30,7 +30,7 @@ public enum ActiveAbilityEffect {
   /**
    * Active ability effect's data.
    */
-  private String data;
+  private final String data;
 
   /**
    * Associates an active ability effect with its data.

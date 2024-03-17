@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.rpg.ability.*;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;

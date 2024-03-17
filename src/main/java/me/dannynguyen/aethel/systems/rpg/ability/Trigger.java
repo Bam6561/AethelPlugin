@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.rpg;
+package me.dannynguyen.aethel.systems.rpg.ability;
 
 import org.jetbrains.annotations.NotNull;
 

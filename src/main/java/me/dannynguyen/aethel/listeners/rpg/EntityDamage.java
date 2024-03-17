@@ -2,6 +2,9 @@ package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.*;
+import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

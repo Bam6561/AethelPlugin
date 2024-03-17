@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.rpg;
+package me.dannynguyen.aethel.systems.rpg.ability;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
  * Conditions of ability triggers.
  *
  * @author Danny Nguyen
- * @version 1.16.12
+ * @version 1.16.14.1
  * @since 1.15.13
  */
 public enum TriggerCondition {
@@ -25,7 +25,7 @@ public enum TriggerCondition {
   /**
    * Trigger condition's data.
    */
-  private String data;
+  private final String data;
 
   /**
    * Associates a trigger condition with its data.

@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.rpg;
+package me.dannynguyen.aethel.systems.rpg.ability;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
  * Effects of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.13
+ * @version 1.16.14.1
  * @since 1.15.9
  */
 public enum PassiveAbilityEffect {
@@ -25,7 +25,7 @@ public enum PassiveAbilityEffect {
   /**
    * Passive ability effect's data.
    */
-  private String data;
+  private final String data;
 
   /**
    * Associates a passive ability effect with its data.

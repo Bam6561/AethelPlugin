@@ -1,37 +1,36 @@
-package me.dannynguyen.aethel.systems.rpg;
+package me.dannynguyen.aethel.systems.rpg.ability;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 /**
- * Types of active abilities.
+ * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.1
+ * @version 1.16.3
  * @since 1.15.1
  */
-public enum ActiveAbilityType {
+public enum PassiveAbilityType {
   /**
-   * Forward facing teleport.
+   * Applies stacks of Brittle.
    */
-  BLINK("Blink", "blink", ActiveAbilityEffect.MOVEMENT),
+  BRITTLE("Brittle", "brittle", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
-   * Forward facing movement.
+   * Apply stacks of Soaked.
    */
-  DASH("Dash", "dash", ActiveAbilityEffect.MOVEMENT),
+  SOAKED("Soaked", "soaked", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
-   * Forward facing teleport that after a delay,
-   * teleports the user back to their original location.
+   * Attacks chain to entities with stacks of Soaked.
    */
-  PROJECTION("Projection", "projection", ActiveAbilityEffect.PROJECTION),
+  SPARK("Spark", "spark", PassiveAbilityEffect.CHAIN),
 
   /**
-   * Immediately triggers all stacks of Brittle from nearby enemies.
+   * Applies stacks of Bleed.
    */
-  SHATTER("Shatter", "shatter", ActiveAbilityEffect.SHATTER);
+  BLEED("Bleed", "bleed", PassiveAbilityEffect.STACK_INSTANCE);
 
   /**
    * Proper name.
@@ -46,16 +45,16 @@ public enum ActiveAbilityType {
   /**
    * Ability effect.
    */
-  private final ActiveAbilityEffect effect;
+  private final PassiveAbilityEffect effect;
 
   /**
-   * Associates an active ability with its effect.
+   * Associates a passive ability with its effect.
    *
    * @param properName proper name
    * @param id         ability id
    * @param effect     ability effect
    */
-  ActiveAbilityType(@NotNull String properName, @NotNull String id, @NotNull ActiveAbilityEffect effect) {
+  PassiveAbilityType(@NotNull String properName, @NotNull String id, @NotNull PassiveAbilityEffect effect) {
     this.properName = Objects.requireNonNull(properName, "Null name");
     this.id = Objects.requireNonNull(id, "Null id");
     this.effect = Objects.requireNonNull(effect, "Null effect");
@@ -87,7 +86,7 @@ public enum ActiveAbilityType {
    * @return ability's effect
    */
   @NotNull
-  public ActiveAbilityEffect getEffect() {
+  public PassiveAbilityEffect getEffect() {
     return this.effect;
   }
 }

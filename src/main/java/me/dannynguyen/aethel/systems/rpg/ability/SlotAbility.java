@@ -1,5 +1,6 @@
-package me.dannynguyen.aethel.systems.rpg;
+package me.dannynguyen.aethel.systems.rpg.ability;
 
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

@@ -1,7 +1,12 @@
 package me.dannynguyen.aethel.listeners.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.rpg.*;
+import me.dannynguyen.aethel.systems.rpg.RpgSystem;
+import me.dannynguyen.aethel.systems.rpg.Status;
+import me.dannynguyen.aethel.systems.rpg.StatusType;
+import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
