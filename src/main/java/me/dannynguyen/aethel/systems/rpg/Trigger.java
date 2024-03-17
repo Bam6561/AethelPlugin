@@ -23,14 +23,14 @@ public enum Trigger {
   DAMAGE_DEALT("Damage Dealt", "damage_dealt", TriggerCondition.CHANCE_COOLDOWN),
 
   /**
-   * Killed an entity.
-   */
-  KILL("Kill", "kill", TriggerCondition.CHANCE_COOLDOWN),
-
-  /**
    * Damage taken.
    */
-  DAMAGE_TAKEN("Damage Taken", "damage_taken", TriggerCondition.CHANCE_COOLDOWN);
+  DAMAGE_TAKEN("Damage Taken", "damage_taken", TriggerCondition.CHANCE_COOLDOWN),
+
+  /**
+   * Killed an entity.
+   */
+  KILL("Kill", "kill", TriggerCondition.CHANCE_COOLDOWN);
 
   /**
    * Trigger's proper name.

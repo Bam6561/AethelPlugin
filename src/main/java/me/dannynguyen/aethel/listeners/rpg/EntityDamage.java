@@ -117,7 +117,20 @@ public class EntityDamage implements Listener {
    * @param damagee interacting player
    */
   private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
-    // TO DO
+    Map<SlotAbility, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
+    if (!damageTakenTriggers.isEmpty()) {
+      if (e.getDamager() instanceof LivingEntity damager) {
+        Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+        Random random = new Random();
+        for (PassiveAbility ability : damageTakenTriggers.values()) {
+          if (!ability.isOnCooldown()) {
+            switch (ability.getAbility().getEffect()) {
+              case STACK_INSTANCE -> applyStackInstance(entityStatuses, random, ability, damagee.getUniqueId(), damager.getUniqueId());
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -237,10 +250,10 @@ public class EntityDamage implements Listener {
    * @param entityStatuses entity statuses
    * @param random         rng
    * @param ability        passive ability
-   * @param damagerUUID    damager UUID
-   * @param damageeUUID    damagee UUID
+   * @param selfUUID       self UUID
+   * @param otherUUID      entity UUID
    */
-  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID damagerUUID, UUID damageeUUID) {
+  private void applyStackInstance(Map<UUID, Map<StatusType, Status>> entityStatuses, Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
     List<String> triggerData = ability.getTriggerData();
     double chance = Double.parseDouble(triggerData.get(0));
 
@@ -249,9 +262,9 @@ public class EntityDamage implements Listener {
       boolean self = Boolean.parseBoolean(effectData.get(0));
       UUID targetUUID;
       if (self) {
-        targetUUID = damagerUUID;
+        targetUUID = selfUUID;
       } else {
-        targetUUID = damageeUUID;
+        targetUUID = otherUUID;
       }
       Map<StatusType, Status> statuses;
       if (!entityStatuses.containsKey(targetUUID)) {
