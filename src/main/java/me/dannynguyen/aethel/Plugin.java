@@ -48,7 +48,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.16
+ * @version 1.17.0
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -202,6 +202,7 @@ public class Plugin extends JavaPlugin {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
               case STACK_INSTANCE -> readBelowHealthStackInstance(ability, rpgPlayer);
+              case CHAIN_DAMAGE -> readBelowHealthChainDamage(ability, rpgPlayer);
             }
           }
         }
@@ -285,6 +286,22 @@ public class Plugin extends JavaPlugin {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       if (self) {
         new PassiveAbilityTrigger(ability).applyStackInstance(rpgPlayer.getUUID());
+      }
+    }
+  }
+
+  /**
+   * Checks if the chain damage effect was successful before dealing chain damage.
+   *
+   * @param ability   passive ability
+   * @param rpgPlayer interacting player
+   */
+  private void readBelowHealthChainDamage(PassiveAbility ability, RpgPlayer rpgPlayer) {
+    double healthPercent = Double.parseDouble(ability.getTriggerData().get(0));
+    if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
+      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+      if (self) {
+        new PassiveAbilityTrigger(ability).chainDamage(rpgPlayer.getUUID());
       }
     }
   }

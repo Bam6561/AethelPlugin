@@ -24,7 +24,7 @@ import java.util.UUID;
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.16.16
+ * @version 1.17.0
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -86,23 +86,25 @@ public class RpgEvent implements Listener {
   @EventHandler
   private void onEntityDeath(EntityDeathEvent e) {
     if (e.getEntity().getKiller() != null) {
-      triggerOnKillPassives(e.getEntity().getKiller());
+      triggerOnKillPassives(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
     }
   }
 
   /**
    * Triggers on kill passive abilities.
    *
-   * @param killer killer
+   * @param killedUUID killed entity UUID
+   * @param selfUUID   self UUID
    */
-  private void triggerOnKillPassives(Player killer) {
-    Map<SlotAbility, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(killer.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.ON_KILL);
+  private void triggerOnKillPassives(UUID killedUUID, UUID selfUUID) {
+    Map<SlotAbility, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getEquipment().getTriggerPassives().get(Trigger.ON_KILL);
     if (!killTriggers.isEmpty()) {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {
         if (!ability.isOnCooldown()) {
           switch (ability.getAbility().getEffect()) {
-            case STACK_INSTANCE -> readOnKillStackInstance(random, ability, killer.getUniqueId());
+            case STACK_INSTANCE -> readOnKillStackInstance(random, ability, selfUUID);
+            case CHAIN_DAMAGE -> readOnKillChainDamage(random, ability, killedUUID, selfUUID);
           }
         }
       }
@@ -123,6 +125,28 @@ public class RpgEvent implements Listener {
       if (self) {
         new PassiveAbilityTrigger(ability).applyStackInstance(selfUUID);
       }
+    }
+  }
+
+  /**
+   * Checks if the chain damage effect was successful before dealing chain damage.
+   *
+   * @param random     rng
+   * @param ability    passive ability
+   * @param killedUUID killed entity
+   * @param selfUUID   self UUID
+   */
+  private void readOnKillChainDamage(Random random, PassiveAbility ability, UUID killedUUID, UUID selfUUID) {
+    double chance = Double.parseDouble(ability.getTriggerData().get(0));
+    if (chance > random.nextDouble() * 100) {
+      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+      UUID targetUUID;
+      if (self) {
+        targetUUID = selfUUID;
+      } else {
+        targetUUID = killedUUID;
+      }
+      new PassiveAbilityTrigger(ability).chainDamage(targetUUID);
     }
   }
 }

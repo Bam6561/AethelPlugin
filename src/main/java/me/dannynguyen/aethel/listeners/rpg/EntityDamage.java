@@ -31,7 +31,7 @@ import java.util.UUID;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.17
+ * @version 1.17.0
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -132,6 +132,7 @@ public class EntityDamage implements Listener {
           if (!ability.isOnCooldown()) {
             switch (ability.getAbility().getEffect()) {
               case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damagee.getUniqueId(), damager.getUniqueId());
+              case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
             }
           }
         }
@@ -247,7 +248,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Checks if the chain effect was successful before dealing chain damage.
+   * Checks if the chain damage effect was successful before dealing chain damage.
    *
    * @param random    rng
    * @param ability   passive ability

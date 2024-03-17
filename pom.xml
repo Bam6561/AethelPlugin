@@ -6,7 +6,7 @@
 
     <groupId>ndanny09</groupId>
     <artifactId>AethelPlugin</artifactId>
-    <version>1.16.17</version>
+    <version>1.17.0</version>
 
     <build>
         <plugins>

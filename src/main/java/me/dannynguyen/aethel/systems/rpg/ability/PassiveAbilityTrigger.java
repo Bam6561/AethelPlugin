@@ -18,7 +18,7 @@ import java.util.*;
  * Represents a triggered passive ability.
  *
  * @author Danny Nguyen
- * @version 1.16.17
+ * @version 1.17.0
  * @since 1.16.16
  */
 public class PassiveAbilityTrigger {
@@ -129,11 +129,8 @@ public class PassiveAbilityTrigger {
         UUID livingEntityUUID = livingEntity.getUniqueId();
         if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
           if (!soakedTargets.containsKey(livingEntity)) {
-            Bukkit.getLogger().warning("New entity: " + livingEntity.getName());
             newSoakedTargets.add(livingEntity);
             soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
-          } else {
-            Bukkit.getLogger().warning("Already contains entity: " + livingEntity.getName());
           }
         }
       }
