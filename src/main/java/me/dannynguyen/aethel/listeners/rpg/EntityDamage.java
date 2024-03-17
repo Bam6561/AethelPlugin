@@ -29,15 +29,10 @@ import java.util.*;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.16.14
+ * @version 1.16.15
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
-  /**
-   * Player damage mitigation calculator.
-   */
-  private PlayerDamageMitigation mitigation;
-
   /**
    * Ignored damage causes.
    */
@@ -53,23 +48,24 @@ public class EntityDamage implements Listener {
     if (e instanceof EntityDamageByEntityEvent event) {
       if (event.getDamager() instanceof Player || event.getEntity() instanceof Player) {
         if (event.getDamager() instanceof Player damager && !(event.getEntity() instanceof Player)) { // PvE
-          triggerDamageDealtPassives(event, damager);
+          PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damager);
+          triggerDamageDealtPassives(event, damager, mitigation);
           calculatePlayerDamageDone(event, damager);
         } else {
           Player damagee = (Player) event.getEntity();
-          mitigation = new PlayerDamageMitigation(damagee);
+          PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
           if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
-            triggerDamageDealtPassives(event, damager);
+            triggerDamageDealtPassives(event, damager, mitigation);
             calculatePlayerDamageDone(event, damager);
           }
           triggerDamageTakenPassives(event, damagee);
-          calculatePlayerDamageTaken(event, damagee);
+          calculatePlayerDamageTaken(event, damagee, mitigation);
         }
       }
     } else if (e.getEntity() instanceof Player damagee && !ignoredDamageCauses.contains(e.getCause())) {
-      mitigation = new PlayerDamageMitigation(damagee);
+      PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
       EntityDamageEvent.DamageCause cause = e.getCause();
-      if (mitigateEnvironmentalDamage(e, cause, damagee)) {
+      if (mitigateEnvironmentalDamage(e, cause, damagee, mitigation)) {
         e.setCancelled(true);
         return;
       }
@@ -98,10 +94,11 @@ public class EntityDamage implements Listener {
   /**
    * Triggers damage dealt passive abilities.
    *
-   * @param e       entity damage by entity event
-   * @param damager interacting player
+   * @param e          entity damage by entity event
+   * @param damager    interacting player
+   * @param mitigation player damage mitgation
    */
-  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
+  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager, PlayerDamageMitigation mitigation) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
       Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
@@ -111,7 +108,7 @@ public class EntityDamage implements Listener {
             if (!ability.isOnCooldown()) {
               switch (ability.getAbility().getEffect()) {
                 case STACK_INSTANCE -> applyStackInstanceEffect(Plugin.getData().getRpgSystem().getStatuses(), random, ability, damager.getUniqueId(), damagee.getUniqueId());
-                case CHAIN -> applyChainEffect(random, ability, damager.getUniqueId(), damagee.getUniqueId());
+                case CHAIN -> applyChainEffect(random, ability, damager.getUniqueId(), damagee.getUniqueId(), mitigation);
               }
             }
           }
@@ -161,14 +158,15 @@ public class EntityDamage implements Listener {
   /**
    * Calculates damage taken by the player.
    *
-   * @param e       entity damage by entity event
-   * @param damagee interacting player
+   * @param e          entity damage by entity event
+   * @param damagee    interacting player
+   * @param mitigation player damage mitigation
    */
-  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
+  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee, PlayerDamageMitigation mitigation) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
     Entity damager = e.getDamager();
 
-    if (mitigateSpecificCauseDamage(e, damager, damagee)) {
+    if (mitigateSpecificCauseDamage(e, damager, damagee, mitigation)) {
       e.setCancelled(true);
       return;
     }
@@ -198,12 +196,13 @@ public class EntityDamage implements Listener {
   /**
    * Mitigates environmental damage taken based on the player's environmental protection enchantments.
    *
-   * @param e       entity damage event
-   * @param cause   damage cause
-   * @param damagee player taking damage
+   * @param e          entity damage event
+   * @param cause      damage cause
+   * @param damagee    player taking damage
+   * @param mitigation player damage mitigation
    * @return if no damage is taken
    */
-  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee) {
+  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee, PlayerDamageMitigation mitigation) {
     switch (cause) {
       case FALL -> e.setDamage(mitigation.mitigateFall(e.getDamage()));
       case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> e.setDamage(mitigation.mitigateProtection(e.getDamage()));
@@ -274,12 +273,13 @@ public class EntityDamage implements Listener {
   /**
    * Applies chain damage by chance.
    *
-   * @param random    rng
-   * @param ability   passive ability
-   * @param selfUUID  self UUID
-   * @param otherUUID entity UUID
+   * @param random     rng
+   * @param ability    passive ability
+   * @param selfUUID   self UUID
+   * @param otherUUID  entity UUID
+   * @param mitigation player damage mitigation
    */
-  private void applyChainEffect(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
+  private void applyChainEffect(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID, PlayerDamageMitigation mitigation) {
     List<String> triggerData = ability.getTriggerData();
     double chance = Double.parseDouble(triggerData.get(0));
 
@@ -358,12 +358,13 @@ public class EntityDamage implements Listener {
   /**
    * Mitigates specific cause damage taken based on their respective protection enchantment.
    *
-   * @param e       entity damage by entity event
-   * @param damager damaging entity
-   * @param damagee player taking damage
+   * @param e          entity damage by entity event
+   * @param damager    damaging entity
+   * @param damagee    player taking damage
+   * @param mitigation player damage mitigation
    * @return if no damage taken or magic damage was taken/mitigated
    */
-  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity damager, Player damagee) {
+  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity damager, Player damagee, PlayerDamageMitigation mitigation) {
     switch (e.getCause()) {
       case ENTITY_EXPLOSION -> {
         e.setDamage(mitigation.mitigateExplosion(e.getDamage()));
