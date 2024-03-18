@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.16.3
+ * @version 1.17.1
  * @since 1.13.4
  */
 public class Equipment {
@@ -71,7 +71,12 @@ public class Equipment {
   /**
    * Equipment passive abilities by trigger.
    */
-  private final Map<Trigger, Map<SlotAbility, PassiveAbility>> triggerPassives = createBlankTriggers();
+  private final Map<Trigger, Map<SlotAbility, PassiveAbility>> triggerPassives = createBlankPassiveTriggers();
+
+  /**
+   * Equipment passive abilities on cooldown.
+   */
+  private final Map<Trigger, Set<SlotAbility>> onCooldownPassives = createBlankCooldownTriggers();
 
   /**
    * Jewelry slots.
@@ -115,10 +120,23 @@ public class Equipment {
    *
    * @return blank ability triggers
    */
-  private Map<Trigger, Map<SlotAbility, PassiveAbility>> createBlankTriggers() {
+  private Map<Trigger, Map<SlotAbility, PassiveAbility>> createBlankPassiveTriggers() {
     Map<Trigger, Map<SlotAbility, PassiveAbility>> triggers = new HashMap<>();
     for (Trigger trigger : Trigger.values()) {
       triggers.put(trigger, new HashMap<>());
+    }
+    return triggers;
+  }
+
+  /**
+   * Creates a blank map of ability cooldown triggers.
+   *
+   * @return blank ability cooldown triggers
+   */
+  private Map<Trigger, Set<SlotAbility>> createBlankCooldownTriggers() {
+    Map<Trigger, Set<SlotAbility>> triggers = new HashMap<>();
+    for (Trigger trigger : Trigger.values()) {
+      triggers.put(trigger, new HashSet<>());
     }
     return triggers;
   }
@@ -350,7 +368,7 @@ public class Equipment {
     Trigger trigger = Trigger.valueOf(abilityMeta[1].toUpperCase());
     PassiveAbilityType ability = PassiveAbilityType.valueOf(abilityMeta[2].toUpperCase());
     slotPassives.get(slot).add(new TriggerAbility(trigger, ability));
-    triggerPassives.get(trigger).put(new SlotAbility(slot, ability), new PassiveAbility(trigger, ability, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
+    triggerPassives.get(trigger).put(new SlotAbility(slot, ability), new PassiveAbility(onCooldownPassives, slot, trigger, ability, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
   }
 
   /**
@@ -442,6 +460,16 @@ public class Equipment {
   @NotNull
   public Map<Trigger, Map<SlotAbility, PassiveAbility>> getTriggerPassives() {
     return this.triggerPassives;
+  }
+
+  /**
+   * Gets the player's equipment passive abilities on cooldown.
+   *
+   * @return equipment passive abilities on cooldown
+   */
+  @NotNull
+  public Map<Trigger, Set<SlotAbility>> getOnCooldownPassives() {
+    return this.onCooldownPassives;
   }
 
   /**
