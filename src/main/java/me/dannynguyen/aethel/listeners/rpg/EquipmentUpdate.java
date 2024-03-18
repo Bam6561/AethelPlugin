@@ -36,6 +36,13 @@ import java.util.Map;
  */
 public class EquipmentUpdate implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public EquipmentUpdate(){
+
+  }
+
+  /**
    * Checks clicks within player inventories to determine whether to update a player's equipment data.
    *
    * @param e inventory click event

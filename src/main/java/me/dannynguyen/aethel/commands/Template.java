@@ -17,6 +17,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Template implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public Template() {
+
+  }
+
+  /**
    * Executes the Template command.
    *
    * @param sender  command source

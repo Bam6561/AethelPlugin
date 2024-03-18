@@ -66,6 +66,13 @@ public class PluginData {
   private final RpgSystem rpgSystem = new RpgSystem();
 
   /**
+   * No parameter constructor.
+   */
+  public PluginData() {
+
+  }
+
+  /**
    * Loads persistent plugin data. Creates data directories if they do not already exist.
    */
   public void loadResources() {

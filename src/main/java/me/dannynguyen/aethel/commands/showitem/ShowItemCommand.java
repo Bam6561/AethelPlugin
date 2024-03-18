@@ -31,6 +31,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ShowItemCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public ShowItemCommand() {
+
+  }
+
+  /**
    * Executes the ShowItem command.
    *
    * @param sender  command source

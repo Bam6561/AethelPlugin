@@ -29,6 +29,13 @@ import java.util.Map;
  */
 public class MenuClick implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public MenuClick(){
+
+  }
+
+  /**
    * Routes interactions between inventories.
    *
    * @param e inventory click event

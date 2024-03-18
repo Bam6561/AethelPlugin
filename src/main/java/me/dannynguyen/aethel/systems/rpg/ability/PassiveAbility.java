@@ -47,6 +47,7 @@ public class PassiveAbility {
    * Associates a passive ability with its data.
    *
    * @param onCooldownPassives passives on cooldown
+   * @param slot               slot type
    * @param trigger            trigger type
    * @param ability            ability type
    * @param dataValues         ability data

@@ -20,6 +20,13 @@ public class PluginSystem {
   private final Map<UUID, Map<PlayerMeta, String>> playerMetadata = new HashMap<>();
 
   /**
+   * No parameter constructor.
+   */
+  public PluginSystem() {
+
+  }
+
+  /**
    * Gets players' plugin metadata.
    *
    * @return players' plugin metadata

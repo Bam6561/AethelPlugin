@@ -14,6 +14,13 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  */
 public class StatusUpdate implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public StatusUpdate() {
+
+  }
+
+  /**
    * Clears player statuses on death.
    *
    * @param e player death event

@@ -19,25 +19,28 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a passive ability tag set or remove operation.
  *
  * @author Danny Nguyen
- * @version 1.16.13
+ * @version 1.17.2
  * @since 1.15.13
  */
 class PassiveAbilityTag {
   /**
    * Passive list key.
    */
-  private final NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+  private static final NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
 
   /**
    * Passive header.
    */
-  private final String passiveHeader = KeyHeader.PASSIVE.getHeader();
+  private static final String passiveHeader = KeyHeader.PASSIVE.getHeader();
 
   /**
    * User input.
@@ -48,11 +51,6 @@ class PassiveAbilityTag {
    * Player who sent the message.
    */
   private final Player user;
-
-  /**
-   * User's UUID.
-   */
-  private final UUID userUUID;
 
   /**
    * ItemStack being edited.
@@ -100,10 +98,9 @@ class PassiveAbilityTag {
     this.args = Objects.requireNonNull(message, "Null message").split(" ");
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Objects.requireNonNull(item, "Null item");
-    this.userUUID = user.getUniqueId();
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     this.slot = playerMeta.get(PlayerMeta.SLOT);
     this.condition = playerMeta.get(PlayerMeta.CONDITION);
     this.type = playerMeta.get(PlayerMeta.TYPE);

@@ -26,6 +26,13 @@ import java.util.Map;
  */
 public class ItemCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public ItemCommand() {
+
+  }
+
+  /**
    * Executes the AethelItem command.
    *
    * @param sender  command source

@@ -19,6 +19,13 @@ import java.util.UUID;
  */
 public class PluginEvent implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public PluginEvent(){
+
+  }
+
+  /**
    * Associates a player with metadata.
    *
    * @param e player join event

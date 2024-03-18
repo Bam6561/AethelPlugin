@@ -29,6 +29,13 @@ import java.util.UUID;
  */
 public class RpgEvent implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public RpgEvent() {
+
+  }
+
+  /**
    * Assigns an RPG player to a player upon joining the server.
    *
    * @param e player join event

@@ -21,6 +21,13 @@ public class EditedItemCache {
   private final Map<UUID, ItemStack> editedItemMap = new HashMap<>();
 
   /**
+   * No parameter constructor.
+   */
+  public EditedItemCache() {
+
+  }
+
+  /**
    * Gets the player:item map.
    *
    * @return player:item map

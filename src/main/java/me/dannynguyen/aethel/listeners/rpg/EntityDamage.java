@@ -38,7 +38,14 @@ public class EntityDamage implements Listener {
   /**
    * Ignored damage causes.
    */
-  private final Set<EntityDamageEvent.DamageCause> ignoredDamageCauses = Set.of(EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.KILL);
+  private static final Set<EntityDamageEvent.DamageCause> ignoredDamageCauses = Set.of(EntityDamageEvent.DamageCause.CUSTOM, EntityDamageEvent.DamageCause.KILL);
+
+  /**
+   * No parameter constructor.
+   */
+  public EntityDamage() {
+
+  }
 
   /**
    * Calculates player damage dealt and taken interactions.

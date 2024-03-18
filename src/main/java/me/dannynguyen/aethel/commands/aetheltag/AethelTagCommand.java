@@ -26,6 +26,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AethelTagCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public AethelTagCommand() {
+
+  }
+
+  /**
    * Executes the AethelTag command.
    *
    * @param sender  command source

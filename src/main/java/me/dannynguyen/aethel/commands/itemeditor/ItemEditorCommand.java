@@ -22,6 +22,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ItemEditorCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public ItemEditorCommand() {
+
+  }
+
+  /**
    * Executes the ItemEditor command.
    *
    * @param sender  command source

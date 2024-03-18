@@ -27,6 +27,13 @@ import java.util.Map;
  */
 public class ForgeCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public ForgeCommand() {
+
+  }
+
+  /**
    * Executes the Forge command.
    *
    * @param sender  command source

@@ -23,6 +23,13 @@ public class PastStatHistory {
   private final Queue<ItemStack> pastStats = new LinkedList<>();
 
   /**
+   * No parameter constructor.
+   */
+  public PastStatHistory() {
+
+  }
+
+  /**
    * Adds the stat to past stat history and ensures the number
    * of past stats never exceeds 27 (PastStat menu's size).
    *

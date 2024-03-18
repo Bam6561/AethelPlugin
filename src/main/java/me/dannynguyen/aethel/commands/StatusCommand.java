@@ -34,6 +34,13 @@ import java.util.UUID;
  */
 public class StatusCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public StatusCommand() {
+
+  }
+
+  /**
    * Executes the Status command.
    *
    * @param sender  command source

@@ -22,6 +22,13 @@ import java.util.Map;
  */
 public class DeveloperModeCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public DeveloperModeCommand() {
+
+  }
+
+  /**
    * Executes the DeveloperMode command.
    *
    * @param sender  command source

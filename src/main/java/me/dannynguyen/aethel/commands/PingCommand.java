@@ -17,6 +17,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PingCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public PingCommand() {
+
+  }
+
+  /**
    * Executes the Ping command.
    *
    * @param sender  command source

@@ -58,6 +58,13 @@ public class Plugin extends JavaPlugin {
   private static final PluginData data = new PluginData();
 
   /**
+   * No parameter constructor.
+   */
+  public Plugin() {
+
+  }
+
+  /**
    * On enable:
    * - Loads existing plugin data.
    * - Registers event listeners.

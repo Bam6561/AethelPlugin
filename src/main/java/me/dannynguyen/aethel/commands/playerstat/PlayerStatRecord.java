@@ -24,7 +24,7 @@ public class PlayerStatRecord {
   /**
    * Player stat categories.
    */
-  private final Map<String, Statistic[]> playerStatCategories = new HashMap<>(Map.of(
+  private static final Map<String, Statistic[]> playerStatCategories = new HashMap<>(Map.of(
       "Activities", new Statistic[]{
           Statistic.ANIMALS_BRED, Statistic.ARMOR_CLEANED, Statistic.BANNER_CLEANED,
           Statistic.BELL_RING, Statistic.CAKE_SLICES_EATEN, Statistic.CAULDRON_FILLED,
@@ -75,6 +75,13 @@ public class PlayerStatRecord {
    * </p>
    */
   private final Map<String, List<Inventory>> substatCategories = createSubstatCategoryPages();
+
+  /**
+   * No parameter constructor.
+   */
+  public PlayerStatRecord() {
+
+  }
 
   /**
    * Creates pages of non-substats by category.

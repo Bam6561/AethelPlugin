@@ -21,6 +21,13 @@ import java.util.Map;
  */
 public class MessageSent implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public MessageSent() {
+
+  }
+
+  /**
    * Routes interactions for messages sent.
    *
    * @param e message event

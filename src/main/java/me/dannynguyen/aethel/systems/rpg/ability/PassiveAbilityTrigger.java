@@ -18,15 +18,10 @@ import java.util.*;
  * Represents a triggered passive ability.
  *
  * @author Danny Nguyen
- * @version 1.17.0
+ * @version 1.17.2
  * @since 1.16.16
  */
 public class PassiveAbilityTrigger {
-  /**
-   * Entity statuses.
-   */
-  private static final Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-
   /**
    * Passive ability.
    */
@@ -59,6 +54,7 @@ public class PassiveAbilityTrigger {
    * @param targetUUID entity to receive stack instances
    */
   public void applyStackInstance(UUID targetUUID) {
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     Map<StatusType, Status> statuses;
     if (!entityStatuses.containsKey(targetUUID)) {
       entityStatuses.put(targetUUID, new HashMap<>());
@@ -87,11 +83,13 @@ public class PassiveAbilityTrigger {
    * @param targetUUID source of chain damage location
    */
   public void chainDamage(UUID targetUUID) {
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+
     double chainDamage = Double.parseDouble(effectData.get(1));
     double meters = Double.parseDouble(effectData.get(2));
 
     Map<LivingEntity, Integer> soakedTargets = new HashMap<>();
-    getSoakedTargets(soakedTargets, targetUUID, meters);
+    getSoakedTargets(entityStatuses, soakedTargets, targetUUID, meters);
 
     for (LivingEntity livingEntity : soakedTargets.keySet()) {
       Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
@@ -118,11 +116,12 @@ public class PassiveAbilityTrigger {
   /**
    * Recursively finds new soaked targets around the source entity.
    *
-   * @param soakedTargets soaked targets
-   * @param targetUUID    source entity
-   * @param meters        distance
+   * @param entityStatuses entity statuses
+   * @param soakedTargets  soaked targets
+   * @param targetUUID     source entity
+   * @param meters         distance
    */
-  private void getSoakedTargets(Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, Double meters) {
+  private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, Double meters) {
     List<LivingEntity> newSoakedTargets = new ArrayList<>();
     for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
       if (entity instanceof LivingEntity livingEntity) {
@@ -139,7 +138,7 @@ public class PassiveAbilityTrigger {
       return;
     }
     for (LivingEntity livingEntity : newSoakedTargets) {
-      getSoakedTargets(soakedTargets, livingEntity.getUniqueId(), meters);
+      getSoakedTargets(entityStatuses, soakedTargets, livingEntity.getUniqueId(), meters);
     }
   }
 }

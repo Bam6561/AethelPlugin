@@ -15,14 +15,10 @@ import java.util.UUID;
  * Represents player damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.16.16
+ * @version 1.17.2
  * @since 1.16.14
  */
 public class PlayerDamageMitigation {
-  /**
-   * RPG system.
-   */
-  private static final RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
 
   /**
    * Player taking damage.
@@ -52,6 +48,7 @@ public class PlayerDamageMitigation {
   public PlayerDamageMitigation(@NotNull Player damagee) {
     this.damagee = Objects.requireNonNull(damagee, "Null damagee");
     this.uuid = damagee.getUniqueId();
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
     this.enchantments = rpgSystem.getRpgPlayers().get(uuid).getEquipment().getTotalEnchantments();
     this.statuses = rpgSystem.getStatuses().get(uuid);
   }
@@ -85,7 +82,7 @@ public class PlayerDamageMitigation {
   public double mitigateExplosion(double damage) {
     damage = damage - (damage * (enchantments.get(Enchantment.PROTECTION_EXPLOSIONS) * .1));
     if (damage <= 0) {
-      rpgSystem.getRpgPlayers().get(uuid).getHealth().heal(damage * .2);
+      Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().heal(damage * .2);
       damagee.setFoodLevel(20);
     }
     return damage;

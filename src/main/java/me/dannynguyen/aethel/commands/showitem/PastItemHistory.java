@@ -24,6 +24,13 @@ public class PastItemHistory {
   private final Queue<ItemStack> pastItems = new LinkedList<>();
 
   /**
+   * No parameter constructor.
+   */
+  public PastItemHistory() {
+
+  }
+
+  /**
    * Adds the item to past item history and ensures the number
    * of past items never exceeds 27 (PastItem menu's size).
    *

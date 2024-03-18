@@ -32,6 +32,13 @@ public class RpgSystem {
   private final Map<UUID, Map<StatusType, Status>> statuses = new HashMap<>();
 
   /**
+   * No parameter constructor.
+   */
+  public RpgSystem() {
+
+  }
+
+  /**
    * Loads an RPG player into memory.
    *
    * @param player interacting player

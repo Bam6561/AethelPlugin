@@ -28,6 +28,13 @@ import java.util.Map;
  */
 public class PlayerStatCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public PlayerStatCommand() {
+
+  }
+
+  /**
    * Executes the PlayerStat command.
    *
    * @param sender  command source

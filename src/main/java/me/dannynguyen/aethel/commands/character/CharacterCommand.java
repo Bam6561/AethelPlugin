@@ -26,6 +26,13 @@ import java.util.Map;
  */
 public class CharacterCommand implements CommandExecutor {
   /**
+   * No parameter constructor.
+   */
+  public CharacterCommand() {
+
+  }
+
+  /**
    * Executes the Character command.
    *
    * @param sender  command source
