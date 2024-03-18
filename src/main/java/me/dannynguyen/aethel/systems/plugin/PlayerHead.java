@@ -90,16 +90,6 @@ public enum PlayerHead {
   }
 
   /**
-   * Gets the player head.
-   *
-   * @return player head
-   */
-  @NotNull
-  public ItemStack getHead() {
-    return this.head;
-  }
-
-  /**
    * Creates a player head from provided texture data.
    *
    * @param textureData encoded texture
@@ -152,5 +142,15 @@ public enum PlayerHead {
       return profile;
     }
     return null;
+  }
+
+  /**
+   * Gets the player head.
+   *
+   * @return player head
+   */
+  @NotNull
+  public ItemStack getHead() {
+    return this.head;
   }
 }

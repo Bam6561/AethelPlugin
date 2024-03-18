@@ -286,21 +286,21 @@ public class Health {
   }
 
   /**
-   * Gets the max health.
-   *
-   * @return max health
-   */
-  public double getMaxHealth() {
-    return this.maxHealth;
-  }
-
-  /**
    * Sets the current health.
    *
    * @param currentHealth new current health value
    */
   private void setCurrentHealth(Double currentHealth) {
     this.currentHealth = currentHealth;
+  }
+
+  /**
+   * Gets the max health.
+   *
+   * @return max health
+   */
+  public double getMaxHealth() {
+    return this.maxHealth;
   }
 
   /**

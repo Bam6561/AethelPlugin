@@ -31,7 +31,7 @@ public class MenuClick implements Listener {
   /**
    * No parameter constructor.
    */
-  public MenuClick(){
+  public MenuClick() {
 
   }
 

@@ -21,7 +21,7 @@ public class PluginEvent implements Listener {
   /**
    * No parameter constructor.
    */
-  public PluginEvent(){
+  public PluginEvent() {
 
   }
 

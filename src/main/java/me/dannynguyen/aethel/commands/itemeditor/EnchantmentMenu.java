@@ -56,6 +56,18 @@ class EnchantmentMenu {
   }
 
   /**
+   * Sorts enchantments by name.
+   *
+   * @return sorted enchantments
+   */
+  private static List<Enchantment> sortEnchantments() {
+    List<Enchantment> enchantments = new ArrayList<>(List.of(Enchantment.values()));
+    Comparator<Enchantment> enchantmentComparator = Comparator.comparing(e -> e.getKey().getKey());
+    enchantments.sort(enchantmentComparator);
+    return enchantments;
+  }
+
+  /**
    * Creates and names an Enchantment menu.
    *
    * @return Enchantment menu
@@ -100,17 +112,5 @@ class EnchantmentMenu {
    */
   private void addContext() {
     menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove an enchant, input \"-\".")));
-  }
-
-  /**
-   * Sorts enchantments by name.
-   *
-   * @return sorted enchantments
-   */
-  private static List<Enchantment> sortEnchantments() {
-    List<Enchantment> enchantments = new ArrayList<>(List.of(Enchantment.values()));
-    Comparator<Enchantment> enchantmentComparator = Comparator.comparing(e -> e.getKey().getKey());
-    enchantments.sort(enchantmentComparator);
-    return enchantments;
   }
 }

@@ -84,20 +84,6 @@ public class PassiveAbility {
   }
 
   /**
-   * Sets if the ability is on cooldown.
-   *
-   * @param onCooldown is on cooldown
-   */
-  public void setOnCooldown(boolean onCooldown) {
-    SlotAbility slotAbility = new SlotAbility(slot, ability);
-    if (onCooldown) {
-      onCooldownPassives.get(trigger).add(slotAbility);
-    } else {
-      onCooldownPassives.get(trigger).remove(slotAbility);
-    }
-  }
-
-  /**
    * Gets the equipment slot.
    *
    * @return equipment slot
@@ -154,5 +140,19 @@ public class PassiveAbility {
    */
   public boolean isOnCooldown() {
     return onCooldownPassives.get(trigger).contains(new SlotAbility(slot, ability));
+  }
+
+  /**
+   * Sets if the ability is on cooldown.
+   *
+   * @param onCooldown is on cooldown
+   */
+  public void setOnCooldown(boolean onCooldown) {
+    SlotAbility slotAbility = new SlotAbility(slot, ability);
+    if (onCooldown) {
+      onCooldownPassives.get(trigger).add(slotAbility);
+    } else {
+      onCooldownPassives.get(trigger).remove(slotAbility);
+    }
   }
 }

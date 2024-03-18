@@ -404,15 +404,6 @@ public class Equipment {
   }
 
   /**
-   * Sets the player's held item tracked by RPG system.
-   *
-   * @param item item to be set
-   */
-  public void setHeldItem(@Nullable ItemStack item) {
-    this.heldItem = item;
-  }
-
-  /**
    * Gets the player's equipment Aethel attributes.
    *
    * @return equipment Aethel attributes
@@ -494,5 +485,14 @@ public class Equipment {
   @NotNull
   public ItemStack getHeldItem() {
     return this.heldItem;
+  }
+
+  /**
+   * Sets the player's held item tracked by RPG system.
+   *
+   * @param item item to be set
+   */
+  public void setHeldItem(@Nullable ItemStack item) {
+    this.heldItem = item;
   }
 }

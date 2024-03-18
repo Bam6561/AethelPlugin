@@ -38,7 +38,7 @@ public class EquipmentUpdate implements Listener {
   /**
    * No parameter constructor.
    */
-  public EquipmentUpdate(){
+  public EquipmentUpdate() {
 
   }
 
