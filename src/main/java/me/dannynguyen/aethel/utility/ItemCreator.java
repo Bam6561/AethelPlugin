@@ -66,6 +66,24 @@ public class ItemCreator {
   }
 
   /**
+   * Creates a named item with an item flag.
+   *
+   * @param material item material
+   * @param name     item name
+   * @param itemFlag item flag
+   * @return named item with an item flag disabled
+   */
+  @NotNull
+  public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull ItemFlag itemFlag) {
+    ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
+    ItemMeta meta = item.getItemMeta();
+    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
+    meta.addItemFlags(Objects.requireNonNull(itemFlag, "Null item flag"));
+    item.setItemMeta(meta);
+    return item;
+  }
+
+  /**
    * Creates a named item with lore and an item flag.
    *
    * @param material item material
@@ -81,24 +99,6 @@ public class ItemCreator {
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
     meta.setLore(Objects.requireNonNull(lore, "Null lore"));
-    meta.addItemFlags(Objects.requireNonNull(itemFlag, "Null item flag"));
-    item.setItemMeta(meta);
-    return item;
-  }
-
-  /**
-   * Creates a named item with an item flag.
-   *
-   * @param material item material
-   * @param name     item name
-   * @param itemFlag item flag
-   * @return named item with an item flag disabled
-   */
-  @NotNull
-  public static ItemStack createItem(@NotNull Material material, @NotNull String name, @NotNull ItemFlag itemFlag) {
-    ItemStack item = new ItemStack(Objects.requireNonNull(material, "Null material"), 1);
-    ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(Objects.requireNonNull(name, "Null name"));
     meta.addItemFlags(Objects.requireNonNull(itemFlag, "Null item flag"));
     item.setItemMeta(meta);
     return item;

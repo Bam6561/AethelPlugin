@@ -1,6 +1,8 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.PlayerHead;
+import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
@@ -8,8 +10,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,10 +22,10 @@ import java.util.UUID;
  * Represents a menu that shows the player's RPG settings.
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.17.3
  * @since 1.11.5
  */
-class SettingsMenu {
+public class SettingsMenu {
   /**
    * Settings GUI.
    */
@@ -41,7 +46,7 @@ class SettingsMenu {
    *
    * @param user user
    */
-  protected SettingsMenu(@NotNull Player user) {
+  public SettingsMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.userUUID = user.getUniqueId();
     this.menu = createMenu();
@@ -62,7 +67,7 @@ class SettingsMenu {
    * @return Settings menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory openMenu() {
     addOwner();
     addSettings();
     InventoryPages.addBackButton(menu, 6);
@@ -82,6 +87,7 @@ class SettingsMenu {
   private void addSettings() {
     addDisplayHealthBar();
     addDisplayHealthAction();
+    addActiveAbilityCrouchBinds();
   }
 
   /**
@@ -89,9 +95,9 @@ class SettingsMenu {
    */
   private void addDisplayHealthBar() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().isHealthBarVisible()) {
-      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
+      menu.setItem(18, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     } else {
-      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
+      menu.setItem(18, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     }
   }
 
@@ -100,9 +106,25 @@ class SettingsMenu {
    */
   private void addDisplayHealthAction() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().isHealthActionVisible()) {
-      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+      menu.setItem(19, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     } else {
-      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+      menu.setItem(19, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     }
+  }
+
+  /**
+   * Adds active ability crouch binds.
+   */
+  private void addActiveAbilityCrouchBinds() {
+    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().getActiveAbilityCrouchBinds();
+    menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Reset Active Ability Crouch Binds"));
+    menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.HAND).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.OFF_HAND).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(12, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.HEAD).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(13, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.CHEST).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(14, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.LEGS).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(15, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.FEET).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.NECKLACE).toString())));
+    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.RING).toString())));
   }
 }

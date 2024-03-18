@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
+import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.systems.rpg.Equipment;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
@@ -14,10 +15,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +33,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.17.3
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -130,8 +134,17 @@ public class CharacterMenuClick {
         case 4 -> { // Player Head
         }
         case 6 -> returnToSheet();
-        case 9 -> toggleHealthBar();
-        case 10 -> toggleHealthAction();
+        case 9 -> resetActiveAbilityCrouchBinds();
+        case 10 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.HAND);
+        case 11 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.OFF_HAND);
+        case 12 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.HEAD);
+        case 13 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.CHEST);
+        case 14 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.LEGS);
+        case 15 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.FEET);
+        case 16 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.NECKLACE);
+        case 17 -> setActiveAbilityCrouchBind(RpgEquipmentSlot.RING);
+        case 18 -> toggleHealthBar();
+        case 19 -> toggleHealthAction();
       }
     }
   }
@@ -312,10 +325,10 @@ public class CharacterMenuClick {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings();
     Inventory menu = e.getInventory();
     if (settings.isHealthBarVisible()) {
-      menu.setItem(9, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
+      menu.setItem(18, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
     } else {
-      menu.setItem(9, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Bar"));
+      menu.setItem(18, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
     }
     settings.toggleHealthBarVisibility();
@@ -328,12 +341,44 @@ public class CharacterMenuClick {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings();
     Inventory menu = e.getInventory();
     if (settings.isHealthActionVisible()) {
-      menu.setItem(10, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+      menu.setItem(19, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
     } else {
-      menu.setItem(10, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+      menu.setItem(19, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
       user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
     }
     settings.toggleHealthActionVisibility();
+  }
+
+  /**
+   * Resets all active ability crouch binds.
+   */
+  private void resetActiveAbilityCrouchBinds() {
+    user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Crouch Binds]");
+    Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().resetActiveAbilityCrouchBinds();
+    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().getActiveAbilityCrouchBinds();
+    Inventory menu = e.getInventory();
+    menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.HAND).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.OFF_HAND).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(12, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.HEAD).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(13, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.CHEST).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(14, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.LEGS).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(15, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.FEET).toString()), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.NECKLACE).toString())));
+    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.RING).toString())));
+  }
+
+  /**
+   * Sets the crouch bind to activate abilities by equipment slot.
+   *
+   * @param slot equipment slot
+   */
+  private void setActiveAbilityCrouchBind(RpgEquipmentSlot slot) {
+    user.closeInventory();
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.WHITE + "crouch bind:");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Select a hotbar slot and crouch.");
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    playerMeta.put(PlayerMeta.ACTION, "crouch.bind");
+    playerMeta.put(PlayerMeta.SLOT, slot.getId());
   }
 }

@@ -47,7 +47,7 @@ public class MessageSent implements Listener {
   /**
    * Determines which ItemEditor input is being interacted with.
    *
-   * @param e       inventory click event
+   * @param e       message event
    * @param msgType message type
    */
   private void interpretItemEditor(AsyncPlayerChatEvent e, String[] msgType) {

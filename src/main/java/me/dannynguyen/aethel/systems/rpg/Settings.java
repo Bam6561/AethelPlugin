@@ -9,15 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents an RPG player's settings.
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.17.3
  * @since 1.16.4
  */
 public class Settings {
@@ -27,7 +25,12 @@ public class Settings {
   private final UUID uuid;
 
   /**
-   * if health bar visible.
+   * Active ability crouch binds.
+   */
+  private final Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = createBlankActiveAbilityCrouchBinds();
+
+  /**
+   * If health bar visible.
    */
   private boolean healthBarVisible = false;
 
@@ -47,6 +50,19 @@ public class Settings {
   }
 
   /**
+   * Creates a blank set of active ability crouch binds.
+   *
+   * @return blank active ability crouch binds
+   */
+  private Map<RpgEquipmentSlot, Integer> createBlankActiveAbilityCrouchBinds() {
+    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = new HashMap<>();
+    for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
+      activeAbilityCrouchBinds.put(slot, -1);
+    }
+    return activeAbilityCrouchBinds;
+  }
+
+  /**
    * Initializes the player's settings from a file if it exists.
    */
   private void initializeSettings() {
@@ -54,8 +70,20 @@ public class Settings {
     if (file.exists()) {
       try {
         Scanner scanner = new Scanner(file);
-        healthBarVisible = Boolean.parseBoolean(scanner.nextLine());
-        healthActionVisible = Boolean.parseBoolean(scanner.nextLine());
+        String[] settings = scanner.nextLine().split(" ");
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.HAND, Integer.parseInt(settings[0]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.OFF_HAND, Integer.parseInt(settings[1]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.HEAD, Integer.parseInt(settings[2]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.CHEST, Integer.parseInt(settings[3]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.LEGS, Integer.parseInt(settings[4]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.FEET, Integer.parseInt(settings[5]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.NECKLACE, Integer.parseInt(settings[6]));
+        activeAbilityCrouchBinds.put(RpgEquipmentSlot.RING, Integer.parseInt(settings[7]));
+
+        settings = scanner.nextLine().split(" ");
+        healthBarVisible = Boolean.parseBoolean(settings[0]);
+        healthActionVisible = Boolean.parseBoolean(settings[1]);
+        scanner.close();
       } catch (IOException ex) {
         Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
       }
@@ -69,12 +97,34 @@ public class Settings {
     File file = new File(Directory.SETTINGS.getFile().getPath() + "/" + uuid.toString() + "_set.txt");
     try {
       FileWriter fw = new FileWriter(file);
-      fw.write(healthBarVisible + "\n");
-      fw.write(healthActionVisible + "\n");
+      for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
+        fw.write(activeAbilityCrouchBinds.get(slot) + " ");
+      }
+      fw.write("\n");
+      fw.write(healthBarVisible + " " + healthActionVisible);
       fw.close();
     } catch (IOException ex) {
       Bukkit.getLogger().warning("[Aethel] Failed to write " + uuid + "'s settings to file.");
     }
+  }
+
+  /**
+   * Resets active ability crouch binds.
+   */
+  public void resetActiveAbilityCrouchBinds() {
+    for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
+      activeAbilityCrouchBinds.put(slot, -1);
+    }
+  }
+
+  /**
+   * Sets the active ability crouch bind.
+   *
+   * @param equipmentSlot equipment slot
+   * @param hotbarSlot    hotbar slot
+   */
+  public void setActiveAbilityCrouchBind(RpgEquipmentSlot equipmentSlot, int hotbarSlot) {
+    activeAbilityCrouchBinds.put(equipmentSlot, hotbarSlot);
   }
 
   /**
@@ -98,6 +148,15 @@ public class Settings {
    */
   public void toggleHealthActionVisibility() {
     healthActionVisible = !healthActionVisible;
+  }
+
+  /**
+   * Gets active ability crouch binds.
+   *
+   * @return active ability crouch binds
+   */
+  public Map<RpgEquipmentSlot, Integer> getActiveAbilityCrouchBinds() {
+    return this.activeAbilityCrouchBinds;
   }
 
   /**

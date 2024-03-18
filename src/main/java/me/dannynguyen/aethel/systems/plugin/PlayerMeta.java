@@ -4,10 +4,15 @@ package me.dannynguyen.aethel.systems.plugin;
  * Plugin player metadata.
  *
  * @author Danny Nguyen
- * @version 1.15.12
+ * @version 1.17.3
  * @since 1.10.1
  */
 public enum PlayerMeta {
+  /**
+   * Action input type.
+   */
+  ACTION,
+
   /**
    * Menu category.
    */

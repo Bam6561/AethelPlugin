@@ -10,6 +10,7 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
+import me.dannynguyen.aethel.listeners.plugin.Crouch;
 import me.dannynguyen.aethel.listeners.plugin.MenuClick;
 import me.dannynguyen.aethel.listeners.plugin.MessageSent;
 import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
@@ -48,7 +49,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.17.0
+ * @version 1.17.3
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -93,6 +94,7 @@ public class Plugin extends JavaPlugin {
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
+    manager.registerEvents(new Crouch(), this);
     manager.registerEvents(new MenuClick(), this);
     manager.registerEvents(new MessageSent(), this);
     manager.registerEvents(new PluginEvent(), this);
