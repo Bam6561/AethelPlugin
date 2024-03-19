@@ -33,7 +33,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.17.3
+ * @version 1.17.4
  * @since 1.9.2
  */
 public class CharacterMenuClick {
@@ -378,7 +378,7 @@ public class CharacterMenuClick {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.WHITE + "crouch bind:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Select a hotbar slot and crouch.");
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    playerMeta.put(PlayerMeta.ACTION, "crouch.bind");
+    playerMeta.put(PlayerMeta.ACTION, "crouch.bind-active_ability");
     playerMeta.put(PlayerMeta.SLOT, slot.getId());
   }
 }

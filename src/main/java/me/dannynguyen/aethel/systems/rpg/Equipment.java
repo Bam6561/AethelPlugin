@@ -27,12 +27,12 @@ import java.util.*;
  * Represents an RPG player's equipment.
  *
  * @author Danny Nguyen
- * @version 1.17.1
+ * @version 1.17.4
  * @since 1.13.4
  */
 public class Equipment {
   /**
-   * Tracked equipment enchantments.
+   * Tracked enchantments.
    */
   private static final Set<Enchantment> trackedEnchantments = Set.of(
       Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS,
@@ -49,34 +49,49 @@ public class Equipment {
   private final Map<AethelAttribute, Double> aethelAttributes;
 
   /**
-   * Equipment Aethel attributes.
+   * Aethel attributes by slot.
    */
   private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> attributes = new HashMap<>();
 
   /**
-   * Total equipment enchantments.
+   * Total enchantments.
    */
   private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
 
   /**
-   * Equipment enchantments.
+   * Enchantments by slot.
    */
   private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> enchantments = new HashMap<>();
 
   /**
-   * Equipment passive abilities by slot.
+   * Passive abilities by slot.
    */
   private final Map<RpgEquipmentSlot, List<TriggerAbility>> slotPassives = new HashMap<>();
 
   /**
-   * Equipment passive abilities by trigger.
+   * Passive abilities by trigger method..
    */
   private final Map<Trigger, Map<SlotAbility, PassiveAbility>> triggerPassives = createBlankPassiveTriggers();
 
   /**
-   * Equipment passive abilities on cooldown.
+   * Passive abilities on cooldown.
    */
   private final Map<Trigger, Set<SlotAbility>> onCooldownPassives = createBlankCooldownTriggers();
+
+  /**
+   * Active abilities by slot.
+   */
+  private final Map<RpgEquipmentSlot, List<ActiveAbilityType>> slotActives = new HashMap<>();
+
+  /**
+   * Active abilities by trigger method.
+   */
+  private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = new HashMap<>();
+
+  /**
+   * Active abilities on cooldown.
+   */
+  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives = new HashMap<>();
 
   /**
    * Jewelry slots.
@@ -454,13 +469,23 @@ public class Equipment {
   }
 
   /**
-   * Gets the player's equipment passive abilities on cooldown.
+   * Gets the player's equipment active abilities by slot.
    *
-   * @return equipment passive abilities on cooldown
+   * @return equipment active abilities
    */
   @NotNull
-  public Map<Trigger, Set<SlotAbility>> getOnCooldownPassives() {
-    return this.onCooldownPassives;
+  public Map<RpgEquipmentSlot, List<ActiveAbilityType>> getSlotActives() {
+    return this.slotActives;
+  }
+
+  /**
+   * Gets the player's equipment passive ability triggers by slot.
+   *
+   * @return equipment active abilities
+   */
+  @NotNull
+  public Map<RpgEquipmentSlot, List<ActiveAbility>> getTriggerActives() {
+    return this.triggerActives;
   }
 
   /**

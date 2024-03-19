@@ -18,7 +18,7 @@ import java.util.Map;
  * Player crouch listener for the plugin system.
  *
  * @author Danny Nguyen
- * @version 1.17.3
+ * @version 1.17.4
  * @since 1.17.3
  */
 public class Crouch implements Listener {
@@ -39,7 +39,7 @@ public class Crouch implements Listener {
     if (e.isSneaking()) {
       Player player = e.getPlayer();
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(player.getUniqueId());
-      if (playerMeta.containsKey(PlayerMeta.ACTION) && playerMeta.get(PlayerMeta.ACTION).equals("crouch.bind")) {
+      if (playerMeta.containsKey(PlayerMeta.ACTION) && playerMeta.get(PlayerMeta.ACTION).equals("crouch.bind-active_ability")) {
         Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getSettings();
         RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase());
         int hotbarSlot = player.getInventory().getHeldItemSlot();
