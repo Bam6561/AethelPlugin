@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.systems.plugin.CategoryMenu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -21,10 +22,10 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.5
  * @since 1.4.0
  */
-class ItemMenu {
+public class ItemMenu implements CategoryMenu {
   /**
    * AethelItem GUI.
    */
@@ -38,12 +39,12 @@ class ItemMenu {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * GUI action.
    */
-  private final ItemMenuAction action;
+  private final Action action;
 
   /**
    * Associates a new AethelItem menu with its user and action.
@@ -51,10 +52,10 @@ class ItemMenu {
    * @param user   user
    * @param action type of interaction
    */
-  protected ItemMenu(@NotNull Player user, @NotNull ItemMenuAction action) {
+  public ItemMenu(@NotNull Player user, @NotNull Action action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
-    this.userUUID = user.getUniqueId();
+    this.uuid = user.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -66,8 +67,8 @@ class ItemMenu {
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
-      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
+      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
     }
     return Bukkit.createInventory(user, 54, title);
   }
@@ -78,7 +79,7 @@ class ItemMenu {
    * @return AethelItem main menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory setMenu() {
     addCategories();
     addContext(null);
     addActions();
@@ -93,11 +94,11 @@ class ItemMenu {
    * @return AethelItem item category page
    */
   @NotNull
-  protected Inventory openCategoryPage(String requestedCategory, int requestedPage) {
+  public Inventory setCategoryPage(String requestedCategory, int requestedPage) {
     List<Inventory> category = Plugin.getData().getItemRegistry().getCategoryMap().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext(requestedCategory);
@@ -165,5 +166,25 @@ class ItemMenu {
         i++;
       }
     }
+  }
+
+  /**
+   * Types of interactions.
+   */
+  public enum Action {
+    /**
+     * Obtain items.
+     */
+    GET,
+
+    /**
+     * Remove items.
+     */
+    REMOVE,
+
+    /**
+     * View item categories.
+     */
+    VIEW
   }
 }

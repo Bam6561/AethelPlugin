@@ -11,7 +11,7 @@ import java.util.Objects;
  * Represents an ItemStack stored in the file system.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.5
  * @since 1.3.2
  */
 class PersistentItem {
@@ -19,6 +19,8 @@ class PersistentItem {
    * Item file.
    * <p>
    * - May be deleted from file system.
+   * </p>
+   * <p>
    * - Path persists until data is reloaded.
    * </p>
    */
@@ -41,7 +43,7 @@ class PersistentItem {
    * @param item ItemStack
    * @throws IllegalArgumentException provided file is not a file
    */
-  public PersistentItem(@NotNull File file, @NotNull ItemStack item) throws IllegalArgumentException {
+  PersistentItem(@NotNull File file, @NotNull ItemStack item) throws IllegalArgumentException {
     if (Objects.requireNonNull(file, "Null file").isFile()) {
       this.item = Objects.requireNonNull(item, "Null item");
       this.file = file;
@@ -57,17 +59,7 @@ class PersistentItem {
    * @return true if the file was deleted
    */
   protected boolean delete() {
-    return getFile().delete();
-  }
-
-  /**
-   * Gets the file the ItemStack is stored in.
-   *
-   * @return item file
-   */
-  @NotNull
-  protected File getFile() {
-    return this.file;
+    return file.delete();
   }
 
   /**

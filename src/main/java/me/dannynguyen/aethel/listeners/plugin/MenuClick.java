@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.listeners.plugin;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.commands.aethelitem.ItemMenuAction;
+import me.dannynguyen.aethel.commands.aethelitem.ItemMenu;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
@@ -24,7 +24,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.0
+ * @version 1.17.5
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -90,8 +90,8 @@ public class MenuClick implements Listener {
         ItemMenuClick click = new ItemMenuClick(e);
         switch (invType[1]) {
           case "category" -> click.interpretMenuClick();
-          case "get" -> click.interpretCategoryClick(ItemMenuAction.GET);
-          case "remove" -> click.interpretCategoryClick(ItemMenuAction.REMOVE);
+          case "get" -> click.interpretCategoryClick(ItemMenu.Action.GET);
+          case "remove" -> click.interpretCategoryClick(ItemMenu.Action.REMOVE);
         }
       } else {
         if (e.getSlot() == 3) {

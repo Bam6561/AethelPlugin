@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
+import me.dannynguyen.aethel.systems.plugin.Registry;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
@@ -23,10 +24,10 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.5
  * @since 1.3.2
  */
-public class ItemRegistry {
+public class ItemRegistry implements Registry {
   /**
    * Item file directory.
    */

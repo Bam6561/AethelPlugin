@@ -16,12 +16,17 @@ import java.util.Map;
 /**
  * Command invocation that allows the user to obtain items through clicking.
  * <p>
- * Additional Parameters:
+ * Parameters:
+ * </p>
+ * <p>
+ * - "": opens AethelItem menu
+ * </p>
+ * <p>
  * - "reload", "r": reloads items into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.5
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -29,7 +34,6 @@ public class ItemCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public ItemCommand() {
-
   }
 
   /**
@@ -77,7 +81,7 @@ public class ItemCommand implements CommandExecutor {
   private void openMenu(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.CATEGORY, " ");
-    user.openInventory(new ItemMenu(user, ItemMenuAction.VIEW).openMenu());
+    user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).setMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }
