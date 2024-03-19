@@ -17,5 +17,5 @@ public interface CategoryMenu extends Menu {
    * @param requestedPage     requested page
    * @return category page
    */
-  Inventory setCategoryPage(String requestedCategory, int requestedPage);
+  Inventory getCategoryPage(String requestedCategory, int requestedPage);
 }

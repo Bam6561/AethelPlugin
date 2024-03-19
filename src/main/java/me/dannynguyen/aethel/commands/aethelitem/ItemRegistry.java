@@ -36,7 +36,7 @@ public class ItemRegistry implements Registry {
   /**
    * Loaded items.
    */
-  private final Map<String, PersistentItem> itemMap = new HashMap<>();
+  private final Map<String, PersistentItem> items = new HashMap<>();
 
   /**
    * Loaded item categories represented by groups of inventories.
@@ -44,7 +44,7 @@ public class ItemRegistry implements Registry {
    * An inventory from any of the groups is also referred to as a page.
    * </p>
    */
-  private final Map<String, List<Inventory>> categoryMap = new HashMap<>();
+  private final Map<String, List<Inventory>> itemCategories = new HashMap<>();
 
   /**
    * Associates an ItemRegistry with the provided directory.
@@ -71,8 +71,8 @@ public class ItemRegistry implements Registry {
   public void loadData() {
     File[] files = directory.listFiles();
     if (files != null) {
-      itemMap.clear();
-      categoryMap.clear();
+      items.clear();
+      itemCategories.clear();
 
       if (files.length > 0) {
         Arrays.sort(files);
@@ -84,9 +84,9 @@ public class ItemRegistry implements Registry {
           }
         }
 
-        if (!itemMap.isEmpty()) {
+        if (!items.isEmpty()) {
           for (String category : categories.keySet()) {
-            categoryMap.put(category, createPages(categories.get(category)));
+            itemCategories.put(category, createPages(categories.get(category)));
           }
         }
       }
@@ -108,7 +108,7 @@ public class ItemRegistry implements Registry {
 
       if (ItemReader.isNotNullOrAir(item)) {
         PersistentItem pItem = new PersistentItem(file, item);
-        itemMap.put(pItem.getName(), pItem);
+        items.put(pItem.getName(), pItem);
         categories.get("All").add(item);
         sortItem(categories, item);
       } else {
@@ -158,9 +158,9 @@ public class ItemRegistry implements Registry {
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
     PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    NamespacedKey itemId = PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey();
-    if (data.has(itemId, PersistentDataType.STRING)) {
-      String category = data.get(itemId, PersistentDataType.STRING);
+    NamespacedKey itemCategory = PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey();
+    if (data.has(itemCategory, PersistentDataType.STRING)) {
+      String category = data.get(itemCategory, PersistentDataType.STRING);
       if (categories.containsKey(category)) {
         categories.get(category).add(item);
       } else {
@@ -175,8 +175,8 @@ public class ItemRegistry implements Registry {
    * @return loaded items
    */
   @NotNull
-  protected Map<String, PersistentItem> getItemMap() {
-    return this.itemMap;
+  protected Map<String, PersistentItem> getItems() {
+    return this.items;
   }
 
   /**
@@ -185,7 +185,7 @@ public class ItemRegistry implements Registry {
    * @return loaded item categories
    */
   @NotNull
-  protected Map<String, List<Inventory>> getCategoryMap() {
-    return this.categoryMap;
+  protected Map<String, List<Inventory>> getItemCategories() {
+    return this.itemCategories;
   }
 }

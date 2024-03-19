@@ -15,5 +15,5 @@ public interface Menu {
    *
    * @return plugin menu
    */
-  Inventory setMenu();
+  Inventory getMainMenu();
 }

@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.MenuClick;
 import me.dannynguyen.aethel.systems.plugin.Directory;
+import me.dannynguyen.aethel.systems.plugin.MenuClick;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -25,7 +25,7 @@ import java.util.UUID;
  * Inventory click event listener for AethelItem menus.
  *
  * @author Danny Nguyen
- * @version 1.17.5
+ * @version 1.17.5.1
  * @since 1.4.0
  */
 public class ItemMenuClick implements MenuClick {
@@ -40,7 +40,7 @@ public class ItemMenuClick implements MenuClick {
   private final Player user;
 
   /**
-   * User's uuid.
+   * User's UUID.
    */
   private final UUID uuid;
 
@@ -65,12 +65,14 @@ public class ItemMenuClick implements MenuClick {
    * Either saves an item or gets an item category page.
    */
   public void interpretMenuClick() {
-    if (slot == 3) { // Save Item Slot
-      e.setCancelled(false);
-    } else if (slot == 4) {
-      saveItem();
-    } else if (slot > 8) {
-      getCategoryPage();
+    switch (slot) {
+      case 3 -> e.setCancelled(false); // Save Item Slot
+      case 4 -> saveItem();
+      default -> {
+        if (slot > 8) {
+          getCategoryPage();
+        }
+      }
     }
   }
 
@@ -100,7 +102,7 @@ public class ItemMenuClick implements MenuClick {
       case 3 -> e.setCancelled(false); // Save Item Slot
       case 4 -> saveItem();
       case 5 -> toggleAction(action);
-      case 6 -> returnToMenu();
+      case 6 -> returnToMainMenu();
       case 8 -> nextPage(action);
       default -> {
         if (slot > 8) {
@@ -143,7 +145,7 @@ public class ItemMenuClick implements MenuClick {
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     playerMeta.put(PlayerMeta.CATEGORY, item);
-    user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).setCategoryPage(item, pageRequest));
+    user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(item, pageRequest));
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_GET.getMeta());
   }
 
@@ -157,7 +159,7 @@ public class ItemMenuClick implements MenuClick {
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
-    user.openInventory(new ItemMenu(user, action).setCategoryPage(category, pageRequest - 1));
+    user.openInventory(new ItemMenu(user, action).getCategoryPage(category, pageRequest - 1));
     playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + action.name().toLowerCase());
   }
 
@@ -172,10 +174,10 @@ public class ItemMenuClick implements MenuClick {
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     if (action == ItemMenu.Action.GET) {
-      user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).setCategoryPage(category, pageRequest));
+      user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).getCategoryPage(category, pageRequest));
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_REMOVE.getMeta());
     } else {
-      user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).setCategoryPage(category, pageRequest));
+      user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_GET.getMeta());
     }
   }
@@ -183,8 +185,8 @@ public class ItemMenuClick implements MenuClick {
   /**
    * Returns to the AethelItem main menu.
    */
-  private void returnToMenu() {
-    user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).setMenu());
+  private void returnToMainMenu() {
+    user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
@@ -200,7 +202,7 @@ public class ItemMenuClick implements MenuClick {
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
-    user.openInventory(new ItemMenu(user, action).setCategoryPage(category, pageRequest + 1));
+    user.openInventory(new ItemMenu(user, action).getCategoryPage(category, pageRequest + 1));
     playerMeta.put(PlayerMeta.INVENTORY, "aethelitem." + action.name().toLowerCase());
   }
 
@@ -213,7 +215,7 @@ public class ItemMenuClick implements MenuClick {
     ItemStack clickedItem = e.getCurrentItem();
     switch (action) {
       case GET -> {
-        ItemStack item = Plugin.getData().getItemRegistry().getItemMap().get(ItemReader.readName(clickedItem)).getItem();
+        ItemStack item = Plugin.getData().getItemRegistry().getItems().get(ItemReader.readName(clickedItem)).getItem();
         if (user.getInventory().firstEmpty() != -1) {
           user.getInventory().addItem(item);
         } else {
@@ -221,9 +223,9 @@ public class ItemMenuClick implements MenuClick {
         }
       }
       case REMOVE -> {
-        PersistentItem aethelItem = Plugin.getData().getItemRegistry().getItemMap().get(ItemReader.readName(clickedItem));
-        aethelItem.delete();
-        user.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + aethelItem.getName());
+        PersistentItem pItem = Plugin.getData().getItemRegistry().getItems().get(ItemReader.readName(clickedItem));
+        pItem.delete();
+        user.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + pItem.getName());
       }
     }
   }

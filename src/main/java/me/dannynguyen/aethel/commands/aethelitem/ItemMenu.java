@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Represents a menu that supports categorical pagination for obtaining, creating, editing, and removing items.
+ * Represents a menu that supports categorical pagination for
+ * obtaining, creating, editing, and removing items.
  *
  * @author Danny Nguyen
  * @version 1.17.5
@@ -27,7 +28,7 @@ import java.util.UUID;
  */
 public class ItemMenu implements CategoryMenu {
   /**
-   * AethelItem GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -79,7 +80,7 @@ public class ItemMenu implements CategoryMenu {
    * @return AethelItem main menu
    */
   @NotNull
-  public Inventory setMenu() {
+  public Inventory getMainMenu() {
     addCategories();
     addContext(null);
     addActions();
@@ -94,8 +95,8 @@ public class ItemMenu implements CategoryMenu {
    * @return AethelItem item category page
    */
   @NotNull
-  public Inventory setCategoryPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = Plugin.getData().getItemRegistry().getCategoryMap().get(requestedCategory);
+  public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
+    List<Inventory> category = Plugin.getData().getItemRegistry().getItemCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
@@ -158,7 +159,7 @@ public class ItemMenu implements CategoryMenu {
    * Adds item categories.
    */
   private void addCategories() {
-    Set<String> categories = Plugin.getData().getItemRegistry().getCategoryMap().keySet();
+    Set<String> categories = Plugin.getData().getItemRegistry().getItemCategories().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {
