@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Types of RPG equipment slots.
  * <p>
- * Necklace and ring are only equippable in the Sheet menu.
+ * Necklace and ring are only equippable in the {@link me.dannynguyen.aethel.commands.character.SheetMenu} menu.
  * </p>
  *
  * @author Danny Nguyen
@@ -46,7 +46,7 @@ public enum RpgEquipmentSlot {
   /**
    * Necklace.
    * <p>
-   * Sheet menu only.
+   * {@link me.dannynguyen.aethel.commands.character.SheetMenu} menu only.
    * </p>
    */
   NECKLACE("Necklace", "necklace"),
@@ -54,7 +54,7 @@ public enum RpgEquipmentSlot {
   /**
    * Ring.
    * <p>
-   * Sheet menu only.
+   * {@link me.dannynguyen.aethel.commands.character.SheetMenu} menu only.
    * </p>
    */
   RING("Ring", "ring");

@@ -11,22 +11,22 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum MenuMeta {
   /**
-   * View item categories.
+   * View {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem item} categories.
    */
   AETHELITEM_CATEGORY("aethelitem.category"),
 
   /**
-   * Get items.
+   * Get {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
    */
   AETHELITEM_GET("aethelitem.get"),
 
   /**
-   * Remove items.
+   * Remove {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
    */
   AETHELITEM_REMOVE("aethelitem.remove"),
 
   /**
-   * Interact with character sheet.
+   * Interact with {@link me.dannynguyen.aethel.commands.character.SheetMenu}.
    */
   CHARACTER_SHEET("character.sheet"),
 
@@ -41,37 +41,37 @@ public enum MenuMeta {
   CHARACTER_COLLECTIBLES("character.collectibles"),
 
   /**
-   * Interact with RPG settings.
+   * Interact with {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}.
    */
   CHARACTER_SETTINGS("character.settings"),
 
   /**
-   * View recipe categories.
+   * View {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} categories.
    */
   FORGE_CATEGORY("forge.category"),
 
   /**
-   * Craft recipes.
+   * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
    */
   FORGE_CRAFT("forge.craft"),
 
   /**
-   * Craft recipe operation.
+   * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} operation.
    */
   FORGE_CRAFT_RECIPE("forge.craft-recipe"),
 
   /**
-   * Edit recipes.
+   * Edit {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
    */
   FORGE_EDIT("forge.edit"),
 
   /**
-   * Remove recipes.
+   * Remove {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
    */
   FORGE_REMOVE("forge.remove"),
 
   /**
-   * Save recipes.
+   * Save {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
    */
   FORGE_SAVE("forge.save"),
 
@@ -86,7 +86,7 @@ public enum MenuMeta {
   ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor.minecraft_attribute"),
 
   /**
-   * Edit item Aethel attributes.
+   * Edit item {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attributes}.
    */
   ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor.aethel_attribute"),
 
@@ -101,22 +101,22 @@ public enum MenuMeta {
   ITEMEDITOR_POTION("itemeditor.potion"),
 
   /**
-   * Edit item passive abilities.
+   * Edit item {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive abilities}.
    */
   ITEMEDITOR_PASSIVE("itemeditor.passive"),
 
   /**
-   * Edit item active abilities.
+   * Edit item {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityType active abilities}.
    */
   ITEMEDITOR_ACTIVE("itemeditor.active"),
 
   /**
-   * Edit item tags.
+   * Edit item {@link PluginNamespacedKey Aethel tags}.
    */
   ITEMEDITOR_TAG("itemeditor.tag"),
 
   /**
-   * View categories.
+   * View stat categories.
    */
   PLAYERSTAT_CATEGORY("playerstat.category"),
 

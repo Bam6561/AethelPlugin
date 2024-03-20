@@ -17,7 +17,8 @@ import org.bukkit.event.inventory.*;
 import java.util.Map;
 
 /**
- * Collection of inventory click listeners for the plugin's menus.
+ * Collection of inventory click listeners for the plugin's
+ * {@link me.dannynguyen.aethel.plugin.interfaces.Menu menus}.
  * <p>
  * By default, all clicks within plugin menus are cancelled due to the possibility of an
  * internal error occurring and the associated methods never reaching their end result.
@@ -78,7 +79,8 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which AethelItem menu is being interacting with.
+   * Determines which {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand}
+   * menu is being interacting with.
    *
    * @param e       inventory click event
    * @param invType inventory type
@@ -105,7 +107,8 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which Character menu is being interacting with.
+   * Determines which {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
+   * menu is being interacting with.
    *
    * @param e       inventory click event
    * @param invType inventory type
@@ -130,7 +133,8 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which Forge menu is being interacting with.
+   * Determines which {@link me.dannynguyen.aethel.commands.forge.ForgeCommand}
+   * menu is being interacting with.
    *
    * @param e       inventory click event
    * @param invType inventory type
@@ -158,7 +162,8 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which ItemEditor menu is being interacting with.
+   * Determines which {@link me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand}
+   * menu is being interacting with.
    *
    * @param e       inventory click event
    * @param invType inventory type
@@ -186,7 +191,8 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which PlayerStats menu is being interacting with.
+   * Determines which {@link me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand}
+   * menu is being interacting with.
    *
    * @param e       inventory click event
    * @param invType inventory type
@@ -210,7 +216,8 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which ShowItem menu is being interacting with.
+   * Determines which {@link me.dannynguyen.aethel.commands.showitem.ShowItemCommand}
+   * menu is being interacting with.
    *
    * @param e       inventory click event
    * @param invType inventory type
@@ -228,7 +235,7 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Removes player menu metadata when a menu is closed.
+   * Removes plugin {@link PlayerMeta player metadata} when a menu is closed.
    * <p>
    * Since opening a new inventory while one already exists triggers
    * the InventoryCloseEvent, always add new inventory metadata AFTER

@@ -26,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a menu that allows the user to edit an item's passive abilities.
+ * Represents a menu that allows the user to edit an item's
+ * {@link PassiveAbilityType passive abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -49,14 +50,14 @@ public class PassiveMenu implements Menu {
   private final ItemStack item;
 
   /**
-   * GUI trigger type.
-   */
-  private final Trigger trigger;
-
-  /**
-   * GUI equipment slot.
+   * GUI {@link RpgEquipmentSlot equipment slot}
    */
   private final RpgEquipmentSlot eSlot;
+
+  /**
+   * GUI {@link Trigger trigger}
+   */
+  private final Trigger trigger;
 
   /**
    * ItemStack data container.
@@ -64,7 +65,7 @@ public class PassiveMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack passive abilities.
+   * ItemStack {@link PassiveAbilityType passive abilities}.
    */
   private final Map<String, List<PassiveLoreIdentifier>> existingPassives;
 
@@ -72,8 +73,8 @@ public class PassiveMenu implements Menu {
    * Associates a new Passive menu with its user and item.
    *
    * @param user    user
-   * @param trigger trigger type
-   * @param eSlot   equipment slot
+   * @param trigger {@link Trigger trigger}
+   * @param eSlot   {@link RpgEquipmentSlot equipment slot}
    */
   public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -97,7 +98,7 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with passive abilities.
+   * Sets the menu to display interactions with {@link PassiveAbilityType passive abilities}.
    *
    * @return Passive menu
    */
@@ -112,7 +113,7 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Adds passive abilities.
+   * Adds {@link PassiveAbilityType passive abilities}.
    */
   private void addPassives() {
     int invSlot = 18;
@@ -150,7 +151,7 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Adds equipment slot buttons.
+   * Adds {@link RpgEquipmentSlot equipment slot} buttons.
    */
   private void addActions() {
     menu.setItem(5, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
@@ -164,7 +165,7 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Adds trigger type buttons.
+   * Adds {@link Trigger trigger} buttons.
    */
   private void addTriggers() {
     menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
@@ -174,9 +175,9 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Maps an item's passive abilities.
+   * Maps an item's {@link PassiveAbilityType passive abilities}.
    *
-   * @return item's passives map
+   * @return item's {@link PassiveAbilityType passives} map
    */
   private Map<String, List<PassiveLoreIdentifier>> mapPassives() {
     NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();

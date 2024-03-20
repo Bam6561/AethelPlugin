@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a triggered passive ability.
+ * Represents a triggered {@link PassiveAbility}.
  *
  * @author Danny Nguyen
  * @version 1.17.2
@@ -23,28 +23,31 @@ import java.util.*;
  */
 public class PassiveAbilityTrigger {
   /**
-   * Passive ability.
+   * {@link PassiveAbility}
    */
   private final PassiveAbility ability;
 
   /**
-   * Passive ability's trigger data.
+   * {@link PassiveAbility Passive ability's}
+   * {@link me.dannynguyen.aethel.rpg.enums.Trigger trigger} data.
    */
   private final List<String> triggerData;
 
   /**
-   * Passive ability's effect data.
+   * {@link PassiveAbility Passive ability's}
+   * {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect effect} data.
    */
   private final List<String> effectData;
 
   /**
-   * Associates a passive ability trigger with an ability.
+   * Associates a {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability}
+   * {@link PassiveAbilityTrigger trigger} with a {@link PassiveAbility}.
    *
-   * @param ability ability to be triggered
+   * @param ability {@link PassiveAbility} to be triggered
    */
   public PassiveAbilityTrigger(@NotNull PassiveAbility ability) {
     this.ability = Objects.requireNonNull(ability, "Null ability");
-    this.triggerData = ability.getTriggerData();
+    this.triggerData = ability.getConditionData();
     this.effectData = ability.getEffectData();
   }
 
@@ -61,7 +64,7 @@ public class PassiveAbilityTrigger {
     }
     statuses = entityStatuses.get(targetUUID);
 
-    StatusType statusType = StatusType.valueOf(ability.getAbilityType().toString());
+    StatusType statusType = StatusType.valueOf(ability.getType().toString());
     int stacks = Integer.parseInt(effectData.get(1));
     int ticks = Integer.parseInt(effectData.get(2));
     if (statuses.containsKey(statusType)) {

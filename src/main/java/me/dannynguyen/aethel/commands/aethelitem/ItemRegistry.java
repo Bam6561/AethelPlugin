@@ -20,7 +20,7 @@ import java.util.*;
  * Represents items in memory.
  * <p>
  * After the registry's creation, {@link #loadData() loadData} must
- * be called in order to load items from its associated directory.
+ * be called in order to load {@link PersistentItem items} from its associated directory.
  * </p>
  *
  * @author Danny Nguyen
@@ -34,7 +34,7 @@ public class ItemRegistry implements DataRegistry {
   private final File directory;
 
   /**
-   * Loaded items.
+   * Loaded {@link PersistentItem items}.
    */
   private final Map<String, PersistentItem> items = new HashMap<>();
 
@@ -94,8 +94,8 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Deserializes bytes from designated item file into
-   * an ItemStack that is then sorted into a category.
+   * Deserializes bytes from designated item file into an
+   * {@link PersistentItem item} that is then sorted into a category.
    *
    * @param file       item file
    * @param categories item categories
@@ -120,10 +120,10 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Creates an item category's pages.
+   * Creates an {@link PersistentItem item} category's pages.
    *
-   * @param items items from an item category
-   * @return item category's pages
+   * @param items items from an {@link PersistentItem item} category
+   * @return {@link PersistentItem item} category's pages
    */
   private List<Inventory> createPages(List<ItemStack> items) {
     int totalItems = items.size();
@@ -153,7 +153,7 @@ public class ItemRegistry implements DataRegistry {
   /**
    * Sorts an item into a category based on its item category ID.
    *
-   * @param categories item categories
+   * @param categories {@link PersistentItem item} categories
    * @param item       interacting item
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
@@ -170,18 +170,18 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded items.
+   * Gets loaded {@link PersistentItem items}.
    *
-   * @return loaded items
+   * @return loaded {@link PersistentItem items}
    */
   protected Map<String, PersistentItem> getItems() {
     return this.items;
   }
 
   /**
-   * Gets loaded item categories.
+   * Gets loaded {@link PersistentItem item} categories.
    *
-   * @return loaded item categories
+   * @return loaded {@link PersistentItem item} categories
    */
   protected Map<String, List<Inventory>> getItemCategories() {
     return this.itemCategories;

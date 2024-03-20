@@ -29,9 +29,9 @@ public class Enchantments {
   private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
 
   /**
-   * Enchantments by slot.
+   * Enchantments by {@link RpgEquipmentSlot slot}.
    */
-  private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> enchantments = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = new HashMap<>();
 
   /**
    * Player's UUID.
@@ -63,14 +63,14 @@ public class Enchantments {
   /**
    * Adds new equipment enchantments.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
    * @param item  interacting item
    */
   public void addEnchantments(@NotNull RpgEquipmentSlot eSlot, @NotNull ItemStack item) {
     Objects.requireNonNull(eSlot, "Null slot");
     Objects.requireNonNull(item, "Null item");
     for (Enchantment enchantment : trackedEnchantments) {
-      enchantments.get(eSlot).put(enchantment, item.getEnchantmentLevel(enchantment));
+      slotEnchantments.get(eSlot).put(enchantment, item.getEnchantmentLevel(enchantment));
       totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
     }
     readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
@@ -78,14 +78,14 @@ public class Enchantments {
   }
 
   /**
-   * Removes existing equipment enchantments at an equipment slot.
+   * Removes existing equipment enchantments at an {@link RpgEquipmentSlot equipment slot}.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
    */
   public void removeEnchantments(@NotNull RpgEquipmentSlot eSlot) {
-    for (Enchantment enchantment : enchantments.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
-      totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) - enchantments.get(eSlot).get(enchantment));
-      enchantments.get(eSlot).put(enchantment, 0);
+    for (Enchantment enchantment : slotEnchantments.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
+      totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) - slotEnchantments.get(eSlot).get(enchantment));
+      slotEnchantments.get(eSlot).put(enchantment, 0);
     }
     readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
     readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
@@ -116,12 +116,12 @@ public class Enchantments {
   }
 
   /**
-   * Gets the player's equipment enchantments.
+   * Gets the player's equipment enchantments by {@link RpgEquipmentSlot slot}.
    *
-   * @return equipment enchantments
+   * @return equipment enchantments by {@link RpgEquipmentSlot slot}
    */
   @NotNull
-  public Map<RpgEquipmentSlot, Map<Enchantment, Integer>> getEnchantments() {
-    return this.enchantments;
+  public Map<RpgEquipmentSlot, Map<Enchantment, Integer>> getSlotEnchantments() {
+    return this.slotEnchantments;
   }
 }

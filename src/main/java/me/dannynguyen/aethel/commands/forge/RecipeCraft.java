@@ -16,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 
 /**
- * Represents a recipe craft operation.
+ * Represents a {@link PersistentRecipe recipe} craft operation.
  * <p>
  * Only removes items from the user's inventory if
  * they have enough materials to craft the recipe.
@@ -28,12 +28,7 @@ import java.util.*;
  */
 class RecipeCraft {
   /**
-   * Inventory slots to update if the recipe's requirements are met.
-   */
-  private final List<RecipeCraftInventory> postCraft = new ArrayList<>();
-
-  /**
-   * User crafting the recipe.
+   * User crafting the {@link PersistentRecipe recipe}.
    */
   private final Player user;
 
@@ -43,12 +38,12 @@ class RecipeCraft {
   private final UUID uuid;
 
   /**
-   * Recipe's results.
+   * {@link PersistentRecipe Recipe's} results.
    */
   private final List<ItemStack> results;
 
   /**
-   * Recipe's materials.
+   * {@link PersistentRecipe Recipe's} materials.
    */
   private final List<ItemStack> materials;
 
@@ -63,7 +58,12 @@ class RecipeCraft {
   private final Map<Material, List<RecipeCraftInventory>> materialSlots;
 
   /**
-   * Associates a user with the recipe being crafted.
+   * Inventory slots to update if the {@link PersistentRecipe recipe's} requirements are met.
+   */
+  private final List<RecipeCraftInventory> postCraft = new ArrayList<>();
+
+  /**
+   * Associates a user with the {@link PersistentRecipe recipe} being crafted.
    *
    * @param user user
    * @param item representative item of recipe
@@ -101,7 +101,7 @@ class RecipeCraft {
   }
 
   /**
-   * Crafts a recipe if the user has enough materials.
+   * Crafts a {@link PersistentRecipe recipe} if the user has enough materials.
    */
   protected void readRecipeMaterials() {
     if (!Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).containsKey(PlayerMeta.DEVELOPER)) {
@@ -116,7 +116,7 @@ class RecipeCraft {
   }
 
   /**
-   * Determines if the user has enough materials to craft the recipe.
+   * Determines if the user has enough materials to craft the {@link PersistentRecipe recipe}.
    *
    * @return has enough materials
    */
@@ -146,7 +146,7 @@ class RecipeCraft {
   }
 
   /**
-   * Removes the recipe's materials from the user's inventory and gives the recipe's results.
+   * Removes the {@link PersistentRecipe recipe's} materials from the user's inventory and gives the {@link PersistentRecipe recipe's} results.
    */
   private void craftRecipe() {
     for (RecipeCraftInventory invSlot : postCraft) {

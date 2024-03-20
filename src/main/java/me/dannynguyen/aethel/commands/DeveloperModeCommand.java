@@ -13,8 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Command invocation that allows the user to
- * bypass conditions for various interactions.
+ * Command invocation that allows the user to bypass conditions for various interactions.
  *
  * @author Danny Nguyen
  * @version 1.14.5

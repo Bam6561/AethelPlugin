@@ -56,7 +56,7 @@ public class AttributeMenu implements Menu {
   private final ItemStack item;
 
   /**
-   * GUI action.
+   * GUI equipment slot.
    */
   private final EquipmentSlot eSlot;
 
@@ -69,7 +69,7 @@ public class AttributeMenu implements Menu {
    * Associates a new Attribute menu with its user and editing item.
    *
    * @param user  user
-   * @param eSlot type of interaction
+   * @param eSlot equipment slot
    */
   public AttributeMenu(@NotNull Player user, @NotNull EquipmentSlot eSlot) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -80,7 +80,7 @@ public class AttributeMenu implements Menu {
   }
 
   /**
-   * Creates and names a new Attribute menu with its action.
+   * Creates and names a new Attribute menu with its equipment slot.
    *
    * @return Attribute menu
    */

@@ -14,15 +14,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Command invocation that allows the user to obtain items through clicking.
+ * Command invocation that allows the user to obtain {@link PersistentItem items} through clicking.
+ * <p>
+ * Registered through {@link Plugin}.
+ * </p>
  * <p>
  * Parameters:
  * </p>
  * <p>
- * - "": opens AethelItem menu
+ * - "": opens {@link ItemMenu} menu
  * </p>
  * <p>
- * - "reload", "r": reloads items into memory
+ * - "reload", "r": reloads {@link PersistentItem items} into {@link ItemRegistry}
  * </p>
  *
  * @author Danny Nguyen
@@ -74,7 +77,7 @@ public class ItemCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the AethelItem main menu.
+   * Opens the {@link ItemMenu} main menu.
    *
    * @param user user
    */
@@ -87,7 +90,7 @@ public class ItemCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the action is "reload" before reloading items into memory.
+   * Checks if the action is "reload" before reloading {@link PersistentItem items} into {@link ItemRegistry}.
    *
    * @param user   user
    * @param action type of interaction

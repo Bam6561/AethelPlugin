@@ -116,7 +116,7 @@ public class EntityDamage implements Listener {
           Random random = new Random();
           for (PassiveAbility ability : damageDealtTriggers.values()) {
             if (!ability.isOnCooldown()) {
-              switch (ability.getAbilityType().getEffect()) {
+              switch (ability.getType().getEffect()) {
                 case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damager.getUniqueId(), damagee.getUniqueId());
                 case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
               }
@@ -140,7 +140,7 @@ public class EntityDamage implements Listener {
         Random random = new Random();
         for (PassiveAbility ability : damageTakenTriggers.values()) {
           if (!ability.isOnCooldown()) {
-            switch (ability.getAbilityType().getEffect()) {
+            switch (ability.getType().getEffect()) {
               case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damagee.getUniqueId(), damager.getUniqueId());
               case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
             }
@@ -170,7 +170,7 @@ public class EntityDamage implements Listener {
    *
    * @param e          entity damage by entity event
    * @param damagee    interacting player
-   * @param mitigation player damage mitigation
+   * @param mitigation {@link PlayerDamageMitigation}
    */
   private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee, PlayerDamageMitigation mitigation) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
@@ -204,12 +204,13 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Mitigates environmental damage taken based on the player's environmental protection enchantments.
+   * Mitigates environmental damage taken based on the player's
+   * {@link me.dannynguyen.aethel.rpg.system.Enchantments environmental protection enchantments}.
    *
    * @param e          entity damage event
    * @param cause      damage cause
    * @param damagee    player taking damage
-   * @param mitigation player damage mitigation
+   * @param mitigation {@link PlayerDamageMitigation}
    * @return if no damage is taken
    */
   private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee, PlayerDamageMitigation mitigation) {
@@ -236,15 +237,16 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Checks if the stack instance effect was successful before applying stack instances.
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect stack instance effect}
+   * was successful before applying stack instances.
    *
    * @param random    rng
-   * @param ability   passive ability
+   * @param ability   {@link PassiveAbility}
    * @param selfUUID  self UUID
    * @param otherUUID entity UUID
    */
   private void readOnDamageStackInstance(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
-    double chance = Double.parseDouble(ability.getTriggerData().get(0));
+    double chance = Double.parseDouble(ability.getConditionData().get(0));
     if (chance > random.nextDouble() * 100) {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       UUID targetUUID;
@@ -258,15 +260,16 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Checks if the chain damage effect was successful before dealing chain damage.
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect chain damage effect}
+   * was successful before dealing chain damage.
    *
    * @param random    rng
-   * @param ability   passive ability
+   * @param ability   {@link PassiveAbility}
    * @param selfUUID  self UUID
    * @param otherUUID entity UUID
    */
   private void readOnDamageChainDamage(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
-    double chance = Double.parseDouble(ability.getTriggerData().get(0));
+    double chance = Double.parseDouble(ability.getConditionData().get(0));
 
     if (chance > random.nextDouble() * 100) {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
@@ -294,7 +297,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * If the target has the Vulnerable status, multiply the damage by its number of stacks.
+   * If the target has the {@link StatusType Vulnerable status}, multiply the damage by its number of stacks.
    *
    * @param e entity damage by entity event
    */
@@ -316,7 +319,7 @@ public class EntityDamage implements Listener {
    * @param e          entity damage by entity event
    * @param damager    damaging entity
    * @param damagee    player taking damage
-   * @param mitigation player damage mitigation
+   * @param mitigation {@link PlayerDamageMitigation}
    * @return if no damage taken or magic damage was taken/mitigated
    */
   private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity damager, Player damagee, PlayerDamageMitigation mitigation) {
@@ -375,7 +378,7 @@ public class EntityDamage implements Listener {
    * </p>
    *
    * @param cause      damage cause
-   * @param attributes player's attributes
+   * @param attributes {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}
    * @param random     rng
    * @param damager    damager
    * @param damagee    player taking damage
@@ -407,7 +410,7 @@ public class EntityDamage implements Listener {
    * otherwise toughness mitigates damage by a flat amount.
    *
    * @param e          entity damage event
-   * @param attributes player's attributes
+   * @param attributes {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}
    * @param damagee    player taking damage
    * @return if tougher than damage
    */

@@ -18,10 +18,10 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Represents Forge recipes in memory.
+ * Represents {@link PersistentRecipe recipes} in memory.
  * <p>
  * After the registry's creation, {@link #loadData() loadData} must
- * be called in order to load recipes from its associated directory.
+ * be called in order to load {@link PersistentRecipe recipes} from its associated directory.
  * </p>
  *
  * @author Danny Nguyen
@@ -30,12 +30,12 @@ import java.util.*;
  */
 public class RecipeRegistry implements DataRegistry {
   /**
-   * Forge recipe file directory.
+   * Recipe file directory.
    */
   private final File directory;
 
   /**
-   * Loaded Forge recipes.
+   * Loaded {@link PersistentRecipe recipes}.
    */
   private final Map<String, PersistentRecipe> recipes = new HashMap<>();
 
@@ -67,7 +67,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Loads Forge recipes into memory.
+   * Loads {@link PersistentRecipe recipes} into memory.
    */
   public void loadData() {
     File[] files = directory.listFiles();
@@ -95,8 +95,8 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Deserializes bytes from designated recipe file into
-   * a Forge recipe that is then sorted into a category.
+   * Deserializes bytes from designated recipe file into a
+   * {@link PersistentRecipe recipe} that is then sorted into a category.
    * <p>
    * Data is stored in two lines of text, represented by the variable dataType.
    * - [1] Results
@@ -104,7 +104,7 @@ public class RecipeRegistry implements DataRegistry {
    * </p>
    *
    * @param file       recipe file
-   * @param categories recipe categories
+   * @param categories {@link PersistentRecipe recipe} categories
    */
   private void readFile(File file, Map<String, List<List<ItemStack>>> categories) {
     List<ItemStack> results = new ArrayList<>();
@@ -132,10 +132,10 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Creates a recipe category's pages.
+   * Creates a {@link PersistentRecipe recipe} category's pages.
    *
-   * @param recipes recipes from a recipe category
-   * @return recipe category's pages
+   * @param recipes recipes from a {@link PersistentRecipe recipe} category
+   * @return {@link PersistentRecipe recipe} category's pages
    */
   private List<Inventory> createPages(List<List<ItemStack>> recipes) {
     int totalRecipes = recipes.size();
@@ -165,7 +165,7 @@ public class RecipeRegistry implements DataRegistry {
   /**
    * Reads lines of text from the file and adds decoded items to the recipe.
    * <p>
-   * Individual encoded ITemStacks are separated by spaces.
+   * Individual encoded ItemStacks are separated by spaces.
    * </p>
    *
    * @param lines     text lines
@@ -195,7 +195,7 @@ public class RecipeRegistry implements DataRegistry {
   /**
    * Sorts a recipe into a category based on its recipe category ID.
    *
-   * @param categories recipe categories
+   * @param categories {@link PersistentRecipe recipe} categories
    * @param results    interacting recipe
    */
   private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
@@ -211,7 +211,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Creates an item display for recipes with multiple results.
+   * Creates an item display for {@link PersistentRecipe recipes} with multiple results.
    * <p>
    * Format:
    * xAmount Item
@@ -240,9 +240,9 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded recipe.
+   * Gets loaded {@link PersistentRecipe recipe}.
    *
-   * @return loaded recipes
+   * @return loaded {@link PersistentRecipe recipes}
    */
   @NotNull
   protected Map<String, PersistentRecipe> getRecipes() {
@@ -250,9 +250,9 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded recipe categories.
+   * Gets loaded {@link PersistentRecipe recipe} categories.
    *
-   * @return loaded recipe categories
+   * @return loaded {@link PersistentRecipe recipe} categories
    */
   @NotNull
   protected Map<String, List<Inventory>> getRecipeCategories() {

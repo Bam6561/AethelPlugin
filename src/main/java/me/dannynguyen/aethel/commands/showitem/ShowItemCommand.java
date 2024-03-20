@@ -21,8 +21,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Command invocation that shows the user's main hand item to global chat.
  * <p>
- * Additional Parameters:
- * - "past", "p": opens a menu with the last 27 shown items
+ * Parameters:
+ * - "": shows the user's main hand item to global chat
+ * - "past", "p": opens a {@link PastItemMenu} menu with the last 27 shown items
  * </p>
  *
  * @author Danny Nguyen
@@ -92,7 +93,7 @@ public class ShowItemCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the parameter is "past" before opening a PastItem menu.
+   * Checks if the parameter is "past" before opening a {@link PastItemMenu} menu.
    *
    * @param user   user
    * @param action type of interaction

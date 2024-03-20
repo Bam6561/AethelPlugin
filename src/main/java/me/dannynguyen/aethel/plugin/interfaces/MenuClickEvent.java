@@ -7,7 +7,7 @@ package me.dannynguyen.aethel.plugin.interfaces;
  * @version 1.17.5
  * @since 1.17.5
  */
-public interface MenuClick {
+public interface MenuClickEvent {
   /**
    * Determines which action to take when a click happens.
    */

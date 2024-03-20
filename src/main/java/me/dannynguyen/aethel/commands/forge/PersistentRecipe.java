@@ -8,12 +8,15 @@ import java.util.List;
 
 /**
  * Represents a recipe stored in the file system.
+ * <p>
+ * Loaded into memory when {@link RecipeRegistry#loadData()} is called.
+ * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7
  * @since 1.0.3
  */
-class PersistentRecipe {
+public class PersistentRecipe {
   /**
    * Recipe file.
    * <p>
@@ -48,7 +51,7 @@ class PersistentRecipe {
    * @param materials recipe materials
    * @throws IllegalArgumentException provided file is not a file
    */
-  protected PersistentRecipe(File file, List<ItemStack> results, List<ItemStack> materials) {
+  public PersistentRecipe(File file, List<ItemStack> results, List<ItemStack> materials) {
     this.file = file;
     this.results = results;
     this.materials = materials;
@@ -58,7 +61,7 @@ class PersistentRecipe {
   /**
    * Deletes the recipe file from the file system.
    */
-  protected void delete() {
+  public void delete() {
     file.delete();
   }
 
@@ -67,7 +70,7 @@ class PersistentRecipe {
    *
    * @return recipe results
    */
-  protected List<ItemStack> getResults() {
+  public List<ItemStack> getResults() {
     return this.results;
   }
 
@@ -76,7 +79,7 @@ class PersistentRecipe {
    *
    * @return recipe materials
    */
-  protected List<ItemStack> getMaterials() {
+  public List<ItemStack> getMaterials() {
     return this.materials;
   }
 
@@ -85,7 +88,7 @@ class PersistentRecipe {
    *
    * @return recipe name
    */
-  protected String getName() {
+  public String getName() {
     return this.name;
   }
 }

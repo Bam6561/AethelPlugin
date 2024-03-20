@@ -34,17 +34,18 @@ public class Equipment {
   private final UUID uuid;
 
   /**
-   * Total Aethel attributes.
+   * Total {@link AethelAttributes Aethel attributes}.
    */
   private final AethelAttributes attributes;
 
   /**
-   * Total enchantments.
+   * Total {@link Enchantments enchantments}.
    */
   private final Enchantments enchantments;
 
   /**
-   * Passive and active abilities.
+   * {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility} and
+   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} abilities.
    */
   private final Abilities abilities;
 
@@ -62,9 +63,9 @@ public class Equipment {
    * Associates RPG equipment with a player.
    *
    * @param player       interacting player
-   * @param attributes   total Aethel attributes
-   * @param enchantments total enchantments
-   * @param abilities    passive and active abilities
+   * @param attributes   total {@link AethelAttributes Aethel attributes}
+   * @param enchantments total {@link Enchantments enchantments}
+   * @param abilities    {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility} and{@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} abilities.
    */
   public Equipment(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Enchantments enchantments, @NotNull Abilities abilities) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
@@ -94,7 +95,7 @@ public class Equipment {
   }
 
   /**
-   * Initializes the player's equipment-related Aethel tags.
+   * Initializes the player's equipment-related {@link PluginNamespacedKey Aethel tags}.
    *
    * @param player interacting player
    */
@@ -111,7 +112,8 @@ public class Equipment {
   }
 
   /**
-   * Checks if the item has Aethel attribute modifiers, enchantments, and abilities
+   * Checks if the item has {@link AethelAttributes Aethel attribute modifiers},
+   * {@link Enchantments enchantments}, and {@link Abilities abilities}
    * before checking whether the item is in the correct equipment slot.
    * <p>
    * A 2 tick delay is added to max health updates due to items containing
@@ -119,7 +121,7 @@ public class Equipment {
    * </p>
    *
    * @param item            interacting item
-   * @param eSlot           slot type
+   * @param eSlot           {@link RpgEquipmentSlot equipment slot}
    * @param maxHealthUpdate whether to update the player's max health
    */
   public void readSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot eSlot, boolean maxHealthUpdate) {
@@ -151,9 +153,9 @@ public class Equipment {
   }
 
   /**
-   * Sets new data stored about an equipment slot.
+   * Sets new data stored about an {@link RpgEquipmentSlot equipment slot}.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
    * @param item  interacting item
    */
   private void setSlotData(RpgEquipmentSlot eSlot, ItemStack item) {
@@ -163,7 +165,7 @@ public class Equipment {
       attributes.readAttributes(eSlot, dataContainer);
     }
     if (item.getItemMeta().hasEnchants()) {
-      enchantments.getEnchantments().put(eSlot, new HashMap<>());
+      enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
       enchantments.addEnchantments(eSlot, item);
     }
     if (dataContainer.has(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
@@ -173,15 +175,15 @@ public class Equipment {
   }
 
   /**
-   * Removes all data stored about an equipment slot.
+   * Removes all data stored about an {@link RpgEquipmentSlot equipment slot}.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
    */
   private void removeSlotData(RpgEquipmentSlot eSlot) {
     if (attributes.getSlotAttributes().containsKey(eSlot)) {
       attributes.removeAttributes(eSlot);
     }
-    if (enchantments.getEnchantments().containsKey(eSlot)) {
+    if (enchantments.getSlotEnchantments().containsKey(eSlot)) {
       enchantments.removeEnchantments(eSlot);
     }
     if (abilities.getSlotPassives().containsKey(eSlot)) {
@@ -218,13 +220,13 @@ public class Equipment {
   }
 
   /**
-   * Gets the player's held item tracked by the RPG system.
+   * Gets the player's held item tracked by the {@link RpgSystem}.
    * <p>
    * Held item is not synchronous with in-game events,
    * as it is only updated every 10 tick interval.
    * </p>
    *
-   * @return held item tracked by the RPG system
+   * @return held item tracked by the {@link RpgSystem}
    */
   @NotNull
   public ItemStack getHeldItem() {
@@ -232,7 +234,7 @@ public class Equipment {
   }
 
   /**
-   * Sets the player's held item tracked by RPG system.
+   * Sets the player's held item tracked by {@link RpgSystem}.
    *
    * @param item item to be set
    */

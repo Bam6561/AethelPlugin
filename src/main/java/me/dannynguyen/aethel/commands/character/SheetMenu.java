@@ -25,7 +25,8 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
- * Represents a menu that shows the player's equipment and attributes within the RPG context.
+ * Represents a menu that shows the player's {@link me.dannynguyen.aethel.rpg.system.Equipment},
+ * Minecraft attributes, and {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -193,7 +194,7 @@ public class SheetMenu implements Menu {
   /**
    * Adds the player's offense attributes.
    *
-   * @param attributes owner's Aethel attributes
+   * @param attributes owner's attributes
    * @param df2        0.00 decimal format
    */
   private void addOffenseAttributes(Map<AethelAttributeType, Double> attributes, DecimalFormat df2) {
@@ -208,7 +209,7 @@ public class SheetMenu implements Menu {
   /**
    * Adds the player's defense attributes.
    *
-   * @param attributes owner's Aethel attributes
+   * @param attributes owner's attributes
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttributeType, Double> attributes, DecimalFormat df2) {
@@ -234,7 +235,7 @@ public class SheetMenu implements Menu {
   /**
    * Adds the player's other attributes.
    *
-   * @param attributes owner's Aethel attributes
+   * @param attributes owner's attributes
    * @param df2        0.00 decimal format
    */
   private void addOtherAttributes(Map<AethelAttributeType, Double> attributes, DecimalFormat df2) {

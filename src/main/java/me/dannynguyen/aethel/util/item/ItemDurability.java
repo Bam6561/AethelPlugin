@@ -86,7 +86,7 @@ public class ItemDurability {
    * </p>
    *
    * @param player interacting player
-   * @param eSlot  slot type
+   * @param eSlot  equipment slot
    * @param damage durability damage
    */
   public static void increaseDamage(@NotNull Player player, @NotNull EquipmentSlot eSlot, int damage) {

@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents an RPG player's health.
+ * Represents an {@link RpgPlayer RPG player's} health.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -31,12 +31,12 @@ public class Health {
   private final UUID uuid;
 
   /**
-   * Total Aethel attributes.
+   * {@link AethelAttributes Total Aethel attributes}.
    */
   private final AethelAttributes attributes;
 
   /**
-   * Player's settings.
+   * {@link Settings Player's settings}.
    */
   private final Settings settings;
 
@@ -59,8 +59,8 @@ public class Health {
    * Associates RPG health with a player.
    *
    * @param player     interacting player
-   * @param attributes total Aethel attributes
-   * @param settings   player's settings
+   * @param attributes {@link AethelAttributes total Aethel attributes}
+   * @param settings   {@link Settings player's settings}
    */
   public Health(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
@@ -184,7 +184,7 @@ public class Health {
   /**
    * Updates the action bar display.
    *
-   * @param condition health condition
+   * @param condition {@link Condition}
    */
   public void updateActionDisplay(@NotNull Health.Condition condition) {
     if (settings.isHealthActionVisible()) {
@@ -214,7 +214,7 @@ public class Health {
   /**
    * Updates the health bar display.
    *
-   * @param condition health condition
+   * @param condition {@link Condition}
    * @param lifeRatio hearts displayed : true max health
    */
   private void updateBarDisplay(Condition condition, Double lifeRatio) {
@@ -242,9 +242,9 @@ public class Health {
   }
 
   /**
-   * Gets the RPG player's health condition.
+   * Gets the {@link Condition health condition}.
    *
-   * @return RPG health condition
+   * @return {@link Condition health condition}
    */
   private Condition getCondition() {
     if (currentHealth < maxHealth) {

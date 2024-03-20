@@ -56,7 +56,7 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a Cosmetic menu.
+   * Checks if the command request was formatted correctly before opening a {@link CosmeticMenu} menu.
    *
    * @param user user
    * @param args user provided parameters
@@ -71,7 +71,7 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the Cosmetic menu.
+   * Opens the {@link CosmeticMenu} menu.
    *
    * @param user user
    * @param item interacting item

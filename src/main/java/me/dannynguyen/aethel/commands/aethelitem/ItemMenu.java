@@ -20,7 +20,7 @@ import java.util.UUID;
 
 /**
  * Represents a menu that supports categorical pagination for
- * obtaining, creating, editing, and removing items.
+ * obtaining, creating, editing, and removing {@link PersistentItem items}.
  *
  * @author Danny Nguyen
  * @version 1.17.5
@@ -43,7 +43,7 @@ public class ItemMenu implements CategoryMenu {
   private final UUID uuid;
 
   /**
-   * GUI action.
+   * GUI {@link Action action}.
    */
   private final Action action;
 
@@ -75,7 +75,7 @@ public class ItemMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to view item categories.
+   * Sets the menu to view {@link PersistentItem item} categories.
    *
    * @return AethelItem main menu
    */
@@ -88,11 +88,11 @@ public class ItemMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to load an item category page.
+   * Sets the menu to load an {@link PersistentItem item} category page.
    *
    * @param requestedCategory requested category
    * @param requestedPage     requested page
-   * @return AethelItem item category page
+   * @return {@link PersistentItem item} category page
    */
   @NotNull
   public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
@@ -156,7 +156,7 @@ public class ItemMenu implements CategoryMenu {
   }
 
   /**
-   * Adds item categories.
+   * Adds {@link PersistentItem item} categories.
    */
   private void addCategories() {
     Set<String> categories = Plugin.getData().getItemRegistry().getItemCategories().keySet();
@@ -174,17 +174,17 @@ public class ItemMenu implements CategoryMenu {
    */
   public enum Action {
     /**
-     * Obtain items.
+     * Obtain {@link PersistentItem items}.
      */
     GET,
 
     /**
-     * Remove items.
+     * Remove {@link PersistentItem items}.
      */
     REMOVE,
 
     /**
-     * View item categories.
+     * View {@link PersistentItem item} categories.
      */
     VIEW
   }

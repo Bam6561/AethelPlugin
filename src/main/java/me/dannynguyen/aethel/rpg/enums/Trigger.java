@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Types of passive ability triggers.
+ * Types of {@link PassiveAbilityType passive ability} triggers.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -50,7 +50,7 @@ public enum Trigger {
    *
    * @param properName proper name
    * @param id         trigger id
-   * @param condition  trigger condition
+   * @param condition  {@link TriggerCondition trigger condition}
    */
   Trigger(String properName, String id, TriggerCondition condition) {
     this.properName = properName;
@@ -79,9 +79,9 @@ public enum Trigger {
   }
 
   /**
-   * Gets the trigger's condition.
+   * Gets the {@link TriggerCondition trigger's condition}.
    *
-   * @return trigger's condition
+   * @return {@link TriggerCondition trigger's condition}
    */
   @NotNull
   public TriggerCondition getCondition() {

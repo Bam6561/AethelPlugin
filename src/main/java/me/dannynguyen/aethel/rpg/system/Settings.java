@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Represents an RPG player's settings.
+ * Represents an {@link RpgPlayer} settings.
  *
  * @author Danny Nguyen
  * @version 1.17.3
@@ -26,7 +26,7 @@ public class Settings {
   private final UUID uuid;
 
   /**
-   * Active ability crouch binds.
+   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
    */
   private final Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = createBlankActiveAbilityCrouchBinds();
 
@@ -51,9 +51,9 @@ public class Settings {
   }
 
   /**
-   * Creates a blank set of active ability crouch binds.
+   * Creates a blank set of {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
    *
-   * @return blank active ability crouch binds
+   * @return blank {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds
    */
   private Map<RpgEquipmentSlot, Integer> createBlankActiveAbilityCrouchBinds() {
     Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = new HashMap<>();
@@ -110,7 +110,7 @@ public class Settings {
   }
 
   /**
-   * Resets active ability crouch binds.
+   * Resets {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
    */
   public void resetActiveAbilityCrouchBinds() {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
@@ -119,17 +119,17 @@ public class Settings {
   }
 
   /**
-   * Sets the active ability crouch bind.
+   * Sets the {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch bind.
    *
-   * @param equipmentSlot equipment slot
-   * @param heldSlot      hotbar slot
+   * @param eSlot    {@link RpgEquipmentSlot equipment slot}
+   * @param heldSlot hotbar slot
    */
-  public void setActiveAbilityCrouchBind(RpgEquipmentSlot equipmentSlot, int heldSlot) {
-    activeAbilityCrouchBinds.put(equipmentSlot, heldSlot);
+  public void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot, int heldSlot) {
+    activeAbilityCrouchBinds.put(eSlot, heldSlot);
   }
 
   /**
-   * Toggles the visibility of the health bar.
+   * Toggles the visibility of the {@link Health health bar}.
    */
   public void toggleHealthBarVisibility() {
     Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
@@ -145,34 +145,34 @@ public class Settings {
   }
 
   /**
-   * Toggles the visibility of health in the action bar.
+   * Toggles the visibility of {@link Health health} in the action bar.
    */
   public void toggleHealthActionVisibility() {
     healthActionVisible = !healthActionVisible;
   }
 
   /**
-   * Gets active ability crouch binds.
+   * Gets {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
    *
-   * @return active ability crouch binds
+   * @return {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds
    */
   public Map<RpgEquipmentSlot, Integer> getActiveAbilityCrouchBinds() {
     return this.activeAbilityCrouchBinds;
   }
 
   /**
-   * Gets if health bar is displayed.
+   * Gets if {@link Health health bar} is displayed.
    *
-   * @return if health bar displayed
+   * @return if {@link Health health bar} displayed
    */
   public boolean isHealthBarVisible() {
     return this.healthBarVisible;
   }
 
   /**
-   * Gets if health in the action bar is displayed.
+   * Gets if {@link Health health} in the action bar is displayed.
    *
-   * @return if health in the action bar displayed
+   * @return if {@link Health health} in the action bar displayed
    */
   public boolean isHealthActionVisible() {
     return this.healthActionVisible;

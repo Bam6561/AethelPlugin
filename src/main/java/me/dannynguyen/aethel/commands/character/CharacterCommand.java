@@ -20,13 +20,16 @@ import java.util.Map;
  * From the Sheet, the user can also view the player's quests and collectibles.
  * </p>
  * <p>
+ * Registered through {@link Plugin}.
+ * </p>
+ * <p>
  * Parameters:
  * </p>
  * <p>
- * - "": opens a sheet menu belonging to the user
+ * - "": opens a {@link SheetMenu} menu belonging to the user
  * </p>
  * <p>
- * - playerName: opens a sheet menu belonging to the player
+ * - playerName: opens a {@link SheetMenu} menu belonging to the player
  * </p>
  *
  * @author Danny Nguyen
@@ -64,7 +67,7 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a Sheet menu.
+   * Checks if the command request was formatted correctly before opening a {@link SheetMenu} menu.
    *
    * @param user user
    * @param args user provided parameters
@@ -78,7 +81,7 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a Sheet menu belonging to the user.
+   * Opens a {@link SheetMenu} menu belonging to the user.
    *
    * @param user user
    */
@@ -90,7 +93,7 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a Sheet menu belonging to another player.
+   * Opens a {@link SheetMenu} menu belonging to another player.
    *
    * @param user            user
    * @param requestedPlayer requested player's name

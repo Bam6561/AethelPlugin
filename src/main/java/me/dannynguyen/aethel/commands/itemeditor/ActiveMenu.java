@@ -25,7 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a menu that allows the user to edit an item's active abilities.
+ * Represents a menu that allows the user to edit an item's
+ * {@link ActiveAbilityType active abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -48,7 +49,7 @@ public class ActiveMenu implements Menu {
   private final ItemStack item;
 
   /**
-   * GUI equipment slot.
+   * GUI {@link RpgEquipmentSlot equipment slot}.
    */
   private final RpgEquipmentSlot eSlot;
 
@@ -58,7 +59,7 @@ public class ActiveMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack active abilities.
+   * ItemStack {@link ActiveAbilityType active abilities}.
    */
   private final Map<String, List<String>> existingActives;
 
@@ -66,7 +67,7 @@ public class ActiveMenu implements Menu {
    * Associates a new Active menu with its user and item.
    *
    * @param user  user
-   * @param eSlot equipment slot
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
    */
   public ActiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -89,7 +90,7 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with active abilities.
+   * Sets the menu to display interactions with {@link ActiveAbilityType active abilities}.
    *
    * @return Active menu
    */
@@ -103,7 +104,7 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Adds active abilities.
+   * Adds {@link ActiveAbilityType active abilities}.
    */
   private void addActives() {
     int invSlot = 18;
@@ -141,7 +142,7 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Adds equipment slot buttons.
+   * Adds {@link RpgEquipmentSlot equipment slot} buttons.
    */
   private void addActions() {
     menu.setItem(5, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
@@ -155,9 +156,9 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Maps an item's active abilities.
+   * Maps an item's {@link ActiveAbilityType active abilities}.
    *
-   * @return item's actives map
+   * @return item's {@link ActiveAbilityType actives} map
    */
   private Map<String, List<String>> mapActives() {
     NamespacedKey listKey = PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey();

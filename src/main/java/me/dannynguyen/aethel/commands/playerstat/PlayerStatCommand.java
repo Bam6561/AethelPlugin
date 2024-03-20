@@ -18,8 +18,11 @@ import java.util.Map;
 /**
  * Command invocation that retrieves a player's statistics.
  * <p>
- * Additional Parameters:
- * - "past", "p": opens a menu with the last 27 shown stats
+ * Parameters:
+ * <p>
+ * - "": opens a {@link PlayerStatMenu} menu
+ * </p>
+ * - "past", "p": opens a {@link PastStatMenu} with the last 27 shown stats
  * </p>
  *
  * @author Danny Nguyen
@@ -58,7 +61,7 @@ public class PlayerStatCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly
-   * before opening a player's PlayerStat main menu.
+   * before opening a player's {@link PlayerStatMenu} main menu.
    *
    * @param user user
    * @param args user provided parameters
@@ -72,10 +75,11 @@ public class PlayerStatCommand implements CommandExecutor {
   }
 
   /**
-   * Either opens a PlayerStat main menu belonging to another player or opens a PastStat menu.
+   * Either opens a {@link PlayerStatMenu} main menu belonging
+   * to another player or opens a {@link PastStatMenu} menu.
    *
    * @param user      user
-   * @param parameter player given parameter
+   * @param parameter user given parameters
    */
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
@@ -87,7 +91,7 @@ public class PlayerStatCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a PlayerStat main menu belonging to the user.
+   * Opens a {@link PlayerStatMenu} main menu belonging to the user.
    *
    * @param user user
    */
@@ -99,7 +103,7 @@ public class PlayerStatCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a PlayerStat main menu belonging to another player.
+   * Opens a {@link PlayerStatMenu} main menu belonging to another player.
    *
    * @param user  user
    * @param owner requested player's name

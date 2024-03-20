@@ -1,9 +1,11 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 /**
- * Represents a passive ability's slot and condition.
+ * Represents a {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability's}
+ * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} and
+ * {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition condition}.
  * <p>
- * Used for text display within the PassiveMenu.
+ * Used for text display within the {@link PassiveMenu} menu.
  * </p>
  *
  * @author Danny Nguyen
@@ -12,20 +14,21 @@ package me.dannynguyen.aethel.commands.itemeditor;
  */
 class PassiveLoreIdentifier {
   /**
-   * Ability's equipment slot.
+   * Ability's {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
    */
   private final String slot;
 
   /**
-   * Ability's trigger condition.
+   * Ability's {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition trigger condition}/
    */
   private final String condition;
 
   /**
-   * Associates an equipment slot with its trigger condition.
+   * Associates an {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} with
+   * its {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition trigger condition}.
    *
-   * @param eSlot     equipment slot
-   * @param condition trigger condition
+   * @param eSlot     {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
+   * @param condition {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition trigger condition}.
    */
   protected PassiveLoreIdentifier(String eSlot, String condition) {
     this.slot = eSlot;
@@ -33,18 +36,18 @@ class PassiveLoreIdentifier {
   }
 
   /**
-   * Gets the ability's equipment slot.
+   * Gets the ability's {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
    *
-   * @return ability's equipment slot
+   * @return ability's {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
    */
   protected String getSlot() {
     return this.slot;
   }
 
   /**
-   * Gets the ability's trigger condition.
+   * Gets the ability's {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition trigger condition}.
    *
-   * @return ability's trigger condition
+   * @return ability's {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition trigger condition}
    */
   protected String getCondition() {
     return this.condition;

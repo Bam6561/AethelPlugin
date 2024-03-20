@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Collection of equipment data update listeners.
+ * Collection of {@link Equipment} data update listeners.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -41,7 +41,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Checks clicks within player inventories to determine whether to update a player's equipment data.
+   * Checks clicks within player inventories to determine whether to update a player's {@link Equipment} data.
    *
    * @param e inventory click event
    */
@@ -68,7 +68,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates a player's equipment data when items are held.
+   * Updates a player's {@link Equipment} data when items are held.
    *
    * @param e player held item event
    */
@@ -80,7 +80,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates a player's equipment data when items are swapped.
+   * Updates a player's {@link Equipment} data when items are swapped.
    *
    * @param e player swap hand items event
    */
@@ -91,7 +91,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates a player's equipment data when a wearable item is interacted with.
+   * Updates a player's {@link Equipment} data when a wearable item is interacted with.
    *
    * @param e player interact event
    */
@@ -106,7 +106,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates a player's equipment data when a dispenser equips them with armor.
+   * Updates a player's {@link Equipment} data when a dispenser equips them with armor.
    *
    * @param e block dispense armor event
    */
@@ -118,7 +118,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates a player's equipment data when a wearable item is broken.
+   * Updates a player's {@link Equipment} data when a wearable item is broken.
    *
    * @param e player item break event
    */
@@ -128,7 +128,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates a player's equipment data when they die unless they have keep inventory on.
+   * Updates a player's {@link Equipment} data when they die unless they have keep inventory on.
    *
    * @param e player death event
    */
@@ -142,7 +142,7 @@ public class EquipmentUpdate implements Listener {
       Equipment equipment = rpgPlayer.getEquipment();
 
       Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = attributes.getSlotAttributes();
-      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getEnchantments();
+      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
       Map<RpgEquipmentSlot, List<TriggerPassiveType>> slotPassives = abilities.getSlotPassives();
 
       for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
@@ -159,7 +159,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates the player's equipment data if the item is a worn item.
+   * Updates the player's {@link Equipment} data if the item is a worn item.
    *
    * @param player interacting player
    * @param item   interacting item
@@ -180,7 +180,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Updates the player's equipment data at the slot they interacted with.
+   * Updates the player's {@link Equipment} data at the slot they interacted with.
    * <p>
    * A 1 tick delay is used for because only the item that exists in the
    * corresponding slot after the interaction happens should be read.
@@ -205,7 +205,7 @@ public class EquipmentUpdate implements Listener {
   }
 
   /**
-   * Drops the player's jewelry items.
+   * Drops the player's {@link Equipment jewelry} items.
    *
    * @param player       interacting player
    * @param jewelrySlots player's jewelry slots

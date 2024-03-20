@@ -18,6 +18,9 @@ import java.util.List;
 
 /**
  * Represents a set or remove operation for an item's Aethel tag.
+ * <p>
+ * Used with {@link AethelTagCommand}.
+ * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7

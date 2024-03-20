@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Effects of passive abilities.
+ * Effects of {@link PassiveAbilityType passive abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum PassiveAbilityEffect {
   /**
-   * Causes stack instances.
+   * Causes {@link StatusType stack instances}.
    */
   STACK_INSTANCE("Self, Stacks, Duration(t)"),
 
@@ -26,7 +26,7 @@ public enum PassiveAbilityEffect {
   private final String data;
 
   /**
-   * Associates a passive ability effect with its data.
+   * Associates a {@link PassiveAbilityType passive ability} effect with its data.
    *
    * @param data effect's data
    */

@@ -20,12 +20,12 @@ import java.util.UUID;
 
 /**
  * Command invocation that allows the user to retrieve,
- * give, or clear statuses from entities.
+ * give, or clear {@link StatusType statuses} from entities.
  * <p>
- * Additional Parameters:
- * - "get", "g": reads the entity's statuses
- * - "set", "s": sets a status on the entity
- * - "remove", "r": removes a status or all statuses from the entity
+ * Parameters:
+ * - "get", "g": reads the entity's {@link StatusType statuses}
+ * - "set", "s": sets a {@link StatusType status} on the entity
+ * - "remove", "r": removes a status or all {@link StatusType statuses} from the entity
  * </p>
  *
  * @author Danny Nguyen
@@ -131,7 +131,7 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Responds with the entity's statuses.
+   * Responds with the entity's {@link StatusType statuses}.
    *
    * @param user user
    * @param uuid entity uuid
@@ -163,7 +163,7 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Removes all statuses from the entity.
+   * Removes all {@link StatusType statuses} from the entity.
    *
    * @param user user
    * @param uuid entity uuid
@@ -174,7 +174,7 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Removes a status from the entity.
+   * Removes a {@link StatusType status} from the entity.
    *
    * @param user user
    * @param uuid entity uuid
@@ -198,7 +198,8 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the SetStatus request was formatted correctly before setting a status on the entity.
+   * Checks if the SetStatus request was formatted correctly
+   * before setting a {@link StatusType status} on the entity.
    *
    * @param user user
    * @param uuid entity uuid
@@ -224,26 +225,26 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Sets a status on the entity.
+   * Sets a {@link Status status} on the entity.
    *
-   * @param user       user
-   * @param uuid       entity uuid
-   * @param statusType status type
-   * @param stacks     number of status to apply
-   * @param ticks      status duration
+   * @param user   user
+   * @param uuid   entity uuid
+   * @param status {@link StatusType status type}
+   * @param stacks number of stacks to apply
+   * @param ticks  duration
    */
-  private void setStatus(Player user, UUID uuid, StatusType statusType, int stacks, int ticks) {
+  private void setStatus(Player user, UUID uuid, StatusType status, int stacks, int ticks) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     if (!entityStatuses.containsKey(uuid)) {
       entityStatuses.put(uuid, new HashMap<>());
     }
     Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-    if (statuses.containsKey(statusType)) {
-      statuses.get(statusType).addStacks(stacks, ticks);
+    if (statuses.containsKey(status)) {
+      statuses.get(status).addStacks(stacks, ticks);
     } else {
-      statuses.put(statusType, new Status(uuid, statusType, stacks, ticks));
+      statuses.put(status, new Status(uuid, status, stacks, ticks));
     }
-    user.sendMessage(ChatColor.GREEN + "[Status Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + statusType.getProperName() + " " + ChatColor.WHITE + stacks + " " + ticks);
+    user.sendMessage(ChatColor.GREEN + "[Status Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + status.getProperName() + " " + ChatColor.WHITE + stacks + " " + ticks);
   }
 
   /**
@@ -251,22 +252,22 @@ public class StatusCommand implements CommandExecutor {
    */
   private enum Action {
     /**
-     * Reads the entity's statuses.
+     * Reads the entity's {@link StatusType statuses}.
      */
     GET,
 
     /**
-     * Sets a status on the entity.
+     * Sets a {@link StatusType status} on the entity.
      */
     SET,
 
     /**
-     * Removes a status from the entity.
+     * Removes a {@link StatusType status} from the entity.
      */
     REMOVE,
 
     /**
-     * Removes all statuses from the entity.
+     * Removes all {@link StatusType statuses} from the entity.
      */
     REMOVE_ALL
   }

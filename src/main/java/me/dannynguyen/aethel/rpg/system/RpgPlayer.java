@@ -20,32 +20,32 @@ public class RpgPlayer {
   private final UUID uuid;
 
   /**
-   * Player's settings.
+   * {@link Settings Player's settings}.
    */
   private final Settings settings;
 
   /**
-   * Total Aethel attributes.
+   * {@link AethelAttributes Total Aethel attributes}.
    */
   private final AethelAttributes aethelAttributes;
 
   /**
-   * Total enchantments.
+   * {@link Enchantments Total enchantments}.
    */
   private final Enchantments enchantments;
 
   /**
-   * Passive and active abilities.
+   * {@link Abilities Passive and active abilities}.
    */
   private final Abilities abilities;
 
   /**
-   * All equipment.
+   * {@link Equipment Worn equipment}.
    */
   private final Equipment equipment;
 
   /**
-   * Player's health.
+   * {@link Health Player's health}.
    */
   private final Health health;
 
@@ -85,9 +85,9 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the player's total Aethel attributes.
+   * Gets the player's {@link AethelAttributes total Aethel attributes}.
    *
-   * @return player's total Aethel attributes
+   * @return player's {@link AethelAttributes total Aethel attributes}
    */
   @NotNull
   public AethelAttributes getAethelAttributes() {
@@ -95,18 +95,18 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the player's total enchantments.
+   * Gets the player's {@link Enchantments total enchantments}.
    *
-   * @return player's total enchantments
+   * @return player's {@link Enchantments total enchantments}
    */
   public Enchantments getEnchantments() {
     return this.enchantments;
   }
 
   /**
-   * Gets the player's RPG abilities.
+   * Gets the player's {@link Abilities passive and active abilities}.
    *
-   * @return player's RPG abilities
+   * @return player's {@link Abilities passive and active abilities}
    */
   @NotNull
   public Abilities getAbilities() {
@@ -114,9 +114,9 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the player's RPG equipment.
+   * Gets the player's {@link Equipment worn equipment}
    *
-   * @return player's rpg equipment
+   * @return player's {@link Equipment worn equipment}
    */
   @NotNull
   public Equipment getEquipment() {
@@ -124,12 +124,13 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the player's RPG health.
+   * Gets the player's {@link Health health}
    *
-   * @return player's RPG health
+   * @return player's {@link Health health}
    */
   @NotNull
   public Health getHealth() {
     return this.health;
   }
+
 }

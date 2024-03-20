@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents a menu that shows the player's RPG settings.
+ * Represents a menu that shows the player's {@link me.dannynguyen.aethel.rpg.system.Settings}.
  *
  * @author Danny Nguyen
  * @version 1.17.6

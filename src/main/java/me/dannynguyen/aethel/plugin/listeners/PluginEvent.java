@@ -25,7 +25,7 @@ public class PluginEvent implements Listener {
   }
 
   /**
-   * Associates a player with metadata.
+   * Associates a player with {@link PlayerMeta metadata}.
    *
    * @param e player join event
    */

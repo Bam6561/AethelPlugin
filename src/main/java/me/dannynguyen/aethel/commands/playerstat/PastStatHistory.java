@@ -29,7 +29,7 @@ public class PastStatHistory {
 
   /**
    * Adds the stat to past stat history and ensures the number
-   * of past stats never exceeds 27 (PastStat menu's size).
+   * of past stats never exceeds 27 ({@link PastStatMenu} menu's size).
    *
    * @param name   stat owner
    * @param values stat values

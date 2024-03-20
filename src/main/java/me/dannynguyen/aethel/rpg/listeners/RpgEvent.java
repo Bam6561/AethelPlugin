@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
- * Collection of listeners for RPG system functionality.
+ * Collection of listeners for {@link RpgSystem} functionality.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -35,7 +35,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Assigns an RPG player to a player upon joining the server.
+   * Assigns an {@link me.dannynguyen.aethel.rpg.system.RpgPlayer}  to a player upon joining the server.
    *
    * @param e player join event
    */
@@ -56,7 +56,8 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Updates the player's health to account for absorption and health boost status effects.
+   * Updates the player's {@link me.dannynguyen.aethel.rpg.system.Health}
+   * to account for absorption and health boost status effects.
    *
    * @param e entity potion effect event
    */
@@ -75,7 +76,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Resets the player's health.
+   * Resets the player's {@link me.dannynguyen.aethel.rpg.system.Health}.
    *
    * @param e player respawn event
    */
@@ -85,7 +86,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Triggers on kill passives if the player has any.
+   * Triggers {@link Trigger on kill} {@link PassiveAbility passive abilities} if the player has any.
    *
    * @param e entity death event
    */
@@ -97,7 +98,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Triggers on kill passive abilities.
+   * Triggers {@link Trigger on kill} {@link PassiveAbility passive abilities}.
    *
    * @param killedUUID killed entity UUID
    * @param selfUUID   self UUID
@@ -108,7 +109,7 @@ public class RpgEvent implements Listener {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {
         if (!ability.isOnCooldown()) {
-          switch (ability.getAbilityType().getEffect()) {
+          switch (ability.getType().getEffect()) {
             case STACK_INSTANCE -> readOnKillStackInstance(random, ability, selfUUID);
             case CHAIN_DAMAGE -> readOnKillChainDamage(random, ability, killedUUID, selfUUID);
           }
@@ -118,14 +119,15 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Checks if the stack instance effect was successful before applying stack instances.
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect stack instance effect}
+   * was successful before applying stack instances.
    *
    * @param random   rng
    * @param ability  passive ability
    * @param selfUUID self UUID
    */
   private void readOnKillStackInstance(Random random, PassiveAbility ability, UUID selfUUID) {
-    double chance = Double.parseDouble(ability.getTriggerData().get(0));
+    double chance = Double.parseDouble(ability.getConditionData().get(0));
     if (chance > random.nextDouble() * 100) {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       if (self) {
@@ -135,7 +137,8 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Checks if the chain damage effect was successful before dealing chain damage.
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect chain damage effect}
+   * was successful before dealing chain damage.
    *
    * @param random     rng
    * @param ability    passive ability
@@ -143,7 +146,7 @@ public class RpgEvent implements Listener {
    * @param selfUUID   self UUID
    */
   private void readOnKillChainDamage(Random random, PassiveAbility ability, UUID killedUUID, UUID selfUUID) {
-    double chance = Double.parseDouble(ability.getTriggerData().get(0));
+    double chance = Double.parseDouble(ability.getConditionData().get(0));
     if (chance > random.nextDouble() * 100) {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       UUID targetUUID;

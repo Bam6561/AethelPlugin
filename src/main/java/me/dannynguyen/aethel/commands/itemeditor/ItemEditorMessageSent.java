@@ -256,7 +256,8 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's Aethel attribute modifier.
+   * Sets or removes an item's
+   * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute} modifier.
    */
   public void setAethelAttribute() {
     try {
@@ -334,7 +335,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's passive ability.
+   * Sets or removes an item's {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability}.
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
@@ -346,7 +347,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's active ability.
+   * Sets or removes an item's {@link ActiveAbilityType active ability}.
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
@@ -398,7 +399,8 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the active movement.
+   * Checks if the input was formatted correctly before setting the
+   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect movement}.
    */
   private void readActiveMovement() {
     String[] args = e.getMessage().split(" ");
@@ -420,7 +422,8 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the active projection.
+   * Checks if the input was formatted correctly before setting the
+   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect projection}.
    */
   private void readActiveProjection() {
     String[] args = e.getMessage().split(" ");
@@ -447,7 +450,8 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the active shatter.
+   * Checks if the input was formatted correctly before setting the
+   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect shatter}.
    */
   private void readActiveShatter() {
     String[] args = e.getMessage().split(" ");
@@ -469,11 +473,11 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets a key with a double value to a key header's list of keys.
+   * Sets a key with a double value to a {@link KeyHeader key header's} list of keys.
    *
-   * @param keyHeader key header
+   * @param keyHeader {@link KeyHeader key header}
    * @param keyValue  key value
-   * @param listKey   list key
+   * @param listKey   {@link PluginNamespacedKey list key}
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -501,11 +505,11 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets a key with a String value to a key header's list of keys.
+   * Sets a key with a String value to a {@link KeyHeader key header's} list of keys.
    *
-   * @param keyHeader key header
+   * @param keyHeader {@link KeyHeader key header}
    * @param keyValue  key value
-   * @param listKey   list key
+   * @param listKey   {@link PluginNamespacedKey list key}
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -533,13 +537,13 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Removes a key from a key header's list of keys.
+   * Removes a key from a {@link KeyHeader key header's} list of keys.
    * <p>
    * If the list is empty after the operation, the list is also removed.
    * </p>
    *
-   * @param keyHeader key header
-   * @param listKey   list key
+   * @param keyHeader {@link KeyHeader key header}
+   * @param listKey   {@link PluginNamespacedKey list key}
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -569,7 +573,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Cosmetic menu.
+   * Returns to the {@link CosmeticMenu} menu.
    */
   private void returnToCosmetic() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -581,7 +585,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Attribute menu.
+   * Returns to the {@link AttributeMenu} menu.
    */
   private void returnToAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -593,7 +597,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the AethelAttribute menu.
+   * Returns to the {@link AethelAttributeMenu} menu.
    */
   private void returnToAethelAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -605,7 +609,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Enchantment menu.
+   * Returns to the {@link EnchantmentMenu} menu.
    */
   private void returnToEnchantment() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -617,7 +621,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Potion menu.
+   * Returns to the {@link PotionMenu} menu.
    */
   private void returnToPotion() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -629,7 +633,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Passive menu.
+   * Returns to the {@link PassiveMenu} menu.
    */
   private void returnToPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -641,7 +645,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Active menu.
+   * Returns to the {@link ActiveMenu} menu.
    */
   private void returnToActive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -653,7 +657,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the Tag menu.
+   * Returns to the {@link TagMenu} menu.
    */
   private void returnToTag() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);

@@ -18,22 +18,22 @@ public enum Directory {
   RESOURCES(new File("./plugins/aethel")),
 
   /**
-   * Aethel items directory.
+   * {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem Aethel items} directory.
    */
   AETHELITEM(new File(RESOURCES.getFile().getPath() + "/aethelitem")),
 
   /**
-   * Forge recipes directory.
+   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe Forge recipes} directory.
    */
   FORGE(new File(RESOURCES.getFile().getPath() + "/forge")),
 
   /**
-   * RPG jewelry directory.
+   * {@link me.dannynguyen.aethel.rpg.system.Equipment RPG jewelry} directory.
    */
   JEWELRY(new File(RESOURCES.getFile().getPath() + "/rpg/jewelry")),
 
   /**
-   * RPG settings directory.
+   * {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings} directory.
    */
   SETTINGS(new File(RESOURCES.getFile().getPath() + "/rpg/settings"));
 

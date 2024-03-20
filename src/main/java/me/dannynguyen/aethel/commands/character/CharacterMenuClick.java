@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.system.Equipment;
 import me.dannynguyen.aethel.rpg.system.Settings;
@@ -27,17 +27,20 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Inventory click event listener for Character menus.
+ * Inventory click event listener for {@link CharacterCommand} menus.
  * <p>
  * 1 tick delays are used because only the item that exists in the
  * corresponding slot after the interaction happens should be read.
+ * </p>
+ * <p>
+ * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.6
  * @since 1.9.2
  */
-public class CharacterMenuClick implements MenuClick {
+public class CharacterMenuClick implements MenuClickEvent {
   /**
    * Inventory click event.
    */
@@ -59,7 +62,7 @@ public class CharacterMenuClick implements MenuClick {
   private final int slot;
 
   /**
-   * Associates an inventory click event with its user in the context of an open Character menu.
+   * Associates an inventory click event with its user in the context of an open {@link CharacterCommand} menu.
    *
    * @param e inventory click event
    */
@@ -127,7 +130,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Toggles the player's settings.
+   * Toggles the player's {@link Settings}.
    */
   public void interpretSettingsClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
@@ -151,8 +154,8 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Updates the user's main hand item in the menu when
-   * it is interacted with from the user's inventory.
+   * Updates the user's main hand item in the {@link SheetMenu menu}
+   * when it is interacted with from the user's inventory.
    */
   public void interpretPlayerInventoryClick() {
     if (e.getSlot() == user.getInventory().getHeldItemSlot()) {
@@ -168,7 +171,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Opens a Quests menu.
+   * Opens a {@link QuestsMenu} menu.
    */
   private void openQuests() {
     user.openInventory(new QuestsMenu(user).getMainMenu());
@@ -176,7 +179,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Opens a Collectibles menu.
+   * Opens a {@link CollectiblesMenu} menu.
    */
   private void openCollectibles() {
     user.openInventory(new CollectiblesMenu(user).getMainMenu());
@@ -184,7 +187,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Opens a Settings menu.
+   * Opens a {@link SettingsMenu} menu.
    */
   private void openSettings() {
     user.openInventory(new SettingsMenu(user).getMainMenu());
@@ -312,7 +315,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Returns to the Sheet menu.
+   * Returns to the {@link SheetMenu} menu.
    */
   private void returnToSheet() {
     user.openInventory(new SheetMenu(user, user).getMainMenu());
@@ -372,7 +375,7 @@ public class CharacterMenuClick implements MenuClick {
   /**
    * Sets the crouch bind to activate abilities by equipment slot.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
    */
   private void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot) {
     user.closeInventory();

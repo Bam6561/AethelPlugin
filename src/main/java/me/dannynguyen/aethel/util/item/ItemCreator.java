@@ -139,9 +139,9 @@ public class ItemCreator {
   }
 
   /**
-   * Creates a named player head from loaded textures.
+   * Creates a named player head from {@link me.dannynguyen.aethel.plugin.enums.PlayerHead loaded textures}.
    *
-   * @param head interacting player head
+   * @param head {@link me.dannynguyen.aethel.plugin.enums.PlayerHead player head}
    * @param name item name
    * @return named player head texture
    */
@@ -155,9 +155,10 @@ public class ItemCreator {
   }
 
   /**
-   * Creates a named player head from loaded textures with lore.
+   * Creates a named player head from {@link me.dannynguyen.aethel.plugin.enums.PlayerHead loaded textures}
+   * with lore.
    *
-   * @param head interacting player head
+   * @param head {@link me.dannynguyen.aethel.plugin.enums.PlayerHead player head}
    * @param name item name
    * @param lore item lore
    * @return named player head texture with lore

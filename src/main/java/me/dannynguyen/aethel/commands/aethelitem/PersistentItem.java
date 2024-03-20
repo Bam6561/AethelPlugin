@@ -7,12 +7,15 @@ import java.io.File;
 
 /**
  * Represents an ItemStack stored in the file system.
+ * <p>
+ * Loaded into memory when {@link ItemRegistry#loadData()} is called.
+ * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7
  * @since 1.3.2
  */
-class PersistentItem {
+public class PersistentItem {
   /**
    * Item file.
    * <p>
@@ -50,7 +53,7 @@ class PersistentItem {
   /**
    * Deletes the item file from the file system.
    */
-  protected void delete() {
+  public void delete() {
     file.delete();
   }
 
@@ -59,7 +62,7 @@ class PersistentItem {
    *
    * @return ItemStack
    */
-  protected ItemStack getItem() {
+  public ItemStack getItem() {
     return this.item;
   }
 
@@ -68,7 +71,7 @@ class PersistentItem {
    *
    * @return item name
    */
-  protected String getName() {
+  public String getName() {
     return this.name;
   }
 }

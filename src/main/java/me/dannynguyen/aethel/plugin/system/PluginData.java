@@ -27,12 +27,12 @@ import java.util.logging.Logger;
  */
 public class PluginData {
   /**
-   * Registered items.
+   * Registered {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
    */
   private final ItemRegistry itemRegistry = new ItemRegistry(Directory.AETHELITEM.getFile());
 
   /**
-   * Registered recipes.
+   * Registered {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
    */
   private final RecipeRegistry recipeRegistry = new RecipeRegistry(Directory.FORGE.getFile());
 
@@ -57,12 +57,12 @@ public class PluginData {
   private final PastStatHistory pastStatHistory = new PastStatHistory();
 
   /**
-   * Plugin system data.
+   * {@link PluginSystem Plugin system} data.
    */
   private final PluginSystem pluginSystem = new PluginSystem();
 
   /**
-   * RPG system data.
+   * {@link RpgSystem RPG system} data.
    */
   private final RpgSystem rpgSystem = new RpgSystem();
 
@@ -74,6 +74,12 @@ public class PluginData {
 
   /**
    * Loads persistent plugin data. Creates data directories if they do not already exist.
+   * <p>
+   * {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem},
+   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe},
+   * {@link me.dannynguyen.aethel.rpg.system.Equipment RPG Jewelry},
+   * {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}
+   * </p>
    */
   public void loadResources() {
     Logger log = Bukkit.getLogger();
@@ -107,6 +113,10 @@ public class PluginData {
 
   /**
    * Saves persistent plugin data.
+   * <p>
+   * {@link me.dannynguyen.aethel.rpg.system.Equipment RPG Jewelry},
+   * {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}
+   * </p>
    */
   public void saveResources() {
     Logger log = Bukkit.getLogger();
@@ -147,9 +157,9 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's item registry.
+   * Gets the plugin's {@link ItemRegistry}.
    *
-   * @return plugin's item registry
+   * @return plugin's {@link ItemRegistry}
    */
   @NotNull
   public ItemRegistry getItemRegistry() {
@@ -157,9 +167,9 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's recipe registry.
+   * Gets the plugin's {@link RecipeRegistry}.
    *
-   * @return plugin's recipe registry
+   * @return plugin's {@link RecipeRegistry}
    */
   @NotNull
   public RecipeRegistry getRecipeRegistry() {
@@ -167,9 +177,9 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's player stat record.
+   * Gets the plugin's {@link PlayerStatRecord}.
    *
-   * @return plugin's player stat record
+   * @return plugin's {@link PlayerStatRecord}
    */
   @NotNull
   public PlayerStatRecord getPlayerStatRecord() {
@@ -177,18 +187,18 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's edited item cache
+   * Gets the plugin's {@link EditedItemCache}.
    *
-   * @return plugin's edited item cache
+   * @return plugin's {@link EditedItemCache}
    */
   public EditedItemCache getEditedItemCache() {
     return this.editedItemCache;
   }
 
   /**
-   * Gets the plugin's past item history.
+   * Gets the plugin's {@link PastItemHistory}.
    *
-   * @return plugin's past item history
+   * @return plugin's {@link PastItemHistory}
    */
   @NotNull
   public PastItemHistory getPastItemHistory() {
@@ -196,9 +206,9 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's past stat history.
+   * Gets the plugin's {@link PastStatHistory}.
    *
-   * @return plugin's past stat history
+   * @return plugin's {@link PastStatHistory}
    */
   @NotNull
   public PastStatHistory getPastStatHistory() {
@@ -206,9 +216,9 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's plugin system.
+   * Gets the plugin's {@link PluginSystem}.
    *
-   * @return plugin's plugin system
+   * @return plugin's {@link PluginSystem}
    */
   @NotNull
   public PluginSystem getPluginSystem() {
@@ -216,9 +226,9 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's RPG system.
+   * Gets the plugin's {@link RpgSystem}.
    *
-   * @return plugin's RPG system
+   * @return plugin's {@link RpgSystem}
    */
   @NotNull
   public RpgSystem getRpgSystem() {

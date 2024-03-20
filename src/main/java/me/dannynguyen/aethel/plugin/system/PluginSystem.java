@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 public class PluginSystem {
   /**
-   * Players' plugin metadata.
+   * Plugin's {@link PlayerMeta player metadata}.
    */
   private final Map<UUID, Map<PlayerMeta, String>> playerMetadata = new HashMap<>();
 
@@ -27,9 +27,9 @@ public class PluginSystem {
   }
 
   /**
-   * Gets players' plugin metadata.
+   * Gets players' {@link PlayerMeta plugin metadata}.
    *
-   * @return players' plugin metadata
+   * @return players' {@link PlayerMeta plugin metadata}
    */
   @NotNull
   public Map<UUID, Map<PlayerMeta, String>> getPlayerMetadata() {

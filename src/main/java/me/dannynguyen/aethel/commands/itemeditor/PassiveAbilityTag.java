@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a passive ability tag set or remove operation.
+ * Represents a {@link PassiveAbilityType passive ability} tag set or remove operation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -120,7 +120,7 @@ class PassiveAbilityTag {
   /**
    * Checks if the input was formatted correctly before setting the effect's chance and cooldown.
    *
-   * @param abilityEffect ability effect
+   * @param abilityEffect {@link PassiveAbilityEffect ability effect}
    */
   private void readChanceCooldown(PassiveAbilityEffect abilityEffect) {
     switch (abilityEffect) {
@@ -196,7 +196,7 @@ class PassiveAbilityTag {
   /**
    * Checks if the input was formatted correctly before setting the effect's HP, chance, and cooldown.
    *
-   * @param abilityEffect ability effect
+   * @param abilityEffect {@link PassiveAbilityEffect ability effect}
    */
   private void readHpChanceCooldown(PassiveAbilityEffect abilityEffect) {
     switch (abilityEffect) {
@@ -270,7 +270,7 @@ class PassiveAbilityTag {
   }
 
   /**
-   * Sets a key with a String value to a key header's list of keys.
+   * Sets a key with a String value to a {@link KeyHeader key header's} list of keys.
    *
    * @param keyValue key value
    */
@@ -293,7 +293,7 @@ class PassiveAbilityTag {
   }
 
   /**
-   * Removes a key from a key header's list of keys.
+   * Removes a key from a {@link KeyHeader key header's} list of keys.
    * <p>
    * If the list is empty after the operation, the list is also removed.
    * </p>

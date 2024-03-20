@@ -67,9 +67,9 @@ public class Plugin extends JavaPlugin {
 
   /**
    * On enable:
-   * - Loads existing plugin data.
-   * - Registers event listeners.
-   * - Registers commands.
+   * - {@link PluginData#loadResources() Loads existing plugin data}.
+   * - {@link #registerEventListeners() Registers event listeners}.
+   * - {@link #registerCommands() Registers commands}.
    */
   @Override
   public void onEnable() {
@@ -81,7 +81,7 @@ public class Plugin extends JavaPlugin {
 
   /**
    * On disable:
-   * - Saves persistent plugin data.
+   * - {@link PluginData#saveResources() Saves persistent plugin data}.
    */
   @Override
   public void onDisable() {
@@ -91,6 +91,16 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Registers the plugin's event listeners.
+   * <p>
+   * {@link Crouch},
+   * {@link MenuClick},
+   * {@link MessageSent},
+   * {@link PluginEvent},
+   * {@link EntityDamage},
+   * {@link EquipmentUpdate},
+   * {@link RpgEvent},
+   * {@link StatusUpdate}
+   * </p>
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
@@ -106,6 +116,17 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Registers the plugin's commands.
+   * <p>
+   * {@link ItemCommand},
+   * {@link AethelTagCommand},
+   * {@link CharacterCommand},
+   * {@link DeveloperModeCommand},
+   * {@link ForgeCommand},
+   * {@link ItemCommand},
+   * {@link PingCommand},
+   * {@link ShowItemCommand},
+   * {@link StatusCommand},
+   * {@link PlayerStatCommand}
    */
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
@@ -122,6 +143,12 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Schedules the plugin's repeating tasks.
+   * {@link #updateMainHandEquipmentAttributes()},
+   * {@link #updateDamageOverTimeStatuses()},
+   * {@link #updateOvershields()},
+   * {@link #updateBelowHealthPassives()} ,
+   * {@link #updateActionDisplay()} ,
+   * {@link #updateEnvironmentalProtections()}
    */
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
@@ -134,7 +161,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to compare the player's main hand item for updating equipment attributes.
+   * Adds an interval to compare the player's main hand item for updating {@link Equipment} data.
    */
   private void updateMainHandEquipmentAttributes() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
@@ -152,7 +179,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to calculate damage taken from damage over time statuses.
+   * Adds an interval to calculate damage taken from damage over time {@link Status statuses}.
    */
   private void updateDamageOverTimeStatuses() {
     Map<UUID, Map<StatusType, Status>> entityStatuses = data.getRpgSystem().getStatuses();
@@ -173,7 +200,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to update players' action bar health display.
+   * Adds an interval to update players' action bar {@link me.dannynguyen.aethel.rpg.system.Health} display.
    */
   private void updateActionDisplay() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
@@ -201,7 +228,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to trigger below health passive abilities.
+   * Adds an interval to trigger {@link Trigger below health} {@link PassiveAbility passive abilities}.
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
@@ -209,7 +236,7 @@ public class Plugin extends JavaPlugin {
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
-            switch (ability.getAbilityType().getEffect()) {
+            switch (ability.getType().getEffect()) {
               case STACK_INSTANCE -> readBelowHealthStackInstance(ability, rpgPlayer);
               case CHAIN_DAMAGE -> readBelowHealthChainDamage(ability, rpgPlayer);
             }
@@ -245,7 +272,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Deals damage from damage over time statuses to players.
+   * Deals damage from damage over time {@link Status statuses} to players.
    *
    * @param uuid     player uuid
    * @param statuses player statuses
@@ -267,7 +294,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Deals damage from damage over time statuses to entities.
+   * Deals damage from damage over time {@link Status statuses} to entities.
    *
    * @param statuses entity statuses
    * @param entity   interacting entity
@@ -284,13 +311,14 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Checks if the stack instance effect was successful before applying stack instances.
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect stack instance effect}
+   * was successful before applying stack instances.
    *
    * @param ability   passive ability
    * @param rpgPlayer interacting player
    */
   private void readBelowHealthStackInstance(PassiveAbility ability, RpgPlayer rpgPlayer) {
-    double healthPercent = Double.parseDouble(ability.getTriggerData().get(0));
+    double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
     if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       if (self) {
@@ -300,13 +328,14 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Checks if the chain damage effect was successful before dealing chain damage.
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect chain damage effect}
+   * was successful before dealing chain damage.
    *
    * @param ability   passive ability
    * @param rpgPlayer interacting player
    */
   private void readBelowHealthChainDamage(PassiveAbility ability, RpgPlayer rpgPlayer) {
-    double healthPercent = Double.parseDouble(ability.getTriggerData().get(0));
+    double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
     if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
       boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
       if (self) {
@@ -316,9 +345,9 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Gets the plugin's data.
+   * Gets the {@link PluginData}.
    *
-   * @return plugin data
+   * @return {@link PluginData}
    */
   @NotNull
   public static PluginData getData() {

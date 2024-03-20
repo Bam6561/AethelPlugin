@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents an item's passive ability lore generation.
+ * Represents an item's {@link PassiveAbilityType passive ability} lore generation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 class ItemPassiveLore {
   /**
-   * ItemStack whose passive abilities are being written.
+   * ItemStack whose {@link PassiveAbilityType passive abilities} are being written.
    */
   private final ItemStack item;
 
@@ -48,12 +48,12 @@ class ItemPassiveLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's passive abilities categorized by equipment slot.
+   * ItemStack's {@link PassiveAbilityType passive abilities} categorized by equipment slot.
    */
   private final Map<String, List<String>> passiveAbilities;
 
   /**
-   * Associates an ItemStack with its passive ability list.
+   * Associates an ItemStack with its {@link PassiveAbilityType passive ability} list.
    *
    * @param item interacting item
    */
@@ -70,7 +70,7 @@ class ItemPassiveLore {
   }
 
   /**
-   * Adds passive ability headers to the item's lore.
+   * Adds {@link PassiveAbilityType passive ability} headers to the item's lore.
    */
   public void addPassiveHeaders() {
     addPassiveHeader("head");
@@ -86,10 +86,10 @@ class ItemPassiveLore {
   }
 
   /**
-   * Adds a passive ability header if it exists for the
-   * equipment slot with its associated ability values.
+   * Adds a {@link PassiveAbilityType passive ability} header if it exists for the
+   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} with its associated ability values.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
    */
   private void addPassiveHeader(String eSlot) {
     if (passiveAbilities.containsKey(eSlot)) {
@@ -112,9 +112,10 @@ class ItemPassiveLore {
   }
 
   /**
-   * Sorts passive abilities by their equipment slot.
+   * Sorts {@link PassiveAbilityType passive abilities} by their
+   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
    *
-   * @return equipment slot : passive ability
+   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} : {@link PassiveAbilityType passive ability}
    */
   private Map<String, List<String>> sortPassiveAbilities() {
     Map<String, List<String>> passiveAbilities = new HashMap<>();
@@ -170,10 +171,10 @@ class ItemPassiveLore {
   }
 
   /**
-   * Adds ability trigger lore.
+   * Adds ability {@link Trigger trigger} lore.
    *
    * @param abilityLore ability lore
-   * @param trigger     trigger
+   * @param trigger     {@link Trigger trigger}
    */
   private void addTriggerLore(StringBuilder abilityLore, Trigger trigger) {
     switch (trigger) {

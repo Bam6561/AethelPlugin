@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Directory;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
 import me.dannynguyen.aethel.util.TextFormatter;
 import me.dannynguyen.aethel.util.item.ItemCreator;
 import me.dannynguyen.aethel.util.item.ItemReader;
@@ -22,13 +22,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Inventory click event listener for AethelItem menus.
+ * Inventory click event listener for {@link ItemCommand} menus.
+ * <p>
+ * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
+ * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.5.1
  * @since 1.4.0
  */
-public class ItemMenuClick implements MenuClick {
+public class ItemMenuClick implements MenuClickEvent {
   /**
    * Inventory click event.
    */
@@ -50,7 +53,7 @@ public class ItemMenuClick implements MenuClick {
   private final int slot;
 
   /**
-   * Associates an inventory click event with its user in the context of an open AethelItem menu.
+   * Associates an inventory click event with its user in the context of an open {@link ItemCommand} menu.
    *
    * @param e inventory click event
    */
@@ -62,7 +65,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Either saves an item or gets an item category page.
+   * Either saves a {@link PersistentItem item} or gets an {@link PersistentItem item} category page.
    */
   public void interpretMenuClick() {
     switch (slot) {
@@ -79,19 +82,19 @@ public class ItemMenuClick implements MenuClick {
   /**
    * Either:
    * <p>
-   * - increments or decrements an item category page
+   * - increments or decrements an {@link PersistentItem item} category page
    * </p>
    * <p>
-   * - saves an item
+   * - saves a {@link PersistentItem item}
    * </p>
    * <p>
    * - changes the interaction type
    * </p>
    * <p>
-   * - contextualizes the click to get or remove items
+   * - contextualizes the click to get or remove {@link PersistentItem items}
    * </p>
    *
-   * @param action type of interaction
+   * @param action type of {@link ItemMenu.Action} interaction
    */
   public void interpretCategoryClick(@NotNull ItemMenu.Action action) {
     Objects.requireNonNull(action, "Null action");
@@ -113,7 +116,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Checks if there is an item in the designated save slot before saving the item to a file.
+   * Checks if there is an item in the designated save slot before saving the item as a {@link PersistentItem}.
    */
   private void saveItem() {
     ItemStack item = e.getClickedInventory().getItem(3);
@@ -137,7 +140,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Gets an item category page.
+   * Gets an {@link PersistentItem item} category page.
    */
   private void getCategoryPage() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -150,9 +153,9 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Gets the previous item category page.
+   * Gets the previous {@link PersistentItem item} category page.
    *
-   * @param action type of interaction
+   * @param action type of {@link ItemMenu.Action} interaction
    */
   private void previousPage(ItemMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -166,7 +169,7 @@ public class ItemMenuClick implements MenuClick {
   /**
    * Toggles between get and remove actions.
    *
-   * @param action type of interaction
+   * @param action type of {@link ItemMenu.Action} interaction
    */
   private void toggleAction(ItemMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -183,7 +186,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Returns to the AethelItem main menu.
+   * Returns to the {@link ItemMenu} main menu.
    */
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
@@ -193,9 +196,9 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Gets the next item category page.
+   * Gets the next {@link PersistentItem item} category page.
    *
-   * @param action type of interaction
+   * @param action type of {@link ItemMenu.Action} interaction
    */
   private void nextPage(ItemMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -207,9 +210,9 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Either gets or remove an item.
+   * Either gets or remove an {@link PersistentItem item}.
    *
-   * @param action interacting action
+   * @param action type of {@link ItemMenu.Action} interaction
    */
   private void interpretContextualClick(ItemMenu.Action action) {
     ItemStack clickedItem = e.getCurrentItem();
@@ -231,7 +234,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Names an item file by either its display name or material.
+   * Names an {@link PersistentItem item} file by either its display name or material.
    *
    * @param item interacting item
    * @return item file name

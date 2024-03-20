@@ -19,7 +19,7 @@ public enum PlayerMeta {
   CATEGORY,
 
   /**
-   * Developer mode.
+   * {@link me.dannynguyen.aethel.commands.DeveloperModeCommand Developer mode}.
    */
   DEVELOPER,
 
@@ -29,12 +29,12 @@ public enum PlayerMeta {
   FUTURE,
 
   /**
-   * Menu type.
+   * {@link me.dannynguyen.aethel.plugin.listeners.MenuClick Menu type}.
    */
   INVENTORY,
 
   /**
-   * Message input type.
+   * {@link me.dannynguyen.aethel.plugin.listeners.MessageSent Message input type}.
    */
   MESSAGE,
 
@@ -49,7 +49,7 @@ public enum PlayerMeta {
   PLAYER,
 
   /**
-   * Equipment slot.
+   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot Equipment slot}.
    */
   SLOT,
 

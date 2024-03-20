@@ -181,7 +181,7 @@ public class CosmeticMenu implements Menu {
   }
 
   /**
-   * Adds attribute, enchantment, and Aethel tags menu buttons.
+   * Adds {@link AttributeMenu}, {@link EnchantmentMenu}, and {@link TagMenu} menu buttons.
    */
   private void addGameplay() {
     menu.setItem(14, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Minecraft Attributes", ItemFlag.HIDE_ATTRIBUTES));

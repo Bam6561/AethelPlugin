@@ -20,7 +20,6 @@ import java.util.UUID;
  * @since 1.16.14
  */
 public class PlayerDamageMitigation {
-
   /**
    * Player taking damage.
    */

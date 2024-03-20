@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents a trigger passive ability pair.
+ * Represents a {@link Trigger trigger} {@link PassiveAbilityType passive ability} pair.
  *
  * @author Danny Nguyen
  * @version 1.16.3
@@ -15,30 +15,30 @@ import java.util.Objects;
  */
 public class TriggerPassiveType {
   /**
-   * Ability trigger type.
+   * {@link Trigger Trigger}.
    */
   private final Trigger trigger;
 
   /**
-   * Passive ability type.
+   * {@link PassiveAbilityType Type}.
    */
-  private final PassiveAbilityType abilityType;
+  private final PassiveAbilityType type;
 
   /**
-   * Associates a trigger with an ability.
+   * Associates a {@link Trigger trigger} with a {@link PassiveAbilityType type}.
    *
-   * @param trigger     trigger
-   * @param abilityType passive ability
+   * @param trigger {@link Trigger trigger}
+   * @param type    {@link PassiveAbilityType type}
    */
-  public TriggerPassiveType(@NotNull Trigger trigger, @NotNull PassiveAbilityType abilityType) {
+  public TriggerPassiveType(@NotNull Trigger trigger, @NotNull PassiveAbilityType type) {
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
-    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
+    this.type = Objects.requireNonNull(type, "Null ability");
   }
 
   /**
-   * Gets the trigger condition.
+   * Gets the {@link Trigger trigger}.
    *
-   * @return trigger condition
+   * @return {@link Trigger trigger}
    */
   @NotNull
   public Trigger getTrigger() {
@@ -46,12 +46,12 @@ public class TriggerPassiveType {
   }
 
   /**
-   * Gets the passive ability.
+   * Gets the {@link PassiveAbilityType type}.
    *
-   * @return passive ability
+   * @return {@link PassiveAbilityType type}
    */
   @NotNull
-  public PassiveAbilityType getAbilityType() {
-    return this.abilityType;
+  public PassiveAbilityType getType() {
+    return this.type;
   }
 }

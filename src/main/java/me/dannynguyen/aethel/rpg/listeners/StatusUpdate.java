@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 /**
- * Collection of status update listeners.
+ * Collection of {@link me.dannynguyen.aethel.rpg.system.Status} update listeners.
  *
  * @author Danny Nguyen
  * @version 1.16.5
@@ -20,7 +20,7 @@ public class StatusUpdate implements Listener {
   }
 
   /**
-   * Clears player statuses on death.
+   * Clears player {@link me.dannynguyen.aethel.rpg.system.Status} on death.
    *
    * @param e player death event
    */

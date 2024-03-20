@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents an item's active ability lore generation.
+ * Represents an item's {@link ActiveAbilityType active ability} lore generation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -26,7 +26,7 @@ import java.util.Map;
  */
 class ItemActiveLore {
   /**
-   * ItemStack whose active abilities are being written.
+   * ItemStack whose {@link ActiveAbilityType active abilities} are being written.
    */
   private final ItemStack item;
 
@@ -46,12 +46,13 @@ class ItemActiveLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's active abilities categorized by equipment slot.
+   * ItemStack's {@link ActiveAbilityType active abilities} categorized
+   * by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
    */
   private final Map<String, List<String>> activeAbilities;
 
   /**
-   * Associates an ItemStack with its active ability list.
+   * Associates an ItemStack with its {@link ActiveAbilityType active ability} list.
    *
    * @param item interacting item
    */
@@ -68,7 +69,7 @@ class ItemActiveLore {
   }
 
   /**
-   * Adds active ability headers to the item's lore.
+   * Adds {@link ActiveAbilityType active ability} headers to the item's lore.
    */
   public void addActiveHeaders() {
     addActiveHeader("head");
@@ -84,10 +85,11 @@ class ItemActiveLore {
   }
 
   /**
-   * Adds an active ability header if it exists for the
-   * equipment slot with its associated ability values.
+   * Adds an {@link ActiveAbilityType active ability} header if it exists for the
+   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} with
+   * its associated ability values.
    *
-   * @param eSlot equipment slot
+   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
    */
   private void addActiveHeader(String eSlot) {
     if (activeAbilities.containsKey(eSlot)) {
@@ -110,9 +112,10 @@ class ItemActiveLore {
   }
 
   /**
-   * Sorts active abilities by their equipment slot.
+   * Sorts {@link ActiveAbilityType active abilities} by their
+   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
    *
-   * @return equipment slot: active ability
+   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} : active ability
    */
   private Map<String, List<String>> sortActiveAbilities() {
     Map<String, List<String>> activeAbilities = new HashMap<>();

@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
 import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Inventory click event listener for PlayerStat menus.
+ * Inventory click event listener for {@link PlayerStatCommand} menus.
  *
  * @author Danny Nguyen
  * @version 1.17.6
  * @since 1.4.7
  */
-public class PlayerStatMenuClick implements MenuClick {
+public class PlayerStatMenuClick implements MenuClickEvent {
   /**
    * Inventory click event.
    */
@@ -37,7 +37,8 @@ public class PlayerStatMenuClick implements MenuClick {
   private final int slot;
 
   /**
-   * Associates an inventory click event with its user in the context of an open PlayerStat menu.
+   * Associates an inventory click event with its user in
+   * the context of an open {@link PlayerStatCommand} menu.
    *
    * @param e inventory click event
    */
@@ -71,10 +72,10 @@ public class PlayerStatMenuClick implements MenuClick {
    * - increments or decrements a player's statistic page
    * </p>
    * <p>
-   * - returns to the main menu
+   * - returns to the {@link PlayerStatMenu} main menu
    * </p>
    * <p>
-   * - gets a player's statistic value.
+   * - gets a player's statistic value
    * </p>
    */
   public void interpretStatClick() {
@@ -94,7 +95,7 @@ public class PlayerStatMenuClick implements MenuClick {
    * - increments or decrements a player's substatistic page
    * </p>
    * <p>
-   * - returns to the main menu
+   * - returns to the {@link PlayerStatMenu} main menu
    * </p>
    * <p>
    * - gets a player's substatistic value.
@@ -125,7 +126,7 @@ public class PlayerStatMenuClick implements MenuClick {
   }
 
   /**
-   * Opens a PlayerStat menu.
+   * Opens a {@link PlayerStatMenu} menu.
    */
   private void returnToMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents an equipment slot passive ability pair.
+ * Represents an {@link RpgEquipmentSlot equipment slot} {@link PassiveAbilityType passive ability} pair.
  *
  * @author Danny Nguyen
  * @version 1.16.3
@@ -15,30 +15,30 @@ import java.util.Objects;
  **/
 public class SlotPassiveType {
   /**
-   * Equipment slot type.
+   * {@link RpgEquipmentSlot Equipment slot}.
    */
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * Passive ability type.
+   * {@link PassiveAbilityType Type}.
    */
-  private final PassiveAbilityType abilityType;
+  private final PassiveAbilityType type;
 
   /**
-   * Associates an equipment slot with an ability.
+   * Associates an {@link RpgEquipmentSlot equipment slot} with an {@link PassiveAbilityType ability}.
    *
-   * @param eSlot       equipment slot
-   * @param abilityType passive ability
+   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param type  {@link PassiveAbilityType type}
    */
-  public SlotPassiveType(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType abilityType) {
+  public SlotPassiveType(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
-    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
+    this.type = Objects.requireNonNull(type, "Null ability");
   }
 
   /**
-   * Gets the equipment slot.
+   * Gets the {@link RpgEquipmentSlot equipment slot}.
    *
-   * @return equipment slot
+   * @return {@link RpgEquipmentSlot equipment slot}
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
@@ -46,13 +46,13 @@ public class SlotPassiveType {
   }
 
   /**
-   * Gets the passive ability.
+   * Gets the {@link PassiveAbilityType type}.
    *
-   * @return passive ability
+   * @return {@link PassiveAbilityType type}
    */
   @NotNull
-  public PassiveAbilityType getAbilityType() {
-    return this.abilityType;
+  public PassiveAbilityType getType() {
+    return this.type;
   }
 
   /**
@@ -64,7 +64,7 @@ public class SlotPassiveType {
   @Override
   public boolean equals(Object o) {
     if (o instanceof SlotPassiveType slotPassiveType) {
-      return (slotPassiveType.getSlot() == eSlot && slotPassiveType.getAbilityType() == abilityType);
+      return (slotPassiveType.getSlot() == eSlot && slotPassiveType.getType() == type);
     }
     return false;
   }
@@ -76,6 +76,6 @@ public class SlotPassiveType {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(eSlot, abilityType);
+    return Objects.hash(eSlot, type);
   }
 }

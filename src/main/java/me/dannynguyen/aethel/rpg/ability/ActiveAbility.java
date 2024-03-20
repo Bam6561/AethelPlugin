@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents an item's active ability.
+ * Represents an item's {@link ActiveAbilityType active ability}.
  *
  * @author Danny Nguyen
  * @version 1.17.4
@@ -16,64 +16,64 @@ import java.util.*;
  */
 public class ActiveAbility {
   /**
-   * Active abilities on cooldown.
+   * {@link ActiveAbilityType Active abilities} on cooldown.
    */
   private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives;
 
   /**
-   * Equipment slot type.
+   * {@link RpgEquipmentSlot Equipment slot}.
    */
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * Passive ability type.
+   * {@link ActiveAbilityType Type}.
    */
-  private final ActiveAbilityType abilityType;
+  private final ActiveAbilityType type;
 
   /**
-   * Ability data.
+   * {@link ActiveAbilityEffect Effect} data.
    */
   private final List<String> effectData = new ArrayList<>();
 
   /**
-   * Associates an active ability with its data.
+   * Associates an {@link ActiveAbilityType active ability} with its data.
    *
    * @param onCooldownActives actives on cooldown
-   * @param eSlot             slot type
-   * @param abilityType       ability type
+   * @param eSlot             {@link RpgEquipmentSlot equipment slot}
+   * @param type              {@link ActiveAbilityType type}
    * @param dataValues        ability data
    */
-  public ActiveAbility(@NotNull Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives, @NotNull RpgEquipmentSlot eSlot, @NotNull ActiveAbilityType abilityType, @NotNull String[] dataValues) {
+  public ActiveAbility(@NotNull Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives, @NotNull RpgEquipmentSlot eSlot, @NotNull ActiveAbilityType type, @NotNull String[] dataValues) {
     this.onCooldownActives = Objects.requireNonNull(onCooldownActives, "Null on cooldown actives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
-    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
-    initializeAbilityData(abilityType.getEffect(), dataValues);
+    this.type = Objects.requireNonNull(type, "Null ability");
+    initializeAbilityData(type.getEffect(), dataValues);
   }
 
   /**
-   * Initializes the active ability's ability data.
+   * Initializes the {@link ActiveAbilityType active ability's} ability data.
    *
-   * @param abilityEffect ability effect
-   * @param dataValues    ability data
+   * @param effect     {@link ActiveAbilityEffect effect}
+   * @param dataValues ability data
    */
-  private void initializeAbilityData(ActiveAbilityEffect abilityEffect, String[] dataValues) {
-    switch (abilityEffect) {
+  private void initializeAbilityData(ActiveAbilityEffect effect, String[] dataValues) {
+    switch (effect) {
       case MOVEMENT, PROJECTION -> {
-        effectData.add(dataValues[0]);
-        effectData.add(dataValues[1]);
+        this.effectData.add(dataValues[0]);
+        this.effectData.add(dataValues[1]);
       }
       case SHATTER -> {
-        effectData.add(dataValues[0]);
-        effectData.add(dataValues[1]);
-        effectData.add(dataValues[2]);
+        this.effectData.add(dataValues[0]);
+        this.effectData.add(dataValues[1]);
+        this.effectData.add(dataValues[2]);
       }
     }
   }
 
   /**
-   * Gets the equipment slot.
+   * Gets the {@link RpgEquipmentSlot equipment slot}.
    *
-   * @return equipment slot
+   * @return {@link RpgEquipmentSlot equipment slot}.
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
@@ -82,19 +82,19 @@ public class ActiveAbility {
 
 
   /**
-   * Gets the active ability type.
+   * Gets the {@link ActiveAbilityType type}.
    *
-   * @return active ability type
+   * @return {@link ActiveAbilityType type}
    */
   @NotNull
-  public ActiveAbilityType getAbilityType() {
-    return abilityType;
+  public ActiveAbilityType getType() {
+    return type;
   }
 
   /**
-   * Gets the ability's effect data.
+   * Gets the {@link ActiveAbilityEffect effect} data.
    *
-   * @return ability's effect data
+   * @return {@link ActiveAbilityEffect effect} data
    */
   @NotNull
   public List<String> getEffectData() {
@@ -107,7 +107,7 @@ public class ActiveAbility {
    * @return if the ability is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownActives.get(eSlot).contains(abilityType);
+    return onCooldownActives.get(eSlot).contains(type);
   }
 
   /**
@@ -117,9 +117,9 @@ public class ActiveAbility {
    */
   public void setOnCooldown(boolean onCooldown) {
     if (onCooldown) {
-      onCooldownActives.get(eSlot).add(abilityType);
+      onCooldownActives.get(eSlot).add(type);
     } else {
-      onCooldownActives.get(eSlot).remove(abilityType);
+      onCooldownActives.get(eSlot).remove(type);
     }
   }
 }

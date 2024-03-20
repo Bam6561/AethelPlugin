@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a menu that edits an item's Aethel tags.
+ * Represents a menu that edits an item's {@link PluginNamespacedKey Aethel tags}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class TagMenu implements Menu {
   /**
-   * Aethel tags managed by the GUI.
+   * {@link PluginNamespacedKey Aethel tags} managed by the GUI.
    */
   private static final NamespacedKey[] aethelTags = {
       PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey(),
@@ -74,7 +74,7 @@ public class TagMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with Aethel tags.
+   * Sets the menu to display interactions with {@link PluginNamespacedKey Aethel tags}.
    *
    * @return Tag menu
    */
@@ -87,7 +87,7 @@ public class TagMenu implements Menu {
   }
 
   /**
-   * Adds editable Aethel tags.
+   * Adds editable {@link PluginNamespacedKey Aethel tags}.
    */
   private void addAethelTags() {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();

@@ -44,7 +44,8 @@ public class MessageSent implements Listener {
   }
 
   /**
-   * Determines which ItemEditor input is being interacted with.
+   * Determines which {@link me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand}
+   * input is being interacted with.
    *
    * @param e       message event
    * @param msgType message type

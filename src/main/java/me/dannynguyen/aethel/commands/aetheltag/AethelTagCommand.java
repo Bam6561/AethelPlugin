@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
 import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -12,9 +13,13 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Command invocation that allows the user to retrieve,
- * set, or remove Aethel tags to their main hand item.
+ * set, or remove {@link PluginNamespacedKey Aethel tags} to their main hand item.
+ * <p>
+ * Registered through {@link me.dannynguyen.aethel.Plugin}.
+ * </p>
  * <p>
  * Parameters:
+ * </p>
  * <p>
  * - "get", "g": reads the item's tags
  * </p>
@@ -101,7 +106,7 @@ public class AethelTagCommand implements CommandExecutor {
   }
 
   /**
-   * Responds with the item's Aethel tags.
+   * Responds with the item's {@link PluginNamespacedKey Aethel tags}.
    *
    * @param user user
    * @param item main hand item

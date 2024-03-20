@@ -16,13 +16,19 @@ import java.util.Map;
 /**
  * Command invocation that allows the user to craft items through clicking.
  * <p>
+ * Registered through {@link Plugin}.
+ * </p>
+ * <p>
  * Parameters:
  * </p>
  * <p>
- * - "edit", "e": create, edit, or remove Forge recipes
+ * - "" : craft {@link PersistentRecipe recipes}
  * </p>
  * <p>
- * - "reload", "r": reloads Forge recipes into memory
+ * - "edit", "e": create, edit, or remove {@link PersistentRecipe recipes}
+ * </p>
+ * <p>
+ * - "reload", "r": reloads {@link PersistentRecipe recipes} into {@link RecipeRegistry}
  * </p>
  *
  * @author Danny Nguyen
@@ -61,7 +67,7 @@ public class ForgeCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly before
-   * opening a Recipe crafting menu or interpreting its usage.
+   * opening a {@link RecipeMenu} menu or interpreting its usage.
    *
    * @param user user
    * @param args user provided parameters
@@ -75,7 +81,7 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Either edits recipes or reloads them into memory.
+   * Either edits {@link PersistentRecipe recipes} or reloads them into {@link RecipeRegistry}.
    *
    * @param user   user
    * @param action type of interaction
@@ -102,7 +108,7 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the Recipe menu with the intent to craft recipes.
+   * Opens the {@link RecipeMenu} menu with the intent to craft {@link PersistentRecipe recipes}.
    *
    * @param user user
    */
@@ -116,7 +122,7 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the Recipe menu with the intent to edit recipes.
+   * Opens the {@link RecipeMenu} menu with the intent to edit {@link PersistentRecipe recipes}.
    *
    * @param user user
    */

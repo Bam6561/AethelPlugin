@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents RPG players in memory.
+ * Represents RPG metadata in memory.
  *
  * @author Danny Nguyen
  * @version 1.14.7
@@ -16,19 +16,19 @@ import java.util.*;
  */
 public class RpgSystem {
   /**
-   * RPG players.
+   * {@link RpgPlayer RPG players}.
    */
   private final Map<UUID, RpgPlayer> rpgPlayers = new HashMap<>();
 
   /**
-   * Players with sufficient enchantment level requirements.
+   * Players with sufficient {@link Enchantments enchantment} level requirements.
    */
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
       Enchantment.PROTECTION_FALL, new HashSet<>(),
       Enchantment.PROTECTION_FIRE, new HashSet<>()));
 
   /**
-   * Living entities affected by statuses.
+   * Living entities affected by {@link Status statuses}.
    */
   private final Map<UUID, Map<StatusType, Status>> statuses = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class RpgSystem {
   }
 
   /**
-   * Loads an RPG player into memory.
+   * Loads an {@link RpgPlayer RPG player} into memory.
    *
    * @param player interacting player
    */
@@ -48,9 +48,9 @@ public class RpgSystem {
   }
 
   /**
-   * Gets RPG players.
+   * Gets {@link RpgPlayer RPG players}.
    *
-   * @return RPG players
+   * @return {@link RpgPlayer rpg players}
    */
   @NotNull
   public Map<UUID, RpgPlayer> getRpgPlayers() {
@@ -58,9 +58,9 @@ public class RpgSystem {
   }
 
   /**
-   * Gets players with sufficient enchantment level requirements.
+   * Gets players with sufficient {@link Enchantments enchantment} level requirements.
    *
-   * @return players with sufficient enchantment level requirements
+   * @return players with sufficient {@link Enchantments enchantment}level requirements
    */
   @NotNull
   public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
@@ -68,9 +68,9 @@ public class RpgSystem {
   }
 
   /**
-   * Gets entities affected by statuses.
+   * Gets entities affected by {@link Status statuses}.
    *
-   * @return entities with statuses
+   * @return entities with {@link Status statuses}
    */
   @NotNull
   public Map<UUID, Map<StatusType, Status>> getStatuses() {

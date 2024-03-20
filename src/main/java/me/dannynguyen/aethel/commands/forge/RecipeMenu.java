@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
+ * Represents a menu that supports categorical pagination for
+ * crafting, editing, and removing {@link PersistentRecipe recipes}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -42,7 +43,7 @@ public class RecipeMenu implements CategoryMenu {
   private final UUID uuid;
 
   /**
-   * GUI action.
+   * GUI {@link Action action}.
    */
   private final Action action;
 
@@ -76,7 +77,7 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to view recipe categories.
+   * Sets the menu to view {@link PersistentRecipe recipe} categories.
    *
    * @return Recipe menu
    */
@@ -90,11 +91,11 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to load a recipe category page.
+   * Sets the menu to load a {@link PersistentRecipe recipe} category page.
    *
    * @param requestedCategory requested category
    * @param requestedPage     requested page
-   * @return recipe category page
+   * @return {@link PersistentRecipe recipe} category page
    */
   @NotNull
   public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
@@ -154,7 +155,7 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Adds recipe categories.
+   * Adds {@link PersistentRecipe recipe} categories.
    */
   private void addCategories() {
     Set<String> categories = Plugin.getData().getRecipeRegistry().getRecipeCategories().keySet();
@@ -172,17 +173,17 @@ public class RecipeMenu implements CategoryMenu {
    */
   public enum Action {
     /**
-     * Craft recipes.
+     * Craft {@link PersistentRecipe recipes}.
      */
     CRAFT,
 
     /**
-     * Edit recipes.
+     * Edit {@link PersistentRecipe recipes}.
      */
     EDIT,
 
     /**
-     * Remove recipes.
+     * Remove {@link PersistentRecipe recipes}.
      */
     REMOVE
   }

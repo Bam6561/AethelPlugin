@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents statuses that affect Living Entities.
+ * Represents {@link StatusType statuses} that affect Living Entities.
  *
  * @author Danny Nguyen
  * @version 1.16.7
@@ -24,9 +24,9 @@ public class Status {
   private final UUID uuid;
 
   /**
-   * Status type.
+   * {@link StatusType Type}.
    */
-  private final StatusType statusType;
+  private final StatusType type;
 
   /**
    * If stack instances are cumulative.
@@ -34,7 +34,7 @@ public class Status {
   private final boolean isCumulative;
 
   /**
-   * Status's individual stack applications.
+   * {@link StatusType Status's} individual stack applications.
    * <p>
    * Stack instances are represented by their Bukkit task ID.
    * </p>
@@ -42,22 +42,22 @@ public class Status {
   private final Map<Integer, Integer> stackInstances = new HashMap<>();
 
   /**
-   * Number of status stacks.
+   * Number of {@link StatusType status} stacks.
    */
   private int stackAmount;
 
   /**
    * Associates a new status with its initial stacks and application.
    *
-   * @param uuid       entity uuid
-   * @param statusType type of status
-   * @param stacks     initial amount of stacks
-   * @param ticks      initial stack application duration
+   * @param uuid   entity uuid
+   * @param type   {@link StatusType type}
+   * @param stacks initial amount of stacks
+   * @param ticks  initial stack application duration
    */
-  public Status(@NotNull UUID uuid, @NotNull StatusType statusType, int stacks, int ticks) {
+  public Status(@NotNull UUID uuid, @NotNull StatusType type, int stacks, int ticks) {
     this.uuid = Objects.requireNonNull(uuid, "Null uuid");
-    this.statusType = Objects.requireNonNull(statusType, "Null status type");
-    this.isCumulative = statusType.isCumulative();
+    this.type = Objects.requireNonNull(type, "Null status type");
+    this.isCumulative = type.isCumulative();
     int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeStacks(stacks), ticks).getTaskId();
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> stackInstances.remove(taskId), ticks);
     this.stackAmount = stacks;
@@ -65,7 +65,7 @@ public class Status {
   }
 
   /**
-   * Adds a number of stacks to the status.
+   * Adds a number of stacks to the {@link StatusType status}.
    *
    * @param stacks number of stacks to add
    * @param ticks  duration in ticks
@@ -84,7 +84,7 @@ public class Status {
   }
 
   /**
-   * Removes a number of stacks from the status.
+   * Removes a number of stacks from the {@link StatusType status}.
    *
    * @param stacks number of stacks to remove
    */
@@ -106,7 +106,7 @@ public class Status {
   }
 
   /**
-   * Removes the status type if no stack instances remain.
+   * Removes the {@link StatusType status} if no stack instances remain.
    */
   private void removeStatusTypeIfEmpty() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -114,7 +114,7 @@ public class Status {
         Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
         if (entityStatuses.get(uuid) != null) {
           Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-          statuses.remove(statusType);
+          statuses.remove(type);
           if (statuses.isEmpty()) {
             entityStatuses.remove(uuid);
           }
@@ -124,9 +124,9 @@ public class Status {
   }
 
   /**
-   * Gets the status's stack durations.
+   * Gets the {@link StatusType status's} stack durations.
    *
-   * @return status's stack durations
+   * @return {@link StatusType status's} stack durations
    */
   @NotNull
   public Map<Integer, Integer> getStackInstances() {
@@ -134,16 +134,16 @@ public class Status {
   }
 
   /**
-   * Gets the status's number of stacks.
+   * Gets the {@link StatusType status's} number of stacks.
    *
-   * @return number of status stacks
+   * @return number of {@link StatusType status} stacks
    */
   public int getStackAmount() {
     return this.stackAmount;
   }
 
   /**
-   * Sets the status's amount of stacks
+   * Sets the {@link StatusType status's} amount of stacks
    *
    * @param stackAmount amount of stacks
    */

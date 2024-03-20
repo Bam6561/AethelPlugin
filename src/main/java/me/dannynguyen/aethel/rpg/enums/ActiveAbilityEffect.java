@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Effects of active abilities.
+ * Effects of {@link ActiveAbilityType active abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -31,7 +31,7 @@ public enum ActiveAbilityEffect {
   private final String data;
 
   /**
-   * Associates an active ability effect with its data.
+   * Associates an {@link ActiveAbilityType active ability} effect with its data.
    *
    * @param data effect's data
    */
