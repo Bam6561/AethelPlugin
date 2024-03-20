@@ -194,7 +194,7 @@ class TagModifier {
         try {
           RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
           try {
-            AethelAttribute.valueOf(tagMeta[1].toUpperCase());
+            AethelAttributeType.valueOf(tagMeta[1].toUpperCase());
             setAttributeTag(attributeValue);
           } catch (IllegalArgumentException ex) {
             user.sendMessage(ChatColor.RED + "Aethel attribute does not exist.");

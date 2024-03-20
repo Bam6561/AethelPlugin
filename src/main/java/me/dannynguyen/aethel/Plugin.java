@@ -50,7 +50,7 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.17.3
+ * @version 1.17.9
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -205,7 +205,7 @@ public class Plugin extends JavaPlugin {
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotPassiveType, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
+      Map<SlotPassiveType, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(Trigger.BELOW_HP);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {

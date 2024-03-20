@@ -1,11 +1,8 @@
 package me.dannynguyen.aethel.rpg.system;
 
-import me.dannynguyen.aethel.rpg.enums.AethelAttribute;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,7 +10,7 @@ import java.util.UUID;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.17.9
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -30,10 +27,20 @@ public class RpgPlayer {
   /**
    * Total Aethel attributes.
    */
-  private final Map<AethelAttribute, Double> aethelAttributes = createBlankAethelAttributes();
+  private final AethelAttributes aethelAttributes;
 
   /**
-   * Player's equipment.
+   * Total enchantments.
+   */
+  private final Enchantments enchantments;
+
+  /**
+   * Passive and active abilities.
+   */
+  private final Abilities abilities;
+
+  /**
+   * All equipment.
    */
   private final Equipment equipment;
 
@@ -50,21 +57,11 @@ public class RpgPlayer {
   public RpgPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.settings = new Settings(uuid);
-    this.equipment = new Equipment(player, aethelAttributes);
+    this.aethelAttributes = new AethelAttributes();
+    this.enchantments = new Enchantments(uuid);
+    this.abilities = new Abilities();
+    this.equipment = new Equipment(player, aethelAttributes, enchantments, abilities);
     this.health = new Health(player, aethelAttributes, settings);
-  }
-
-  /**
-   * Creates a blank map of Aethel attributes.
-   *
-   * @return blank Aethel attributes
-   */
-  private Map<AethelAttribute, Double> createBlankAethelAttributes() {
-    Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
-    for (AethelAttribute attribute : AethelAttribute.values()) {
-      aethelAttributes.put(attribute, 0.0);
-    }
-    return aethelAttributes;
   }
 
   /**
@@ -90,11 +87,30 @@ public class RpgPlayer {
   /**
    * Gets the player's total Aethel attributes.
    *
-   * @return total Aethel attributes
+   * @return player's total Aethel attributes
    */
   @NotNull
-  public Map<AethelAttribute, Double> getAethelAttributes() {
+  public AethelAttributes getAethelAttributes() {
     return this.aethelAttributes;
+  }
+
+  /**
+   * Gets the player's total enchantments.
+   *
+   * @return player's total enchantments
+   */
+  public Enchantments getEnchantments() {
+    return this.enchantments;
+  }
+
+  /**
+   * Gets the player's RPG abilities.
+   *
+   * @return player's RPG abilities
+   */
+  @NotNull
+  public Abilities getAbilities() {
+    return this.abilities;
   }
 
   /**

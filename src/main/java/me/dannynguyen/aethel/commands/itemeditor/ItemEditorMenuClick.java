@@ -567,7 +567,7 @@ public class ItemEditorMenuClick implements MenuClick {
     RpgEquipmentSlot eSlot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.SLOT)));
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + attribute + ChatColor.WHITE + " value.");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: " + AethelAttribute.valueOf(TextFormatter.formatEnum(attribute)).getBaseValue());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: " + AethelAttributeType.valueOf(TextFormatter.formatEnum(attribute)).getBaseValue());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
     awaitMessageResponse("aethel_attribute");
   }

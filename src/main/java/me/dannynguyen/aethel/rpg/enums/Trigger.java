@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Types of ability trigger conditions.
+ * Types of passive ability triggers.
  *
  * @author Danny Nguyen
  * @version 1.17.7

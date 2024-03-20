@@ -24,7 +24,7 @@ import java.util.UUID;
  * Collection of listeners for RPG system functionality.
  *
  * @author Danny Nguyen
- * @version 1.17.0
+ * @version 1.17.9
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -103,7 +103,7 @@ public class RpgEvent implements Listener {
    * @param selfUUID   self UUID
    */
   private void triggerOnKillPassives(UUID killedUUID, UUID selfUUID) {
-    Map<SlotPassiveType, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getEquipment().getTriggerPassives().get(Trigger.ON_KILL);
+    Map<SlotPassiveType, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getAbilities().getTriggerPassives().get(Trigger.ON_KILL);
     if (!killTriggers.isEmpty()) {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {

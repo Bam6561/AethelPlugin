@@ -2,10 +2,9 @@ package me.dannynguyen.aethel.rpg.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.TriggerPassiveType;
-import me.dannynguyen.aethel.rpg.enums.AethelAttribute;
+import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.system.Equipment;
-import me.dannynguyen.aethel.rpg.system.RpgPlayer;
+import me.dannynguyen.aethel.rpg.system.*;
 import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -31,7 +30,7 @@ import java.util.Map;
  * Collection of equipment data update listeners.
  *
  * @author Danny Nguyen
- * @version 1.16.3
+ * @version 1.17.9
  * @since 1.9.0
  */
 public class EquipmentUpdate implements Listener {
@@ -136,22 +135,26 @@ public class EquipmentUpdate implements Listener {
   @EventHandler
   private void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
-      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment();
-      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = equipment.getEnchantments();
-      Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = equipment.getAttributes();
-      Map<RpgEquipmentSlot, List<TriggerPassiveType>> equipmentPassives = equipment.getSlotPassives();
+      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId());
+      AethelAttributes attributes = rpgPlayer.getAethelAttributes();
+      Enchantments enchantments = rpgPlayer.getEnchantments();
+      Abilities abilities = rpgPlayer.getAbilities();
+      Equipment equipment = rpgPlayer.getEquipment();
 
+      Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = attributes.getSlotAttributes();
+      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getEnchantments();
+      Map<RpgEquipmentSlot, List<TriggerPassiveType>> slotPassives = abilities.getSlotPassives();
+
+      for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
+        attributes.removeAttributes(eSlot);
+      }
+      for (RpgEquipmentSlot eSlot : slotEnchantments.keySet()) {
+        enchantments.removeEnchantments(eSlot);
+      }
+      for (RpgEquipmentSlot eSlot : slotPassives.keySet()) {
+        abilities.removePassives(eSlot);
+      }
       dropJewelryItems(e.getEntity(), equipment.getJewelry());
-
-      for (RpgEquipmentSlot eSlot : equipmentAttributes.keySet()) {
-        equipment.removeAttributes(eSlot);
-      }
-      for (RpgEquipmentSlot eSlot : equipmentEnchantments.keySet()) {
-        equipment.removeEnchantments(eSlot);
-      }
-      for (RpgEquipmentSlot eSlot : equipmentPassives.keySet()) {
-        equipment.removePassives(eSlot);
-      }
     }
   }
 

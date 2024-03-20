@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.enums.AethelAttribute;
+import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -35,10 +35,10 @@ public class AethelAttributeMenu implements Menu {
   /**
    * Categorized Aethel attributes.
    */
-  private static final Map<String, AethelAttribute[]> attributeCategories = Map.of(
-      "offense", new AethelAttribute[]{AethelAttribute.CRITICAL_CHANCE, AethelAttribute.CRITICAL_DAMAGE},
-      "defense", new AethelAttribute[]{AethelAttribute.MAX_HEALTH, AethelAttribute.COUNTER_CHANCE, AethelAttribute.DODGE_CHANCE, AethelAttribute.ARMOR_TOUGHNESS},
-      "other", new AethelAttribute[]{AethelAttribute.ITEM_DAMAGE, AethelAttribute.ITEM_COOLDOWN});
+  private static final Map<String, AethelAttributeType[]> attributeCategories = Map.of(
+      "offense", new AethelAttributeType[]{AethelAttributeType.CRITICAL_CHANCE, AethelAttributeType.CRITICAL_DAMAGE},
+      "defense", new AethelAttributeType[]{AethelAttributeType.MAX_HEALTH, AethelAttributeType.COUNTER_CHANCE, AethelAttributeType.DODGE_CHANCE, AethelAttributeType.ARMOR_TOUGHNESS},
+      "other", new AethelAttributeType[]{AethelAttributeType.ITEM_DAMAGE, AethelAttributeType.ITEM_COOLDOWN});
 
   /**
    * GUI.
@@ -176,7 +176,7 @@ public class AethelAttributeMenu implements Menu {
    */
   private void addAttributeCategory(String category, int invSlot) {
     if (existingAethelAttributes != null) {
-      for (AethelAttribute attribute : attributeCategories.get(category)) {
+      for (AethelAttributeType attribute : attributeCategories.get(category)) {
         String attributeName = attribute.getProperName();
         String attributeId = attribute.getId();
         boolean enabled = existingAethelAttributes.containsKey(attributeId);
@@ -194,7 +194,7 @@ public class AethelAttributeMenu implements Menu {
         invSlot++;
       }
     } else {
-      for (AethelAttribute attribute : attributeCategories.get(category)) {
+      for (AethelAttributeType attribute : attributeCategories.get(category)) {
         menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attribute.getProperName()));
         invSlot++;
       }

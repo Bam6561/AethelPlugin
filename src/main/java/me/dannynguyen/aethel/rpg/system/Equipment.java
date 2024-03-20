@@ -2,18 +2,11 @@ package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Directory;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.rpg.ability.ActiveAbility;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
-import me.dannynguyen.aethel.rpg.ability.TriggerPassiveType;
-import me.dannynguyen.aethel.rpg.enums.*;
+import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.item.ItemCreator;
 import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -36,13 +29,6 @@ import java.util.*;
  */
 public class Equipment {
   /**
-   * Tracked enchantments.
-   */
-  private static final Set<Enchantment> trackedEnchantments = Set.of(
-      Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS,
-      Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
-
-  /**
    * Player's UUID.
    */
   private final UUID uuid;
@@ -50,52 +36,17 @@ public class Equipment {
   /**
    * Total Aethel attributes.
    */
-  private final Map<AethelAttribute, Double> aethelAttributes;
-
-  /**
-   * Aethel attributes by slot.
-   */
-  private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> attributes = new HashMap<>();
+  private final AethelAttributes attributes;
 
   /**
    * Total enchantments.
    */
-  private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
+  private final Enchantments enchantments;
 
   /**
-   * Enchantments by slot.
+   * Passive and active abilities.
    */
-  private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> enchantments = new HashMap<>();
-
-  /**
-   * Passive abilities by slot.
-   */
-  private final Map<RpgEquipmentSlot, List<TriggerPassiveType>> slotPassives = new HashMap<>();
-
-  /**
-   * Passive abilities by trigger method..
-   */
-  private final Map<Trigger, Map<SlotPassiveType, PassiveAbility>> triggerPassives = createBlankPassiveTriggers();
-
-  /**
-   * Passive abilities on cooldown.
-   */
-  private final Map<Trigger, Set<SlotPassiveType>> onCooldownPassives = createBlankCooldownTriggers();
-
-  /**
-   * Active abilities by slot.
-   */
-  private final Map<RpgEquipmentSlot, List<ActiveAbilityType>> slotActives = new HashMap<>();
-
-  /**
-   * Active abilities by trigger method.
-   */
-  private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = new HashMap<>();
-
-  /**
-   * Active abilities on cooldown.
-   */
-  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives = new HashMap<>();
+  private final Abilities abilities;
 
   /**
    * Jewelry slots.
@@ -110,69 +61,19 @@ public class Equipment {
   /**
    * Associates RPG equipment with a player.
    *
-   * @param player           interacting player
-   * @param aethelAttributes total Aethel attributes
+   * @param player       interacting player
+   * @param attributes   total Aethel attributes
+   * @param enchantments total enchantments
+   * @param abilities    passive and active abilities
    */
-  public Equipment(@NotNull Player player, @NotNull Map<AethelAttribute, Double> aethelAttributes) {
+  public Equipment(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Enchantments enchantments, @NotNull Abilities abilities) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.aethelAttributes = Objects.requireNonNull(aethelAttributes, "Null Aethel Attributes");
+    this.attributes = Objects.requireNonNull(attributes, "Null Aethel attributes");
+    this.enchantments = Objects.requireNonNull(enchantments, "Null enchantments");
+    this.abilities = Objects.requireNonNull(abilities, "Null abilities");
     this.heldItem = player.getInventory().getItemInMainHand();
-    initializeEquipment(player);
     initializeJewelrySlots();
-  }
-
-  /**
-   * Creates a blank map of total enchantment levels.
-   *
-   * @return blank total enchantment levels
-   */
-  private Map<Enchantment, Integer> createBlankTotalEnchantments() {
-    Map<Enchantment, Integer> enchantments = new HashMap<>();
-    for (Enchantment enchantment : trackedEnchantments) {
-      enchantments.put(enchantment, 0);
-    }
-    return enchantments;
-  }
-
-  /**
-   * Creates a blank map of ability triggers.
-   *
-   * @return blank ability triggers
-   */
-  private Map<Trigger, Map<SlotPassiveType, PassiveAbility>> createBlankPassiveTriggers() {
-    Map<Trigger, Map<SlotPassiveType, PassiveAbility>> triggers = new HashMap<>();
-    for (Trigger trigger : Trigger.values()) {
-      triggers.put(trigger, new HashMap<>());
-    }
-    return triggers;
-  }
-
-  /**
-   * Creates a blank map of ability cooldown triggers.
-   *
-   * @return blank ability cooldown triggers
-   */
-  private Map<Trigger, Set<SlotPassiveType>> createBlankCooldownTriggers() {
-    Map<Trigger, Set<SlotPassiveType>> triggers = new HashMap<>();
-    for (Trigger trigger : Trigger.values()) {
-      triggers.put(trigger, new HashSet<>());
-    }
-    return triggers;
-  }
-
-  /**
-   * Initializes the player's equipment-related Aethel tags.
-   *
-   * @param player interacting player
-   */
-  private void initializeEquipment(Player player) {
-    PlayerInventory pInv = player.getInventory();
-    readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND, false);
-    readSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND, false);
-    readSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD, false);
-    readSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST, false);
-    readSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS, false);
-    readSlot(pInv.getBoots(), RpgEquipmentSlot.FEET, false);
+    initializeEquipment(player);
   }
 
   /**
@@ -190,6 +91,23 @@ public class Equipment {
         Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
       }
     }
+  }
+
+  /**
+   * Initializes the player's equipment-related Aethel tags.
+   *
+   * @param player interacting player
+   */
+  private void initializeEquipment(Player player) {
+    PlayerInventory pInv = player.getInventory();
+    readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND, false);
+    readSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND, false);
+    readSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD, false);
+    readSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST, false);
+    readSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS, false);
+    readSlot(pInv.getBoots(), RpgEquipmentSlot.FEET, false);
+    readSlot(jewelry[0], RpgEquipmentSlot.NECKLACE, false);
+    readSlot(jewelry[1], RpgEquipmentSlot.RING, false);
   }
 
   /**
@@ -241,16 +159,16 @@ public class Equipment {
   private void setSlotData(RpgEquipmentSlot eSlot, ItemStack item) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
     if (dataContainer.has(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-      attributes.put(eSlot, new HashMap<>());
-      readAttributes(eSlot, dataContainer);
+      attributes.getSlotAttributes().put(eSlot, new HashMap<>());
+      attributes.readAttributes(eSlot, dataContainer);
     }
     if (item.getItemMeta().hasEnchants()) {
-      enchantments.put(eSlot, new HashMap<>());
-      addEnchantments(eSlot, item);
+      enchantments.getEnchantments().put(eSlot, new HashMap<>());
+      enchantments.addEnchantments(eSlot, item);
     }
     if (dataContainer.has(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-      slotPassives.put(eSlot, new ArrayList<>());
-      readPassives(eSlot, dataContainer);
+      abilities.getSlotPassives().put(eSlot, new ArrayList<>());
+      abilities.readPassives(eSlot, dataContainer);
     }
   }
 
@@ -260,148 +178,15 @@ public class Equipment {
    * @param eSlot equipment slot
    */
   private void removeSlotData(RpgEquipmentSlot eSlot) {
-    if (attributes.containsKey(eSlot)) {
-      removeAttributes(eSlot);
+    if (attributes.getSlotAttributes().containsKey(eSlot)) {
+      attributes.removeAttributes(eSlot);
     }
-    if (enchantments.containsKey(eSlot)) {
-      removeEnchantments(eSlot);
+    if (enchantments.getEnchantments().containsKey(eSlot)) {
+      enchantments.removeEnchantments(eSlot);
     }
-    if (slotPassives.containsKey(eSlot)) {
-      removePassives(eSlot);
+    if (abilities.getSlotPassives().containsKey(eSlot)) {
+      abilities.removePassives(eSlot);
     }
-  }
-
-  /**
-   * Checks if the item is in the correct equipment slot before updating the player's attribute values.
-   *
-   * @param eSlot         slot type
-   * @param dataContainer item's persistent tags
-   */
-  private void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] attributes = dataContainer.get(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
-    for (String attribute : attributes) {
-      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
-      if (equipmentSlot == eSlot) {
-        addAttributes(eSlot, dataContainer, attribute);
-      }
-    }
-  }
-
-  /**
-   * Adds new equipment attribute modifiers.
-   *
-   * @param eSlot         slot type
-   * @param dataContainer item's persistent tags
-   * @param attribute     attribute modifier
-   */
-  private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String attribute) {
-    NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
-    AethelAttribute attributeType = AethelAttribute.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
-    attributes.get(eSlot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
-    aethelAttributes.put(attributeType, aethelAttributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
-  }
-
-  /**
-   * Removes existing equipment attribute modifiers at an equipment slot.
-   *
-   * @param eSlot equipment slot
-   */
-  public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
-    for (AethelAttribute attribute : attributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
-      aethelAttributes.put(attribute, aethelAttributes.get(attribute) - attributes.get(eSlot).get(attribute));
-      attributes.get(eSlot).put(attribute, 0.0);
-    }
-  }
-
-  /**
-   * Adds new equipment enchantments.
-   *
-   * @param eSlot equipment slot
-   * @param item  interacting item
-   */
-  public void addEnchantments(@NotNull RpgEquipmentSlot eSlot, @NotNull ItemStack item) {
-    Objects.requireNonNull(eSlot, "Null slot");
-    Objects.requireNonNull(item, "Null item");
-    for (Enchantment enchantment : trackedEnchantments) {
-      enchantments.get(eSlot).put(enchantment, item.getEnchantmentLevel(enchantment));
-      totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
-    }
-    readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
-    readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
-  }
-
-  /**
-   * Removes existing equipment enchantments at an equipment slot.
-   *
-   * @param eSlot equipment slot
-   */
-  public void removeEnchantments(@NotNull RpgEquipmentSlot eSlot) {
-    for (Enchantment enchantment : enchantments.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
-      totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) - enchantments.get(eSlot).get(enchantment));
-      enchantments.get(eSlot).put(enchantment, 0);
-    }
-    readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
-    readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
-  }
-
-  /**
-   * Checks if the player has met a certain enchantment level.
-   *
-   * @param enchantment enchantment to be checked
-   * @param requirement required level to be sufficient
-   */
-  private void readEnchantmentLevel(Enchantment enchantment, int requirement) {
-    if (totalEnchantments.get(enchantment) >= requirement) {
-      Plugin.getData().getRpgSystem().getSufficientEnchantments().get(enchantment).add(uuid);
-    } else {
-      Plugin.getData().getRpgSystem().getSufficientEnchantments().get(enchantment).remove(uuid);
-    }
-  }
-
-  /**
-   * Checks if the item is in the correct equipment slot before updating the player's passive abilities.
-   *
-   * @param eSlot         slot type
-   * @param dataContainer item's persistent tags
-   */
-  private void readPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] passives = dataContainer.get(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
-    for (String passive : passives) {
-      RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(passive.substring(0, passive.indexOf(".")).toUpperCase());
-      if (equipmentSlot == eSlot) {
-        addPassives(eSlot, dataContainer, passive);
-      }
-    }
-  }
-
-  /**
-   * Adds new equipment passive abilities.
-   *
-   * @param eSlot         slot type
-   * @param dataContainer item's persistent tags
-   * @param passive       ability data
-   */
-  private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String passive) {
-    NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
-    String[] abilityMeta = passive.split("\\.");
-    Trigger trigger = Trigger.valueOf(abilityMeta[1].toUpperCase());
-    PassiveAbilityType abilityType = PassiveAbilityType.valueOf(abilityMeta[2].toUpperCase());
-    slotPassives.get(eSlot).add(new TriggerPassiveType(trigger, abilityType));
-    triggerPassives.get(trigger).put(new SlotPassiveType(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, trigger, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
-  }
-
-  /**
-   * Removes existing equipment passive abilities at an equipment slot.
-   *
-   * @param eSlot equipment slot
-   */
-  public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
-    List<TriggerPassiveType> abilitiesToRemove = new ArrayList<>();
-    for (TriggerPassiveType triggerPassiveType : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
-      triggerPassives.get(triggerPassiveType.getTrigger()).remove(new SlotPassiveType(eSlot, triggerPassiveType.getAbilityType()));
-      abilitiesToRemove.add(triggerPassiveType);
-    }
-    slotPassives.get(eSlot).removeAll(abilitiesToRemove);
   }
 
   /**
@@ -420,76 +205,6 @@ public class Equipment {
       encodedJewelry.append("\n");
     }
     return encodedJewelry.toString();
-  }
-
-  /**
-   * Gets the player's equipment Aethel attributes.
-   *
-   * @return equipment Aethel attributes
-   */
-  @NotNull
-  public Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> getAttributes() {
-    return this.attributes;
-  }
-
-  /**
-   * Gets the player's total equipment enchantments.
-   *
-   * @return total equipment enchantments
-   */
-  @NotNull
-  public Map<Enchantment, Integer> getTotalEnchantments() {
-    return this.totalEnchantments;
-  }
-
-  /**
-   * Gets the player's equipment enchantments.
-   *
-   * @return equipment enchantments
-   */
-  @NotNull
-  public Map<RpgEquipmentSlot, Map<Enchantment, Integer>> getEnchantments() {
-    return this.enchantments;
-  }
-
-  /**
-   * Gets the player's equipment passive abilities by slot.
-   *
-   * @return equipment passive abilities
-   */
-  @NotNull
-  public Map<RpgEquipmentSlot, List<TriggerPassiveType>> getSlotPassives() {
-    return this.slotPassives;
-  }
-
-  /**
-   * Gets the player's equipment passive abilities by trigger.
-   *
-   * @return equipment passive abilities
-   */
-  @NotNull
-  public Map<Trigger, Map<SlotPassiveType, PassiveAbility>> getTriggerPassives() {
-    return this.triggerPassives;
-  }
-
-  /**
-   * Gets the player's equipment active abilities by slot.
-   *
-   * @return equipment active abilities
-   */
-  @NotNull
-  public Map<RpgEquipmentSlot, List<ActiveAbilityType>> getSlotActives() {
-    return this.slotActives;
-  }
-
-  /**
-   * Gets the player's equipment passive ability triggers by slot.
-   *
-   * @return equipment active abilities
-   */
-  @NotNull
-  public Map<RpgEquipmentSlot, List<ActiveAbility>> getTriggerActives() {
-    return this.triggerActives;
   }
 
   /**

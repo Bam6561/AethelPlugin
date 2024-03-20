@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.7
  * @since 1.9.10
  */
-public enum AethelAttribute {
+public enum AethelAttributeType {
   /**
    * Max health.
    */
@@ -72,7 +72,7 @@ public enum AethelAttribute {
    * @param id         ability id
    * @param baseValue  attribute's base value
    */
-  AethelAttribute(String properName, String id, String baseValue) {
+  AethelAttributeType(String properName, String id, String baseValue) {
     this.properName = properName;
     this.id = id;
     this.baseValue = baseValue;

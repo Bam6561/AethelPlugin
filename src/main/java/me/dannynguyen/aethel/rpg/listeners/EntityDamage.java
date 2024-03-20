@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
-import me.dannynguyen.aethel.rpg.enums.AethelAttribute;
+import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
@@ -35,7 +35,7 @@ import java.util.UUID;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.17.0
+ * @version 1.17.9
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -110,7 +110,7 @@ public class EntityDamage implements Listener {
    */
   private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-      Map<SlotPassiveType, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
+      Map<SlotPassiveType, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAbilities().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
         if (e.getEntity() instanceof LivingEntity damagee) {
           Random random = new Random();
@@ -134,7 +134,7 @@ public class EntityDamage implements Listener {
    * @param damagee interacting player
    */
   private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
-    Map<SlotPassiveType, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
+    Map<SlotPassiveType, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAbilities().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
     if (!damageTakenTriggers.isEmpty()) {
       if (e.getDamager() instanceof LivingEntity damager) {
         Random random = new Random();
@@ -157,7 +157,7 @@ public class EntityDamage implements Listener {
    * @param damager interacting player
    */
   private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
-    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes();
+    Map<AethelAttributeType, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
     Random random = new Random();
     ifCriticallyHit(e, attributes, random);
     ifVulnerable(e);
@@ -181,7 +181,7 @@ public class EntityDamage implements Listener {
       return;
     }
 
-    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes();
+    Map<AethelAttributeType, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
     Random random = new Random();
 
     if (ifCountered(e.getCause(), attributes, random, damager, damagee)) {
@@ -222,7 +222,7 @@ public class EntityDamage implements Listener {
         if (e.getDamage() <= 0) {
           return true;
         }
-        Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes();
+        Map<AethelAttributeType, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes().getAttributes();
         if (ifDodged(attributes, new Random())) {
           return true;
         } else if (ifTougher(e, attributes, damagee)) {
@@ -287,9 +287,9 @@ public class EntityDamage implements Listener {
    * @param attributes player's attributes
    * @param random     rng
    */
-  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Random random) {
-    if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
-      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
+  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttributeType, Double> attributes, Random random) {
+    if (attributes.get(AethelAttributeType.CRITICAL_CHANCE) > random.nextDouble() * 100) {
+      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttributeType.CRITICAL_DAMAGE) / 100)));
     }
   }
 
@@ -334,7 +334,7 @@ public class EntityDamage implements Listener {
         return true;
       }
       case PROJECTILE -> {
-        int projectileProtection = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTotalEnchantments().get(Enchantment.PROTECTION_PROJECTILE);
+        int projectileProtection = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEnchantments().getTotalEnchantments().get(Enchantment.PROTECTION_PROJECTILE);
         if (projectileProtection >= 10) {
           PlayerInventory pInv = damagee.getInventory();
           switch (damager.getType()) {
@@ -381,9 +381,9 @@ public class EntityDamage implements Listener {
    * @param damagee    player taking damage
    * @return if the damager died
    */
-  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Random random, Entity damager, Player damagee) {
+  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttributeType, Double> attributes, Random random, Entity damager, Player damagee) {
     if (cause != EntityDamageEvent.DamageCause.PROJECTILE && damager instanceof LivingEntity attacker) {
-      if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+      if (attributes.get(AethelAttributeType.COUNTER_CHANCE) > random.nextDouble() * 100) {
         attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
         return attacker.getHealth() <= 0.0;
       }
@@ -398,8 +398,8 @@ public class EntityDamage implements Listener {
    * @param random     rng
    * @return if dodged
    */
-  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random) {
-    return attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
+  private boolean ifDodged(Map<AethelAttributeType, Double> attributes, Random random) {
+    return attributes.get(AethelAttributeType.DODGE_CHANCE) > random.nextDouble() * 100;
   }
 
   /**
@@ -411,8 +411,8 @@ public class EntityDamage implements Listener {
    * @param damagee    player taking damage
    * @return if tougher than damage
    */
-  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
-    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS);
+  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttributeType, Double> attributes, Player damagee) {
+    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttributeType.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
     return e.getDamage() == 0;
   }
