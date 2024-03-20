@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.interfaces.DataRegistry;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.interfaces.DataRegistry;
+import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
@@ -245,7 +245,7 @@ public class RecipeRegistry implements DataRegistry {
    * @return loaded recipes
    */
   @NotNull
-  public Map<String, PersistentRecipe> getRecipes() {
+  protected Map<String, PersistentRecipe> getRecipes() {
     return this.recipes;
   }
 
@@ -255,7 +255,7 @@ public class RecipeRegistry implements DataRegistry {
    * @return loaded recipe categories
    */
   @NotNull
-  public Map<String, List<Inventory>> getRecipeCategories() {
+  protected Map<String, List<Inventory>> getRecipeCategories() {
     return this.recipeCategories;
   }
 }

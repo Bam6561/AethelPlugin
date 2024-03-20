@@ -1,15 +1,14 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.utility.ItemCreator;
-import me.dannynguyen.aethel.utility.TextFormatter;
+import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 

@@ -2,11 +2,11 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.interfaces.Menu;
-import me.dannynguyen.aethel.systems.plugin.PlayerHead;
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.utility.ItemCreator;
-import me.dannynguyen.aethel.utility.TextFormatter;
+import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.plugin.interfaces.Menu;
+import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -68,7 +68,7 @@ public class AttributeMenu implements Menu {
   /**
    * Associates a new Attribute menu with its user and editing item.
    *
-   * @param user user
+   * @param user  user
    * @param eSlot type of interaction
    */
   public AttributeMenu(@NotNull Player user, @NotNull EquipmentSlot eSlot) {

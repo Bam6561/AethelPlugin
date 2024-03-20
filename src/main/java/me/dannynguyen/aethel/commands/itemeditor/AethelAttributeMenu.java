@@ -1,15 +1,15 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.interfaces.Menu;
-import me.dannynguyen.aethel.systems.plugin.KeyHeader;
-import me.dannynguyen.aethel.systems.plugin.PlayerHead;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.utility.ItemCreator;
-import me.dannynguyen.aethel.utility.TextFormatter;
+import me.dannynguyen.aethel.plugin.enums.KeyHeader;
+import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.interfaces.Menu;
+import me.dannynguyen.aethel.rpg.enums.AethelAttribute;
+import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -73,7 +73,7 @@ public class AethelAttributeMenu implements Menu {
   /**
    * Associates a new AethelAttribute menu with its user and editing item.
    *
-   * @param user user
+   * @param user  user
    * @param eSlot type of interaction
    */
   public AethelAttributeMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot) {

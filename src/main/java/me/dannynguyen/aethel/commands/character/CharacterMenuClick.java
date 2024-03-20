@@ -1,15 +1,15 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.interfaces.MenuClick;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.Message;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.rpg.Equipment;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.Settings;
-import me.dannynguyen.aethel.utility.ItemCreator;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.plugin.enums.MenuMeta;
+import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.rpg.system.Equipment;
+import me.dannynguyen.aethel.rpg.system.Settings;
+import me.dannynguyen.aethel.util.item.ItemCreator;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

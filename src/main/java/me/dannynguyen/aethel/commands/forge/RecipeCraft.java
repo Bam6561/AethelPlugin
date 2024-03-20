@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -31,7 +30,7 @@ class RecipeCraft {
   /**
    * Inventory slots to update if the recipe's requirements are met.
    */
-  private final List<InventorySlot> postCraft = new ArrayList<>();
+  private final List<RecipeCraftInventory> postCraft = new ArrayList<>();
 
   /**
    * User crafting the recipe.
@@ -61,7 +60,7 @@ class RecipeCraft {
   /**
    * Map of the user's inventory by material.
    */
-  private final Map<Material, List<InventorySlot>> materialSlots;
+  private final Map<Material, List<RecipeCraftInventory>> materialSlots;
 
   /**
    * Associates a user with the recipe being crafted.
@@ -84,17 +83,17 @@ class RecipeCraft {
    *
    * @return map of material:inventory slots
    */
-  private Map<Material, List<InventorySlot>> mapMaterialIndices() {
-    Map<Material, List<InventorySlot>> materialSlots = new HashMap<>();
+  private Map<Material, List<RecipeCraftInventory>> mapMaterialIndices() {
+    Map<Material, List<RecipeCraftInventory>> materialSlots = new HashMap<>();
     for (int i = 0; i < 36; i++) {
       ItemStack item = pInv.getItem(i);
       if (ItemReader.isNotNullOrAir(pInv.getItem(i))) {
         Material material = item.getType();
         int amount = item.getAmount();
         if (materialSlots.containsKey(material)) {
-          materialSlots.get(material).add(new InventorySlot(i, item, amount));
+          materialSlots.get(material).add(new RecipeCraftInventory(i, item, amount));
         } else {
-          materialSlots.put(material, new ArrayList<>(List.of(new InventorySlot(i, item, amount))));
+          materialSlots.put(material, new ArrayList<>(List.of(new RecipeCraftInventory(i, item, amount))));
         }
       }
     }
@@ -150,7 +149,7 @@ class RecipeCraft {
    * Removes the recipe's materials from the user's inventory and gives the recipe's results.
    */
   private void craftRecipe() {
-    for (InventorySlot invSlot : postCraft) {
+    for (RecipeCraftInventory invSlot : postCraft) {
       ItemStack item = invSlot.getItem();
       item.setAmount(invSlot.getAmount());
       pInv.setItem(invSlot.getSlot(), item);
@@ -181,7 +180,7 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughMatchingMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
-    for (InventorySlot invSlot : materialSlots.get(requiredMaterial)) {
+    for (RecipeCraftInventory invSlot : materialSlots.get(requiredMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
       if (!dataContainer.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
         if (invSlot.getAmount() > 0) {
@@ -205,7 +204,7 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughMatchingIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
-    for (InventorySlot invSlot : materialSlots.get(reqMaterial)) {
+    for (RecipeCraftInventory invSlot : materialSlots.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
       if (dataContainer.has(forgeId, PersistentDataType.STRING) && dataContainer.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {
         if (invSlot.getAmount() > 0) {
@@ -226,15 +225,15 @@ class RecipeCraft {
    * @param reqAmount required amount
    * @return has enough materials
    */
-  private boolean hasRequiredAmount(InventorySlot invSlot, int reqAmount) {
+  private boolean hasRequiredAmount(RecipeCraftInventory invSlot, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
-      postCraft.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), 0));
+      postCraft.add(new RecipeCraftInventory(invSlot.getSlot(), invSlot.getItem(), 0));
       return reqAmount == 0;
     } else {
       int difference = Math.abs(reqAmount);
       invSlot.setAmount(difference);
-      postCraft.add(new InventorySlot(invSlot.getSlot(), invSlot.getItem(), difference));
+      postCraft.add(new RecipeCraftInventory(invSlot.getSlot(), invSlot.getItem(), difference));
       return true;
     }
   }

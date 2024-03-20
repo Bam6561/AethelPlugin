@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.interfaces.MenuClick;
-import me.dannynguyen.aethel.systems.plugin.MenuMeta;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.plugin.enums.MenuMeta;
+import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -77,7 +77,7 @@ public class PlayerStatMenuClick implements MenuClick {
    * - gets a player's statistic value.
    * </p>
    */
-  public void readStatClick() {
+  public void interpretStatClick() {
     switch (slot) {
       case 0 -> previousPage();
       case 3, 4 -> { // Player Heads
@@ -100,7 +100,7 @@ public class PlayerStatMenuClick implements MenuClick {
    * - gets a player's substatistic value.
    * </p>
    */
-  public void readSubstatClick() {
+  public void interpretSubstatClick() {
     switch (slot) {
       case 0 -> previousPage();
       case 3, 4 -> { // Player Heads

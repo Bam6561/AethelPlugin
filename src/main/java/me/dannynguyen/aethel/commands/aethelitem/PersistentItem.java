@@ -1,11 +1,9 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Objects;
 
 /**
  * Represents an ItemStack stored in the file system.
@@ -46,7 +44,7 @@ class PersistentItem {
   PersistentItem(File file, ItemStack item) throws IllegalArgumentException {
     this.file = file;
     this.item = item;
-      this.name = ItemReader.readName(item);
+    this.name = ItemReader.readName(item);
   }
 
   /**

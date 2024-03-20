@@ -10,20 +10,21 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
-import me.dannynguyen.aethel.listeners.plugin.Crouch;
-import me.dannynguyen.aethel.listeners.plugin.MenuClick;
-import me.dannynguyen.aethel.listeners.plugin.MessageSent;
-import me.dannynguyen.aethel.listeners.plugin.PluginEvent;
-import me.dannynguyen.aethel.listeners.rpg.EntityDamage;
-import me.dannynguyen.aethel.listeners.rpg.EquipmentUpdate;
-import me.dannynguyen.aethel.listeners.rpg.RpgEvent;
-import me.dannynguyen.aethel.listeners.rpg.StatusUpdate;
-import me.dannynguyen.aethel.systems.plugin.PluginData;
-import me.dannynguyen.aethel.systems.rpg.*;
-import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
-import me.dannynguyen.aethel.systems.rpg.ability.SlotPassiveAbility;
-import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.plugin.listeners.MessageSent;
+import me.dannynguyen.aethel.plugin.listeners.PluginEvent;
+import me.dannynguyen.aethel.plugin.system.PluginData;
+import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
+import me.dannynguyen.aethel.rpg.ability.PassiveAbilityTrigger;
+import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
+import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.rpg.enums.StatusType;
+import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.rpg.listeners.*;
+import me.dannynguyen.aethel.rpg.system.Equipment;
+import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
+import me.dannynguyen.aethel.rpg.system.RpgPlayer;
+import me.dannynguyen.aethel.rpg.system.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
@@ -204,7 +205,7 @@ public class Plugin extends JavaPlugin {
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotPassiveAbility, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
+      Map<SlotPassiveType, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {

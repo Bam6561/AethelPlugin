@@ -1,21 +1,23 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.KeyHeader;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityEffect;
-import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityType;
-import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
-import me.dannynguyen.aethel.utility.TextFormatter;
+import me.dannynguyen.aethel.plugin.enums.KeyHeader;
+import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect;
+import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents an item's passive ability lore generation.

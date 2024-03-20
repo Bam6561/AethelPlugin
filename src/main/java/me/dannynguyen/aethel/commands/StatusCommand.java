@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.Message;
-import me.dannynguyen.aethel.systems.rpg.Status;
-import me.dannynguyen.aethel.systems.rpg.StatusType;
+import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.rpg.enums.StatusType;
+import me.dannynguyen.aethel.rpg.system.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

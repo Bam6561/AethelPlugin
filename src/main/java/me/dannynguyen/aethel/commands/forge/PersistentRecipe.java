@@ -1,11 +1,10 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a recipe stored in the file system.

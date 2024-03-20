@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
-import me.dannynguyen.aethel.systems.plugin.Message;
-import me.dannynguyen.aethel.utility.ItemReader;
+import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -123,7 +123,7 @@ public class AethelTagCommand implements CommandExecutor {
    * @param item main hand item
    */
   private void removeAethelTag(Player user, String tag, ItemStack item) {
-    if (new AethelTagModifier(user, item, tag).removeTag()) {
+    if (new TagModifier(user, item, tag).removeTag()) {
       user.sendMessage(ChatColor.RED + "[Removed Tag] " + ChatColor.AQUA + tag);
     } else {
       user.sendMessage(ChatColor.RED + "Tag does not exist.");
@@ -147,6 +147,6 @@ public class AethelTagCommand implements CommandExecutor {
         value.append(args[i]).append(" ");
       }
     }
-    new AethelTagModifier(user, item, tag).setTag(value.toString());
+    new TagModifier(user, item, tag).setTag(value.toString());
   }
 }

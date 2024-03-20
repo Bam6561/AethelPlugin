@@ -1,16 +1,16 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.interfaces.Menu;
-import me.dannynguyen.aethel.systems.plugin.KeyHeader;
-import me.dannynguyen.aethel.systems.plugin.PlayerHead;
-import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityType;
-import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.utility.ItemCreator;
-import me.dannynguyen.aethel.utility.TextFormatter;
+import me.dannynguyen.aethel.plugin.enums.KeyHeader;
+import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.interfaces.Menu;
+import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -66,14 +66,14 @@ public class PassiveMenu implements Menu {
   /**
    * ItemStack passive abilities.
    */
-  private final Map<String, List<SlotCondition>> existingPassives;
+  private final Map<String, List<PassiveLoreIdentifier>> existingPassives;
 
   /**
    * Associates a new Passive menu with its user and item.
    *
    * @param user    user
    * @param trigger trigger type
-   * @param eSlot    equipment slot
+   * @param eSlot   equipment slot
    */
   public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -123,10 +123,10 @@ public class PassiveMenu implements Menu {
         boolean enabled = existingPassives.containsKey(passiveId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (SlotCondition slotCondition : existingPassives.get(passiveId)) {
-            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slotCondition.getSlot() + "." + slotCondition.getCondition() + "." + passiveId);
+          for (PassiveLoreIdentifier passiveLoreIdentifier : existingPassives.get(passiveId)) {
+            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passiveLoreIdentifier.getSlot() + "." + passiveLoreIdentifier.getCondition() + "." + passiveId);
             String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slotCondition.getSlot() + " " + slotCondition.getCondition() + ": " + passiveValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(passiveLoreIdentifier.getSlot() + " " + passiveLoreIdentifier.getCondition() + ": " + passiveValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
         } else {
@@ -178,11 +178,11 @@ public class PassiveMenu implements Menu {
    *
    * @return item's passives map
    */
-  private Map<String, List<SlotCondition>> mapPassives() {
+  private Map<String, List<PassiveLoreIdentifier>> mapPassives() {
     NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
     boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
-      Map<String, List<SlotCondition>> existingPassives = new HashMap<>();
+      Map<String, List<PassiveLoreIdentifier>> existingPassives = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
         String[] passiveMeta = passive.split("\\.");
@@ -190,9 +190,9 @@ public class PassiveMenu implements Menu {
         String condition = passiveMeta[1];
         String passiveType = passiveMeta[2];
         if (existingPassives.containsKey(passiveType)) {
-          existingPassives.get(passiveType).add(new SlotCondition(slot, condition));
+          existingPassives.get(passiveType).add(new PassiveLoreIdentifier(slot, condition));
         } else {
-          existingPassives.put(passiveType, new ArrayList<>(List.of(new SlotCondition(slot, condition))));
+          existingPassives.put(passiveType, new ArrayList<>(List.of(new PassiveLoreIdentifier(slot, condition))));
         }
       }
       return existingPassives;

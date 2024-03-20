@@ -1,11 +1,11 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.interfaces.CategoryMenu;
-import me.dannynguyen.aethel.systems.plugin.PlayerHead;
-import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
-import me.dannynguyen.aethel.utility.InventoryPages;
-import me.dannynguyen.aethel.utility.ItemCreator;
+import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
+import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

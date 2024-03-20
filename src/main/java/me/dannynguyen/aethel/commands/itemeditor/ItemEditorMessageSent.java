@@ -1,13 +1,13 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.systems.plugin.*;
-import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.systems.rpg.ability.ActiveAbilityType;
-import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
-import me.dannynguyen.aethel.utility.ItemDurability;
-import me.dannynguyen.aethel.utility.ItemRepairCost;
-import me.dannynguyen.aethel.utility.TextFormatter;
+import me.dannynguyen.aethel.plugin.enums.*;
+import me.dannynguyen.aethel.rpg.enums.ActiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.util.item.ItemDurability;
+import me.dannynguyen.aethel.util.item.ItemRepairCost;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
