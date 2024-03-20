@@ -19,14 +19,14 @@ public class ActiveAbility {
   private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives;
 
   /**
-   * Type of equipment slot.
+   * Equipment slot type.
    */
-  private final RpgEquipmentSlot slot;
+  private final RpgEquipmentSlot eSlot;
 
   /**
-   * Type of passive ability.
+   * Passive ability type.
    */
-  private final ActiveAbilityType ability;
+  private final ActiveAbilityType abilityType;
 
   /**
    * Ability data.
@@ -37,15 +37,15 @@ public class ActiveAbility {
    * Associates an active ability with its data.
    *
    * @param onCooldownActives actives on cooldown
-   * @param slot              slot type
-   * @param ability           ability type
+   * @param eSlot              slot type
+   * @param abilityType       ability type
    * @param dataValues        ability data
    */
-  public ActiveAbility(@NotNull Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives, @NotNull RpgEquipmentSlot slot, @NotNull ActiveAbilityType ability, @NotNull String[] dataValues) {
+  public ActiveAbility(@NotNull Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives, @NotNull RpgEquipmentSlot eSlot, @NotNull ActiveAbilityType abilityType, @NotNull String[] dataValues) {
     this.onCooldownActives = Objects.requireNonNull(onCooldownActives, "Null on cooldown actives");
-    this.slot = Objects.requireNonNull(slot, "Null slot");
-    this.ability = Objects.requireNonNull(ability, "Null ability");
-    initializeAbilityData(ability.getEffect(), dataValues);
+    this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
+    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
+    initializeAbilityData(abilityType.getEffect(), dataValues);
   }
 
   /**
@@ -75,7 +75,7 @@ public class ActiveAbility {
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
-    return slot;
+    return eSlot;
   }
 
 
@@ -85,8 +85,8 @@ public class ActiveAbility {
    * @return active ability type
    */
   @NotNull
-  public ActiveAbilityType getAbility() {
-    return ability;
+  public ActiveAbilityType getAbilityType() {
+    return abilityType;
   }
 
   /**
@@ -105,7 +105,7 @@ public class ActiveAbility {
    * @return if the ability is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownActives.get(slot).contains(ability);
+    return onCooldownActives.get(eSlot).contains(abilityType);
   }
 
   /**
@@ -115,9 +115,9 @@ public class ActiveAbility {
    */
   public void setOnCooldown(boolean onCooldown) {
     if (onCooldown) {
-      onCooldownActives.get(slot).add(ability);
+      onCooldownActives.get(eSlot).add(abilityType);
     } else {
-      onCooldownActives.get(slot).remove(ability);
+      onCooldownActives.get(eSlot).remove(abilityType);
     }
   }
 }

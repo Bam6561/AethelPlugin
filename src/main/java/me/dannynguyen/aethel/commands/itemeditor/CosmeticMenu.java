@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import me.dannynguyen.aethel.utility.ItemDurability;
@@ -26,12 +27,12 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.17.6
  * @since 1.6.7
  */
-class CosmeticMenu {
+public class CosmeticMenu implements Menu {
   /**
-   * Cosmetic GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -55,9 +56,9 @@ class CosmeticMenu {
    *
    * @param user user
    */
-  protected CosmeticMenu(@NotNull Player user) {
+  public CosmeticMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.meta = item.getItemMeta();
     this.menu = createMenu();
   }
@@ -79,7 +80,7 @@ class CosmeticMenu {
    * @return Cosmetic menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addContext();
     addDisplayName();
     addCustomModelData();

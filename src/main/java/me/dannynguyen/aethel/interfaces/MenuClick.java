@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin;
+package me.dannynguyen.aethel.interfaces;
 
 /**
  * Inventory click for plugin menus.

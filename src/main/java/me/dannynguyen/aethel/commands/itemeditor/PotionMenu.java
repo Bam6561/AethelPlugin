@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -23,12 +24,12 @@ import java.util.*;
  * Represents a menu that edits an item's potion effects.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.17.6
  * @since 1.14.0
  */
-class PotionMenu {
+public class PotionMenu implements Menu {
   /**
-   * Potion GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -47,9 +48,9 @@ class PotionMenu {
    *
    * @param user user
    */
-  protected PotionMenu(@NotNull Player user) {
+  public PotionMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.menu = createMenu();
   }
 
@@ -70,7 +71,7 @@ class PotionMenu {
    * @return Potion menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addColor();
     addPotionEffects();
     addContext();

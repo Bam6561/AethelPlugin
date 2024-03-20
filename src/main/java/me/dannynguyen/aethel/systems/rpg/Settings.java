@@ -56,8 +56,8 @@ public class Settings {
    */
   private Map<RpgEquipmentSlot, Integer> createBlankActiveAbilityCrouchBinds() {
     Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = new HashMap<>();
-    for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
-      activeAbilityCrouchBinds.put(slot, -1);
+    for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+      activeAbilityCrouchBinds.put(eSlot, -1);
     }
     return activeAbilityCrouchBinds;
   }
@@ -97,8 +97,8 @@ public class Settings {
     File file = new File(Directory.SETTINGS.getFile().getPath() + "/" + uuid.toString() + "_set.txt");
     try {
       FileWriter fw = new FileWriter(file);
-      for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
-        fw.write(activeAbilityCrouchBinds.get(slot) + " ");
+      for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+        fw.write(activeAbilityCrouchBinds.get(eSlot) + " ");
       }
       fw.write("\n");
       fw.write(healthBarVisible + " " + healthActionVisible);
@@ -112,8 +112,8 @@ public class Settings {
    * Resets active ability crouch binds.
    */
   public void resetActiveAbilityCrouchBinds() {
-    for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
-      activeAbilityCrouchBinds.put(slot, -1);
+    for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+      activeAbilityCrouchBinds.put(eSlot, -1);
     }
   }
 
@@ -121,10 +121,10 @@ public class Settings {
    * Sets the active ability crouch bind.
    *
    * @param equipmentSlot equipment slot
-   * @param hotbarSlot    hotbar slot
+   * @param heldSlot    hotbar slot
    */
-  public void setActiveAbilityCrouchBind(RpgEquipmentSlot equipmentSlot, int hotbarSlot) {
-    activeAbilityCrouchBinds.put(equipmentSlot, hotbarSlot);
+  public void setActiveAbilityCrouchBind(RpgEquipmentSlot equipmentSlot, int heldSlot) {
+    activeAbilityCrouchBinds.put(equipmentSlot, heldSlot);
   }
 
   /**

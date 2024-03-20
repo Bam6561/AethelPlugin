@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -23,10 +24,10 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination of a player's statistics.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.6
  * @since 1.4.7
  */
-class PlayerStatMenu {
+public class PlayerStatMenu implements CategoryMenu {
   /**
    * Stat category names.
    */
@@ -35,7 +36,7 @@ class PlayerStatMenu {
       "General", "Interactions", "Materials", "Movement"};
 
   /**
-   * PlayerStat GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -47,7 +48,7 @@ class PlayerStatMenu {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Owner of the player statistics.
@@ -60,10 +61,10 @@ class PlayerStatMenu {
    * @param user  user
    * @param owner requested player's name
    */
-  protected PlayerStatMenu(@NotNull Player user, @NotNull String owner) {
+  public PlayerStatMenu(@NotNull Player user, @NotNull String owner) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.owner = Objects.requireNonNull(owner, "Null owner");
-    this.userUUID = user.getUniqueId();
+    this.uuid = user.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -82,7 +83,7 @@ class PlayerStatMenu {
    * @return PlayerStat main menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addCategories();
     addContext(null);
     addOwner();
@@ -97,7 +98,7 @@ class PlayerStatMenu {
    * @return PlayerStat category page
    */
   @NotNull
-  protected Inventory openCategoryPage(String category, int requestedPage) {
+  public Inventory getCategoryPage(String category, int requestedPage) {
     switch (category) {
       case "Entity Types", "Materials" -> loadSubstatPage(category, requestedPage);
       default -> loadStatsPage(category);
@@ -118,7 +119,7 @@ class PlayerStatMenu {
     List<Inventory> category = Plugin.getData().getPlayerStatRecord().getSubstatCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
@@ -157,7 +158,7 @@ class PlayerStatMenu {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
+    String statOwner = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.PLAYER);
     OfflinePlayer owner = Bukkit.getOfflinePlayer(statOwner);
 
     meta.setOwningPlayer(owner);

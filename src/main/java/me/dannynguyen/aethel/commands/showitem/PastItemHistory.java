@@ -27,7 +27,6 @@ public class PastItemHistory {
    * No parameter constructor.
    */
   public PastItemHistory() {
-
   }
 
   /**

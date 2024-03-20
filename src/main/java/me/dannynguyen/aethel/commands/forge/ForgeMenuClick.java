@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.systems.plugin.Directory;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
@@ -24,10 +25,10 @@ import java.util.UUID;
  * Inventory click event listener for Forge menus.
  *
  * @author Danny Nguyen
- * @version 1.14.6
+ * @version 1.17.6
  * @since 1.0.9
  */
-public class ForgeMenuClick {
+public class ForgeMenuClick implements MenuClick {
   /**
    * Inventory click event.
    */
@@ -41,12 +42,12 @@ public class ForgeMenuClick {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Slot clicked.
    */
-  private final int slotClicked;
+  private final int slot;
 
   /**
    * Associates an inventory click event with its user in the context of an open Forge menu.
@@ -56,15 +57,15 @@ public class ForgeMenuClick {
   public ForgeMenuClick(@NotNull InventoryClickEvent e) {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
     this.user = (Player) e.getWhoClicked();
-    this.userUUID = user.getUniqueId();
-    this.slotClicked = e.getSlot();
+    this.uuid = user.getUniqueId();
+    this.slot = e.getSlot();
   }
 
   /**
    * Either saves a recipe or opens a recipe category page.
    */
   public void interpretMenuClick() {
-    switch (slotClicked) {
+    switch (slot) {
       case 2, 4 -> { // Context
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
@@ -74,27 +75,35 @@ public class ForgeMenuClick {
 
   /**
    * Either:
+   * <p>
    * - increments or decrements a recipe category page
+   * </p>
+   * <p>
    * - saves a recipe
+   * </p>
+   * <p>
    * - changes the interaction type
+   * </p>
+   * <p>
    * - contextualizes the click to expand, edit, or remove recipes
+   * </p>
    *
    * @param action type of interaction
    */
-  public void interpretCategoryClick(@NotNull ForgeMenuAction action) {
+  public void interpretCategoryClick(@NotNull RecipeMenu.Action action) {
     Objects.requireNonNull(action, "Null action");
-    switch (slotClicked) {
+    switch (slot) {
       case 0 -> previousRecipePage(action);
       case 2 -> { // Context
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
       case 4 -> {
-        if (Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.FUTURE).equals("edit")) {
+        if (Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.FUTURE).equals("edit")) {
           openForgeEditMenu();
         }
       }
       case 5 -> openForgeRemoveMenu();
-      case 6 -> returnToMenu();
+      case 6 -> returnToMainMenu();
       case 8 -> nextRecipePage(action);
       default -> {
         if (e.getSlot() > 8) {
@@ -118,7 +127,7 @@ public class ForgeMenuClick {
    * Either saves a recipe or returns to a category page with the intent to edit recipes.
    */
   public void interpretSaveClick() {
-    switch (slotClicked) {
+    switch (slot) {
       case 8 -> { // Context
       }
       case 25 -> readSaveClick();
@@ -131,13 +140,13 @@ public class ForgeMenuClick {
    * Views a recipe category.
    */
   private void viewRecipeCategory() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    ForgeMenuAction action = ForgeMenuAction.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
     String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
     playerMeta.put(PlayerMeta.CATEGORY, item);
-    user.openInventory(new RecipeMenu(user, action).openCategoryPage(item, requestedPage));
+    user.openInventory(new RecipeMenu(user, action).getCategoryPage(item, requestedPage));
     playerMeta.put(PlayerMeta.INVENTORY, "forge." + action.name().toLowerCase());
   }
 
@@ -146,11 +155,11 @@ public class ForgeMenuClick {
    *
    * @param action type of interaction
    */
-  private void previousRecipePage(ForgeMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+  private void previousRecipePage(RecipeMenu.Action action) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, action).openCategoryPage(category, requestedPage - 1));
+    user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage - 1));
     playerMeta.put(PlayerMeta.INVENTORY, "forge." + action.name().toLowerCase());
   }
 
@@ -161,14 +170,14 @@ public class ForgeMenuClick {
    * </p>
    */
   private void openForgeEditMenu() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     if (category.equals("")) {
-      user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMenu());
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     } else {
       int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-      user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openCategoryPage(category, requestedPage));
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getCategoryPage(category, requestedPage));
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_EDIT.getMeta());
     }
   }
@@ -177,21 +186,21 @@ public class ForgeMenuClick {
    * Opens the Recipe menu with the intent to remove recipes.
    */
   private void openForgeRemoveMenu() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.REMOVE).openCategoryPage(category, requestedPage));
+    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.REMOVE).getCategoryPage(category, requestedPage));
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_REMOVE.getMeta());
   }
 
   /**
    * Opens the Recipe menu with the future action in mind.
    */
-  private void returnToMenu() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
-    ForgeMenuAction action = ForgeMenuAction.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
+  private void returnToMainMenu() {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
     playerMeta.put(PlayerMeta.CATEGORY, "");
-    user.openInventory(new RecipeMenu(user, action).openMenu());
+    user.openInventory(new RecipeMenu(user, action).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }
@@ -200,10 +209,10 @@ public class ForgeMenuClick {
    * Opens the Recipe menu with the intent to craft recipes.
    */
   private void openForgeCraftMenu() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openCategoryPage(category, requestedPage));
+    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getCategoryPage(category, requestedPage));
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT.getMeta());
   }
 
@@ -212,11 +221,11 @@ public class ForgeMenuClick {
    *
    * @param action type of interaction
    */
-  private void nextRecipePage(ForgeMenuAction action) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+  private void nextRecipePage(RecipeMenu.Action action) {
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
-    user.openInventory(new RecipeMenu(user, action).openCategoryPage(category, requestedPage + 1));
+    user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage + 1));
     playerMeta.put(PlayerMeta.INVENTORY, "forge." + action.name().toLowerCase());
   }
 
@@ -225,7 +234,7 @@ public class ForgeMenuClick {
    *
    * @param action type of interaction
    */
-  private void interpretContextualClick(ForgeMenuAction action) {
+  private void interpretContextualClick(RecipeMenu.Action action) {
     switch (action) {
       case CRAFT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.CRAFT, e.getCurrentItem()).craftRecipeDetails();
       case EDIT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE, e.getCurrentItem()).editRecipeDetails();
@@ -237,10 +246,10 @@ public class ForgeMenuClick {
    * Checks if the recipe's details were formatted correctly before saving the recipe.
    */
   private void readSaveClick() {
-    ItemStack[] menuContents = e.getInventory().getContents();
-    String file = nameFile(menuContents);
+    ItemStack[] contents = e.getInventory().getContents();
+    String file = nameFile(contents);
     if (file != null) {
-      String encodedRecipe = encodeRecipe(menuContents);
+      String encodedRecipe = encodeRecipe(contents);
       if (encodedRecipe != null) {
         try {
           FileWriter fw = new FileWriter(Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
@@ -262,7 +271,7 @@ public class ForgeMenuClick {
    * Removes an existing recipe.
    */
   private void removeRecipe() {
-    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(e.getCurrentItem()));
+    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(e.getCurrentItem()));
     recipe.delete();
     user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());
   }

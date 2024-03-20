@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.showitem;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,12 +15,12 @@ import java.util.Objects;
  * Represents a menu that shows past shown items.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.6
  * @since 1.4.5
  */
-class PastItemMenu {
+public class PastItemMenu implements Menu {
   /**
-   * PastItem GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -33,7 +34,7 @@ class PastItemMenu {
    *
    * @param user user
    */
-  protected PastItemMenu(@NotNull Player user) {
+  public PastItemMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
@@ -44,7 +45,7 @@ class PastItemMenu {
    * @return PastItem menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     int index = 0;
     for (ItemStack item : Plugin.getData().getPastItemHistory().getPastItems()) {
       menu.setItem(index, item);

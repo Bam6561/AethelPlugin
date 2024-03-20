@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands.character;
 
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
@@ -15,12 +16,12 @@ import java.util.UUID;
  * Represents a menu to view in-progress and completed quests.
  *
  * @author Danny Nguyen
- * @version 1.14.3
+ * @version 1.17.6
  * @since 1.14.3
  */
-class QuestsMenu {
+public class QuestsMenu implements Menu {
   /**
-   * Settings GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -32,16 +33,16 @@ class QuestsMenu {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Associates a new Quests menu with its user.
    *
    * @param user user
    */
-  protected QuestsMenu(@NotNull Player user) {
+  public QuestsMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
+    this.uuid = user.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -60,7 +61,7 @@ class QuestsMenu {
    * @return Quests menu.
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addOwner();
     addQuests();
     InventoryPages.addBackButton(menu, 6);

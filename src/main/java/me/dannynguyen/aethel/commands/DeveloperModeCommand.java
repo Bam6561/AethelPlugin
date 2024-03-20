@@ -25,7 +25,6 @@ public class DeveloperModeCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public DeveloperModeCommand() {
-
   }
 
   /**

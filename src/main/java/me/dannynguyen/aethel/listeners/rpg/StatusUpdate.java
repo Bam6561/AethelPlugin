@@ -17,7 +17,6 @@ public class StatusUpdate implements Listener {
    * No parameter constructor.
    */
   public StatusUpdate() {
-
   }
 
   /**

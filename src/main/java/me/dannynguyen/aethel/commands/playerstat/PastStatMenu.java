@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,12 +15,12 @@ import java.util.Objects;
  * Represents a menu that shows past shared stats.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.6
  * @since 1.4.10
  */
-class PastStatMenu {
+public class PastStatMenu implements Menu {
   /**
-   * PastStat GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -33,7 +34,7 @@ class PastStatMenu {
    *
    * @param user user
    */
-  protected PastStatMenu(@NotNull Player user) {
+  public PastStatMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = createMenu();
   }
@@ -44,7 +45,7 @@ class PastStatMenu {
    * @return PastStat menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     int i = 0;
     for (ItemStack pastStat : Plugin.getData().getPastStatHistory().getPastStats()) {
       menu.setItem(i, pastStat);

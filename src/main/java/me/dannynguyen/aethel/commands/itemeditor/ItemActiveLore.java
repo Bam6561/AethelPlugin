@@ -85,12 +85,12 @@ class ItemActiveLore {
    * Adds an active ability header if it exists for the
    * equipment slot with its associated ability values.
    *
-   * @param slot equipment slot
+   * @param eSlot equipment slot
    */
-  private void addActiveHeader(String slot) {
-    if (activeAbilities.containsKey(slot)) {
+  private void addActiveHeader(String eSlot) {
+    if (activeAbilities.containsKey(eSlot)) {
       List<String> activeHeader = new ArrayList<>(List.of(""));
-      switch (slot) {
+      switch (eSlot) {
         case "head" -> activeHeader.add(ChatColor.GRAY + "Head (Active):");
         case "chest" -> activeHeader.add(ChatColor.GRAY + "Chest (Active):");
         case "legs" -> activeHeader.add(ChatColor.GRAY + "Legs (Active):");
@@ -100,7 +100,7 @@ class ItemActiveLore {
         case "hand" -> activeHeader.add(ChatColor.GRAY + "Main Hand (Active):");
         case "off_hand" -> activeHeader.add(ChatColor.GRAY + "Off Hand (Active):");
       }
-      for (String ability : activeAbilities.get(slot)) {
+      for (String ability : activeAbilities.get(eSlot)) {
         activeHeader.add(ability);
       }
       lore.addAll(activeHeader);
@@ -118,8 +118,8 @@ class ItemActiveLore {
       String slot = active.substring(0, active.indexOf("."));
       String type = active.substring(active.indexOf(".") + 1);
 
-      ActiveAbilityType ability = ActiveAbilityType.valueOf(type.toUpperCase());
-      ActiveAbilityEffect abilityEffect = ability.getEffect();
+      ActiveAbilityType abilityType = ActiveAbilityType.valueOf(type.toUpperCase());
+      ActiveAbilityEffect abilityEffect = abilityType.getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
       StringBuilder activeLore = new StringBuilder();
@@ -127,7 +127,7 @@ class ItemActiveLore {
       activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
       switch (abilityEffect) {
         case MOVEMENT -> {
-          switch (ability) {
+          switch (abilityType) {
             case BLINK -> activeLore.append(ChatColor.AQUA).append("Blink ");
             case DASH -> activeLore.append(ChatColor.AQUA).append("Dash ");
           }

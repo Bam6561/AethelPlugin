@@ -54,12 +54,12 @@ public enum PlayerMeta {
   SLOT,
 
   /**
-   * Type of condition.
+   * Condition type.
    */
   CONDITION,
 
   /**
-   * Type of interacting object.
+   * Interacting object type.
    */
   TYPE
 }

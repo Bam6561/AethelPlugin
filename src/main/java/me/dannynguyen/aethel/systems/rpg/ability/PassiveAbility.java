@@ -16,22 +16,22 @@ public class PassiveAbility {
   /**
    * Passive abilities on cooldown.
    */
-  private final Map<Trigger, Set<SlotAbility>> onCooldownPassives;
+  private final Map<Trigger, Set<SlotPassiveAbility>> onCooldownPassives;
 
   /**
-   * Type of equipment slot.
+   * Equipment slot type.
    */
-  private final RpgEquipmentSlot slot;
+  private final RpgEquipmentSlot eSlot;
 
   /**
-   * Type of trigger.
+   * Trigger type.
    */
   private final Trigger trigger;
 
   /**
-   * Type of passive ability.
+   * Passive ability type.
    */
-  private final PassiveAbilityType ability;
+  private final PassiveAbilityType abilityType;
 
   /**
    * Trigger data.
@@ -47,17 +47,17 @@ public class PassiveAbility {
    * Associates a passive ability with its data.
    *
    * @param onCooldownPassives passives on cooldown
-   * @param slot               slot type
+   * @param eSlot              equipment slot
    * @param trigger            trigger type
-   * @param ability            ability type
+   * @param abilityType        ability type
    * @param dataValues         ability data
    */
-  public PassiveAbility(@NotNull Map<Trigger, Set<SlotAbility>> onCooldownPassives, @NotNull RpgEquipmentSlot slot, @NotNull Trigger trigger, @NotNull PassiveAbilityType ability, @NotNull String[] dataValues) {
+  public PassiveAbility(@NotNull Map<Trigger, Set<SlotPassiveAbility>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger, @NotNull PassiveAbilityType abilityType, @NotNull String[] dataValues) {
     this.onCooldownPassives = Objects.requireNonNull(onCooldownPassives, "Null on cooldown passives");
-    this.slot = Objects.requireNonNull(slot, "Null slot");
+    this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
-    this.ability = Objects.requireNonNull(ability, "Null ability");
-    initializeAbilityData(trigger.getCondition(), ability.getEffect(), dataValues);
+    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
+    initializeAbilityData(trigger.getCondition(), abilityType.getEffect(), dataValues);
   }
 
   /**
@@ -90,7 +90,7 @@ public class PassiveAbility {
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
-    return this.slot;
+    return this.eSlot;
   }
 
   /**
@@ -109,8 +109,8 @@ public class PassiveAbility {
    * @return passive ability type
    */
   @NotNull
-  public PassiveAbilityType getAbility() {
-    return this.ability;
+  public PassiveAbilityType getAbilityType() {
+    return this.abilityType;
   }
 
   /**
@@ -139,7 +139,7 @@ public class PassiveAbility {
    * @return if the ability is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownPassives.get(trigger).contains(new SlotAbility(slot, ability));
+    return onCooldownPassives.get(trigger).contains(new SlotPassiveAbility(eSlot, abilityType));
   }
 
   /**
@@ -148,11 +148,11 @@ public class PassiveAbility {
    * @param onCooldown is on cooldown
    */
   public void setOnCooldown(boolean onCooldown) {
-    SlotAbility slotAbility = new SlotAbility(slot, ability);
+    SlotPassiveAbility slotPassiveAbility = new SlotPassiveAbility(eSlot, abilityType);
     if (onCooldown) {
-      onCooldownPassives.get(trigger).add(slotAbility);
+      onCooldownPassives.get(trigger).add(slotPassiveAbility);
     } else {
-      onCooldownPassives.get(trigger).remove(slotAbility);
+      onCooldownPassives.get(trigger).remove(slotPassiveAbility);
     }
   }
 }

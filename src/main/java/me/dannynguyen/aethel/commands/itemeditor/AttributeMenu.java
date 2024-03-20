@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import com.google.common.collect.Multimap;
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -27,10 +28,10 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.17.6
  * @since 1.7.0
  */
-class AttributeMenu {
+public class AttributeMenu implements Menu {
   /**
    * Categorized Minecraft attributes.
    */
@@ -40,7 +41,7 @@ class AttributeMenu {
       "other", new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK});
 
   /**
-   * Attribute GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -57,24 +58,24 @@ class AttributeMenu {
   /**
    * GUI action.
    */
-  private final EquipmentSlot slot;
+  private final EquipmentSlot eSlot;
 
   /**
    * ItemStack's Minecraft attributes.
    */
-  private final Multimap<Attribute, AttributeModifier> attributeModifiers;
+  private final Multimap<Attribute, AttributeModifier> existingAttributes;
 
   /**
    * Associates a new Attribute menu with its user and editing item.
    *
    * @param user user
-   * @param slot type of interaction
+   * @param eSlot type of interaction
    */
-  protected AttributeMenu(@NotNull Player user, @NotNull EquipmentSlot slot) {
+  public AttributeMenu(@NotNull Player user, @NotNull EquipmentSlot eSlot) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.slot = Objects.requireNonNull(slot, "Null slot");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
-    this.attributeModifiers = item.getItemMeta().getAttributeModifiers();
+    this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
+    this.existingAttributes = item.getItemMeta().getAttributeModifiers();
     this.menu = createMenu();
   }
 
@@ -85,8 +86,8 @@ class AttributeMenu {
    */
   private Inventory createMenu() {
     String actionString = "";
-    switch (slot) {
-      case HEAD, CHEST, LEGS, FEET, HAND -> actionString = TextFormatter.capitalizeWord(slot.name());
+    switch (eSlot) {
+      case HEAD, CHEST, LEGS, FEET, HAND -> actionString = TextFormatter.capitalizeWord(eSlot.name());
       case OFF_HAND -> actionString = "Off Hand";
     }
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Attributes " + ChatColor.DARK_AQUA + actionString);
@@ -100,7 +101,7 @@ class AttributeMenu {
    * @return Attribute menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addAttributes();
     addContext();
     addActions();
@@ -148,12 +149,12 @@ class AttributeMenu {
   private void addAttributeCategory(String category, int invSlot) {
     for (Attribute attribute : attributeCategories.get(category)) {
       String attributeName = TextFormatter.capitalizePhrase(attribute.name());
-      boolean disabled = attributeModifiers == null || attributeModifiers.get(attribute).isEmpty();
+      boolean disabled = existingAttributes == null || existingAttributes.get(attribute).isEmpty();
       if (disabled) {
         menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attributeName));
       } else {
         List<String> lore = new ArrayList<>();
-        for (AttributeModifier attributeModifier : attributeModifiers.get(attribute)) {
+        for (AttributeModifier attributeModifier : existingAttributes.get(attribute)) {
           lore.add(ChatColor.WHITE + "" + TextFormatter.capitalizePhrase(attributeModifier.getSlot().name()) + ": " + attributeModifier.getAmount());
         }
         menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));

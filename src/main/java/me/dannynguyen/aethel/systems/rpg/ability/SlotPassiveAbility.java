@@ -6,32 +6,32 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents an equipment slot ability pair.
+ * Represents an equipment slot passive ability pair.
  *
  * @author Danny Nguyen
  * @version 1.16.3
  * @since 1.16.3
  **/
-public class SlotAbility {
+public class SlotPassiveAbility {
   /**
-   * Type of equipment slot.
+   * Equipment slot type.
    */
-  private final RpgEquipmentSlot slot;
+  private final RpgEquipmentSlot eSlot;
 
   /**
-   * Passive ability.
+   * Passive ability type.
    */
-  private final PassiveAbilityType ability;
+  private final PassiveAbilityType abilityType;
 
   /**
    * Associates an equipment slot with an ability.
    *
-   * @param slot    equipment slot
-   * @param ability passive ability
+   * @param eSlot        equipment slot
+   * @param abilityType passive ability
    */
-  public SlotAbility(@NotNull RpgEquipmentSlot slot, @NotNull PassiveAbilityType ability) {
-    this.slot = Objects.requireNonNull(slot, "Null slot");
-    this.ability = Objects.requireNonNull(ability, "Null ability");
+  public SlotPassiveAbility(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType abilityType) {
+    this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
+    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
   }
 
   /**
@@ -41,7 +41,7 @@ public class SlotAbility {
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
-    return this.slot;
+    return this.eSlot;
   }
 
   /**
@@ -50,8 +50,8 @@ public class SlotAbility {
    * @return passive ability
    */
   @NotNull
-  public PassiveAbilityType getAbility() {
-    return this.ability;
+  public PassiveAbilityType getAbilityType() {
+    return this.abilityType;
   }
 
   /**
@@ -62,8 +62,8 @@ public class SlotAbility {
    */
   @Override
   public boolean equals(Object o) {
-    if (o instanceof SlotAbility slotAbility) {
-      return (slotAbility.getSlot() == this.slot && slotAbility.getAbility() == this.ability);
+    if (o instanceof SlotPassiveAbility slotPassiveAbility) {
+      return (slotPassiveAbility.getSlot() == eSlot && slotPassiveAbility.getAbilityType() == abilityType);
     }
     return false;
   }
@@ -75,6 +75,6 @@ public class SlotAbility {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(slot, ability);
+    return Objects.hash(eSlot, abilityType);
   }
 }

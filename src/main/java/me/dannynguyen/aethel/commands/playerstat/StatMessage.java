@@ -32,7 +32,7 @@ class StatMessage {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Player statistic owner's name.
@@ -63,8 +63,8 @@ class StatMessage {
   protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
     Objects.requireNonNull(e, "Null inventory click event");
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
-    this.ownerName = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.PLAYER);
+    this.uuid = user.getUniqueId();
+    this.ownerName = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.PLAYER);
     this.owner = Bukkit.getOfflinePlayer(ownerName);
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     this.isGlobalBroadcast = e.isShiftClick();
@@ -87,7 +87,7 @@ class StatMessage {
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
-    String category = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+    String category = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
     String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
     List<String> statValues = getSubstatValues(category, substat);
 

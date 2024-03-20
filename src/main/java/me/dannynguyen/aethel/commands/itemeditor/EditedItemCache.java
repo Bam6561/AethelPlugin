@@ -18,13 +18,12 @@ public class EditedItemCache {
   /**
    * Items currently being edited by what player.
    */
-  private final Map<UUID, ItemStack> editedItemMap = new HashMap<>();
+  private final Map<UUID, ItemStack> editedItems = new HashMap<>();
 
   /**
    * No parameter constructor.
    */
   public EditedItemCache() {
-
   }
 
   /**
@@ -33,7 +32,7 @@ public class EditedItemCache {
    * @return player:item map
    */
   @NotNull
-  protected Map<UUID, ItemStack> getEditedItemMap() {
-    return this.editedItemMap;
+  protected Map<UUID, ItemStack> getEditedItems() {
+    return this.editedItems;
   }
 }

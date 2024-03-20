@@ -69,7 +69,6 @@ public class PluginData {
    * No parameter constructor.
    */
   public PluginData() {
-
   }
 
   /**

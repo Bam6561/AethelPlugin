@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin;
+package me.dannynguyen.aethel.interfaces;
 
 /**
  * Represents a data storage container for data that exists
@@ -12,7 +12,7 @@ package me.dannynguyen.aethel.systems.plugin;
  * @version 1.17.5
  * @since 1.17.5
  */
-public interface Registry {
+public interface DataRegistry {
   /**
    * Loads data from file system.
    */

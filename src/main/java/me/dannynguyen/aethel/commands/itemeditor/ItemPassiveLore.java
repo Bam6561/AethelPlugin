@@ -87,12 +87,12 @@ class ItemPassiveLore {
    * Adds a passive ability header if it exists for the
    * equipment slot with its associated ability values.
    *
-   * @param slot equipment slot
+   * @param eSlot equipment slot
    */
-  private void addPassiveHeader(String slot) {
-    if (passiveAbilities.containsKey(slot)) {
+  private void addPassiveHeader(String eSlot) {
+    if (passiveAbilities.containsKey(eSlot)) {
       List<String> passiveHeader = new ArrayList<>(List.of(""));
-      switch (slot) {
+      switch (eSlot) {
         case "head" -> passiveHeader.add(ChatColor.GRAY + "Head (Passive):");
         case "chest" -> passiveHeader.add(ChatColor.GRAY + "Chest (Passive):");
         case "legs" -> passiveHeader.add(ChatColor.GRAY + "Legs (Passive):");
@@ -102,7 +102,7 @@ class ItemPassiveLore {
         case "hand" -> passiveHeader.add(ChatColor.GRAY + "Main Hand (Passive):");
         case "off_hand" -> passiveHeader.add(ChatColor.GRAY + "Off Hand (Passive):");
       }
-      for (String ability : passiveAbilities.get(slot)) {
+      for (String ability : passiveAbilities.get(eSlot)) {
         passiveHeader.add(ability);
       }
       lore.addAll(passiveHeader);

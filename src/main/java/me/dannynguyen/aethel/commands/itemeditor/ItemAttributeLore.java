@@ -98,12 +98,12 @@ class ItemAttributeLore {
    * Adds an attribute header if it exists for the
    * equipment slot with its associated attribute values.
    *
-   * @param slot equipment slot
+   * @param eSlot equipment slot
    */
-  private void addAttributeHeader(String slot) {
-    if (attributeValues.containsKey(slot)) {
+  private void addAttributeHeader(String eSlot) {
+    if (attributeValues.containsKey(eSlot)) {
       List<String> attributeHeader = new ArrayList<>(List.of(""));
-      switch (slot) {
+      switch (eSlot) {
         case "head" -> attributeHeader.add(ChatColor.GRAY + "When on Head:");
         case "chest" -> attributeHeader.add(ChatColor.GRAY + "When on Chest:");
         case "legs" -> attributeHeader.add(ChatColor.GRAY + "When on Legs:");
@@ -115,10 +115,10 @@ class ItemAttributeLore {
       }
       DecimalFormat df3 = new DecimalFormat();
       df3.setMaximumFractionDigits(3);
-      for (String attribute : attributeValues.get(slot).keySet()) {
+      for (String attribute : attributeValues.get(eSlot).keySet()) {
         switch (attribute) {
-          case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> attributeHeader.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(slot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
-          default -> attributeHeader.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(slot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
+          case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> attributeHeader.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
+          default -> attributeHeader.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
         }
       }
       lore.addAll(attributeHeader);

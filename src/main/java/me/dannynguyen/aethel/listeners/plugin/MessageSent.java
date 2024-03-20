@@ -24,7 +24,6 @@ public class MessageSent implements Listener {
    * No parameter constructor.
    */
   public MessageSent() {
-
   }
 
   /**

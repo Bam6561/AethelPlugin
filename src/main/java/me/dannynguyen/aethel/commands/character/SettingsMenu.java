@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -22,12 +23,12 @@ import java.util.UUID;
  * Represents a menu that shows the player's RPG settings.
  *
  * @author Danny Nguyen
- * @version 1.17.4
+ * @version 1.17.6
  * @since 1.11.5
  */
-public class SettingsMenu {
+public class SettingsMenu implements Menu {
   /**
-   * Settings GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -39,7 +40,7 @@ public class SettingsMenu {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Associates a new Settings menu with its user.
@@ -48,7 +49,7 @@ public class SettingsMenu {
    */
   public SettingsMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.userUUID = user.getUniqueId();
+    this.uuid = user.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -67,7 +68,7 @@ public class SettingsMenu {
    * @return Settings menu
    */
   @NotNull
-  public Inventory openMenu() {
+  public Inventory getMainMenu() {
     addOwner();
     addSettings();
     InventoryPages.addBackButton(menu, 6);
@@ -94,7 +95,7 @@ public class SettingsMenu {
    * Toggles the visibility of the health bar.
    */
   private void addDisplayHealthBar() {
-    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().isHealthBarVisible()) {
+    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthBarVisible()) {
       menu.setItem(18, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
     } else {
       menu.setItem(18, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
@@ -105,7 +106,7 @@ public class SettingsMenu {
    * Toggles the visibility of health in the action bar.
    */
   private void addDisplayHealthAction() {
-    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().isHealthActionVisible()) {
+    if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthActionVisible()) {
       menu.setItem(19, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
     } else {
       menu.setItem(19, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
@@ -116,7 +117,7 @@ public class SettingsMenu {
    * Adds active ability crouch binds.
    */
   private void addActiveAbilityCrouchBinds() {
-    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().getActiveAbilityCrouchBinds();
+    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getActiveAbilityCrouchBinds();
     menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Reset Active Ability Crouch Binds"));
     menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.OFF_HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));

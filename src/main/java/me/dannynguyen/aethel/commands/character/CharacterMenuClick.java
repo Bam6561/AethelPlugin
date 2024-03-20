@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.Message;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
@@ -33,10 +34,10 @@ import java.util.UUID;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.17.4
+ * @version 1.17.6
  * @since 1.9.2
  */
-public class CharacterMenuClick {
+public class CharacterMenuClick implements MenuClick {
   /**
    * Inventory click event.
    */
@@ -50,12 +51,12 @@ public class CharacterMenuClick {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Slot clicked.
    */
-  private final int slotClicked;
+  private final int slot;
 
   /**
    * Associates an inventory click event with its user in the context of an open Character menu.
@@ -65,16 +66,16 @@ public class CharacterMenuClick {
   public CharacterMenuClick(@NotNull InventoryClickEvent e) {
     this.e = Objects.requireNonNull(e, "Null inventory click event");
     this.user = (Player) e.getWhoClicked();
-    this.userUUID = user.getUniqueId();
-    this.slotClicked = e.getSlot();
+    this.uuid = user.getUniqueId();
+    this.slot = e.getSlot();
   }
 
   /**
    * Checks if the user is interacting with an item/button or attempting to wear equipment.
    */
-  public void interpretSheetClick() {
+  public void interpretMenuClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-      switch (slotClicked) {
+      switch (slot) {
         case 4, 9, 15, 24, 33, 42 -> { // Player Head & Attributes
         }
         case 25 -> openQuests();
@@ -90,7 +91,7 @@ public class CharacterMenuClick {
         }
       }
     } else {
-      switch (slotClicked) {
+      switch (slot) {
         case 10, 11, 12, 19, 20, 28, 29, 37 -> {
           e.setCancelled(false);
           interpretEquipItem();
@@ -104,7 +105,7 @@ public class CharacterMenuClick {
    */
   public void interpretQuestsClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-      switch (slotClicked) {
+      switch (slot) {
         case 4 -> { // Player Head
         }
         case 6 -> returnToSheet();
@@ -117,7 +118,7 @@ public class CharacterMenuClick {
    */
   public void interpretCollectiblesClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-      switch (slotClicked) {
+      switch (slot) {
         case 4 -> { // Player Head
         }
         case 6 -> returnToSheet();
@@ -130,7 +131,7 @@ public class CharacterMenuClick {
    */
   public void interpretSettingsClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-      switch (slotClicked) {
+      switch (slot) {
         case 4 -> { // Player Head
         }
         case 6 -> returnToSheet();
@@ -159,7 +160,7 @@ public class CharacterMenuClick {
         e.getInventory().setItem(11, user.getInventory().getItem(e.getSlot()));
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment().readSlot(item, RpgEquipmentSlot.HAND, true);
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().readSlot(item, RpgEquipmentSlot.HAND, true);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, e.getInventory())::addAttributes, 3);
         }, 1);
       }, 1);
@@ -170,24 +171,24 @@ public class CharacterMenuClick {
    * Opens a Quests menu.
    */
   private void openQuests() {
-    user.openInventory(new QuestsMenu(user).openMenu());
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_QUESTS.getMeta());
+    user.openInventory(new QuestsMenu(user).getMainMenu());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_QUESTS.getMeta());
   }
 
   /**
    * Opens a Collectibles menu.
    */
   private void openCollectibles() {
-    user.openInventory(new CollectiblesMenu(user).openMenu());
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_COLLECTIBLES.getMeta());
+    user.openInventory(new CollectiblesMenu(user).getMainMenu());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_COLLECTIBLES.getMeta());
   }
 
   /**
    * Opens a Settings menu.
    */
   private void openSettings() {
-    user.openInventory(new SettingsMenu(user).openMenu());
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
+    user.openInventory(new SettingsMenu(user).getMainMenu());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
   }
 
   /**
@@ -195,7 +196,7 @@ public class CharacterMenuClick {
    */
   private void unequipArmorHands() {
     int invSlot;
-    switch (slotClicked) {
+    switch (slot) {
       case 10 -> invSlot = 39;
       case 11 -> invSlot = user.getInventory().getHeldItemSlot();
       case 12 -> invSlot = 40;
@@ -205,7 +206,7 @@ public class CharacterMenuClick {
       default -> invSlot = -1; // Unreachable
     }
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      user.getInventory().setItem(invSlot, e.getInventory().getItem(slotClicked));
+      user.getInventory().setItem(invSlot, e.getInventory().getItem(slot));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> updateArmorHandsAttributes(invSlot), 1);
     }, 1);
   }
@@ -215,7 +216,7 @@ public class CharacterMenuClick {
    */
   private void interpretEquipItem() {
     if (ItemReader.isNotNullOrAir(e.getCursor())) {
-      switch (slotClicked) {
+      switch (slot) {
         case 11 -> equipMainHandItem();
         case 10, 12, 19, 28, 37 -> equipOffHandArmorItem();
         case 20, 29 -> updateJewelryAttributes();
@@ -229,12 +230,12 @@ public class CharacterMenuClick {
   private void equipMainHandItem() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       PlayerInventory pInv = user.getInventory();
-      int slot = pInv.getHeldItemSlot();
+      int heldSlot = pInv.getHeldItemSlot();
       ItemStack item = e.getInventory().getItem(11);
 
-      if (pInv.getItem(slot) == null) { // Main hand slot is empty
-        pInv.setItem(slot, item);
-        updateArmorHandsAttributes(slot);
+      if (pInv.getItem(heldSlot) == null) { // Main hand slot is empty
+        pInv.setItem(heldSlot, item);
+        updateArmorHandsAttributes(heldSlot);
       } else if (pInv.firstEmpty() != -1) { // Main hand slot is full
         user.setItemOnCursor(null);
         pInv.setItem(pInv.firstEmpty(), item);
@@ -253,30 +254,30 @@ public class CharacterMenuClick {
    */
   private void equipOffHandArmorItem() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      int slot;
-      switch (slotClicked) {
-        case 12 -> slot = 40;
-        case 10 -> slot = 39;
-        case 19 -> slot = 38;
-        case 28 -> slot = 37;
-        case 37 -> slot = 36;
-        default -> slot = -1;
+      int iSlot;
+      switch (slot) {
+        case 12 -> iSlot = 40;
+        case 10 -> iSlot = 39;
+        case 19 -> iSlot = 38;
+        case 28 -> iSlot = 37;
+        case 37 -> iSlot = 36;
+        default -> iSlot = -1;
       }
-      user.getInventory().setItem(slot, e.getInventory().getItem(slotClicked));
-      updateArmorHandsAttributes(slot);
+      user.getInventory().setItem(iSlot, e.getInventory().getItem(slot));
+      updateArmorHandsAttributes(iSlot);
     }, 1);
   }
 
   /**
    * Updates the user's displayed attributes for the armor and main hand slots.
    *
-   * @param slot user's item slot
+   * @param iSlot user's item slot
    */
-  private void updateArmorHandsAttributes(int slot) {
+  private void updateArmorHandsAttributes(int iSlot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
-      ItemStack wornItem = user.getInventory().getItem(slot);
-      switch (slot) {
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment();
+      ItemStack wornItem = user.getInventory().getItem(iSlot);
+      switch (iSlot) {
         case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
         case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
         case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
@@ -293,10 +294,10 @@ public class CharacterMenuClick {
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getEquipment();
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment();
       Inventory menu = e.getClickedInventory();
-      ItemStack wornItem = menu.getItem(slotClicked);
-      switch (slotClicked) {
+      ItemStack wornItem = menu.getItem(slot);
+      switch (slot) {
         case 20 -> {
           equipment.getJewelry()[0] = wornItem;
           equipment.readSlot(wornItem, RpgEquipmentSlot.NECKLACE, true);
@@ -314,15 +315,15 @@ public class CharacterMenuClick {
    * Returns to the Sheet menu.
    */
   private void returnToSheet() {
-    user.openInventory(new SheetMenu(user, user).openMenu());
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+    user.openInventory(new SheetMenu(user, user).getMainMenu());
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 
   /**
    * Toggles the player's health bar.
    */
   private void toggleHealthBar() {
-    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings();
+    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
     Inventory menu = e.getInventory();
     if (settings.isHealthBarVisible()) {
       menu.setItem(18, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
@@ -338,7 +339,7 @@ public class CharacterMenuClick {
    * Toggles the player's health in action bar.
    */
   private void toggleHealthAction() {
-    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings();
+    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
     Inventory menu = e.getInventory();
     if (settings.isHealthActionVisible()) {
       menu.setItem(19, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
@@ -355,8 +356,8 @@ public class CharacterMenuClick {
    */
   private void resetActiveAbilityCrouchBinds() {
     user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Crouch Binds]");
-    Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().resetActiveAbilityCrouchBinds();
-    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(userUUID).getSettings().getActiveAbilityCrouchBinds();
+    Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().resetActiveAbilityCrouchBinds();
+    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getActiveAbilityCrouchBinds();
     Inventory menu = e.getInventory();
     menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.HAND).toString()), ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + activeAbilityCrouchBinds.get(RpgEquipmentSlot.OFF_HAND).toString()), ItemFlag.HIDE_ATTRIBUTES));
@@ -371,14 +372,14 @@ public class CharacterMenuClick {
   /**
    * Sets the crouch bind to activate abilities by equipment slot.
    *
-   * @param slot equipment slot
+   * @param eSlot equipment slot
    */
-  private void setActiveAbilityCrouchBind(RpgEquipmentSlot slot) {
+  private void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot) {
     user.closeInventory();
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.WHITE + "crouch bind:");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "crouch bind:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Select a hotbar slot and crouch.");
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.put(PlayerMeta.ACTION, "crouch.bind-active_ability");
-    playerMeta.put(PlayerMeta.SLOT, slot.getId());
+    playerMeta.put(PlayerMeta.SLOT, eSlot.getId());
   }
 }

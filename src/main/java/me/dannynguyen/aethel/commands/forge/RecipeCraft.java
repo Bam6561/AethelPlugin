@@ -29,6 +29,11 @@ import java.util.*;
  */
 class RecipeCraft {
   /**
+   * Inventory slots to update if the recipe's requirements are met.
+   */
+  private final List<InventorySlot> postCraft = new ArrayList<>();
+
+  /**
    * User crafting the recipe.
    */
   private final Player user;
@@ -36,7 +41,7 @@ class RecipeCraft {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * Recipe's results.
@@ -56,12 +61,7 @@ class RecipeCraft {
   /**
    * Map of the user's inventory by material.
    */
-  private final Map<Material, List<InventorySlot>> invMap;
-
-  /**
-   * Inventory slots to update if the recipe's requirements are met.
-   */
-  private final List<InventorySlot> postCraft;
+  private final Map<Material, List<InventorySlot>> materialSlots;
 
   /**
    * Associates a user with the recipe being crafted.
@@ -71,13 +71,12 @@ class RecipeCraft {
    */
   protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
-    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipeMap().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
-    this.userUUID = user.getUniqueId();
+    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
+    this.uuid = user.getUniqueId();
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
     this.pInv = user.getInventory();
-    this.invMap = mapMaterialIndices();
-    this.postCraft = new ArrayList<>();
+    this.materialSlots = mapMaterialIndices();
   }
 
   /**
@@ -86,27 +85,27 @@ class RecipeCraft {
    * @return map of material:inventory slots
    */
   private Map<Material, List<InventorySlot>> mapMaterialIndices() {
-    Map<Material, List<InventorySlot>> invMap = new HashMap<>();
+    Map<Material, List<InventorySlot>> materialSlots = new HashMap<>();
     for (int i = 0; i < 36; i++) {
       ItemStack item = pInv.getItem(i);
       if (ItemReader.isNotNullOrAir(pInv.getItem(i))) {
         Material material = item.getType();
         int amount = item.getAmount();
-        if (invMap.containsKey(material)) {
-          invMap.get(material).add(new InventorySlot(i, item, amount));
+        if (materialSlots.containsKey(material)) {
+          materialSlots.get(material).add(new InventorySlot(i, item, amount));
         } else {
-          invMap.put(material, new ArrayList<>(List.of(new InventorySlot(i, item, amount))));
+          materialSlots.put(material, new ArrayList<>(List.of(new InventorySlot(i, item, amount))));
         }
       }
     }
-    return invMap;
+    return materialSlots;
   }
 
   /**
    * Crafts a recipe if the user has enough materials.
    */
   protected void readRecipeMaterials() {
-    if (!Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).containsKey(PlayerMeta.DEVELOPER)) {
+    if (!Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).containsKey(PlayerMeta.DEVELOPER)) {
       if (hasEnoughOfAllMaterials()) {
         craftRecipe();
       } else {
@@ -126,7 +125,7 @@ class RecipeCraft {
     NamespacedKey forgeId = PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey();
     for (ItemStack item : materials) {
       Material requiredMaterial = item.getType();
-      if (invMap.containsKey(requiredMaterial)) {
+      if (materialSlots.containsKey(requiredMaterial)) {
         int requiredAmount = item.getAmount();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         boolean hasForgeId = dataContainer.has(forgeId, PersistentDataType.STRING);
@@ -182,7 +181,7 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughMatchingMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
-    for (InventorySlot invSlot : invMap.get(requiredMaterial)) {
+    for (InventorySlot invSlot : materialSlots.get(requiredMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
       if (!dataContainer.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
         if (invSlot.getAmount() > 0) {
@@ -206,7 +205,7 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughMatchingIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
-    for (InventorySlot invSlot : invMap.get(reqMaterial)) {
+    for (InventorySlot invSlot : materialSlots.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
       if (dataContainer.has(forgeId, PersistentDataType.STRING) && dataContainer.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {
         if (invSlot.getAmount() > 0) {

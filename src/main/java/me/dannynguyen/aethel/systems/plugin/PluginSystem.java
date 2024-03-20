@@ -23,7 +23,6 @@ public class PluginSystem {
    * No parameter constructor.
    */
   public PluginSystem() {
-
   }
 
   /**

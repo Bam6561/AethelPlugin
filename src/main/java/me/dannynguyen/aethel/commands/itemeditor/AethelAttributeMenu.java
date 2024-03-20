@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
@@ -27,10 +28,10 @@ import java.util.*;
  * Represents a menu that edits an item's Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.17.6
  * @since 1.14.1
  */
-public class AethelAttributeMenu {
+public class AethelAttributeMenu implements Menu {
   /**
    * Categorized Aethel attributes.
    */
@@ -40,7 +41,7 @@ public class AethelAttributeMenu {
       "other", new AethelAttribute[]{AethelAttribute.ITEM_DAMAGE, AethelAttribute.ITEM_COOLDOWN});
 
   /**
-   * AethelAttribute GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -57,7 +58,7 @@ public class AethelAttributeMenu {
   /**
    * GUI action.
    */
-  private final RpgEquipmentSlot slot;
+  private final RpgEquipmentSlot eSlot;
 
   /**
    * ItemStack data container.
@@ -67,20 +68,20 @@ public class AethelAttributeMenu {
   /**
    * ItemStack Aethel attributes.
    */
-  private final Map<String, List<String>> aethelAttributesMap;
+  private final Map<String, List<String>> existingAethelAttributes;
 
   /**
    * Associates a new AethelAttribute menu with its user and editing item.
    *
    * @param user user
-   * @param slot type of interaction
+   * @param eSlot type of interaction
    */
-  protected AethelAttributeMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot) {
+  public AethelAttributeMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.slot = Objects.requireNonNull(slot, "Null slot");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
-    this.aethelAttributesMap = mapAethelAttributes();
+    this.existingAethelAttributes = mapAethelAttributes();
     this.menu = createMenu();
   }
 
@@ -90,7 +91,7 @@ public class AethelAttributeMenu {
    * @return AethelAttribute menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Aethel Attributes " + ChatColor.DARK_AQUA + slot.getProperName());
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Aethel Attributes " + ChatColor.DARK_AQUA + eSlot.getProperName());
     inv.setItem(1, item);
     return inv;
   }
@@ -101,7 +102,7 @@ public class AethelAttributeMenu {
    * @return AethelAttribute menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addAttributes();
     addContext();
     addActions();
@@ -151,17 +152,17 @@ public class AethelAttributeMenu {
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasAttributes) {
-      Map<String, List<String>> attributesMap = new HashMap<>();
+      Map<String, List<String>> existingAethelAttributes = new HashMap<>();
       List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String attribute : attributes) {
         String attributeType = attribute.substring(attribute.indexOf(".") + 1);
-        if (attributesMap.containsKey(attributeType)) {
-          attributesMap.get(attributeType).add(attribute.substring(0, attribute.indexOf(".")));
+        if (existingAethelAttributes.containsKey(attributeType)) {
+          existingAethelAttributes.get(attributeType).add(attribute.substring(0, attribute.indexOf(".")));
         } else {
-          attributesMap.put(attributeType, new ArrayList<>(List.of(attribute.substring(0, attribute.indexOf(".")))));
+          existingAethelAttributes.put(attributeType, new ArrayList<>(List.of(attribute.substring(0, attribute.indexOf(".")))));
         }
       }
-      return attributesMap;
+      return existingAethelAttributes;
     } else {
       return null;
     }
@@ -174,14 +175,14 @@ public class AethelAttributeMenu {
    * @param invSlot  inventory slot
    */
   private void addAttributeCategory(String category, int invSlot) {
-    if (aethelAttributesMap != null) {
+    if (existingAethelAttributes != null) {
       for (AethelAttribute attribute : attributeCategories.get(category)) {
         String attributeName = attribute.getProperName();
         String attributeId = attribute.getId();
-        boolean enabled = aethelAttributesMap.containsKey(attributeId);
+        boolean enabled = existingAethelAttributes.containsKey(attributeId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (String slot : aethelAttributesMap.get(attributeId)) {
+          for (String slot : existingAethelAttributes.get(attributeId)) {
             NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slot + "." + attributeId);
             double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + attributeValue));

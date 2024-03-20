@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.systems.rpg.AethelAttribute;
 import me.dannynguyen.aethel.systems.rpg.Equipment;
 import me.dannynguyen.aethel.systems.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.systems.rpg.RpgPlayer;
-import me.dannynguyen.aethel.systems.rpg.ability.TriggerAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.TriggerPassiveAbility;
 import me.dannynguyen.aethel.utility.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -39,7 +39,6 @@ public class EquipmentUpdate implements Listener {
    * No parameter constructor.
    */
   public EquipmentUpdate() {
-
   }
 
   /**
@@ -140,18 +139,18 @@ public class EquipmentUpdate implements Listener {
       Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId()).getEquipment();
       Map<RpgEquipmentSlot, Map<Enchantment, Integer>> equipmentEnchantments = equipment.getEnchantments();
       Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> equipmentAttributes = equipment.getAttributes();
-      Map<RpgEquipmentSlot, List<TriggerAbility>> equipmentPassives = equipment.getSlotPassives();
+      Map<RpgEquipmentSlot, List<TriggerPassiveAbility>> equipmentPassives = equipment.getSlotPassives();
 
       dropJewelryItems(e.getEntity(), equipment.getJewelry());
 
-      for (RpgEquipmentSlot slot : equipmentAttributes.keySet()) {
-        equipment.removeAttributes(slot);
+      for (RpgEquipmentSlot eSlot : equipmentAttributes.keySet()) {
+        equipment.removeAttributes(eSlot);
       }
-      for (RpgEquipmentSlot slot : equipmentEnchantments.keySet()) {
-        equipment.removeEnchantments(slot);
+      for (RpgEquipmentSlot eSlot : equipmentEnchantments.keySet()) {
+        equipment.removeEnchantments(eSlot);
       }
-      for (RpgEquipmentSlot slot : equipmentPassives.keySet()) {
-        equipment.removePassives(slot);
+      for (RpgEquipmentSlot eSlot : equipmentPassives.keySet()) {
+        equipment.removePassives(eSlot);
       }
     }
   }

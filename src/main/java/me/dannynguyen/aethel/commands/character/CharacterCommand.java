@@ -19,6 +19,15 @@ import java.util.Map;
  * <p>
  * From the Sheet, the user can also view the player's quests and collectibles.
  * </p>
+ * <p>
+ * Parameters:
+ * </p>
+ * <p>
+ * - "": opens a sheet menu belonging to the user
+ * </p>
+ * <p>
+ * - playerName: opens a sheet menu belonging to the player
+ * </p>
  *
  * @author Danny Nguyen
  * @version 1.14.5
@@ -29,7 +38,6 @@ public class CharacterCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public CharacterCommand() {
-
   }
 
   /**
@@ -75,27 +83,28 @@ public class CharacterCommand implements CommandExecutor {
    * @param user user
    */
   private void openSheetSelf(Player user) {
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.PLAYER, user.getName());
-    user.openInventory(new SheetMenu(user, user).openMenu());
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
+    playerMeta.put(PlayerMeta.PLAYER, user.getName());
+    user.openInventory(new SheetMenu(user, user).getMainMenu());
+    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
   }
 
   /**
    * Opens a Sheet menu belonging to another player.
    *
-   * @param user  user
-   * @param owner requested player's name
+   * @param user            user
+   * @param requestedPlayer requested player's name
    */
-  private void openSheetOther(Player user, String owner) {
+  private void openSheetOther(Player user, String requestedPlayer) {
     for (Player player : Bukkit.getOnlinePlayers()) {
-      if (player.getName().equals(owner)) {
+      if (player.getName().equals(requestedPlayer)) {
         Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
         playerMeta.put(PlayerMeta.PLAYER, player.getName());
-        user.openInventory(new SheetMenu(user, player).openMenu());
+        user.openInventory(new SheetMenu(user, player).getMainMenu());
         playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
         return;
       }
     }
-    user.sendMessage(ChatColor.RED + owner + " not online.");
+    user.sendMessage(ChatColor.RED + requestedPlayer + " not online.");
   }
 }

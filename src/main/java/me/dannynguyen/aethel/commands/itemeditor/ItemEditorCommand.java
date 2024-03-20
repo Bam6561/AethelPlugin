@@ -25,7 +25,6 @@ public class ItemEditorCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public ItemEditorCommand() {
-
   }
 
   /**
@@ -78,8 +77,8 @@ public class ItemEditorCommand implements CommandExecutor {
    * @param item interacting item
    */
   private void openMenu(Player user, ItemStack item) {
-    Plugin.getData().getEditedItemCache().getEditedItemMap().put(user.getUniqueId(), item);
-    user.openInventory(new CosmeticMenu(user).openMenu());
+    Plugin.getData().getEditedItemCache().getEditedItems().put(user.getUniqueId(), item);
+    user.openInventory(new CosmeticMenu(user).getMainMenu());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
   }
 }

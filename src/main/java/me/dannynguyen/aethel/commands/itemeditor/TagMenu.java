@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -23,10 +24,10 @@ import java.util.Objects;
  * Represents a menu that edits an item's Aethel tags.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.6
  * @since 1.6.15
  */
-class TagMenu {
+public class TagMenu implements Menu {
   /**
    * Aethel tags managed by the GUI.
    */
@@ -36,7 +37,7 @@ class TagMenu {
       PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey()};
 
   /**
-   * Tag GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -55,9 +56,9 @@ class TagMenu {
    *
    * @param user user
    */
-  protected TagMenu(@NotNull Player user) {
+  public TagMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.menu = createMenu();
   }
 
@@ -78,7 +79,7 @@ class TagMenu {
    * @return Tag menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addAethelTags();
     addContext();
     InventoryPages.addBackButton(menu, 6);

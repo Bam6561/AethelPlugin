@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.systems.plugin;
+package me.dannynguyen.aethel.interfaces;
 
 import org.bukkit.inventory.Inventory;
 

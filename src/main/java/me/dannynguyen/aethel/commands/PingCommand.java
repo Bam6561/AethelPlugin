@@ -20,7 +20,6 @@ public class PingCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public PingCommand() {
-
   }
 
   /**

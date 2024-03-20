@@ -61,7 +61,7 @@ public class PassiveAbilityTrigger {
     }
     statuses = entityStatuses.get(targetUUID);
 
-    StatusType statusType = StatusType.valueOf(ability.getAbility().toString());
+    StatusType statusType = StatusType.valueOf(ability.getAbilityType().toString());
     int stacks = Integer.parseInt(effectData.get(1));
     int ticks = Integer.parseInt(effectData.get(2));
     if (statuses.containsKey(statusType)) {

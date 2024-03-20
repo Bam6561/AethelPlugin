@@ -16,13 +16,17 @@ import java.util.Map;
 /**
  * Command invocation that allows the user to craft items through clicking.
  * <p>
- * Additional Parameters:
+ * Parameters:
+ * </p>
+ * <p>
  * - "edit", "e": create, edit, or remove Forge recipes
+ * </p>
+ * <p>
  * - "reload", "r": reloads Forge recipes into memory
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.6
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -30,7 +34,6 @@ public class ForgeCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public ForgeCommand() {
-
   }
 
   /**
@@ -107,13 +110,13 @@ public class ForgeCommand implements CommandExecutor {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.FUTURE, "craft");
     playerMeta.put(PlayerMeta.CATEGORY, "");
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.CRAFT).openMenu());
+    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }
 
   /**
-   * Opens the  Recipe menu with the intent to edit recipes.
+   * Opens the Recipe menu with the intent to edit recipes.
    *
    * @param user user
    */
@@ -121,7 +124,7 @@ public class ForgeCommand implements CommandExecutor {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.FUTURE, "edit");
     playerMeta.put(PlayerMeta.CATEGORY, "");
-    user.openInventory(new RecipeMenu(user, ForgeMenuAction.EDIT).openMenu());
+    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
   }

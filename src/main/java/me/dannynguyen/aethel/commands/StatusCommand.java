@@ -37,7 +37,6 @@ public class StatusCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public StatusCommand() {
-
   }
 
   /**

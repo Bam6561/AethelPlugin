@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -23,12 +24,12 @@ import java.util.*;
  * Represents a menu that shows the player's equipment and attributes within the RPG context.
  *
  * @author Danny Nguyen
- * @version 1.16.5
+ * @version 1.17.6
  * @since 1.6.3
  */
-class SheetMenu {
+public class SheetMenu implements Menu {
   /**
-   * Sheet GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -45,7 +46,7 @@ class SheetMenu {
   /**
    * Owner's UUID.
    */
-  private final UUID ownerUUID;
+  private final UUID uuid;
 
   /**
    * Associates a new Sheet menu with its user and target player.
@@ -53,10 +54,10 @@ class SheetMenu {
    * @param user  user
    * @param owner requested player
    */
-  protected SheetMenu(@NotNull Player user, @NotNull Player owner) {
+  public SheetMenu(@NotNull Player user, @NotNull Player owner) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.owner = Objects.requireNonNull(owner, "Null owner");
-    this.ownerUUID = owner.getUniqueId();
+    this.uuid = owner.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -66,11 +67,11 @@ class SheetMenu {
    * @param user user
    * @param menu existing Sheet menu
    */
-  protected SheetMenu(@NotNull Player user, @NotNull Inventory menu) {
+  public SheetMenu(@NotNull Player user, @NotNull Inventory menu) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.menu = Objects.requireNonNull(menu, "Null menu");
     this.owner = user;
-    this.ownerUUID = owner.getUniqueId();
+    this.uuid = owner.getUniqueId();
   }
 
   /**
@@ -88,7 +89,7 @@ class SheetMenu {
    * @return Sheet menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addContext();
     addActions();
     addEquipment();
@@ -127,7 +128,7 @@ class SheetMenu {
    */
   private void addEquipment() {
     PlayerInventory pInv = owner.getInventory();
-    ItemStack[] jewelry = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID).getEquipment().getJewelry();
+    ItemStack[] jewelry = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().getJewelry();
 
     menu.setItem(10, pInv.getHelmet());
     menu.setItem(19, pInv.getChestplate());
@@ -143,7 +144,7 @@ class SheetMenu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID).getAethelAttributes();
+    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getAethelAttributes();
 
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
@@ -159,8 +160,8 @@ class SheetMenu {
   private void addStatuses() {
     List<String> lore = new ArrayList<>();
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    if (entityStatuses.containsKey(ownerUUID)) {
-      Map<StatusType, Status> statuses = entityStatuses.get(ownerUUID);
+    if (entityStatuses.containsKey(uuid)) {
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
       for (StatusType statusType : statuses.keySet()) {
         Status status = statuses.get(statusType);
         StringBuilder instancesBuilder = new StringBuilder();
@@ -207,7 +208,7 @@ class SheetMenu {
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> attributes, DecimalFormat df2) {
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(ownerUUID);
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
     Health health = rpgPlayer.getHealth();
     Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getTotalEnchantments();
 
@@ -236,12 +237,12 @@ class SheetMenu {
     DecimalFormat df3 = new DecimalFormat();
     df3.setMaximumFractionDigits(3);
 
-    String abilityDamage = ChatColor.LIGHT_PURPLE + "" + df2.format(1.0 + attributes.get(AethelAttribute.ITEM_DAMAGE) / 100) + "x ITEM DMG";
-    String abilityCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(attributes.get(AethelAttribute.ITEM_COOLDOWN)) + "% ITEM CD";
+    String itemDamage = ChatColor.LIGHT_PURPLE + "" + df2.format(1.0 + attributes.get(AethelAttribute.ITEM_DAMAGE) / 100) + "x ITEM DMG";
+    String itemCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(attributes.get(AethelAttribute.ITEM_COOLDOWN)) + "% ITEM CD";
     String speed = ChatColor.DARK_AQUA + "" + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 20) + " SPEED";
     String luck = ChatColor.GREEN + "" + df2.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
     String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
 
-    menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(abilityDamage, abilityCooldown, speed, luck, knockbackResistance)));
+    menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(itemDamage, itemCooldown, speed, luck, knockbackResistance)));
   }
 }

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.KeyHeader;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
@@ -28,12 +29,12 @@ import java.util.*;
  * Represents a menu that allows the user to edit an item's passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.6
+ * @version 1.17.6
  * @since 1.15.1
  */
-class PassiveMenu {
+public class PassiveMenu implements Menu {
   /**
-   * Passive GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -55,7 +56,7 @@ class PassiveMenu {
   /**
    * GUI equipment slot.
    */
-  private final RpgEquipmentSlot slot;
+  private final RpgEquipmentSlot eSlot;
 
   /**
    * ItemStack data container.
@@ -65,22 +66,22 @@ class PassiveMenu {
   /**
    * ItemStack passive abilities.
    */
-  private final Map<String, List<SlotCondition>> passivesMap;
+  private final Map<String, List<SlotCondition>> existingPassives;
 
   /**
    * Associates a new Passive menu with its user and item.
    *
    * @param user    user
    * @param trigger trigger type
-   * @param slot    equipment slot
+   * @param eSlot    equipment slot
    */
-  protected PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot slot, @NotNull Trigger trigger) {
+  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.slot = Objects.requireNonNull(slot, "Null slot");
+    this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
-    this.passivesMap = mapPassives();
+    this.existingPassives = mapPassives();
     this.menu = createMenu();
   }
 
@@ -90,7 +91,7 @@ class PassiveMenu {
    * @return Passive menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + slot.getProperName() + " " + ChatColor.YELLOW + trigger.getProperName());
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + trigger.getProperName());
     inv.setItem(1, item);
     return inv;
   }
@@ -100,7 +101,7 @@ class PassiveMenu {
    *
    * @return Passive menu
    */
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addPassives();
     addContext();
     addActions();
@@ -114,14 +115,14 @@ class PassiveMenu {
    */
   private void addPassives() {
     int invSlot = 18;
-    if (passivesMap != null) {
-      for (PassiveAbilityType passive : PassiveAbilityType.values()) {
-        String passiveName = passive.getProperName();
-        String passiveId = passive.getId();
-        boolean enabled = passivesMap.containsKey(passiveId);
+    if (existingPassives != null) {
+      for (PassiveAbilityType passiveType : PassiveAbilityType.values()) {
+        String passiveName = passiveType.getProperName();
+        String passiveId = passiveType.getId();
+        boolean enabled = existingPassives.containsKey(passiveId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (SlotCondition slotCondition : passivesMap.get(passiveId)) {
+          for (SlotCondition slotCondition : existingPassives.get(passiveId)) {
             NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slotCondition.getSlot() + "." + slotCondition.getCondition() + "." + passiveId);
             String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slotCondition.getSlot() + " " + slotCondition.getCondition() + ": " + passiveValue));
@@ -133,8 +134,8 @@ class PassiveMenu {
         invSlot++;
       }
     } else {
-      for (PassiveAbilityType passive : PassiveAbilityType.values()) {
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passive.getProperName()));
+      for (PassiveAbilityType passiveType : PassiveAbilityType.values()) {
+        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passiveType.getProperName()));
         invSlot++;
       }
     }
@@ -180,20 +181,20 @@ class PassiveMenu {
     NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
     boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
-      Map<String, List<SlotCondition>> passivesMap = new HashMap<>();
+      Map<String, List<SlotCondition>> existingPassives = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
         String[] passiveMeta = passive.split("\\.");
         String slot = passiveMeta[0];
         String condition = passiveMeta[1];
         String passiveType = passiveMeta[2];
-        if (passivesMap.containsKey(passiveType)) {
-          passivesMap.get(passiveType).add(new SlotCondition(slot, condition));
+        if (existingPassives.containsKey(passiveType)) {
+          existingPassives.get(passiveType).add(new SlotCondition(slot, condition));
         } else {
-          passivesMap.put(passiveType, new ArrayList<>(List.of(new SlotCondition(slot, condition))));
+          existingPassives.put(passiveType, new ArrayList<>(List.of(new SlotCondition(slot, condition))));
         }
       }
-      return passivesMap;
+      return existingPassives;
     } else {
       return null;
     }

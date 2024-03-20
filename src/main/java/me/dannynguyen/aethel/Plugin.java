@@ -22,7 +22,7 @@ import me.dannynguyen.aethel.systems.plugin.PluginData;
 import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
-import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.SlotPassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -62,7 +62,6 @@ public class Plugin extends JavaPlugin {
    * No parameter constructor.
    */
   public Plugin() {
-
   }
 
   /**
@@ -205,11 +204,11 @@ public class Plugin extends JavaPlugin {
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotAbility, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
+      Map<SlotPassiveAbility, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getTriggerPassives().get(Trigger.BELOW_HP);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
-            switch (ability.getAbility().getEffect()) {
+            switch (ability.getAbilityType().getEffect()) {
               case STACK_INSTANCE -> readBelowHealthStackInstance(ability, rpgPlayer);
               case CHAIN_DAMAGE -> readBelowHealthChainDamage(ability, rpgPlayer);
             }

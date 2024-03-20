@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.*;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
-import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.SlotPassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import me.dannynguyen.aethel.utility.ItemDurability;
 import org.bukkit.Material;
@@ -44,7 +44,6 @@ public class EntityDamage implements Listener {
    * No parameter constructor.
    */
   public EntityDamage() {
-
   }
 
   /**
@@ -107,13 +106,13 @@ public class EntityDamage implements Listener {
    */
   private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-      Map<SlotAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
+      Map<SlotPassiveAbility, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
         if (e.getEntity() instanceof LivingEntity damagee) {
           Random random = new Random();
           for (PassiveAbility ability : damageDealtTriggers.values()) {
             if (!ability.isOnCooldown()) {
-              switch (ability.getAbility().getEffect()) {
+              switch (ability.getAbilityType().getEffect()) {
                 case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damager.getUniqueId(), damagee.getUniqueId());
                 case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
               }
@@ -131,13 +130,13 @@ public class EntityDamage implements Listener {
    * @param damagee interacting player
    */
   private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
-    Map<SlotAbility, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
+    Map<SlotPassiveAbility, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getEquipment().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
     if (!damageTakenTriggers.isEmpty()) {
       if (e.getDamager() instanceof LivingEntity damager) {
         Random random = new Random();
         for (PassiveAbility ability : damageTakenTriggers.values()) {
           if (!ability.isOnCooldown()) {
-            switch (ability.getAbility().getEffect()) {
+            switch (ability.getAbilityType().getEffect()) {
               case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damagee.getUniqueId(), damager.getUniqueId());
               case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
             }

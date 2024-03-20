@@ -49,7 +49,7 @@ public class ItemEditorMessageSent {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * ItemStack being edited.
@@ -70,8 +70,8 @@ public class ItemEditorMessageSent {
   public ItemEditorMessageSent(@NotNull AsyncPlayerChatEvent e) {
     this.e = Objects.requireNonNull(e, "Null message sent event");
     this.user = e.getPlayer();
-    this.userUUID = user.getUniqueId();
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.uuid = user.getUniqueId();
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.meta = item.getItemMeta();
   }
 
@@ -233,7 +233,7 @@ public class ItemEditorMessageSent {
    */
   public void setMinecraftAttribute() {
     try {
-      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
       String type = playerMeta.get(PlayerMeta.TYPE);
       Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
       String slot = playerMeta.get(PlayerMeta.SLOT);
@@ -275,7 +275,7 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's enchantment.
    */
   public void setEnchantment() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     NamespacedKey enchantment = NamespacedKey.minecraft(playerMeta.get(PlayerMeta.TYPE));
 
     if (!e.getMessage().equals("-")) {
@@ -302,7 +302,7 @@ public class ItemEditorMessageSent {
    */
   public void setPotionEffect() {
     PotionMeta potion = (PotionMeta) meta;
-    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE));
+    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE));
     PotionEffectType potionEffectType = PotionEffectType.getByKey(potionEffectKey);
 
     if (!e.getMessage().equals("-")) {
@@ -350,7 +350,7 @@ public class ItemEditorMessageSent {
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE).toUpperCase();
+      String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE).toUpperCase();
       switch (ActiveAbilityType.valueOf(type).getEffect()) {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
@@ -367,7 +367,7 @@ public class ItemEditorMessageSent {
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String tagType = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.TYPE);
+    String tagType = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE);
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tagType);
 
     if (!e.getMessage().equals("-")) {
@@ -476,7 +476,7 @@ public class ItemEditorMessageSent {
    * @param listKey   list key
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String slot = playerMeta.get(PlayerMeta.SLOT);
     String type = playerMeta.get(PlayerMeta.TYPE);
     String stringKeyToSet = slot + "." + type;
@@ -508,7 +508,7 @@ public class ItemEditorMessageSent {
    * @param listKey   list key
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String slot = playerMeta.get(PlayerMeta.SLOT);
     String type = playerMeta.get(PlayerMeta.TYPE);
     String stringKeyToSet = slot + "." + type;
@@ -542,7 +542,7 @@ public class ItemEditorMessageSent {
    * @param listKey   list key
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String slot = playerMeta.get(PlayerMeta.SLOT);
     String type = playerMeta.get(PlayerMeta.TYPE);
     String stringKeyToRemove = slot + "." + type;
@@ -572,10 +572,10 @@ public class ItemEditorMessageSent {
    * Returns to the Cosmetic menu.
    */
   private void returnToCosmetic() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new CosmeticMenu(user).openMenu());
+      user.openInventory(new CosmeticMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
     });
   }
@@ -584,10 +584,10 @@ public class ItemEditorMessageSent {
    * Returns to the Attribute menu.
    */
   private void returnToAttribute() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
     });
   }
@@ -596,10 +596,10 @@ public class ItemEditorMessageSent {
    * Returns to the AethelAttribute menu.
    */
   private void returnToAethelAttribute() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
     });
   }
@@ -608,10 +608,10 @@ public class ItemEditorMessageSent {
    * Returns to the Enchantment menu.
    */
   private void returnToEnchantment() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new EnchantmentMenu(user).openMenu());
+      user.openInventory(new EnchantmentMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
     });
   }
@@ -620,10 +620,10 @@ public class ItemEditorMessageSent {
    * Returns to the Potion menu.
    */
   private void returnToPotion() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PotionMenu(user).openMenu());
+      user.openInventory(new PotionMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
     });
   }
@@ -632,10 +632,10 @@ public class ItemEditorMessageSent {
    * Returns to the Passive menu.
    */
   private void returnToPassive() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase()), Trigger.valueOf(playerMeta.get(PlayerMeta.CONDITION).toUpperCase())).openMenu());
+      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase()), Trigger.valueOf(playerMeta.get(PlayerMeta.CONDITION).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
     });
   }
@@ -644,10 +644,10 @@ public class ItemEditorMessageSent {
    * Returns to the Active menu.
    */
   private void returnToActive() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).openMenu());
+      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
     });
   }
@@ -656,10 +656,10 @@ public class ItemEditorMessageSent {
    * Returns to the Tag menu.
    */
   private void returnToTag() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID);
+    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new TagMenu(user).openMenu());
+      user.openInventory(new TagMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
     });
   }

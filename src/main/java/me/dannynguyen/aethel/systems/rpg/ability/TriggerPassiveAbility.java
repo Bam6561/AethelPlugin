@@ -5,32 +5,32 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents a trigger ability pair.
+ * Represents a trigger passive ability pair.
  *
  * @author Danny Nguyen
  * @version 1.16.3
  * @since 1.16.1
  */
-public class TriggerAbility {
+public class TriggerPassiveAbility {
   /**
-   * Type of ability trigger.
+   * Ability trigger type.
    */
   private final Trigger trigger;
 
   /**
-   * Passive ability.
+   * Passive ability type.
    */
-  private final PassiveAbilityType ability;
+  private final PassiveAbilityType abilityType;
 
   /**
    * Associates a trigger with an ability.
    *
-   * @param trigger trigger
-   * @param ability passive ability
+   * @param trigger     trigger
+   * @param abilityType passive ability
    */
-  public TriggerAbility(@NotNull Trigger trigger, @NotNull PassiveAbilityType ability) {
+  public TriggerPassiveAbility(@NotNull Trigger trigger, @NotNull PassiveAbilityType abilityType) {
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
-    this.ability = Objects.requireNonNull(ability, "Null ability");
+    this.abilityType = Objects.requireNonNull(abilityType, "Null ability");
   }
 
   /**
@@ -49,7 +49,7 @@ public class TriggerAbility {
    * @return passive ability
    */
   @NotNull
-  public PassiveAbilityType getAbility() {
-    return this.ability;
+  public PassiveAbilityType getAbilityType() {
+    return this.abilityType;
   }
 }

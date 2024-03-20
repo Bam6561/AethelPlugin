@@ -20,7 +20,6 @@ public class Template implements CommandExecutor {
    * No parameter constructor.
    */
   public Template() {
-
   }
 
   /**

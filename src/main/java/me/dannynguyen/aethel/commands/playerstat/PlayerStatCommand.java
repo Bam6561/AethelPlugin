@@ -31,7 +31,6 @@ public class PlayerStatCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public PlayerStatCommand() {
-
   }
 
   /**
@@ -80,7 +79,7 @@ public class PlayerStatCommand implements CommandExecutor {
    */
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
-      user.openInventory(new PastStatMenu(user).openMenu());
+      user.openInventory(new PastStatMenu(user).getMainMenu());
       Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
     } else {
       openPlayerStatOther(user, parameter);
@@ -95,7 +94,7 @@ public class PlayerStatCommand implements CommandExecutor {
   private void openPlayerStatSelf(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.PLAYER, user.getName());
-    user.openInventory(new PlayerStatMenu(user, user.getName()).openMenu());
+    user.openInventory(new PlayerStatMenu(user, user.getName()).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
   }
 
@@ -110,7 +109,7 @@ public class PlayerStatCommand implements CommandExecutor {
     if (player.hasPlayedBefore()) {
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
       playerMeta.put(PlayerMeta.PLAYER, player.getName());
-      user.openInventory(new PlayerStatMenu(user, player.getName()).openMenu());
+      user.openInventory(new PlayerStatMenu(user, player.getName()).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     } else {
       user.sendMessage(ChatColor.RED + owner + " has never played on this server.");

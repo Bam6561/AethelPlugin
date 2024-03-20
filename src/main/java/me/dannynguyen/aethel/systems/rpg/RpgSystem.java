@@ -35,7 +35,6 @@ public class RpgSystem {
    * No parameter constructor.
    */
   public RpgSystem() {
-
   }
 
   /**

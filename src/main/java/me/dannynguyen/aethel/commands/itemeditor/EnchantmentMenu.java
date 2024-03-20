@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemCreator;
@@ -20,17 +21,17 @@ import java.util.*;
  * Represents a menu that edits an item's enchantments.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.6
  * @since 1.6.16
  */
-class EnchantmentMenu {
+public class EnchantmentMenu implements Menu {
   /**
    * List of sorted enchantments by name.
    */
   private static final List<Enchantment> enchantments = sortEnchantments();
 
   /**
-   * Enchantment GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -49,9 +50,9 @@ class EnchantmentMenu {
    *
    * @param user user
    */
-  protected EnchantmentMenu(@NotNull Player user) {
+  public EnchantmentMenu(@NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Plugin.getData().getEditedItemCache().getEditedItemMap().get(user.getUniqueId());
+    this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.menu = createMenu();
   }
 
@@ -84,7 +85,7 @@ class EnchantmentMenu {
    * @return Enchantment menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addEnchantments();
     addContext();
     InventoryPages.addBackButton(menu, 6);

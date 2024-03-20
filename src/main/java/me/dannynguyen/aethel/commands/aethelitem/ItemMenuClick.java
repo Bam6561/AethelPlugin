@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.systems.plugin.Directory;
-import me.dannynguyen.aethel.systems.plugin.MenuClick;
 import me.dannynguyen.aethel.systems.plugin.MenuMeta;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.ItemCreator;

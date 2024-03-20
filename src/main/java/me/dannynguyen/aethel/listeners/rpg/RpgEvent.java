@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.systems.rpg.RpgSystem;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.PassiveAbilityTrigger;
-import me.dannynguyen.aethel.systems.rpg.ability.SlotAbility;
+import me.dannynguyen.aethel.systems.rpg.ability.SlotPassiveAbility;
 import me.dannynguyen.aethel.systems.rpg.ability.Trigger;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
@@ -32,7 +32,6 @@ public class RpgEvent implements Listener {
    * No parameter constructor.
    */
   public RpgEvent() {
-
   }
 
   /**
@@ -104,12 +103,12 @@ public class RpgEvent implements Listener {
    * @param selfUUID   self UUID
    */
   private void triggerOnKillPassives(UUID killedUUID, UUID selfUUID) {
-    Map<SlotAbility, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getEquipment().getTriggerPassives().get(Trigger.ON_KILL);
+    Map<SlotPassiveAbility, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getEquipment().getTriggerPassives().get(Trigger.ON_KILL);
     if (!killTriggers.isEmpty()) {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {
         if (!ability.isOnCooldown()) {
-          switch (ability.getAbility().getEffect()) {
+          switch (ability.getAbilityType().getEffect()) {
             case STACK_INSTANCE -> readOnKillStackInstance(random, ability, selfUUID);
             case CHAIN_DAMAGE -> readOnKillChainDamage(random, ability, killedUUID, selfUUID);
           }

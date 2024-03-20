@@ -34,7 +34,6 @@ public class ShowItemCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public ShowItemCommand() {
-
   }
 
   /**
@@ -100,7 +99,7 @@ public class ShowItemCommand implements CommandExecutor {
    */
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
-      user.openInventory(new PastItemMenu(user).openMenu());
+      user.openInventory(new PastItemMenu(user).getMainMenu());
       Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.SHOWITEM_PAST.getMeta());
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());

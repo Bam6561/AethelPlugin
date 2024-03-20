@@ -86,12 +86,12 @@ public class ItemDurability {
    * </p>
    *
    * @param player interacting player
-   * @param slot   slot type
+   * @param eSlot   slot type
    * @param damage durability damage
    */
-  public static void increaseDamage(@NotNull Player player, @NotNull EquipmentSlot slot, int damage) {
+  public static void increaseDamage(@NotNull Player player, @NotNull EquipmentSlot eSlot, int damage) {
     PlayerInventory pInv = Objects.requireNonNull(player, "Null player").getInventory();
-    ItemStack item = pInv.getItem(Objects.requireNonNull(slot, "Null slot"));
+    ItemStack item = pInv.getItem(Objects.requireNonNull(eSlot, "Null slot"));
     if (ItemReader.isNotNullOrAir(item)) {
       if (item.getItemMeta() instanceof Damageable durability) {
         int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
@@ -103,9 +103,9 @@ public class ItemDurability {
         }
         durability.setDamage(durability.getDamage() + damage);
         if (durability.getDamage() > item.getType().getMaxDurability()) {
-          pInv.setItem(slot, new ItemStack(Material.AIR));
+          pInv.setItem(eSlot, new ItemStack(Material.AIR));
           player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(slot.name().toUpperCase()), true);
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(eSlot.name().toUpperCase()), true);
         } else {
           item.setItemMeta(durability);
         }

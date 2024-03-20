@@ -14,9 +14,14 @@ import org.jetbrains.annotations.NotNull;
  * Command invocation that allows the user to retrieve,
  * set, or remove Aethel tags to their main hand item.
  * <p>
- * Additional Parameters:
+ * Parameters:
+ * <p>
  * - "get", "g": reads the item's tags
+ * </p>
+ * <p>
  * - "set", "s": sets the item's tag
+ * </p>
+ * <p>
  * - "remove", "r": removes the item's tag
  * </p>
  *
@@ -29,7 +34,6 @@ public class AethelTagCommand implements CommandExecutor {
    * No parameter constructor.
    */
   public AethelTagCommand() {
-
   }
 
   /**

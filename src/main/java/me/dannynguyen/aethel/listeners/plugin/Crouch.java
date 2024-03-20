@@ -26,7 +26,6 @@ public class Crouch implements Listener {
    * No parameter constructor.
    */
   public Crouch() {
-
   }
 
   /**
@@ -42,12 +41,12 @@ public class Crouch implements Listener {
       if (playerMeta.containsKey(PlayerMeta.ACTION) && playerMeta.get(PlayerMeta.ACTION).equals("crouch.bind-active_ability")) {
         Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getSettings();
         RpgEquipmentSlot equipmentSlot = RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase());
-        int hotbarSlot = player.getInventory().getHeldItemSlot();
+        int heldSlot = player.getInventory().getHeldItemSlot();
 
-        settings.setActiveAbilityCrouchBind(equipmentSlot, hotbarSlot);
-        player.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + equipmentSlot.getProperName() + " Active Ability " + ChatColor.GREEN + "Crouch Bind] " + ChatColor.WHITE + hotbarSlot);
+        settings.setActiveAbilityCrouchBind(equipmentSlot, heldSlot);
+        player.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + equipmentSlot.getProperName() + " Active Ability " + ChatColor.GREEN + "Crouch Bind] " + ChatColor.WHITE + heldSlot);
         playerMeta.remove(PlayerMeta.ACTION);
-        player.openInventory(new SettingsMenu(player).openMenu());
+        player.openInventory(new SettingsMenu(player).getMainMenu());
         playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
       }
     }

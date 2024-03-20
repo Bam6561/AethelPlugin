@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.systems.plugin.PlayerHead;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
 import me.dannynguyen.aethel.utility.InventoryPages;
@@ -21,12 +22,12 @@ import java.util.UUID;
  * Represents a menu that supports categorical pagination for crafting, editing, and removing Forge recipes.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.6
  * @since 1.0.6
  */
-class RecipeMenu {
+public class RecipeMenu implements CategoryMenu {
   /**
-   * Recipe GUI.
+   * GUI.
    */
   private final Inventory menu;
 
@@ -38,12 +39,12 @@ class RecipeMenu {
   /**
    * User's UUID.
    */
-  private final UUID userUUID;
+  private final UUID uuid;
 
   /**
    * GUI action.
    */
-  private final ForgeMenuAction action;
+  private final Action action;
 
   /**
    * Associates a new Recipe menu with its user and action.
@@ -51,10 +52,10 @@ class RecipeMenu {
    * @param user   user
    * @param action type of interaction
    */
-  protected RecipeMenu(@NotNull Player user, @NotNull ForgeMenuAction action) {
+  public RecipeMenu(@NotNull Player user, @NotNull RecipeMenu.Action action) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.action = Objects.requireNonNull(action, "Null action");
-    this.userUUID = user.getUniqueId();
+    this.uuid = user.getUniqueId();
     this.menu = createMenu();
   }
 
@@ -65,7 +66,7 @@ class RecipeMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).get(PlayerMeta.CATEGORY);
+    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -80,9 +81,9 @@ class RecipeMenu {
    * @return Recipe menu
    */
   @NotNull
-  protected Inventory openMenu() {
+  public Inventory getMainMenu() {
     addCategories();
-    if (action != ForgeMenuAction.CRAFT) {
+    if (action != Action.CRAFT) {
       addCreateButton();
     }
     return menu;
@@ -96,11 +97,11 @@ class RecipeMenu {
    * @return recipe category page
    */
   @NotNull
-  protected Inventory openCategoryPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = Plugin.getData().getRecipeRegistry().getCategoryMap().get(requestedCategory);
+  public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
+    List<Inventory> category = Plugin.getData().getRecipeRegistry().getRecipeCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(userUUID).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();
@@ -156,7 +157,7 @@ class RecipeMenu {
    * Adds recipe categories.
    */
   private void addCategories() {
-    Set<String> categories = Plugin.getData().getRecipeRegistry().getCategoryMap().keySet();
+    Set<String> categories = Plugin.getData().getRecipeRegistry().getRecipeCategories().keySet();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {
@@ -164,5 +165,25 @@ class RecipeMenu {
         i++;
       }
     }
+  }
+
+  /**
+   * Types of interactions.
+   */
+  public enum Action {
+    /**
+     * Craft recipes.
+     */
+    CRAFT,
+
+    /**
+     * Edit recipes.
+     */
+    EDIT,
+
+    /**
+     * Remove recipes.
+     */
+    REMOVE
   }
 }

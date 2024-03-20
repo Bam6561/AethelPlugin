@@ -26,7 +26,6 @@ public class PastStatHistory {
    * No parameter constructor.
    */
   public PastStatHistory() {
-
   }
 
   /**

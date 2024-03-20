@@ -4,8 +4,8 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenu;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenuClick;
 import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
-import me.dannynguyen.aethel.commands.forge.ForgeMenuAction;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
+import me.dannynguyen.aethel.commands.forge.RecipeMenu;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
 import me.dannynguyen.aethel.systems.plugin.PlayerMeta;
@@ -24,7 +24,7 @@ import java.util.Map;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.17.5
+ * @version 1.17.6
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -32,7 +32,6 @@ public class MenuClick implements Listener {
    * No parameter constructor.
    */
   public MenuClick() {
-
   }
 
   /**
@@ -116,7 +115,7 @@ public class MenuClick implements Listener {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
         switch (invType[1]) {
-          case "sheet" -> click.interpretSheetClick();
+          case "sheet" -> click.interpretMenuClick();
           case "quests" -> click.interpretQuestsClick();
           case "collectibles" -> click.interpretCollectiblesClick();
           case "settings" -> click.interpretSettingsClick();
@@ -142,10 +141,10 @@ public class MenuClick implements Listener {
         ForgeMenuClick click = new ForgeMenuClick(e);
         switch (invType[1]) {
           case "category" -> click.interpretMenuClick();
-          case "craft" -> click.interpretCategoryClick(ForgeMenuAction.CRAFT);
+          case "craft" -> click.interpretCategoryClick(RecipeMenu.Action.CRAFT);
           case "craft-recipe" -> click.interpretCraftDetailsClick();
-          case "edit" -> click.interpretCategoryClick(ForgeMenuAction.EDIT);
-          case "remove" -> click.interpretCategoryClick(ForgeMenuAction.REMOVE);
+          case "edit" -> click.interpretCategoryClick(RecipeMenu.Action.EDIT);
+          case "remove" -> click.interpretCategoryClick(RecipeMenu.Action.REMOVE);
           case "save" -> click.interpretSaveClick();
         }
       } else if (invType[1].equals("save")) {
@@ -169,7 +168,7 @@ public class MenuClick implements Listener {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ItemEditorMenuClick click = new ItemEditorMenuClick(e);
         switch (invType[1]) {
-          case "cosmetic" -> click.interpretCosmeticClick();
+          case "cosmetic" -> click.interpretMenuClick();
           case "minecraft_attribute" -> click.interpretAttributeClick();
           case "aethel_attribute" -> click.interpretAethelAttributeClick();
           case "enchantment" -> click.interpretEnchantmentClick();
@@ -197,7 +196,7 @@ public class MenuClick implements Listener {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         PlayerStatMenuClick click = new PlayerStatMenuClick(e);
         switch (invType[1]) {
-          case "category" -> click.readMainClick();
+          case "category" -> click.interpretMenuClick();
           case "stat" -> click.readStatClick();
           case "substat" -> click.readSubstatClick();
           case "past" -> doNothing();
@@ -252,6 +251,5 @@ public class MenuClick implements Listener {
    * </p>
    */
   private void doNothing() {
-
   }
 }

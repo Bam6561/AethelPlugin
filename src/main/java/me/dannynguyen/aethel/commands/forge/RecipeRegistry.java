@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
+import me.dannynguyen.aethel.interfaces.DataRegistry;
 import me.dannynguyen.aethel.systems.plugin.PluginNamespacedKey;
 import me.dannynguyen.aethel.utility.InventoryPages;
 import me.dannynguyen.aethel.utility.ItemReader;
@@ -24,10 +25,10 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.6
  * @since 1.1.11
  */
-public class RecipeRegistry {
+public class RecipeRegistry implements DataRegistry {
   /**
    * Forge recipe file directory.
    */
@@ -36,7 +37,7 @@ public class RecipeRegistry {
   /**
    * Loaded Forge recipes.
    */
-  private final Map<String, PersistentRecipe> recipeMap = new HashMap<>();
+  private final Map<String, PersistentRecipe> recipes = new HashMap<>();
 
   /**
    * Loaded Forge recipe categories represented by groups of inventories.
@@ -44,7 +45,7 @@ public class RecipeRegistry {
    * An inventory from any of the groups is also referred to as a page.
    * </p>
    */
-  private final Map<String, List<Inventory>> categoryMap = new HashMap<>();
+  private final Map<String, List<Inventory>> recipeCategories = new HashMap<>();
 
   /**
    * Associates a RecipeRegistry with the provided directory.
@@ -71,8 +72,8 @@ public class RecipeRegistry {
   public void loadData() {
     File[] files = directory.listFiles();
     if (files != null) {
-      recipeMap.clear();
-      categoryMap.clear();
+      recipes.clear();
+      recipeCategories.clear();
 
       if (files.length > 0) {
         Arrays.sort(files);
@@ -84,9 +85,9 @@ public class RecipeRegistry {
           }
         }
 
-        if (!recipeMap.isEmpty()) {
+        if (!recipes.isEmpty()) {
           for (String category : categories.keySet()) {
-            categoryMap.put(category, createPages(categories.get(category)));
+            recipeCategories.put(category, createPages(categories.get(category)));
           }
         }
       }
@@ -119,7 +120,7 @@ public class RecipeRegistry {
       readLines(lines, results, materials);
       if (!results.isEmpty()) {
         PersistentRecipe pRecipe = new PersistentRecipe(file, results, materials);
-        recipeMap.put(pRecipe.getName(), pRecipe);
+        recipes.put(pRecipe.getName(), pRecipe);
         categories.get("All").add(results);
         sortRecipe(categories, results);
       } else {
@@ -244,8 +245,8 @@ public class RecipeRegistry {
    * @return loaded recipes
    */
   @NotNull
-  public Map<String, PersistentRecipe> getRecipeMap() {
-    return this.recipeMap;
+  public Map<String, PersistentRecipe> getRecipes() {
+    return this.recipes;
   }
 
   /**
@@ -254,7 +255,7 @@ public class RecipeRegistry {
    * @return loaded recipe categories
    */
   @NotNull
-  public Map<String, List<Inventory>> getCategoryMap() {
-    return this.categoryMap;
+  public Map<String, List<Inventory>> getRecipeCategories() {
+    return this.recipeCategories;
   }
 }

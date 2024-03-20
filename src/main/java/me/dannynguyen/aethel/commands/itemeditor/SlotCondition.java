@@ -28,11 +28,11 @@ class SlotCondition {
   /**
    * Associates an equipment slot with its trigger condition.
    *
-   * @param slot      equipment slot
+   * @param eSlot      equipment slot
    * @param condition trigger condition
    */
-  protected SlotCondition(@NotNull String slot, @NotNull String condition) {
-    this.slot = Objects.requireNonNull(slot, "Null slot");
+  protected SlotCondition(@NotNull String eSlot, @NotNull String condition) {
+    this.slot = Objects.requireNonNull(eSlot, "Null slot");
     this.condition = Objects.requireNonNull(condition, "Null condition");
   }
 
