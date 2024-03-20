@@ -21,7 +21,7 @@ import java.util.*;
  * Represents an item's passive ability lore generation.
  *
  * @author Danny Nguyen
- * @version 1.16.13
+ * @version 1.17.7
  * @since 1.15.15
  */
 class ItemPassiveLore {
@@ -55,8 +55,8 @@ class ItemPassiveLore {
    *
    * @param item interacting item
    */
-  protected ItemPassiveLore(@NotNull ItemStack item) {
-    this.item = Objects.requireNonNull(item, "Null item");
+  protected ItemPassiveLore(ItemStack item) {
+    this.item = item;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
     if (meta.hasLore()) {

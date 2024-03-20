@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.17.7
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -74,10 +74,10 @@ public enum AethelAttribute {
    * @param id         ability id
    * @param baseValue  attribute's base value
    */
-  AethelAttribute(@NotNull String properName, @NotNull String id, @NotNull String baseValue) {
-    this.properName = Objects.requireNonNull(properName, "Null name");
-    this.id = Objects.requireNonNull(id, "Null id");
-    this.baseValue = Objects.requireNonNull(baseValue, "Null value");
+  AethelAttribute(String properName, String id, String baseValue) {
+    this.properName = properName;
+    this.id = id;
+    this.baseValue = baseValue;
   }
 
   /**

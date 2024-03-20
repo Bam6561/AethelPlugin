@@ -11,17 +11,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Represents a menu containing a recipe's details.
  *
  * @author Danny Nguyen
- * @version 1.15.8
+ * @version 1.17.7
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -56,9 +54,9 @@ class RecipeDetailsMenu {
    * @param user user
    * @param type recipe details type
    */
-  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type) {
-    this.user = Objects.requireNonNull(user, "Null user");
-    this.type = Objects.requireNonNull(type, "Null type");
+  protected RecipeDetailsMenu(Player user, Type type) {
+    this.user = user;
+    this.type = type;
     this.uuid = user.getUniqueId();
     this.menu = createMenu(type);
   }
@@ -70,10 +68,10 @@ class RecipeDetailsMenu {
    * @param type recipe details type
    * @param item requested item
    */
-  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type, @NotNull ItemStack item) {
-    this.user = Objects.requireNonNull(user, "Null user");
-    this.type = Objects.requireNonNull(type, "Null type");
-    this.recipe = Objects.requireNonNull(Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(item)), "Null recipe");
+  protected RecipeDetailsMenu(Player user, Type type, ItemStack item) {
+    this.user = user;
+    this.type = type;
+    this.recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(item));
     this.uuid = user.getUniqueId();
     this.menu = createMenu(type);
   }

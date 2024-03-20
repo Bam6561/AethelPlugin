@@ -27,7 +27,7 @@ import java.util.Objects;
  * Represents a set or remove operation for an item's Aethel tag.
  *
  * @author Danny Nguyen
- * @version 1.16.13
+ * @version 1.17.7
  * @since 1.13.9
  */
 class AethelTagModifier {
@@ -68,10 +68,10 @@ class AethelTagModifier {
    * @param item interacting item
    * @param tag  tag to be modified
    */
-  protected AethelTagModifier(@NotNull Player user, @NotNull ItemStack item, @NotNull String tag) {
-    this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Objects.requireNonNull(item, "Null item");
-    this.originalTag = Objects.requireNonNull(tag, "Null tag");
+  protected AethelTagModifier(Player user, ItemStack item, String tag) {
+    this.user = user;
+    this.item = item;
+    this.originalTag = tag;
     this.tag = originalTag;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();

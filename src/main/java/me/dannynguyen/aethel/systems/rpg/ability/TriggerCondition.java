@@ -8,7 +8,7 @@ import java.util.Objects;
  * Conditions of ability triggers.
  *
  * @author Danny Nguyen
- * @version 1.16.14.1
+ * @version 1.17.7
  * @since 1.15.13
  */
 public enum TriggerCondition {
@@ -32,8 +32,8 @@ public enum TriggerCondition {
    *
    * @param data condition's data
    */
-  TriggerCondition(@NotNull String data) {
-    this.data = Objects.requireNonNull(data, "Null data");
+  TriggerCondition(String data) {
+    this.data = data;
   }
 
   /**

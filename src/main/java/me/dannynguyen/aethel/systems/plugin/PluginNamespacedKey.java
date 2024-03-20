@@ -10,7 +10,7 @@ import java.util.Objects;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.15.7
+ * @version 1.17.7
  * @since 1.11.9
  **/
 public enum PluginNamespacedKey {
@@ -54,8 +54,8 @@ public enum PluginNamespacedKey {
    *
    * @param namespacedKey namespaced key
    */
-  PluginNamespacedKey(@NotNull NamespacedKey namespacedKey) {
-    this.namespacedKey = Objects.requireNonNull(namespacedKey, "Null namespaced key");
+  PluginNamespacedKey(NamespacedKey namespacedKey) {
+    this.namespacedKey = namespacedKey;
   }
 
   /**

@@ -11,7 +11,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.12
+ * @version 1.17.7
  * @since 1.15.12
  */
 class SlotCondition {
@@ -31,9 +31,9 @@ class SlotCondition {
    * @param eSlot      equipment slot
    * @param condition trigger condition
    */
-  protected SlotCondition(@NotNull String eSlot, @NotNull String condition) {
-    this.slot = Objects.requireNonNull(eSlot, "Null slot");
-    this.condition = Objects.requireNonNull(condition, "Null condition");
+  protected SlotCondition(String eSlot, String condition) {
+    this.slot = eSlot;
+    this.condition = condition;
   }
 
   /**

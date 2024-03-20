@@ -14,14 +14,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Plugin player head textures.
  *
  * @author Danny Nguyen
- * @version 1.11.9
+ * @version 1.17.7
  * @since 1.11.9
  **/
 public enum PlayerHead {
@@ -85,8 +84,8 @@ public enum PlayerHead {
    *
    * @param head player head
    */
-  PlayerHead(@NotNull ItemStack head) {
-    this.head = Objects.requireNonNull(head, "Null item");
+  PlayerHead(ItemStack head) {
+    this.head = head;
   }
 
   /**

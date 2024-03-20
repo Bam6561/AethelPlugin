@@ -9,7 +9,7 @@ import java.util.Objects;
  * Plugin directories.
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.17.7
  * @since 1.11.9
  */
 public enum Directory {
@@ -48,8 +48,8 @@ public enum Directory {
    *
    * @param file file
    */
-  Directory(@NotNull File file) {
-    this.file = Objects.requireNonNull(file, "Null file");
+  Directory(File file) {
+    this.file = file;
   }
 
   /**

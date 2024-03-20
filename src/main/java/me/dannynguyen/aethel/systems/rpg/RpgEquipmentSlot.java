@@ -11,7 +11,7 @@ import java.util.Objects;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.11
+ * @version 1.17.7
  * @since 1.11.6
  */
 public enum RpgEquipmentSlot {
@@ -77,9 +77,9 @@ public enum RpgEquipmentSlot {
    * @param properName proper name
    * @param id         slot id
    */
-  RpgEquipmentSlot(@NotNull String properName, @NotNull String id) {
-    this.properName = Objects.requireNonNull(properName, "Null name");
-    this.id = Objects.requireNonNull(id, "Null ID");
+  RpgEquipmentSlot(String properName, String id) {
+    this.properName = properName;
+    this.id = id;
   }
 
   /**

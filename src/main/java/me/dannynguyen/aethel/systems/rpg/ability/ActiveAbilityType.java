@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.1
+ * @version 1.17.7
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -55,10 +55,10 @@ public enum ActiveAbilityType {
    * @param id         ability id
    * @param effect     ability effect
    */
-  ActiveAbilityType(@NotNull String properName, @NotNull String id, @NotNull ActiveAbilityEffect effect) {
-    this.properName = Objects.requireNonNull(properName, "Null name");
-    this.id = Objects.requireNonNull(id, "Null id");
-    this.effect = Objects.requireNonNull(effect, "Null effect");
+  ActiveAbilityType(String properName, String id, ActiveAbilityEffect effect) {
+    this.properName = properName;
+    this.id = id;
+    this.effect = effect;
   }
 
   /**

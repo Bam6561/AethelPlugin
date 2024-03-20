@@ -93,6 +93,7 @@ public class ActiveMenu implements Menu {
    *
    * @return Active menu
    */
+  @NotNull
   public Inventory getMainMenu() {
     addActives();
     addContext();

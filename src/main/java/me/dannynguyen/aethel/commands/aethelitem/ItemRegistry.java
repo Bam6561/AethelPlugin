@@ -174,7 +174,6 @@ public class ItemRegistry implements DataRegistry {
    *
    * @return loaded items
    */
-  @NotNull
   protected Map<String, PersistentItem> getItems() {
     return this.items;
   }
@@ -184,7 +183,6 @@ public class ItemRegistry implements DataRegistry {
    *
    * @return loaded item categories
    */
-  @NotNull
   protected Map<String, List<Inventory>> getItemCategories() {
     return this.itemCategories;
   }

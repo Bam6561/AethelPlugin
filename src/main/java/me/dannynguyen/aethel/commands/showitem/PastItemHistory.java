@@ -53,7 +53,6 @@ public class PastItemHistory {
    *
    * @return past shown items
    */
-  @NotNull
   protected Queue<ItemStack> getPastItems() {
     return this.pastItems;
   }

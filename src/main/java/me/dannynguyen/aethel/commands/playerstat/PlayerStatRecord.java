@@ -211,7 +211,6 @@ public class PlayerStatRecord {
    *
    * @return player statistic categories
    */
-  @NotNull
   protected Map<String, Inventory> getStatCategories() {
     return this.statCategories;
   }
@@ -221,7 +220,6 @@ public class PlayerStatRecord {
    *
    * @return player substatistic categories
    */
-  @NotNull
   protected Map<String, List<Inventory>> getSubstatCategories() {
     return this.substatCategories;
   }

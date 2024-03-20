@@ -22,7 +22,7 @@ import java.util.*;
  * Represents an item's Minecraft and Aethel attribute lore generation.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.17.7
  * @since 1.13.2
  */
 class ItemAttributeLore {
@@ -52,8 +52,8 @@ class ItemAttributeLore {
    *
    * @param item interacting item
    */
-  protected ItemAttributeLore(@NotNull ItemStack item) {
-    this.item = Objects.requireNonNull(item, "Null item");
+  protected ItemAttributeLore(ItemStack item) {
+    this.item = item;
     this.meta = item.getItemMeta();
     if (meta.hasLore()) {
       this.lore = meta.getLore();

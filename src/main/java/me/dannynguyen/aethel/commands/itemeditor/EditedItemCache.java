@@ -31,7 +31,6 @@ public class EditedItemCache {
    *
    * @return player:item map
    */
-  @NotNull
   protected Map<UUID, ItemStack> getEditedItems() {
     return this.editedItems;
   }

@@ -101,6 +101,7 @@ public class PassiveMenu implements Menu {
    *
    * @return Passive menu
    */
+  @NotNull
   public Inventory getMainMenu() {
     addPassives();
     addContext();

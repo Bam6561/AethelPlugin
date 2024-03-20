@@ -2,13 +2,11 @@ package me.dannynguyen.aethel.systems.rpg.ability;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 /**
  * Types of ability trigger conditions.
  *
  * @author Danny Nguyen
- * @version 1.16.11
+ * @version 1.17.7
  * @since 1.15.11
  */
 public enum Trigger {
@@ -54,10 +52,10 @@ public enum Trigger {
    * @param id         trigger id
    * @param condition  trigger condition
    */
-  Trigger(@NotNull String properName, @NotNull String id, @NotNull TriggerCondition condition) {
-    this.properName = Objects.requireNonNull(properName, "Null name");
-    this.id = Objects.requireNonNull(id, "Null ID");
-    this.condition = Objects.requireNonNull(condition, "Null condition");
+  Trigger(String properName, String id, TriggerCondition condition) {
+    this.properName = properName;
+    this.id = id;
+    this.condition = condition;
   }
 
   /**

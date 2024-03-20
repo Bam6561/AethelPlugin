@@ -24,7 +24,7 @@ import java.util.*;
  * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.17.7
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -69,9 +69,9 @@ class RecipeCraft {
    * @param user user
    * @param item representative item of recipe
    */
-  protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
-    this.user = Objects.requireNonNull(user, "Null user");
-    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null recipe")));
+  protected RecipeCraft(Player user, ItemStack item) {
+    this.user = user;
+    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(item));
     this.uuid = user.getUniqueId();
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();

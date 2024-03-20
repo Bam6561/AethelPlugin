@@ -19,7 +19,7 @@ import java.util.*;
  * Represents an item's active ability lore generation.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.17.7
  * @since 1.15.16
  */
 class ItemActiveLore {
@@ -53,8 +53,8 @@ class ItemActiveLore {
    *
    * @param item interacting item
    */
-  protected ItemActiveLore(@NotNull ItemStack item) {
-    this.item = Objects.requireNonNull(item, "Null item");
+  protected ItemActiveLore(ItemStack item) {
+    this.item = item;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
     if (meta.hasLore()) {

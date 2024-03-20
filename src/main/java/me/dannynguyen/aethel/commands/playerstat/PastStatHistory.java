@@ -48,7 +48,6 @@ public class PastStatHistory {
    *
    * @return past shown stats
    */
-  @NotNull
   protected Queue<ItemStack> getPastStats() {
     return this.pastStats;
   }

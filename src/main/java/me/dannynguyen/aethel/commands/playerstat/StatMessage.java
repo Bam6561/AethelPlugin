@@ -20,7 +20,7 @@ import java.util.UUID;
  * Represents the retrieval and broadcast of a player statistic.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.7
  * @since 1.4.10
  */
 class StatMessage {
@@ -60,9 +60,8 @@ class StatMessage {
    * @param e    inventory click event
    * @param user user
    */
-  protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
-    Objects.requireNonNull(e, "Null inventory click event");
-    this.user = Objects.requireNonNull(user, "Null user");
+  protected StatMessage(InventoryClickEvent e, Player user) {
+    this.user = user;
     this.uuid = user.getUniqueId();
     this.ownerName = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.PLAYER);
     this.owner = Bukkit.getOfflinePlayer(ownerName);

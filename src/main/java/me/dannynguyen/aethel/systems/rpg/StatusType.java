@@ -2,13 +2,11 @@ package me.dannynguyen.aethel.systems.rpg;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 /**
  * Types of statuses.
  *
  * @author Danny Nguyen
- * @version 1.16.6
+ * @version 1.17.7
  * @since 1.14.7
  */
 public enum StatusType {
@@ -65,9 +63,9 @@ public enum StatusType {
    * @param id           type id
    * @param isCumulative if the status type's stack instances are cumulative
    */
-  StatusType(@NotNull String properName, @NotNull String id, boolean isCumulative) {
-    this.properName = Objects.requireNonNull(properName, "Null name");
-    this.id = Objects.requireNonNull(id, "Null id");
+  StatusType(String properName, String id, boolean isCumulative) {
+    this.properName = properName;
+    this.id = id;
     this.isCumulative = isCumulative;
   }
 

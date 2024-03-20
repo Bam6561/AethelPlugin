@@ -17,18 +17,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Represents a passive ability tag set or remove operation.
  *
  * @author Danny Nguyen
- * @version 1.17.2
+ * @version 1.17.7
  * @since 1.15.13
  */
 class PassiveAbilityTag {
@@ -94,10 +92,10 @@ class PassiveAbilityTag {
    * @param user    user
    * @param item    interacting item
    */
-  PassiveAbilityTag(@NotNull String message, @NotNull Player user, @NotNull ItemStack item) {
-    this.args = Objects.requireNonNull(message, "Null message").split(" ");
-    this.user = Objects.requireNonNull(user, "Null user");
-    this.item = Objects.requireNonNull(item, "Null item");
+  PassiveAbilityTag(String message, Player user, ItemStack item) {
+    this.args = message.split(" ");
+    this.user = user;
+    this.item = item;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());

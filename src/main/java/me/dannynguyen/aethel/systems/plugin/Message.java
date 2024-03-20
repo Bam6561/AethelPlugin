@@ -9,7 +9,7 @@ import java.util.Objects;
  * Plugin messages.
  *
  * @author Danny Nguyen
- * @version 1.11.9
+ * @version 1.17.7
  * @since 1.11.9
  **/
 public enum Message {
@@ -63,8 +63,8 @@ public enum Message {
    *
    * @param message message content
    */
-  Message(@NotNull String message) {
-    this.message = Objects.requireNonNull(message, "Null message");
+  Message(String message) {
+    this.message = message;
   }
 
   /**

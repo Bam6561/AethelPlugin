@@ -8,7 +8,7 @@ import java.util.Objects;
  * Effects of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.14.1
+ * @version 1.17.7
  * @since 1.15.9
  */
 public enum PassiveAbilityEffect {
@@ -32,8 +32,8 @@ public enum PassiveAbilityEffect {
    *
    * @param data effect's data
    */
-  PassiveAbilityEffect(@NotNull String data) {
-    this.data = Objects.requireNonNull(data, "Null data");
+  PassiveAbilityEffect(String data) {
+    this.data = data;
   }
 
   /**

@@ -8,7 +8,7 @@ import java.util.Objects;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.16.3
+ * @version 1.17.7
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
@@ -54,10 +54,10 @@ public enum PassiveAbilityType {
    * @param id         ability id
    * @param effect     ability effect
    */
-  PassiveAbilityType(@NotNull String properName, @NotNull String id, @NotNull PassiveAbilityEffect effect) {
-    this.properName = Objects.requireNonNull(properName, "Null name");
-    this.id = Objects.requireNonNull(id, "Null id");
-    this.effect = Objects.requireNonNull(effect, "Null effect");
+  PassiveAbilityType(String properName,String id, PassiveAbilityEffect effect) {
+    this.properName = properName;
+    this.id = id;
+    this.effect = effect;
   }
 
   /**
