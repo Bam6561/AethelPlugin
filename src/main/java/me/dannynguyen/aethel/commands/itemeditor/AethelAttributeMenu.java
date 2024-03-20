@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a menu that edits an item's {@link AethelAttributeType Aethel attributes}.
+ * Represents a menu that edits an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class AethelAttributeMenu implements Menu {
   /**
-   * Categorized {@link AethelAttributeType Aethel attributes}.
+   * Categorized {@link AethelAttributeType}.
    */
   private static final Map<String, AethelAttributeType[]> attributeCategories = Map.of(
       "offense", new AethelAttributeType[]{AethelAttributeType.CRITICAL_CHANCE, AethelAttributeType.CRITICAL_DAMAGE},
@@ -56,7 +56,7 @@ public class AethelAttributeMenu implements Menu {
   private final ItemStack item;
 
   /**
-   * GUI {@link RpgEquipmentSlot equipment slot}.
+   * {@link RpgEquipmentSlot}
    */
   private final RpgEquipmentSlot eSlot;
 
@@ -66,7 +66,7 @@ public class AethelAttributeMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack {@link AethelAttributeType Aethel attributes}.
+   * ItemStack {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
    */
   private final Map<String, List<String>> existingAethelAttributes;
 
@@ -74,7 +74,7 @@ public class AethelAttributeMenu implements Menu {
    * Associates a new AethelAttribute menu with its user and editing item.
    *
    * @param user  user
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   public AethelAttributeMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -86,7 +86,7 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Creates and names a new AethelAttribute menu with its {@link RpgEquipmentSlot equipment slot}.
+   * Creates and names a new AethelAttribute menu with its {@link RpgEquipmentSlot}.
    *
    * @return AethelAttribute menu
    */
@@ -97,7 +97,7 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with {@link AethelAttributeType attributes}.
+   * Sets the menu to display interactions with {@link AethelAttributeType}.
    *
    * @return AethelAttribute menu
    */
@@ -130,7 +130,7 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Adds {@link RpgEquipmentSlot equipment slot} buttons.
+   * Adds {@link RpgEquipmentSlot} buttons.
    */
   private void addActions() {
     menu.setItem(5, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
@@ -144,9 +144,9 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link AethelAttributeType Aethel attributes}.
+   * Maps an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
    *
-   * @return item's {@link AethelAttributeType Aethel attributes} map
+   * @return item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes} map
    */
   private Map<String, List<String>> mapAethelAttributes() {
     NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();

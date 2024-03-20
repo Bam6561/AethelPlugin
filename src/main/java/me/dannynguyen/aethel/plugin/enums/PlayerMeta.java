@@ -19,7 +19,7 @@ public enum PlayerMeta {
   CATEGORY,
 
   /**
-   * {@link me.dannynguyen.aethel.commands.DeveloperModeCommand Developer mode}.
+   * {@link me.dannynguyen.aethel.commands.DeveloperModeCommand}.
    */
   DEVELOPER,
 
@@ -29,12 +29,12 @@ public enum PlayerMeta {
   FUTURE,
 
   /**
-   * {@link me.dannynguyen.aethel.plugin.listeners.MenuClick Menu type}.
+   * {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}
    */
   INVENTORY,
 
   /**
-   * {@link me.dannynguyen.aethel.plugin.listeners.MessageSent Message input type}.
+   * {@link me.dannynguyen.aethel.plugin.listeners.MessageSent}
    */
   MESSAGE,
 
@@ -49,7 +49,7 @@ public enum PlayerMeta {
   PLAYER,
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot Equipment slot}.
+   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    */
   SLOT,
 

@@ -20,7 +20,7 @@ public class StatusUpdate implements Listener {
   }
 
   /**
-   * Clears player {@link me.dannynguyen.aethel.rpg.system.Status} on death.
+   * Clears player {@link me.dannynguyen.aethel.rpg.system.Status statuses} on death.
    *
    * @param e player death event
    */

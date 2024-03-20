@@ -15,6 +15,8 @@ import java.util.Objects;
 
 /**
  * Inventory click event listener for {@link PlayerStatCommand} menus.
+ * <p>
+ * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -68,15 +70,11 @@ public class PlayerStatMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p>
-   * - increments or decrements a player's statistic page
-   * </p>
-   * <p>
-   * - returns to the {@link PlayerStatMenu} main menu
-   * </p>
-   * <p>
-   * - gets a player's statistic value
-   * </p>
+   * <p><ul>
+   * <li>increments or decrements a player's statistic page
+   * <li>returns to the {@link PlayerStatMenu}
+   * <li>gets a player's statistic value
+   * </ul></p>
    */
   public void interpretStatClick() {
     switch (slot) {
@@ -91,15 +89,11 @@ public class PlayerStatMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p>
-   * - increments or decrements a player's substatistic page
-   * </p>
-   * <p>
-   * - returns to the {@link PlayerStatMenu} main menu
-   * </p>
-   * <p>
-   * - gets a player's substatistic value.
-   * </p>
+   * <p><ul>
+   * <li>increments or decrements a player's substatistic page
+   * <li>returns to the {@link PlayerStatMenu}
+   * <li>gets a player's substatistic value
+   * </ul></p>
    */
   public void interpretSubstatClick() {
     switch (slot) {
@@ -126,7 +120,7 @@ public class PlayerStatMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens a {@link PlayerStatMenu} menu.
+   * Opens a {@link PlayerStatMenu}.
    */
   private void returnToMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());

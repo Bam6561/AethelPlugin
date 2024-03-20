@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands;
 
+import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -10,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Command invocation that responds to the user with their server latency.
+ * <p>
+ * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
  * @version 1.9.21

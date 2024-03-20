@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Represents an {@link RpgPlayer} settings.
+ * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
  * @version 1.17.3
@@ -31,12 +31,12 @@ public class Settings {
   private final Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = createBlankActiveAbilityCrouchBinds();
 
   /**
-   * If health bar visible.
+   * If {@link Health health bar} visible.
    */
   private boolean healthBarVisible = false;
 
   /**
-   * If health in action bar visible.
+   * If {@link Health health in action bar} visible.
    */
   private boolean healthActionVisible = false;
 
@@ -121,7 +121,7 @@ public class Settings {
   /**
    * Sets the {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch bind.
    *
-   * @param eSlot    {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot    {@link RpgEquipmentSlot}
    * @param heldSlot hotbar slot
    */
   public void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot, int heldSlot) {
@@ -145,7 +145,7 @@ public class Settings {
   }
 
   /**
-   * Toggles the visibility of {@link Health health} in the action bar.
+   * Toggles the visibility of {@link Health health in the action bar}.
    */
   public void toggleHealthActionVisibility() {
     healthActionVisible = !healthActionVisible;
@@ -170,9 +170,9 @@ public class Settings {
   }
 
   /**
-   * Gets if {@link Health health} in the action bar is displayed.
+   * Gets if {@link Health health in the action bar} is displayed.
    *
-   * @return if {@link Health health} in the action bar displayed
+   * @return if {@link Health health in the action bar} displayed
    */
   public boolean isHealthActionVisible() {
     return this.healthActionVisible;

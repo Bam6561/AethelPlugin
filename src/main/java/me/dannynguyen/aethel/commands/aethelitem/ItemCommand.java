@@ -17,16 +17,12 @@ import java.util.Map;
  * Command invocation that allows the user to obtain {@link PersistentItem items} through clicking.
  * <p>
  * Registered through {@link Plugin}.
- * </p>
  * <p>
  * Parameters:
- * </p>
- * <p>
- * - "": opens {@link ItemMenu} menu
- * </p>
- * <p>
- * - "reload", "r": reloads {@link PersistentItem items} into {@link ItemRegistry}
- * </p>
+ * <p><ul>
+ * <li>"": opens {@link ItemMenu}
+ * <li>"reload", "r": reloads {@link PersistentItem items} into {@link ItemRegistry}
+ * </ul></p>
  *
  * @author Danny Nguyen
  * @version 1.17.5
@@ -77,7 +73,7 @@ public class ItemCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the {@link ItemMenu} main menu.
+   * Opens the {@link ItemMenu}.
    *
    * @param user user
    */

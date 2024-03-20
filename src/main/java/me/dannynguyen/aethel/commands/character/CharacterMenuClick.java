@@ -31,10 +31,8 @@ import java.util.UUID;
  * <p>
  * 1 tick delays are used because only the item that exists in the
  * corresponding slot after the interaction happens should be read.
- * </p>
  * <p>
  * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -74,7 +72,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Checks if the user is interacting with an item/button or attempting to wear equipment.
+   * Checks if the user is interacting with an item/button or attempting to wear {@link Equipment}.
    */
   public void interpretMenuClick() {
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
@@ -154,7 +152,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Updates the user's main hand item in the {@link SheetMenu menu}
+   * Updates the user's main hand item in the {@link SheetMenu}
    * when it is interacted with from the user's inventory.
    */
   public void interpretPlayerInventoryClick() {
@@ -171,7 +169,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens a {@link QuestsMenu} menu.
+   * Opens a {@link QuestsMenu}.
    */
   private void openQuests() {
     user.openInventory(new QuestsMenu(user).getMainMenu());
@@ -179,7 +177,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens a {@link CollectiblesMenu} menu.
+   * Opens a {@link CollectiblesMenu}.
    */
   private void openCollectibles() {
     user.openInventory(new CollectiblesMenu(user).getMainMenu());
@@ -187,7 +185,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens a {@link SettingsMenu} menu.
+   * Opens a {@link SettingsMenu}.
    */
   private void openSettings() {
     user.openInventory(new SettingsMenu(user).getMainMenu());
@@ -293,7 +291,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Updates the user's displayed attributes for the jewelry slots.
+   * Updates the user's displayed attributes for the {@link Equipment jewelry} slots.
    */
   private void updateJewelryAttributes() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -315,7 +313,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Returns to the {@link SheetMenu} menu.
+   * Returns to the {@link SheetMenu}.
    */
   private void returnToSheet() {
     user.openInventory(new SheetMenu(user, user).getMainMenu());
@@ -323,7 +321,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Toggles the player's health bar.
+   * Toggles the player's {@link me.dannynguyen.aethel.rpg.system.Health health bar}.
    */
   private void toggleHealthBar() {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
@@ -339,7 +337,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Toggles the player's health in action bar.
+   * Toggles the player's {@link me.dannynguyen.aethel.rpg.system.Health health in action bar}.
    */
   private void toggleHealthAction() {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
@@ -355,7 +353,7 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Resets all active ability crouch binds.
+   * Resets all {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
    */
   private void resetActiveAbilityCrouchBinds() {
     user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Crouch Binds]");
@@ -373,9 +371,10 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Sets the crouch bind to activate abilities by equipment slot.
+   * Sets the crouch bind to activate
+   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility abilities} by {@link RpgEquipmentSlot}.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   private void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot) {
     user.closeInventory();

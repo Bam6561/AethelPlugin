@@ -24,7 +24,7 @@ public class Status {
   private final UUID uuid;
 
   /**
-   * {@link StatusType Type}.
+   * {@link StatusType}
    */
   private final StatusType type;
 
@@ -34,15 +34,14 @@ public class Status {
   private final boolean isCumulative;
 
   /**
-   * {@link StatusType Status's} individual stack applications.
+   * Individual stack applications.
    * <p>
    * Stack instances are represented by their Bukkit task ID.
-   * </p>
    */
   private final Map<Integer, Integer> stackInstances = new HashMap<>();
 
   /**
-   * Number of {@link StatusType status} stacks.
+   * Number of stacks.
    */
   private int stackAmount;
 
@@ -50,7 +49,7 @@ public class Status {
    * Associates a new status with its initial stacks and application.
    *
    * @param uuid   entity uuid
-   * @param type   {@link StatusType type}
+   * @param type   {@link StatusType}
    * @param stacks initial amount of stacks
    * @param ticks  initial stack application duration
    */
@@ -65,7 +64,7 @@ public class Status {
   }
 
   /**
-   * Adds a number of stacks to the {@link StatusType status}.
+   * Adds a number of stacks to the {@link StatusType}.
    *
    * @param stacks number of stacks to add
    * @param ticks  duration in ticks
@@ -84,7 +83,7 @@ public class Status {
   }
 
   /**
-   * Removes a number of stacks from the {@link StatusType status}.
+   * Removes a number of stacks from the {@link StatusType}.
    *
    * @param stacks number of stacks to remove
    */
@@ -106,7 +105,7 @@ public class Status {
   }
 
   /**
-   * Removes the {@link StatusType status} if no stack instances remain.
+   * Removes the {@link StatusType} if no stack instances remain.
    */
   private void removeStatusTypeIfEmpty() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -124,9 +123,9 @@ public class Status {
   }
 
   /**
-   * Gets the {@link StatusType status's} stack durations.
+   * Gets the {@link StatusType}'s stack durations.
    *
-   * @return {@link StatusType status's} stack durations
+   * @return {@link StatusType}'s stack durations
    */
   @NotNull
   public Map<Integer, Integer> getStackInstances() {
@@ -134,16 +133,16 @@ public class Status {
   }
 
   /**
-   * Gets the {@link StatusType status's} number of stacks.
+   * Gets the {@link StatusType}'s number of stacks.
    *
-   * @return number of {@link StatusType status} stacks
+   * @return number of {@link StatusType}'s stacks
    */
   public int getStackAmount() {
     return this.stackAmount;
   }
 
   /**
-   * Sets the {@link StatusType status's} amount of stacks
+   * Sets the {@link StatusType}'s amount of stacks
    *
    * @param stackAmount amount of stacks
    */

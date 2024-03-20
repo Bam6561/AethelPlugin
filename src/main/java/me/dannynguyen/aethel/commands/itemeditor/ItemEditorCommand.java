@@ -13,8 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Command invocation that allows the user to
- * edit their main hand item's metadata.
+ * Command invocation that allows the user to edit their main hand item's metadata.
+ * <p>
+ * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
  * @version 1.14.5
@@ -56,7 +57,7 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a {@link CosmeticMenu} menu.
+   * Checks if the command request was formatted correctly before opening a {@link CosmeticMenu}.
    *
    * @param user user
    * @param args user provided parameters
@@ -71,7 +72,7 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the {@link CosmeticMenu} menu.
+   * Opens the {@link CosmeticMenu}.
    *
    * @param user user
    * @param item interacting item

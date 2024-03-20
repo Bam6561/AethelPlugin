@@ -13,16 +13,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Represents an item's Minecraft and
- * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute} lore generation.
+ * Represents an item's Minecraft and {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute}
+ * lore generation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -45,19 +43,18 @@ class ItemAttributeLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's total Minecraft and {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute}
-   * values categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
+   * ItemStack's total Minecraft and {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute}
+   * values categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    */
   private final Map<String, Map<String, Double>> attributeValues;
 
   /**
-   * Associates an ItemStack with its
-   * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute} list.
+   * Associates an ItemStack with its {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute list}.
    *
    * @param item interacting item
    */
-  protected ItemAttributeLore(ItemStack item) {
-    this.item = item;
+  protected ItemAttributeLore(@NotNull ItemStack item) {
+    this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     if (meta.hasLore()) {
       this.lore = meta.getLore();
@@ -68,8 +65,7 @@ class ItemAttributeLore {
   }
 
   /**
-   * Totals the item's Minecraft and
-   * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attributes} together.
+   * Totals the item's Minecraft and {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes} together.
    *
    * @return ItemStack's total attribute values
    */
@@ -83,7 +79,7 @@ class ItemAttributeLore {
   }
 
   /**
-   * Adds attribute headers to the item's lore.
+   * Adds attribute {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} headers to the item's lore.
    */
   protected void addAttributeHeaders() {
     addAttributeHeader("head");
@@ -100,11 +96,10 @@ class ItemAttributeLore {
   }
 
   /**
-   * Adds an attribute header if it exists for the
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
-   * with its associated attribute values.
+   * Adds an attribute {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * header if it exists for its associated attribute values.
    *
-   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    */
   private void addAttributeHeader(String eSlot) {
     if (attributeValues.containsKey(eSlot)) {
@@ -132,9 +127,9 @@ class ItemAttributeLore {
   }
 
   /**
-   * Sorts Minecraft attributes by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
+   * Sorts Minecraft attributes by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    *
-   * @param attributeValues {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} : (attribute : value)
+   * @param attributeValues {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : (attribute : value)
    */
   private void sortMinecraftAttributes(Map<String, Map<String, Double>> attributeValues) {
     for (Attribute attribute : meta.getAttributeModifiers().keySet()) {
@@ -160,9 +155,10 @@ class ItemAttributeLore {
   }
 
   /**
-   * Sorts Aethel attributes by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
+   * Sorts {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}
+   * by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    *
-   * @param attributeValues {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} : (attribute : value)
+   * @param attributeValues {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : (attribute : value)
    */
   private void sortAethelAttributes(Map<String, Map<String, Double>> attributeValues) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();

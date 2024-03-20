@@ -25,8 +25,10 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
- * Represents a menu that shows the player's {@link me.dannynguyen.aethel.rpg.system.Equipment},
- * Minecraft attributes, and {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}.
+ * Represents a menu that shows the player's
+ * {@link me.dannynguyen.aethel.rpg.system.Equipment equipment},
+ * Minecraft attributes, {@link me.dannynguyen.aethel.rpg.system.AethelAttributes Aethel attributes},
+ * {@link me.dannynguyen.aethel.rpg.system.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -89,7 +91,9 @@ public class SheetMenu implements Menu {
   }
 
   /**
-   * Sets the menu to view equipment and attributes.
+   * Sets the menu to view {@link me.dannynguyen.aethel.rpg.system.Equipment equipment},
+   * Minecraft attributes, {@link me.dannynguyen.aethel.rpg.system.AethelAttributes Aethel attributes},
+   * {@link me.dannynguyen.aethel.rpg.system.Enchantments enchantments}, and {@link Status statuses}.
    *
    * @return Sheet menu
    */
@@ -118,7 +122,7 @@ public class SheetMenu implements Menu {
   }
 
   /**
-   * Adds quests, collectibles, and settings buttons.
+   * Adds {@link QuestsMenu}, {@link CollectiblesMenu, and {@link SettingsMenu} buttons.
    */
   private void addActions() {
     menu.setItem(25, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
@@ -160,7 +164,7 @@ public class SheetMenu implements Menu {
   }
 
   /**
-   * Adds the player's statuses.
+   * Adds the player's {@link Status statuses}.
    */
   private void addStatuses() {
     List<String> lore = new ArrayList<>();

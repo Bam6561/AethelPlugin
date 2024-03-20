@@ -22,7 +22,6 @@ import java.util.Map;
  * <p>
  * By default, all clicks within plugin menus are cancelled due to the possibility of an
  * internal error occurring and the associated methods never reaching their end result.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -235,12 +234,11 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Removes plugin {@link PlayerMeta player metadata} when a menu is closed.
+   * Removes plugin {@link PlayerMeta#INVENTORY} when a menu is closed.
    * <p>
    * Since opening a new inventory while one already exists triggers
    * the InventoryCloseEvent, always add new inventory metadata AFTER
    * opening an inventory and not before, as it will be removed otherwise.
-   * </p>
    *
    * @param e inventory close event
    */
@@ -255,7 +253,6 @@ public class MenuClick implements Listener {
    * <p>
    * Despite its non-functionality, it serves as a catalogue
    * of all possible menus belonging to a command or system.
-   * </p>
    */
   private void doNothing() {
   }

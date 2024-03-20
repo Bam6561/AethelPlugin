@@ -92,7 +92,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Toggles the visibility of the health bar.
+   * Toggles the visibility of the {@link me.dannynguyen.aethel.rpg.system.Health health bar}.
    */
   private void addDisplayHealthBar() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthBarVisible()) {
@@ -103,7 +103,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Toggles the visibility of health in the action bar.
+   * Toggles the visibility of {@link me.dannynguyen.aethel.rpg.system.Health health in the action bar}.
    */
   private void addDisplayHealthAction() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthActionVisible()) {
@@ -114,7 +114,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Adds active ability crouch binds.
+   * Adds {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
    */
   private void addActiveAbilityCrouchBinds() {
     Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getActiveAbilityCrouchBinds();

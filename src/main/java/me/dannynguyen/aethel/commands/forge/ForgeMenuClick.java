@@ -25,7 +25,6 @@ import java.util.UUID;
  * Inventory click event listener for {@link ForgeCommand} menus.
  * <p>
  * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -78,20 +77,14 @@ public class ForgeMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p>
-   * - increments or decrements a {@link PersistentRecipe recipe} category page
-   * </p>
-   * <p>
-   * - saves a {@link PersistentRecipe recipe}
-   * </p>
-   * <p>
-   * - changes the interaction type
-   * </p>
-   * <p>
-   * - contextualizes the click to expand, edit, or remove {@link PersistentRecipe recipe}
-   * </p>
+   * <p><ul>
+   * <li>increments or decrements a {@link PersistentRecipe recipe} category page
+   * <li>saves a {@link PersistentRecipe recipe}
+   * <li>changes the {@link RecipeMenu.Action interaction}
+   * <li>contextualizes the click to expand, edit, or remove {@link PersistentRecipe recipe}
+   * </ul></p>
    *
-   * @param action type of {@link RecipeMenu.Action} interaction
+   * @param action type of interaction
    */
   public void interpretCategoryClick(@NotNull RecipeMenu.Action action) {
     Objects.requireNonNull(action, "Null action");
@@ -158,7 +151,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   /**
    * Opens the previous {@link PersistentRecipe recipe} category page.
    *
-   * @param action type of {@link RecipeMenu.Action} interaction
+   * @param action type of interaction
    */
   private void previousRecipePage(RecipeMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -169,10 +162,9 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens the {@link RecipeMenu} menu with the intent to edit {@link PersistentRecipe recipe}.
+   * Opens the {@link RecipeMenu} with the intent to edit {@link PersistentRecipe recipe}.
    * <p>
-   * The player can return to either the {@link RecipeMenu} menu or a {@link PersistentRecipe recipe} category.
-   * </p>
+   * The player can return to either the {@link RecipeMenu} or a {@link PersistentRecipe recipe} category.
    */
   private void openForgeEditMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -188,7 +180,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens the {@link RecipeMenu} menu with the intent to remove {@link PersistentRecipe recipe}.
+   * Opens the {@link RecipeMenu} with the intent to remove {@link PersistentRecipe recipe}.
    */
   private void openForgeRemoveMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -199,7 +191,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens the {@link RecipeMenu} menu with the future action in mind.
+   * Opens the {@link RecipeMenu} with the {@link PlayerMeta#FUTURE} in mind.
    */
   private void returnToMainMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -211,7 +203,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens the {@link RecipeMenu} menu with the intent to craft {@link PersistentRecipe recipes}.
+   * Opens the {@link RecipeMenu} with the intent to craft {@link PersistentRecipe recipes}.
    */
   private void openForgeCraftMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -224,7 +216,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   /**
    * Opens the next {@link PersistentRecipe recipe} category page.
    *
-   * @param action type of {@link RecipeMenu.Action} interaction
+   * @param action type of interaction
    */
   private void nextRecipePage(RecipeMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -237,7 +229,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   /**
    * Either crafts, edits, or removes a {@link PersistentRecipe recipe}.
    *
-   * @param action type of {@link RecipeMenu.Action} interaction
+   * @param action type of interaction
    */
   private void interpretContextualClick(RecipeMenu.Action action) {
     switch (action) {
@@ -248,7 +240,8 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Checks if the recipe's details were formatted correctly before saving the {@link PersistentRecipe recipe}.
+   * Checks if the {@link PersistentRecipe recipe's} details were
+   * formatted correctly before saving the {@link PersistentRecipe recipe}.
    */
   private void readSaveClick() {
     ItemStack[] contents = e.getInventory().getContents();
@@ -282,7 +275,7 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Names a recipe by the first item in the results row.
+   * Names a {@link PersistentRecipe recipe} by the first item in the results row.
    *
    * @param menuContents items in menu
    * @return file name
@@ -303,11 +296,10 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Encodes the recipe by its results and materials.
+   * Encodes the {@link PersistentRecipe recipe} by its results and materials.
    * <p>
    * At this stage, the results are non-null, so the
    * method checks if the materials are non-null first.
-   * </p>
    *
    * @param menuContents items in the menu
    * @return encoded recipe string

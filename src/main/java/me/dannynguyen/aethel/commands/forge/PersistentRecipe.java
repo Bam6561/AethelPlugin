@@ -10,7 +10,6 @@ import java.util.List;
  * Represents a recipe stored in the file system.
  * <p>
  * Loaded into memory when {@link RecipeRegistry#loadData()} is called.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -19,12 +18,10 @@ import java.util.List;
 public class PersistentRecipe {
   /**
    * Recipe file.
-   * <p>
-   * - May be deleted from file system.
-   * </p>
-   * <p>
-   * - Path persists until data is reloaded.
-   * </p>
+   * <p><ul>
+   * <li>May be deleted from file system.
+   * <li>Path persists until data is reloaded.
+   * </ul></p>
    */
   private final File file;
 
@@ -49,7 +46,7 @@ public class PersistentRecipe {
    * @param file      recipe file
    * @param results   recipe results
    * @param materials recipe materials
-   * @throws IllegalArgumentException provided file is not a file
+   * @throws IllegalArgumentException if provided file is not a file
    */
   public PersistentRecipe(File file, List<ItemStack> results, List<ItemStack> materials) {
     this.file = file;

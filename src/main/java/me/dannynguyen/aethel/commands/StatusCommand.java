@@ -20,13 +20,16 @@ import java.util.UUID;
 
 /**
  * Command invocation that allows the user to retrieve,
- * give, or clear {@link StatusType statuses} from entities.
+ * give, or clear {@link Status statuses} from entities.
+ * <p>
+ * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * - "get", "g": reads the entity's {@link StatusType statuses}
- * - "set", "s": sets a {@link StatusType status} on the entity
- * - "remove", "r": removes a status or all {@link StatusType statuses} from the entity
- * </p>
+ * <p><ul>
+ * <li>"get", "g": reads the entity's {@link Status statuses}
+ * <li>"set", "s": sets a {@link Status status} on the entity
+ * <li>"remove", "r": removes a status or all {@link Status statuses} from the entity
+ * </ul></p>
  *
  * @author Danny Nguyen
  * @version 1.15.9
@@ -131,7 +134,7 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Responds with the entity's {@link StatusType statuses}.
+   * Responds with the entity's {@link Status statuses}.
    *
    * @param user user
    * @param uuid entity uuid
@@ -163,7 +166,7 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Removes all {@link StatusType statuses} from the entity.
+   * Removes all {@link Status statuses} from the entity.
    *
    * @param user user
    * @param uuid entity uuid
@@ -174,7 +177,7 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Removes a {@link StatusType status} from the entity.
+   * Removes a {@link Status status} from the entity.
    *
    * @param user user
    * @param uuid entity uuid
@@ -199,7 +202,7 @@ public class StatusCommand implements CommandExecutor {
 
   /**
    * Checks if the SetStatus request was formatted correctly
-   * before setting a {@link StatusType status} on the entity.
+   * before setting a {@link Status status} on the entity.
    *
    * @param user user
    * @param uuid entity uuid
@@ -229,7 +232,7 @@ public class StatusCommand implements CommandExecutor {
    *
    * @param user   user
    * @param uuid   entity uuid
-   * @param status {@link StatusType status type}
+   * @param status {@link StatusType}
    * @param stacks number of stacks to apply
    * @param ticks  duration
    */
@@ -252,22 +255,22 @@ public class StatusCommand implements CommandExecutor {
    */
   private enum Action {
     /**
-     * Reads the entity's {@link StatusType statuses}.
+     * Reads the entity's {@link Status statuses}.
      */
     GET,
 
     /**
-     * Sets a {@link StatusType status} on the entity.
+     * Sets a {@link Status status} on the entity.
      */
     SET,
 
     /**
-     * Removes a {@link StatusType status} from the entity.
+     * Removes a {@link Status status} from the entity.
      */
     REMOVE,
 
     /**
-     * Removes all {@link StatusType statuses} from the entity.
+     * Removes all {@link Status statuses} from the entity.
      */
     REMOVE_ALL
   }

@@ -19,9 +19,8 @@ import java.util.*;
 /**
  * Represents items in memory.
  * <p>
- * After the registry's creation, {@link #loadData() loadData} must
- * be called in order to load {@link PersistentItem items} from its associated directory.
- * </p>
+ * After the registry's creation, {@link #loadData() loadData} must be called in
+ * order to load {@link PersistentItem items} from its associated directory.
  *
  * @author Danny Nguyen
  * @version 1.17.5
@@ -39,10 +38,9 @@ public class ItemRegistry implements DataRegistry {
   private final Map<String, PersistentItem> items = new HashMap<>();
 
   /**
-   * Loaded item categories represented by groups of inventories.
+   * Loaded {@link PersistentItem item} categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
-   * </p>
    */
   private final Map<String, List<Inventory>> itemCategories = new HashMap<>();
 
@@ -50,7 +48,7 @@ public class ItemRegistry implements DataRegistry {
    * Associates an ItemRegistry with the provided directory.
    *
    * @param directory directory containing item files
-   * @throws IllegalArgumentException provided file is not a directory
+   * @throws if IllegalArgumentException provided file is not a directory
    */
   public ItemRegistry(@NotNull File directory) throws IllegalArgumentException {
     if (Objects.requireNonNull(directory, "Null directory").exists()) {
@@ -66,7 +64,7 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Loads data by reading item files from the provided directory.
+   * Loads data by reading {@link PersistentItem item} files from the provided directory.
    */
   public void loadData() {
     File[] files = directory.listFiles();
@@ -151,7 +149,7 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Sorts an item into a category based on its item category ID.
+   * Sorts an item into a category based on its {@link PluginNamespacedKey#ITEM_CATEGORY}.
    *
    * @param categories {@link PersistentItem item} categories
    * @param item       interacting item
@@ -174,6 +172,7 @@ public class ItemRegistry implements DataRegistry {
    *
    * @return loaded {@link PersistentItem items}
    */
+  @NotNull
   protected Map<String, PersistentItem> getItems() {
     return this.items;
   }
@@ -183,6 +182,7 @@ public class ItemRegistry implements DataRegistry {
    *
    * @return loaded {@link PersistentItem item} categories
    */
+  @NotNull
   protected Map<String, List<Inventory>> getItemCategories() {
     return this.itemCategories;
   }

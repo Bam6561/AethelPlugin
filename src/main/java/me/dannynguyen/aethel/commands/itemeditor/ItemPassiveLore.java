@@ -13,14 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Represents an item's {@link PassiveAbilityType passive ability} lore generation.
+ * Represents an item's {@link PluginNamespacedKey#PASSIVE_LIST passive ability} lore generation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -28,7 +26,7 @@ import java.util.Map;
  */
 class ItemPassiveLore {
   /**
-   * ItemStack whose {@link PassiveAbilityType passive abilities} are being written.
+   * ItemStack whose {@link PluginNamespacedKey#PASSIVE_LIST passive abilities} are being written.
    */
   private final ItemStack item;
 
@@ -48,17 +46,18 @@ class ItemPassiveLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's {@link PassiveAbilityType passive abilities} categorized by equipment slot.
+   * ItemStack's {@link PluginNamespacedKey#PASSIVE_LIST passive abilities}
+   * categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    */
   private final Map<String, List<String>> passiveAbilities;
 
   /**
-   * Associates an ItemStack with its {@link PassiveAbilityType passive ability} list.
+   * Associates an ItemStack with its {@link PluginNamespacedKey#PASSIVE_LIST passive ability list}.
    *
    * @param item interacting item
    */
-  protected ItemPassiveLore(ItemStack item) {
-    this.item = item;
+  protected ItemPassiveLore(@NotNull ItemStack item) {
+    this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
     if (meta.hasLore()) {
@@ -70,9 +69,9 @@ class ItemPassiveLore {
   }
 
   /**
-   * Adds {@link PassiveAbilityType passive ability} headers to the item's lore.
+   * Adds passive ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} headers to the item's lore.
    */
-  public void addPassiveHeaders() {
+  protected void addPassiveHeaders() {
     addPassiveHeader("head");
     addPassiveHeader("chest");
     addPassiveHeader("legs");
@@ -86,10 +85,10 @@ class ItemPassiveLore {
   }
 
   /**
-   * Adds a {@link PassiveAbilityType passive ability} header if it exists for the
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} with its associated ability values.
+   * Adds a passive ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * header if it exists with its associated ability values.
    *
-   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    */
   private void addPassiveHeader(String eSlot) {
     if (passiveAbilities.containsKey(eSlot)) {
@@ -112,10 +111,10 @@ class ItemPassiveLore {
   }
 
   /**
-   * Sorts {@link PassiveAbilityType passive abilities} by their
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
+   * Sorts {@link PluginNamespacedKey#PASSIVE_LIST passive abilities}
+   * by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} : {@link PassiveAbilityType passive ability}
+   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : {@link PluginNamespacedKey#PASSIVE_LIST passive ability}
    */
   private Map<String, List<String>> sortPassiveAbilities() {
     Map<String, List<String>> passiveAbilities = new HashMap<>();
@@ -171,10 +170,10 @@ class ItemPassiveLore {
   }
 
   /**
-   * Adds ability {@link Trigger trigger} lore.
+   * Adds ability {@link Trigger} lore.
    *
    * @param abilityLore ability lore
-   * @param trigger     {@link Trigger trigger}
+   * @param trigger     {@link Trigger}
    */
   private void addTriggerLore(StringBuilder abilityLore, Trigger trigger) {
     switch (trigger) {

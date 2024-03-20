@@ -22,7 +22,6 @@ import java.util.*;
  * <p>
  * After the registry's creation, {@link #loadData() loadData} must
  * be called in order to load {@link PersistentRecipe recipes} from its associated directory.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -40,10 +39,9 @@ public class RecipeRegistry implements DataRegistry {
   private final Map<String, PersistentRecipe> recipes = new HashMap<>();
 
   /**
-   * Loaded Forge recipe categories represented by groups of inventories.
+   * Loaded {@link PersistentRecipe recipe} categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
-   * </p>
    */
   private final Map<String, List<Inventory>> recipeCategories = new HashMap<>();
 
@@ -51,7 +49,7 @@ public class RecipeRegistry implements DataRegistry {
    * Associates a RecipeRegistry with the provided directory.
    *
    * @param directory directory containing recipe files
-   * @throws IllegalArgumentException provided file is not a directory
+   * @throws if IllegalArgumentException provided file is not a directory
    */
   public RecipeRegistry(@NotNull File directory) {
     if (Objects.requireNonNull(directory, "Null directory").exists()) {
@@ -99,9 +97,10 @@ public class RecipeRegistry implements DataRegistry {
    * {@link PersistentRecipe recipe} that is then sorted into a category.
    * <p>
    * Data is stored in two lines of text, represented by the variable dataType.
-   * - [1] Results
-   * - [2] Materials
-   * </p>
+   * <p><ul>
+   * <li>[1] Results
+   * <li>[2] Materials
+   * </ul></p>
    *
    * @param file       recipe file
    * @param categories {@link PersistentRecipe recipe} categories
@@ -134,7 +133,7 @@ public class RecipeRegistry implements DataRegistry {
   /**
    * Creates a {@link PersistentRecipe recipe} category's pages.
    *
-   * @param recipes recipes from a {@link PersistentRecipe recipe} category
+   * @param recipes {@link PersistentRecipe recipes} from a {@link PersistentRecipe recipe} category
    * @return {@link PersistentRecipe recipe} category's pages
    */
   private List<Inventory> createPages(List<List<ItemStack>> recipes) {
@@ -163,10 +162,9 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Reads lines of text from the file and adds decoded items to the recipe.
+   * Reads lines of text from the file and adds decoded items to the {@link PersistentRecipe recipe}.
    * <p>
    * Individual encoded ItemStacks are separated by spaces.
-   * </p>
    *
    * @param lines     text lines
    * @param results   recipe results
@@ -193,7 +191,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Sorts a recipe into a category based on its recipe category ID.
+   * Sorts a recipe into a category based on its {@link PluginNamespacedKey#RECIPE_CATEGORY}.
    *
    * @param categories {@link PersistentRecipe recipe} categories
    * @param results    interacting recipe
@@ -214,9 +212,11 @@ public class RecipeRegistry implements DataRegistry {
    * Creates an item display for {@link PersistentRecipe recipes} with multiple results.
    * <p>
    * Format:
-   * xAmount Item
-   * ...
-   * </p>
+   * <p><ul>
+   * <li>xAmount Item
+   * <li>...
+   * </ul></p>
+   * <p>
    *
    * @param displayItem item to be shown
    * @param results     recipe results

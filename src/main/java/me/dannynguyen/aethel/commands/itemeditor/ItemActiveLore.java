@@ -11,14 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Represents an item's {@link ActiveAbilityType active ability} lore generation.
+ * Represents an item's {@link PluginNamespacedKey#ACTIVE_LIST active ability} lore generation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -26,7 +24,7 @@ import java.util.Map;
  */
 class ItemActiveLore {
   /**
-   * ItemStack whose {@link ActiveAbilityType active abilities} are being written.
+   * ItemStack whose {@link PluginNamespacedKey#ACTIVE_LIST active abilities} are being written.
    */
   private final ItemStack item;
 
@@ -46,18 +44,18 @@ class ItemActiveLore {
   private final List<String> lore;
 
   /**
-   * ItemStack's {@link ActiveAbilityType active abilities} categorized
-   * by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
+   * ItemStack's {@link PluginNamespacedKey#ACTIVE_LIST active abilities}
+   * categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    */
   private final Map<String, List<String>> activeAbilities;
 
   /**
-   * Associates an ItemStack with its {@link ActiveAbilityType active ability} list.
+   * Associates an ItemStack with its {@link PluginNamespacedKey#ACTIVE_LIST active ability list}.
    *
    * @param item interacting item
    */
-  protected ItemActiveLore(ItemStack item) {
-    this.item = item;
+  protected ItemActiveLore(@NotNull ItemStack item) {
+    this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
     if (meta.hasLore()) {
@@ -69,9 +67,9 @@ class ItemActiveLore {
   }
 
   /**
-   * Adds {@link ActiveAbilityType active ability} headers to the item's lore.
+   * Adds active ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} headers to the item's lore.
    */
-  public void addActiveHeaders() {
+  protected void addActiveHeaders() {
     addActiveHeader("head");
     addActiveHeader("chest");
     addActiveHeader("legs");
@@ -85,11 +83,10 @@ class ItemActiveLore {
   }
 
   /**
-   * Adds an {@link ActiveAbilityType active ability} header if it exists for the
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} with
-   * its associated ability values.
+   * Adds an active ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * header if it exists for the its associated ability values.
    *
-   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    */
   private void addActiveHeader(String eSlot) {
     if (activeAbilities.containsKey(eSlot)) {
@@ -112,10 +109,10 @@ class ItemActiveLore {
   }
 
   /**
-   * Sorts {@link ActiveAbilityType active abilities} by their
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot}.
+   * Sorts {@link PluginNamespacedKey#ACTIVE_LIST active abilities}
+   * by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot equipment slot} : active ability
+   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : {@link PluginNamespacedKey#ACTIVE_LIST}
    */
   private Map<String, List<String>> sortActiveAbilities() {
     Map<String, List<String>> activeAbilities = new HashMap<>();

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents an item's {@link PassiveAbilityType passive ability}.
+ * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
  * @version 1.17.1
@@ -19,37 +19,37 @@ public class PassiveAbility {
   private final Map<Trigger, Set<SlotPassiveType>> onCooldownPassives;
 
   /**
-   * {@link RpgEquipmentSlot Equipment slot}.
+   * {@link RpgEquipmentSlot}
    */
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * {@link Trigger Trigger}.
+   * {@link Trigger}
    */
   private final Trigger trigger;
 
   /**
-   * {@link PassiveAbilityType Type}.
+   * {@link PassiveAbilityType}
    */
   private final PassiveAbilityType type;
 
   /**
-   * {@link TriggerCondition Condition} data.
+   * {@link TriggerCondition} data.
    */
   private final List<String> conditionData = new ArrayList<>();
 
   /**
-   * {@link PassiveAbilityEffect Effect} data.
+   * {@link PassiveAbilityEffect} data.
    */
   private final List<String> effectData = new ArrayList<>();
 
   /**
-   * Associates a {@link PassiveAbility passive ability} with its data.
+   * Associates a {@link PassiveAbilityType passive ability} with its data.
    *
-   * @param onCooldownPassives passives on cooldown
-   * @param eSlot              {@link RpgEquipmentSlot equipment slot}
-   * @param trigger            {@link Trigger trigger}
-   * @param type               {@link PassiveAbilityType type}
+   * @param onCooldownPassives {@link PassiveAbilityType} on cooldown
+   * @param eSlot              {@link RpgEquipmentSlot}
+   * @param trigger            {@link Trigger}
+   * @param type               {@link PassiveAbilityType}
    * @param dataValues         ability data
    */
   public PassiveAbility(@NotNull Map<Trigger, Set<SlotPassiveType>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger, @NotNull PassiveAbilityType type, @NotNull String[] dataValues) {
@@ -62,10 +62,10 @@ public class PassiveAbility {
 
   /**
    * Initializes the {@link PassiveAbilityType passive ability's}
-   * {@link TriggerCondition condition} and {@link PassiveAbilityEffect effect} data.
+   * {@link TriggerCondition} and {@link PassiveAbilityEffect} data.
    *
-   * @param condition  {@link TriggerCondition condition}
-   * @param effect     {@link PassiveAbilityEffect effect}
+   * @param condition  {@link TriggerCondition}
+   * @param effect     {@link PassiveAbilityEffect}
    * @param dataValues ability data
    */
   private void initializeAbilityData(TriggerCondition condition, PassiveAbilityEffect effect, String[] dataValues) {
@@ -85,9 +85,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link RpgEquipmentSlot equipment slot}.
+   * Gets the {@link RpgEquipmentSlot}.
    *
-   * @return {@link RpgEquipmentSlot equipment slot}
+   * @return {@link RpgEquipmentSlot}
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
@@ -95,9 +95,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link Trigger trigger}.
+   * Gets the {@link Trigger}.
    *
-   * @return {@link Trigger trigger}
+   * @return {@link Trigger}
    */
   @NotNull
   public Trigger getTrigger() {
@@ -105,9 +105,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link PassiveAbilityType type}.
+   * Gets the {@link PassiveAbilityType}.
    *
-   * @return {@link PassiveAbilityType type}
+   * @return {@link PassiveAbilityType}
    */
   @NotNull
   public PassiveAbilityType getType() {
@@ -115,9 +115,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link TriggerCondition condition} data.
+   * Gets the {@link TriggerCondition} data.
    *
-   * @return {@link TriggerCondition condition} data.
+   * @return {@link TriggerCondition} data.
    */
   @NotNull
   public List<String> getConditionData() {
@@ -125,9 +125,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link PassiveAbilityEffect effect} data.
+   * Gets the {@link PassiveAbilityEffect} data.
    *
-   * @return {@link PassiveAbilityEffect effect} data
+   * @return {@link PassiveAbilityEffect} data
    */
   @NotNull
   public List<String> getEffectData() {
@@ -135,22 +135,22 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets if the ability is on cooldown.
+   * Gets if the {@link PassiveAbilityType} is on cooldown.
    *
-   * @return if the ability is on cooldown
+   * @return if the {@link PassiveAbilityType} is on cooldown
    */
   public boolean isOnCooldown() {
     return onCooldownPassives.get(trigger).contains(new SlotPassiveType(eSlot, type));
   }
 
   /**
-   * Sets if the ability is on cooldown.
+   * Sets if the {@link PassiveAbilityType} is on cooldown.
    *
-   * @param onCooldown is on cooldown
+   * @param isOnCooldown is on cooldown
    */
-  public void setOnCooldown(boolean onCooldown) {
+  public void setOnCooldown(boolean isOnCooldown) {
     SlotPassiveType slotPassiveType = new SlotPassiveType(eSlot, type);
-    if (onCooldown) {
+    if (isOnCooldown) {
       onCooldownPassives.get(trigger).add(slotPassiveType);
     } else {
       onCooldownPassives.get(trigger).remove(slotPassiveType);

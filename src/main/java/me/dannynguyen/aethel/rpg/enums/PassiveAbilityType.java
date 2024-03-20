@@ -11,22 +11,22 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum PassiveAbilityType {
   /**
-   * Applies stacks of {@link StatusType Brittle}.
+   * Applies stacks of {@link StatusType#BRITTLE}.
    */
   BRITTLE("Brittle", "brittle", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
-   * Apply stacks of {@link StatusType Soaked}.
+   * Apply stacks of {@link StatusType#SOAKED}.
    */
   SOAKED("Soaked", "soaked", PassiveAbilityEffect.STACK_INSTANCE),
 
   /**
-   * Attacks chain to entities with stacks of {@link StatusType Soaked}.
+   * Attacks chain to entities with stacks of {@link StatusType#SOAKED}.
    */
   SPARK("Spark", "spark", PassiveAbilityEffect.CHAIN_DAMAGE),
 
   /**
-   * Applies stacks of {@link StatusType Bleed}.
+   * Applies stacks of {@link StatusType#BLEED}.
    */
   BLEED("Bleed", "bleed", PassiveAbilityEffect.STACK_INSTANCE);
 
@@ -41,16 +41,16 @@ public enum PassiveAbilityType {
   private final String id;
 
   /**
-   * {@link PassiveAbilityEffect Ability effect}.
+   * {@link PassiveAbilityEffect}
    */
   private final PassiveAbilityEffect effect;
 
   /**
-   * Associates a passive ability with its {@link PassiveAbilityEffect effect}.
+   * Associates a passive ability with its {@link PassiveAbilityEffect}.
    *
    * @param properName proper name
    * @param id         ability id
-   * @param effect     {@link PassiveAbilityEffect ability effect}
+   * @param effect     {@link PassiveAbilityEffect}
    */
   PassiveAbilityType(String properName, String id, PassiveAbilityEffect effect) {
     this.properName = properName;
@@ -79,9 +79,9 @@ public enum PassiveAbilityType {
   }
 
   /**
-   * Gets the {@link PassiveAbilityEffect ability's effect}.
+   * Gets the {@link PassiveAbilityEffect}.
    *
-   * @return {@link PassiveAbilityEffect ability's effect}.
+   * @return {@link PassiveAbilityEffect}
    */
   @NotNull
   public PassiveAbilityEffect getEffect() {

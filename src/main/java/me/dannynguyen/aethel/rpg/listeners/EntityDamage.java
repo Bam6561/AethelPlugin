@@ -103,7 +103,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Triggers damage dealt passive abilities.
+   * Triggers {@link Trigger#DAMAGE_DEALT} {@link PassiveAbility passive abilities}.
    *
    * @param e       entity damage by entity event
    * @param damager interacting player
@@ -128,7 +128,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Triggers damage taken passive abilities.
+   * Triggers {@link Trigger#DAMAGE_TAKEN} {@link PassiveAbility passive abilities}.
    *
    * @param e       entity damage by entity event
    * @param damagee interacting player
@@ -205,7 +205,7 @@ public class EntityDamage implements Listener {
 
   /**
    * Mitigates environmental damage taken based on the player's
-   * {@link me.dannynguyen.aethel.rpg.system.Enchantments environmental protection enchantments}.
+   * {@link me.dannynguyen.aethel.rpg.system.Enchantments}.
    *
    * @param e          entity damage event
    * @param cause      damage cause
@@ -237,7 +237,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect stack instance effect}
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
    * was successful before applying stack instances.
    *
    * @param random    rng
@@ -260,7 +260,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect chain damage effect}
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE}
    * was successful before dealing chain damage.
    *
    * @param random    rng
@@ -297,7 +297,7 @@ public class EntityDamage implements Listener {
   }
 
   /**
-   * If the target has the {@link StatusType Vulnerable status}, multiply the damage by its number of stacks.
+   * If the target has the {@link StatusType#VULNERABLE}, multiply the damage by its number of stacks.
    *
    * @param e entity damage by entity event
    */
@@ -374,8 +374,7 @@ public class EntityDamage implements Listener {
   /**
    * Ignores damage taken if the player killed the damager by counterattacks.
    * <p>
-   * Projectile attacks cannot trigger counter attacks.
-   * </p>
+   * Projectile attacks cannot trigger counterattacks.
    *
    * @param cause      damage cause
    * @param attributes {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}

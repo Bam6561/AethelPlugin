@@ -15,22 +15,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Command invocation that allows the user to view a player's RPG character information.
+ * Command invocation that allows the user to view a player's RPG character data.
  * <p>
- * From the Sheet, the user can also view the player's quests and collectibles.
- * </p>
+ * From the {@link SheetMenu}, the user can also view the player's quests and collectibles.
  * <p>
  * Registered through {@link Plugin}.
- * </p>
  * <p>
  * Parameters:
- * </p>
- * <p>
- * - "": opens a {@link SheetMenu} menu belonging to the user
- * </p>
- * <p>
- * - playerName: opens a {@link SheetMenu} menu belonging to the player
- * </p>
+ * <p><ul>
+ * <li>"": opens a {@link SheetMenu} belonging to the user
+ * <li><playerName>: opens a {@link SheetMenu} belonging to the player
+ * </ul></p>
  *
  * @author Danny Nguyen
  * @version 1.14.5
@@ -67,7 +62,7 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a {@link SheetMenu} menu.
+   * Checks if the command request was formatted correctly before opening a {@link SheetMenu}.
    *
    * @param user user
    * @param args user provided parameters
@@ -81,7 +76,7 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a {@link SheetMenu} menu belonging to the user.
+   * Opens a {@link SheetMenu} belonging to the user.
    *
    * @param user user
    */
@@ -93,7 +88,7 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a {@link SheetMenu} menu belonging to another player.
+   * Opens a {@link SheetMenu} belonging to another player.
    *
    * @param user            user
    * @param requestedPlayer requested player's name

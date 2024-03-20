@@ -36,7 +36,7 @@ public class PlayerDamageMitigation {
   private final Map<Enchantment, Integer> enchantments;
 
   /**
-   * Player's statuses.
+   * Player's {@link Status statuses}.
    */
   private final Map<StatusType, Status> statuses;
 

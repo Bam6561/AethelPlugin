@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents an {@link RpgPlayer} {@link AethelAttributeType}.
+ * Represents an {@link RpgPlayer}'s total {@link AethelAttributeType} values.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -23,12 +23,12 @@ import java.util.Objects;
  */
 public class AethelAttributes {
   /**
-   * Total {@link AethelAttributeType Aethel attributes}.
+   * Total {@link AethelAttributeType} values.
    */
   private final Map<AethelAttributeType, Double> attributes = createBlankAethelAttributes();
 
   /**
-   * {@link AethelAttributeType Aethel attributes} by {@link RpgEquipmentSlot slot}.
+   * {@link AethelAttributeType} values by {@link RpgEquipmentSlot}.
    */
   private final Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = new HashMap<>();
 
@@ -39,9 +39,9 @@ public class AethelAttributes {
   }
 
   /**
-   * Creates a blank map of {@link AethelAttributeType Aethel attributes}.
+   * Creates a blank map of {@link AethelAttributeType} values.
    *
-   * @return blank {@link AethelAttributeType Aethel attributes}
+   * @return blank {@link AethelAttributeType} values
    */
   private Map<AethelAttributeType, Double> createBlankAethelAttributes() {
     Map<AethelAttributeType, Double> aethelAttributes = new HashMap<>();
@@ -52,10 +52,10 @@ public class AethelAttributes {
   }
 
   /**
-   * Checks if the item is in the correct {@link RpgEquipmentSlot slot}
-   * before updating the player's {@link AethelAttributeType attributes} values.
+   * Checks if the item is in the correct {@link RpgEquipmentSlot}
+   * before updating the player's {@link AethelAttributeType} values.
    *
-   * @param eSlot         {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot         {@link RpgEquipmentSlot}
    * @param dataContainer item's persistent tags
    */
   public void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
@@ -69,9 +69,9 @@ public class AethelAttributes {
   }
 
   /**
-   * Adds new equipment {@link AethelAttributeType attribute} modifiers.
+   * Adds new {@link Equipment} {@link AethelAttributeType} modifiers.
    *
-   * @param eSlot         {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot         {@link RpgEquipmentSlot}
    * @param dataContainer item's persistent tags
    * @param attribute     attribute modifier
    */
@@ -83,9 +83,9 @@ public class AethelAttributes {
   }
 
   /**
-   * Removes existing equipment {@link AethelAttributeType attribute} modifiers at a {@link RpgEquipmentSlot slot}.
+   * Removes existing {@link Equipment} {@link AethelAttributeType} modifiers at a {@link RpgEquipmentSlot}.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
     for (AethelAttributeType attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
@@ -95,9 +95,9 @@ public class AethelAttributes {
   }
 
   /**
-   * Gets total {@link AethelAttributeType Aethel attributes}.
+   * Gets total {@link AethelAttributeType} values.
    *
-   * @return total {@link AethelAttributeType Aethel attributes}
+   * @return total {@link AethelAttributeType} values
    */
   @NotNull
   public Map<AethelAttributeType, Double> getAttributes() {
@@ -105,9 +105,9 @@ public class AethelAttributes {
   }
 
   /**
-   * Gets {@link AethelAttributeType Aethel attributes} by {@link RpgEquipmentSlot slot}.
+   * Gets {@link Equipment} {@link AethelAttributeType} values by {@link RpgEquipmentSlot}.
    *
-   * @return {@link AethelAttributeType Aethel attributes} by {@link RpgEquipmentSlot slot}
+   * @return {@link Equipment} {@link AethelAttributeType} values by {@link RpgEquipmentSlot}
    */
   @NotNull
   public Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> getSlotAttributes() {

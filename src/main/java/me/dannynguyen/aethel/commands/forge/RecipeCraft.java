@@ -12,15 +12,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 /**
  * Represents a {@link PersistentRecipe recipe} craft operation.
  * <p>
- * Only removes items from the user's inventory if
- * they have enough materials to craft the recipe.
- * </p>
+ * Only removes items from the user's inventory if they have
+ * enough materials to craft the {@link PersistentRecipe recipe}.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -68,9 +68,9 @@ class RecipeCraft {
    * @param user user
    * @param item representative item of recipe
    */
-  protected RecipeCraft(Player user, ItemStack item) {
-    this.user = user;
-    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(item));
+  protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
     this.uuid = user.getUniqueId();
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
@@ -81,7 +81,7 @@ class RecipeCraft {
   /**
    * Maps the user's inventory by material.
    *
-   * @return map of material:inventory slots
+   * @return map of material : inventory slots
    */
   private Map<Material, List<RecipeCraftInventory>> mapMaterialIndices() {
     Map<Material, List<RecipeCraftInventory>> materialSlots = new HashMap<>();

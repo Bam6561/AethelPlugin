@@ -32,8 +32,7 @@ public class ItemDurability {
   /**
    * Gets the item's durability.
    * <p>
-   * Returns -1 if the item's meta cannot be type cast to a Damageable.
-   * </p>
+   * Returns -1 if the item's meta cannot be type cast to a Damageable item meta.
    *
    * @param item interacting item
    * @return item durability
@@ -49,8 +48,7 @@ public class ItemDurability {
   /**
    * Gets the item's damage.
    * <p>
-   * Returns -1 if the item's meta cannot be type cast to a Damageable.
-   * </p>
+   * Returns -1 if the item's meta cannot be type cast to a Damageable item meta.
    *
    * @param item interacting item
    * @return item damage
@@ -83,7 +81,6 @@ public class ItemDurability {
    * Damages an item's durability.
    * <p>
    * An item is broken when its damage exceeds its material type's durability.
-   * </p>
    *
    * @param player interacting player
    * @param eSlot  equipment slot
@@ -118,7 +115,6 @@ public class ItemDurability {
    * <p>
    * If the durability to be set exceeds the material type's max durability,
    * the durability is set to match the material type's max durability instead.
-   * </p>
    *
    * @param item                interacting item
    * @param requestedDurability requested durability
@@ -139,7 +135,6 @@ public class ItemDurability {
    * <p>
    * If the damage to be set exceeds the material type's max durability,
    * the damage is set to match the material type's max durability instead.
-   * </p>
    *
    * @param item   interacting item
    * @param damage durability damage

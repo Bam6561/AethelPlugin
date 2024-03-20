@@ -14,6 +14,8 @@ import java.util.Map;
 
 /**
  * Command invocation that allows the user to bypass conditions for various interactions.
+ * <p>
+ * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
  * @version 1.14.5
@@ -50,7 +52,8 @@ public class DeveloperModeCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before toggling developer mode.
+   * Checks if the command request was formatted correctly
+   * before toggling {@link PlayerMeta#DEVELOPER developer mode}.
    *
    * @param user user
    * @param args user provided parameters
@@ -65,7 +68,7 @@ public class DeveloperModeCommand implements CommandExecutor {
   }
 
   /**
-   * Toggles Developer mode on or off for the user.
+   * Toggles {@link PlayerMeta#DEVELOPER developer mode} on or off for the user.
    *
    * @param user user
    */

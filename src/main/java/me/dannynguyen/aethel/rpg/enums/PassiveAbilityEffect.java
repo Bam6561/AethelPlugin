@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Effects of {@link PassiveAbilityType passive abilities}.
+ * Effects of {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -26,7 +26,7 @@ public enum PassiveAbilityEffect {
   private final String data;
 
   /**
-   * Associates a {@link PassiveAbilityType passive ability} effect with its data.
+   * Associates an effect with its data.
    *
    * @param data effect's data
    */

@@ -11,8 +11,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -44,7 +46,7 @@ class RecipeDetailsMenu {
   private final Type type;
 
   /**
-   * {@link PersistentRecipe Recipe}.
+   * {@link PersistentRecipe Recipe}
    */
   private PersistentRecipe recipe;
 
@@ -54,9 +56,9 @@ class RecipeDetailsMenu {
    * @param user user
    * @param type recipe details type
    */
-  protected RecipeDetailsMenu(Player user, Type type) {
-    this.user = user;
-    this.type = type;
+  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    this.type = Objects.requireNonNull(type, "Null type");
     this.uuid = user.getUniqueId();
     this.menu = createMenu(type);
   }
@@ -65,13 +67,13 @@ class RecipeDetailsMenu {
    * Associates a new RecipeDetails menu with its user and {@link PersistentRecipe recipe}.
    *
    * @param user user
-   * @param type recipe details {@link RecipeDetailsMenu.Type type}
+   * @param type {@link RecipeDetailsMenu.Type type}
    * @param item requested item
    */
-  protected RecipeDetailsMenu(Player user, Type type, ItemStack item) {
-    this.user = user;
-    this.type = type;
-    this.recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(item));
+  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type, @NotNull ItemStack item) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    this.type = Objects.requireNonNull(type, "Null type");
+    this.recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
     this.uuid = user.getUniqueId();
     this.menu = createMenu(type);
   }
@@ -79,7 +81,7 @@ class RecipeDetailsMenu {
   /**
    * Creates and names a RecipeDetails menu with the intent to craft or save a {@link PersistentRecipe recipe}.
    *
-   * @param type details menu {@link RecipeDetailsMenu.Type type}
+   * @param type {@link RecipeDetailsMenu.Type type}
    * @return RecipeDetails menu
    */
   private Inventory createMenu(Type type) {
@@ -152,7 +154,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Adds the recipe's results and materials to the menu.
+   * Adds the {@link PersistentRecipe recipe's} results and materials to the menu.
    */
   private void addRecipeContents() {
     List<ItemStack> results = recipe.getResults();

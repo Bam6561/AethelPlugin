@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents an {@link RpgPlayer RPG player's} health.
+ * Represents an {@link RpgPlayer}'s health.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -31,12 +31,12 @@ public class Health {
   private final UUID uuid;
 
   /**
-   * {@link AethelAttributes Total Aethel attributes}.
+   * {@link AethelAttributes}
    */
   private final AethelAttributes attributes;
 
   /**
-   * {@link Settings Player's settings}.
+   * {@link Settings}
    */
   private final Settings settings;
 
@@ -59,8 +59,8 @@ public class Health {
    * Associates RPG health with a player.
    *
    * @param player     interacting player
-   * @param attributes {@link AethelAttributes total Aethel attributes}
-   * @param settings   {@link Settings player's settings}
+   * @param attributes {@link AethelAttributes}
+   * @param settings   {@link Settings}
    */
   public Health(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
@@ -242,9 +242,9 @@ public class Health {
   }
 
   /**
-   * Gets the {@link Condition health condition}.
+   * Gets the {@link Condition}.
    *
-   * @return {@link Condition health condition}
+   * @return {@link Condition}
    */
   private Condition getCondition() {
     if (currentHealth < maxHealth) {

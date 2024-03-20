@@ -35,7 +35,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Assigns an {@link me.dannynguyen.aethel.rpg.system.RpgPlayer}  to a player upon joining the server.
+   * Assigns an {@link me.dannynguyen.aethel.rpg.system.RpgPlayer} to a player upon joining the server.
    *
    * @param e player join event
    */
@@ -86,7 +86,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Triggers {@link Trigger on kill} {@link PassiveAbility passive abilities} if the player has any.
+   * Triggers {@link Trigger#ON_KILL} {@link PassiveAbility passive abilities} if the player has any.
    *
    * @param e entity death event
    */
@@ -98,7 +98,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Triggers {@link Trigger on kill} {@link PassiveAbility passive abilities}.
+   * Triggers {@link Trigger#ON_KILL} {@link PassiveAbility passive abilities}.
    *
    * @param killedUUID killed entity UUID
    * @param selfUUID   self UUID
@@ -119,7 +119,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect stack instance effect}
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
    * was successful before applying stack instances.
    *
    * @param random   rng
@@ -137,7 +137,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect chain damage effect}
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE}
    * was successful before dealing chain damage.
    *
    * @param random     rng

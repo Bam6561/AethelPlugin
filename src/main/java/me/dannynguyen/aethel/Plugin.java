@@ -47,7 +47,6 @@ import java.util.UUID;
  * <p>
  * Through event listeners and command executors, the plugin can
  * handle various requests given to it by its users and the server.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -67,9 +66,11 @@ public class Plugin extends JavaPlugin {
 
   /**
    * On enable:
-   * - {@link PluginData#loadResources() Loads existing plugin data}.
-   * - {@link #registerEventListeners() Registers event listeners}.
-   * - {@link #registerCommands() Registers commands}.
+   * <p><ul>
+   * <li>{@link PluginData#loadResources() Loads} existing plugin data.
+   * <li>{@link #registerCommands() Registers} commands.
+   * <li>{@link #registerEventListeners() Registers} event listeners.
+   * </ul></p>
    */
   @Override
   public void onEnable() {
@@ -81,7 +82,9 @@ public class Plugin extends JavaPlugin {
 
   /**
    * On disable:
-   * - {@link PluginData#saveResources() Saves persistent plugin data}.
+   * <p><ul>
+   * <li>{@link PluginData#saveResources() Saves} persistent plugin data.
+   * </ul></p>
    */
   @Override
   public void onDisable() {
@@ -91,16 +94,16 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Registers the plugin's event listeners.
-   * <p>
-   * {@link Crouch},
-   * {@link MenuClick},
-   * {@link MessageSent},
-   * {@link PluginEvent},
-   * {@link EntityDamage},
-   * {@link EquipmentUpdate},
-   * {@link RpgEvent},
-   * {@link StatusUpdate}
-   * </p>
+   * <p><ul>
+   * <li>{@link Crouch}
+   * <li>{@link MenuClick}
+   * <li>{@link MessageSent}
+   * <li>{@link PluginEvent}
+   * <li>{@link EntityDamage}
+   * <li>{@link EquipmentUpdate}
+   * <li>{@link RpgEvent}
+   * <li>{@link StatusUpdate}
+   * </ul></p>
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
@@ -116,17 +119,18 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Registers the plugin's commands.
-   * <p>
-   * {@link ItemCommand},
-   * {@link AethelTagCommand},
-   * {@link CharacterCommand},
-   * {@link DeveloperModeCommand},
-   * {@link ForgeCommand},
-   * {@link ItemCommand},
-   * {@link PingCommand},
-   * {@link ShowItemCommand},
-   * {@link StatusCommand},
-   * {@link PlayerStatCommand}
+   * <p><ul>
+   * <li>{@link ItemCommand}
+   * <li>{@link AethelTagCommand}
+   * <li>{@link CharacterCommand}
+   * <li>{@link DeveloperModeCommand}
+   * <li>{@link ForgeCommand}
+   * <li>{@link ItemEditorCommand}
+   * <li>{@link PingCommand}
+   * <li>{@link ShowItemCommand}
+   * <li>{@link StatusCommand}
+   * <li>{@link PlayerStatCommand}
+   * </ul></p>
    */
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
@@ -143,12 +147,14 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Schedules the plugin's repeating tasks.
-   * {@link #updateMainHandEquipmentAttributes()},
-   * {@link #updateDamageOverTimeStatuses()},
-   * {@link #updateOvershields()},
-   * {@link #updateBelowHealthPassives()} ,
-   * {@link #updateActionDisplay()} ,
-   * {@link #updateEnvironmentalProtections()}
+   * <p><ul>
+   * <li>{@link #updateMainHandEquipmentAttributes()}
+   * <li>{@link #updateDamageOverTimeStatuses()}
+   * <li>{@link #updateOvershields()}
+   * <li>{@link #updateBelowHealthPassives()}
+   * <li>{@link #updateActionDisplay()}
+   * <li>{@link #updateEnvironmentalProtections()}
+   * </ul></p>
    */
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
@@ -161,7 +167,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to compare the player's main hand item for updating {@link Equipment} data.
+   * Adds an interval to compare the player's main hand item for updating {@link Equipment}.
    */
   private void updateMainHandEquipmentAttributes() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
@@ -200,7 +206,8 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to update players' action bar {@link me.dannynguyen.aethel.rpg.system.Health} display.
+   * Adds an interval to update players'
+   * {@link me.dannynguyen.aethel.rpg.system.Health health in action bar} display.
    */
   private void updateActionDisplay() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
@@ -212,11 +219,10 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to decay players' overcapped overshields.
+   * Adds an interval to decay players' overcapped {@link me.dannynguyen.aethel.rpg.system.Health overshields}.
    * <p>
    * An overshield begins to decay when current health
    * exceeds max health by a factor greater than x1.2.
-   * </p>
    */
   private void updateOvershields() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
@@ -228,11 +234,11 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to trigger {@link Trigger below health} {@link PassiveAbility passive abilities}.
+   * Adds an interval to trigger {@link Trigger#BELOW_HEALTH} {@link PassiveAbility passive abilities}.
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotPassiveType, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(Trigger.BELOW_HP);
+      Map<SlotPassiveType, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(Trigger.BELOW_HEALTH);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
@@ -249,10 +255,10 @@ public class Plugin extends JavaPlugin {
   /**
    * Adds an interval to apply environmental potion effects
    * to players who've met enchantment level requirements.
-   * <p>
-   * - Feather Falling > 5: Slow falling effect
-   * - Fire Protection > 10: Fire resistance effect
-   * </p>
+   * <p><ul>
+   * <li>Feather Falling >= 5: Slow Falling
+   * <li>Fire Protection >= 10: Fire Resistance
+   * </ul></p>
    */
   private void updateEnvironmentalProtections() {
     Map<Enchantment, Set<UUID>> sufficientEnchantments = data.getRpgSystem().getSufficientEnchantments();
@@ -274,8 +280,8 @@ public class Plugin extends JavaPlugin {
   /**
    * Deals damage from damage over time {@link Status statuses} to players.
    *
-   * @param uuid     player uuid
-   * @param statuses player statuses
+   * @param uuid     uuid
+   * @param statuses {@link Status statuses}
    * @param damagee  player taking damage
    */
   private void handlePlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
@@ -296,8 +302,8 @@ public class Plugin extends JavaPlugin {
   /**
    * Deals damage from damage over time {@link Status statuses} to entities.
    *
-   * @param statuses entity statuses
-   * @param entity   interacting entity
+   * @param statuses {@link Status statuses}
+   * @param entity   entity taking damage
    */
   private void handleEntityDamageOverTime(Map<StatusType, Status> statuses, LivingEntity entity) {
     if (statuses.containsKey(StatusType.BLEED)) {
@@ -311,7 +317,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect stack instance effect}
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
    * was successful before applying stack instances.
    *
    * @param ability   passive ability
@@ -328,7 +334,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect chain damage effect}
+   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE}
    * was successful before dealing chain damage.
    *
    * @param ability   passive ability

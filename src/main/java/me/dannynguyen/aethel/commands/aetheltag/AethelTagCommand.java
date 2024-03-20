@@ -12,23 +12,17 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Command invocation that allows the user to retrieve,
- * set, or remove {@link PluginNamespacedKey Aethel tags} to their main hand item.
+ * Command invocation that allows the user to retrieve, set, or remove
+ * {@link PluginNamespacedKey Aethel tags} to their main hand item.
  * <p>
  * Registered through {@link me.dannynguyen.aethel.Plugin}.
- * </p>
  * <p>
  * Parameters:
- * </p>
- * <p>
- * - "get", "g": reads the item's tags
- * </p>
- * <p>
- * - "set", "s": sets the item's tag
- * </p>
- * <p>
- * - "remove", "r": removes the item's tag
- * </p>
+ * <p><ul>
+ * <li>"get", "g": reads the item's {@link PluginNamespacedKey tags}
+ * <li>"set", "s": sets the item's {@link PluginNamespacedKey tag}
+ * <li>"remove", "r": removes the item's {@link PluginNamespacedKey tag}
+ * </ul></p>
  *
  * @author Danny Nguyen
  * @version 1.15.6
@@ -121,10 +115,10 @@ public class AethelTagCommand implements CommandExecutor {
   }
 
   /**
-   * Removes the Aethel tag from the item.
+   * Removes the {@link PluginNamespacedKey Aethel tag} from the item.
    *
    * @param user user
-   * @param tag  Aethel tag to be removed
+   * @param tag  {@link PluginNamespacedKey Aethel tag} to be removed
    * @param item main hand item
    */
   private void removeAethelTag(Player user, String tag, ItemStack item) {
@@ -136,7 +130,7 @@ public class AethelTagCommand implements CommandExecutor {
   }
 
   /**
-   * Sets the Aethel tag to the item.
+   * Sets the {@link PluginNamespacedKey Aethel tag} to the item.
    *
    * @param user user
    * @param args user provided parameters

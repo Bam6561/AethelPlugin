@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Collection of listeners for plugin system functionality.
+ * Collection of listeners for {@link me.dannynguyen.aethel.plugin.system.PluginSystem} functionality.
  *
  * @author Danny Nguyen
  * @version 1.14.5
@@ -25,7 +25,7 @@ public class PluginEvent implements Listener {
   }
 
   /**
-   * Associates a player with {@link PlayerMeta metadata}.
+   * Associates a player with {@link PlayerMeta}.
    *
    * @param e player join event
    */

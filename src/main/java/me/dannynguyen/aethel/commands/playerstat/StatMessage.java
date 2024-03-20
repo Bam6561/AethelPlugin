@@ -9,9 +9,11 @@ import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -58,12 +60,12 @@ class StatMessage {
    * @param e    inventory click event
    * @param user user
    */
-  protected StatMessage(InventoryClickEvent e, Player user) {
-    this.user = user;
+  protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    this.requestedStat = ChatColor.stripColor(ItemReader.readName(Objects.requireNonNull(e, "Null inventory click event").getCurrentItem()));
     this.uuid = user.getUniqueId();
     this.ownerName = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.PLAYER);
     this.owner = Bukkit.getOfflinePlayer(ownerName);
-    this.requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     this.isGlobalBroadcast = e.isShiftClick();
   }
 

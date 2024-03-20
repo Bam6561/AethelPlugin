@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents an RPG player's enchantments.
+ * Represents an {@link RpgPlayer}'s enchantments.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -29,7 +29,7 @@ public class Enchantments {
   private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
 
   /**
-   * Enchantments by {@link RpgEquipmentSlot slot}.
+   * Enchantments by {@link RpgEquipmentSlot}.
    */
   private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = new HashMap<>();
 
@@ -61,9 +61,9 @@ public class Enchantments {
   }
 
   /**
-   * Adds new equipment enchantments.
+   * Adds new {@link Equipment} enchantments.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    * @param item  interacting item
    */
   public void addEnchantments(@NotNull RpgEquipmentSlot eSlot, @NotNull ItemStack item) {
@@ -78,9 +78,9 @@ public class Enchantments {
   }
 
   /**
-   * Removes existing equipment enchantments at an {@link RpgEquipmentSlot equipment slot}.
+   * Removes existing {@link Equipment} enchantments at an {@link RpgEquipmentSlot}.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   public void removeEnchantments(@NotNull RpgEquipmentSlot eSlot) {
     for (Enchantment enchantment : slotEnchantments.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
@@ -106,9 +106,9 @@ public class Enchantments {
   }
 
   /**
-   * Gets the player's total equipment enchantments.
+   * Gets the player's total enchantments.
    *
-   * @return total equipment enchantments
+   * @return total enchantments
    */
   @NotNull
   public Map<Enchantment, Integer> getTotalEnchantments() {
@@ -116,9 +116,9 @@ public class Enchantments {
   }
 
   /**
-   * Gets the player's equipment enchantments by {@link RpgEquipmentSlot slot}.
+   * Gets the player's {@link Equipment} enchantments by {@link RpgEquipmentSlot}.
    *
-   * @return equipment enchantments by {@link RpgEquipmentSlot slot}
+   * @return enchantments by {@link RpgEquipmentSlot}
    */
   @NotNull
   public Map<RpgEquipmentSlot, Map<Enchantment, Integer>> getSlotEnchantments() {

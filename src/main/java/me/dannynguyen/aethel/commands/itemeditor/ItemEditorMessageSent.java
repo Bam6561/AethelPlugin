@@ -30,6 +30,8 @@ import java.util.*;
 
 /**
  * Message sent listener for ItemEditor text inputs.
+ * <p>
+ * Called with {@link me.dannynguyen.aethel.plugin.listeners.MessageSent}.
  *
  * @author Danny Nguyen
  * @version 1.16.0
@@ -62,8 +64,8 @@ public class ItemEditorMessageSent {
   private final ItemMeta meta;
 
   /**
-   * Associates a message sent event with its user and current
-   * editing item in the context of using an ItemEditor menu.
+   * Associates a message sent event with its user and current editing
+   * item in the context of using an {@link ItemEditorCommand} menu.
    *
    * @param e message sent event
    */
@@ -256,8 +258,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's
-   * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute} modifier.
+   * Sets or removes an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute} modifier.
    */
   public void setAethelAttribute() {
     try {
@@ -335,7 +336,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability}.
+   * Sets or removes an item's {@link PluginNamespacedKey#PASSIVE_LIST passive ability}.
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
@@ -347,7 +348,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link ActiveAbilityType active ability}.
+   * Sets or removes an item's {@link PluginNamespacedKey#ACTIVE_LIST active ability}.
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
@@ -364,7 +365,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's Aethel tag.
+   * Sets or removes an item's {@link PluginNamespacedKey Aethel tag}.
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -400,7 +401,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect movement}.
+   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect#MOVEMENT}.
    */
   private void readActiveMovement() {
     String[] args = e.getMessage().split(" ");
@@ -423,7 +424,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect projection}.
+   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect#PROJECTION}.
    */
   private void readActiveProjection() {
     String[] args = e.getMessage().split(" ");
@@ -451,7 +452,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect shatter}.
+   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect#SHATTER}.
    */
   private void readActiveShatter() {
     String[] args = e.getMessage().split(" ");
@@ -475,7 +476,7 @@ public class ItemEditorMessageSent {
   /**
    * Sets a key with a double value to a {@link KeyHeader key header's} list of keys.
    *
-   * @param keyHeader {@link KeyHeader key header}
+   * @param keyHeader {@link KeyHeader}
    * @param keyValue  key value
    * @param listKey   {@link PluginNamespacedKey list key}
    */
@@ -507,7 +508,7 @@ public class ItemEditorMessageSent {
   /**
    * Sets a key with a String value to a {@link KeyHeader key header's} list of keys.
    *
-   * @param keyHeader {@link KeyHeader key header}
+   * @param keyHeader {@link KeyHeader}
    * @param keyValue  key value
    * @param listKey   {@link PluginNamespacedKey list key}
    */
@@ -540,9 +541,8 @@ public class ItemEditorMessageSent {
    * Removes a key from a {@link KeyHeader key header's} list of keys.
    * <p>
    * If the list is empty after the operation, the list is also removed.
-   * </p>
    *
-   * @param keyHeader {@link KeyHeader key header}
+   * @param keyHeader {@link KeyHeader}
    * @param listKey   {@link PluginNamespacedKey list key}
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
@@ -573,11 +573,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link CosmeticMenu} menu.
+   * Returns to the {@link CosmeticMenu}.
    */
   private void returnToCosmetic() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
@@ -585,11 +584,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link AttributeMenu} menu.
+   * Returns to the {@link AttributeMenu}.
    */
   private void returnToAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
@@ -597,11 +595,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link AethelAttributeMenu} menu.
+   * Returns to the {@link AethelAttributeMenu}.
    */
   private void returnToAethelAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
@@ -609,11 +606,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link EnchantmentMenu} menu.
+   * Returns to the {@link EnchantmentMenu}.
    */
   private void returnToEnchantment() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
@@ -621,11 +617,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link PotionMenu} menu.
+   * Returns to the {@link PotionMenu}.
    */
   private void returnToPotion() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
@@ -633,11 +628,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link PassiveMenu} menu.
+   * Returns to the {@link PassiveMenu}.
    */
   private void returnToPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase()), Trigger.valueOf(playerMeta.get(PlayerMeta.CONDITION).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
@@ -645,11 +639,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link ActiveMenu} menu.
+   * Returns to the {@link ActiveMenu}.
    */
   private void returnToActive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
@@ -657,11 +650,10 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Returns to the {@link TagMenu} menu.
+   * Returns to the {@link TagMenu}.
    */
   private void returnToTag() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.remove(PlayerMeta.MESSAGE);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new TagMenu(user).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());

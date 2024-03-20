@@ -37,22 +37,22 @@ public class PluginData {
   private final RecipeRegistry recipeRegistry = new RecipeRegistry(Directory.FORGE.getFile());
 
   /**
-   * Available player stats.
+   * Available {@link PlayerStatRecord player stats}.
    */
   private final PlayerStatRecord playerStatRecord = new PlayerStatRecord();
 
   /**
-   * Currently editing items.
+   * Currently {@link EditedItemCache editing items}.
    */
   private final EditedItemCache editedItemCache = new EditedItemCache();
 
   /**
-   * Past shown item history.
+   * Past shown {@link PastItemHistory item history}.
    */
   private final PastItemHistory pastItemHistory = new PastItemHistory();
 
   /**
-   * Past shared stat history.
+   * Past shared {@link PastStatHistory stat history}.
    */
   private final PastStatHistory pastStatHistory = new PastStatHistory();
 
@@ -74,12 +74,12 @@ public class PluginData {
 
   /**
    * Loads persistent plugin data. Creates data directories if they do not already exist.
-   * <p>
-   * {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem},
-   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe},
-   * {@link me.dannynguyen.aethel.rpg.system.Equipment RPG Jewelry},
-   * {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}
-   * </p>
+   * <p><ul>
+   * <li>{@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem}
+   * <li>{@link me.dannynguyen.aethel.commands.forge.PersistentRecipe}
+   * <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
+   * <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
+   * </ul></p>
    */
   public void loadResources() {
     Logger log = Bukkit.getLogger();
@@ -113,10 +113,10 @@ public class PluginData {
 
   /**
    * Saves persistent plugin data.
-   * <p>
-   * {@link me.dannynguyen.aethel.rpg.system.Equipment RPG Jewelry},
-   * {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}
-   * </p>
+   * <p><ul>
+   * <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
+   * <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
+   * </ul></p>
    */
   public void saveResources() {
     Logger log = Bukkit.getLogger();

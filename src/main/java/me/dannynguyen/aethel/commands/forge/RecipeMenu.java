@@ -43,7 +43,7 @@ public class RecipeMenu implements CategoryMenu {
   private final UUID uuid;
 
   /**
-   * GUI {@link Action action}.
+   * {@link Action action}
    */
   private final Action action;
 

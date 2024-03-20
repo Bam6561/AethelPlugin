@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -63,7 +64,6 @@ public class PlayerStatRecord {
    * Player statistic categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
-   * </p>
    */
   private final Map<String, Inventory> statCategories = createStatCategoryPages();
 
@@ -71,7 +71,6 @@ public class PlayerStatRecord {
    * Player substatistic categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
-   * </p>
    */
   private final Map<String, List<Inventory>> substatCategories = createSubstatCategoryPages();
 
@@ -210,6 +209,7 @@ public class PlayerStatRecord {
    *
    * @return player statistic categories
    */
+  @NotNull
   protected Map<String, Inventory> getStatCategories() {
     return this.statCategories;
   }
@@ -219,6 +219,7 @@ public class PlayerStatRecord {
    *
    * @return player substatistic categories
    */
+  @NotNull
   protected Map<String, List<Inventory>> getSubstatCategories() {
     return this.substatCategories;
   }

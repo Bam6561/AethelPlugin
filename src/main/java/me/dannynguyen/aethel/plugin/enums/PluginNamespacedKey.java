@@ -13,17 +13,17 @@ import org.jetbrains.annotations.NotNull;
  **/
 public enum PluginNamespacedKey {
   /**
-   * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute} list.
+   * Item {@link me.dannynguyen.aethel.rpg.system.AethelAttributes} list.
    */
   ATTRIBUTE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + "list")),
 
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability} list.
+   * Item {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility} list.
    */
   PASSIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + "list")),
 
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityType active ability} list.
+   * Item {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} list.
    */
   ACTIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + "list")),
 
@@ -33,7 +33,7 @@ public enum PluginNamespacedKey {
   ITEM_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHELITEM.getHeader() + "category")),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} category.
+   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe Recipe} category.
    */
   RECIPE_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "category")),
 

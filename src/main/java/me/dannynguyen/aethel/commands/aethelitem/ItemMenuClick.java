@@ -25,7 +25,6 @@ import java.util.UUID;
  * Inventory click event listener for {@link ItemCommand} menus.
  * <p>
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.5.1
@@ -81,18 +80,11 @@ public class ItemMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p>
-   * - increments or decrements an {@link PersistentItem item} category page
-   * </p>
-   * <p>
-   * - saves a {@link PersistentItem item}
-   * </p>
-   * <p>
-   * - changes the interaction type
-   * </p>
-   * <p>
-   * - contextualizes the click to get or remove {@link PersistentItem items}
-   * </p>
+   * <p><ul>
+   * <li>increments or decrements an {@link PersistentItem item} category page
+   * <li>saves a {@link PersistentItem item}
+   * <li>changes the {@link ItemMenu.Action interaction}
+   * <li>contextualizes the click to get or remove {@link PersistentItem items}
    *
    * @param action type of {@link ItemMenu.Action} interaction
    */
@@ -155,7 +147,7 @@ public class ItemMenuClick implements MenuClickEvent {
   /**
    * Gets the previous {@link PersistentItem item} category page.
    *
-   * @param action type of {@link ItemMenu.Action} interaction
+   * @param action type of interaction
    */
   private void previousPage(ItemMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -169,7 +161,7 @@ public class ItemMenuClick implements MenuClickEvent {
   /**
    * Toggles between get and remove actions.
    *
-   * @param action type of {@link ItemMenu.Action} interaction
+   * @param action type of interaction
    */
   private void toggleAction(ItemMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -186,7 +178,7 @@ public class ItemMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Returns to the {@link ItemMenu} main menu.
+   * Returns to the {@link ItemMenu}.
    */
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
@@ -198,7 +190,7 @@ public class ItemMenuClick implements MenuClickEvent {
   /**
    * Gets the next {@link PersistentItem item} category page.
    *
-   * @param action type of {@link ItemMenu.Action} interaction
+   * @param action type of interaction
    */
   private void nextPage(ItemMenu.Action action) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -212,7 +204,7 @@ public class ItemMenuClick implements MenuClickEvent {
   /**
    * Either gets or remove an {@link PersistentItem item}.
    *
-   * @param action type of {@link ItemMenu.Action} interaction
+   * @param action type of interaction
    */
   private void interpretContextualClick(ItemMenu.Action action) {
     ItemStack clickedItem = e.getCurrentItem();
@@ -237,7 +229,7 @@ public class ItemMenuClick implements MenuClickEvent {
    * Names an {@link PersistentItem item} file by either its display name or material.
    *
    * @param item interacting item
-   * @return item file name
+   * @return {@link PersistentItem item} file name
    */
   private String nameItemFile(ItemStack item) {
     ItemMeta meta = item.getItemMeta();

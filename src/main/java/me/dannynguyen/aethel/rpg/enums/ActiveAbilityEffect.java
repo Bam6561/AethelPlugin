@@ -31,7 +31,7 @@ public enum ActiveAbilityEffect {
   private final String data;
 
   /**
-   * Associates an {@link ActiveAbilityType active ability} effect with its data.
+   * Associates an effect with its data.
    *
    * @param data effect's data
    */

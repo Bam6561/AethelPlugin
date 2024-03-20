@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.Map;
@@ -13,10 +14,9 @@ import java.util.Map;
  * Collection of player chat listeners for the plugin's message inputs.
  * <p>
  * By default, all message inputs are cancelled since they are used for only user inputs.
- * </p>
  *
  * @author Danny Nguyen
- * @version 1.15.1
+ * @version 1.17.11
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -41,6 +41,16 @@ public class MessageSent implements Listener {
         case "itemeditor" -> interpretItemEditor(e, msgType);
       }
     }
+  }
+
+  /**
+   * Removes plugin {@link PlayerMeta#MESSAGE} when an inventory is opened.
+   *
+   * @param e inventory open event
+   */
+  @EventHandler
+  private void onOpenInventory(InventoryOpenEvent e) {
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(e.getPlayer().getUniqueId()).remove(PlayerMeta.MESSAGE);
   }
 
   /**

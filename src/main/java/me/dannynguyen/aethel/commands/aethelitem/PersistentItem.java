@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -9,7 +10,6 @@ import java.io.File;
  * Represents an ItemStack stored in the file system.
  * <p>
  * Loaded into memory when {@link ItemRegistry#loadData()} is called.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -18,12 +18,10 @@ import java.io.File;
 public class PersistentItem {
   /**
    * Item file.
-   * <p>
-   * - May be deleted from file system.
-   * </p>
-   * <p>
-   * - Path persists until data is reloaded.
-   * </p>
+   * <p><ul>
+   * <li>May be deleted from file system.
+   * <li>Path persists until data is reloaded.
+   * </ul></p>
    */
   private final File file;
 
@@ -42,7 +40,7 @@ public class PersistentItem {
    *
    * @param file item file
    * @param item ItemStack
-   * @throws IllegalArgumentException provided file is not a file
+   * @throws if IllegalArgumentException provided file is not a file
    */
   PersistentItem(File file, ItemStack item) throws IllegalArgumentException {
     this.file = file;
@@ -62,6 +60,7 @@ public class PersistentItem {
    *
    * @return ItemStack
    */
+  @NotNull
   public ItemStack getItem() {
     return this.item;
   }
@@ -71,6 +70,7 @@ public class PersistentItem {
    *
    * @return item name
    */
+  @NotNull
   public String getName() {
     return this.name;
   }

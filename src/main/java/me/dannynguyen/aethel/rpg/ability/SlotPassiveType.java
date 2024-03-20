@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * Represents an {@link RpgEquipmentSlot equipment slot} {@link PassiveAbilityType passive ability} pair.
+ * Represents an {@link RpgEquipmentSlot} {@link PassiveAbilityType} pair.
  *
  * @author Danny Nguyen
  * @version 1.16.3
@@ -15,20 +15,20 @@ import java.util.Objects;
  **/
 public class SlotPassiveType {
   /**
-   * {@link RpgEquipmentSlot Equipment slot}.
+   * {@link RpgEquipmentSlot}
    */
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * {@link PassiveAbilityType Type}.
+   * {@link PassiveAbilityType}
    */
   private final PassiveAbilityType type;
 
   /**
-   * Associates an {@link RpgEquipmentSlot equipment slot} with an {@link PassiveAbilityType ability}.
+   * Associates an {@link RpgEquipmentSlot} with an {@link PassiveAbilityType}.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
-   * @param type  {@link PassiveAbilityType type}
+   * @param eSlot {@link RpgEquipmentSlot}
+   * @param type  {@link PassiveAbilityType}
    */
   public SlotPassiveType(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
@@ -36,9 +36,9 @@ public class SlotPassiveType {
   }
 
   /**
-   * Gets the {@link RpgEquipmentSlot equipment slot}.
+   * Gets the {@link RpgEquipmentSlot}.
    *
-   * @return {@link RpgEquipmentSlot equipment slot}
+   * @return {@link RpgEquipmentSlot}
    */
   @NotNull
   public RpgEquipmentSlot getSlot() {
@@ -46,9 +46,9 @@ public class SlotPassiveType {
   }
 
   /**
-   * Gets the {@link PassiveAbilityType type}.
+   * Gets the {@link PassiveAbilityType}.
    *
-   * @return {@link PassiveAbilityType type}
+   * @return {@link PassiveAbilityType}
    */
   @NotNull
   public PassiveAbilityType getType() {

@@ -19,8 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Represents a menu that supports categorical pagination for
- * obtaining, creating, editing, and removing {@link PersistentItem items}.
+ * Represents a menu that supports categorical pagination for obtaining,
+ * creating, editing, and removing {@link PersistentItem items}.
  *
  * @author Danny Nguyen
  * @version 1.17.5
@@ -43,7 +43,7 @@ public class ItemMenu implements CategoryMenu {
   private final UUID uuid;
 
   /**
-   * GUI {@link Action action}.
+   * GUI action.
    */
   private final Action action;
 

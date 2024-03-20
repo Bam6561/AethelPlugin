@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Types of {@link PassiveAbilityType passive ability} triggers.
+ * Types of {@link PassiveAbilityType} triggers.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -13,7 +13,7 @@ public enum Trigger {
   /**
    * Below a % of max health.
    */
-  BELOW_HP("Below % HP", "below_hp", TriggerCondition.HEALTH_COOLDOWN),
+  BELOW_HEALTH("Below % HP", "below_hp", TriggerCondition.HEALTH_COOLDOWN),
 
   /**
    * Damage dealt.
@@ -50,7 +50,7 @@ public enum Trigger {
    *
    * @param properName proper name
    * @param id         trigger id
-   * @param condition  {@link TriggerCondition trigger condition}
+   * @param condition  {@link TriggerCondition}
    */
   Trigger(String properName, String id, TriggerCondition condition) {
     this.properName = properName;
@@ -79,9 +79,9 @@ public enum Trigger {
   }
 
   /**
-   * Gets the {@link TriggerCondition trigger's condition}.
+   * Gets the {@link TriggerCondition}.
    *
-   * @return {@link TriggerCondition trigger's condition}
+   * @return {@link TriggerCondition}
    */
   @NotNull
   public TriggerCondition getCondition() {

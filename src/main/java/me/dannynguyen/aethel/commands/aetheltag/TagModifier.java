@@ -12,15 +12,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Represents a set or remove operation for an item's Aethel tag.
+ * Represents a set or remove operation for an item's {@link PluginNamespacedKey Aethel tag}.
  * <p>
  * Used with {@link AethelTagCommand}.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -64,17 +65,17 @@ class TagModifier {
    * @param item interacting item
    * @param tag  tag to be modified
    */
-  protected TagModifier(Player user, ItemStack item, String tag) {
-    this.user = user;
-    this.item = item;
-    this.originalTag = tag;
+  protected TagModifier(@NotNull Player user, @NotNull ItemStack item, @NotNull String tag) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    this.item = Objects.requireNonNull(item, "Null item");
+    this.originalTag = Objects.requireNonNull(tag, "Null tag");
     this.tag = originalTag;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
   }
 
   /**
-   * Removes the Aethel tag from the item.
+   * Removes the {@link PluginNamespacedKey Aethel tag} from the item.
    *
    * @return if the tag was removed
    */
@@ -96,11 +97,12 @@ class TagModifier {
   }
 
   /**
-   * Sets the Aethel tag to the item.
+   * Sets the {@link PluginNamespacedKey Aethel tag} to the item.
    *
    * @param value tag value
    */
-  protected void setTag(String value) {
+  protected void setTag(@NotNull String value) {
+    Objects.requireNonNull(value, "Null value");
     if (tag.startsWith("attribute.")) {
       if (!tag.equals("attribute.list")) {
         readAttributeModifier(value);
@@ -127,7 +129,7 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's attribute tag.
+   * Removes an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST attribute} tag.
    */
   private void removeAttributeTag() {
     if (!tag.equals("attribute.list")) {
@@ -146,7 +148,7 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's passive tag.
+   * Removes an item's {@link PluginNamespacedKey#PASSIVE_LIST passive} tag.
    */
   private void removePassiveTag() {
     if (!tag.equals("passive.list")) {
@@ -165,7 +167,7 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's active tag.
+   * Removes an item's {@link PluginNamespacedKey#ACTIVE_LIST active} tag.
    */
   private void removeActiveTag() {
     if (!tag.equals("active.list")) {
@@ -184,7 +186,8 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the attribute modifier tag was formatted correctly before setting its tag and value.
+   * Checks whether the {@link PluginNamespacedKey#ATTRIBUTE_LIST attribute}
+   * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
    */
@@ -214,7 +217,8 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the passive tag was formatted correctly before setting its tag and value.
+   * Checks whether the {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility passive}
+   * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
    */
@@ -247,7 +251,8 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the active tag was formatted correctly before setting its tag and value.
+   * Checks whether the {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility active}
+   * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
    */
@@ -276,10 +281,11 @@ class TagModifier {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the passive stack instance.
+   * Checks if the input was formatted correctly before
+   * setting the {@link PassiveAbilityEffect#STACK_INSTANCE}.
    *
    * @param value     tag value
-   * @param condition trigger condition
+   * @param condition {@link TriggerCondition}
    */
   private void readPassiveStackInstance(String value, TriggerCondition condition) {
     String[] args = value.split(" ");
@@ -354,10 +360,11 @@ class TagModifier {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the passive chain.
+   * Checks if the input was formatted correctly before
+   * setting the {@link PassiveAbilityEffect#CHAIN_DAMAGE}.
    *
    * @param value     tag value
-   * @param condition trigger condition
+   * @param condition {@link TriggerCondition}
    */
   private void readPassiveChainDamage(String value, TriggerCondition condition) {
     String[] args = value.split(" ");
@@ -432,7 +439,8 @@ class TagModifier {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the active movement.
+   * Checks if the input was formatted correctly before
+   * setting the {@link ActiveAbilityEffect#MOVEMENT}.
    *
    * @param value tag value
    */
@@ -456,7 +464,8 @@ class TagModifier {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the active projection.
+   * Checks if the input was formatted correctly before
+   * setting the {@link ActiveAbilityEffect#PROJECTION}.
    *
    * @param value tag value
    */
@@ -485,7 +494,8 @@ class TagModifier {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the active shatter.
+   * Checks if the input was formatted correctly before
+   * setting the {@link ActiveAbilityEffect#SHATTER}.
    *
    * @param value tag value
    */
@@ -509,7 +519,7 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's attribute tag.
+   * Sets an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST attribute} tag.
    *
    * @param value tag value
    */
@@ -522,7 +532,7 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's passive ability tag.
+   * Sets an item's {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility passive} tag.
    *
    * @param value tag value
    */
@@ -535,7 +545,7 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's active ability tag.
+   * Sets an item's {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility active} tag.
    *
    * @param value tag value
    */

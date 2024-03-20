@@ -6,7 +6,6 @@ package me.dannynguyen.aethel.plugin.interfaces;
  * <p>
  * After the registry's creation, {@link #loadData() loadData} must
  * be called in order to load items from its associated directory.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.5

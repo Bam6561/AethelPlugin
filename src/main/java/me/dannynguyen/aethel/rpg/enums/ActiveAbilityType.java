@@ -27,7 +27,7 @@ public enum ActiveAbilityType {
   PROJECTION("Projection", "projection", ActiveAbilityEffect.PROJECTION),
 
   /**
-   * Immediately consumes all stacks of {@link StatusType Brittle} from nearby enemies.
+   * Immediately consumes all stacks of {@link StatusType#BRITTLE} from nearby enemies.
    */
   SHATTER("Shatter", "shatter", ActiveAbilityEffect.SHATTER);
 
@@ -42,16 +42,16 @@ public enum ActiveAbilityType {
   private final String id;
 
   /**
-   * {@link ActiveAbilityEffect Ability effect}.
+   * {@link ActiveAbilityEffect}
    */
   private final ActiveAbilityEffect effect;
 
   /**
-   * Associates an active ability with its {@link ActiveAbilityEffect effect}.
+   * Associates an active ability with its {@link ActiveAbilityEffect}.
    *
    * @param properName proper name
    * @param id         ability id
-   * @param effect     {@link PassiveAbilityEffect ability effect}
+   * @param effect     {@link ActiveAbilityEffect}
    */
   ActiveAbilityType(String properName, String id, ActiveAbilityEffect effect) {
     this.properName = properName;
@@ -80,9 +80,9 @@ public enum ActiveAbilityType {
   }
 
   /**
-   * Gets the {@link ActiveAbilityEffect ability's effect}.
+   * Gets the {@link ActiveAbilityEffect}.
    *
-   * @return {@link ActiveAbilityEffect ability's effect}
+   * @return {@link ActiveAbilityEffect}
    */
   @NotNull
   public ActiveAbilityEffect getEffect() {

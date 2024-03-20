@@ -1,14 +1,16 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Represents an inventory slot containing an ItemStack.
  * <p>
  * The "amount" field is separate from the ItemStack's built-in
- * amount, as it is used in RecipeCraft to set a new value
+ * amount, as it is used in {@link RecipeCraft} to set a new value
  * post-craft if the craft operation's requirements are met.
- * </p>
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -37,8 +39,8 @@ class RecipeCraftInventory {
    * @param item   ItemStack
    * @param amount amount of ItemStack
    */
-  protected RecipeCraftInventory(int slot, ItemStack item, int amount) {
-    this.item = item;
+  protected RecipeCraftInventory(int slot, @NotNull ItemStack item, int amount) {
+    this.item = Objects.requireNonNull(item, "Null item");
     this.slot = slot;
     this.amount = amount;
   }
@@ -57,6 +59,7 @@ class RecipeCraftInventory {
    *
    * @return ItemStack
    */
+  @NotNull
   protected ItemStack getItem() {
     return this.item;
   }

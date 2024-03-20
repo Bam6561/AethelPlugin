@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a {@link PassiveAbilityType passive ability} tag set or remove operation.
+ * Represents a {@link PluginNamespacedKey#PASSIVE_LIST passive tag} set or remove operation.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -31,12 +31,12 @@ import java.util.Map;
  */
 class PassiveAbilityTag {
   /**
-   * Passive list key.
+   * {@link PluginNamespacedKey#PASSIVE_LIST}
    */
   private static final NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
 
   /**
-   * Passive header.
+   * {@link KeyHeader#PASSIVE}
    */
   private static final String passiveHeader = KeyHeader.PASSIVE.getHeader();
 
@@ -66,17 +66,17 @@ class PassiveAbilityTag {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * User's slot metadata.
+   * {@link PlayerMeta#SLOT}
    */
   private final String slot;
 
   /**
-   * User's condition metadata.
+   * {@link PlayerMeta#CONDITION}
    */
   private final String condition;
 
   /**
-   * User's type metadata.
+   * {@link PlayerMeta#TYPE}
    */
   private final String type;
 
@@ -106,24 +106,25 @@ class PassiveAbilityTag {
   }
 
   /**
-   * Determines the type of ability tag to be set.
+   * Determines the type of {@link PluginNamespacedKey#PASSIVE_LIST ability tag} to be set.
    */
   public void interpretKeyToBeSet() {
-    TriggerCondition triggerCondition = Trigger.valueOf(condition.toUpperCase()).getCondition();
-    PassiveAbilityEffect abilityEffect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
-    switch (triggerCondition) {
-      case CHANCE_COOLDOWN -> readChanceCooldown(abilityEffect);
-      case HEALTH_COOLDOWN -> readHpChanceCooldown(abilityEffect);
+    TriggerCondition condition = Trigger.valueOf(this.condition.toUpperCase()).getCondition();
+    PassiveAbilityEffect effect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
+    switch (condition) {
+      case CHANCE_COOLDOWN -> readChanceCooldown(effect);
+      case HEALTH_COOLDOWN -> readHpChanceCooldown(effect);
     }
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the effect's chance and cooldown.
+   * Checks if the input was formatted correctly before setting
+   * the {@link PassiveAbilityEffect effect's} chance and cooldown.
    *
-   * @param abilityEffect {@link PassiveAbilityEffect ability effect}
+   * @param effect {@link PassiveAbilityEffect}
    */
-  private void readChanceCooldown(PassiveAbilityEffect abilityEffect) {
-    switch (abilityEffect) {
+  private void readChanceCooldown(PassiveAbilityEffect effect) {
+    switch (effect) {
       case STACK_INSTANCE -> {
         if (args.length == 5) {
           try {
@@ -194,12 +195,13 @@ class PassiveAbilityTag {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the effect's HP, chance, and cooldown.
+   * Checks if the input was formatted correctly before setting the
+   * {@link PassiveAbilityEffect effect's} HP, chance, and cooldown.
    *
-   * @param abilityEffect {@link PassiveAbilityEffect ability effect}
+   * @param effect {@link PassiveAbilityEffect}
    */
-  private void readHpChanceCooldown(PassiveAbilityEffect abilityEffect) {
-    switch (abilityEffect) {
+  private void readHpChanceCooldown(PassiveAbilityEffect effect) {
+    switch (effect) {
       case STACK_INSTANCE -> {
         if (args.length == 5) {
           try {
@@ -296,7 +298,6 @@ class PassiveAbilityTag {
    * Removes a key from a {@link KeyHeader key header's} list of keys.
    * <p>
    * If the list is empty after the operation, the list is also removed.
-   * </p>
    */
   public void removeKeyFromList() {
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {

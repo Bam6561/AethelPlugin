@@ -16,27 +16,27 @@ public enum KeyHeader {
   AETHEL("aethel."),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand AethelItem} command.
+   * {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand}
    */
   AETHELITEM(AETHEL.getHeader() + "aethelitem."),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.forge.ForgeCommand Forge} command.
+   * {@link me.dannynguyen.aethel.commands.forge.ForgeCommand}
    */
   FORGE(AETHEL.getHeader() + "forge."),
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.enums.AethelAttributeType Aethel attribute}.
+   * {@link PluginNamespacedKey#ATTRIBUTE_LIST}
    */
   ATTRIBUTE(AETHEL.getHeader() + "attribute."),
 
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability}.
+   * Item {@link PluginNamespacedKey#PASSIVE_LIST}
    */
   PASSIVE(AETHEL.getHeader() + "passive."),
 
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityType active ability}.
+   * Item {@link PluginNamespacedKey#ACTIVE_LIST}
    */
   ACTIVE(AETHEL.getHeader() + "active.");
 

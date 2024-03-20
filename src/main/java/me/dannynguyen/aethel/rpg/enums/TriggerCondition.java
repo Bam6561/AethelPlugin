@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link PassiveAbilityType Passive ability} {@link Trigger trigger} conditions.
+ * {@link PassiveAbilityType} {@link Trigger} conditions.
  *
  * @author Danny Nguyen
  * @version 1.17.7
@@ -26,7 +26,7 @@ public enum TriggerCondition {
   private final String data;
 
   /**
-   * Associates a trigger condition with its data.
+   * Associates a condition with its data.
    *
    * @param data condition's data
    */

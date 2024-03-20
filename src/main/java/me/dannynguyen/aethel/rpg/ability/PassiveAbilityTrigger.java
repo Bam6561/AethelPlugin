@@ -28,20 +28,18 @@ public class PassiveAbilityTrigger {
   private final PassiveAbility ability;
 
   /**
-   * {@link PassiveAbility Passive ability's}
-   * {@link me.dannynguyen.aethel.rpg.enums.Trigger trigger} data.
+   * {@link PassiveAbility Passive ability's} {@link me.dannynguyen.aethel.rpg.enums.Trigger} data.
    */
   private final List<String> triggerData;
 
   /**
-   * {@link PassiveAbility Passive ability's}
-   * {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect effect} data.
+   * {@link PassiveAbility Passive ability's} {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect} data.
    */
   private final List<String> effectData;
 
   /**
-   * Associates a {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityType passive ability}
-   * {@link PassiveAbilityTrigger trigger} with a {@link PassiveAbility}.
+   * Associates a {@link PassiveAbility} with a {@link PassiveAbilityTrigger}
+   * and {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect}.
    *
    * @param ability {@link PassiveAbility} to be triggered
    */
@@ -52,9 +50,9 @@ public class PassiveAbilityTrigger {
   }
 
   /**
-   * Applies stack instances.
+   * Applies {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}.
    *
-   * @param targetUUID entity to receive stack instances
+   * @param targetUUID entity to receive {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
    */
   public void applyStackInstance(UUID targetUUID) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
@@ -81,9 +79,9 @@ public class PassiveAbilityTrigger {
   }
 
   /**
-   * Chains damage between entities.
+   * {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE} between entities.
    *
-   * @param targetUUID source of chain damage location
+   * @param targetUUID {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE} source
    */
   public void chainDamage(UUID targetUUID) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
@@ -117,10 +115,10 @@ public class PassiveAbilityTrigger {
   }
 
   /**
-   * Recursively finds new soaked targets around the source entity.
+   * Recursively finds new {@link StatusType#SOAKED} targets around the source entity.
    *
-   * @param entityStatuses entity statuses
-   * @param soakedTargets  soaked targets
+   * @param entityStatuses entity {@link Status statuses}
+   * @param soakedTargets  {@link StatusType#SOAKED} targets
    * @param targetUUID     source entity
    * @param meters         distance
    */

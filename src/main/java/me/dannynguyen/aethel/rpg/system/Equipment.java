@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Represents an RPG player's equipment.
+ * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
  * @version 1.17.4
@@ -34,18 +34,17 @@ public class Equipment {
   private final UUID uuid;
 
   /**
-   * Total {@link AethelAttributes Aethel attributes}.
+   * {@link AethelAttributes}
    */
   private final AethelAttributes attributes;
 
   /**
-   * Total {@link Enchantments enchantments}.
+   * {@link Enchantments}
    */
   private final Enchantments enchantments;
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility} and
-   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} abilities.
+   * {@link Abilities}
    */
   private final Abilities abilities;
 
@@ -63,9 +62,9 @@ public class Equipment {
    * Associates RPG equipment with a player.
    *
    * @param player       interacting player
-   * @param attributes   total {@link AethelAttributes Aethel attributes}
-   * @param enchantments total {@link Enchantments enchantments}
-   * @param abilities    {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility} and{@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} abilities.
+   * @param attributes   {@link AethelAttributes}
+   * @param enchantments {@link Enchantments}
+   * @param abilities    {@link Abilities}
    */
   public Equipment(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Enchantments enchantments, @NotNull Abilities abilities) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
@@ -112,16 +111,16 @@ public class Equipment {
   }
 
   /**
-   * Checks if the item has {@link AethelAttributes Aethel attribute modifiers},
-   * {@link Enchantments enchantments}, and {@link Abilities abilities}
+   * Checks if the item has {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes},
+   * enchantments, {@link PluginNamespacedKey#PASSIVE_LIST passive abilities},
+   * and {@link PluginNamespacedKey#ACTIVE_LIST active abilities}
    * before checking whether the item is in the correct equipment slot.
    * <p>
    * A 2 tick delay is added to max health updates due to items containing
    * Minecraft's Generic Health attribute requiring 1 tick to update.
-   * </p>
    *
    * @param item            interacting item
-   * @param eSlot           {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot           {@link RpgEquipmentSlot}
    * @param maxHealthUpdate whether to update the player's max health
    */
   public void readSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot eSlot, boolean maxHealthUpdate) {
@@ -153,9 +152,9 @@ public class Equipment {
   }
 
   /**
-   * Sets new data stored about an {@link RpgEquipmentSlot equipment slot}.
+   * Sets new data stored about an {@link RpgEquipmentSlot}.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    * @param item  interacting item
    */
   private void setSlotData(RpgEquipmentSlot eSlot, ItemStack item) {
@@ -175,9 +174,9 @@ public class Equipment {
   }
 
   /**
-   * Removes all data stored about an {@link RpgEquipmentSlot equipment slot}.
+   * Removes all data stored about an {@link RpgEquipmentSlot}.
    *
-   * @param eSlot {@link RpgEquipmentSlot equipment slot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   private void removeSlotData(RpgEquipmentSlot eSlot) {
     if (attributes.getSlotAttributes().containsKey(eSlot)) {
@@ -224,7 +223,6 @@ public class Equipment {
    * <p>
    * Held item is not synchronous with in-game events,
    * as it is only updated every 10 tick interval.
-   * </p>
    *
    * @return held item tracked by the {@link RpgSystem}
    */
