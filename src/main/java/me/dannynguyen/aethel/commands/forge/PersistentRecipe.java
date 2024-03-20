@@ -18,10 +18,10 @@ import java.util.List;
 public class PersistentRecipe {
   /**
    * Recipe file.
-   * <p><ul>
-   * <li>May be deleted from file system.
-   * <li>Path persists until data is reloaded.
-   * </ul></p>
+   * <ul>
+   *  <li>May be deleted from file system.
+   *  <li>Path persists until data is reloaded.
+   * </ul>
    */
   private final File file;
 

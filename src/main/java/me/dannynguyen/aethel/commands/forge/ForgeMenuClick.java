@@ -77,12 +77,12 @@ public class ForgeMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p><ul>
-   * <li>increments or decrements a {@link PersistentRecipe recipe} category page
-   * <li>saves a {@link PersistentRecipe recipe}
-   * <li>changes the {@link RecipeMenu.Action interaction}
-   * <li>contextualizes the click to expand, edit, or remove {@link PersistentRecipe recipe}
-   * </ul></p>
+   * <ul>
+   *  <li>increments or decrements a {@link PersistentRecipe recipe} category page
+   *  <li>saves a {@link PersistentRecipe recipe}
+   *  <li>changes the {@link RecipeMenu.Action interaction}
+   *  <li>contextualizes the click to expand, edit, or remove {@link PersistentRecipe recipe}
+   * </ul>
    *
    * @param action type of interaction
    */

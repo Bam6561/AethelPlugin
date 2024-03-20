@@ -18,10 +18,10 @@ import java.io.File;
 public class PersistentItem {
   /**
    * Item file.
-   * <p><ul>
-   * <li>May be deleted from file system.
-   * <li>Path persists until data is reloaded.
-   * </ul></p>
+   * <ul>
+   *  <li>May be deleted from file system.
+   *  <li>Path persists until data is reloaded.
+   * </ul>
    */
   private final File file;
 
@@ -40,7 +40,7 @@ public class PersistentItem {
    *
    * @param file item file
    * @param item ItemStack
-   * @throws if IllegalArgumentException provided file is not a file
+   * @throws IllegalArgumentException if provided file is not a file
    */
   PersistentItem(File file, ItemStack item) throws IllegalArgumentException {
     this.file = file;

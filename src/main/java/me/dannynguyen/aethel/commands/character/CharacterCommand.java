@@ -22,10 +22,10 @@ import java.util.Map;
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"": opens a {@link SheetMenu} belonging to the user
- * <li><playerName>: opens a {@link SheetMenu} belonging to the player
- * </ul></p>
+ * <ul>
+ *  <li>"": opens a {@link SheetMenu} belonging to the user
+ *  <li>playerName: opens a {@link SheetMenu} belonging to the player
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.14.5

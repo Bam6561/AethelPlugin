@@ -49,7 +49,7 @@ public class RecipeRegistry implements DataRegistry {
    * Associates a RecipeRegistry with the provided directory.
    *
    * @param directory directory containing recipe files
-   * @throws if IllegalArgumentException provided file is not a directory
+   * @throws IllegalArgumentException if provided file is not a directory
    */
   public RecipeRegistry(@NotNull File directory) {
     if (Objects.requireNonNull(directory, "Null directory").exists()) {
@@ -97,10 +97,10 @@ public class RecipeRegistry implements DataRegistry {
    * {@link PersistentRecipe recipe} that is then sorted into a category.
    * <p>
    * Data is stored in two lines of text, represented by the variable dataType.
-   * <p><ul>
-   * <li>[1] Results
-   * <li>[2] Materials
-   * </ul></p>
+   * <ul>
+   *  <li>[1] Results
+   *  <li>[2] Materials
+   * </ul>
    *
    * @param file       recipe file
    * @param categories {@link PersistentRecipe recipe} categories
@@ -212,11 +212,10 @@ public class RecipeRegistry implements DataRegistry {
    * Creates an item display for {@link PersistentRecipe recipes} with multiple results.
    * <p>
    * Format:
-   * <p><ul>
-   * <li>xAmount Item
-   * <li>...
-   * </ul></p>
-   * <p>
+   * <ul>
+   *  <li>xAmount Item
+   *  <li>...
+   * </ul>
    *
    * @param displayItem item to be shown
    * @param results     recipe results

@@ -19,10 +19,10 @@ import java.util.Map;
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"": opens {@link ItemMenu}
- * <li>"reload", "r": reloads {@link PersistentItem items} into {@link ItemRegistry}
- * </ul></p>
+ * <ul>
+ *  <li>"": opens {@link ItemMenu}
+ *  <li>"reload", "r": reloads {@link PersistentItem items} into {@link ItemRegistry}
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.17.5

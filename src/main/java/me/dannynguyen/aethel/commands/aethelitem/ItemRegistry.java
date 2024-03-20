@@ -48,7 +48,7 @@ public class ItemRegistry implements DataRegistry {
    * Associates an ItemRegistry with the provided directory.
    *
    * @param directory directory containing item files
-   * @throws if IllegalArgumentException provided file is not a directory
+   * @throws IllegalArgumentException if provided file is not a directory
    */
   public ItemRegistry(@NotNull File directory) throws IllegalArgumentException {
     if (Objects.requireNonNull(directory, "Null directory").exists()) {

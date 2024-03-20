@@ -21,10 +21,10 @@ import java.util.Map;
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"": opens a {@link PlayerStatMenu}
- * <li>"past", "p": opens a {@link PastStatMenu} with the last 27 shown stats
- * </ul></p>
+ * <ul>
+ *   <li>"": opens a {@link PlayerStatMenu}
+ *   <li>"past", "p": opens a {@link PastStatMenu} with the last 27 shown stats
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.14.5

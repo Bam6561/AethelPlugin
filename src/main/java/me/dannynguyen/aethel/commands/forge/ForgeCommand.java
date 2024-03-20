@@ -19,11 +19,11 @@ import java.util.Map;
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"" : craft {@link PersistentRecipe recipes}
- * <li>"edit", "e": create, edit, or remove {@link PersistentRecipe recipes}
- * <li>"reload", "r": reloads {@link PersistentRecipe recipes} into {@link RecipeRegistry}
- * </ul></p>
+ * <ul>
+ *  <li>"" : craft {@link PersistentRecipe recipes}
+ *  <li>"edit", "e": create, edit, or remove {@link PersistentRecipe recipes}
+ *  <li>"reload", "r": reloads {@link PersistentRecipe recipes} into {@link RecipeRegistry}
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.17.6

@@ -74,12 +74,12 @@ public class PluginData {
 
   /**
    * Loads persistent plugin data. Creates data directories if they do not already exist.
-   * <p><ul>
-   * <li>{@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem}
-   * <li>{@link me.dannynguyen.aethel.commands.forge.PersistentRecipe}
-   * <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
-   * <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
-   * </ul></p>
+   * <ul>
+   *  <li>{@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem}
+   *  <li>{@link me.dannynguyen.aethel.commands.forge.PersistentRecipe}
+   *  <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
+   *  <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
+   * </ul>
    */
   public void loadResources() {
     Logger log = Bukkit.getLogger();
@@ -113,10 +113,10 @@ public class PluginData {
 
   /**
    * Saves persistent plugin data.
-   * <p><ul>
-   * <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
-   * <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
-   * </ul></p>
+   * <ul>
+   *  <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
+   *  <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
+   * </ul>
    */
   public void saveResources() {
     Logger log = Bukkit.getLogger();

@@ -70,11 +70,11 @@ public class PlayerStatMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p><ul>
-   * <li>increments or decrements a player's statistic page
-   * <li>returns to the {@link PlayerStatMenu}
-   * <li>gets a player's statistic value
-   * </ul></p>
+   * <ul>
+   *  <li>increments or decrements a player's statistic page
+   *  <li>returns to the {@link PlayerStatMenu}
+   *  <li>gets a player's statistic value
+   * </ul>
    */
   public void interpretStatClick() {
     switch (slot) {
@@ -89,11 +89,11 @@ public class PlayerStatMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p><ul>
-   * <li>increments or decrements a player's substatistic page
-   * <li>returns to the {@link PlayerStatMenu}
-   * <li>gets a player's substatistic value
-   * </ul></p>
+   * <ul>
+   *  <li>increments or decrements a player's substatistic page
+   *  <li>returns to the {@link PlayerStatMenu}
+   *  <li>gets a player's substatistic value
+   * </ul>
    */
   public void interpretSubstatClick() {
     switch (slot) {

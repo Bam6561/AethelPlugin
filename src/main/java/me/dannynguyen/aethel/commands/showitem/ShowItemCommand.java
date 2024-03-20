@@ -24,10 +24,10 @@ import org.jetbrains.annotations.NotNull;
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"": shows the user's main hand item to global chat
- * <li>"past", "p": opens a {@link PastItemMenu} with the last 27 shown items
- * </ul></p>
+ * <ul>
+ *  <li>"": shows the user's main hand item to global chat
+ *  <li>"past", "p": opens a {@link PastItemMenu} with the last 27 shown items
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.14.5

@@ -80,11 +80,12 @@ public class ItemMenuClick implements MenuClickEvent {
 
   /**
    * Either:
-   * <p><ul>
-   * <li>increments or decrements an {@link PersistentItem item} category page
-   * <li>saves a {@link PersistentItem item}
-   * <li>changes the {@link ItemMenu.Action interaction}
-   * <li>contextualizes the click to get or remove {@link PersistentItem items}
+   * <ul>
+   *  <li>increments or decrements an {@link PersistentItem item} category page
+   *  <li>saves a {@link PersistentItem item}
+   *  <li>changes the {@link ItemMenu.Action interaction}
+   *  <li>contextualizes the click to get or remove {@link PersistentItem items}
+   * </ul>
    *
    * @param action type of {@link ItemMenu.Action} interaction
    */

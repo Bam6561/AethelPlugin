@@ -25,11 +25,11 @@ import java.util.UUID;
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"get", "g": reads the entity's {@link Status statuses}
- * <li>"set", "s": sets a {@link Status status} on the entity
- * <li>"remove", "r": removes a status or all {@link Status statuses} from the entity
- * </ul></p>
+ * <ul>
+ *  <li>"get", "g": reads the entity's {@link Status statuses}
+ *  <li>"set", "s": sets a {@link Status status} on the entity
+ *  <li>"remove", "r": removes a status or all {@link Status statuses} from the entity
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.15.9

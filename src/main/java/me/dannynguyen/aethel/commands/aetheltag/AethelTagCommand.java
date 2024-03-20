@@ -18,11 +18,11 @@ import org.jetbrains.annotations.NotNull;
  * Registered through {@link me.dannynguyen.aethel.Plugin}.
  * <p>
  * Parameters:
- * <p><ul>
- * <li>"get", "g": reads the item's {@link PluginNamespacedKey tags}
- * <li>"set", "s": sets the item's {@link PluginNamespacedKey tag}
- * <li>"remove", "r": removes the item's {@link PluginNamespacedKey tag}
- * </ul></p>
+ * <ul>
+ *  <li>"get", "g": reads the item's {@link PluginNamespacedKey tags}
+ *  <li>"set", "s": sets the item's {@link PluginNamespacedKey tag}
+ *  <li>"remove", "r": removes the item's {@link PluginNamespacedKey tag}
+ * </ul>
  *
  * @author Danny Nguyen
  * @version 1.15.6

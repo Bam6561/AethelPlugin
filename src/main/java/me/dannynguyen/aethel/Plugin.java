@@ -66,11 +66,11 @@ public class Plugin extends JavaPlugin {
 
   /**
    * On enable:
-   * <p><ul>
-   * <li>{@link PluginData#loadResources() Loads} existing plugin data.
-   * <li>{@link #registerCommands() Registers} commands.
-   * <li>{@link #registerEventListeners() Registers} event listeners.
-   * </ul></p>
+   * <ul>
+   *  <li>{@link PluginData#loadResources() Loads} existing plugin data.
+   *  <li>{@link #registerCommands() Registers} commands.
+   *  <li>{@link #registerEventListeners() Registers} event listeners.
+   * </ul>
    */
   @Override
   public void onEnable() {
@@ -82,9 +82,9 @@ public class Plugin extends JavaPlugin {
 
   /**
    * On disable:
-   * <p><ul>
-   * <li>{@link PluginData#saveResources() Saves} persistent plugin data.
-   * </ul></p>
+   * <ul>
+   *  <li>{@link PluginData#saveResources() Saves} persistent plugin data.
+   * </ul>
    */
   @Override
   public void onDisable() {
@@ -94,16 +94,16 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Registers the plugin's event listeners.
-   * <p><ul>
-   * <li>{@link Crouch}
-   * <li>{@link MenuClick}
-   * <li>{@link MessageSent}
-   * <li>{@link PluginEvent}
-   * <li>{@link EntityDamage}
-   * <li>{@link EquipmentUpdate}
-   * <li>{@link RpgEvent}
-   * <li>{@link StatusUpdate}
-   * </ul></p>
+   * <ul>
+   *  <li>{@link Crouch}
+   *  <li>{@link MenuClick}
+   *  <li>{@link MessageSent}
+   *  <li>{@link PluginEvent}
+   *  <li>{@link EntityDamage}
+   *  <li>{@link EquipmentUpdate}
+   *  <li>{@link RpgEvent}
+   *  <li>{@link StatusUpdate}
+   * </ul>
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
@@ -119,18 +119,18 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Registers the plugin's commands.
-   * <p><ul>
-   * <li>{@link ItemCommand}
-   * <li>{@link AethelTagCommand}
-   * <li>{@link CharacterCommand}
-   * <li>{@link DeveloperModeCommand}
-   * <li>{@link ForgeCommand}
-   * <li>{@link ItemEditorCommand}
-   * <li>{@link PingCommand}
-   * <li>{@link ShowItemCommand}
-   * <li>{@link StatusCommand}
-   * <li>{@link PlayerStatCommand}
-   * </ul></p>
+   * <ul>
+   *  <li>{@link ItemCommand}
+   *  <li>{@link AethelTagCommand}
+   *  <li>{@link CharacterCommand}
+   *  <li>{@link DeveloperModeCommand}
+   *  <li>{@link ForgeCommand}
+   *  <li>{@link ItemEditorCommand}
+   *  <li>{@link PingCommand}
+   *  <li>{@link ShowItemCommand}
+   *  <li>{@link StatusCommand}
+   *  <li>{@link PlayerStatCommand}
+   * </ul>
    */
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
@@ -147,14 +147,14 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Schedules the plugin's repeating tasks.
-   * <p><ul>
-   * <li>{@link #updateMainHandEquipmentAttributes()}
-   * <li>{@link #updateDamageOverTimeStatuses()}
-   * <li>{@link #updateOvershields()}
-   * <li>{@link #updateBelowHealthPassives()}
-   * <li>{@link #updateActionDisplay()}
-   * <li>{@link #updateEnvironmentalProtections()}
-   * </ul></p>
+   * <ul>
+   *  <li>{@link #updateMainHandEquipmentAttributes()}
+   *  <li>{@link #updateDamageOverTimeStatuses()}
+   *  <li>{@link #updateOvershields()}
+   *  <li>{@link #updateBelowHealthPassives()}
+   *  <li>{@link #updateActionDisplay()}
+   *  <li>{@link #updateEnvironmentalProtections()}
+   * </ul>
    */
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
@@ -255,10 +255,10 @@ public class Plugin extends JavaPlugin {
   /**
    * Adds an interval to apply environmental potion effects
    * to players who've met enchantment level requirements.
-   * <p><ul>
-   * <li>Feather Falling >= 5: Slow Falling
-   * <li>Fire Protection >= 10: Fire Resistance
-   * </ul></p>
+   * <ul>
+   *  <li>Feather Falling >= 5: Slow Falling
+   *  <li>Fire Protection >= 10: Fire Resistance
+   * </ul>
    */
   private void updateEnvironmentalProtections() {
     Map<Enchantment, Set<UUID>> sufficientEnchantments = data.getRpgSystem().getSufficientEnchantments();

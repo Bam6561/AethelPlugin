@@ -122,7 +122,7 @@ public class SheetMenu implements Menu {
   }
 
   /**
-   * Adds {@link QuestsMenu}, {@link CollectiblesMenu, and {@link SettingsMenu} buttons.
+   * Adds {@link QuestsMenu}, {@link CollectiblesMenu}, and {@link SettingsMenu} buttons.
    */
   private void addActions() {
     menu.setItem(25, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
