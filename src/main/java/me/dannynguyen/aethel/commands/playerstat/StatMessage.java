@@ -18,9 +18,11 @@ import java.util.UUID;
 
 /**
  * Represents the retrieval and broadcast of a player statistic.
+ * <p>
+ * Used with {@link PlayerStatMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.4.10
  */
 class StatMessage {
@@ -60,7 +62,7 @@ class StatMessage {
    * @param e    inventory click event
    * @param user user
    */
-  protected StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
+  StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(Objects.requireNonNull(e, "Null inventory click event").getCurrentItem()));
     this.uuid = user.getUniqueId();

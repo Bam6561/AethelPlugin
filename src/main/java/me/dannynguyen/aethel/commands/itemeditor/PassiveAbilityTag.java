@@ -24,9 +24,11 @@ import java.util.Map;
 
 /**
  * Represents a {@link PluginNamespacedKey#PASSIVE_LIST passive tag} set or remove operation.
+ * <p>
+ * Used with {@link ItemEditorMessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.15.13
  */
 class PassiveAbilityTag {
@@ -108,7 +110,7 @@ class PassiveAbilityTag {
   /**
    * Determines the type of {@link PluginNamespacedKey#PASSIVE_LIST ability tag} to be set.
    */
-  public void interpretKeyToBeSet() {
+  protected void interpretKeyToBeSet() {
     TriggerCondition condition = Trigger.valueOf(this.condition.toUpperCase()).getCondition();
     PassiveAbilityEffect effect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
     switch (condition) {
@@ -299,7 +301,7 @@ class PassiveAbilityTag {
    * <p>
    * If the list is empty after the operation, the list is also removed.
    */
-  public void removeKeyFromList() {
+  protected void removeKeyFromList() {
     if (dataContainer.has(listKey, PersistentDataType.STRING)) {
       List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newKeys = new StringBuilder();

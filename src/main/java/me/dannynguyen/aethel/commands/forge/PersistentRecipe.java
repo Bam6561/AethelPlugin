@@ -12,7 +12,7 @@ import java.util.List;
  * Loaded into memory when {@link RecipeRegistry#loadData()} is called.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.0.3
  */
 public class PersistentRecipe {
@@ -58,7 +58,7 @@ public class PersistentRecipe {
   /**
    * Deletes the recipe file from the file system.
    */
-  public void delete() {
+  protected void delete() {
     file.delete();
   }
 
@@ -67,7 +67,7 @@ public class PersistentRecipe {
    *
    * @return recipe results
    */
-  public List<ItemStack> getResults() {
+  protected List<ItemStack> getResults() {
     return this.results;
   }
 
@@ -76,7 +76,7 @@ public class PersistentRecipe {
    *
    * @return recipe materials
    */
-  public List<ItemStack> getMaterials() {
+  protected List<ItemStack> getMaterials() {
     return this.materials;
   }
 
@@ -85,7 +85,7 @@ public class PersistentRecipe {
    *
    * @return recipe name
    */
-  public String getName() {
+  protected String getName() {
     return this.name;
   }
 }

@@ -21,9 +21,11 @@ import java.util.*;
 /**
  * Represents an item's Minecraft and {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute}
  * lore generation.
+ * <p>
+ * Used with {@link ItemEditorMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.13.2
  */
 class ItemAttributeLore {
@@ -53,7 +55,7 @@ class ItemAttributeLore {
    *
    * @param item interacting item
    */
-  protected ItemAttributeLore(@NotNull ItemStack item) {
+  ItemAttributeLore(@NotNull ItemStack item) {
     this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     if (meta.hasLore()) {

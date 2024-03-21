@@ -23,7 +23,7 @@ import java.util.*;
  * enough materials to craft the {@link PersistentRecipe recipe}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -68,7 +68,7 @@ class RecipeCraft {
    * @param user user
    * @param item representative item of recipe
    */
-  protected RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
+  RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
     this.uuid = user.getUniqueId();

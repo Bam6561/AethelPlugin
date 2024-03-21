@@ -29,7 +29,7 @@ public class Enchantments {
   private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
 
   /**
-   * Enchantments by {@link RpgEquipmentSlot}.
+   * Enchantments on {@link RpgEquipmentSlot}.
    */
   private final Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = new HashMap<>();
 
@@ -116,9 +116,9 @@ public class Enchantments {
   }
 
   /**
-   * Gets the player's {@link Equipment} enchantments by {@link RpgEquipmentSlot}.
+   * Gets the player's {@link Equipment} enchantments on {@link RpgEquipmentSlot}.
    *
-   * @return enchantments by {@link RpgEquipmentSlot}
+   * @return enchantments on {@link RpgEquipmentSlot}
    */
   @NotNull
   public Map<RpgEquipmentSlot, Map<Enchantment, Integer>> getSlotEnchantments() {

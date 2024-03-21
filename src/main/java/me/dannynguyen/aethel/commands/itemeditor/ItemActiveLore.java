@@ -17,9 +17,11 @@ import java.util.*;
 
 /**
  * Represents an item's {@link PluginNamespacedKey#ACTIVE_LIST active ability} lore generation.
+ * <p>
+ * Used with {@link ItemEditorMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.15.16
  */
 class ItemActiveLore {
@@ -54,7 +56,7 @@ class ItemActiveLore {
    *
    * @param item interacting item
    */
-  protected ItemActiveLore(@NotNull ItemStack item) {
+  ItemActiveLore(@NotNull ItemStack item) {
     this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();

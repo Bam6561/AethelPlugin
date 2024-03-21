@@ -13,7 +13,7 @@ import java.util.Objects;
  * post-craft if the craft operation's requirements are met.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.2.4
  */
 class RecipeCraftInventory {
@@ -39,7 +39,7 @@ class RecipeCraftInventory {
    * @param item   ItemStack
    * @param amount amount of ItemStack
    */
-  protected RecipeCraftInventory(int slot, @NotNull ItemStack item, int amount) {
+  RecipeCraftInventory(int slot, @NotNull ItemStack item, int amount) {
     this.item = Objects.requireNonNull(item, "Null item");
     this.slot = slot;
     this.amount = amount;

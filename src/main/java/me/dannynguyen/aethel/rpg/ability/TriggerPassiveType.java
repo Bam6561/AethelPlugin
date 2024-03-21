@@ -8,6 +8,8 @@ import java.util.Objects;
 
 /**
  * Represents a {@link Trigger} {@link PassiveAbilityType} pair.
+ * <p>
+ * Used to remove abilities upon {@link me.dannynguyen.aethel.rpg.listeners.EquipmentUpdate}.
  *
  * @author Danny Nguyen
  * @version 1.16.3

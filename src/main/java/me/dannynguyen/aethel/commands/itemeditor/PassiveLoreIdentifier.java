@@ -13,7 +13,7 @@ import java.util.Objects;
  * Used for text display within the {@link PassiveMenu}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.15.12
  */
 class PassiveLoreIdentifier {
@@ -34,7 +34,7 @@ class PassiveLoreIdentifier {
    * @param eSlot     {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    * @param condition {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
    */
-  protected PassiveLoreIdentifier(@NotNull String eSlot, @NotNull String condition) {
+  PassiveLoreIdentifier(@NotNull String eSlot, @NotNull String condition) {
     this.slot = Objects.requireNonNull(eSlot, "Null slot");
     this.condition = Objects.requireNonNull(condition, "Null condition");
   }

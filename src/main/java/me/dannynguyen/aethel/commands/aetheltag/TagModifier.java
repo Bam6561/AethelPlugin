@@ -24,7 +24,7 @@ import java.util.Objects;
  * Used with {@link AethelTagCommand}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.13.9
  */
 class TagModifier {
@@ -65,7 +65,7 @@ class TagModifier {
    * @param item interacting item
    * @param tag  tag to be modified
    */
-  protected TagModifier(@NotNull Player user, @NotNull ItemStack item, @NotNull String tag) {
+  TagModifier(@NotNull Player user, @NotNull ItemStack item, @NotNull String tag) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.item = Objects.requireNonNull(item, "Null item");
     this.originalTag = Objects.requireNonNull(tag, "Null tag");

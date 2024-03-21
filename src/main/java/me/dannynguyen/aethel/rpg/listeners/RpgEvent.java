@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.rpg.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.rpg.system.RpgSystem;
@@ -24,7 +23,7 @@ import java.util.UUID;
  * Collection of listeners for {@link RpgSystem} functionality.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.17.12
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -99,6 +98,9 @@ public class RpgEvent implements Listener {
 
   /**
    * Triggers {@link Trigger#ON_KILL} {@link PassiveAbility passive abilities}.
+   * <p>
+   * {@link Trigger#ON_KILL} {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
+   * can only be triggered on self.
    *
    * @param killedUUID killed entity UUID
    * @param selfUUID   self UUID
@@ -109,53 +111,28 @@ public class RpgEvent implements Listener {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {
         if (!ability.isOnCooldown()) {
-          switch (ability.getType().getEffect()) {
-            case STACK_INSTANCE -> readOnKillStackInstance(random, ability, selfUUID);
-            case CHAIN_DAMAGE -> readOnKillChainDamage(random, ability, killedUUID, selfUUID);
+          double chance = Double.parseDouble(ability.getConditionData().get(0));
+          if (chance > random.nextDouble() * 100) {
+            boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+            UUID targetUUID;
+            switch (ability.getType().getEffect()) {
+              case STACK_INSTANCE -> {
+                if (self) {
+                  ability.doEffect(selfUUID);
+                }
+              }
+              case CHAIN_DAMAGE -> {
+                if (self) {
+                  targetUUID = selfUUID;
+                } else {
+                  targetUUID = killedUUID;
+                }
+                ability.doEffect(targetUUID);
+              }
+            }
           }
         }
       }
-    }
-  }
-
-  /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
-   * was successful before applying stack instances.
-   *
-   * @param random   rng
-   * @param ability  passive ability
-   * @param selfUUID self UUID
-   */
-  private void readOnKillStackInstance(Random random, PassiveAbility ability, UUID selfUUID) {
-    double chance = Double.parseDouble(ability.getConditionData().get(0));
-    if (chance > random.nextDouble() * 100) {
-      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-      if (self) {
-        new PassiveAbilityTrigger(ability).applyStackInstance(selfUUID);
-      }
-    }
-  }
-
-  /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE}
-   * was successful before dealing chain damage.
-   *
-   * @param random     rng
-   * @param ability    passive ability
-   * @param killedUUID killed entity
-   * @param selfUUID   self UUID
-   */
-  private void readOnKillChainDamage(Random random, PassiveAbility ability, UUID killedUUID, UUID selfUUID) {
-    double chance = Double.parseDouble(ability.getConditionData().get(0));
-    if (chance > random.nextDouble() * 100) {
-      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-      UUID targetUUID;
-      if (self) {
-        targetUUID = selfUUID;
-      } else {
-        targetUUID = killedUUID;
-      }
-      new PassiveAbilityTrigger(ability).chainDamage(targetUUID);
     }
   }
 }

@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.rpg.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
 import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
@@ -35,7 +34,7 @@ import java.util.UUID;
  * Entity damage done, taken, and healed listener.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.17.12
  * @since 1.9.4
  */
 public class EntityDamage implements Listener {
@@ -116,9 +115,16 @@ public class EntityDamage implements Listener {
           Random random = new Random();
           for (PassiveAbility ability : damageDealtTriggers.values()) {
             if (!ability.isOnCooldown()) {
-              switch (ability.getType().getEffect()) {
-                case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damager.getUniqueId(), damagee.getUniqueId());
-                case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
+              double chance = Double.parseDouble(ability.getConditionData().get(0));
+              if (chance > random.nextDouble() * 100) {
+                boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+                UUID targetUUID;
+                if (self) {
+                  targetUUID = damager.getUniqueId();
+                } else {
+                  targetUUID = damagee.getUniqueId();
+                }
+                ability.doEffect(targetUUID);
               }
             }
           }
@@ -140,9 +146,16 @@ public class EntityDamage implements Listener {
         Random random = new Random();
         for (PassiveAbility ability : damageTakenTriggers.values()) {
           if (!ability.isOnCooldown()) {
-            switch (ability.getType().getEffect()) {
-              case STACK_INSTANCE -> readOnDamageStackInstance(random, ability, damagee.getUniqueId(), damager.getUniqueId());
-              case CHAIN_DAMAGE -> readOnDamageChainDamage(random, ability, damager.getUniqueId(), damagee.getUniqueId());
+            double chance = Double.parseDouble(ability.getConditionData().get(0));
+            if (chance > random.nextDouble() * 100) {
+              boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+              UUID targetUUID;
+              if (self) {
+                targetUUID = damagee.getUniqueId();
+              } else {
+                targetUUID = damager.getUniqueId();
+              }
+              ability.doEffect(targetUUID);
             }
           }
         }
@@ -234,53 +247,6 @@ public class EntityDamage implements Listener {
     }
     e.setDamage(mitigation.mitigateResistance(e.getDamage()));
     return false;
-  }
-
-  /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
-   * was successful before applying stack instances.
-   *
-   * @param random    rng
-   * @param ability   {@link PassiveAbility}
-   * @param selfUUID  self UUID
-   * @param otherUUID entity UUID
-   */
-  private void readOnDamageStackInstance(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
-    double chance = Double.parseDouble(ability.getConditionData().get(0));
-    if (chance > random.nextDouble() * 100) {
-      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-      UUID targetUUID;
-      if (self) {
-        targetUUID = selfUUID;
-      } else {
-        targetUUID = otherUUID;
-      }
-      new PassiveAbilityTrigger(ability).applyStackInstance(targetUUID);
-    }
-  }
-
-  /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE}
-   * was successful before dealing chain damage.
-   *
-   * @param random    rng
-   * @param ability   {@link PassiveAbility}
-   * @param selfUUID  self UUID
-   * @param otherUUID entity UUID
-   */
-  private void readOnDamageChainDamage(Random random, PassiveAbility ability, UUID selfUUID, UUID otherUUID) {
-    double chance = Double.parseDouble(ability.getConditionData().get(0));
-
-    if (chance > random.nextDouble() * 100) {
-      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-      UUID targetUUID;
-      if (self) {
-        targetUUID = selfUUID;
-      } else {
-        targetUUID = otherUUID;
-      }
-      new PassiveAbilityTrigger(ability).chainDamage(targetUUID);
-    }
   }
 
   /**

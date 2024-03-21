@@ -8,6 +8,9 @@ import java.util.Objects;
 
 /**
  * Represents an {@link RpgEquipmentSlot} {@link PassiveAbilityType} pair.
+ * <p>
+ * Used to identify unique {@link PassiveAbility passive abilities}
+ * after a {@link me.dannynguyen.aethel.rpg.enums.Trigger} is called.
  *
  * @author Danny Nguyen
  * @version 1.16.3

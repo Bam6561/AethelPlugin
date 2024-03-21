@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents a menu containing a {@link PersistentRecipe recipe's} details.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -56,7 +56,7 @@ class RecipeDetailsMenu {
    * @param user user
    * @param type recipe details type
    */
-  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type) {
+  RecipeDetailsMenu(@NotNull Player user, @NotNull Type type) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
     this.uuid = user.getUniqueId();
@@ -70,7 +70,7 @@ class RecipeDetailsMenu {
    * @param type {@link RecipeDetailsMenu.Type type}
    * @param item requested item
    */
-  protected RecipeDetailsMenu(@NotNull Player user, @NotNull Type type, @NotNull ItemStack item) {
+  RecipeDetailsMenu(@NotNull Player user, @NotNull Type type, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.type = Objects.requireNonNull(type, "Null type");
     this.recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));

@@ -19,9 +19,11 @@ import java.util.*;
 
 /**
  * Represents an item's {@link PluginNamespacedKey#PASSIVE_LIST passive ability} lore generation.
+ * <p>
+ * Used with {@link ItemEditorMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.15.15
  */
 class ItemPassiveLore {
@@ -56,7 +58,7 @@ class ItemPassiveLore {
    *
    * @param item interacting item
    */
-  protected ItemPassiveLore(@NotNull ItemStack item) {
+  ItemPassiveLore(@NotNull ItemStack item) {
     this.item = Objects.requireNonNull(item, "Null item");
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();

@@ -28,12 +28,13 @@ import java.util.*;
  */
 public class Abilities {
   /**
-   * {@link TriggerPassiveType Passive abilities} by {@link RpgEquipmentSlot}.
+   * Used to remove abilities upon {@link me.dannynguyen.aethel.rpg.listeners.EquipmentUpdate}.
    */
   private final Map<RpgEquipmentSlot, List<TriggerPassiveType>> slotPassives = new HashMap<>();
 
   /**
-   * {@link PassiveAbility Passive abilities} by {@link Trigger}.
+   * Used to identify unique {@link PassiveAbility passive abilities}
+   * after a {@link me.dannynguyen.aethel.rpg.enums.Trigger} is called.
    */
   private final Map<Trigger, Map<SlotPassiveType, PassiveAbility>> triggerPassives = createBlankPassiveTriggers();
 
@@ -43,7 +44,7 @@ public class Abilities {
   private final Map<Trigger, Set<SlotPassiveType>> onCooldownPassives = createBlankPassiveCooldownTriggers();
 
   /**
-   * {@link ActiveAbility Active abilities} by {@link Trigger}.
+   * {@link ActiveAbility Active abilities} identified by their {@link RpgEquipmentSlot} trigger.
    */
   private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = new HashMap<>();
 
@@ -59,9 +60,9 @@ public class Abilities {
   }
 
   /**
-   * Creates a blank map of {@link PassiveAbility passive abilities} by {@link Trigger}.
+   * Creates a blank map of {@link Trigger triggerable} {@link PassiveAbility passive abilities}.
    *
-   * @return blank {@link PassiveAbility passive abilities} by {@link Trigger}.
+   * @return blank map of {@link Trigger triggerable} {@link PassiveAbility passive abilities}
    */
   private Map<Trigger, Map<SlotPassiveType, PassiveAbility>> createBlankPassiveTriggers() {
     Map<Trigger, Map<SlotPassiveType, PassiveAbility>> triggers = new HashMap<>();
@@ -72,9 +73,10 @@ public class Abilities {
   }
 
   /**
-   * Creates a blank map of {@link SlotPassiveType passive ability} cooldown by {@link Trigger}.
+   * Creates a blank map of {@link Trigger triggerable}
+   * {@link SlotPassiveType passive abilities} on cooldown.
    *
-   * @return blank {@link SlotPassiveType passive ability} cooldown by {@link Trigger}.
+   * @return blank map of {@link Trigger triggerable} {@link SlotPassiveType passive abilities} on cooldown
    */
   private Map<Trigger, Set<SlotPassiveType>> createBlankPassiveCooldownTriggers() {
     Map<Trigger, Set<SlotPassiveType>> triggers = new HashMap<>();
@@ -132,9 +134,10 @@ public class Abilities {
   }
 
   /**
-   * Gets the player's {@link TriggerPassiveType passive abilities} by {@link RpgEquipmentSlot}.
+   * Gets the player's {@link TriggerPassiveType passive abilities}
+   * that exist on each {@link RpgEquipmentSlot}.
    *
-   * @return {@link TriggerPassiveType passive abilities} by {@link RpgEquipmentSlot}
+   * @return {@link TriggerPassiveType passive abilities} that exist on each {@link RpgEquipmentSlot}
    */
   @NotNull
   public Map<RpgEquipmentSlot, List<TriggerPassiveType>> getSlotPassives() {
@@ -142,9 +145,9 @@ public class Abilities {
   }
 
   /**
-   * Gets the player's {@link PassiveAbility passive abilities} by {@link Trigger}.
+   * Gets the player's {@link Trigger triggerable} {@link PassiveAbility passive abilities}.
    *
-   * @return {@link PassiveAbility passive abilities} by {@link Trigger}
+   * @return {@link Trigger triggerable} {@link PassiveAbility passive abilities}
    */
   @NotNull
   public Map<Trigger, Map<SlotPassiveType, PassiveAbility>> getTriggerPassives() {
@@ -152,9 +155,10 @@ public class Abilities {
   }
 
   /**
-   * Gets the player's {@link ActiveAbility active abilities} by {@link RpgEquipmentSlot}.
+   * Gets the player's {@link RpgEquipmentSlot} {@link ActiveAbility active abilities}
+   * triggered by crouch binds.
    *
-   * @return {@link ActiveAbility active abilities} by {@link RpgEquipmentSlot}
+   * @return {@link RpgEquipmentSlot} {@link ActiveAbility active abilities} triggered by crouch binds
    */
   @NotNull
   public Map<RpgEquipmentSlot, List<ActiveAbility>> getTriggerActives() {

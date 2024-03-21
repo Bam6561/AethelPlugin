@@ -371,8 +371,8 @@ public class CharacterMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Sets the crouch bind to activate
-   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility abilities} by {@link RpgEquipmentSlot}.
+   * Sets the crouch bind to activate {@link RpgEquipmentSlot}
+   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility abilities}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */

@@ -12,7 +12,7 @@ import java.io.File;
  * Loaded into memory when {@link ItemRegistry#loadData()} is called.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.12
  * @since 1.3.2
  */
 public class PersistentItem {
@@ -51,7 +51,7 @@ public class PersistentItem {
   /**
    * Deletes the item file from the file system.
    */
-  public void delete() {
+  protected void delete() {
     file.delete();
   }
 
@@ -61,7 +61,7 @@ public class PersistentItem {
    * @return ItemStack
    */
   @NotNull
-  public ItemStack getItem() {
+  protected ItemStack getItem() {
     return this.item;
   }
 
@@ -71,7 +71,7 @@ public class PersistentItem {
    * @return item name
    */
   @NotNull
-  public String getName() {
+  protected String getName() {
     return this.name;
   }
 }

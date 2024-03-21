@@ -32,7 +32,7 @@ import java.util.*;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.12
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClickEvent {
@@ -316,7 +316,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.put(PlayerMeta.CONDITION, "below_hp");
+    playerMeta.put(PlayerMeta.CONDITION, "below_health");
     playerMeta.put(PlayerMeta.SLOT, "head");
     user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HEAD, Trigger.BELOW_HEALTH).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());

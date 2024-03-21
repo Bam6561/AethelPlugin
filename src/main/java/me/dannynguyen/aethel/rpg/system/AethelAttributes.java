@@ -28,7 +28,7 @@ public class AethelAttributes {
   private final Map<AethelAttributeType, Double> attributes = createBlankAethelAttributes();
 
   /**
-   * {@link AethelAttributeType} values by {@link RpgEquipmentSlot}.
+   * {@link AethelAttributeType} values on {@link RpgEquipmentSlot}.
    */
   private final Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = new HashMap<>();
 
@@ -105,9 +105,9 @@ public class AethelAttributes {
   }
 
   /**
-   * Gets {@link Equipment} {@link AethelAttributeType} values by {@link RpgEquipmentSlot}.
+   * Gets {@link Equipment} {@link AethelAttributeType} values on {@link RpgEquipmentSlot}.
    *
-   * @return {@link Equipment} {@link AethelAttributeType} values by {@link RpgEquipmentSlot}
+   * @return {@link Equipment} {@link AethelAttributeType} values on {@link RpgEquipmentSlot}
    */
   @NotNull
   public Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> getSlotAttributes() {

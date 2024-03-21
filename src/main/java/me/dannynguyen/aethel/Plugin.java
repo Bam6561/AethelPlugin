@@ -15,7 +15,6 @@ import me.dannynguyen.aethel.plugin.listeners.MessageSent;
 import me.dannynguyen.aethel.plugin.listeners.PluginEvent;
 import me.dannynguyen.aethel.plugin.system.PluginData;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbilityTrigger;
 import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
@@ -49,7 +48,7 @@ import java.util.UUID;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.17.12
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -235,6 +234,8 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Adds an interval to trigger {@link Trigger#BELOW_HEALTH} {@link PassiveAbility passive abilities}.
+   * <p>
+   * {@link Trigger#BELOW_HEALTH}{@link PassiveAbility} can only be triggered on self.
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
@@ -242,9 +243,12 @@ public class Plugin extends JavaPlugin {
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
-            switch (ability.getType().getEffect()) {
-              case STACK_INSTANCE -> readBelowHealthStackInstance(ability, rpgPlayer);
-              case CHAIN_DAMAGE -> readBelowHealthChainDamage(ability, rpgPlayer);
+            double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
+            if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
+              boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+              if (self) {
+                ability.doEffect(rpgPlayer.getUUID());
+              }
             }
           }
         }
@@ -313,40 +317,6 @@ public class Plugin extends JavaPlugin {
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
       entity.damage(0.1);
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2));
-    }
-  }
-
-  /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
-   * was successful before applying stack instances.
-   *
-   * @param ability   passive ability
-   * @param rpgPlayer interacting player
-   */
-  private void readBelowHealthStackInstance(PassiveAbility ability, RpgPlayer rpgPlayer) {
-    double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
-    if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
-      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-      if (self) {
-        new PassiveAbilityTrigger(ability).applyStackInstance(rpgPlayer.getUUID());
-      }
-    }
-  }
-
-  /**
-   * Checks if the {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE}
-   * was successful before dealing chain damage.
-   *
-   * @param ability   passive ability
-   * @param rpgPlayer interacting player
-   */
-  private void readBelowHealthChainDamage(PassiveAbility ability, RpgPlayer rpgPlayer) {
-    double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
-    if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
-      boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-      if (self) {
-        new PassiveAbilityTrigger(ability).chainDamage(rpgPlayer.getUUID());
-      }
     }
   }
 
