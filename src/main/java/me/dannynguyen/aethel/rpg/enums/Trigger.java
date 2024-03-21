@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull;
  * Types of {@link PassiveAbilityType} triggers.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.17.13
  * @since 1.15.11
  */
 public enum Trigger {
   /**
    * Below a % of max health.
    */
-  BELOW_HEALTH("Below % HP", "below_hp", TriggerCondition.HEALTH_COOLDOWN),
+  BELOW_HEALTH("Below % HP", "below_health", TriggerCondition.HEALTH_COOLDOWN),
 
   /**
    * Damage dealt.

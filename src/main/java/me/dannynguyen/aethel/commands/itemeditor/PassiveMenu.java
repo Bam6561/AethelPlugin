@@ -67,7 +67,7 @@ public class PassiveMenu implements Menu {
   /**
    * ItemStack {@link PluginNamespacedKey#PASSIVE_LIST passive abilities}.
    */
-  private final Map<String, List<PassiveLoreIdentifier>> existingPassives;
+  private final Map<String, List<UniquePassiveIdentifier>> existingPassives;
 
   /**
    * Associates a new Passive menu with its user and item.
@@ -124,10 +124,10 @@ public class PassiveMenu implements Menu {
         boolean enabled = existingPassives.containsKey(passiveId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (PassiveLoreIdentifier passiveLoreIdentifier : existingPassives.get(passiveId)) {
-            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passiveLoreIdentifier.getSlot() + "." + passiveLoreIdentifier.getCondition() + "." + passiveId);
+          for (UniquePassiveIdentifier uniquePassiveIdentifier : existingPassives.get(passiveId)) {
+            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + uniquePassiveIdentifier.getSlot() + "." + uniquePassiveIdentifier.getCondition() + "." + passiveId);
             String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(passiveLoreIdentifier.getSlot() + " " + passiveLoreIdentifier.getCondition() + ": " + passiveValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(uniquePassiveIdentifier.getSlot() + " " + uniquePassiveIdentifier.getCondition() + ": " + passiveValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
         } else {
@@ -179,11 +179,11 @@ public class PassiveMenu implements Menu {
    *
    * @return item's {@link PluginNamespacedKey#PASSIVE_LIST passives} map
    */
-  private Map<String, List<PassiveLoreIdentifier>> mapPassives() {
+  private Map<String, List<UniquePassiveIdentifier>> mapPassives() {
     NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
     boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
-      Map<String, List<PassiveLoreIdentifier>> existingPassives = new HashMap<>();
+      Map<String, List<UniquePassiveIdentifier>> existingPassives = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
         String[] passiveMeta = passive.split("\\.");
@@ -191,9 +191,9 @@ public class PassiveMenu implements Menu {
         String condition = passiveMeta[1];
         String passiveType = passiveMeta[2];
         if (existingPassives.containsKey(passiveType)) {
-          existingPassives.get(passiveType).add(new PassiveLoreIdentifier(slot, condition));
+          existingPassives.get(passiveType).add(new UniquePassiveIdentifier(slot, condition));
         } else {
-          existingPassives.put(passiveType, new ArrayList<>(List.of(new PassiveLoreIdentifier(slot, condition))));
+          existingPassives.put(passiveType, new ArrayList<>(List.of(new UniquePassiveIdentifier(slot, condition))));
         }
       }
       return existingPassives;

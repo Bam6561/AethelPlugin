@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a set or remove operation for an item's {@link PluginNamespacedKey Aethel tag}.
+ * Represents an item's {@link PluginNamespacedKey Aethel tag} set or remove operation.
  * <p>
  * Used with {@link AethelTagCommand}.
  *

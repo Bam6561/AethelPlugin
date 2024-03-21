@@ -340,9 +340,9 @@ public class ItemEditorMessageSent {
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
-      new PassiveAbilityTag(e.getMessage(), user, item).interpretKeyToBeSet();
+      new PassiveTagModifier(e.getMessage(), user, item).interpretKeyToBeSet();
     } else {
-      new PassiveAbilityTag(e.getMessage(), user, item).removeKeyFromList();
+      new PassiveTagModifier(e.getMessage(), user, item).removeKeyFromList();
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassive);
   }

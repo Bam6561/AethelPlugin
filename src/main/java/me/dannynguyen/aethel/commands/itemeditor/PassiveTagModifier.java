@@ -31,7 +31,7 @@ import java.util.Map;
  * @version 1.17.12
  * @since 1.15.13
  */
-class PassiveAbilityTag {
+class PassiveTagModifier {
   /**
    * {@link PluginNamespacedKey#PASSIVE_LIST}
    */
@@ -94,7 +94,7 @@ class PassiveAbilityTag {
    * @param user    user
    * @param item    interacting item
    */
-  PassiveAbilityTag(String message, Player user, ItemStack item) {
+  PassiveTagModifier(String message, Player user, ItemStack item) {
     this.args = message.split(" ");
     this.user = user;
     this.item = item;

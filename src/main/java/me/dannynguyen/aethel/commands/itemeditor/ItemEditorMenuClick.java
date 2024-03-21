@@ -8,10 +8,8 @@ import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
 import me.dannynguyen.aethel.rpg.enums.*;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemCreator;
 import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,8 +18,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -32,7 +28,7 @@ import java.util.*;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.17.13
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClickEvent {
@@ -113,7 +109,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
       case 45 -> addLore();
       case 46 -> editLore();
       case 47 -> removeLore();
-      case 48 -> generateLore();
+      case 48 -> new ItemLoreGeneration(user, menu, item).generateLore();
       case 41, 42, 43, 44, 50, 51, 52, 53 -> toggleItemFlag();
     }
   }
@@ -411,38 +407,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Generates an item's lore based on its {@link PluginNamespacedKey plugin-related data}.
-   */
-  private void generateLore() {
-    boolean generatedLore = false;
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-
-    if (dataContainer.has(PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
-      generatedLore = true;
-      displayForgeId(dataContainer);
-    }
-    if (dataContainer.has(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-      generatedLore = true;
-      new ItemAttributeLore(item).addAttributeHeaders();
-      menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
-    }
-    if (dataContainer.has(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-      generatedLore = true;
-      new ItemPassiveLore(item).addPassiveHeaders();
-    }
-    if (dataContainer.has(PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-      generatedLore = true;
-      new ItemActiveLore(item).addActiveHeaders();
-    }
-
-    if (generatedLore) {
-      user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
-    } else {
-      user.sendMessage(ChatColor.RED + "Not modified by plugin.");
-    }
-  }
-
-  /**
    * Toggles an item's item flag.
    */
   private void toggleItemFlag() {
@@ -677,22 +641,5 @@ public class ItemEditorMenuClick implements MenuClickEvent {
         return null;
       }
     }
-  }
-
-  /**
-   * Adds the Forge ID to the item's lore.
-   *
-   * @param dataContainer item's persistent tags
-   */
-  private void displayForgeId(PersistentDataContainer dataContainer) {
-    List<String> lore;
-    if (meta.hasLore()) {
-      lore = meta.getLore();
-    } else {
-      lore = new ArrayList<>();
-    }
-    lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(PluginNamespacedKey.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
-    meta.setLore(lore);
-    item.setItemMeta(meta);
   }
 }
