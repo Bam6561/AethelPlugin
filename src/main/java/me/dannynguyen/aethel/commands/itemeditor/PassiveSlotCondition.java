@@ -16,7 +16,7 @@ import java.util.Objects;
  * @version 1.17.12
  * @since 1.15.12
  */
-class UniquePassiveIdentifier {
+class PassiveSlotCondition {
   /**
    * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    */
@@ -34,7 +34,7 @@ class UniquePassiveIdentifier {
    * @param eSlot     {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    * @param condition {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
    */
-  UniquePassiveIdentifier(@NotNull String eSlot, @NotNull String condition) {
+  PassiveSlotCondition(@NotNull String eSlot, @NotNull String condition) {
     this.slot = Objects.requireNonNull(eSlot, "Null slot");
     this.condition = Objects.requireNonNull(condition, "Null condition");
   }

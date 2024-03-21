@@ -34,7 +34,7 @@ import java.util.*;
  * @version 1.17.13
  * @since 1.17.13
  */
-public class ItemLoreGeneration {
+class ItemLoreGeneration {
   /**
    * Order of headers by {@link RpgEquipmentSlot}.
    */
@@ -353,16 +353,14 @@ public class ItemLoreGeneration {
         case "hand" -> header.add(ChatColor.GRAY + "Main Hand (Passive):");
         case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand (Passive):");
       }
-      for (String ability : passiveAbilities.get(eSlot)) {
-        header.add(ability);
-      }
+      header.addAll(passiveAbilities.get(eSlot));
       lore.addAll(header);
     }
   }
 
   /**
    * Adds an active ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
-   * header if it exists for the its associated ability values.
+   * header if it exists for its associated ability values.
    *
    * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
    */
@@ -379,9 +377,7 @@ public class ItemLoreGeneration {
         case "hand" -> header.add(ChatColor.GRAY + "Main Hand (Active):");
         case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand (Active):");
       }
-      for (String ability : activeAbilities.get(eSlot)) {
-        header.add(ability);
-      }
+      header.addAll(activeAbilities.get(eSlot));
       lore.addAll(header);
     }
   }

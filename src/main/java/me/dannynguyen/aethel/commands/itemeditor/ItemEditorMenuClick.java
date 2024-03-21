@@ -20,7 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Inventory click event listener for {@link ItemEditorCommand} menus.

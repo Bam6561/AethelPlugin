@@ -48,7 +48,7 @@ public class PersistentRecipe {
    * @param materials recipe materials
    * @throws IllegalArgumentException if provided file is not a file
    */
-  public PersistentRecipe(File file, List<ItemStack> results, List<ItemStack> materials) {
+  PersistentRecipe(File file, List<ItemStack> results, List<ItemStack> materials) {
     this.file = file;
     this.results = results;
     this.materials = materials;
