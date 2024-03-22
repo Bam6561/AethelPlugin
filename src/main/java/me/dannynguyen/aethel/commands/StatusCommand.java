@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
 import me.dannynguyen.aethel.rpg.system.Status;
+import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,7 +33,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.15.9
+ * @version 1.17.14
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -185,7 +186,7 @@ public class StatusCommand implements CommandExecutor {
    */
   private void removeStatus(Player user, UUID uuid, String[] args) {
     try {
-      StatusType statusType = StatusType.valueOf(args[2].toUpperCase());
+      StatusType statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
       Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
       if (entityStatuses.get(uuid) != null) {
         Map<StatusType, Status> statuses = entityStatuses.get(uuid);
@@ -196,7 +197,7 @@ public class StatusCommand implements CommandExecutor {
       }
       user.sendMessage(ChatColor.RED + "[Status Removed] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + statusType.getProperName());
     } catch (IllegalArgumentException ex) {
-      user.sendMessage(ChatColor.RED + "Status type does not exist.");
+      user.sendMessage(Message.UNRECOGNIZED_STATUS.getMessage());
     }
   }
 
@@ -210,20 +211,20 @@ public class StatusCommand implements CommandExecutor {
    */
   private void readSetStatusRequest(Player user, UUID uuid, String[] args) {
     try {
-      StatusType statusType = StatusType.valueOf(args[2].toUpperCase());
+      StatusType statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
       try {
         int stacks = Integer.parseInt(args[3]);
         try {
           int ticks = Integer.parseInt(args[4]);
           setStatus(user, uuid, statusType, stacks, ticks);
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid ticks.");
+          user.sendMessage(Message.INVALID_TICKS.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid stacks.");
+        user.sendMessage(Message.INVALID_STACKS.getMessage());
       }
     } catch (IllegalArgumentException ex) {
-      user.sendMessage(ChatColor.RED + "Status type does not exist.");
+      user.sendMessage(Message.UNRECOGNIZED_STATUS.getMessage());
     }
   }
 

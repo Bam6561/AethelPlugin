@@ -60,7 +60,7 @@ public enum StatusType {
    * Associates the status type with if its stack instances are cumulative.
    *
    * @param properName   proper name
-   * @param id           type id
+   * @param id           type ID
    * @param isCumulative if the status type's stack instances are cumulative
    */
   StatusType(String properName, String id, boolean isCumulative) {

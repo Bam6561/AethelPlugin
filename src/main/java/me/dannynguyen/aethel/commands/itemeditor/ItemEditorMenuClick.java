@@ -31,7 +31,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.13
+ * @version 1.17.14
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClickEvent {
@@ -246,7 +246,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setDisplayName() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
-    awaitMessageResponse("display_name");
+    awaitMessageResponse(MessageMetadata.DISPLAY_NAME);
   }
 
   /**
@@ -254,7 +254,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setCustomModelData() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
-    awaitMessageResponse("custom_model_data");
+    awaitMessageResponse(MessageMetadata.CUSTOM_MODEL_DATA);
   }
 
   /**
@@ -277,7 +277,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.put(PlayerMeta.SLOT, "head");
+    playerMeta.put(PlayerMeta.SLOT, RpgEquipmentSlot.HAND.getId());
     user.openInventory(new AttributeMenu(user, EquipmentSlot.HEAD).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
   }
@@ -287,8 +287,8 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openAethelAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HEAD).getMainMenu());
+    playerMeta.put(PlayerMeta.SLOT, RpgEquipmentSlot.HAND.getId());
+    user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
   }
 
@@ -315,9 +315,9 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.put(PlayerMeta.CONDITION, "below_health");
-    playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HEAD, Trigger.BELOW_HEALTH).getMainMenu());
+    playerMeta.put(PlayerMeta.CONDITION, Trigger.DAMAGE_DEALT.getId());
+    playerMeta.put(PlayerMeta.SLOT, RpgEquipmentSlot.HAND.getId());
+    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, Trigger.DAMAGE_DEALT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -326,8 +326,8 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openActive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.put(PlayerMeta.SLOT, "head");
-    user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HEAD).getMainMenu());
+    playerMeta.put(PlayerMeta.SLOT, RpgEquipmentSlot.HAND.getId());
+    user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
   }
 
@@ -345,7 +345,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setDurability() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
-    awaitMessageResponse("durability");
+    awaitMessageResponse(MessageMetadata.DURABILITY);
   }
 
   /**
@@ -353,7 +353,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setRepairCost() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
-    awaitMessageResponse("repair_cost");
+    awaitMessageResponse(MessageMetadata.REPAIR_COST);
   }
 
   /**
@@ -361,7 +361,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setLore() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
-    awaitMessageResponse("lore-set");
+    awaitMessageResponse(MessageMetadata.LORE_SET);
   }
 
   /**
@@ -373,7 +373,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Cleared Lore]");
     } else {
-      user.sendMessage(ChatColor.RED + "Item has no lore.");
+      user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
   }
 
@@ -382,7 +382,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void addLore() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
-    awaitMessageResponse("lore-add");
+    awaitMessageResponse(MessageMetadata.LORE_ADD);
   }
 
   /**
@@ -391,9 +391,9 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   private void editLore() {
     if (meta.hasLore()) {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and new lore.");
-      awaitMessageResponse("lore-edit");
+      awaitMessageResponse(MessageMetadata.LORE_EDIT);
     } else {
-      user.sendMessage(ChatColor.RED + "Item has no lore.");
+      user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
   }
 
@@ -403,9 +403,9 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   private void removeLore() {
     if (meta.hasLore()) {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
-      awaitMessageResponse("lore-remove");
+      awaitMessageResponse(MessageMetadata.LORE_REMOVE);
     } else {
-      user.sendMessage(ChatColor.RED + "Item has no lore.");
+      user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
   }
 
@@ -440,7 +440,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setPotionColor() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input RGB value.");
-    awaitMessageResponse("potion-color");
+    awaitMessageResponse(MessageMetadata.POTION_COLOR);
   }
 
   /**
@@ -486,7 +486,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   private void setPassiveMode(RpgEquipmentSlot eSlot) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.put(PlayerMeta.SLOT, eSlot.name().toLowerCase());
-    user.openInventory(new PassiveMenu(user, eSlot, Trigger.valueOf(playerMeta.get(PlayerMeta.CONDITION).toUpperCase())).getMainMenu());
+    user.openInventory(new PassiveMenu(user, eSlot, Trigger.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.CONDITION)))).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -499,7 +499,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   private void setTriggerMode(Trigger trigger) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     playerMeta.put(PlayerMeta.CONDITION, trigger.name().toLowerCase());
-    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase()), trigger).getMainMenu());
+    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT))), trigger).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
   }
 
@@ -520,12 +520,12 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    * Determines the Minecraft attribute to be set and prompts the user for an input.
    */
   private void readMinecraftAttribute() {
-    EquipmentSlot slot = EquipmentSlot.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.SLOT).toUpperCase()));
+    EquipmentSlot slot = EquipmentSlot.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.SLOT)));
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(slot.name()) + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeContext(attribute));
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, attribute);
-    awaitMessageResponse("minecraft_attribute");
+    awaitMessageResponse(MessageMetadata.MINECRAFT_ATTRIBUTE);
   }
 
   /**
@@ -537,7 +537,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: " + AethelAttributeType.valueOf(TextFormatter.formatEnum(attribute)).getBaseValue());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(attribute));
-    awaitMessageResponse("aethel_attribute");
+    awaitMessageResponse(MessageMetadata.AETHEL_ATTRIBUTE);
   }
 
   /**
@@ -547,7 +547,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String enchantment = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(enchantment));
-    awaitMessageResponse("enchantment");
+    awaitMessageResponse(MessageMetadata.ENCHANTMENT);
   }
 
   /**
@@ -557,7 +557,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String potionEffect = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(potionEffect));
-    awaitMessageResponse("potion-effect");
+    awaitMessageResponse(MessageMetadata.POTION_EFFECT);
   }
 
   /**
@@ -572,7 +572,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + trigger.getCondition().getData());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbilityType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(passive));
-    awaitMessageResponse("passive_ability");
+    awaitMessageResponse(MessageMetadata.PASSIVE_ABILITY);
   }
 
   /**
@@ -584,7 +584,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbilityType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(active));
-    awaitMessageResponse("active_ability");
+    awaitMessageResponse(MessageMetadata.ACTIVE_ABILITY);
   }
 
   /**
@@ -594,17 +594,17 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, tag);
-    awaitMessageResponse("tag");
+    awaitMessageResponse(MessageMetadata.AETHEL_TAG);
   }
 
   /**
    * Uses the user's next message as the field's input.
    *
-   * @param metadata metadata field
+   * @param messageMetadata message metadata
    */
-  private void awaitMessageResponse(String metadata) {
+  private void awaitMessageResponse(MessageMetadata messageMetadata) {
     user.closeInventory();
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.MESSAGE, "itemeditor." + metadata);
+    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.MESSAGE, messageMetadata.getValue());
   }
 
   /**
@@ -643,6 +643,119 @@ public class ItemEditorMenuClick implements MenuClickEvent {
       default -> {
         return null;
       }
+    }
+  }
+
+  /**
+   * ItemEditor message metadata.
+   */
+  private enum MessageMetadata {
+    /**
+     * ItemEditor.
+     */
+    ITEMEDITOR("itemeditor."),
+
+    /**
+     * Display name.
+     */
+    DISPLAY_NAME(MessageMetadata.ITEMEDITOR.getValue() + "display_name"),
+
+    /**
+     * Custom model data.
+     */
+    CUSTOM_MODEL_DATA(MessageMetadata.ITEMEDITOR.getValue() + "custom_model_data"),
+
+    /**
+     * Durability.
+     */
+    DURABILITY(MessageMetadata.ITEMEDITOR.getValue() + "durability"),
+
+    /**
+     * Repair cost.
+     */
+    REPAIR_COST(MessageMetadata.ITEMEDITOR.getValue() + "repair_cost"),
+
+    /**
+     * Set lore.
+     */
+    LORE_SET(MessageMetadata.ITEMEDITOR.getValue() + "lore-set"),
+
+    /**
+     * Add lore.
+     */
+    LORE_ADD(MessageMetadata.ITEMEDITOR.getValue() + "lore-add"),
+
+    /**
+     * Edit lore.
+     */
+    LORE_EDIT(MessageMetadata.ITEMEDITOR.getValue() + "lore-edit"),
+
+    /**
+     * Remove lore.
+     */
+    LORE_REMOVE(MessageMetadata.ITEMEDITOR.getValue() + "lore-remove"),
+
+    /**
+     * Potion color.
+     */
+    POTION_COLOR(MessageMetadata.ITEMEDITOR.getValue() + "potion-color"),
+
+    /**
+     * Minecraft attribute.
+     */
+    MINECRAFT_ATTRIBUTE(MessageMetadata.ITEMEDITOR.getValue() + "minecraft_attribute"),
+
+    /**
+     * Aethel attribute.
+     */
+    AETHEL_ATTRIBUTE(MessageMetadata.ITEMEDITOR.getValue() + "aethel_attribute"),
+
+    /**
+     * Enchantment.
+     */
+    ENCHANTMENT(MessageMetadata.ITEMEDITOR.getValue() + "enchantment"),
+
+    /**
+     * Potion effect.
+     */
+    POTION_EFFECT(MessageMetadata.ITEMEDITOR.getValue() + "potion-effect"),
+
+    /**
+     * Passive ability.
+     */
+    PASSIVE_ABILITY(MessageMetadata.ITEMEDITOR.getValue() + "passive_ability"),
+
+    /**
+     * Active ability.
+     */
+    ACTIVE_ABILITY(MessageMetadata.ITEMEDITOR.getValue() + "active_ability"),
+
+    /**
+     * Aethel tag.
+     */
+    AETHEL_TAG(MessageMetadata.ITEMEDITOR.getValue() + "tag");
+
+    /**
+     * Message metadata's value.
+     */
+    private final String value;
+
+    /**
+     * Associates a message metadata with its value.
+     *
+     * @param value meta value
+     */
+    MessageMetadata(String value) {
+      this.value = value;
+    }
+
+    /**
+     * Gets the message metadata's value.
+     *
+     * @return message metadata's value
+     */
+    private String getValue() {
+      return this.value;
     }
   }
 }

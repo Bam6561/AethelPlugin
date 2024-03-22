@@ -27,7 +27,7 @@ import java.util.UUID;
  * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.14
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClickEvent {
@@ -139,7 +139,7 @@ public class ForgeMenuClick implements MenuClickEvent {
    */
   private void viewRecipeCategory() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.FUTURE)));
     String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -195,7 +195,7 @@ public class ForgeMenuClick implements MenuClickEvent {
    */
   private void returnToMainMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(playerMeta.get(PlayerMeta.FUTURE).toUpperCase());
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.FUTURE)));
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, action).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());

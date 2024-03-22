@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
+import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.plugin.interfaces.DataRegistry;
 import me.dannynguyen.aethel.util.InventoryPages;
@@ -24,7 +25,7 @@ import java.util.*;
  * be called in order to load {@link PersistentRecipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.14
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -123,10 +124,10 @@ public class RecipeRegistry implements DataRegistry {
         categories.get("All").add(results);
         sortRecipe(categories, results);
       } else {
-        Bukkit.getLogger().warning("[Aethel] Invalid file: " + file.getName());
+        Bukkit.getLogger().warning(Message.INVALID_FILE.getMessage() + file.getName());
       }
     } catch (FileNotFoundException ex) {
-      Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
     }
   }
 

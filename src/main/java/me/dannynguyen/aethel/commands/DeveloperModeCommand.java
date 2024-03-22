@@ -75,7 +75,7 @@ public class DeveloperModeCommand implements CommandExecutor {
   private void toggleDeveloperMode(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     if (!playerMeta.containsKey(PlayerMeta.DEVELOPER)) {
-      playerMeta.put(PlayerMeta.DEVELOPER, "1");
+      playerMeta.put(PlayerMeta.DEVELOPER, "true");
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");
     } else {
       playerMeta.remove(PlayerMeta.DEVELOPER);

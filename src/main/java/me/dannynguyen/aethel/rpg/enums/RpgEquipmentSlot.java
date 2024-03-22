@@ -67,10 +67,10 @@ public enum RpgEquipmentSlot {
   private final String id;
 
   /**
-   * Associates an equipment slot with its proper name and id.
+   * Associates an equipment slot with its proper name and ID.
    *
    * @param properName proper name
-   * @param id         slot id
+   * @param id         slot ID
    */
   RpgEquipmentSlot(String properName, String id) {
     this.properName = properName;

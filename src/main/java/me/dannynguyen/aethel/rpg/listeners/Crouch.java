@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.system.Settings;
+import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,7 @@ import java.util.Map;
  * Player crouch listener.
  *
  * @author Danny Nguyen
- * @version 1.17.4
+ * @version 1.17.14
  * @since 1.17.3
  */
 public class Crouch implements Listener {
@@ -40,7 +41,7 @@ public class Crouch implements Listener {
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(player.getUniqueId());
       if (playerMeta.containsKey(PlayerMeta.ACTION) && playerMeta.get(PlayerMeta.ACTION).equals("crouch.bind-active_ability")) {
         Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getSettings();
-        RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase());
+        RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)));
         int heldSlot = player.getInventory().getHeldItemSlot();
 
         settings.setActiveAbilityCrouchBind(slot, heldSlot);

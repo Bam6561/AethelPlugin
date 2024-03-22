@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -18,7 +19,7 @@ import java.util.Objects;
  * Represents an {@link RpgPlayer}'s total {@link AethelAttributeType} values.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.17.14
  * @since 1.17.9
  */
 public class AethelAttributes {
@@ -61,7 +62,7 @@ public class AethelAttributes {
   public void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
     String[] attributes = dataContainer.get(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
-      RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(attribute.substring(0, attribute.indexOf(".")).toUpperCase());
+      RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(attribute.substring(0, attribute.indexOf("."))));
       if (slot == eSlot) {
         addAttributes(eSlot, dataContainer, attribute);
       }
@@ -77,7 +78,7 @@ public class AethelAttributes {
    */
   private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
-    AethelAttributeType attributeType = AethelAttributeType.valueOf(attribute.substring(attribute.indexOf(".") + 1).toUpperCase());
+    AethelAttributeType attributeType = AethelAttributeType.valueOf(TextFormatter.formatEnum(attribute.substring(attribute.indexOf(".") + 1)));
     slotAttributes.get(eSlot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     attributes.put(attributeType, attributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }

@@ -69,7 +69,7 @@ public enum AethelAttributeType {
    * Associates the attribute with its base value.
    *
    * @param properName proper name
-   * @param id         ability id
+   * @param id         ability ID
    * @param baseValue  attribute's base value
    */
   AethelAttributeType(String properName, String id, String baseValue) {

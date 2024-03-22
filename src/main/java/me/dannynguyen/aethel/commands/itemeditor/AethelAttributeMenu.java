@@ -28,17 +28,17 @@ import java.util.*;
  * Represents a menu that edits an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.14
  * @since 1.14.1
  */
 public class AethelAttributeMenu implements Menu {
   /**
    * Categorized {@link AethelAttributeType}.
    */
-  private static final Map<String, AethelAttributeType[]> attributeCategories = Map.of(
-      "offense", new AethelAttributeType[]{AethelAttributeType.CRITICAL_CHANCE, AethelAttributeType.CRITICAL_DAMAGE},
-      "defense", new AethelAttributeType[]{AethelAttributeType.MAX_HEALTH, AethelAttributeType.COUNTER_CHANCE, AethelAttributeType.DODGE_CHANCE, AethelAttributeType.ARMOR_TOUGHNESS},
-      "other", new AethelAttributeType[]{AethelAttributeType.ITEM_DAMAGE, AethelAttributeType.ITEM_COOLDOWN});
+  private static final Map<Category, AethelAttributeType[]> attributeCategories = Map.of(
+      Category.OFFENSE, new AethelAttributeType[]{AethelAttributeType.CRITICAL_CHANCE, AethelAttributeType.CRITICAL_DAMAGE},
+      Category.DEFENSE, new AethelAttributeType[]{AethelAttributeType.MAX_HEALTH, AethelAttributeType.COUNTER_CHANCE, AethelAttributeType.DODGE_CHANCE, AethelAttributeType.ARMOR_TOUGHNESS},
+      Category.MISCELLANEOUS, new AethelAttributeType[]{AethelAttributeType.ITEM_DAMAGE, AethelAttributeType.ITEM_COOLDOWN});
 
   /**
    * GUI.
@@ -114,9 +114,9 @@ public class AethelAttributeMenu implements Menu {
    * Adds {@link AethelAttributeType attributes}.
    */
   private void addAttributes() {
-    addAttributeCategory("offense", 19);
-    addAttributeCategory("defense", 28);
-    addAttributeCategory("other", 37);
+    addAttributeCategory(Category.OFFENSE, 19);
+    addAttributeCategory(Category.DEFENSE, 28);
+    addAttributeCategory(Category.MISCELLANEOUS, 37);
   }
 
   /**
@@ -174,7 +174,7 @@ public class AethelAttributeMenu implements Menu {
    * @param category {@link AethelAttributeType attributes} category
    * @param invSlot  inventory slot
    */
-  private void addAttributeCategory(String category, int invSlot) {
+  private void addAttributeCategory(Category category, int invSlot) {
     if (existingAethelAttributes != null) {
       for (AethelAttributeType attribute : attributeCategories.get(category)) {
         String attributeName = attribute.getProperName();
@@ -199,5 +199,25 @@ public class AethelAttributeMenu implements Menu {
         invSlot++;
       }
     }
+  }
+
+  /**
+   * {@link AethelAttributeType} categories.
+   */
+  private enum Category {
+    /**
+     * Offensive attributes.
+     */
+    OFFENSE,
+
+    /**
+     * Defensive attributes.
+     */
+    DEFENSE,
+
+    /**
+     * Miscellaneous attributes.
+     */
+    MISCELLANEOUS
   }
 }

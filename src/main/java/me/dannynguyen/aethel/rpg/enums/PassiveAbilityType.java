@@ -49,7 +49,7 @@ public enum PassiveAbilityType {
    * Associates a passive ability with its {@link PassiveAbilityEffect}.
    *
    * @param properName proper name
-   * @param id         ability id
+   * @param id         ability ID
    * @param effect     {@link PassiveAbilityEffect}
    */
   PassiveAbilityType(String properName, String id, PassiveAbilityEffect effect) {

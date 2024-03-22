@@ -72,7 +72,7 @@ class StatMessage {
   }
 
   /**
-   * Sends a statistic value.
+   * Sends a {@link StatCategory statistic} value.
    */
   protected void sendStat() {
     Statistic stat = Statistic.valueOf(TextFormatter.formatEnum(requestedStat));
@@ -84,7 +84,7 @@ class StatMessage {
   }
 
   /**
-   * Sends a substatistic value.
+   * Sends a {@link SubstatCategory substatistic} value.
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
@@ -149,7 +149,7 @@ class StatMessage {
   /**
    * Retrieves the requested player's substat values.
    *
-   * @param category substat category
+   * @param category {@link SubstatCategory}
    * @param substat  substat name
    * @return substat value
    */

@@ -46,10 +46,10 @@ public enum Trigger {
   private final TriggerCondition condition;
 
   /**
-   * Associates an equipment slot with its proper name and id.
+   * Associates an equipment slot with its proper name and ID.
    *
    * @param properName proper name
-   * @param id         trigger id
+   * @param id         trigger ID
    * @param condition  {@link TriggerCondition}
    */
   Trigger(String properName, String id, TriggerCondition condition) {

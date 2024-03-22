@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Directory;
+import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.item.ItemCreator;
@@ -24,7 +25,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.17.4
+ * @version 1.17.14
  * @since 1.13.4
  */
 public class Equipment {
@@ -88,7 +89,7 @@ public class Equipment {
         jewelry[1] = ItemReader.decodeItem(scanner.nextLine());
         scanner.close();
       } catch (IOException ex) {
-        Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
+        Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
       }
     }
   }

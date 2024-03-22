@@ -79,7 +79,7 @@ public class ItemCommand implements CommandExecutor {
    */
   private void openMenu(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.CATEGORY, " ");
+    playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");

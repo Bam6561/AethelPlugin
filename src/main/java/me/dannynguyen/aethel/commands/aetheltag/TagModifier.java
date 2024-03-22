@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.rpg.enums.*;
+import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ import java.util.Objects;
  * Used with {@link AethelTagCommand}.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.17.14
  * @since 1.13.9
  */
 class TagModifier {
@@ -198,21 +199,21 @@ class TagModifier {
       String[] tagMeta = tag.split("\\.", 2);
       if (tagMeta.length == 2) {
         try {
-          RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
+          RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
           try {
-            AethelAttributeType.valueOf(tagMeta[1].toUpperCase());
+            AethelAttributeType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
             setAttributeTag(attributeValue);
           } catch (IllegalArgumentException ex) {
-            user.sendMessage(ChatColor.RED + "Aethel attribute does not exist.");
+            user.sendMessage(ChatColor.RED + "Unrecognized Aethel attribute.");
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
+          user.sendMessage(Message.UNRECOGNIZED_EQUIPMENT_SLOT.getMessage());
         }
       } else {
         user.sendMessage(ChatColor.RED + "Did not provide equipment slot and attribute.");
       }
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
   }
 
@@ -227,23 +228,23 @@ class TagModifier {
     String[] tagMeta = tag.split("\\.", 3);
     if (tagMeta.length == 3) {
       try {
-        RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
+        RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
         try {
-          TriggerCondition triggerCondition = Trigger.valueOf(tagMeta[1].toUpperCase()).getCondition();
+          TriggerCondition triggerCondition = Trigger.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
           try {
-            PassiveAbilityType passiveType = PassiveAbilityType.valueOf(tagMeta[2].toUpperCase());
+            PassiveAbilityType passiveType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[2]));
             switch (passiveType.getEffect()) {
               case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
               case CHAIN_DAMAGE -> readPassiveChainDamage(value, triggerCondition);
             }
           } catch (IllegalArgumentException ex) {
-            user.sendMessage(ChatColor.RED + "Passive ability does not exist.");
+            user.sendMessage(ChatColor.RED + "Unrecognized passive ability.");
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Trigger condition does not exist.");
+          user.sendMessage(ChatColor.RED + "Unrecognized trigger condition.");
         }
       } catch (IllegalArgumentException ex) {
-        user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
+        user.sendMessage(Message.UNRECOGNIZED_EQUIPMENT_SLOT.getMessage());
       }
     } else {
       user.sendMessage(ChatColor.RED + "Did not provide equipment slot and passive ability.");
@@ -261,19 +262,19 @@ class TagModifier {
     String[] tagMeta = tag.split("\\.", 2);
     if (tagMeta.length == 2) {
       try {
-        RpgEquipmentSlot.valueOf(tagMeta[0].toUpperCase());
+        RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
         try {
-          ActiveAbilityType activeType = ActiveAbilityType.valueOf(tagMeta[1].toUpperCase());
+          ActiveAbilityType activeType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
           switch (activeType.getEffect()) {
             case MOVEMENT -> readActiveMovement(value);
             case PROJECTION -> readActiveProjection(value);
             case SHATTER -> readActiveShatter(value);
           }
         } catch (IllegalArgumentException ex) {
-          user.sendMessage(ChatColor.RED + "Active ability does not exist.");
+          user.sendMessage(ChatColor.RED + "Unrecognized active ability.");
         }
       } catch (IllegalArgumentException ex) {
-        user.sendMessage(ChatColor.RED + "Equipment slot does not exist.");
+        user.sendMessage(Message.UNRECOGNIZED_EQUIPMENT_SLOT.getMessage());
       }
     } else {
       user.sendMessage(ChatColor.RED + "Did not provide equipment slot and active ability.");
@@ -305,19 +306,19 @@ class TagModifier {
                       int ticks = Integer.parseInt(args[4]);
                       setPassiveTag(chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                      user.sendMessage(Message.INVALID_TICKS.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                    user.sendMessage(Message.INVALID_STACKS.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid chance.");
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -338,19 +339,19 @@ class TagModifier {
                       int ticks = Integer.parseInt(args[4]);
                       setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + stacks + " " + ticks);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                      user.sendMessage(Message.INVALID_TICKS.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                    user.sendMessage(Message.INVALID_STACKS.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid % health.");
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -384,19 +385,19 @@ class TagModifier {
                       double distance = Double.parseDouble(args[4]);
                       setPassiveTag(chance + " " + cooldown + " " + self + " " + damage + " " + distance);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid radius.");
+                      user.sendMessage(Message.INVALID_DISTANCE.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid damage.");
+                    user.sendMessage(Message.INVALID_DAMAGE.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid chance.");
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -417,19 +418,19 @@ class TagModifier {
                       double distance = Double.parseDouble(args[4]);
                       setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + damage + " " + distance);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid radius.");
+                      user.sendMessage(Message.INVALID_DISTANCE.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid damage.");
+                    user.sendMessage(Message.INVALID_DAMAGE.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid % health.");
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -453,10 +454,10 @@ class TagModifier {
           double distance = Double.parseDouble(args[1]);
           setActiveTag(cooldown + " " + distance);
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid distance.");
+          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -480,13 +481,13 @@ class TagModifier {
             int delay = Integer.parseInt(args[2]);
             setActiveTag(cooldown + " " + distance + " " + delay);
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid delay.");
+            user.sendMessage(Message.INVALID_DELAY.getMessage());
           }
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid distance.");
+          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -508,10 +509,10 @@ class TagModifier {
           double radius = Double.parseDouble(args[1]);
           setActiveTag(cooldown + " " + radius);
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid radius.");
+          user.sendMessage(Message.INVALID_RADIUS.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());

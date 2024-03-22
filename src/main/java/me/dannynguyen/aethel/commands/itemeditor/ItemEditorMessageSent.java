@@ -34,7 +34,7 @@ import java.util.*;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.16.0
+ * @version 1.17.14
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -96,7 +96,7 @@ public class ItemEditorMessageSent {
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set Custom Model Data] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid custom model data.");
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
     returnToCosmetic();
   }
@@ -115,7 +115,7 @@ public class ItemEditorMessageSent {
         user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
       }
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid durability/damage.");
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
     returnToCosmetic();
   }
@@ -128,7 +128,7 @@ public class ItemEditorMessageSent {
       ItemRepairCost.setRepairCost(item, Integer.parseInt(e.getMessage()));
       user.sendMessage(ChatColor.GREEN + "[Set Repair Cost] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid repair cost.");
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
     returnToCosmetic();
   }
@@ -172,9 +172,9 @@ public class ItemEditorMessageSent {
         item.setItemMeta(meta);
         user.sendMessage(ChatColor.GREEN + "[Edited Lore]");
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid line.");
+        user.sendMessage(Message.INVALID_LINE.getMessage());
       } catch (IndexOutOfBoundsException ex) {
-        user.sendMessage(ChatColor.RED + "Line does not exist.");
+        user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -193,9 +193,9 @@ public class ItemEditorMessageSent {
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Removed Lore]");
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid line.");
+      user.sendMessage(Message.INVALID_LINE.getMessage());
     } catch (IndexOutOfBoundsException ex) {
-      user.sendMessage(ChatColor.RED + "Line does not exist.");
+      user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
     }
     returnToCosmetic();
   }
@@ -252,7 +252,7 @@ public class ItemEditorMessageSent {
       }
       item.setItemMeta(meta);
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
     returnToAttribute();
   }
@@ -268,7 +268,7 @@ public class ItemEditorMessageSent {
         removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
       }
     } catch (NumberFormatException ex) {
-      user.sendMessage(ChatColor.RED + "Invalid value.");
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
     returnToAethelAttribute();
   }
@@ -322,10 +322,10 @@ public class ItemEditorMessageSent {
             user.sendMessage(ChatColor.RED + "Invalid amplifier.");
           }
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid duration.");
+          user.sendMessage(ChatColor.RED + "Invalid duration");
         }
       } else {
-        user.sendMessage(ChatColor.RED + "Invalid effect.");
+        user.sendMessage(ChatColor.RED + "Invalid effect");
       }
     } else {
       potion.removeCustomEffect(potionEffectType);
@@ -352,8 +352,7 @@ public class ItemEditorMessageSent {
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      String type = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE).toUpperCase();
-      switch (ActiveAbilityType.valueOf(type).getEffect()) {
+      switch (ActiveAbilityType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE))).getEffect()) {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
@@ -412,10 +411,10 @@ public class ItemEditorMessageSent {
           double distance = Double.parseDouble(args[1]);
           setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid distance.");
+          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -437,13 +436,13 @@ public class ItemEditorMessageSent {
             int delay = Integer.parseInt(args[2]);
             setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid delay.");
+            user.sendMessage(Message.INVALID_DELAY.getMessage());
           }
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid distance.");
+          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -463,10 +462,10 @@ public class ItemEditorMessageSent {
           double radius = Double.parseDouble(args[1]);
           setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid radius.");
+          user.sendMessage(Message.INVALID_RADIUS.getMessage());
         }
       } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       }
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -589,7 +588,7 @@ public class ItemEditorMessageSent {
   private void returnToAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
+      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)))).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
     });
   }
@@ -600,7 +599,7 @@ public class ItemEditorMessageSent {
   private void returnToAethelAttribute() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
+      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)))).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
     });
   }
@@ -633,7 +632,7 @@ public class ItemEditorMessageSent {
   private void returnToPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase()), Trigger.valueOf(playerMeta.get(PlayerMeta.CONDITION).toUpperCase())).getMainMenu());
+      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT))), Trigger.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.CONDITION)))).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
     });
   }
@@ -644,7 +643,7 @@ public class ItemEditorMessageSent {
   private void returnToActive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(playerMeta.get(PlayerMeta.SLOT).toUpperCase())).getMainMenu());
+      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)))).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
     });
   }

@@ -26,7 +26,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.14
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -108,7 +108,7 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openCraftingMenu(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.FUTURE, "craft");
+    playerMeta.put(PlayerMeta.FUTURE, RecipeMenu.Action.CRAFT.getId());
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
@@ -122,7 +122,7 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openEditorMenu(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.FUTURE, "edit");
+    playerMeta.put(PlayerMeta.FUTURE, RecipeMenu.Action.EDIT.getId());
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());

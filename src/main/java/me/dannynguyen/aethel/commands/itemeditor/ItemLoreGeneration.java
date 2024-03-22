@@ -31,7 +31,7 @@ import java.util.*;
  * Used with {@link ItemEditorMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.13
+ * @version 1.17.14
  * @since 1.17.13
  */
 class ItemLoreGeneration {
@@ -197,8 +197,8 @@ class ItemLoreGeneration {
       String condition = passiveMeta[1];
       String type = passiveMeta[2];
 
-      Trigger trigger = Trigger.valueOf(condition.toUpperCase());
-      PassiveAbilityEffect abilityEffect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
+      Trigger trigger = Trigger.valueOf(TextFormatter.formatEnum(condition));
+      PassiveAbilityEffect abilityEffect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
       StringBuilder abilityLore = new StringBuilder();
@@ -265,7 +265,7 @@ class ItemLoreGeneration {
       String slot = active.substring(0, active.indexOf("."));
       String type = active.substring(active.indexOf(".") + 1);
 
-      ActiveAbilityType abilityType = ActiveAbilityType.valueOf(type.toUpperCase());
+      ActiveAbilityType abilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type));
       ActiveAbilityEffect abilityEffect = abilityType.getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");

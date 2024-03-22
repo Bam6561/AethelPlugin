@@ -28,17 +28,17 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.14
  * @since 1.7.0
  */
 public class AttributeMenu implements Menu {
   /**
    * Categorized Minecraft attributes.
    */
-  private static final Map<String, Attribute[]> attributeCategories = Map.of(
-      "offense", new Attribute[]{Attribute.GENERIC_ATTACK_DAMAGE, Attribute.GENERIC_ATTACK_SPEED},
-      "defense", new Attribute[]{Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ARMOR, Attribute.GENERIC_ARMOR_TOUGHNESS, Attribute.GENERIC_KNOCKBACK_RESISTANCE},
-      "other", new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK});
+  private static final Map<Category, Attribute[]> attributeCategories = Map.of(
+      Category.OFFENSE, new Attribute[]{Attribute.GENERIC_ATTACK_DAMAGE, Attribute.GENERIC_ATTACK_SPEED},
+      Category.DEFENSE, new Attribute[]{Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ARMOR, Attribute.GENERIC_ARMOR_TOUGHNESS, Attribute.GENERIC_KNOCKBACK_RESISTANCE},
+      Category.MISCELLANEOUS, new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK});
 
   /**
    * GUI.
@@ -113,9 +113,9 @@ public class AttributeMenu implements Menu {
    * Adds attributes.
    */
   private void addAttributes() {
-    addAttributeCategory("offense", 19);
-    addAttributeCategory("defense", 28);
-    addAttributeCategory("other", 37);
+    addAttributeCategory(Category.OFFENSE, 19);
+    addAttributeCategory(Category.DEFENSE, 28);
+    addAttributeCategory(Category.MISCELLANEOUS, 37);
   }
 
   /**
@@ -146,7 +146,7 @@ public class AttributeMenu implements Menu {
    * @param category attribute category
    * @param invSlot  inventory slot
    */
-  private void addAttributeCategory(String category, int invSlot) {
+  private void addAttributeCategory(Category category, int invSlot) {
     for (Attribute attribute : attributeCategories.get(category)) {
       String attributeName = TextFormatter.capitalizePhrase(attribute.name());
       boolean disabled = existingAttributes == null || existingAttributes.get(attribute).isEmpty();
@@ -161,5 +161,25 @@ public class AttributeMenu implements Menu {
       }
       invSlot++;
     }
+  }
+
+  /**
+   * Minecraft attribute categories.
+   */
+  private enum Category {
+    /**
+     * Offensive attributes.
+     */
+    OFFENSE,
+
+    /**
+     * Defensive attributes.
+     */
+    DEFENSE,
+
+    /**
+     * Miscellaneous attributes.
+     */
+    MISCELLANEOUS
   }
 }

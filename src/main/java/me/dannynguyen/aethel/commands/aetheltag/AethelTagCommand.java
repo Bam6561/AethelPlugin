@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.15.6
+ * @version 1.17.14
  * @since 1.2.6
  */
 public class AethelTagCommand implements CommandExecutor {

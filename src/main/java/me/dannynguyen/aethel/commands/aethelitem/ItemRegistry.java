@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
+import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
 import me.dannynguyen.aethel.plugin.interfaces.DataRegistry;
 import me.dannynguyen.aethel.util.InventoryPages;
@@ -23,7 +24,7 @@ import java.util.*;
  * order to load {@link PersistentItem items} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.17.5
+ * @version 1.17.14
  * @since 1.3.2
  */
 public class ItemRegistry implements DataRegistry {
@@ -110,10 +111,10 @@ public class ItemRegistry implements DataRegistry {
         categories.get("All").add(item);
         sortItem(categories, item);
       } else {
-        Bukkit.getLogger().warning("[Aethel] Invalid file: " + file.getName());
+        Bukkit.getLogger().warning(Message.INVALID_FILE.getMessage() + file.getName());
       }
     } catch (FileNotFoundException ex) {
-      Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
     }
   }
 

@@ -28,7 +28,7 @@ import java.util.Map;
  * Used with {@link ItemEditorMessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.17.14
  * @since 1.15.13
  */
 class PassiveTagModifier {
@@ -111,8 +111,8 @@ class PassiveTagModifier {
    * Determines the type of {@link PluginNamespacedKey#PASSIVE_LIST ability tag} to be set.
    */
   protected void interpretKeyToBeSet() {
-    TriggerCondition condition = Trigger.valueOf(this.condition.toUpperCase()).getCondition();
-    PassiveAbilityEffect effect = PassiveAbilityType.valueOf(type.toUpperCase()).getEffect();
+    TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(this.condition)).getCondition();
+    PassiveAbilityEffect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
     switch (condition) {
       case CHANCE_COOLDOWN -> readChanceCooldown(effect);
       case HEALTH_COOLDOWN -> readHpChanceCooldown(effect);
@@ -142,19 +142,19 @@ class PassiveTagModifier {
                       int ticks = Integer.parseInt(args[4]);
                       setKeyStringToList(chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                      user.sendMessage(Message.INVALID_TICKS.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                    user.sendMessage(Message.INVALID_STACKS.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid chance.");
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -175,19 +175,19 @@ class PassiveTagModifier {
                       double distance = Double.parseDouble(args[4]);
                       setKeyStringToList(chance + " " + cooldown + " " + self + " " + damage + " " + distance);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid radius.");
+                      user.sendMessage(Message.INVALID_RADIUS.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid damage.");
+                    user.sendMessage(Message.INVALID_DAMAGE.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid chance.");
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -219,19 +219,19 @@ class PassiveTagModifier {
                       int ticks = Integer.parseInt(args[4]);
                       setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + stacks + " " + ticks);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid ticks.");
+                      user.sendMessage(Message.INVALID_TICKS.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid stacks.");
+                    user.sendMessage(Message.INVALID_STACKS.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false.");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid % health.");
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -252,19 +252,19 @@ class PassiveTagModifier {
                       double distance = Double.parseDouble(args[4]);
                       setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + damage + " " + distance);
                     } catch (NumberFormatException ex) {
-                      user.sendMessage(ChatColor.RED + "Invalid radius.");
+                      user.sendMessage(Message.INVALID_RADIUS.getMessage());
                     }
                   } catch (NumberFormatException ex) {
-                    user.sendMessage(ChatColor.RED + "Invalid damage.");
+                    user.sendMessage(Message.INVALID_DAMAGE.getMessage());
                   }
                 }
-                default -> user.sendMessage(ChatColor.RED + "Invalid true/false");
+                default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
               }
             } catch (NumberFormatException ex) {
-              user.sendMessage(ChatColor.RED + "Invalid cooldown.");
+              user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
             }
           } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid % health.");
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
           }
         } else {
           user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());

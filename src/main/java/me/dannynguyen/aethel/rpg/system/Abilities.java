@@ -11,6 +11,7 @@ import me.dannynguyen.aethel.rpg.enums.ActiveAbilityType;
 import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -23,7 +24,7 @@ import java.util.*;
  * and {@link ActiveAbility active} abilities.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.17.14
  * @since 1.17.9
  */
 public class Abilities {
@@ -96,7 +97,7 @@ public class Abilities {
   public void readPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
     String[] passives = dataContainer.get(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String passive : passives) {
-      RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(passive.substring(0, passive.indexOf(".")).toUpperCase());
+      RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(passive.substring(0, passive.indexOf("."))));
       if (slot == eSlot) {
         addPassives(eSlot, dataContainer, passive);
       }
@@ -113,8 +114,8 @@ public class Abilities {
   private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String passive) {
     NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
     String[] abilityMeta = passive.split("\\.");
-    Trigger trigger = Trigger.valueOf(abilityMeta[1].toUpperCase());
-    PassiveAbilityType abilityType = PassiveAbilityType.valueOf(abilityMeta[2].toUpperCase());
+    Trigger trigger = Trigger.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
+    PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
     slotPassives.get(eSlot).add(new TriggerPassiveType(trigger, abilityType));
     triggerPassives.get(trigger).put(new SlotPassiveType(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, trigger, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
   }

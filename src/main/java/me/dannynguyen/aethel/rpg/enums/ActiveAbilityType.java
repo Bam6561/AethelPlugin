@@ -50,7 +50,7 @@ public enum ActiveAbilityType {
    * Associates an active ability with its {@link ActiveAbilityEffect}.
    *
    * @param properName proper name
-   * @param id         ability id
+   * @param id         ability ID
    * @param effect     {@link ActiveAbilityEffect}
    */
   ActiveAbilityType(String properName, String id, ActiveAbilityEffect effect) {

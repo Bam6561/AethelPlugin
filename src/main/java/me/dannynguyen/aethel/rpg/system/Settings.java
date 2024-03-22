@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Directory;
+import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
@@ -16,7 +17,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
- * @version 1.17.3
+ * @version 1.17.14
  * @since 1.16.4
  */
 public class Settings {
@@ -86,7 +87,7 @@ public class Settings {
         healthActionVisible = Boolean.parseBoolean(settings[1]);
         scanner.close();
       } catch (IOException ex) {
-        Bukkit.getLogger().warning("[Aethel] Unable to read file: " + file.getName());
+        Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
       }
     }
   }
