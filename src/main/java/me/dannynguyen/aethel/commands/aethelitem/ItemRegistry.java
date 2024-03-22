@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.plugin.interfaces.DataRegistry;
 import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
@@ -150,14 +150,14 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Sorts an item into a category based on its {@link PluginNamespacedKey#ITEM_CATEGORY}.
+   * Sorts an item into a category based on its {@link PluginKey#ITEM_CATEGORY}.
    *
    * @param categories {@link PersistentItem item} categories
    * @param item       interacting item
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
     PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    NamespacedKey itemCategory = PluginNamespacedKey.ITEM_CATEGORY.getNamespacedKey();
+    NamespacedKey itemCategory = PluginKey.ITEM_CATEGORY.getNamespacedKey();
     if (data.has(itemCategory, PersistentDataType.STRING)) {
       String category = data.get(itemCategory, PersistentDataType.STRING);
       if (categories.containsKey(category)) {

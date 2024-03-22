@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * {@link PassiveAbilityType} {@link Trigger} conditions.
+ * {@link PassiveType} {@link Trigger} conditions.
  *
  * @author Danny Nguyen
  * @version 1.17.7

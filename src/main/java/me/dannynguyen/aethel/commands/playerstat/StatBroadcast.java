@@ -3,8 +3,8 @@ package me.dannynguyen.aethel.commands.playerstat;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.util.ItemReader;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,13 +19,13 @@ import java.util.UUID;
 /**
  * Represents the retrieval and broadcast of a player statistic.
  * <p>
- * Used with {@link PlayerStatMenuClick}.
+ * Used with {@link StatMenuClick}.
  *
  * @author Danny Nguyen
  * @version 1.17.12
  * @since 1.4.10
  */
-class StatMessage {
+class StatBroadcast {
   /**
    * Player who requested the value.
    */
@@ -62,7 +62,7 @@ class StatMessage {
    * @param e    inventory click event
    * @param user user
    */
-  StatMessage(@NotNull InventoryClickEvent e, @NotNull Player user) {
+  StatBroadcast(@NotNull InventoryClickEvent e, @NotNull Player user) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(Objects.requireNonNull(e, "Null inventory click event").getCurrentItem()));
     this.uuid = user.getUniqueId();
@@ -72,7 +72,7 @@ class StatMessage {
   }
 
   /**
-   * Sends a {@link StatCategory statistic} value.
+   * Sends a {@link StatisticCategory statistic} value.
    */
   protected void sendStat() {
     Statistic stat = Statistic.valueOf(TextFormatter.formatEnum(requestedStat));
@@ -84,7 +84,7 @@ class StatMessage {
   }
 
   /**
-   * Sends a {@link SubstatCategory substatistic} value.
+   * Sends a {@link SubstatisticCategory substatistic} value.
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
@@ -149,7 +149,7 @@ class StatMessage {
   /**
    * Retrieves the requested player's substat values.
    *
-   * @param category {@link SubstatCategory}
+   * @param category {@link SubstatisticCategory}
    * @param substat  substat name
    * @return substat value
    */

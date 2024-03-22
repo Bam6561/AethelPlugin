@@ -21,11 +21,11 @@ import java.util.Map;
  * @version 1.14.5
  * @since 1.4.6
  */
-public class DeveloperModeCommand implements CommandExecutor {
+public class DeveloperCommand implements CommandExecutor {
   /**
    * No parameter constructor.
    */
-  public DeveloperModeCommand() {
+  public DeveloperCommand() {
   }
 
   /**

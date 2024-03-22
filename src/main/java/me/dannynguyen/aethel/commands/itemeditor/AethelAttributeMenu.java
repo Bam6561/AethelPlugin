@@ -3,13 +3,13 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
 import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a menu that edits an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
+ * Represents a menu that edits an item's {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
  * @version 1.17.14
@@ -66,7 +66,7 @@ public class AethelAttributeMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
+   * ItemStack {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
    */
   private final Map<String, List<String>> existingAethelAttributes;
 
@@ -144,12 +144,12 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
+   * Maps an item's {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
    *
-   * @return item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes} map
+   * @return item's {@link PluginKey#ATTRIBUTE_LIST Aethel attributes} map
    */
   private Map<String, List<String>> mapAethelAttributes() {
-    NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
+    NamespacedKey listKey = PluginKey.ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasAttributes) {
       Map<String, List<String>> existingAethelAttributes = new HashMap<>();

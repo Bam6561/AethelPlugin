@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.aetheltag;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.rpg.enums.*;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents an item's {@link PluginNamespacedKey Aethel tag} set or remove operation.
+ * Represents an item's {@link PluginKey Aethel tag} set or remove operation.
  * <p>
- * Used with {@link AethelTagCommand}.
+ * Used with {@link TagCommand}.
  *
  * @author Danny Nguyen
  * @version 1.17.14
@@ -76,7 +76,7 @@ class TagModifier {
   }
 
   /**
-   * Removes the {@link PluginNamespacedKey Aethel tag} from the item.
+   * Removes the {@link PluginKey Aethel tag} from the item.
    *
    * @return if the tag was removed
    */
@@ -98,7 +98,7 @@ class TagModifier {
   }
 
   /**
-   * Sets the {@link PluginNamespacedKey Aethel tag} to the item.
+   * Sets the {@link PluginKey Aethel tag} to the item.
    *
    * @param value tag value
    */
@@ -130,11 +130,11 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST attribute} tag.
+   * Removes an item's {@link PluginKey#ATTRIBUTE_LIST attribute} tag.
    */
   private void removeAttributeTag() {
     if (!tag.equals("attribute.list")) {
-      NamespacedKey listKey = PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey();
+      NamespacedKey listKey = PluginKey.ATTRIBUTE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         tag = tag.substring(10);
         removeKeyFromList(listKey);
@@ -149,11 +149,11 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's {@link PluginNamespacedKey#PASSIVE_LIST passive} tag.
+   * Removes an item's {@link PluginKey#PASSIVE_LIST passive} tag.
    */
   private void removePassiveTag() {
     if (!tag.equals("passive.list")) {
-      NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+      NamespacedKey listKey = PluginKey.PASSIVE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         tag = tag.substring(8);
         removeKeyFromList(listKey);
@@ -168,11 +168,11 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's {@link PluginNamespacedKey#ACTIVE_LIST active} tag.
+   * Removes an item's {@link PluginKey#ACTIVE_LIST active} tag.
    */
   private void removeActiveTag() {
     if (!tag.equals("active.list")) {
-      NamespacedKey listKey = PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey();
+      NamespacedKey listKey = PluginKey.ACTIVE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         tag = tag.substring(7);
         removeKeyFromList(listKey);
@@ -187,7 +187,7 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the {@link PluginNamespacedKey#ATTRIBUTE_LIST attribute}
+   * Checks whether the {@link PluginKey#ATTRIBUTE_LIST attribute}
    * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
@@ -232,7 +232,7 @@ class TagModifier {
         try {
           TriggerCondition triggerCondition = Trigger.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
           try {
-            PassiveAbilityType passiveType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[2]));
+            PassiveType passiveType = PassiveType.valueOf(TextFormatter.formatEnum(tagMeta[2]));
             switch (passiveType.getEffect()) {
               case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
               case CHAIN_DAMAGE -> readPassiveChainDamage(value, triggerCondition);
@@ -264,7 +264,7 @@ class TagModifier {
       try {
         RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
         try {
-          ActiveAbilityType activeType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
+          ActiveType activeType = ActiveType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
           switch (activeType.getEffect()) {
             case MOVEMENT -> readActiveMovement(value);
             case PROJECTION -> readActiveProjection(value);
@@ -283,7 +283,7 @@ class TagModifier {
 
   /**
    * Checks if the input was formatted correctly before
-   * setting the {@link PassiveAbilityEffect#STACK_INSTANCE}.
+   * setting the {@link PassiveEffect#STACK_INSTANCE}.
    *
    * @param value     tag value
    * @param condition {@link TriggerCondition}
@@ -362,7 +362,7 @@ class TagModifier {
 
   /**
    * Checks if the input was formatted correctly before
-   * setting the {@link PassiveAbilityEffect#CHAIN_DAMAGE}.
+   * setting the {@link PassiveEffect#CHAIN_DAMAGE}.
    *
    * @param value     tag value
    * @param condition {@link TriggerCondition}
@@ -441,7 +441,7 @@ class TagModifier {
 
   /**
    * Checks if the input was formatted correctly before
-   * setting the {@link ActiveAbilityEffect#MOVEMENT}.
+   * setting the {@link ActiveEffect#MOVEMENT}.
    *
    * @param value tag value
    */
@@ -466,7 +466,7 @@ class TagModifier {
 
   /**
    * Checks if the input was formatted correctly before
-   * setting the {@link ActiveAbilityEffect#PROJECTION}.
+   * setting the {@link ActiveEffect#PROJECTION}.
    *
    * @param value tag value
    */
@@ -496,7 +496,7 @@ class TagModifier {
 
   /**
    * Checks if the input was formatted correctly before
-   * setting the {@link ActiveAbilityEffect#SHATTER}.
+   * setting the {@link ActiveEffect#SHATTER}.
    *
    * @param value tag value
    */
@@ -520,14 +520,14 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST attribute} tag.
+   * Sets an item's {@link PluginKey#ATTRIBUTE_LIST attribute} tag.
    *
    * @param value tag value
    */
   private void setAttributeTag(Double value) {
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + tag);
     dataContainer.set(tagKey, PersistentDataType.DOUBLE, value);
-    setKeyToList(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
+    setKeyToList(PluginKey.ATTRIBUTE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
@@ -540,7 +540,7 @@ class TagModifier {
   private void setPassiveTag(String value) {
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + tag);
     dataContainer.set(tagKey, PersistentDataType.STRING, value);
-    setKeyToList(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey());
+    setKeyToList(PluginKey.PASSIVE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
@@ -553,7 +553,7 @@ class TagModifier {
   private void setActiveTag(String value) {
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + tag);
     dataContainer.set(tagKey, PersistentDataType.STRING, value);
-    setKeyToList(PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+    setKeyToList(PluginKey.ACTIVE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }

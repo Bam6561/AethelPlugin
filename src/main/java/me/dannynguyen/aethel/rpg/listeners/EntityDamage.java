@@ -2,14 +2,14 @@ package me.dannynguyen.aethel.rpg.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
+import me.dannynguyen.aethel.rpg.ability.SlotPassive;
 import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
 import me.dannynguyen.aethel.rpg.system.RpgPlayer;
 import me.dannynguyen.aethel.rpg.system.Status;
-import me.dannynguyen.aethel.util.item.ItemDurability;
+import me.dannynguyen.aethel.util.ItemDurability;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -109,7 +109,7 @@ public class EntityDamage implements Listener {
    */
   private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-      Map<SlotPassiveType, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAbilities().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
+      Map<SlotPassive, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAbilities().getTriggerPassives().get(Trigger.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
         if (e.getEntity() instanceof LivingEntity damagee) {
           Random random = new Random();
@@ -140,7 +140,7 @@ public class EntityDamage implements Listener {
    * @param damagee interacting player
    */
   private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
-    Map<SlotPassiveType, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAbilities().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
+    Map<SlotPassive, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAbilities().getTriggerPassives().get(Trigger.DAMAGE_TAKEN);
     if (!damageTakenTriggers.isEmpty()) {
       if (e.getDamager() instanceof LivingEntity damager) {
         Random random = new Random();

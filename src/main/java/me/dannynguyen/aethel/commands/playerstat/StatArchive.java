@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,64 +20,64 @@ import java.util.*;
  * @version 1.17.14
  * @since 1.4.8
  */
-public class PlayerStatRecord {
+public class StatArchive {
   /**
-   * {@link StatCategory Stat categories} represented by groups of inventories.
+   * {@link StatisticCategory Stat categories} represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    */
-  private final Map<StatCategory, Inventory> statCategories = createStatCategoryPages();
+  private final Map<StatisticCategory, Inventory> statCategories = createStatCategoryPages();
 
   /**
-   * {@link SubstatCategory Substat categories} represented by groups of inventories.
+   * {@link SubstatisticCategory Substat categories} represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    */
-  private final Map<SubstatCategory, List<Inventory>> substatCategories = createSubstatCategoryPages();
+  private final Map<SubstatisticCategory, List<Inventory>> substatCategories = createSubstatCategoryPages();
 
   /**
    * No parameter constructor.
    */
-  public PlayerStatRecord() {
+  public StatArchive() {
   }
 
   /**
-   * Creates pages of {@link StatCategory stat categories}.
+   * Creates pages of {@link StatisticCategory stat categories}.
    *
-   * @return pages of {@link StatCategory stat categories}
+   * @return pages of {@link StatisticCategory stat categories}
    */
-  private Map<StatCategory, Inventory> createStatCategoryPages() {
-    Map<StatCategory, Inventory> statCategories = new HashMap<>();
-    for (StatCategory statCategory : StatCategory.values()) {
+  private Map<StatisticCategory, Inventory> createStatCategoryPages() {
+    Map<StatisticCategory, Inventory> statCategories = new HashMap<>();
+    for (StatisticCategory statisticCategory : StatisticCategory.values()) {
       int i = 9;
       Inventory inv = Bukkit.createInventory(null, 54);
-      for (Statistic stat : statCategory.getStatistics()) {
+      for (Statistic stat : statisticCategory.getStatistics()) {
         inv.setItem(i, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + TextFormatter.capitalizePhrase(stat.name())));
         i++;
-        statCategories.put(statCategory, inv);
+        statCategories.put(statisticCategory, inv);
       }
     }
     return statCategories;
   }
 
   /**
-   * Creates pages of {@link SubstatCategory substat categories}.
+   * Creates pages of {@link SubstatisticCategory substat categories}.
    *
-   * @return pages of {@link SubstatCategory substat categories}
+   * @return pages of {@link SubstatisticCategory substat categories}
    */
-  private Map<SubstatCategory, List<Inventory>> createSubstatCategoryPages() {
-    Map<SubstatCategory, List<Inventory>> substatCategories = new HashMap<>(Map.of(SubstatCategory.MATERIALS, new ArrayList<>(), SubstatCategory.ENTITY_TYPES, new ArrayList<>()));
+  private Map<SubstatisticCategory, List<Inventory>> createSubstatCategoryPages() {
+    Map<SubstatisticCategory, List<Inventory>> substatCategories = new HashMap<>(Map.of(SubstatisticCategory.MATERIALS, new ArrayList<>(), SubstatisticCategory.ENTITY_TYPES, new ArrayList<>()));
     createMaterialPages(substatCategories);
     createEntityTypeStatPages(substatCategories);
     return substatCategories;
   }
 
   /**
-   * Creates pages of {@link SubstatCategory#MATERIALS}.
+   * Creates pages of {@link SubstatisticCategory#MATERIALS}.
    *
    * @param substatCategories map to add pages to
    */
-  private void createMaterialPages(Map<SubstatCategory, List<Inventory>> substatCategories) {
+  private void createMaterialPages(Map<SubstatisticCategory, List<Inventory>> substatCategories) {
     List<Material> materials = sortMaterials();
     int numberOfMaterials = materials.size();
     int numberOfPages = InventoryPages.calculateTotalPages(numberOfMaterials);
@@ -95,7 +95,7 @@ public class PlayerStatRecord {
         inv.setItem(invSlot, ItemCreator.createItem(Material.valueOf(material), ChatColor.WHITE + materialName));
         invSlot++;
       }
-      substatCategories.get(SubstatCategory.MATERIALS).add(inv);
+      substatCategories.get(SubstatisticCategory.MATERIALS).add(inv);
 
       // Indices to use for the next page (if it exists)
       startIndex += 45;
@@ -104,11 +104,11 @@ public class PlayerStatRecord {
   }
 
   /**
-   * Creates pages of {@link SubstatCategory#ENTITY_TYPES}.
+   * Creates pages of {@link SubstatisticCategory#ENTITY_TYPES}.
    *
    * @param substatCategories map to add pages to
    */
-  private void createEntityTypeStatPages(Map<SubstatCategory, List<Inventory>> substatCategories) {
+  private void createEntityTypeStatPages(Map<SubstatisticCategory, List<Inventory>> substatCategories) {
     List<EntityType> entityTypes = sortEntityTypes();
     int numberOfEntityTypes = entityTypes.size();
     int numberOfPages = InventoryPages.calculateTotalPages(numberOfEntityTypes);
@@ -128,7 +128,7 @@ public class PlayerStatRecord {
         inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entity));
         j++;
       }
-      substatCategories.get(SubstatCategory.ENTITY_TYPES).add(inv);
+      substatCategories.get(SubstatisticCategory.ENTITY_TYPES).add(inv);
 
       // Indices to use for the next page (if it exists)
       startIndex += 45;
@@ -166,22 +166,22 @@ public class PlayerStatRecord {
   }
 
   /**
-   * Gets {@link StatCategory stat categories}.
+   * Gets {@link StatisticCategory stat categories}.
    *
-   * @return {@link StatCategory stat categories}
+   * @return {@link StatisticCategory stat categories}
    */
   @NotNull
-  protected Map<StatCategory, Inventory> getStatCategories() {
+  protected Map<StatisticCategory, Inventory> getStatCategories() {
     return this.statCategories;
   }
 
   /**
-   * Gets {@link SubstatCategory substat categories}.
+   * Gets {@link SubstatisticCategory substat categories}.
    *
-   * @return {@link SubstatCategory substat categories}
+   * @return {@link SubstatisticCategory substat categories}
    */
   @NotNull
-  protected Map<SubstatCategory, List<Inventory>> getSubstatCategories() {
+  protected Map<SubstatisticCategory, List<Inventory>> getSubstatCategories() {
     return this.substatCategories;
   }
 }

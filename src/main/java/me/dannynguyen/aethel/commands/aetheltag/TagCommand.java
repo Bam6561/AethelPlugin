@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,26 +13,26 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Command invocation that allows the user to retrieve, set, or remove
- * {@link PluginNamespacedKey Aethel tags} to their main hand item.
+ * {@link PluginKey Aethel tags} to their main hand item.
  * <p>
  * Registered through {@link me.dannynguyen.aethel.Plugin}.
  * <p>
  * Parameters:
  * <ul>
- *  <li>"get", "g": reads the item's {@link PluginNamespacedKey tags}
- *  <li>"set", "s": sets the item's {@link PluginNamespacedKey tag}
- *  <li>"remove", "r": removes the item's {@link PluginNamespacedKey tag}
+ *  <li>"get", "g": reads the item's {@link PluginKey tags}
+ *  <li>"set", "s": sets the item's {@link PluginKey tag}
+ *  <li>"remove", "r": removes the item's {@link PluginKey tag}
  * </ul>
  *
  * @author Danny Nguyen
  * @version 1.17.14
  * @since 1.2.6
  */
-public class AethelTagCommand implements CommandExecutor {
+public class TagCommand implements CommandExecutor {
   /**
    * No parameter constructor.
    */
-  public AethelTagCommand() {
+  public TagCommand() {
   }
 
   /**
@@ -100,7 +100,7 @@ public class AethelTagCommand implements CommandExecutor {
   }
 
   /**
-   * Responds with the item's {@link PluginNamespacedKey Aethel tags}.
+   * Responds with the item's {@link PluginKey Aethel tags}.
    *
    * @param user user
    * @param item main hand item
@@ -115,10 +115,10 @@ public class AethelTagCommand implements CommandExecutor {
   }
 
   /**
-   * Removes the {@link PluginNamespacedKey Aethel tag} from the item.
+   * Removes the {@link PluginKey Aethel tag} from the item.
    *
    * @param user user
-   * @param tag  {@link PluginNamespacedKey Aethel tag} to be removed
+   * @param tag  {@link PluginKey Aethel tag} to be removed
    * @param item main hand item
    */
   private void removeAethelTag(Player user, String tag, ItemStack item) {
@@ -130,7 +130,7 @@ public class AethelTagCommand implements CommandExecutor {
   }
 
   /**
-   * Sets the {@link PluginNamespacedKey Aethel tag} to the item.
+   * Sets the {@link PluginKey Aethel tag} to the item.
    *
    * @param user user
    * @param args user provided parameters

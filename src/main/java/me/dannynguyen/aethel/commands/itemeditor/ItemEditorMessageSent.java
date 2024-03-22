@@ -2,12 +2,13 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.*;
-import me.dannynguyen.aethel.rpg.enums.ActiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.ActiveEffect;
+import me.dannynguyen.aethel.rpg.enums.ActiveType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.util.ItemDurability;
+import me.dannynguyen.aethel.util.ItemRepairCost;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemDurability;
-import me.dannynguyen.aethel.util.item.ItemRepairCost;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -258,14 +259,14 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute} modifier.
+   * Sets or removes an item's {@link PluginKey#ATTRIBUTE_LIST Aethel attribute} modifier.
    */
   public void setAethelAttribute() {
     try {
       if (!e.getMessage().equals("-")) {
-        setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), Double.parseDouble(e.getMessage()), PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
+        setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), Double.parseDouble(e.getMessage()), PluginKey.ATTRIBUTE_LIST.getNamespacedKey());
       } else {
-        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey());
+        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), PluginKey.ATTRIBUTE_LIST.getNamespacedKey());
       }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
@@ -336,7 +337,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link PluginNamespacedKey#PASSIVE_LIST passive ability}.
+   * Sets or removes an item's {@link PluginKey#PASSIVE_LIST passive ability}.
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
@@ -348,23 +349,23 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link PluginNamespacedKey#ACTIVE_LIST active ability}.
+   * Sets or removes an item's {@link PluginKey#ACTIVE_LIST active ability}.
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      switch (ActiveAbilityType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE))).getEffect()) {
+      switch (ActiveType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE))).getEffect()) {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
       }
     } else {
-      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), PluginKey.ACTIVE_LIST.getNamespacedKey());
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActive);
   }
 
   /**
-   * Sets or removes an item's {@link PluginNamespacedKey Aethel tag}.
+   * Sets or removes an item's {@link PluginKey Aethel tag}.
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -400,7 +401,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect#MOVEMENT}.
+   * {@link ActiveEffect#MOVEMENT}.
    */
   private void readActiveMovement() {
     String[] args = e.getMessage().split(" ");
@@ -409,7 +410,7 @@ public class ItemEditorMessageSent {
         int cooldown = Integer.parseInt(args[0]);
         try {
           double distance = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, PluginKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
@@ -423,7 +424,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect#PROJECTION}.
+   * {@link ActiveEffect#PROJECTION}.
    */
   private void readActiveProjection() {
     String[] args = e.getMessage().split(" ");
@@ -434,7 +435,7 @@ public class ItemEditorMessageSent {
           double distance = Double.parseDouble(args[1]);
           try {
             int delay = Integer.parseInt(args[2]);
-            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, PluginKey.ACTIVE_LIST.getNamespacedKey());
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_DELAY.getMessage());
           }
@@ -451,7 +452,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link me.dannynguyen.aethel.rpg.enums.ActiveAbilityEffect#SHATTER}.
+   * {@link ActiveEffect#SHATTER}.
    */
   private void readActiveShatter() {
     String[] args = e.getMessage().split(" ");
@@ -460,7 +461,7 @@ public class ItemEditorMessageSent {
         int cooldown = Integer.parseInt(args[0]);
         try {
           double radius = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey());
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, PluginKey.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_RADIUS.getMessage());
         }
@@ -477,7 +478,7 @@ public class ItemEditorMessageSent {
    *
    * @param keyHeader {@link KeyHeader}
    * @param keyValue  key value
-   * @param listKey   {@link PluginNamespacedKey list key}
+   * @param listKey   {@link PluginKey list key}
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -509,7 +510,7 @@ public class ItemEditorMessageSent {
    *
    * @param keyHeader {@link KeyHeader}
    * @param keyValue  key value
-   * @param listKey   {@link PluginNamespacedKey list key}
+   * @param listKey   {@link PluginKey list key}
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -542,7 +543,7 @@ public class ItemEditorMessageSent {
    * If the list is empty after the operation, the list is also removed.
    *
    * @param keyHeader {@link KeyHeader}
-   * @param listKey   {@link PluginNamespacedKey list key}
+   * @param listKey   {@link PluginKey list key}
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);

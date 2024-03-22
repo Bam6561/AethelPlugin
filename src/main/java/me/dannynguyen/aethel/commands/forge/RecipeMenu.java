@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.plugin.enums.PlayerHead;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.item.ItemCreator;
+import me.dannynguyen.aethel.util.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.7
  * @since 1.11.9
  **/
-public enum PluginNamespacedKey {
+public enum PluginKey {
   /**
    * Item {@link me.dannynguyen.aethel.rpg.system.AethelAttributes} list.
    */
@@ -52,7 +52,7 @@ public enum PluginNamespacedKey {
    *
    * @param namespacedKey namespaced key
    */
-  PluginNamespacedKey(NamespacedKey namespacedKey) {
+  PluginKey(NamespacedKey namespacedKey) {
     this.namespacedKey = namespacedKey;
   }
 

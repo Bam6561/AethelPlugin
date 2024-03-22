@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.plugin.enums;
 
+import me.dannynguyen.aethel.commands.DeveloperCommand;
+
 /**
  * Plugin player metadata.
  *
@@ -19,7 +21,7 @@ public enum PlayerMeta {
   CATEGORY,
 
   /**
-   * {@link me.dannynguyen.aethel.commands.DeveloperModeCommand}.
+   * {@link DeveloperCommand}.
    */
   DEVELOPER,
 

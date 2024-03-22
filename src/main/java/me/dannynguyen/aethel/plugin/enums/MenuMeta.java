@@ -86,7 +86,7 @@ public enum MenuMeta {
   ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor.minecraft_attribute"),
 
   /**
-   * Edit item {@link PluginNamespacedKey#ATTRIBUTE_LIST}.
+   * Edit item {@link PluginKey#ATTRIBUTE_LIST}.
    */
   ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor.aethel_attribute"),
 
@@ -101,17 +101,17 @@ public enum MenuMeta {
   ITEMEDITOR_POTION("itemeditor.potion"),
 
   /**
-   * Edit item {@link PluginNamespacedKey#PASSIVE_LIST}.
+   * Edit item {@link PluginKey#PASSIVE_LIST}.
    */
   ITEMEDITOR_PASSIVE("itemeditor.passive"),
 
   /**
-   * Edit item {@link PluginNamespacedKey#ACTIVE_LIST}.
+   * Edit item {@link PluginKey#ACTIVE_LIST}.
    */
   ITEMEDITOR_ACTIVE("itemeditor.active"),
 
   /**
-   * Edit item {@link PluginNamespacedKey Aethel tags}.
+   * Edit item {@link PluginKey Aethel tags}.
    */
   ITEMEDITOR_TAG("itemeditor.tag"),
 

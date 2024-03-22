@@ -7,9 +7,10 @@ import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.forge.RecipeMenu;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
-import me.dannynguyen.aethel.commands.playerstat.PlayerStatMenuClick;
+import me.dannynguyen.aethel.commands.playerstat.StatCommand;
+import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
@@ -190,7 +191,7 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Determines which {@link me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand}
+   * Determines which {@link StatCommand}
    * menu is being interacting with.
    *
    * @param e       inventory click event
@@ -199,7 +200,7 @@ public class MenuClick implements Listener {
   private void interpretPlayerStat(InventoryClickEvent e, String[] invType) {
     if (e.getClickedInventory().getType() == InventoryType.CHEST) {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-        PlayerStatMenuClick click = new PlayerStatMenuClick(e);
+        StatMenuClick click = new StatMenuClick(e);
         switch (invType[1]) {
           case "category" -> click.interpretMenuClick();
           case "stat" -> click.interpretStatClick();

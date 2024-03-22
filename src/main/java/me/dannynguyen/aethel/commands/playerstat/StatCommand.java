@@ -22,7 +22,7 @@ import java.util.Map;
  * <p>
  * Parameters:
  * <ul>
- *   <li>"": opens a {@link PlayerStatMenu}
+ *   <li>"": opens a {@link StatMenu}
  *   <li>"past", "p": opens a {@link PastStatMenu} with the last 27 shown stats
  * </ul>
  *
@@ -30,11 +30,11 @@ import java.util.Map;
  * @version 1.14.5
  * @since 1.4.7
  */
-public class PlayerStatCommand implements CommandExecutor {
+public class StatCommand implements CommandExecutor {
   /**
    * No parameter constructor.
    */
-  public PlayerStatCommand() {
+  public StatCommand() {
   }
 
   /**
@@ -62,7 +62,7 @@ public class PlayerStatCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly
-   * before opening the player's {@link PlayerStatMenu}.
+   * before opening the player's {@link StatMenu}.
    *
    * @param user user
    * @param args user provided parameters
@@ -76,7 +76,7 @@ public class PlayerStatCommand implements CommandExecutor {
   }
 
   /**
-   * Either opens a {@link PlayerStatMenu} belonging
+   * Either opens a {@link StatMenu} belonging
    * to another player or opens a {@link PastStatMenu}.
    *
    * @param user      user
@@ -92,19 +92,19 @@ public class PlayerStatCommand implements CommandExecutor {
   }
 
   /**
-   * Opens a {@link PlayerStatMenu} belonging to the user.
+   * Opens a {@link StatMenu} belonging to the user.
    *
    * @param user user
    */
   private void openPlayerStatSelf(Player user) {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     playerMeta.put(PlayerMeta.PLAYER, user.getName());
-    user.openInventory(new PlayerStatMenu(user, user.getName()).getMainMenu());
+    user.openInventory(new StatMenu(user, user.getName()).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
   }
 
   /**
-   * Opens a {@link PlayerStatMenu} belonging to another player.
+   * Opens a {@link StatMenu} belonging to another player.
    *
    * @param user  user
    * @param owner requested player's name
@@ -114,7 +114,7 @@ public class PlayerStatCommand implements CommandExecutor {
     if (player.hasPlayedBefore()) {
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
       playerMeta.put(PlayerMeta.PLAYER, player.getName());
-      user.openInventory(new PlayerStatMenu(user, player.getName()).getMainMenu());
+      user.openInventory(new StatMenu(user, player.getName()).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     } else {
       user.sendMessage(ChatColor.RED + owner + " has never played on this server.");

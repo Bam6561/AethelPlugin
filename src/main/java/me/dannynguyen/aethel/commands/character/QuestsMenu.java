@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
 import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.item.ItemCreator;
+import me.dannynguyen.aethel.util.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

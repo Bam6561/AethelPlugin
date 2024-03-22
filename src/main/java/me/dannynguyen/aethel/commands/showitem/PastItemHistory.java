@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.showitem;
 
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

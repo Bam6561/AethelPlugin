@@ -3,13 +3,13 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.enums.ActiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.ActiveType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.InventoryPages;
+import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,7 +26,7 @@ import java.util.*;
 
 /**
  * Represents a menu that allows the user to edit an item's
- * {@link PluginNamespacedKey#ACTIVE_LIST active abilities}.
+ * {@link PluginKey#ACTIVE_LIST active abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -59,7 +59,7 @@ public class ActiveMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack {@link PluginNamespacedKey#ACTIVE_LIST active abilities}.
+   * ItemStack {@link PluginKey#ACTIVE_LIST active abilities}.
    */
   private final Map<String, List<String>> existingActives;
 
@@ -90,7 +90,7 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with {@link ActiveAbilityType}.
+   * Sets the menu to display interactions with {@link ActiveType}.
    *
    * @return Active menu
    */
@@ -104,12 +104,12 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Adds {@link ActiveAbilityType active abilities}.
+   * Adds {@link ActiveType active abilities}.
    */
   private void addActives() {
     int invSlot = 18;
     if (existingActives != null) {
-      for (ActiveAbilityType activeType : ActiveAbilityType.values()) {
+      for (ActiveType activeType : ActiveType.values()) {
         String activeName = activeType.getProperName();
         String activeId = activeType.getId();
         boolean enabled = existingActives.containsKey(activeId);
@@ -127,7 +127,7 @@ public class ActiveMenu implements Menu {
         invSlot++;
       }
     } else {
-      for (ActiveAbilityType activeType : ActiveAbilityType.values()) {
+      for (ActiveType activeType : ActiveType.values()) {
         menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + activeType.getProperName()));
         invSlot++;
       }
@@ -156,12 +156,12 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link PluginNamespacedKey#ACTIVE_LIST active abilities}.
+   * Maps an item's {@link PluginKey#ACTIVE_LIST active abilities}.
    *
-   * @return item's {@link PluginNamespacedKey#ACTIVE_LIST actives} map
+   * @return item's {@link PluginKey#ACTIVE_LIST actives} map
    */
   private Map<String, List<String>> mapActives() {
-    NamespacedKey listKey = PluginNamespacedKey.ACTIVE_LIST.getNamespacedKey();
+    NamespacedKey listKey = PluginKey.ACTIVE_LIST.getNamespacedKey();
     boolean hasActives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasActives) {
       Map<String, List<String>> existingActives = new HashMap<>();

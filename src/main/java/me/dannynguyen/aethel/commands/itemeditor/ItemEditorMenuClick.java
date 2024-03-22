@@ -4,11 +4,11 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
 import me.dannynguyen.aethel.rpg.enums.*;
+import me.dannynguyen.aethel.util.ItemReader;
 import me.dannynguyen.aethel.util.TextFormatter;
-import me.dannynguyen.aethel.util.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -112,7 +112,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
       case 45 -> addLore();
       case 46 -> editLore();
       case 47 -> removeLore();
-      case 48 -> new ItemLoreGeneration(user, menu, item).generateLore();
+      case 48 -> new LoreGeneration(user, menu, item).generateLore();
       case 41, 42, 43, 44, 50, 51, 52, 53 -> toggleItemFlag();
     }
   }
@@ -139,7 +139,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
 
   /**
    * Either changes the {@link RpgEquipmentSlot} mode or sets an
-   * item's {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attribute}.
+   * item's {@link PluginKey#ATTRIBUTE_LIST Aethel attribute}.
    */
   public void interpretAethelAttributeClick() {
     switch (e.getSlot()) {
@@ -186,7 +186,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Sets an item's {@link PluginNamespacedKey#PASSIVE_LIST passive ability}.
+   * Sets an item's {@link PluginKey#PASSIVE_LIST passive ability}.
    */
   public void interpretPassiveClick() {
     switch (e.getSlot()) {
@@ -210,7 +210,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Sets an item's {@link PluginNamespacedKey#ACTIVE_LIST active ability}.
+   * Sets an item's {@link PluginKey#ACTIVE_LIST active ability}.
    */
   public void interpretActiveClick() {
     switch (e.getSlot()) {
@@ -230,7 +230,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Sets an item's {@link PluginNamespacedKey Aethel tag}.
+   * Sets an item's {@link PluginKey Aethel tag}.
    */
   public void interpretTagClick() {
     switch (e.getSlot()) {
@@ -465,7 +465,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
 
   /**
    * Sets the user's interacting {@link RpgEquipmentSlot} for
-   * {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes}.
+   * {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */
@@ -479,7 +479,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
 
   /**
    * Sets the user's interacting {@link RpgEquipmentSlot} for
-   * {@link PluginNamespacedKey#PASSIVE_LIST passive abilities}.
+   * {@link PluginKey#PASSIVE_LIST passive abilities}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */
@@ -492,7 +492,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
 
   /**
    * Sets the user's interacting {@link Trigger} for
-   * {@link PluginNamespacedKey#PASSIVE_LIST passive abilities}.
+   * {@link PluginKey#PASSIVE_LIST passive abilities}.
    *
    * @param trigger {@link Trigger}
    */
@@ -505,7 +505,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
 
   /**
    * Sets the user's interacting {@link RpgEquipmentSlot}
-   * for {@link PluginNamespacedKey#ACTIVE_LIST active abilities}.
+   * for {@link PluginKey#ACTIVE_LIST active abilities}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */
@@ -561,7 +561,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Determines the {@link PassiveAbilityType} to be set and prompts the user for an input.
+   * Determines the {@link PassiveType} to be set and prompts the user for an input.
    */
   private void readPassive() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
@@ -570,25 +570,25 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String passive = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + trigger.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + trigger.getCondition().getData());
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbilityType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(passive));
     awaitMessageResponse(MessageMetadata.PASSIVE_ABILITY);
   }
 
   /**
-   * Determines the {@link ActiveAbilityType} to be set and prompts the user for an input.
+   * Determines the {@link ActiveType} to be set and prompts the user for an input.
    */
   private void readActive() {
     RpgEquipmentSlot eSlot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.SLOT)));
     String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbilityType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.TYPE, TextFormatter.formatId(active));
     awaitMessageResponse(MessageMetadata.ACTIVE_ABILITY);
   }
 
   /**
-   * Determines the {@link PluginNamespacedKey Aethel tag} to be set and prompts the user for an input.
+   * Determines the {@link PluginKey Aethel tag} to be set and prompts the user for an input.
    */
   private void readTag() {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());

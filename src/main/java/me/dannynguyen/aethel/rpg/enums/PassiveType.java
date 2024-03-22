@@ -9,26 +9,26 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.7
  * @since 1.15.1
  */
-public enum PassiveAbilityType {
+public enum PassiveType {
   /**
    * Applies stacks of {@link StatusType#BRITTLE}.
    */
-  BRITTLE("Brittle", "brittle", PassiveAbilityEffect.STACK_INSTANCE),
+  BRITTLE("Brittle", "brittle", PassiveEffect.STACK_INSTANCE),
 
   /**
    * Apply stacks of {@link StatusType#SOAKED}.
    */
-  SOAKED("Soaked", "soaked", PassiveAbilityEffect.STACK_INSTANCE),
+  SOAKED("Soaked", "soaked", PassiveEffect.STACK_INSTANCE),
 
   /**
    * Attacks chain to entities with stacks of {@link StatusType#SOAKED}.
    */
-  SPARK("Spark", "spark", PassiveAbilityEffect.CHAIN_DAMAGE),
+  SPARK("Spark", "spark", PassiveEffect.CHAIN_DAMAGE),
 
   /**
    * Applies stacks of {@link StatusType#BLEED}.
    */
-  BLEED("Bleed", "bleed", PassiveAbilityEffect.STACK_INSTANCE);
+  BLEED("Bleed", "bleed", PassiveEffect.STACK_INSTANCE);
 
   /**
    * Proper name.
@@ -41,18 +41,18 @@ public enum PassiveAbilityType {
   private final String id;
 
   /**
-   * {@link PassiveAbilityEffect}
+   * {@link PassiveEffect}
    */
-  private final PassiveAbilityEffect effect;
+  private final PassiveEffect effect;
 
   /**
-   * Associates a passive ability with its {@link PassiveAbilityEffect}.
+   * Associates a passive ability with its {@link PassiveEffect}.
    *
    * @param properName proper name
    * @param id         ability ID
-   * @param effect     {@link PassiveAbilityEffect}
+   * @param effect     {@link PassiveEffect}
    */
-  PassiveAbilityType(String properName, String id, PassiveAbilityEffect effect) {
+  PassiveType(String properName, String id, PassiveEffect effect) {
     this.properName = properName;
     this.id = id;
     this.effect = effect;
@@ -79,12 +79,12 @@ public enum PassiveAbilityType {
   }
 
   /**
-   * Gets the {@link PassiveAbilityEffect}.
+   * Gets the {@link PassiveEffect}.
    *
-   * @return {@link PassiveAbilityEffect}
+   * @return {@link PassiveEffect}
    */
   @NotNull
-  public PassiveAbilityEffect getEffect() {
+  public PassiveEffect getEffect() {
     return this.effect;
   }
 }

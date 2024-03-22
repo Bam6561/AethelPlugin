@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Types of {@link PassiveAbilityType} triggers.
+ * Types of {@link PassiveType} triggers.
  *
  * @author Danny Nguyen
  * @version 1.17.13

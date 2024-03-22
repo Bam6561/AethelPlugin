@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.14
  * @since 1.17.14
  */
-enum StatCategory {
+enum StatisticCategory {
   /**
    * Player activities.
    */
@@ -83,7 +83,7 @@ enum StatCategory {
    * @param properName proper name
    * @param statistics statistics
    */
-  StatCategory(String properName, org.bukkit.Statistic[] statistics) {
+  StatisticCategory(String properName, org.bukkit.Statistic[] statistics) {
     this.properName = properName;
     this.statistics = statistics;
   }

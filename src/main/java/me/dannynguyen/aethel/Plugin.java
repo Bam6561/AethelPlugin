@@ -1,21 +1,21 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.commands.DeveloperModeCommand;
+import me.dannynguyen.aethel.commands.DeveloperCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
 import me.dannynguyen.aethel.commands.StatusCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
-import me.dannynguyen.aethel.commands.aetheltag.AethelTagCommand;
+import me.dannynguyen.aethel.commands.aetheltag.TagCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
-import me.dannynguyen.aethel.commands.playerstat.PlayerStatCommand;
+import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.plugin.listeners.MessageSent;
 import me.dannynguyen.aethel.plugin.listeners.PluginEvent;
 import me.dannynguyen.aethel.plugin.system.PluginData;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
+import me.dannynguyen.aethel.rpg.ability.SlotPassive;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
@@ -120,28 +120,28 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's commands.
    * <ul>
    *  <li>{@link ItemCommand}
-   *  <li>{@link AethelTagCommand}
+   *  <li>{@link TagCommand}
    *  <li>{@link CharacterCommand}
-   *  <li>{@link DeveloperModeCommand}
+   *  <li>{@link DeveloperCommand}
    *  <li>{@link ForgeCommand}
    *  <li>{@link ItemEditorCommand}
    *  <li>{@link PingCommand}
    *  <li>{@link ShowItemCommand}
    *  <li>{@link StatusCommand}
-   *  <li>{@link PlayerStatCommand}
+   *  <li>{@link StatCommand}
    * </ul>
    */
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
-    this.getCommand("aetheltag").setExecutor(new AethelTagCommand());
+    this.getCommand("aetheltag").setExecutor(new TagCommand());
     this.getCommand("character").setExecutor(new CharacterCommand());
-    this.getCommand("developermode").setExecutor(new DeveloperModeCommand());
+    this.getCommand("developermode").setExecutor(new DeveloperCommand());
     this.getCommand("forge").setExecutor(new ForgeCommand());
     this.getCommand("itemeditor").setExecutor(new ItemEditorCommand());
     this.getCommand("ping").setExecutor(new PingCommand());
     this.getCommand("showitem").setExecutor(new ShowItemCommand());
     this.getCommand("status").setExecutor(new StatusCommand());
-    this.getCommand("playerstat").setExecutor(new PlayerStatCommand());
+    this.getCommand("playerstat").setExecutor(new StatCommand());
   }
 
   /**
@@ -239,7 +239,7 @@ public class Plugin extends JavaPlugin {
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotPassiveType, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(Trigger.BELOW_HEALTH);
+      Map<SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(Trigger.BELOW_HEALTH);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {

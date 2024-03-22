@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents an item's {@link PassiveAbilityType}.
+ * Represents an item's {@link PassiveType}.
  *
  * @author Danny Nguyen
  * @version 1.17.12
@@ -23,9 +23,9 @@ import java.util.*;
  */
 public class PassiveAbility {
   /**
-   * {@link PassiveAbilityType Passive abilities} on cooldown.
+   * {@link PassiveType Passive abilities} on cooldown.
    */
-  private final Map<Trigger, Set<SlotPassiveType>> onCooldownPassives;
+  private final Map<Trigger, Set<SlotPassive>> onCooldownPassives;
 
   /**
    * {@link RpgEquipmentSlot}
@@ -38,9 +38,9 @@ public class PassiveAbility {
   private final Trigger trigger;
 
   /**
-   * {@link PassiveAbilityType}
+   * {@link PassiveType}
    */
-  private final PassiveAbilityType type;
+  private final PassiveType type;
 
   /**
    * {@link TriggerCondition} data.
@@ -48,20 +48,20 @@ public class PassiveAbility {
   private final List<String> conditionData = new ArrayList<>();
 
   /**
-   * {@link PassiveAbilityEffect} data.
+   * {@link PassiveEffect} data.
    */
   private final List<String> effectData = new ArrayList<>();
 
   /**
-   * Associates a {@link PassiveAbilityType passive ability} with its data.
+   * Associates a {@link PassiveType passive ability} with its data.
    *
-   * @param onCooldownPassives {@link PassiveAbilityType} on cooldown
+   * @param onCooldownPassives {@link PassiveType} on cooldown
    * @param eSlot              {@link RpgEquipmentSlot}
    * @param trigger            {@link Trigger}
-   * @param type               {@link PassiveAbilityType}
+   * @param type               {@link PassiveType}
    * @param dataValues         ability data
    */
-  public PassiveAbility(@NotNull Map<Trigger, Set<SlotPassiveType>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger, @NotNull PassiveAbilityType type, @NotNull String[] dataValues) {
+  public PassiveAbility(@NotNull Map<Trigger, Set<SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger, @NotNull PassiveType type, @NotNull String[] dataValues) {
     this.onCooldownPassives = Objects.requireNonNull(onCooldownPassives, "Null on cooldown passives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
@@ -70,14 +70,14 @@ public class PassiveAbility {
   }
 
   /**
-   * Initializes the {@link PassiveAbilityType passive ability's}
-   * {@link TriggerCondition} and {@link PassiveAbilityEffect} data.
+   * Initializes the {@link PassiveType passive ability's}
+   * {@link TriggerCondition} and {@link PassiveEffect} data.
    *
    * @param condition  {@link TriggerCondition}
-   * @param effect     {@link PassiveAbilityEffect}
+   * @param effect     {@link PassiveEffect}
    * @param dataValues ability data
    */
-  private void initializeAbilityData(TriggerCondition condition, PassiveAbilityEffect effect, String[] dataValues) {
+  private void initializeAbilityData(TriggerCondition condition, PassiveEffect effect, String[] dataValues) {
     switch (condition) {
       case CHANCE_COOLDOWN, HEALTH_COOLDOWN -> {
         conditionData.add(dataValues[0]);
@@ -94,7 +94,7 @@ public class PassiveAbility {
   }
 
   /**
-   * Triggers the {@link PassiveAbilityEffect}.
+   * Triggers the {@link PassiveEffect}.
    *
    * @param targetUUID target UUID
    */
@@ -106,9 +106,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Applies {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}.
+   * Applies {@link PassiveEffect#STACK_INSTANCE}.
    *
-   * @param targetUUID entity to receive {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#STACK_INSTANCE}
+   * @param targetUUID entity to receive {@link PassiveEffect#STACK_INSTANCE}
    */
   private void applyStackInstance(UUID targetUUID) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
@@ -135,9 +135,9 @@ public class PassiveAbility {
   }
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE} between entities.
+   * {@link PassiveEffect#CHAIN_DAMAGE} between entities.
    *
-   * @param targetUUID {@link me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect#CHAIN_DAMAGE} source
+   * @param targetUUID {@link PassiveEffect#CHAIN_DAMAGE} source
    */
   private void chainDamage(UUID targetUUID) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
@@ -220,12 +220,12 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link PassiveAbilityType}.
+   * Gets the {@link PassiveType}.
    *
-   * @return {@link PassiveAbilityType}
+   * @return {@link PassiveType}
    */
   @NotNull
-  public PassiveAbilityType getType() {
+  public PassiveType getType() {
     return this.type;
   }
 
@@ -240,9 +240,9 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets the {@link PassiveAbilityEffect} data.
+   * Gets the {@link PassiveEffect} data.
    *
-   * @return {@link PassiveAbilityEffect} data
+   * @return {@link PassiveEffect} data
    */
   @NotNull
   public List<String> getEffectData() {
@@ -250,25 +250,25 @@ public class PassiveAbility {
   }
 
   /**
-   * Gets if the {@link PassiveAbilityType} is on cooldown.
+   * Gets if the {@link PassiveType} is on cooldown.
    *
-   * @return if the {@link PassiveAbilityType} is on cooldown
+   * @return if the {@link PassiveType} is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownPassives.get(trigger).contains(new SlotPassiveType(eSlot, type));
+    return onCooldownPassives.get(trigger).contains(new SlotPassive(eSlot, type));
   }
 
   /**
-   * Sets if the {@link PassiveAbilityType} is on cooldown.
+   * Sets if the {@link PassiveType} is on cooldown.
    *
    * @param isOnCooldown is on cooldown
    */
   public void setOnCooldown(boolean isOnCooldown) {
-    SlotPassiveType slotPassiveType = new SlotPassiveType(eSlot, type);
+    SlotPassive slotPassive = new SlotPassive(eSlot, type);
     if (isOnCooldown) {
-      onCooldownPassives.get(trigger).add(slotPassiveType);
+      onCooldownPassives.get(trigger).add(slotPassive);
     } else {
-      onCooldownPassives.get(trigger).remove(slotPassiveType);
+      onCooldownPassives.get(trigger).remove(slotPassive);
     }
   }
 }

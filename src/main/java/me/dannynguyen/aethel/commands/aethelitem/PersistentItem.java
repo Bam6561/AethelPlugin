@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

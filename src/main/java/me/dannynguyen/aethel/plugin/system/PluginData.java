@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
 import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
-import me.dannynguyen.aethel.commands.playerstat.PlayerStatRecord;
+import me.dannynguyen.aethel.commands.playerstat.StatArchive;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.plugin.enums.Directory;
 import me.dannynguyen.aethel.rpg.system.RpgPlayer;
@@ -37,9 +37,9 @@ public class PluginData {
   private final RecipeRegistry recipeRegistry = new RecipeRegistry(Directory.FORGE.getFile());
 
   /**
-   * Available {@link PlayerStatRecord player stats}.
+   * Available {@link StatArchive player stats}.
    */
-  private final PlayerStatRecord playerStatRecord = new PlayerStatRecord();
+  private final StatArchive statArchive = new StatArchive();
 
   /**
    * Currently {@link EditedItemCache editing items}.
@@ -177,13 +177,13 @@ public class PluginData {
   }
 
   /**
-   * Gets the plugin's {@link PlayerStatRecord}.
+   * Gets the plugin's {@link StatArchive}.
    *
-   * @return plugin's {@link PlayerStatRecord}
+   * @return plugin's {@link StatArchive}
    */
   @NotNull
-  public PlayerStatRecord getPlayerStatRecord() {
-    return this.playerStatRecord;
+  public StatArchive getPlayerStatRecord() {
+    return this.statArchive;
   }
 
   /**

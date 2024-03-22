@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.plugin.interfaces.DataRegistry;
 import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
@@ -192,15 +192,15 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Sorts a recipe into a category based on its {@link PluginNamespacedKey#RECIPE_CATEGORY}.
+   * Sorts a recipe into a category based on its {@link PluginKey#RECIPE_CATEGORY}.
    *
    * @param categories {@link PersistentRecipe recipe} categories
    * @param results    interacting recipe
    */
   private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
     PersistentDataContainer data = results.get(0).getItemMeta().getPersistentDataContainer();
-    if (data.has(PluginNamespacedKey.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
-      String category = data.get(PluginNamespacedKey.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
+    if (data.has(PluginKey.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
+      String category = data.get(PluginKey.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
       if (categories.containsKey(category)) {
         categories.get(category).add(results);
       } else {

@@ -1,8 +1,7 @@
-package me.dannynguyen.aethel.util.item;
+package me.dannynguyen.aethel.util;
 
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -58,10 +57,10 @@ public class ItemReader {
   }
 
   /**
-   * Returns the item's {@link PluginNamespacedKey Aethel tags}.
+   * Returns the item's {@link PluginKey Aethel tags}.
    *
    * @param item interacting item
-   * @return item's {@link PluginNamespacedKey Aethel tags}
+   * @return item's {@link PluginKey Aethel tags}
    */
   @NotNull
   public static String readAethelTags(@NotNull ItemStack item) {

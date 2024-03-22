@@ -1,12 +1,13 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 /**
  * Represents a
- * {@link me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey#PASSIVE_LIST passive ability's}
+ * {@link PluginKey#PASSIVE_LIST passive ability's}
  * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} and
  * {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
  * <p>

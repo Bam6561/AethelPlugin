@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.14
  * @since 1.17.14
  */
-enum SubstatCategory {
+enum SubstatisticCategory {
   /**
    * Entity types.
    */
@@ -29,7 +29,7 @@ enum SubstatCategory {
    * Associates the category with a proper name.
    * @param properName proper name
    */
-  SubstatCategory(String properName) {
+  SubstatisticCategory(String properName) {
     this.properName = properName;
   }
 

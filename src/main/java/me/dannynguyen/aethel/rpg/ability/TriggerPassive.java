@@ -1,13 +1,13 @@
 package me.dannynguyen.aethel.rpg.ability;
 
-import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.PassiveType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 /**
- * Represents a {@link Trigger} {@link PassiveAbilityType} pair.
+ * Represents a {@link Trigger} {@link PassiveType} pair.
  * <p>
  * Used to remove abilities upon {@link me.dannynguyen.aethel.rpg.listeners.EquipmentUpdate}.
  *
@@ -15,24 +15,24 @@ import java.util.Objects;
  * @version 1.16.3
  * @since 1.16.1
  */
-public class TriggerPassiveType {
+public class TriggerPassive {
   /**
    * {@link Trigger}
    */
   private final Trigger trigger;
 
   /**
-   * {@link PassiveAbilityType}
+   * {@link PassiveType}
    */
-  private final PassiveAbilityType type;
+  private final PassiveType type;
 
   /**
-   * Associates a {@link Trigger} with a {@link PassiveAbilityType}.
+   * Associates a {@link Trigger} with a {@link PassiveType}.
    *
    * @param trigger {@link Trigger}
-   * @param type    {@link PassiveAbilityType}
+   * @param type    {@link PassiveType}
    */
-  public TriggerPassiveType(@NotNull Trigger trigger, @NotNull PassiveAbilityType type) {
+  public TriggerPassive(@NotNull Trigger trigger, @NotNull PassiveType type) {
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.type = Objects.requireNonNull(type, "Null ability");
   }
@@ -48,12 +48,12 @@ public class TriggerPassiveType {
   }
 
   /**
-   * Gets the {@link PassiveAbilityType}.
+   * Gets the {@link PassiveType}.
    *
-   * @return {@link PassiveAbilityType}
+   * @return {@link PassiveType}
    */
   @NotNull
-  public PassiveAbilityType getType() {
+  public PassiveType getType() {
     return this.type;
   }
 }

@@ -1,11 +1,11 @@
 package me.dannynguyen.aethel.rpg.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.ability.TriggerPassiveType;
+import me.dannynguyen.aethel.rpg.ability.TriggerPassive;
 import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.system.*;
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -143,7 +143,7 @@ public class EquipmentUpdate implements Listener {
 
       Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = attributes.getSlotAttributes();
       Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
-      Map<RpgEquipmentSlot, List<TriggerPassiveType>> slotPassives = abilities.getSlotPassives();
+      Map<RpgEquipmentSlot, List<TriggerPassive>> slotPassives = abilities.getSlotPassives();
 
       for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
         attributes.removeAttributes(eSlot);

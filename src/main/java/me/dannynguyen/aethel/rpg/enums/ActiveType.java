@@ -9,27 +9,27 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.7
  * @since 1.15.1
  */
-public enum ActiveAbilityType {
+public enum ActiveType {
   /**
    * Forward facing teleport.
    */
-  BLINK("Blink", "blink", ActiveAbilityEffect.MOVEMENT),
+  BLINK("Blink", "blink", ActiveEffect.MOVEMENT),
 
   /**
    * Forward facing movement.
    */
-  DASH("Dash", "dash", ActiveAbilityEffect.MOVEMENT),
+  DASH("Dash", "dash", ActiveEffect.MOVEMENT),
 
   /**
    * Forward facing teleport that after a delay,
    * teleports the user back to their original location.
    */
-  PROJECTION("Projection", "projection", ActiveAbilityEffect.PROJECTION),
+  PROJECTION("Projection", "projection", ActiveEffect.PROJECTION),
 
   /**
    * Immediately consumes all stacks of {@link StatusType#BRITTLE} from nearby enemies.
    */
-  SHATTER("Shatter", "shatter", ActiveAbilityEffect.SHATTER);
+  SHATTER("Shatter", "shatter", ActiveEffect.SHATTER);
 
   /**
    * Proper name.
@@ -42,18 +42,18 @@ public enum ActiveAbilityType {
   private final String id;
 
   /**
-   * {@link ActiveAbilityEffect}
+   * {@link ActiveEffect}
    */
-  private final ActiveAbilityEffect effect;
+  private final ActiveEffect effect;
 
   /**
-   * Associates an active ability with its {@link ActiveAbilityEffect}.
+   * Associates an active ability with its {@link ActiveEffect}.
    *
    * @param properName proper name
    * @param id         ability ID
-   * @param effect     {@link ActiveAbilityEffect}
+   * @param effect     {@link ActiveEffect}
    */
-  ActiveAbilityType(String properName, String id, ActiveAbilityEffect effect) {
+  ActiveType(String properName, String id, ActiveEffect effect) {
     this.properName = properName;
     this.id = id;
     this.effect = effect;
@@ -80,12 +80,12 @@ public enum ActiveAbilityType {
   }
 
   /**
-   * Gets the {@link ActiveAbilityEffect}.
+   * Gets the {@link ActiveEffect}.
    *
-   * @return {@link ActiveAbilityEffect}
+   * @return {@link ActiveEffect}
    */
   @NotNull
-  public ActiveAbilityEffect getEffect() {
+  public ActiveEffect getEffect() {
     return this.effect;
   }
 }

@@ -4,9 +4,9 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
-import me.dannynguyen.aethel.rpg.enums.PassiveAbilityEffect;
-import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.rpg.enums.PassiveEffect;
+import me.dannynguyen.aethel.rpg.enums.PassiveType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.rpg.enums.TriggerCondition;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a {@link PluginNamespacedKey#PASSIVE_LIST passive tag} set or remove operation.
+ * Represents a {@link PluginKey#PASSIVE_LIST passive tag} set or remove operation.
  * <p>
  * Used with {@link ItemEditorMessageSent}.
  *
@@ -33,9 +33,9 @@ import java.util.Map;
  */
 class PassiveTagModifier {
   /**
-   * {@link PluginNamespacedKey#PASSIVE_LIST}
+   * {@link PluginKey#PASSIVE_LIST}
    */
-  private static final NamespacedKey listKey = PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey();
+  private static final NamespacedKey listKey = PluginKey.PASSIVE_LIST.getNamespacedKey();
 
   /**
    * {@link KeyHeader#PASSIVE}
@@ -108,11 +108,11 @@ class PassiveTagModifier {
   }
 
   /**
-   * Determines the type of {@link PluginNamespacedKey#PASSIVE_LIST ability tag} to be set.
+   * Determines the type of {@link PluginKey#PASSIVE_LIST ability tag} to be set.
    */
   protected void interpretKeyToBeSet() {
     TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(this.condition)).getCondition();
-    PassiveAbilityEffect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+    PassiveEffect effect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
     switch (condition) {
       case CHANCE_COOLDOWN -> readChanceCooldown(effect);
       case HEALTH_COOLDOWN -> readHpChanceCooldown(effect);
@@ -121,11 +121,11 @@ class PassiveTagModifier {
 
   /**
    * Checks if the input was formatted correctly before setting
-   * the {@link PassiveAbilityEffect effect's} chance and cooldown.
+   * the {@link PassiveEffect effect's} chance and cooldown.
    *
-   * @param effect {@link PassiveAbilityEffect}
+   * @param effect {@link PassiveEffect}
    */
-  private void readChanceCooldown(PassiveAbilityEffect effect) {
+  private void readChanceCooldown(PassiveEffect effect) {
     switch (effect) {
       case STACK_INSTANCE -> {
         if (args.length == 5) {
@@ -198,11 +198,11 @@ class PassiveTagModifier {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link PassiveAbilityEffect effect's} HP, chance, and cooldown.
+   * {@link PassiveEffect effect's} HP, chance, and cooldown.
    *
-   * @param effect {@link PassiveAbilityEffect}
+   * @param effect {@link PassiveEffect}
    */
-  private void readHpChanceCooldown(PassiveAbilityEffect effect) {
+  private void readHpChanceCooldown(PassiveEffect effect) {
     switch (effect) {
       case STACK_INSTANCE -> {
         if (args.length == 5) {

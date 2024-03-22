@@ -8,7 +8,7 @@ import me.dannynguyen.aethel.rpg.enums.StatusType;
 import me.dannynguyen.aethel.rpg.system.Health;
 import me.dannynguyen.aethel.rpg.system.RpgPlayer;
 import me.dannynguyen.aethel.rpg.system.Status;
-import me.dannynguyen.aethel.util.item.ItemCreator;
+import me.dannynguyen.aethel.util.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

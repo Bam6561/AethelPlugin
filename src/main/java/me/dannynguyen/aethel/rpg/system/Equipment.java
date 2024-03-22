@@ -3,10 +3,10 @@ package me.dannynguyen.aethel.rpg.system;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Directory;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.util.item.ItemCreator;
-import me.dannynguyen.aethel.util.item.ItemReader;
+import me.dannynguyen.aethel.util.ItemCreator;
+import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -95,7 +95,7 @@ public class Equipment {
   }
 
   /**
-   * Initializes the player's equipment-related {@link PluginNamespacedKey Aethel tags}.
+   * Initializes the player's equipment-related {@link PluginKey Aethel tags}.
    *
    * @param player interacting player
    */
@@ -112,9 +112,9 @@ public class Equipment {
   }
 
   /**
-   * Checks if the item has {@link PluginNamespacedKey#ATTRIBUTE_LIST Aethel attributes},
-   * enchantments, {@link PluginNamespacedKey#PASSIVE_LIST passive abilities},
-   * and {@link PluginNamespacedKey#ACTIVE_LIST active abilities}
+   * Checks if the item has {@link PluginKey#ATTRIBUTE_LIST Aethel attributes},
+   * enchantments, {@link PluginKey#PASSIVE_LIST passive abilities},
+   * and {@link PluginKey#ACTIVE_LIST active abilities}
    * before checking whether the item is in the correct equipment slot.
    * <p>
    * A 2 tick delay is added to max health updates due to items containing
@@ -160,7 +160,7 @@ public class Equipment {
    */
   private void setSlotData(RpgEquipmentSlot eSlot, ItemStack item) {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-    if (dataContainer.has(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (dataContainer.has(PluginKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       attributes.getSlotAttributes().put(eSlot, new HashMap<>());
       attributes.readAttributes(eSlot, dataContainer);
     }
@@ -168,7 +168,7 @@ public class Equipment {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
       enchantments.addEnchantments(eSlot, item);
     }
-    if (dataContainer.has(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (dataContainer.has(PluginKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
       abilities.readPassives(eSlot, dataContainer);
     }

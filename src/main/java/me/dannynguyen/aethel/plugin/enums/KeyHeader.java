@@ -26,17 +26,17 @@ public enum KeyHeader {
   FORGE(AETHEL.getHeader() + "forge."),
 
   /**
-   * {@link PluginNamespacedKey#ATTRIBUTE_LIST}
+   * {@link PluginKey#ATTRIBUTE_LIST}
    */
   ATTRIBUTE(AETHEL.getHeader() + "attribute."),
 
   /**
-   * Item {@link PluginNamespacedKey#PASSIVE_LIST}
+   * Item {@link PluginKey#PASSIVE_LIST}
    */
   PASSIVE(AETHEL.getHeader() + "passive."),
 
   /**
-   * Item {@link PluginNamespacedKey#ACTIVE_LIST}
+   * Item {@link PluginKey#ACTIVE_LIST}
    */
   ACTIVE(AETHEL.getHeader() + "active.");
 

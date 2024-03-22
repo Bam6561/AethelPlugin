@@ -1,13 +1,13 @@
 package me.dannynguyen.aethel.rpg.ability;
 
-import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
+import me.dannynguyen.aethel.rpg.enums.PassiveType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 /**
- * Represents an {@link RpgEquipmentSlot} {@link PassiveAbilityType} pair.
+ * Represents an {@link RpgEquipmentSlot} {@link PassiveType} pair.
  * <p>
  * Used to identify unique {@link PassiveAbility passive abilities}
  * after a {@link me.dannynguyen.aethel.rpg.enums.Trigger} is called.
@@ -16,24 +16,24 @@ import java.util.Objects;
  * @version 1.16.3
  * @since 1.16.3
  **/
-public class SlotPassiveType {
+public class SlotPassive {
   /**
    * {@link RpgEquipmentSlot}
    */
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * {@link PassiveAbilityType}
+   * {@link PassiveType}
    */
-  private final PassiveAbilityType type;
+  private final PassiveType type;
 
   /**
-   * Associates an {@link RpgEquipmentSlot} with an {@link PassiveAbilityType}.
+   * Associates an {@link RpgEquipmentSlot} with an {@link PassiveType}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
-   * @param type  {@link PassiveAbilityType}
+   * @param type  {@link PassiveType}
    */
-  public SlotPassiveType(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
+  public SlotPassive(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveType type) {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.type = Objects.requireNonNull(type, "Null ability");
   }
@@ -49,12 +49,12 @@ public class SlotPassiveType {
   }
 
   /**
-   * Gets the {@link PassiveAbilityType}.
+   * Gets the {@link PassiveType}.
    *
-   * @return {@link PassiveAbilityType}
+   * @return {@link PassiveType}
    */
   @NotNull
-  public PassiveAbilityType getType() {
+  public PassiveType getType() {
     return this.type;
   }
 
@@ -66,8 +66,8 @@ public class SlotPassiveType {
    */
   @Override
   public boolean equals(Object o) {
-    if (o instanceof SlotPassiveType slotPassiveType) {
-      return (slotPassiveType.getSlot() == eSlot && slotPassiveType.getType() == type);
+    if (o instanceof SlotPassive slotPassive) {
+      return (slotPassive.getSlot() == eSlot && slotPassive.getType() == type);
     }
     return false;
   }

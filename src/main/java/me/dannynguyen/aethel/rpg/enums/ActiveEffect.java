@@ -3,25 +3,30 @@ package me.dannynguyen.aethel.rpg.enums;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Effects of {@link PassiveAbilityType}.
+ * Effects of {@link ActiveType active abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.7
  * @since 1.15.9
  */
-public enum PassiveAbilityEffect {
+public enum ActiveEffect {
   /**
-   * Causes {@link StatusType stack instances}.
+   * Causes movement.
    */
-  STACK_INSTANCE("Self, Stacks, Duration(t)"),
+  MOVEMENT("Cooldown(t), Distance(m)"),
 
   /**
-   * Causes chain damage.
+   * Causes movement that returns to the original location after a delay.
    */
-  CHAIN_DAMAGE("Self, Damage, Radius(m)");
+  PROJECTION("Cooldown(t), Distance(m), Delay(t)"),
 
   /**
-   * Passive ability effect's data.
+   * Causes Shatter.
+   */
+  SHATTER("Cooldown(t), Radius(m)");
+
+  /**
+   * Active ability effect's data.
    */
   private final String data;
 
@@ -30,7 +35,7 @@ public enum PassiveAbilityEffect {
    *
    * @param data effect's data
    */
-  PassiveAbilityEffect(String data) {
+  ActiveEffect(String data) {
     this.data = data;
   }
 

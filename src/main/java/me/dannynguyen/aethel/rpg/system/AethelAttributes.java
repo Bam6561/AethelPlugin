@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -60,7 +60,7 @@ public class AethelAttributes {
    * @param dataContainer item's persistent tags
    */
   public void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] attributes = dataContainer.get(PluginNamespacedKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    String[] attributes = dataContainer.get(PluginKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(attribute.substring(0, attribute.indexOf("."))));
       if (slot == eSlot) {

@@ -2,13 +2,13 @@ package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PluginNamespacedKey;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.rpg.ability.ActiveAbility;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassiveType;
-import me.dannynguyen.aethel.rpg.ability.TriggerPassiveType;
-import me.dannynguyen.aethel.rpg.enums.ActiveAbilityType;
-import me.dannynguyen.aethel.rpg.enums.PassiveAbilityType;
+import me.dannynguyen.aethel.rpg.ability.SlotPassive;
+import me.dannynguyen.aethel.rpg.ability.TriggerPassive;
+import me.dannynguyen.aethel.rpg.enums.ActiveType;
+import me.dannynguyen.aethel.rpg.enums.PassiveType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -31,18 +31,18 @@ public class Abilities {
   /**
    * Used to remove abilities upon {@link me.dannynguyen.aethel.rpg.listeners.EquipmentUpdate}.
    */
-  private final Map<RpgEquipmentSlot, List<TriggerPassiveType>> slotPassives = new HashMap<>();
+  private final Map<RpgEquipmentSlot, List<TriggerPassive>> slotPassives = new HashMap<>();
 
   /**
    * Used to identify unique {@link PassiveAbility passive abilities}
    * after a {@link me.dannynguyen.aethel.rpg.enums.Trigger} is called.
    */
-  private final Map<Trigger, Map<SlotPassiveType, PassiveAbility>> triggerPassives = createBlankPassiveTriggers();
+  private final Map<Trigger, Map<SlotPassive, PassiveAbility>> triggerPassives = createBlankPassiveTriggers();
 
   /**
-   * {@link SlotPassiveType Passive abilities} on cooldown.
+   * {@link SlotPassive Passive abilities} on cooldown.
    */
-  private final Map<Trigger, Set<SlotPassiveType>> onCooldownPassives = createBlankPassiveCooldownTriggers();
+  private final Map<Trigger, Set<SlotPassive>> onCooldownPassives = createBlankPassiveCooldownTriggers();
 
   /**
    * {@link ActiveAbility Active abilities} identified by their {@link RpgEquipmentSlot} trigger.
@@ -50,9 +50,9 @@ public class Abilities {
   private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = new HashMap<>();
 
   /**
-   * {@link ActiveAbilityType Active abilities} on cooldown.
+   * {@link ActiveType Active abilities} on cooldown.
    */
-  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Set<ActiveType>> onCooldownActives = new HashMap<>();
 
   /**
    * No parameter constructor.
@@ -65,8 +65,8 @@ public class Abilities {
    *
    * @return blank map of {@link Trigger triggerable} {@link PassiveAbility passive abilities}
    */
-  private Map<Trigger, Map<SlotPassiveType, PassiveAbility>> createBlankPassiveTriggers() {
-    Map<Trigger, Map<SlotPassiveType, PassiveAbility>> triggers = new HashMap<>();
+  private Map<Trigger, Map<SlotPassive, PassiveAbility>> createBlankPassiveTriggers() {
+    Map<Trigger, Map<SlotPassive, PassiveAbility>> triggers = new HashMap<>();
     for (Trigger trigger : Trigger.values()) {
       triggers.put(trigger, new HashMap<>());
     }
@@ -75,12 +75,12 @@ public class Abilities {
 
   /**
    * Creates a blank map of {@link Trigger triggerable}
-   * {@link SlotPassiveType passive abilities} on cooldown.
+   * {@link SlotPassive passive abilities} on cooldown.
    *
-   * @return blank map of {@link Trigger triggerable} {@link SlotPassiveType passive abilities} on cooldown
+   * @return blank map of {@link Trigger triggerable} {@link SlotPassive passive abilities} on cooldown
    */
-  private Map<Trigger, Set<SlotPassiveType>> createBlankPassiveCooldownTriggers() {
-    Map<Trigger, Set<SlotPassiveType>> triggers = new HashMap<>();
+  private Map<Trigger, Set<SlotPassive>> createBlankPassiveCooldownTriggers() {
+    Map<Trigger, Set<SlotPassive>> triggers = new HashMap<>();
     for (Trigger trigger : Trigger.values()) {
       triggers.put(trigger, new HashSet<>());
     }
@@ -95,7 +95,7 @@ public class Abilities {
    * @param dataContainer item's persistent tags
    */
   public void readPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] passives = dataContainer.get(PluginNamespacedKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    String[] passives = dataContainer.get(PluginKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String passive : passives) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(passive.substring(0, passive.indexOf("."))));
       if (slot == eSlot) {
@@ -115,9 +115,9 @@ public class Abilities {
     NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
     String[] abilityMeta = passive.split("\\.");
     Trigger trigger = Trigger.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
-    PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
-    slotPassives.get(eSlot).add(new TriggerPassiveType(trigger, abilityType));
-    triggerPassives.get(trigger).put(new SlotPassiveType(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, trigger, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
+    PassiveType abilityType = PassiveType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
+    slotPassives.get(eSlot).add(new TriggerPassive(trigger, abilityType));
+    triggerPassives.get(trigger).put(new SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, trigger, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
   }
 
   /**
@@ -126,22 +126,22 @@ public class Abilities {
    * @param eSlot {@link RpgEquipmentSlot}
    */
   public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
-    List<TriggerPassiveType> abilitiesToRemove = new ArrayList<>();
-    for (TriggerPassiveType triggerPassiveType : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
-      triggerPassives.get(triggerPassiveType.getTrigger()).remove(new SlotPassiveType(eSlot, triggerPassiveType.getType()));
-      abilitiesToRemove.add(triggerPassiveType);
+    List<TriggerPassive> abilitiesToRemove = new ArrayList<>();
+    for (TriggerPassive triggerPassive : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
+      triggerPassives.get(triggerPassive.getTrigger()).remove(new SlotPassive(eSlot, triggerPassive.getType()));
+      abilitiesToRemove.add(triggerPassive);
     }
     slotPassives.get(eSlot).removeAll(abilitiesToRemove);
   }
 
   /**
-   * Gets the player's {@link TriggerPassiveType passive abilities}
+   * Gets the player's {@link TriggerPassive passive abilities}
    * that exist on each {@link RpgEquipmentSlot}.
    *
-   * @return {@link TriggerPassiveType passive abilities} that exist on each {@link RpgEquipmentSlot}
+   * @return {@link TriggerPassive passive abilities} that exist on each {@link RpgEquipmentSlot}
    */
   @NotNull
-  public Map<RpgEquipmentSlot, List<TriggerPassiveType>> getSlotPassives() {
+  public Map<RpgEquipmentSlot, List<TriggerPassive>> getSlotPassives() {
     return this.slotPassives;
   }
 
@@ -151,7 +151,7 @@ public class Abilities {
    * @return {@link Trigger triggerable} {@link PassiveAbility passive abilities}
    */
   @NotNull
-  public Map<Trigger, Map<SlotPassiveType, PassiveAbility>> getTriggerPassives() {
+  public Map<Trigger, Map<SlotPassive, PassiveAbility>> getTriggerPassives() {
     return this.triggerPassives;
   }
 

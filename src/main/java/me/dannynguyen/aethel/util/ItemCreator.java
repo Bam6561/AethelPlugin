@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.util.item;
+package me.dannynguyen.aethel.util;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
