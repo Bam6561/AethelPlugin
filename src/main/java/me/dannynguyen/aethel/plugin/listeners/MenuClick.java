@@ -25,7 +25,7 @@ import java.util.Map;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.16
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -256,5 +256,19 @@ public class MenuClick implements Listener {
    * of all possible menus belonging to a command or system.
    */
   private void doNothing() {
+  }
+
+  /**
+   * {@link me.dannynguyen.aethel.plugin.interfaces.Menu} types.
+   */
+  public enum Menu {
+
+  }
+
+  /**
+   * {@link me.dannynguyen.aethel.plugin.interfaces.Menu} modes.
+   */
+  public enum Mode {
+
   }
 }

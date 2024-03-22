@@ -16,7 +16,7 @@ import java.util.Map;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.17.11
+ * @version 1.17.16
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -80,5 +80,12 @@ public class MessageSent implements Listener {
       case "active_ability" -> msg.setActive();
       case "tag" -> msg.setTag();
     }
+  }
+
+  /**
+   * Message input types.
+   */
+  public enum Input {
+
   }
 }

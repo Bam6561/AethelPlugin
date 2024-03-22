@@ -16,17 +16,18 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import java.util.Map;
 
 /**
- * Player crouch listener.
+ * Collection of player action listeners for
+ * {@link me.dannynguyen.aethel.rpg.system.RpgSystem} functionality.
  *
  * @author Danny Nguyen
  * @version 1.17.14
  * @since 1.17.3
  */
-public class Crouch implements Listener {
+public class RPGAction implements Listener {
   /**
    * No parameter constructor.
    */
-  public Crouch() {
+  public RPGAction() {
   }
 
   /**
@@ -51,5 +52,9 @@ public class Crouch implements Listener {
         playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SETTINGS.getMeta());
       }
     }
+  }
+
+  public enum Input {
+
   }
 }

@@ -94,7 +94,7 @@ public class Plugin extends JavaPlugin {
   /**
    * Registers the plugin's event listeners.
    * <ul>
-   *  <li>{@link Crouch}
+   *  <li>{@link RPGAction}
    *  <li>{@link MenuClick}
    *  <li>{@link MessageSent}
    *  <li>{@link PluginEvent}
@@ -106,7 +106,7 @@ public class Plugin extends JavaPlugin {
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
-    manager.registerEvents(new Crouch(), this);
+    manager.registerEvents(new RPGAction(), this);
     manager.registerEvents(new MenuClick(), this);
     manager.registerEvents(new MessageSent(), this);
     manager.registerEvents(new PluginEvent(), this);

@@ -168,7 +168,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Type of recipe details menus.
+   * Recipe details menu types.
    */
   protected enum Type {
     /**
