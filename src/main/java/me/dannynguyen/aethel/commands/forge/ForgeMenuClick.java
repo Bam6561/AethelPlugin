@@ -5,6 +5,8 @@ import me.dannynguyen.aethel.plugin.enums.Directory;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.ItemReader;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -27,7 +29,7 @@ import java.util.UUID;
  * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.17.17
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClickEvent {
@@ -94,7 +96,7 @@ public class ForgeMenuClick implements MenuClickEvent {
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
       case 4 -> {
-        if (Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.FUTURE).equals("edit")) {
+        if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMode() == MenuClick.Mode.RECIPE_MENU_EDIT) {
           openForgeEditMenu();
         }
       }
@@ -138,8 +140,9 @@ public class ForgeMenuClick implements MenuClickEvent {
    * Views a {@link PersistentRecipe recipe} category.
    */
   private void viewRecipeCategory() {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.FUTURE)));
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(pluginPlayer.getMode().getId()));
     String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -191,11 +194,12 @@ public class ForgeMenuClick implements MenuClickEvent {
   }
 
   /**
-   * Opens the {@link RecipeMenu} with the {@link PlayerMeta#FUTURE} in mind.
+   * Opens the {@link RecipeMenu} with the {@link MenuClick.Mode} in mind.
    */
   private void returnToMainMenu() {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.FUTURE)));
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(pluginPlayer.getMode().getId()));
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, action).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());

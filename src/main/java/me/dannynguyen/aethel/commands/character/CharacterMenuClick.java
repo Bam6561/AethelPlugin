@@ -5,7 +5,9 @@ import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.rpg.listeners.RPGAction;
 import me.dannynguyen.aethel.rpg.system.Equipment;
 import me.dannynguyen.aethel.rpg.system.Settings;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -35,7 +37,7 @@ import java.util.UUID;
  * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.17
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClickEvent {
@@ -380,8 +382,10 @@ public class CharacterMenuClick implements MenuClickEvent {
     user.closeInventory();
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "crouch bind:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Select a hotbar slot and crouch.");
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    pluginPlayer.setActionInput(RPGAction.Input.CROUCH_BIND_ACTIVE_ABILITY);
+
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    playerMeta.put(PlayerMeta.ACTION, "crouch.bind-active_ability");
     playerMeta.put(PlayerMeta.SLOT, eSlot.getId());
   }
 }

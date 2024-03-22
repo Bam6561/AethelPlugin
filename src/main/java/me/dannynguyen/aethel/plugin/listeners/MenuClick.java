@@ -14,6 +14,7 @@ import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import java.util.Map;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.17.16
+ * @version 1.17.17
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -262,13 +263,48 @@ public class MenuClick implements Listener {
    * {@link me.dannynguyen.aethel.plugin.interfaces.Menu} types.
    */
   public enum Menu {
-
+    /**
+     * Interact with {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}.
+     */
+    CHARACTER_SETTINGS
   }
 
   /**
    * {@link me.dannynguyen.aethel.plugin.interfaces.Menu} modes.
    */
   public enum Mode {
+    /**
+     * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     */
+    RECIPE_MENU_CRAFT("craft"),
 
+    /**
+     * Edit {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     */
+    RECIPE_MENU_EDIT("edit");
+
+    /**
+     * Mode ID.
+     */
+    private final String id;
+
+    /**
+     * Associates a menu mode with its ID.
+     *
+     * @param id
+     */
+    Mode(String id) {
+      this.id = id;
+    }
+
+    /**
+     * Gets the mode's ID.
+     *
+     * @return mode's ID
+     */
+    @NotNull
+    public String getId() {
+      return this.id;
+    }
   }
 }

@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,15 +10,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 /**
  * Command invocation that allows the user to bypass conditions for various interactions.
  * <p>
  * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.17
  * @since 1.4.6
  */
 public class DeveloperCommand implements CommandExecutor {
@@ -53,7 +51,7 @@ public class DeveloperCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly
-   * before toggling {@link PlayerMeta#DEVELOPER developer mode}.
+   * before toggling {@link me.dannynguyen.aethel.plugin.system.PluginPlayer developer mode}.
    *
    * @param user user
    * @param args user provided parameters
@@ -68,17 +66,17 @@ public class DeveloperCommand implements CommandExecutor {
   }
 
   /**
-   * Toggles {@link PlayerMeta#DEVELOPER developer mode} on or off for the user.
+   * Toggles {@link me.dannynguyen.aethel.plugin.system.PluginPlayer developer mode} on or off for the user.
    *
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    if (!playerMeta.containsKey(PlayerMeta.DEVELOPER)) {
-      playerMeta.put(PlayerMeta.DEVELOPER, "true");
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+    if (!pluginPlayer.isDeveloper()) {
+      pluginPlayer.setIsDeveloper(true);
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");
     } else {
-      playerMeta.remove(PlayerMeta.DEVELOPER);
+      pluginPlayer.setIsDeveloper(false);
       user.sendMessage(ChatColor.RED + "[Developer Mode Off]");
     }
   }

@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.plugin.listeners.MessageSent;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.rpg.listeners.RPGAction;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  * Represents a player's plugin metadata.
  *
  * @author Danny Nguyen
- * @version 1.17.16
+ * @version 1.17.17
  * @since 1.17.16
  */
 public class PluginPlayer {
@@ -20,13 +21,12 @@ public class PluginPlayer {
    * No parameter constructor.
    */
   public PluginPlayer() {
-
   }
 
   /**
    * {@link me.dannynguyen.aethel.commands.DeveloperCommand}
    */
-  private boolean developer;
+  private boolean isDeveloper;
 
   /**
    * {@link RPGAction.Input}
@@ -84,7 +84,16 @@ public class PluginPlayer {
    * @return {@link me.dannynguyen.aethel.commands.DeveloperCommand}
    */
   public boolean isDeveloper() {
-    return developer;
+    return this.isDeveloper;
+  }
+
+  /**
+   * Sets the {@link me.dannynguyen.aethel.commands.DeveloperCommand}.
+   *
+   * @param developer {@link me.dannynguyen.aethel.commands.DeveloperCommand}
+   */
+  public void setIsDeveloper(boolean developer) {
+    this.isDeveloper = developer;
   }
 
   /**
@@ -93,7 +102,16 @@ public class PluginPlayer {
    * @return {@link RPGAction.Input}
    */
   public RPGAction.Input getActionInput() {
-    return actionInput;
+    return this.actionInput;
+  }
+
+  /**
+   * Sets the {@link RPGAction.Input}.
+   *
+   * @param actionInput {@link RPGAction.Input}
+   */
+  public void setActionInput(RPGAction.Input actionInput) {
+    this.actionInput = actionInput;
   }
 
   /**
@@ -102,7 +120,16 @@ public class PluginPlayer {
    * @return {@link MessageSent.Input}
    */
   public MessageSent.Input getMessageInput() {
-    return messageInput;
+    return this.messageInput;
+  }
+
+  /**
+   * Sets the {@link MessageSent.Input}.
+   *
+   * @param messageInput {@link MessageSent.Input}
+   */
+  public void setMessageInput(MessageSent.Input messageInput) {
+    this.messageInput = messageInput;
   }
 
   /**
@@ -111,7 +138,17 @@ public class PluginPlayer {
    * @return {@link MenuClick.Menu menu type}
    */
   public MenuClick.Menu getMenu() {
-    return menu;
+    return this.menu;
+  }
+
+
+  /**
+   * Sets the {@link MenuClick.Menu menu type}.
+   *
+   * @param menu {@link MenuClick.Menu menu type}
+   */
+  public void setMenu(MenuClick.Menu menu) {
+    this.menu = menu;
   }
 
   /**
@@ -120,7 +157,16 @@ public class PluginPlayer {
    * @return {@link MenuClick.Mode menu mode}
    */
   public MenuClick.Mode getMode() {
-    return mode;
+    return this.mode;
+  }
+
+  /**
+   * Sets the {@link MenuClick.Mode menu mode}
+   *
+   * @param mode {@link MenuClick.Mode menu mode}
+   */
+  public void setMode(MenuClick.Mode mode) {
+    this.mode = mode;
   }
 
   /**
@@ -129,7 +175,16 @@ public class PluginPlayer {
    * @return menu category
    */
   public String getCategory() {
-    return category;
+    return this.category;
+  }
+
+  /**
+   * Sets the menu category.
+   *
+   * @param category menu category
+   */
+  public void setCategory(String category) {
+    this.category = category;
   }
 
   /**
@@ -138,7 +193,16 @@ public class PluginPlayer {
    * @return menu page
    */
   public int getPage() {
-    return page;
+    return this.page;
+  }
+
+  /**
+   * Sets the menu page number.
+   *
+   * @param page menu page number
+   */
+  public void setPage(int page) {
+    this.page = page;
   }
 
   /**
@@ -147,7 +211,18 @@ public class PluginPlayer {
    * @return target player's UUID
    */
   public UUID getTarget() {
-    return target;
+    return this.target;
+  }
+
+  /**
+   * Sets the target player's UUID.
+   *
+   * @param target target player's UUID
+   */
+  public void setTarget(UUID target) {
+    if (Bukkit.getPlayer(target) != null) {
+      this.target = target;
+    }
   }
 
   /**
@@ -156,7 +231,16 @@ public class PluginPlayer {
    * @return {@link RpgEquipmentSlot}
    */
   public RpgEquipmentSlot getSlot() {
-    return slot;
+    return this.slot;
+  }
+
+  /**
+   * Sets the {@link RpgEquipmentSlot}.
+   *
+   * @param slot {@link RpgEquipmentSlot}
+   */
+  public void setSlot(RpgEquipmentSlot slot) {
+    this.slot = slot;
   }
 
   /**
@@ -165,7 +249,16 @@ public class PluginPlayer {
    * @return {@link Trigger}
    */
   public Trigger getTrigger() {
-    return trigger;
+    return this.trigger;
+  }
+
+  /**
+   * Sets the {@link Trigger}.
+   *
+   * @param trigger {@link Trigger}
+   */
+  public void setTrigger(Trigger trigger) {
+    this.trigger = trigger;
   }
 
   /**
@@ -174,6 +267,15 @@ public class PluginPlayer {
    * @return object type
    */
   public String getObjectType() {
-    return objectType;
+    return this.objectType;
+  }
+
+  /**
+   * Sets the object type.
+   *
+   * @param objectType object type
+   */
+  public void setObjectType(String objectType) {
+    this.objectType = objectType;
   }
 }

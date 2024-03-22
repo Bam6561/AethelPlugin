@@ -1,7 +1,6 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.ChatColor;
@@ -23,7 +22,7 @@ import java.util.*;
  * enough materials to craft the {@link PersistentRecipe recipe}.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.17.17
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -104,7 +103,7 @@ class RecipeCraft {
    * Crafts a {@link PersistentRecipe recipe} if the user has enough materials.
    */
   protected void readRecipeMaterials() {
-    if (!Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).containsKey(PlayerMeta.DEVELOPER)) {
+    if (!Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).isDeveloper()) {
       if (hasEnoughOfAllMaterials()) {
         craftRecipe();
       } else {

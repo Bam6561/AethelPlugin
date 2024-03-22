@@ -4,6 +4,8 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,7 +28,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.17.17
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -107,8 +109,9 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openCraftingMenu(Player user) {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.FUTURE, RecipeMenu.Action.CRAFT.getId());
+    pluginPlayer.setMode(MenuClick.Mode.RECIPE_MENU_CRAFT);
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
@@ -121,8 +124,9 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openEditorMenu(Player user) {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.FUTURE, RecipeMenu.Action.EDIT.getId());
+    pluginPlayer.setMode(MenuClick.Mode.RECIPE_MENU_EDIT);
     playerMeta.put(PlayerMeta.CATEGORY, "");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
