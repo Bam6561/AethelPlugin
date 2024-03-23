@@ -28,7 +28,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -98,7 +98,7 @@ public class CharacterCommand implements CommandExecutor {
     for (Player player : Bukkit.getOnlinePlayers()) {
       if (player.getName().equals(requestedPlayer)) {
         UUID target = player.getUniqueId();
-        PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
+        PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
         pluginPlayer.setTarget(target);
         user.openInventory(new SheetMenu(user, player).getMainMenu());
         pluginPlayer.setMenu(MenuClick.Menu.CHARACTER_SHEET);

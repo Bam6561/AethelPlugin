@@ -31,7 +31,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClickEvent {
@@ -277,9 +277,8 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openAttribute() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
-    user.openInventory(new AttributeMenu(user, EquipmentSlot.HEAD).getMainMenu());
+    user.openInventory(new AttributeMenu(user, EquipmentSlot.HAND).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
   }
 
@@ -288,7 +287,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openAethelAttribute() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
@@ -298,18 +296,16 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    * Opens an {@link EnchantmentMenu}.
    */
   private void openEnchantment() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     user.openInventory(new EnchantmentMenu(user).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ENCHANTMENT);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_ENCHANTMENT);
   }
 
   /**
    * Opens a {@link PotionMenu}.
    */
   private void openPotion() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     user.openInventory(new PotionMenu(user).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_POTION);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_POTION);
   }
 
   /**
@@ -317,7 +313,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     pluginPlayer.setTrigger(Trigger.DAMAGE_DEALT);
     user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, Trigger.DAMAGE_DEALT).getMainMenu());
@@ -329,7 +324,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openActive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ACTIVE);
@@ -339,9 +333,8 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    * Opens a {@link TagMenu}.
    */
   private void openTag() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     user.openInventory(new TagMenu(user).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_TAG);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_TAG);
   }
 
   /**
@@ -462,7 +455,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setAttributeMode(EquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(RpgEquipmentSlot.valueOf(eSlot.name()));
     user.openInventory(new AttributeMenu(user, eSlot).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
@@ -476,7 +468,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setAethelAttributeMode(RpgEquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new AethelAttributeMenu(user, eSlot).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
@@ -490,7 +481,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setPassiveMode(RpgEquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new PassiveMenu(user, eSlot, pluginPlayer.getTrigger()).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);
@@ -504,7 +494,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setTriggerMode(Trigger trigger) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setTrigger(trigger);
     user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), trigger).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);
@@ -518,7 +507,6 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setActiveMode(RpgEquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new ActiveMenu(user, eSlot).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ACTIVE);
@@ -528,11 +516,12 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    * Determines the Minecraft attribute to be set and prompts the user for an input.
    */
   private void readMinecraftAttribute() {
-    EquipmentSlot slot = EquipmentSlot.valueOf(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getSlot().name());
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    EquipmentSlot slot = EquipmentSlot.valueOf(pluginPlayer.getSlot().name());
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(slot.name()) + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeContext(attribute));
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(attribute);
+    pluginPlayer.setObjectType(attribute);
     awaitMessageResponse(MessageSent.Input.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
   }
 
@@ -540,11 +529,12 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    * Determines the {@link AethelAttributeType} to be set and prompts the user for an input.
    */
   private void readAethelAttribute() {
-    RpgEquipmentSlot eSlot = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getSlot();
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    RpgEquipmentSlot eSlot = pluginPlayer.getSlot();
     String attribute = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: " + AethelAttributeType.valueOf(TextFormatter.formatEnum(attribute)).getBaseValue());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(attribute));
+    pluginPlayer.setObjectType(TextFormatter.formatId(attribute));
     awaitMessageResponse(MessageSent.Input.ITEMEDITOR_AETHEL_ATTRIBUTE);
   }
 
@@ -579,7 +569,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + trigger.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + trigger.getCondition().getData());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(passive));
+    pluginPlayer.setObjectType(TextFormatter.formatId(passive));
     awaitMessageResponse(MessageSent.Input.ITEMEDITOR_PASSIVE_ABILITY);
   }
 
@@ -587,11 +577,12 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    * Determines the {@link ActiveType} to be set and prompts the user for an input.
    */
   private void readActive() {
-    RpgEquipmentSlot eSlot = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getSlot();
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    RpgEquipmentSlot eSlot = pluginPlayer.getSlot();
     String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(active));
+    pluginPlayer.setObjectType(TextFormatter.formatId(active));
     awaitMessageResponse(MessageSent.Input.ITEMEDITOR_ACTIVE_ABILITY);
   }
 

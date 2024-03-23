@@ -11,13 +11,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * Command invocation that allows the user to edit their main hand item's metadata.
  * <p>
  * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -77,8 +79,9 @@ public class ItemEditorCommand implements CommandExecutor {
    * @param item interacting item
    */
   private void openMenu(Player user, ItemStack item) {
-    Plugin.getData().getEditedItemCache().getEditedItems().put(user.getUniqueId(), item);
+    UUID uuid = user.getUniqueId();
+    Plugin.getData().getEditedItemCache().getEditedItems().put(uuid, item);
     user.openInventory(new CosmeticMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuClick.Menu.ITEMEDITOR_COSMETIC);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_COSMETIC);
   }
 }

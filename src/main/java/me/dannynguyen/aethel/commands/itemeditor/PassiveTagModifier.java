@@ -110,7 +110,7 @@ class PassiveTagModifier {
    * Determines the type of {@link PluginKey#PASSIVE_LIST ability tag} to be set.
    */
   protected void interpretKeyToBeSet() {
-    TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(this.trigger)).getCondition();
+    TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
     PassiveEffect effect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
     switch (condition) {
       case CHANCE_COOLDOWN -> readChanceCooldown(effect);

@@ -26,7 +26,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.4.0
  */
 public class ItemMenuClick implements MenuClickEvent {
@@ -136,11 +136,11 @@ public class ItemMenuClick implements MenuClickEvent {
    */
   private void getCategoryPage() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+    String category = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int pageRequest = pluginPlayer.getPage();
 
-    pluginPlayer.setCategory(item);
-    user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(item, pageRequest));
+    pluginPlayer.setCategory(category);
+    user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
     pluginPlayer.setMenu(MenuClick.Menu.AETHELITEM_GET);
   }
 
@@ -171,7 +171,7 @@ public class ItemMenuClick implements MenuClickEvent {
     if (action == ItemMenu.Action.GET) {
       user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).getCategoryPage(category, pageRequest));
       pluginPlayer.setMenu(MenuClick.Menu.AETHELITEM_REMOVE);
-    } else {
+    } else if (action == ItemMenu.Action.REMOVE) {
       user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
       pluginPlayer.setMenu(MenuClick.Menu.AETHELITEM_GET);
     }

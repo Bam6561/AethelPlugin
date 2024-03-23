@@ -486,7 +486,6 @@ public class ItemEditorMessageSent {
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     String slot = pluginPlayer.getSlot().getId();
     String type = pluginPlayer.getObjectType();
     String stringKeyToSet = slot + "." + type;
@@ -593,7 +592,6 @@ public class ItemEditorMessageSent {
    */
   private void returnToAttribute() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(pluginPlayer.getSlot().name())).getMainMenu());
       pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
@@ -605,7 +603,6 @@ public class ItemEditorMessageSent {
    */
   private void returnToAethelAttribute() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AethelAttributeMenu(user, pluginPlayer.getSlot()).getMainMenu());
       pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
@@ -617,7 +614,6 @@ public class ItemEditorMessageSent {
    */
   private void returnToEnchantment() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentMenu(user).getMainMenu());
       pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ENCHANTMENT);
@@ -629,7 +625,6 @@ public class ItemEditorMessageSent {
    */
   private void returnToPotion() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionMenu(user).getMainMenu());
       pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_POTION);
@@ -641,7 +636,6 @@ public class ItemEditorMessageSent {
    */
   private void returnToPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
       pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);

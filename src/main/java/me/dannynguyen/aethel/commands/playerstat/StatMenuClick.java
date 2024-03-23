@@ -56,11 +56,10 @@ public class StatMenuClick implements MenuClickEvent {
   public void interpretMenuClick() {
     if (slot > 8) {
       PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-
       String owner = Bukkit.getOfflinePlayer(pluginPlayer.getTarget()).getName();
       String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-      pluginPlayer.setCategory(item);
 
+      pluginPlayer.setCategory(item);
       user.openInventory(new StatMenu(user, owner).getCategoryPage(item, 0));
       switch (item) {
         case "Entity Types", "Materials" -> pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_SUBSTAT);
@@ -112,7 +111,6 @@ public class StatMenuClick implements MenuClickEvent {
    */
   private void previousPage() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-
     String owner = Bukkit.getOfflinePlayer(pluginPlayer.getTarget()).getName();
     String category = pluginPlayer.getCategory();
     int pageRequest = pluginPlayer.getPage();
@@ -126,8 +124,8 @@ public class StatMenuClick implements MenuClickEvent {
    */
   private void returnToMenu() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-
     String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
+
     user.openInventory(new StatMenu(user, owner).getMainMenu());
     pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_CATEGORY);
     pluginPlayer.setPage(0);
@@ -138,7 +136,6 @@ public class StatMenuClick implements MenuClickEvent {
    */
   private void nextPage() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-
     String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
     String category = pluginPlayer.getCategory();
     int pageRequest = pluginPlayer.getPage();

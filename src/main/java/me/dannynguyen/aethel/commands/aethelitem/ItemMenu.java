@@ -67,8 +67,8 @@ public class ItemMenu implements CategoryMenu {
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get " + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
-      case REMOVE -> title += ChatColor.RED + " Remove " + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
     }
     return Bukkit.createInventory(user, 54, title);
   }

@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -44,11 +44,10 @@ public class MenuClick implements Listener {
   @EventHandler
   private void onClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId());
-      Menu menu = pluginPlayer.getMenu();
+      Menu menu = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenu();
       if (menu != null && e.getAction() != InventoryAction.COLLECT_TO_CURSOR) {// Prevents item duplication
         e.setCancelled(true);
-        String invType = menu.getMeta();
+        String invType = menu.getId();
         switch (invType) {
           case "aethelitem" -> interpretAethelItem(e, menu);
           case "character" -> interpretCharacter(e, menu);
@@ -393,27 +392,27 @@ public class MenuClick implements Listener {
     SHOWITEM_PAST("showitem");
 
     /**
-     * Metadata value.
+     * Menu ID.
      */
-    private final String meta;
+    private final String id;
 
     /**
-     * Associates a menu metadata with its value.
+     * Associates a menu with its ID.
      *
-     * @param meta metadata value
+     * @param id ID
      */
-    Menu(String meta) {
-      this.meta = meta;
+    Menu(String id) {
+      this.id = id;
     }
 
     /**
-     * Gets the metadata value.
+     * Gets the menu's ID.
      *
-     * @return metadata value
+     * @return menu's ID
      */
     @NotNull
-    public String getMeta() {
-      return this.meta;
+    public String getId() {
+      return this.id;
     }
   }
 
@@ -439,7 +438,7 @@ public class MenuClick implements Listener {
     /**
      * Associates a menu mode with its ID.
      *
-     * @param id
+     * @param id ID
      */
     Mode(String id) {
       this.id = id;

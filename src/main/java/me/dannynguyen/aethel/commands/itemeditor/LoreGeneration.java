@@ -31,7 +31,7 @@ import java.util.*;
  * Used with {@link ItemEditorMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.18.0
  * @since 1.17.13
  */
 class LoreGeneration {
@@ -343,15 +343,16 @@ class LoreGeneration {
   private void addPassiveHeader(String eSlot) {
     if (passiveAbilities.containsKey(eSlot)) {
       List<String> header = new ArrayList<>(List.of(""));
+      String tag = ChatColor.BLUE + "Passives";
       switch (eSlot) {
-        case "head" -> header.add(ChatColor.GRAY + "Head (Passive):");
-        case "chest" -> header.add(ChatColor.GRAY + "Chest (Passive):");
-        case "legs" -> header.add(ChatColor.GRAY + "Legs (Passive):");
-        case "feet" -> header.add(ChatColor.GRAY + "Feet (Passive):");
-        case "necklace" -> header.add(ChatColor.GRAY + "Necklace (Passive):");
-        case "ring" -> header.add(ChatColor.GRAY + "Ring (Passive):");
-        case "hand" -> header.add(ChatColor.GRAY + "Main Hand (Passive):");
-        case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand (Passive):");
+        case "head" -> header.add(ChatColor.GRAY + "Head " + tag);
+        case "chest" -> header.add(ChatColor.GRAY + "Chest " + tag);
+        case "legs" -> header.add(ChatColor.GRAY + "Legs " + tag);
+        case "feet" -> header.add(ChatColor.GRAY + "Feet " + tag);
+        case "necklace" -> header.add(ChatColor.GRAY + "Necklace " + tag);
+        case "ring" -> header.add(ChatColor.GRAY + "Ring " + tag);
+        case "hand" -> header.add(ChatColor.GRAY + "Main Hand " + tag);
+        case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand " + tag);
       }
       header.addAll(passiveAbilities.get(eSlot));
       lore.addAll(header);
@@ -367,15 +368,16 @@ class LoreGeneration {
   private void addActiveHeader(String eSlot) {
     if (activeAbilities.containsKey(eSlot)) {
       List<String> header = new ArrayList<>(List.of(""));
+      String tag = ChatColor.YELLOW + "Actives";
       switch (eSlot) {
-        case "head" -> header.add(ChatColor.GRAY + "Head (Active):");
-        case "chest" -> header.add(ChatColor.GRAY + "Chest (Active):");
-        case "legs" -> header.add(ChatColor.GRAY + "Legs (Active):");
-        case "feet" -> header.add(ChatColor.GRAY + "Feet (Active):");
-        case "necklace" -> header.add(ChatColor.GRAY + "Necklace (Active):");
-        case "ring" -> header.add(ChatColor.GRAY + "Ring (Active):");
-        case "hand" -> header.add(ChatColor.GRAY + "Main Hand (Active):");
-        case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand (Active):");
+        case "head" -> header.add(ChatColor.GRAY + "Head " + tag);
+        case "chest" -> header.add(ChatColor.GRAY + "Chest " + tag);
+        case "legs" -> header.add(ChatColor.GRAY + "Legs " + tag);
+        case "feet" -> header.add(ChatColor.GRAY + "Feet " + tag);
+        case "necklace" -> header.add(ChatColor.GRAY + "Necklace " + tag);
+        case "ring" -> header.add(ChatColor.GRAY + "Ring " + tag);
+        case "hand" -> header.add(ChatColor.GRAY + "Main Hand " + tag);
+        case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand " + tag);
       }
       header.addAll(activeAbilities.get(eSlot));
       lore.addAll(header);

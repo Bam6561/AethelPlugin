@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -35,7 +35,7 @@ public class MessageSent implements Listener {
     Input input = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMessageInput();
     if (input != null) {
       e.setCancelled(true);
-      String inputType = input.getMeta();
+      String inputType = input.getId();
       switch (inputType) {
         case "itemeditor" -> interpretItemEditor(e, input);
       }
@@ -166,27 +166,27 @@ public class MessageSent implements Listener {
     ITEMEDITOR_AETHEL_TAG("itemeditor");
 
     /**
-     * Metadata value.
+     * Input ID.
      */
-    private final String meta;
+    private final String id;
 
     /**
-     * Associates an input metadata with its value.
+     * Associates an input with its ID.
      *
-     * @param meta metadata value
+     * @param id ID
      */
-    Input(String meta) {
-      this.meta = meta;
+    Input(String id) {
+      this.id = id;
     }
 
     /**
-     * Gets the metadata value.
+     * Gets the input's ID.
      *
-     * @return metadata value
+     * @return input's ID
      */
     @NotNull
-    public String getMeta() {
-      return this.meta;
+    public String getId() {
+      return this.id;
     }
   }
 }

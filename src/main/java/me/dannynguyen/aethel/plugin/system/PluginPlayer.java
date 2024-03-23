@@ -5,7 +5,6 @@ import me.dannynguyen.aethel.plugin.listeners.MessageSent;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.rpg.listeners.RPGAction;
-import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -13,70 +12,60 @@ import java.util.UUID;
  * Represents a player's plugin metadata.
  *
  * @author Danny Nguyen
- * @version 1.17.17
+ * @version 1.18.0
  * @since 1.17.16
  */
 public class PluginPlayer {
+  /**
+   * {@link me.dannynguyen.aethel.commands.DeveloperCommand}
+   */
+  private boolean isDeveloper;
+  /**
+   * {@link RPGAction.Input}
+   */
+  private RPGAction.Input actionInput;
+  /**
+   * {@link MessageSent.Input}
+   */
+  private MessageSent.Input messageInput;
+  /**
+   * {@link MenuClick.Menu}
+   */
+  private MenuClick.Menu menu;
+  /**
+   * {@link MenuClick.Mode}
+   */
+  private MenuClick.Mode mode;
+  /**
+   * Menu category.
+   */
+  private String category;
+  /**
+   * Menu page number.
+   */
+  private int page;
+  /**
+   * Target player's UUID.
+   */
+  private UUID target;
+  /**
+   * {@link RpgEquipmentSlot}
+   */
+  private RpgEquipmentSlot slot;
+  /**
+   * {@link Trigger}
+   */
+  private Trigger trigger;
+  /**
+   * Interacting object type.
+   */
+  private String objectType;
+
   /**
    * No parameter constructor.
    */
   public PluginPlayer() {
   }
-
-  /**
-   * {@link me.dannynguyen.aethel.commands.DeveloperCommand}
-   */
-  private boolean isDeveloper;
-
-  /**
-   * {@link RPGAction.Input}
-   */
-  private RPGAction.Input actionInput;
-
-  /**
-   * {@link MessageSent.Input}
-   */
-  private MessageSent.Input messageInput;
-
-  /**
-   * {@link MenuClick.Menu}
-   */
-  private MenuClick.Menu menu;
-
-  /**
-   * {@link MenuClick.Mode}
-   */
-  private MenuClick.Mode mode;
-
-  /**
-   * Menu category.
-   */
-  private String category;
-
-  /**
-   * Menu page number.
-   */
-  private int page;
-
-  /**
-   * Target player's UUID.
-   */
-  private UUID target;
-
-  /**
-   * {@link RpgEquipmentSlot}
-   */
-  private RpgEquipmentSlot slot;
-
-  /**
-   * {@link Trigger}
-   */
-  private Trigger trigger;
-
-  /**
-   * Interacting object type.
-   */
-  private String objectType;
 
   /**
    * Gets {@link me.dannynguyen.aethel.commands.DeveloperCommand}.
@@ -215,14 +204,12 @@ public class PluginPlayer {
   }
 
   /**
-   * Sets the target player's UUID.
+   * Sets the target's UUID.
    *
-   * @param target target player's UUID
+   * @param target target's UUID
    */
   public void setTarget(UUID target) {
-    if (Bukkit.getPlayer(target) != null) {
-      this.target = target;
-    }
+    this.target = target;
   }
 
   /**

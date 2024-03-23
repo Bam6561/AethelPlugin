@@ -214,7 +214,7 @@ public class Equipment {
    *
    * @return jewelry slots
    */
-  @NotNull
+  @Nullable
   public ItemStack[] getJewelry() {
     return this.jewelry;
   }

@@ -27,7 +27,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.0
  * @since 1.4.7
  */
 public class StatCommand implements CommandExecutor {
@@ -85,7 +85,7 @@ public class StatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuClick.Menu.PLAYERSTAT_STAT);
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuClick.Menu.PLAYERSTAT_PAST);
     } else {
       openPlayerStatOther(user, parameter);
     }
