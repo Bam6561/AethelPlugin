@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Collection of player chat listeners for the plugin's message inputs.
@@ -14,7 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.6.7
  */
 public class MessageSent implements Listener {
@@ -31,27 +32,12 @@ public class MessageSent implements Listener {
    */
   @EventHandler
   private void onPlayerChat(AsyncPlayerChatEvent e) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId());
-    if (pluginPlayer.getMessageInput() != null) {
+    Input input = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMessageInput();
+    if (input != null) {
       e.setCancelled(true);
-      ItemEditorMessageSent msg = new ItemEditorMessageSent(e);
-      switch (pluginPlayer.getMessageInput()) {
-        case DISPLAY_NAME -> msg.setDisplayName();
-        case CUSTOM_MODEL_DATA -> msg.setCustomModelData();
-        case DURABILITY -> msg.setDurability();
-        case REPAIR_COST -> msg.setRepairCost();
-        case LORE_SET -> msg.setLore();
-        case LORE_ADD -> msg.addLore();
-        case LORE_EDIT -> msg.editLore();
-        case LORE_REMOVE -> msg.removeLore();
-        case POTION_COLOR -> msg.setPotionColor();
-        case MINECRAFT_ATTRIBUTE -> msg.setMinecraftAttribute();
-        case AETHEL_ATTRIBUTE -> msg.setAethelAttribute();
-        case ENCHANTMENT -> msg.setEnchantment();
-        case POTION_EFFECT -> msg.setPotionEffect();
-        case PASSIVE_ABILITY -> msg.setPassive();
-        case ACTIVE_ABILITY -> msg.setActive();
-        case AETHEL_TAG -> msg.setTag();
+      String inputType = input.getMeta();
+      switch (inputType) {
+        case "itemeditor" -> interpretItemEditor(e, input);
       }
     }
   }
@@ -67,86 +53,140 @@ public class MessageSent implements Listener {
   }
 
   /**
+   * Determines which {@link me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand}
+   * input is being interacted with.
+   *
+   * @param e     message event
+   * @param input {@link Input}
+   */
+  private void interpretItemEditor(AsyncPlayerChatEvent e, Input input) {
+    ItemEditorMessageSent msg = new ItemEditorMessageSent(e);
+    switch (input) {
+      case ITEMEDITOR_DISPLAY_NAME -> msg.setDisplayName();
+      case ITEMEDITOR_CUSTOM_MODEL_DATA -> msg.setCustomModelData();
+      case ITEMEDITOR_DURABILITY -> msg.setDurability();
+      case ITEMEDITOR_REPAIR_COST -> msg.setRepairCost();
+      case ITEMEDITOR_LORE_SET -> msg.setLore();
+      case ITEMEDITOR_LORE_ADD -> msg.addLore();
+      case ITEMEDITOR_LORE_EDIT -> msg.editLore();
+      case ITEMEDITOR_LORE_REMOVE -> msg.removeLore();
+      case ITEMEDITOR_POTION_COLOR -> msg.setPotionColor();
+      case ITEMEDITOR_MINECRAFT_ATTRIBUTE -> msg.setMinecraftAttribute();
+      case ITEMEDITOR_AETHEL_ATTRIBUTE -> msg.setAethelAttribute();
+      case ITEMEDITOR_ENCHANTMENT -> msg.setEnchantment();
+      case ITEMEDITOR_POTION_EFFECT -> msg.setPotionEffect();
+      case ITEMEDITOR_PASSIVE_ABILITY -> msg.setPassive();
+      case ITEMEDITOR_ACTIVE_ABILITY -> msg.setActive();
+      case ITEMEDITOR_AETHEL_TAG -> msg.setTag();
+    }
+  }
+
+  /**
    * Message input types.
    */
   public enum Input {
     /**
      * Display name.
      */
-    DISPLAY_NAME,
+    ITEMEDITOR_DISPLAY_NAME("itemeditor"),
 
     /**
      * Custom model data.
      */
-    CUSTOM_MODEL_DATA,
+    ITEMEDITOR_CUSTOM_MODEL_DATA("itemeditor"),
 
     /**
      * Durability.
      */
-    DURABILITY,
+    ITEMEDITOR_DURABILITY("itemeditor"),
 
     /**
      * Repair cost.
      */
-    REPAIR_COST,
+    ITEMEDITOR_REPAIR_COST("itemeditor"),
 
     /**
      * Set lore.
      */
-    LORE_SET,
+    ITEMEDITOR_LORE_SET("itemeditor"),
 
     /**
      * Add lore.
      */
-    LORE_ADD,
+    ITEMEDITOR_LORE_ADD("itemeditor"),
 
     /**
      * Edit lore.
      */
-    LORE_EDIT,
+    ITEMEDITOR_LORE_EDIT("itemeditor"),
 
     /**
      * Remove lore.
      */
-    LORE_REMOVE,
+    ITEMEDITOR_LORE_REMOVE("itemeditor"),
 
     /**
      * Potion color.
      */
-    POTION_COLOR,
+    ITEMEDITOR_POTION_COLOR("itemeditor"),
 
     /**
      * Minecraft attribute.
      */
-    MINECRAFT_ATTRIBUTE,
+    ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor"),
 
     /**
      * Aethel attribute.
      */
-    AETHEL_ATTRIBUTE,
+    ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor"),
 
     /**
      * Enchantment.
      */
-    ENCHANTMENT,
+    ITEMEDITOR_ENCHANTMENT("itemeditor"),
 
     /**
      * Potion effect.
      */
-    POTION_EFFECT,
+    ITEMEDITOR_POTION_EFFECT("itemeditor"),
 
     /**
      * Passive ability.
      */
-    PASSIVE_ABILITY,
+    ITEMEDITOR_PASSIVE_ABILITY("itemeditor"),
+
     /**
      * Active ability.
      */
-    ACTIVE_ABILITY,
+    ITEMEDITOR_ACTIVE_ABILITY("itemeditor"),
 
     /**
      * Aethel tag.
      */
-    AETHEL_TAG
+    ITEMEDITOR_AETHEL_TAG("itemeditor");
+
+    /**
+     * Metadata value.
+     */
+    private final String meta;
+
+    /**
+     * Associates an input metadata with its value.
+     *
+     * @param meta metadata value
+     */
+    Input(String meta) {
+      this.meta = meta;
+    }
+
+    /**
+     * Gets the metadata value.
+     *
+     * @return metadata value
+     */
+    @NotNull
+    public String getMeta() {
+      return this.meta;
+    }
   }
 }

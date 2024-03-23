@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -23,7 +22,7 @@ import java.util.UUID;
  * crafting, editing, and removing {@link PersistentRecipe recipes}.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.17.19
  * @since 1.0.6
  */
 public class RecipeMenu implements CategoryMenu {
@@ -67,7 +66,7 @@ public class RecipeMenu implements CategoryMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
+    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -102,7 +101,7 @@ public class RecipeMenu implements CategoryMenu {
     List<Inventory> category = Plugin.getData().getRecipeRegistry().getRecipeCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();

@@ -1,9 +1,8 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
@@ -21,7 +20,7 @@ import java.util.UUID;
  * Represents a menu containing a {@link PersistentRecipe recipe's} details.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.17.19
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -106,7 +105,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CRAFT_RECIPE.getMeta());
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.FORGE_CRAFT_RECIPE);
   }
 
   /**
@@ -117,7 +116,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.FORGE_SAVE);
   }
 
   /**
@@ -127,7 +126,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.INVENTORY, MenuMeta.FORGE_SAVE.getMeta());
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.FORGE_SAVE);
   }
 
   /**

@@ -1,11 +1,13 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.*;
+import me.dannynguyen.aethel.plugin.enums.KeyHeader;
+import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.ActiveEffect;
 import me.dannynguyen.aethel.rpg.enums.ActiveType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.ItemDurability;
 import me.dannynguyen.aethel.util.ItemRepairCost;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -27,7 +29,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Message sent listener for ItemEditor text inputs.
@@ -35,7 +40,7 @@ import java.util.*;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -236,10 +241,10 @@ public class ItemEditorMessageSent {
    */
   public void setMinecraftAttribute() {
     try {
-      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-      String type = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType();
+      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+      String type = pluginPlayer.getObjectType();
       Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
-      String slot = playerMeta.get(PlayerMeta.SLOT);
+      String slot = pluginPlayer.getSlot().getId();
       EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
 
       if (!e.getMessage().equals("-")) {
@@ -481,8 +486,8 @@ public class ItemEditorMessageSent {
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    String slot = playerMeta.get(PlayerMeta.SLOT);
+
+    String slot = pluginPlayer.getSlot().getId();
     String type = pluginPlayer.getObjectType();
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
@@ -514,8 +519,7 @@ public class ItemEditorMessageSent {
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    String slot = playerMeta.get(PlayerMeta.SLOT);
+    String slot = pluginPlayer.getSlot().getId();
     String type = pluginPlayer.getObjectType();
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
@@ -548,8 +552,7 @@ public class ItemEditorMessageSent {
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    String slot = playerMeta.get(PlayerMeta.SLOT);
+    String slot = pluginPlayer.getSlot().getId();
     String type = pluginPlayer.getObjectType();
     String stringKeyToRemove = slot + "." + type;
     NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
@@ -578,10 +581,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link CosmeticMenu}.
    */
   private void returnToCosmetic() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticMenu(user).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_COSMETIC);
     });
   }
 
@@ -589,10 +592,11 @@ public class ItemEditorMessageSent {
    * Returns to the {@link AttributeMenu}.
    */
   private void returnToAttribute() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)))).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_MINECRAFT_ATTRIBUTE.getMeta());
+      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(pluginPlayer.getSlot().name())).getMainMenu());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
     });
   }
 
@@ -600,10 +604,11 @@ public class ItemEditorMessageSent {
    * Returns to the {@link AethelAttributeMenu}.
    */
   private void returnToAethelAttribute() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)))).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_AETHEL_ATTRIBUTE.getMeta());
+      user.openInventory(new AethelAttributeMenu(user, pluginPlayer.getSlot()).getMainMenu());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
     });
   }
 
@@ -611,10 +616,11 @@ public class ItemEditorMessageSent {
    * Returns to the {@link EnchantmentMenu}.
    */
   private void returnToEnchantment() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentMenu(user).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ENCHANTMENT.getMeta());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ENCHANTMENT);
     });
   }
 
@@ -622,10 +628,11 @@ public class ItemEditorMessageSent {
    * Returns to the {@link PotionMenu}.
    */
   private void returnToPotion() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionMenu(user).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_POTION.getMeta());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_POTION);
     });
   }
 
@@ -634,10 +641,10 @@ public class ItemEditorMessageSent {
    */
   private void returnToPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT))), pluginPlayer.getTrigger()).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
+      user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);
     });
   }
 
@@ -645,10 +652,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link ActiveMenu}.
    */
   private void returnToActive() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT)))).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_ACTIVE.getMeta());
+      user.openInventory(new ActiveMenu(user, pluginPlayer.getSlot()).getMainMenu());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ACTIVE);
     });
   }
 
@@ -656,10 +663,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link TagMenu}.
    */
   private void returnToTag() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new TagMenu(user).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_TAG.getMeta());
+      pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_TAG);
     });
   }
 }

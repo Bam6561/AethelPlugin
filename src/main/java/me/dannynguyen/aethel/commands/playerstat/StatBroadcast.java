@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.util.ItemReader;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.*;
@@ -22,7 +21,7 @@ import java.util.UUID;
  * Used with {@link StatMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.4.10
  */
 class StatBroadcast {
@@ -88,7 +87,7 @@ class StatBroadcast {
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
-    String category = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
+    String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
     String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
     List<String> statValues = getSubstatValues(category, substat);
 

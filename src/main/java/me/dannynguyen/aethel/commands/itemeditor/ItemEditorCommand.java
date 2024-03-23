@@ -1,9 +1,8 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.19
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -80,6 +79,6 @@ public class ItemEditorCommand implements CommandExecutor {
   private void openMenu(Player user, ItemStack item) {
     Plugin.getData().getEditedItemCache().getEditedItems().put(user.getUniqueId(), item);
     user.openInventory(new CosmeticMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_COSMETIC.getMeta());
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuClick.Menu.ITEMEDITOR_COSMETIC);
   }
 }

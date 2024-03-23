@@ -1,9 +1,8 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,7 +27,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.4.7
  */
 public class StatCommand implements CommandExecutor {
@@ -87,7 +85,7 @@ public class StatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId()).put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_PAST.getMeta());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuClick.Menu.PLAYERSTAT_STAT);
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -101,10 +99,10 @@ public class StatCommand implements CommandExecutor {
   private void openPlayerStatSelf(Player user) {
     UUID target = user.getUniqueId();
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
+
     pluginPlayer.setTarget(target);
     user.openInventory(new StatMenu(user, user.getName()).getMainMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
+    pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_CATEGORY);
   }
 
   /**
@@ -118,10 +116,10 @@ public class StatCommand implements CommandExecutor {
     if (player.hasPlayedBefore()) {
       UUID target = player.getUniqueId();
       PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
+
       pluginPlayer.setTarget(target);
       user.openInventory(new StatMenu(user, player.getName()).getMainMenu());
-      playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
+      pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_CATEGORY);
     } else {
       user.sendMessage(ChatColor.RED + owner + " has never played on this server.");
     }

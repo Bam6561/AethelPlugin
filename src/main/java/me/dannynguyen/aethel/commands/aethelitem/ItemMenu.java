@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -23,7 +22,7 @@ import java.util.UUID;
  * creating, editing, and removing {@link PersistentItem items}.
  *
  * @author Danny Nguyen
- * @version 1.17.5
+ * @version 1.17.19
  * @since 1.4.0
  */
 public class ItemMenu implements CategoryMenu {
@@ -68,8 +67,8 @@ public class ItemMenu implements CategoryMenu {
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Aethel Item";
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
-      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.CATEGORY);
+      case GET -> title += ChatColor.GREEN + " Get " + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+      case REMOVE -> title += ChatColor.RED + " Remove " + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
     }
     return Bukkit.createInventory(user, 54, title);
   }
@@ -99,7 +98,7 @@ public class ItemMenu implements CategoryMenu {
     List<Inventory> category = Plugin.getData().getItemRegistry().getItemCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext(requestedCategory);

@@ -1,9 +1,8 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -30,7 +28,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -85,10 +83,9 @@ public class CharacterCommand implements CommandExecutor {
   private void openSheetSelf(Player user) {
     UUID target = user.getUniqueId();
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     pluginPlayer.setTarget(target);
     user.openInventory(new SheetMenu(user, user).getMainMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+    pluginPlayer.setMenu(MenuClick.Menu.CHARACTER_SHEET);
   }
 
   /**
@@ -102,10 +99,9 @@ public class CharacterCommand implements CommandExecutor {
       if (player.getName().equals(requestedPlayer)) {
         UUID target = player.getUniqueId();
         PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
-        Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
         pluginPlayer.setTarget(target);
         user.openInventory(new SheetMenu(user, player).getMainMenu());
-        playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.CHARACTER_SHEET.getMeta());
+        pluginPlayer.setMenu(MenuClick.Menu.CHARACTER_SHEET);
         return;
       }
     }

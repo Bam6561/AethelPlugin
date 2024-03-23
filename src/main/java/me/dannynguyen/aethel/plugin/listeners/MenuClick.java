@@ -9,15 +9,14 @@ import me.dannynguyen.aethel.commands.forge.RecipeMenu;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 /**
  * Collection of inventory click listeners for the plugin's
@@ -27,7 +26,7 @@ import java.util.Map;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -45,19 +44,18 @@ public class MenuClick implements Listener {
   @EventHandler
   private void onClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
-      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(e.getWhoClicked().getUniqueId());
-      if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
+      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId());
+      Menu menu = pluginPlayer.getMenu();
+      if (menu != null && e.getAction() != InventoryAction.COLLECT_TO_CURSOR) {// Prevents item duplication
         e.setCancelled(true);
-        if (e.getAction() != InventoryAction.COLLECT_TO_CURSOR) { // Prevents item duplication
-          String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
-          switch (invType[0]) {
-            case "aethelitem" -> interpretAethelItem(e, invType);
-            case "character" -> interpretCharacter(e, invType);
-            case "forge" -> interpretForge(e, invType);
-            case "itemeditor" -> interpretItemEditor(e, invType);
-            case "playerstat" -> interpretPlayerStat(e, invType);
-            case "showitem" -> interpretShowItem(e, invType);
-          }
+        String invType = menu.getMeta();
+        switch (invType) {
+          case "aethelitem" -> interpretAethelItem(e, menu);
+          case "character" -> interpretCharacter(e, menu);
+          case "forge" -> interpretForge(e, menu);
+          case "itemeditor" -> interpretItemEditor(e, menu);
+          case "playerstat" -> interpretPlayerStat(e, menu);
+          case "showitem" -> interpretShowItem(e, menu);
         }
       }
     }
@@ -70,11 +68,10 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   private void onDrag(InventoryDragEvent e) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(e.getWhoClicked().getUniqueId());
-    if (playerMeta.containsKey(PlayerMeta.INVENTORY)) {
+    Menu menu = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenu();
+    if (menu != null) {
       e.setCancelled(true);
-      String[] invType = playerMeta.get(PlayerMeta.INVENTORY).split("\\.");
-      switch (invType[0]) {
+      switch (menu) {
         default -> e.setCancelled(true);
       }
     }
@@ -84,17 +81,17 @@ public class MenuClick implements Listener {
    * Determines which {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand}
    * menu is being interacting with.
    *
-   * @param e       inventory click event
-   * @param invType inventory type
+   * @param e    inventory click event
+   * @param menu {@link Menu}
    */
-  private void interpretAethelItem(InventoryClickEvent e, String[] invType) {
+  private void interpretAethelItem(InventoryClickEvent e, Menu menu) {
     if (e.getClickedInventory().getType() == InventoryType.CHEST) {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ItemMenuClick click = new ItemMenuClick(e);
-        switch (invType[1]) {
-          case "category" -> click.interpretMenuClick();
-          case "get" -> click.interpretCategoryClick(ItemMenu.Action.GET);
-          case "remove" -> click.interpretCategoryClick(ItemMenu.Action.REMOVE);
+        switch (menu) {
+          case AETHELITEM_CATEGORY -> click.interpretMenuClick();
+          case AETHELITEM_GET -> click.interpretCategoryClick(ItemMenu.Action.GET);
+          case AETHELITEM_REMOVE -> click.interpretCategoryClick(ItemMenu.Action.REMOVE);
         }
       } else {
         if (e.getSlot() == 3) {
@@ -112,22 +109,22 @@ public class MenuClick implements Listener {
    * Determines which {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
    * menu is being interacting with.
    *
-   * @param e       inventory click event
-   * @param invType inventory type
+   * @param e    inventory click event
+   * @param menu {@link Menu}
    */
-  private void interpretCharacter(InventoryClickEvent e, String[] invType) {
+  private void interpretCharacter(InventoryClickEvent e, Menu menu) {
     String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getTarget()).getName();
     if (owner.equals(e.getWhoClicked().getName())) {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
-        switch (invType[1]) {
-          case "sheet" -> click.interpretMenuClick();
-          case "quests" -> click.interpretQuestsClick();
-          case "collectibles" -> click.interpretCollectiblesClick();
-          case "settings" -> click.interpretSettingsClick();
+        switch (menu) {
+          case CHARACTER_SHEET -> click.interpretMenuClick();
+          case CHARACTER_QUESTS -> click.interpretQuestsClick();
+          case CHARACTER_COLLECTIBLES -> click.interpretCollectiblesClick();
+          case CHARACTER_SETTINGS -> click.interpretSettingsClick();
         }
       } else {
-        if (invType[1].equals("sheet") && !e.isShiftClick()) {
+        if (menu == Menu.CHARACTER_SHEET && !e.isShiftClick()) {
           e.setCancelled(false);
           click.interpretPlayerInventoryClick();
         }
@@ -139,26 +136,26 @@ public class MenuClick implements Listener {
    * Determines which {@link me.dannynguyen.aethel.commands.forge.ForgeCommand}
    * menu is being interacting with.
    *
-   * @param e       inventory click event
-   * @param invType inventory type
+   * @param e    inventory click event
+   * @param menu {@link Menu}
    */
-  private void interpretForge(InventoryClickEvent e, String[] invType) {
+  private void interpretForge(InventoryClickEvent e, Menu menu) {
     if (e.getClickedInventory().getType() == InventoryType.CHEST) {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ForgeMenuClick click = new ForgeMenuClick(e);
-        switch (invType[1]) {
-          case "category" -> click.interpretMenuClick();
-          case "craft" -> click.interpretCategoryClick(RecipeMenu.Action.CRAFT);
-          case "craft-recipe" -> click.interpretCraftDetailsClick();
-          case "edit" -> click.interpretCategoryClick(RecipeMenu.Action.EDIT);
-          case "remove" -> click.interpretCategoryClick(RecipeMenu.Action.REMOVE);
-          case "save" -> click.interpretSaveClick();
+        switch (menu) {
+          case FORGE_CATEGORY -> click.interpretMenuClick();
+          case FORGE_CRAFT -> click.interpretCategoryClick(RecipeMenu.Action.CRAFT);
+          case FORGE_CRAFT_RECIPE -> click.interpretCraftDetailsClick();
+          case FORGE_EDIT -> click.interpretCategoryClick(RecipeMenu.Action.EDIT);
+          case FORGE_REMOVE -> click.interpretCategoryClick(RecipeMenu.Action.REMOVE);
+          case FORGE_SAVE -> click.interpretSaveClick();
         }
-      } else if (invType[1].equals("save")) {
+      } else if (menu == Menu.FORGE_SAVE) {
         new ForgeMenuClick(e).interpretSaveClick();
       }
     } else {
-      if ((e.isShiftClick() && invType[1].equals("save")) || !e.isShiftClick()) {
+      if ((e.isShiftClick() && menu == Menu.FORGE_SAVE) || !e.isShiftClick()) {
         e.setCancelled(false);
       }
     }
@@ -168,22 +165,22 @@ public class MenuClick implements Listener {
    * Determines which {@link me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand}
    * menu is being interacting with.
    *
-   * @param e       inventory click event
-   * @param invType inventory type
+   * @param e    inventory click event
+   * @param menu {@link Menu}
    */
-  private void interpretItemEditor(InventoryClickEvent e, String[] invType) {
+  private void interpretItemEditor(InventoryClickEvent e, Menu menu) {
     if (e.getClickedInventory().getType() == InventoryType.CHEST) {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         ItemEditorMenuClick click = new ItemEditorMenuClick(e);
-        switch (invType[1]) {
-          case "cosmetic" -> click.interpretMenuClick();
-          case "minecraft_attribute" -> click.interpretAttributeClick();
-          case "aethel_attribute" -> click.interpretAethelAttributeClick();
-          case "enchantment" -> click.interpretEnchantmentClick();
-          case "potion" -> click.interpretPotionClick();
-          case "passive" -> click.interpretPassiveClick();
-          case "active" -> click.interpretActiveClick();
-          case "tag" -> click.interpretTagClick();
+        switch (menu) {
+          case ITEMEDITOR_COSMETIC -> click.interpretMenuClick();
+          case ITEMEDITOR_MINECRAFT_ATTRIBUTE -> click.interpretAttributeClick();
+          case ITEMEDITOR_AETHEL_ATTRIBUTE -> click.interpretAethelAttributeClick();
+          case ITEMEDITOR_ENCHANTMENT -> click.interpretEnchantmentClick();
+          case ITEMEDITOR_POTION -> click.interpretPotionClick();
+          case ITEMEDITOR_PASSIVE -> click.interpretPassiveClick();
+          case ITEMEDITOR_ACTIVE -> click.interpretActiveClick();
+          case ITEMEDITOR_TAG -> click.interpretTagClick();
         }
       }
     } else {
@@ -197,18 +194,18 @@ public class MenuClick implements Listener {
    * Determines which {@link StatCommand}
    * menu is being interacting with.
    *
-   * @param e       inventory click event
-   * @param invType inventory type
+   * @param e    inventory click event
+   * @param menu {@link Menu}
    */
-  private void interpretPlayerStat(InventoryClickEvent e, String[] invType) {
+  private void interpretPlayerStat(InventoryClickEvent e, Menu menu) {
     if (e.getClickedInventory().getType() == InventoryType.CHEST) {
       if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         StatMenuClick click = new StatMenuClick(e);
-        switch (invType[1]) {
-          case "category" -> click.interpretMenuClick();
-          case "stat" -> click.interpretStatClick();
-          case "substat" -> click.interpretSubstatClick();
-          case "past" -> doNothing();
+        switch (menu) {
+          case PLAYERSTAT_CATEGORY -> click.interpretMenuClick();
+          case PLAYERSTAT_STAT -> click.interpretStatClick();
+          case PLAYERSTAT_SUBSTAT -> click.interpretSubstatClick();
+          case PLAYERSTAT_PAST -> doNothing();
         }
       }
     } else {
@@ -222,13 +219,13 @@ public class MenuClick implements Listener {
    * Determines which {@link me.dannynguyen.aethel.commands.showitem.ShowItemCommand}
    * menu is being interacting with.
    *
-   * @param e       inventory click event
-   * @param invType inventory type
+   * @param e    inventory click event
+   * @param menu {@link Menu}
    */
-  private void interpretShowItem(InventoryClickEvent e, String[] invType) {
+  private void interpretShowItem(InventoryClickEvent e, Menu menu) {
     if (e.getClickedInventory().getType() == InventoryType.CHEST) {
-      switch (invType[1]) {
-        case "past" -> doNothing();
+      switch (menu) {
+        case SHOWITEM_PAST -> doNothing();
       }
     } else {
       if (!e.isShiftClick()) {
@@ -238,7 +235,7 @@ public class MenuClick implements Listener {
   }
 
   /**
-   * Removes plugin {@link PlayerMeta#INVENTORY} when a menu is closed.
+   * Removes plugin {@link PluginPlayer#getMenu()} when a menu is closed.
    * <p>
    * Since opening a new inventory while one already exists triggers
    * the InventoryCloseEvent, always add new inventory metadata AFTER
@@ -248,7 +245,7 @@ public class MenuClick implements Listener {
    */
   @EventHandler
   private void onClose(InventoryCloseEvent e) {
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(e.getPlayer().getUniqueId()).remove(PlayerMeta.INVENTORY);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).setMenu(null);
   }
 
   /**
@@ -266,9 +263,158 @@ public class MenuClick implements Listener {
    */
   public enum Menu {
     /**
+     * View {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem item} categories.
+     */
+    AETHELITEM_CATEGORY("aethelitem"),
+
+    /**
+     * Get {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
+     */
+    AETHELITEM_GET("aethelitem"),
+
+    /**
+     * Remove {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
+     */
+    AETHELITEM_REMOVE("aethelitem"),
+
+    /**
+     * Interact with {@link me.dannynguyen.aethel.commands.character.SheetMenu}.
+     */
+    CHARACTER_SHEET("character"),
+
+    /**
+     * View quests.
+     */
+    CHARACTER_QUESTS("character"),
+
+    /**
+     * View collectibles.
+     */
+    CHARACTER_COLLECTIBLES("character"),
+
+    /**
      * Interact with {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}.
      */
-    CHARACTER_SETTINGS
+    CHARACTER_SETTINGS("character"),
+
+    /**
+     * View {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} categories.
+     */
+    FORGE_CATEGORY("forge"),
+
+    /**
+     * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     */
+    FORGE_CRAFT("forge"),
+
+    /**
+     * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} operation.
+     */
+    FORGE_CRAFT_RECIPE("forge"),
+
+    /**
+     * Edit {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     */
+    FORGE_EDIT("forge"),
+
+    /**
+     * Remove {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     */
+    FORGE_REMOVE("forge"),
+
+    /**
+     * Save {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     */
+    FORGE_SAVE("forge"),
+
+    /**
+     * Edit item cosmetics.
+     */
+    ITEMEDITOR_COSMETIC("itemeditor"),
+
+    /**
+     * Edit item Minecraft attributes.
+     */
+    ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor"),
+
+    /**
+     * Edit item {@link PluginKey#ATTRIBUTE_LIST}.
+     */
+    ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor"),
+
+    /**
+     * Edit item enchantments.
+     */
+    ITEMEDITOR_ENCHANTMENT("itemeditor"),
+
+    /**
+     * Edit item potion effects.
+     */
+    ITEMEDITOR_POTION("itemeditor"),
+
+    /**
+     * Edit item {@link PluginKey#PASSIVE_LIST}.
+     */
+    ITEMEDITOR_PASSIVE("itemeditor"),
+
+    /**
+     * Edit item {@link PluginKey#ACTIVE_LIST}.
+     */
+    ITEMEDITOR_ACTIVE("itemeditor"),
+
+    /**
+     * Edit item {@link PluginKey Aethel tags}.
+     */
+    ITEMEDITOR_TAG("itemeditor"),
+
+    /**
+     * View stat categories.
+     */
+    PLAYERSTAT_CATEGORY("playerstat"),
+
+    /**
+     * View past stats.
+     */
+    PLAYERSTAT_PAST("playerstat"),
+
+    /**
+     * Interact with statistics.
+     */
+    PLAYERSTAT_STAT("playerstat"),
+
+    /**
+     * Interact with sub-statistics.
+     */
+    PLAYERSTAT_SUBSTAT("playerstat"),
+
+    /**
+     * View past shown items.
+     */
+    SHOWITEM_PAST("showitem");
+
+    /**
+     * Metadata value.
+     */
+    private final String meta;
+
+    /**
+     * Associates a menu metadata with its value.
+     *
+     * @param meta metadata value
+     */
+    Menu(String meta) {
+      this.meta = meta;
+    }
+
+    /**
+     * Gets the metadata value.
+     *
+     * @return metadata value
+     */
+    @NotNull
+    public String getMeta() {
+      return this.meta;
+    }
   }
 
   /**

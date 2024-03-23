@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -27,7 +26,7 @@ import java.util.UUID;
  * See {@link StatisticCategory} and {@link SubstatisticCategory}.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -115,7 +114,7 @@ public class StatMenu implements CategoryMenu {
     List<Inventory> category = Plugin.getData().getPlayerStatRecord().getSubstatCategories().get(SubstatisticCategory.valueOf(TextFormatter.formatEnum(requestedCategory)));
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).put(PlayerMeta.PAGE, String.valueOf(pageViewed));
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);

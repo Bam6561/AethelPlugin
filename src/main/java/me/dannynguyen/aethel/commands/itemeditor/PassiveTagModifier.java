@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.PassiveEffect;
@@ -21,7 +20,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a {@link PluginKey#PASSIVE_LIST passive tag} set or remove operation.
@@ -29,7 +27,7 @@ import java.util.Map;
  * Used with {@link ItemEditorMessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.15.13
  */
 class PassiveTagModifier {
@@ -69,7 +67,7 @@ class PassiveTagModifier {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * {@link PlayerMeta#SLOT}
+   * {@link PluginPlayer#getSlot()}
    */
   private final String slot;
 
@@ -102,8 +100,7 @@ class PassiveTagModifier {
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    this.slot = playerMeta.get(PlayerMeta.SLOT);
+    this.slot = pluginPlayer.getSlot().getId();
     this.trigger = pluginPlayer.getTrigger().getId();
     this.type = pluginPlayer.getObjectType();
     this.interactingKey = slot + "." + trigger + "." + type;

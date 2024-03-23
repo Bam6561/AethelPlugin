@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -20,7 +19,7 @@ import java.util.Objects;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.18
+ * @version 1.17.19
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClickEvent {
@@ -56,15 +55,16 @@ public class StatMenuClick implements MenuClickEvent {
    */
   public void interpretMenuClick() {
     if (slot > 8) {
-      Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-      String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
+      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+
+      String owner = Bukkit.getOfflinePlayer(pluginPlayer.getTarget()).getName();
       String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-      playerMeta.put(PlayerMeta.CATEGORY, item);
+      pluginPlayer.setCategory(item);
 
       user.openInventory(new StatMenu(user, owner).getCategoryPage(item, 0));
       switch (item) {
-        case "Entity Types", "Materials" -> playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_SUBSTAT.getMeta());
-        default -> playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_STAT.getMeta());
+        case "Entity Types", "Materials" -> pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_SUBSTAT);
+        default -> pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_STAT);
       }
     }
   }
@@ -111,36 +111,39 @@ public class StatMenuClick implements MenuClickEvent {
    * Opens the previous stat category page.
    */
   private void previousPage() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
-    String category = playerMeta.get(PlayerMeta.CATEGORY);
-    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+
+    String owner = Bukkit.getOfflinePlayer(pluginPlayer.getTarget()).getName();
+    String category = pluginPlayer.getCategory();
+    int pageRequest = pluginPlayer.getPage();
 
     user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest - 1));
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_SUBSTAT.getMeta());
+    pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_SUBSTAT);
   }
 
   /**
    * Opens a {@link StatMenu}.
    */
   private void returnToMenu() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+
     String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
     user.openInventory(new StatMenu(user, owner).getMainMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
-    playerMeta.put(PlayerMeta.PAGE, "0");
+    pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_CATEGORY);
+    pluginPlayer.setPage(0);
   }
 
   /**
    * Opens the next stat category page.
    */
   private void nextPage() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+
     String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
-    String category = playerMeta.get(PlayerMeta.CATEGORY);
-    int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
+    String category = pluginPlayer.getCategory();
+    int pageRequest = pluginPlayer.getPage();
 
     user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest + 1));
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_SUBSTAT.getMeta());
+    pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_SUBSTAT);
   }
 }

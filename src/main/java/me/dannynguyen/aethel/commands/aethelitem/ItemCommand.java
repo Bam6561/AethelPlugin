@@ -1,17 +1,15 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 /**
  * Command invocation that allows the user to obtain {@link PersistentItem items} through clicking.
@@ -25,7 +23,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.5
+ * @version 1.17.19
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -78,11 +76,11 @@ public class ItemCommand implements CommandExecutor {
    * @param user user
    */
   private void openMenu(Player user) {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.CATEGORY, "");
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+    pluginPlayer.setCategory("");
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.AETHELITEM_CATEGORY.getMeta());
-    playerMeta.put(PlayerMeta.PAGE, "0");
+    pluginPlayer.setMenu(MenuClick.Menu.AETHELITEM_CATEGORY);
+    pluginPlayer.setPage(0);
   }
 
   /**

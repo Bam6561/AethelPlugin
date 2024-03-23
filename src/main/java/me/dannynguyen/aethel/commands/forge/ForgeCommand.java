@@ -1,9 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.ChatColor;
@@ -12,8 +10,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 /**
  * Command invocation that allows the user to craft items through clicking.
@@ -28,7 +24,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.17
+ * @version 1.17.19
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -110,12 +106,11 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openCraftingMenu(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     pluginPlayer.setMode(MenuClick.Mode.RECIPE_MENU_CRAFT);
-    playerMeta.put(PlayerMeta.CATEGORY, "");
+    pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
-    playerMeta.put(PlayerMeta.PAGE, "0");
+    pluginPlayer.setMenu(MenuClick.Menu.FORGE_CATEGORY);
+    pluginPlayer.setPage(0);
   }
 
   /**
@@ -125,11 +120,10 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openEditorMenu(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     pluginPlayer.setMode(MenuClick.Mode.RECIPE_MENU_EDIT);
-    playerMeta.put(PlayerMeta.CATEGORY, "");
+    pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-    playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.FORGE_CATEGORY.getMeta());
-    playerMeta.put(PlayerMeta.PAGE, "0");
+    pluginPlayer.setMenu(MenuClick.Menu.FORGE_CATEGORY);
+    pluginPlayer.setPage(0);
   }
 }
