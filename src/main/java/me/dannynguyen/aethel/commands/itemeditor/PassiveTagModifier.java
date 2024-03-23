@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.PassiveEffect;
 import me.dannynguyen.aethel.rpg.enums.PassiveType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
@@ -28,7 +29,7 @@ import java.util.Map;
  * Used with {@link ItemEditorMessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.17.18
  * @since 1.15.13
  */
 class PassiveTagModifier {
@@ -73,12 +74,12 @@ class PassiveTagModifier {
   private final String slot;
 
   /**
-   * {@link PlayerMeta#CONDITION}
+   * {@link PluginPlayer#getTrigger()}
    */
-  private final String condition;
+  private final String trigger;
 
   /**
-   * {@link PlayerMeta#TYPE}
+   * {@link PluginPlayer#getObjectType()}
    */
   private final String type;
 
@@ -100,18 +101,19 @@ class PassiveTagModifier {
     this.item = item;
     this.meta = item.getItemMeta();
     this.dataContainer = meta.getPersistentDataContainer();
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
     this.slot = playerMeta.get(PlayerMeta.SLOT);
-    this.condition = playerMeta.get(PlayerMeta.CONDITION);
-    this.type = playerMeta.get(PlayerMeta.TYPE);
-    this.interactingKey = slot + "." + condition + "." + type;
+    this.trigger = pluginPlayer.getTrigger().getId();
+    this.type = pluginPlayer.getObjectType();
+    this.interactingKey = slot + "." + trigger + "." + type;
   }
 
   /**
    * Determines the type of {@link PluginKey#PASSIVE_LIST ability tag} to be set.
    */
   protected void interpretKeyToBeSet() {
-    TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(this.condition)).getCondition();
+    TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(this.trigger)).getCondition();
     PassiveEffect effect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
     switch (condition) {
       case CHANCE_COOLDOWN -> readChanceCooldown(effect);
@@ -293,7 +295,7 @@ class PassiveTagModifier {
     }
     dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey), PersistentDataType.STRING, keyValue);
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(condition) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
   }
 
   /**
@@ -318,6 +320,6 @@ class PassiveTagModifier {
       dataContainer.remove(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey));
     }
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(condition) + " " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
   }
 }

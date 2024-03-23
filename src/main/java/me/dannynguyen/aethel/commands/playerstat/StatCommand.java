@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Command invocation that retrieves a player's statistics.
@@ -27,7 +29,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.14.5
+ * @version 1.17.18
  * @since 1.4.7
  */
 public class StatCommand implements CommandExecutor {
@@ -97,8 +99,10 @@ public class StatCommand implements CommandExecutor {
    * @param user user
    */
   private void openPlayerStatSelf(Player user) {
+    UUID target = user.getUniqueId();
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    playerMeta.put(PlayerMeta.PLAYER, user.getName());
+    pluginPlayer.setTarget(target);
     user.openInventory(new StatMenu(user, user.getName()).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
   }
@@ -112,8 +116,10 @@ public class StatCommand implements CommandExecutor {
   private void openPlayerStatOther(Player user, String owner) {
     OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
     if (player.hasPlayedBefore()) {
+      UUID target = player.getUniqueId();
+      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-      playerMeta.put(PlayerMeta.PLAYER, player.getName());
+      pluginPlayer.setTarget(target);
       user.openInventory(new StatMenu(user, player.getName()).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     } else {

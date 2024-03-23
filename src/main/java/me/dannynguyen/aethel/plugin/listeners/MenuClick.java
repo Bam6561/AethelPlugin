@@ -11,6 +11,7 @@ import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.util.ItemReader;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
@@ -26,7 +27,7 @@ import java.util.Map;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.17.17
+ * @version 1.17.18
  * @since 1.0.2
  */
 public class MenuClick implements Listener {
@@ -115,7 +116,8 @@ public class MenuClick implements Listener {
    * @param invType inventory type
    */
   private void interpretCharacter(InventoryClickEvent e, String[] invType) {
-    if (Plugin.getData().getPluginSystem().getPlayerMetadata().get(e.getWhoClicked().getUniqueId()).get(PlayerMeta.PLAYER).equals(e.getWhoClicked().getName())) {
+    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getTarget()).getName();
+    if (owner.equals(e.getWhoClicked().getName())) {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
         switch (invType[1]) {

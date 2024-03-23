@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.plugin.enums.MenuMeta;
 import me.dannynguyen.aethel.plugin.enums.PlayerMeta;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
 import me.dannynguyen.aethel.util.ItemReader;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,7 +20,7 @@ import java.util.Objects;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.17.18
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClickEvent {
@@ -56,7 +57,7 @@ public class StatMenuClick implements MenuClickEvent {
   public void interpretMenuClick() {
     if (slot > 8) {
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-      String owner = playerMeta.get(PlayerMeta.PLAYER);
+      String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
       String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
       playerMeta.put(PlayerMeta.CATEGORY, item);
 
@@ -111,7 +112,7 @@ public class StatMenuClick implements MenuClickEvent {
    */
   private void previousPage() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    String owner = playerMeta.get(PlayerMeta.PLAYER);
+    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 
@@ -124,7 +125,7 @@ public class StatMenuClick implements MenuClickEvent {
    */
   private void returnToMenu() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    String owner = playerMeta.get(PlayerMeta.PLAYER);
+    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
     user.openInventory(new StatMenu(user, owner).getMainMenu());
     playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.PLAYERSTAT_CATEGORY.getMeta());
     playerMeta.put(PlayerMeta.PAGE, "0");
@@ -135,7 +136,7 @@ public class StatMenuClick implements MenuClickEvent {
    */
   private void nextPage() {
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(user.getUniqueId());
-    String owner = playerMeta.get(PlayerMeta.PLAYER);
+    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
     String category = playerMeta.get(PlayerMeta.CATEGORY);
     int pageRequest = Integer.parseInt(playerMeta.get(PlayerMeta.PAGE));
 

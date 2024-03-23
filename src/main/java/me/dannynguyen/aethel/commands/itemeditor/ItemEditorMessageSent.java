@@ -2,10 +2,10 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.*;
+import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.ActiveEffect;
 import me.dannynguyen.aethel.rpg.enums.ActiveType;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.enums.Trigger;
 import me.dannynguyen.aethel.util.ItemDurability;
 import me.dannynguyen.aethel.util.ItemRepairCost;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -35,7 +35,7 @@ import java.util.*;
  * Called with {@link me.dannynguyen.aethel.plugin.listeners.MessageSent}.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.17.18
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -237,7 +237,7 @@ public class ItemEditorMessageSent {
   public void setMinecraftAttribute() {
     try {
       Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-      String type = playerMeta.get(PlayerMeta.TYPE);
+      String type = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType();
       Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
       String slot = playerMeta.get(PlayerMeta.SLOT);
       EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
@@ -278,8 +278,7 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's enchantment.
    */
   public void setEnchantment() {
-    Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
-    NamespacedKey enchantment = NamespacedKey.minecraft(playerMeta.get(PlayerMeta.TYPE));
+    NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType());
 
     if (!e.getMessage().equals("-")) {
       try {
@@ -305,7 +304,7 @@ public class ItemEditorMessageSent {
    */
   public void setPotionEffect() {
     PotionMeta potion = (PotionMeta) meta;
-    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE));
+    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType());
     PotionEffectType potionEffectType = PotionEffectType.getByKey(potionEffectKey);
 
     if (!e.getMessage().equals("-")) {
@@ -353,7 +352,7 @@ public class ItemEditorMessageSent {
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      switch (ActiveType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE))).getEffect()) {
+      switch (ActiveType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType())).getEffect()) {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
@@ -369,7 +368,7 @@ public class ItemEditorMessageSent {
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String tagType = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.TYPE);
+    String tagType = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType();
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tagType);
 
     if (!e.getMessage().equals("-")) {
@@ -481,9 +480,10 @@ public class ItemEditorMessageSent {
    * @param listKey   {@link PluginKey list key}
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String slot = playerMeta.get(PlayerMeta.SLOT);
-    String type = playerMeta.get(PlayerMeta.TYPE);
+    String type = pluginPlayer.getObjectType();
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -513,9 +513,10 @@ public class ItemEditorMessageSent {
    * @param listKey   {@link PluginKey list key}
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String slot = playerMeta.get(PlayerMeta.SLOT);
-    String type = playerMeta.get(PlayerMeta.TYPE);
+    String type = pluginPlayer.getObjectType();
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -546,9 +547,10 @@ public class ItemEditorMessageSent {
    * @param listKey   {@link PluginKey list key}
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     String slot = playerMeta.get(PlayerMeta.SLOT);
-    String type = playerMeta.get(PlayerMeta.TYPE);
+    String type = pluginPlayer.getObjectType();
     String stringKeyToRemove = slot + "." + type;
     NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -631,9 +633,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link PassiveMenu}.
    */
   private void returnToPassive() {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Map<PlayerMeta, String> playerMeta = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT))), Trigger.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.CONDITION)))).getMainMenu());
+      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(playerMeta.get(PlayerMeta.SLOT))), pluginPlayer.getTrigger()).getMainMenu());
       playerMeta.put(PlayerMeta.INVENTORY, MenuMeta.ITEMEDITOR_PASSIVE.getMeta());
     });
   }

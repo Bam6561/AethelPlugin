@@ -27,7 +27,7 @@ import java.util.UUID;
  * See {@link StatisticCategory} and {@link SubstatisticCategory}.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.17.18
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -154,8 +154,8 @@ public class StatMenu implements CategoryMenu {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    String statOwner = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.PLAYER);
-    OfflinePlayer owner = Bukkit.getOfflinePlayer(statOwner);
+    OfflinePlayer owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getTarget());
+    String statOwner = owner.getName();
 
     meta.setOwningPlayer(owner);
     meta.setDisplayName(ChatColor.DARK_PURPLE + statOwner);

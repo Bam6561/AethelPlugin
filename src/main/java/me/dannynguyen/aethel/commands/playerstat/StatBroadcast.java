@@ -22,7 +22,7 @@ import java.util.UUID;
  * Used with {@link StatMenuClick}.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.17.18
  * @since 1.4.10
  */
 class StatBroadcast {
@@ -37,14 +37,14 @@ class StatBroadcast {
   private final UUID uuid;
 
   /**
-   * Player statistic owner's name.
-   */
-  private final String ownerName;
-
-  /**
    * OfflinePlayer object of the player statistic owner.
    */
   private final OfflinePlayer owner;
+
+  /**
+   * Player statistic owner's name.
+   */
+  private final String ownerName;
 
   /**
    * Requested player statistic.
@@ -66,8 +66,8 @@ class StatBroadcast {
     this.user = Objects.requireNonNull(user, "Null user");
     this.requestedStat = ChatColor.stripColor(ItemReader.readName(Objects.requireNonNull(e, "Null inventory click event").getCurrentItem()));
     this.uuid = user.getUniqueId();
-    this.ownerName = Plugin.getData().getPluginSystem().getPlayerMetadata().get(uuid).get(PlayerMeta.PLAYER);
-    this.owner = Bukkit.getOfflinePlayer(ownerName);
+    this.owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getTarget());
+    this.ownerName = owner.getName();
     this.isGlobalBroadcast = e.isShiftClick();
   }
 

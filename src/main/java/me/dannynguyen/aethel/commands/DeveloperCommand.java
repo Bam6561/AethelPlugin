@@ -50,8 +50,8 @@ public class DeveloperCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly
-   * before toggling {@link me.dannynguyen.aethel.plugin.system.PluginPlayer developer mode}.
+   * Checks if the command request was formatted correctly before
+   * {@link me.dannynguyen.aethel.plugin.system.PluginPlayer#setIsDeveloper toggling} developer mode.
    *
    * @param user user
    * @param args user provided parameters
@@ -66,7 +66,8 @@ public class DeveloperCommand implements CommandExecutor {
   }
 
   /**
-   * Toggles {@link me.dannynguyen.aethel.plugin.system.PluginPlayer developer mode} on or off for the user.
+   * {@link me.dannynguyen.aethel.plugin.system.PluginPlayer#setIsDeveloper Toggles}
+   * developer mode on or off for the user.
    *
    * @param user user
    */
