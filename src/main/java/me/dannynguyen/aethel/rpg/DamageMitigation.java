@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.system;
+package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
@@ -19,7 +19,7 @@ import java.util.UUID;
  * @version 1.17.9
  * @since 1.16.14
  */
-public class PlayerDamageMitigation {
+public class DamageMitigation {
   /**
    * Player taking damage.
    */
@@ -45,7 +45,7 @@ public class PlayerDamageMitigation {
    *
    * @param damagee damagee
    */
-  public PlayerDamageMitigation(@NotNull Player damagee) {
+  public DamageMitigation(@NotNull Player damagee) {
     this.damagee = Objects.requireNonNull(damagee, "Null damagee");
     this.uuid = damagee.getUniqueId();
     RpgSystem rpgSystem = Plugin.getData().getRpgSystem();

@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
-import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.util.ItemReader;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

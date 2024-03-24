@@ -10,16 +10,13 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
-import me.dannynguyen.aethel.listeners.*;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassive;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
-import me.dannynguyen.aethel.rpg.system.Equipment;
-import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
-import me.dannynguyen.aethel.rpg.system.RpgPlayer;
-import me.dannynguyen.aethel.rpg.system.Status;
+import me.dannynguyen.aethel.listeners.*;
+import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
+import me.dannynguyen.aethel.rpg.abilities.SlotPassive;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
@@ -202,7 +199,7 @@ public class Plugin extends JavaPlugin {
 
   /**
    * Adds an interval to update players'
-   * {@link me.dannynguyen.aethel.rpg.system.Health health in action bar} display.
+   * {@link Health health in action bar} display.
    */
   private void updateActionDisplay() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
@@ -214,7 +211,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to decay players' overcapped {@link me.dannynguyen.aethel.rpg.system.Health overshields}.
+   * Adds an interval to decay players' overcapped {@link Health overshields}.
    * <p>
    * An overshield begins to decay when current health
    * exceeds max health by a factor greater than x1.2.
@@ -286,7 +283,7 @@ public class Plugin extends JavaPlugin {
    */
   private void handlePlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
-    PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
+    DamageMitigation mitigation = new DamageMitigation(damagee);
     if (statuses.containsKey(StatusType.BLEED)) {
       double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
       damagee.damage(0.1);

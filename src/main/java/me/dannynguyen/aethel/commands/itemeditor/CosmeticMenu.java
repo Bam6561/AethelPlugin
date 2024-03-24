@@ -2,11 +2,11 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
-import me.dannynguyen.aethel.plugin.interfaces.Menu;
-import me.dannynguyen.aethel.util.ItemCreator;
-import me.dannynguyen.aethel.util.ItemDurability;
-import me.dannynguyen.aethel.util.ItemReader;
-import me.dannynguyen.aethel.util.ItemRepairCost;
+import me.dannynguyen.aethel.interfaces.Menu;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
+import me.dannynguyen.aethel.utils.item.ItemDurability;
+import me.dannynguyen.aethel.utils.item.ItemReader;
+import me.dannynguyen.aethel.utils.item.ItemRepairCost;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

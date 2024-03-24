@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;

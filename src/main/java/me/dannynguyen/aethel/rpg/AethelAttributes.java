@@ -1,11 +1,11 @@
-package me.dannynguyen.aethel.rpg.system;
+package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.enums.plugin;
 
-import me.dannynguyen.aethel.util.ItemCreator;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

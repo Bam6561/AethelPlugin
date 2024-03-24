@@ -1,10 +1,10 @@
-package me.dannynguyen.aethel.plugin.system;
+package me.dannynguyen.aethel.plugin;
 
-import me.dannynguyen.aethel.listeners.MenuEvent;
-import me.dannynguyen.aethel.listeners.MessageEvent;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.listeners.ActionEvent;
+import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MessageEvent;
 
 import java.util.UUID;
 

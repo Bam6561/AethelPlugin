@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.interfaces;
+package me.dannynguyen.aethel.interfaces;
 
 /**
  * Represents a data storage container for data that exists

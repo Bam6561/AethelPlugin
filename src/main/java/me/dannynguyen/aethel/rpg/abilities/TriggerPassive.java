@@ -1,8 +1,8 @@
-package me.dannynguyen.aethel.rpg.ability;
+package me.dannynguyen.aethel.rpg.abilities;
 
-import me.dannynguyen.aethel.listeners.EquipmentEvent;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.listeners.EquipmentEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

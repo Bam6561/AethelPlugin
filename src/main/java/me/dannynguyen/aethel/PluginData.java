@@ -7,9 +7,11 @@ import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.StatArchive;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.plugin.Directory;
-import me.dannynguyen.aethel.plugin.system.PluginSystem;
-import me.dannynguyen.aethel.rpg.system.RpgPlayer;
-import me.dannynguyen.aethel.rpg.system.RpgSystem;
+import me.dannynguyen.aethel.plugin.PluginSystem;
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.rpg.RpgSystem;
+import me.dannynguyen.aethel.rpg.Settings;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,8 +79,8 @@ public class PluginData {
    * <ul>
    *  <li>{@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem}
    *  <li>{@link me.dannynguyen.aethel.commands.forge.PersistentRecipe}
-   *  <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
-   *  <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
+   *  <li>{@link Equipment Jewelry}
+   *  <li>{@link Settings}
    * </ul>
    */
   public void loadResources() {
@@ -114,8 +116,8 @@ public class PluginData {
   /**
    * Saves persistent plugin data.
    * <ul>
-   *  <li>{@link me.dannynguyen.aethel.rpg.system.Equipment Jewelry}
-   *  <li>{@link me.dannynguyen.aethel.rpg.system.Settings}
+   *  <li>{@link Equipment Jewelry}
+   *  <li>{@link Settings}
    * </ul>
    */
   public void saveResources() {

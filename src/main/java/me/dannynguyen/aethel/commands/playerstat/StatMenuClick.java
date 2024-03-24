@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.util.ItemReader;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -2,13 +2,11 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
-import me.dannynguyen.aethel.plugin.interfaces.Menu;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
-import me.dannynguyen.aethel.rpg.system.Health;
-import me.dannynguyen.aethel.rpg.system.RpgPlayer;
-import me.dannynguyen.aethel.rpg.system.Status;
-import me.dannynguyen.aethel.util.ItemCreator;
+import me.dannynguyen.aethel.interfaces.Menu;
+import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,9 +24,9 @@ import java.util.*;
 
 /**
  * Represents a menu that shows the player's
- * {@link me.dannynguyen.aethel.rpg.system.Equipment equipment},
- * Minecraft attributes, {@link me.dannynguyen.aethel.rpg.system.AethelAttributes Aethel attributes},
- * {@link me.dannynguyen.aethel.rpg.system.Enchantments enchantments}, and {@link Status statuses}.
+ * {@link Equipment equipment},
+ * Minecraft attributes, {@link AethelAttributes Aethel attributes},
+ * {@link Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
  * @version 1.17.9
@@ -91,9 +89,9 @@ public class SheetMenu implements Menu {
   }
 
   /**
-   * Sets the menu to view {@link me.dannynguyen.aethel.rpg.system.Equipment equipment},
-   * Minecraft attributes, {@link me.dannynguyen.aethel.rpg.system.AethelAttributes Aethel attributes},
-   * {@link me.dannynguyen.aethel.rpg.system.Enchantments enchantments}, and {@link Status statuses}.
+   * Sets the menu to view {@link Equipment equipment},
+   * Minecraft attributes, {@link AethelAttributes Aethel attributes},
+   * {@link Enchantments enchantments}, and {@link Status statuses}.
    *
    * @return Sheet menu
    */

@@ -2,12 +2,12 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.util.ItemCreator;
-import me.dannynguyen.aethel.util.ItemReader;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

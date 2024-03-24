@@ -1,15 +1,13 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassive;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
-import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
-import me.dannynguyen.aethel.rpg.system.RpgPlayer;
-import me.dannynguyen.aethel.rpg.system.Status;
-import me.dannynguyen.aethel.util.ItemDurability;
+import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
+import me.dannynguyen.aethel.rpg.abilities.SlotPassive;
+import me.dannynguyen.aethel.utils.item.ItemDurability;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -63,7 +61,7 @@ public class HealthEvent implements Listener {
           calculatePlayerDamageDone(event, damager);
         } else {
           Player damagee = (Player) event.getEntity();
-          PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
+          DamageMitigation mitigation = new DamageMitigation(damagee);
           if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
             triggerDamageDealtPassives(event, damager);
             calculatePlayerDamageDone(event, damager);
@@ -73,7 +71,7 @@ public class HealthEvent implements Listener {
         }
       }
     } else if (e.getEntity() instanceof Player damagee && !ignoredDamageCauses.contains(e.getCause())) {
-      PlayerDamageMitigation mitigation = new PlayerDamageMitigation(damagee);
+      DamageMitigation mitigation = new DamageMitigation(damagee);
       EntityDamageEvent.DamageCause cause = e.getCause();
       if (mitigateEnvironmentalDamage(e, cause, damagee, mitigation)) {
         e.setCancelled(true);
@@ -183,9 +181,9 @@ public class HealthEvent implements Listener {
    *
    * @param e          entity damage by entity event
    * @param damagee    interacting player
-   * @param mitigation {@link PlayerDamageMitigation}
+   * @param mitigation {@link DamageMitigation}
    */
-  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee, PlayerDamageMitigation mitigation) {
+  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee, DamageMitigation mitigation) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
     Entity damager = e.getDamager();
 
@@ -218,15 +216,15 @@ public class HealthEvent implements Listener {
 
   /**
    * Mitigates environmental damage taken based on the player's
-   * {@link me.dannynguyen.aethel.rpg.system.Enchantments}.
+   * {@link Enchantments}.
    *
    * @param e          entity damage event
    * @param cause      damage cause
    * @param damagee    player taking damage
-   * @param mitigation {@link PlayerDamageMitigation}
+   * @param mitigation {@link DamageMitigation}
    * @return if no damage is taken
    */
-  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee, PlayerDamageMitigation mitigation) {
+  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player damagee, DamageMitigation mitigation) {
     switch (cause) {
       case FALL -> e.setDamage(mitigation.mitigateFall(e.getDamage()));
       case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> e.setDamage(mitigation.mitigateProtection(e.getDamage()));
@@ -285,10 +283,10 @@ public class HealthEvent implements Listener {
    * @param e          entity damage by entity event
    * @param damager    damaging entity
    * @param damagee    player taking damage
-   * @param mitigation {@link PlayerDamageMitigation}
+   * @param mitigation {@link DamageMitigation}
    * @return if no damage taken or magic damage was taken/mitigated
    */
-  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity damager, Player damagee, PlayerDamageMitigation mitigation) {
+  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity damager, Player damagee, DamageMitigation mitigation) {
     switch (e.getCause()) {
       case ENTITY_EXPLOSION -> {
         e.setDamage(mitigation.mitigateExplosion(e.getDamage()));
@@ -343,7 +341,7 @@ public class HealthEvent implements Listener {
    * Projectile attacks cannot trigger counterattacks.
    *
    * @param cause      damage cause
-   * @param attributes {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}
+   * @param attributes {@link AethelAttributes}
    * @param random     rng
    * @param damager    damager
    * @param damagee    player taking damage
@@ -375,7 +373,7 @@ public class HealthEvent implements Listener {
    * otherwise toughness mitigates damage by a flat amount.
    *
    * @param e          entity damage event
-   * @param attributes {@link me.dannynguyen.aethel.rpg.system.AethelAttributes}
+   * @param attributes {@link AethelAttributes}
    * @param damagee    player taking damage
    * @return if tougher than damage
    */

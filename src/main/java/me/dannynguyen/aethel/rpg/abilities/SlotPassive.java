@@ -1,7 +1,7 @@
-package me.dannynguyen.aethel.rpg.ability;
+package me.dannynguyen.aethel.rpg.abilities;
 
-import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import org.jetbrains.annotations.NotNull;
 

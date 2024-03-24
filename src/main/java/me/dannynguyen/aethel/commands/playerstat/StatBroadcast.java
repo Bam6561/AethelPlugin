@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.util.ItemReader;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

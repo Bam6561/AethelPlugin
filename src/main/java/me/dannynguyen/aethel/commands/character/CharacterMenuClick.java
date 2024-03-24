@@ -2,15 +2,17 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
-import me.dannynguyen.aethel.listeners.MenuEvent;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.ActionEvent;
-import me.dannynguyen.aethel.rpg.system.Equipment;
-import me.dannynguyen.aethel.rpg.system.Settings;
-import me.dannynguyen.aethel.util.ItemCreator;
-import me.dannynguyen.aethel.util.ItemReader;
+import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.Health;
+import me.dannynguyen.aethel.rpg.Settings;
+import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -322,7 +324,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Toggles the player's {@link me.dannynguyen.aethel.rpg.system.Health health bar}.
+   * Toggles the player's {@link Health health bar}.
    */
   private void toggleHealthBar() {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
@@ -338,7 +340,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Toggles the player's {@link me.dannynguyen.aethel.rpg.system.Health health in action bar}.
+   * Toggles the player's {@link Health health in action bar}.
    */
   private void toggleHealthAction() {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
@@ -354,7 +356,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Resets all {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
+   * Resets all {@link ActiveAbility} crouch binds.
    */
   private void resetActiveAbilityCrouchBinds() {
     user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Crouch Binds]");
@@ -373,7 +375,7 @@ public class CharacterMenuClick implements MenuClick {
 
   /**
    * Sets the crouch bind to activate {@link RpgEquipmentSlot}
-   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility abilities}.
+   * {@link ActiveAbility abilities}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */

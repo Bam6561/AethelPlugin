@@ -1,12 +1,15 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.enums.rpg.*;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.*;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
+import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
+import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -219,7 +222,7 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility passive}
+   * Checks whether the {@link PassiveAbility passive}
    * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
@@ -253,7 +256,7 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility active}
+   * Checks whether the {@link ActiveAbility active}
    * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
@@ -534,7 +537,7 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility passive} tag.
+   * Sets an item's {@link PassiveAbility passive} tag.
    *
    * @param value tag value
    */
@@ -547,7 +550,7 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility active} tag.
+   * Sets an item's {@link ActiveAbility active} tag.
    *
    * @param value tag value
    */

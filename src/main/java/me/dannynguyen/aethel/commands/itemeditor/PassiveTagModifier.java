@@ -1,15 +1,15 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveEffect;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerCondition;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;

@@ -2,9 +2,9 @@ package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
-import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
-import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.ItemCreator;
+import me.dannynguyen.aethel.interfaces.CategoryMenu;
+import me.dannynguyen.aethel.utils.InventoryPages;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

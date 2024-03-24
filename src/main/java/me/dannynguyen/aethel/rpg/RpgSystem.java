@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.system;
+package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.enchantments.Enchantment;

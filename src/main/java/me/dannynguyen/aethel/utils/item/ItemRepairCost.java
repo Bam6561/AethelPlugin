@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.util;
+package me.dannynguyen.aethel.utils.item;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;

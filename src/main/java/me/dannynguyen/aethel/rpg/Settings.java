@@ -1,9 +1,10 @@
-package me.dannynguyen.aethel.rpg.system;
+package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ public class Settings {
   private final UUID uuid;
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
+   * {@link ActiveAbility} crouch binds.
    */
   private final Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = createBlankActiveAbilityCrouchBinds();
 
@@ -52,9 +53,9 @@ public class Settings {
   }
 
   /**
-   * Creates a blank set of {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
+   * Creates a blank set of {@link ActiveAbility} crouch binds.
    *
-   * @return blank {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds
+   * @return blank {@link ActiveAbility} crouch binds
    */
   private Map<RpgEquipmentSlot, Integer> createBlankActiveAbilityCrouchBinds() {
     Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = new HashMap<>();
@@ -111,7 +112,7 @@ public class Settings {
   }
 
   /**
-   * Resets {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
+   * Resets {@link ActiveAbility} crouch binds.
    */
   public void resetActiveAbilityCrouchBinds() {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
@@ -120,7 +121,7 @@ public class Settings {
   }
 
   /**
-   * Sets the {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch bind.
+   * Sets the {@link ActiveAbility} crouch bind.
    *
    * @param eSlot    {@link RpgEquipmentSlot}
    * @param heldSlot hotbar slot
@@ -153,9 +154,9 @@ public class Settings {
   }
 
   /**
-   * Gets {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
+   * Gets {@link ActiveAbility} crouch binds.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds
+   * @return {@link ActiveAbility} crouch binds
    */
   public Map<RpgEquipmentSlot, Integer> getActiveAbilityCrouchBinds() {
     return this.activeAbilityCrouchBinds;

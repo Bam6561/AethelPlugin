@@ -1,7 +1,8 @@
-package me.dannynguyen.aethel.util;
+package me.dannynguyen.aethel.utils.item;
 
-import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

@@ -1,5 +1,6 @@
-package me.dannynguyen.aethel.rpg.system;
+package me.dannynguyen.aethel.rpg;
 
+import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

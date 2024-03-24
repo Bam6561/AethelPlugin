@@ -1,11 +1,13 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
-import me.dannynguyen.aethel.rpg.ability.SlotPassive;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveEffect;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
-import me.dannynguyen.aethel.rpg.system.RpgSystem;
+import me.dannynguyen.aethel.rpg.Health;
+import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.rpg.RpgSystem;
+import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
+import me.dannynguyen.aethel.rpg.abilities.SlotPassive;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -35,7 +37,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Assigns an {@link me.dannynguyen.aethel.rpg.system.RpgPlayer} to a player upon joining the server.
+   * Assigns an {@link RpgPlayer} to a player upon joining the server.
    *
    * @param e player join event
    */
@@ -56,7 +58,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Updates the player's {@link me.dannynguyen.aethel.rpg.system.Health}
+   * Updates the player's {@link Health}
    * to account for absorption and health boost status effects.
    *
    * @param e entity potion effect event
@@ -76,7 +78,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Resets the player's {@link me.dannynguyen.aethel.rpg.system.Health}.
+   * Resets the player's {@link Health}.
    *
    * @param e player respawn event
    */

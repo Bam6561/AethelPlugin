@@ -10,8 +10,9 @@ import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
 import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.util.ItemReader;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.rpg.Settings;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +20,7 @@ import org.bukkit.event.inventory.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Collection of {@link me.dannynguyen.aethel.plugin.interfaces.Menu menu}
+ * Collection of {@link me.dannynguyen.aethel.interfaces.Menu menu}
  * click listeners.
  * <p>
  * By default, all clicks within plugin menus are cancelled due to the possibility of an
@@ -258,7 +259,7 @@ public class MenuEvent implements Listener {
   }
 
   /**
-   * {@link me.dannynguyen.aethel.plugin.interfaces.Menu} types.
+   * {@link me.dannynguyen.aethel.interfaces.Menu} types.
    */
   public enum Menu {
     /**
@@ -292,7 +293,7 @@ public class MenuEvent implements Listener {
     CHARACTER_COLLECTIBLES("character"),
 
     /**
-     * Interact with {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings}.
+     * Interact with {@link Settings RPG settings}.
      */
     CHARACTER_SETTINGS("character"),
 
@@ -417,7 +418,7 @@ public class MenuEvent implements Listener {
   }
 
   /**
-   * {@link me.dannynguyen.aethel.plugin.interfaces.Menu} modes.
+   * {@link me.dannynguyen.aethel.interfaces.Menu} modes.
    */
   public enum Mode {
     /**

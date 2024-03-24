@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
-import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.ItemCreator;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.utils.InventoryPages;
+import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

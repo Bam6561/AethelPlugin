@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,7 +51,7 @@ public class DeveloperCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly before
-   * {@link me.dannynguyen.aethel.plugin.system.PluginPlayer#setIsDeveloper toggling} developer mode.
+   * {@link PluginPlayer#setIsDeveloper toggling} developer mode.
    *
    * @param user user
    * @param args user provided parameters
@@ -66,7 +66,7 @@ public class DeveloperCommand implements CommandExecutor {
   }
 
   /**
-   * {@link me.dannynguyen.aethel.plugin.system.PluginPlayer#setIsDeveloper Toggles}
+   * {@link PluginPlayer#setIsDeveloper Toggles}
    * developer mode on or off for the user.
    *
    * @param user user

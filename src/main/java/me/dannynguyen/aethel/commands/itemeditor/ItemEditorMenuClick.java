@@ -1,18 +1,19 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.enums.rpg.*;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.util.ItemReader;
-import me.dannynguyen.aethel.util.TextFormatter;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;

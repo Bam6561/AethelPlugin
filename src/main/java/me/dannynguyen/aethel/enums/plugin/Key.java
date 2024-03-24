@@ -1,6 +1,9 @@
 package me.dannynguyen.aethel.enums.plugin;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.rpg.AethelAttributes;
+import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
+import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,17 +16,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum Key {
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.system.AethelAttributes} list.
+   * Item {@link AethelAttributes} list.
    */
   ATTRIBUTE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + "list")),
 
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.ability.PassiveAbility} list.
+   * Item {@link PassiveAbility} list.
    */
   PASSIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + "list")),
 
   /**
-   * Item {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} list.
+   * Item {@link ActiveAbility} list.
    */
   ACTIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + "list")),
 

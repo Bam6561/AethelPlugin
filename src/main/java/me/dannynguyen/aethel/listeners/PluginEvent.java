@@ -1,7 +1,8 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.system.PluginPlayer;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.PluginSystem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Collection of {@link me.dannynguyen.aethel.plugin.system.PluginSystem}
+ * Collection of {@link PluginSystem}
  * listeners.
  *
  * @author Danny Nguyen

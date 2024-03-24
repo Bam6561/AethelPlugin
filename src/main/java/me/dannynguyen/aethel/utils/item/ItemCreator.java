@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.util;
+package me.dannynguyen.aethel.utils.item;
 
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import net.md_5.bungee.api.ChatColor;

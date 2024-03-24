@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.system;
+package me.dannynguyen.aethel.plugin;
 
 import org.jetbrains.annotations.NotNull;
 

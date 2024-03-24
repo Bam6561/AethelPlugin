@@ -1,5 +1,7 @@
 package me.dannynguyen.aethel.enums.plugin;
 
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.Settings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -28,12 +30,12 @@ public enum Directory {
   FORGE(new File(RESOURCES.getFile().getPath() + "/forge")),
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.system.Equipment RPG jewelry} directory.
+   * {@link Equipment RPG jewelry} directory.
    */
   JEWELRY(new File(RESOURCES.getFile().getPath() + "/rpg/jewelry")),
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.system.Settings RPG settings} directory.
+   * {@link Settings RPG settings} directory.
    */
   SETTINGS(new File(RESOURCES.getFile().getPath() + "/rpg/settings"));
 

@@ -1,14 +1,15 @@
-package me.dannynguyen.aethel.rpg.ability;
+package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.rpg.*;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveEffect;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerCondition;
-import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
-import me.dannynguyen.aethel.rpg.system.RpgPlayer;
-import me.dannynguyen.aethel.rpg.system.Status;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.rpg.DamageMitigation;
+import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -159,7 +160,7 @@ public class PassiveAbility {
           RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
           double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
           player.damage(0.1);
-          rpgPlayer.getHealth().damage(new PlayerDamageMitigation(player).mitigateProtectionResistance(damage));
+          rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateProtectionResistance(damage));
         }
       } else {
         livingEntity.damage(0.1);

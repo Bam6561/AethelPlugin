@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.util;
+package me.dannynguyen.aethel.utils;
 
 import org.jetbrains.annotations.NotNull;
 

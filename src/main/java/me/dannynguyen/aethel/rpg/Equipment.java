@@ -1,12 +1,13 @@
-package me.dannynguyen.aethel.rpg.system;
+package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
-import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.util.ItemCreator;
-import me.dannynguyen.aethel.util.ItemReader;
+import me.dannynguyen.aethel.rpg.abilities.Abilities;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

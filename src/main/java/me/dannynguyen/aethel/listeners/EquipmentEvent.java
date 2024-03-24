@@ -1,11 +1,15 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.ability.TriggerPassive;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.system.*;
-import me.dannynguyen.aethel.util.ItemReader;
+import me.dannynguyen.aethel.rpg.AethelAttributes;
+import me.dannynguyen.aethel.rpg.Enchantments;
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.rpg.abilities.Abilities;
+import me.dannynguyen.aethel.rpg.abilities.TriggerPassive;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;

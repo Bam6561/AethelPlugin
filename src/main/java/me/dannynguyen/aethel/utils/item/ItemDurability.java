@@ -1,7 +1,8 @@
-package me.dannynguyen.aethel.util;
+package me.dannynguyen.aethel.utils.item;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;

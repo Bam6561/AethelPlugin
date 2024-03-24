@@ -2,10 +2,13 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
-import me.dannynguyen.aethel.plugin.interfaces.Menu;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.util.InventoryPages;
-import me.dannynguyen.aethel.util.ItemCreator;
+import me.dannynguyen.aethel.interfaces.Menu;
+import me.dannynguyen.aethel.rpg.Health;
+import me.dannynguyen.aethel.rpg.Settings;
+import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
+import me.dannynguyen.aethel.utils.InventoryPages;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,7 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents a menu that shows the player's {@link me.dannynguyen.aethel.rpg.system.Settings}.
+ * Represents a menu that shows the player's {@link Settings}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -92,7 +95,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Toggles the visibility of the {@link me.dannynguyen.aethel.rpg.system.Health health bar}.
+   * Toggles the visibility of the {@link Health health bar}.
    */
   private void addDisplayHealthBar() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthBarVisible()) {
@@ -103,7 +106,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Toggles the visibility of {@link me.dannynguyen.aethel.rpg.system.Health health in the action bar}.
+   * Toggles the visibility of {@link Health health in the action bar}.
    */
   private void addDisplayHealthAction() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthActionVisible()) {
@@ -114,7 +117,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Adds {@link me.dannynguyen.aethel.rpg.ability.ActiveAbility} crouch binds.
+   * Adds {@link ActiveAbility} crouch binds.
    */
   private void addActiveAbilityCrouchBinds() {
     Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getActiveAbilityCrouchBinds();
