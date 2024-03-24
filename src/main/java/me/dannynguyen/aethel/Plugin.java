@@ -10,16 +10,12 @@ import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
-import me.dannynguyen.aethel.plugin.listeners.MessageSent;
-import me.dannynguyen.aethel.plugin.listeners.PluginEvent;
-import me.dannynguyen.aethel.plugin.system.PluginData;
+import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
 import me.dannynguyen.aethel.rpg.ability.SlotPassive;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.StatusType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
-import me.dannynguyen.aethel.rpg.listeners.*;
 import me.dannynguyen.aethel.rpg.system.Equipment;
 import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
 import me.dannynguyen.aethel.rpg.system.RpgPlayer;
@@ -94,26 +90,26 @@ public class Plugin extends JavaPlugin {
   /**
    * Registers the plugin's event listeners.
    * <ul>
-   *  <li>{@link RPGAction}
-   *  <li>{@link MenuClick}
-   *  <li>{@link MessageSent}
+   *  <li>{@link ActionEvent}
+   *  <li>{@link MenuEvent}
+   *  <li>{@link MessageEvent}
    *  <li>{@link PluginEvent}
-   *  <li>{@link EntityDamage}
-   *  <li>{@link EquipmentUpdate}
+   *  <li>{@link HealthEvent}
+   *  <li>{@link EquipmentEvent}
    *  <li>{@link RpgEvent}
-   *  <li>{@link StatusUpdate}
+   *  <li>{@link StatusEvent}
    * </ul>
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
-    manager.registerEvents(new RPGAction(), this);
-    manager.registerEvents(new MenuClick(), this);
-    manager.registerEvents(new MessageSent(), this);
+    manager.registerEvents(new ActionEvent(), this);
+    manager.registerEvents(new MenuEvent(), this);
+    manager.registerEvents(new MessageEvent(), this);
     manager.registerEvents(new PluginEvent(), this);
-    manager.registerEvents(new EntityDamage(), this);
-    manager.registerEvents(new EquipmentUpdate(), this);
+    manager.registerEvents(new HealthEvent(), this);
+    manager.registerEvents(new EquipmentEvent(), this);
     manager.registerEvents(new RpgEvent(), this);
-    manager.registerEvents(new StatusUpdate(), this);
+    manager.registerEvents(new StatusEvent(), this);
   }
 
   /**

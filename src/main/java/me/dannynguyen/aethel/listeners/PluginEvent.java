@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Collection of listeners for {@link me.dannynguyen.aethel.plugin.system.PluginSystem} functionality.
+ * Collection of {@link me.dannynguyen.aethel.plugin.system.PluginSystem}
+ * listeners.
  *
  * @author Danny Nguyen
  * @version 1.17.19

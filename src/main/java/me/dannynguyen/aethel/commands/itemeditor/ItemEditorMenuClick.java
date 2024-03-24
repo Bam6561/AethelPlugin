@@ -3,9 +3,9 @@ package me.dannynguyen.aethel.commands.itemeditor;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
 import me.dannynguyen.aethel.plugin.enums.PluginKey;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
-import me.dannynguyen.aethel.plugin.listeners.MessageSent;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MessageEvent;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.*;
 import me.dannynguyen.aethel.util.ItemReader;
@@ -28,13 +28,13 @@ import java.util.UUID;
 /**
  * Inventory click event listener for {@link ItemEditorCommand} menus.
  * <p>
- * Called with {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
+ * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
  * @version 1.18.0
  * @since 1.6.7
  */
-public class ItemEditorMenuClick implements MenuClickEvent {
+public class ItemEditorMenuClick implements MenuClick {
   /**
    * Inventory click event.
    */
@@ -246,7 +246,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setDisplayName() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_DISPLAY_NAME);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_DISPLAY_NAME);
   }
 
   /**
@@ -254,7 +254,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setCustomModelData() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_CUSTOM_MODEL_DATA);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_CUSTOM_MODEL_DATA);
   }
 
   /**
@@ -279,7 +279,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     user.openInventory(new AttributeMenu(user, EquipmentSlot.HAND).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
   }
 
   /**
@@ -289,7 +289,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
   }
 
   /**
@@ -297,7 +297,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openEnchantment() {
     user.openInventory(new EnchantmentMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_ENCHANTMENT);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.ITEMEDITOR_ENCHANTMENT);
   }
 
   /**
@@ -305,7 +305,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openPotion() {
     user.openInventory(new PotionMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_POTION);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.ITEMEDITOR_POTION);
   }
 
   /**
@@ -316,7 +316,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     pluginPlayer.setTrigger(Trigger.DAMAGE_DEALT);
     user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, Trigger.DAMAGE_DEALT).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
   /**
@@ -326,7 +326,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ACTIVE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_ACTIVE);
   }
 
   /**
@@ -334,7 +334,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void openTag() {
     user.openInventory(new TagMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_TAG);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.ITEMEDITOR_TAG);
   }
 
   /**
@@ -342,7 +342,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setDurability() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_DURABILITY);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_DURABILITY);
   }
 
   /**
@@ -350,7 +350,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setRepairCost() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_REPAIR_COST);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_REPAIR_COST);
   }
 
   /**
@@ -358,7 +358,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setLore() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_LORE_SET);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_SET);
   }
 
   /**
@@ -379,7 +379,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void addLore() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_LORE_ADD);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_ADD);
   }
 
   /**
@@ -388,7 +388,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   private void editLore() {
     if (meta.hasLore()) {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and new lore.");
-      awaitMessageResponse(MessageSent.Input.ITEMEDITOR_LORE_EDIT);
+      awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_EDIT);
     } else {
       user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
@@ -400,7 +400,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
   private void removeLore() {
     if (meta.hasLore()) {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
-      awaitMessageResponse(MessageSent.Input.ITEMEDITOR_LORE_REMOVE);
+      awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_REMOVE);
     } else {
       user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
@@ -437,7 +437,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void setPotionColor() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input RGB value.");
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_POTION_COLOR);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_POTION_COLOR);
   }
 
   /**
@@ -445,7 +445,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
    */
   private void returnToCosmetic() {
     user.openInventory(new CosmeticMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.ITEMEDITOR_COSMETIC);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.ITEMEDITOR_COSMETIC);
   }
 
   /**
@@ -457,7 +457,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(RpgEquipmentSlot.valueOf(eSlot.name()));
     user.openInventory(new AttributeMenu(user, eSlot).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
   }
 
   /**
@@ -470,7 +470,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new AethelAttributeMenu(user, eSlot).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
   }
 
   /**
@@ -483,7 +483,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new PassiveMenu(user, eSlot, pluginPlayer.getTrigger()).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
   /**
@@ -496,7 +496,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setTrigger(trigger);
     user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), trigger).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_PASSIVE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
   /**
@@ -509,7 +509,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new ActiveMenu(user, eSlot).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.ITEMEDITOR_ACTIVE);
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_ACTIVE);
   }
 
   /**
@@ -522,7 +522,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(slot.name()) + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeContext(attribute));
     pluginPlayer.setObjectType(attribute);
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
   }
 
   /**
@@ -535,7 +535,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: " + AethelAttributeType.valueOf(TextFormatter.formatEnum(attribute)).getBaseValue());
     pluginPlayer.setObjectType(TextFormatter.formatId(attribute));
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_AETHEL_ATTRIBUTE);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_AETHEL_ATTRIBUTE);
   }
 
   /**
@@ -545,7 +545,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String enchantment = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(enchantment));
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_ENCHANTMENT);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_ENCHANTMENT);
   }
 
   /**
@@ -555,7 +555,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String potionEffect = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(potionEffect));
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_POTION_EFFECT);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_POTION_EFFECT);
   }
 
   /**
@@ -570,7 +570,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + trigger.getCondition().getData());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     pluginPlayer.setObjectType(TextFormatter.formatId(passive));
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_PASSIVE_ABILITY);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_PASSIVE_ABILITY);
   }
 
   /**
@@ -583,7 +583,7 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     pluginPlayer.setObjectType(TextFormatter.formatId(active));
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_ACTIVE_ABILITY);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_ACTIVE_ABILITY);
   }
 
   /**
@@ -593,17 +593,17 @@ public class ItemEditorMenuClick implements MenuClickEvent {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(tag);
-    awaitMessageResponse(MessageSent.Input.ITEMEDITOR_AETHEL_TAG);
+    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_AETHEL_TAG);
   }
 
   /**
    * Uses the user's next message as the field's input.
    *
-   * @param messageInput {@link MessageSent.Input}
+   * @param messageType {@link MessageEvent.Type}
    */
-  private void awaitMessageResponse(MessageSent.Input messageInput) {
+  private void awaitMessageResponse(MessageEvent.Type messageType) {
     user.closeInventory();
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMessageInput(messageInput);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMessageInput(messageType);
   }
 
   /**

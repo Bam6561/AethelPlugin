@@ -2,11 +2,11 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.interfaces.MenuClickEvent;
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
+import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.listeners.RPGAction;
+import me.dannynguyen.aethel.listeners.ActionEvent;
 import me.dannynguyen.aethel.rpg.system.Equipment;
 import me.dannynguyen.aethel.rpg.system.Settings;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -33,13 +33,13 @@ import java.util.UUID;
  * 1 tick delays are used because only the item that exists in the
  * corresponding slot after the interaction happens should be read.
  * <p>
- * Called through {@link me.dannynguyen.aethel.plugin.listeners.MenuClick}.
+ * Called through {@link MenuEvent}.
  *
  * @author Danny Nguyen
  * @version 1.17.19
  * @since 1.9.2
  */
-public class CharacterMenuClick implements MenuClickEvent {
+public class CharacterMenuClick implements MenuClick {
   /**
    * Inventory click event.
    */
@@ -174,7 +174,7 @@ public class CharacterMenuClick implements MenuClickEvent {
    */
   private void openQuests() {
     user.openInventory(new QuestsMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.CHARACTER_QUESTS);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.CHARACTER_QUESTS);
   }
 
   /**
@@ -182,7 +182,7 @@ public class CharacterMenuClick implements MenuClickEvent {
    */
   private void openCollectibles() {
     user.openInventory(new CollectiblesMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.CHARACTER_COLLECTIBLES);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.CHARACTER_COLLECTIBLES);
   }
 
   /**
@@ -190,7 +190,7 @@ public class CharacterMenuClick implements MenuClickEvent {
    */
   private void openSettings() {
     user.openInventory(new SettingsMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.CHARACTER_SETTINGS);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);
   }
 
   /**
@@ -318,7 +318,7 @@ public class CharacterMenuClick implements MenuClickEvent {
    */
   private void returnToSheet() {
     user.openInventory(new SheetMenu(user, user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.CHARACTER_SHEET);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.CHARACTER_SHEET);
   }
 
   /**
@@ -382,7 +382,7 @@ public class CharacterMenuClick implements MenuClickEvent {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "crouch bind:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Select a hotbar slot and crouch.");
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setActionInput(RPGAction.Input.CROUCH_BIND_ACTIVE_ABILITY);
+    pluginPlayer.setActionInput(ActionEvent.Input.CROUCH_BIND_ACTIVE_ABILITY);
     pluginPlayer.setSlot(eSlot);
   }
 }

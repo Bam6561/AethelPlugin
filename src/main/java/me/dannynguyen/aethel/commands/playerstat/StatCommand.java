@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,7 +85,7 @@ public class StatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuClick.Menu.PLAYERSTAT_PAST);
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuEvent.Menu.PLAYERSTAT_PAST);
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -102,7 +102,7 @@ public class StatCommand implements CommandExecutor {
 
     pluginPlayer.setTarget(target);
     user.openInventory(new StatMenu(user, user.getName()).getMainMenu());
-    pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_CATEGORY);
+    pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_CATEGORY);
   }
 
   /**
@@ -119,7 +119,7 @@ public class StatCommand implements CommandExecutor {
 
       pluginPlayer.setTarget(target);
       user.openInventory(new StatMenu(user, player.getName()).getMainMenu());
-      pluginPlayer.setMenu(MenuClick.Menu.PLAYERSTAT_CATEGORY);
+      pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_CATEGORY);
     } else {
       user.sendMessage(ChatColor.RED + owner + " has never played on this server.");
     }

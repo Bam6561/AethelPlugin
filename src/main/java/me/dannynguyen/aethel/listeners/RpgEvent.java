@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
- * Collection of listeners for {@link RpgSystem} functionality.
+ * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
  * @version 1.17.12

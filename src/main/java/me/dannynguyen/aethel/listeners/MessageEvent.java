@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
@@ -10,7 +10,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Collection of player chat listeners for the plugin's message inputs.
+ * Collection of message input listeners.
  * <p>
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
@@ -18,11 +18,11 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.18.0
  * @since 1.6.7
  */
-public class MessageSent implements Listener {
+public class MessageEvent implements Listener {
   /**
    * No parameter constructor.
    */
-  public MessageSent() {
+  public MessageEvent() {
   }
 
   /**
@@ -32,12 +32,12 @@ public class MessageSent implements Listener {
    */
   @EventHandler
   private void onPlayerChat(AsyncPlayerChatEvent e) {
-    Input input = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMessageInput();
-    if (input != null) {
+    Type type = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMessageInput();
+    if (type != null) {
       e.setCancelled(true);
-      String inputType = input.getId();
+      String inputType = type.getId();
       switch (inputType) {
-        case "itemeditor" -> interpretItemEditor(e, input);
+        case "itemeditor" -> interpretItemEditor(e, type);
       }
     }
   }
@@ -57,11 +57,11 @@ public class MessageSent implements Listener {
    * input is being interacted with.
    *
    * @param e     message event
-   * @param input {@link Input}
+   * @param type {@link Type}
    */
-  private void interpretItemEditor(AsyncPlayerChatEvent e, Input input) {
+  private void interpretItemEditor(AsyncPlayerChatEvent e, Type type) {
     ItemEditorMessageSent msg = new ItemEditorMessageSent(e);
-    switch (input) {
+    switch (type) {
       case ITEMEDITOR_DISPLAY_NAME -> msg.setDisplayName();
       case ITEMEDITOR_CUSTOM_MODEL_DATA -> msg.setCustomModelData();
       case ITEMEDITOR_DURABILITY -> msg.setDurability();
@@ -84,7 +84,7 @@ public class MessageSent implements Listener {
   /**
    * Message input types.
    */
-  public enum Input {
+  public enum Type {
     /**
      * Display name.
      */
@@ -175,7 +175,7 @@ public class MessageSent implements Listener {
      *
      * @param id ID
      */
-    Input(String id) {
+    Type(String id) {
       this.id = id;
     }
 

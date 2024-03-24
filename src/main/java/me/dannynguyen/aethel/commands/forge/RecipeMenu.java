@@ -22,7 +22,7 @@ import java.util.UUID;
  * crafting, editing, and removing {@link PersistentRecipe recipes}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.1
  * @since 1.0.6
  */
 public class RecipeMenu implements CategoryMenu {
@@ -174,39 +174,16 @@ public class RecipeMenu implements CategoryMenu {
     /**
      * Craft {@link PersistentRecipe recipes}.
      */
-    CRAFT("craft"),
+    CRAFT,
 
     /**
      * Edit {@link PersistentRecipe recipes}.
      */
-    EDIT("edit"),
+    EDIT,
 
     /**
      * Remove {@link PersistentRecipe recipes}.
      */
-    REMOVE("remove");
-
-    /**
-     * ID.
-     */
-    private final String id;
-
-    /**
-     * Associates the action with its ID.
-     *
-     * @param id ID
-     */
-    Action(String id) {
-      this.id = id;
-    }
-
-    /**
-     * Gets the action's ID.
-     *
-     * @return action's ID
-     */
-    public String getId() {
-      return this.id;
-    }
+    REMOVE;
   }
 }

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.listeners.EquipmentEvent;
 import me.dannynguyen.aethel.plugin.enums.KeyHeader;
 import me.dannynguyen.aethel.plugin.enums.PluginKey;
 import me.dannynguyen.aethel.rpg.ability.ActiveAbility;
@@ -29,7 +30,7 @@ import java.util.*;
  */
 public class Abilities {
   /**
-   * Used to remove abilities upon {@link me.dannynguyen.aethel.rpg.listeners.EquipmentUpdate}.
+   * Used to remove abilities upon {@link EquipmentEvent}.
    */
   private final Map<RpgEquipmentSlot, List<TriggerPassive>> slotPassives = new HashMap<>();
 
@@ -128,7 +129,7 @@ public class Abilities {
   public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
     List<TriggerPassive> abilitiesToRemove = new ArrayList<>();
     for (TriggerPassive triggerPassive : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
-      triggerPassives.get(triggerPassive.getTrigger()).remove(new SlotPassive(eSlot, triggerPassive.getType()));
+      triggerPassives.get(triggerPassive.trigger()).remove(new SlotPassive(eSlot, triggerPassive.type()));
       abilitiesToRemove.add(triggerPassive);
     }
     slotPassives.get(eSlot).removeAll(abilitiesToRemove);

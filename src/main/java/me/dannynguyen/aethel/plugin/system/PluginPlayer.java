@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.plugin.system;
 
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
-import me.dannynguyen.aethel.plugin.listeners.MessageSent;
+import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MessageEvent;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
-import me.dannynguyen.aethel.rpg.listeners.RPGAction;
+import me.dannynguyen.aethel.listeners.ActionEvent;
 
 import java.util.UUID;
 
@@ -21,21 +21,21 @@ public class PluginPlayer {
    */
   private boolean isDeveloper;
   /**
-   * {@link RPGAction.Input}
+   * {@link ActionEvent.Input}
    */
-  private RPGAction.Input actionInput;
+  private ActionEvent.Input actionInput;
   /**
-   * {@link MessageSent.Input}
+   * {@link MessageEvent.Type}
    */
-  private MessageSent.Input messageInput;
+  private MessageEvent.Type messageType;
   /**
-   * {@link MenuClick.Menu}
+   * {@link MenuEvent.Menu}
    */
-  private MenuClick.Menu menu;
+  private MenuEvent.Menu menu;
   /**
-   * {@link MenuClick.Mode}
+   * {@link MenuEvent.Mode}
    */
-  private MenuClick.Mode mode;
+  private MenuEvent.Mode mode;
   /**
    * Menu category.
    */
@@ -86,75 +86,75 @@ public class PluginPlayer {
   }
 
   /**
-   * Gets {@link RPGAction.Input}.
+   * Gets {@link ActionEvent.Input}.
    *
-   * @return {@link RPGAction.Input}
+   * @return {@link ActionEvent.Input}
    */
-  public RPGAction.Input getActionInput() {
+  public ActionEvent.Input getActionInput() {
     return this.actionInput;
   }
 
   /**
-   * Sets the {@link RPGAction.Input}.
+   * Sets the {@link ActionEvent.Input}.
    *
-   * @param actionInput {@link RPGAction.Input}
+   * @param actionInput {@link ActionEvent.Input}
    */
-  public void setActionInput(RPGAction.Input actionInput) {
+  public void setActionInput(ActionEvent.Input actionInput) {
     this.actionInput = actionInput;
   }
 
   /**
-   * Gets {@link MessageSent.Input}.
+   * Gets {@link MessageEvent.Type}.
    *
-   * @return {@link MessageSent.Input}
+   * @return {@link MessageEvent.Type}
    */
-  public MessageSent.Input getMessageInput() {
-    return this.messageInput;
+  public MessageEvent.Type getMessageInput() {
+    return this.messageType;
   }
 
   /**
-   * Sets the {@link MessageSent.Input}.
+   * Sets the {@link MessageEvent.Type}.
    *
-   * @param messageInput {@link MessageSent.Input}
+   * @param messageType {@link MessageEvent.Type}
    */
-  public void setMessageInput(MessageSent.Input messageInput) {
-    this.messageInput = messageInput;
+  public void setMessageInput(MessageEvent.Type messageType) {
+    this.messageType = messageType;
   }
 
   /**
-   * Gets {@link MenuClick.Menu menu type}.
+   * Gets {@link MenuEvent.Menu menu type}.
    *
-   * @return {@link MenuClick.Menu menu type}
+   * @return {@link MenuEvent.Menu menu type}
    */
-  public MenuClick.Menu getMenu() {
+  public MenuEvent.Menu getMenu() {
     return this.menu;
   }
 
 
   /**
-   * Sets the {@link MenuClick.Menu menu type}.
+   * Sets the {@link MenuEvent.Menu menu type}.
    *
-   * @param menu {@link MenuClick.Menu menu type}
+   * @param menu {@link MenuEvent.Menu menu type}
    */
-  public void setMenu(MenuClick.Menu menu) {
+  public void setMenu(MenuEvent.Menu menu) {
     this.menu = menu;
   }
 
   /**
-   * Gets {@link MenuClick.Mode menu mode}.
+   * Gets {@link MenuEvent.Mode menu mode}.
    *
-   * @return {@link MenuClick.Mode menu mode}
+   * @return {@link MenuEvent.Mode menu mode}
    */
-  public MenuClick.Mode getMode() {
+  public MenuEvent.Mode getMode() {
     return this.mode;
   }
 
   /**
-   * Sets the {@link MenuClick.Mode menu mode}
+   * Sets the {@link MenuEvent.Mode menu mode}
    *
-   * @param mode {@link MenuClick.Mode menu mode}
+   * @param mode {@link MenuEvent.Mode menu mode}
    */
-  public void setMode(MenuClick.Mode mode) {
+  public void setMode(MenuEvent.Mode mode) {
     this.mode = mode;
   }
 

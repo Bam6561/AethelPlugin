@@ -1,8 +1,7 @@
-package me.dannynguyen.aethel.rpg.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.character.SettingsMenu;
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.system.Settings;
@@ -13,18 +12,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 /**
- * Collection of player action listeners for
- * {@link me.dannynguyen.aethel.rpg.system.RpgSystem} functionality.
+ * Collection of player action listeners.
  *
  * @author Danny Nguyen
  * @version 1.17.17
  * @since 1.17.3
  */
-public class RPGAction implements Listener {
+public class ActionEvent implements Listener {
   /**
    * No parameter constructor.
    */
-  public RPGAction() {
+  public ActionEvent() {
   }
 
   /**
@@ -46,7 +44,7 @@ public class RPGAction implements Listener {
         player.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Crouch Bind] " + ChatColor.WHITE + heldSlot);
         pluginPlayer.setActionInput(null);
         player.openInventory(new SettingsMenu(player).getMainMenu());
-        pluginPlayer.setMenu(MenuClick.Menu.CHARACTER_SETTINGS);
+        pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);
       }
     }
   }

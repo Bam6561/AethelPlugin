@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
@@ -31,13 +31,13 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Entity damage done, taken, and healed listener.
+ * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
  * @version 1.17.12
  * @since 1.9.4
  */
-public class EntityDamage implements Listener {
+public class HealthEvent implements Listener {
   /**
    * Ignored damage causes.
    */
@@ -46,7 +46,7 @@ public class EntityDamage implements Listener {
   /**
    * No parameter constructor.
    */
-  public EntityDamage() {
+  public HealthEvent() {
   }
 
   /**

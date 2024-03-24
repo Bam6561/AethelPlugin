@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.listeners.MenuClick;
+import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
@@ -105,7 +105,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.FORGE_CRAFT_RECIPE);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_CRAFT_RECIPE);
   }
 
   /**
@@ -116,7 +116,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.FORGE_SAVE);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
   }
 
   /**
@@ -126,7 +126,7 @@ class RecipeDetailsMenu {
     addContext();
     addActions();
     user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuClick.Menu.FORGE_SAVE);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
   }
 
   /**

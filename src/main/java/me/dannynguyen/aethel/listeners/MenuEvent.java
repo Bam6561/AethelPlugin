@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemMenu;
@@ -19,8 +19,8 @@ import org.bukkit.event.inventory.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Collection of inventory click listeners for the plugin's
- * {@link me.dannynguyen.aethel.plugin.interfaces.Menu menus}.
+ * Collection of {@link me.dannynguyen.aethel.plugin.interfaces.Menu menu}
+ * click listeners.
  * <p>
  * By default, all clicks within plugin menus are cancelled due to the possibility of an
  * internal error occurring and the associated methods never reaching their end result.
@@ -29,11 +29,11 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.18.0
  * @since 1.0.2
  */
-public class MenuClick implements Listener {
+public class MenuEvent implements Listener {
   /**
    * No parameter constructor.
    */
-  public MenuClick() {
+  public MenuEvent() {
   }
 
   /**

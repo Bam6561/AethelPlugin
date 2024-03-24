@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.listeners;
+package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.TriggerPassive;
@@ -27,17 +27,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Collection of {@link Equipment} update listeners.
+ * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
  * @version 1.17.9
  * @since 1.9.0
  */
-public class EquipmentUpdate implements Listener {
+public class EquipmentEvent implements Listener {
   /**
    * No parameter constructor.
    */
-  public EquipmentUpdate() {
+  public EquipmentEvent() {
   }
 
   /**

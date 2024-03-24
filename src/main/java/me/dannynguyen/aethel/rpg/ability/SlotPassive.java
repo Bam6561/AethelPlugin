@@ -13,20 +13,10 @@ import java.util.Objects;
  * after a {@link me.dannynguyen.aethel.rpg.enums.Trigger} is called.
  *
  * @author Danny Nguyen
- * @version 1.16.3
+ * @version 1.18.1
  * @since 1.16.3
  **/
-public class SlotPassive {
-  /**
-   * {@link RpgEquipmentSlot}
-   */
-  private final RpgEquipmentSlot eSlot;
-
-  /**
-   * {@link PassiveType}
-   */
-  private final PassiveType type;
-
+public record SlotPassive(RpgEquipmentSlot eSlot, PassiveType type) {
   /**
    * Associates an {@link RpgEquipmentSlot} with an {@link PassiveType}.
    *
@@ -43,8 +33,9 @@ public class SlotPassive {
    *
    * @return {@link RpgEquipmentSlot}
    */
+  @Override
   @NotNull
-  public RpgEquipmentSlot getSlot() {
+  public RpgEquipmentSlot eSlot() {
     return this.eSlot;
   }
 
@@ -54,7 +45,7 @@ public class SlotPassive {
    * @return {@link PassiveType}
    */
   @NotNull
-  public PassiveType getType() {
+  public PassiveType type() {
     return this.type;
   }
 
@@ -67,7 +58,7 @@ public class SlotPassive {
   @Override
   public boolean equals(Object o) {
     if (o instanceof SlotPassive slotPassive) {
-      return (slotPassive.getSlot() == eSlot && slotPassive.getType() == type);
+      return (slotPassive.eSlot() == eSlot && slotPassive.type() == type);
     }
     return false;
   }

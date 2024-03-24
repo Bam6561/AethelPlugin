@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.rpg.ability;
 
+import me.dannynguyen.aethel.listeners.EquipmentEvent;
 import me.dannynguyen.aethel.rpg.enums.PassiveType;
 import me.dannynguyen.aethel.rpg.enums.Trigger;
 import org.jetbrains.annotations.NotNull;
@@ -9,23 +10,13 @@ import java.util.Objects;
 /**
  * Represents a {@link Trigger} {@link PassiveType} pair.
  * <p>
- * Used to remove abilities upon {@link me.dannynguyen.aethel.rpg.listeners.EquipmentUpdate}.
+ * Used to remove abilities upon {@link EquipmentEvent}.
  *
  * @author Danny Nguyen
- * @version 1.16.3
+ * @version 1.18.1
  * @since 1.16.1
  */
-public class TriggerPassive {
-  /**
-   * {@link Trigger}
-   */
-  private final Trigger trigger;
-
-  /**
-   * {@link PassiveType}
-   */
-  private final PassiveType type;
-
+public record TriggerPassive(Trigger trigger, PassiveType type) {
   /**
    * Associates a {@link Trigger} with a {@link PassiveType}.
    *
@@ -43,7 +34,7 @@ public class TriggerPassive {
    * @return {@link Trigger}
    */
   @NotNull
-  public Trigger getTrigger() {
+  public Trigger trigger() {
     return this.trigger;
   }
 
@@ -53,7 +44,7 @@ public class TriggerPassive {
    * @return {@link PassiveType}
    */
   @NotNull
-  public PassiveType getType() {
+  public PassiveType type() {
     return this.type;
   }
 }
