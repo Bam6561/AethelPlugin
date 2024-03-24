@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.rpg.enums.StatusType;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.rpg.system.Status;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.Bukkit;

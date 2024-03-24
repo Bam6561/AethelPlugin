@@ -3,13 +3,13 @@ package me.dannynguyen.aethel.commands.playerstat;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Player substatistic categories.
+ * Types of substatistics.
  *
  * @author Danny Nguyen
  * @version 1.17.14
  * @since 1.17.14
  */
-enum SubstatisticCategory {
+enum SubstatisticType {
   /**
    * Entity types.
    */
@@ -21,22 +21,22 @@ enum SubstatisticCategory {
   MATERIALS("Materials");
 
   /**
-   * Category's proper name.
+   * Type's proper name.
    */
   private final String properName;
 
   /***
-   * Associates the category with a proper name.
+   * Associates the type with a proper name.
    * @param properName proper name
    */
-  SubstatisticCategory(String properName) {
+  SubstatisticType(String properName) {
     this.properName = properName;
   }
 
   /**
-   * Gets the category's proper name.
+   * Gets the type's proper name.
    *
-   * @return category's proper name
+   * @return type's proper name
    */
   @NotNull
   public String getProperName() {

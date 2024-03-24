@@ -13,9 +13,9 @@ import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.rpg.ability.PassiveAbility;
 import me.dannynguyen.aethel.rpg.ability.SlotPassive;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.enums.StatusType;
-import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.rpg.system.Equipment;
 import me.dannynguyen.aethel.rpg.system.PlayerDamageMitigation;
 import me.dannynguyen.aethel.rpg.system.RpgPlayer;
@@ -229,13 +229,13 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to trigger {@link Trigger#BELOW_HEALTH} {@link PassiveAbility passive abilities}.
+   * Adds an interval to trigger {@link TriggerType#BELOW_HEALTH} {@link PassiveAbility passive abilities}.
    * <p>
-   * {@link Trigger#BELOW_HEALTH}{@link PassiveAbility} can only be triggered on self.
+   * {@link TriggerType#BELOW_HEALTH}{@link PassiveAbility} can only be triggered on self.
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(Trigger.BELOW_HEALTH);
+      Map<SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(TriggerType.BELOW_HEALTH);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {

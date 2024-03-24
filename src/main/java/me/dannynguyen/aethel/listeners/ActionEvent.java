@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.listeners;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.character.SettingsMenu;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.system.Settings;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

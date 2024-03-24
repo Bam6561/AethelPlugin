@@ -1,9 +1,10 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
-import me.dannynguyen.aethel.rpg.enums.*;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.rpg.*;
+import me.dannynguyen.aethel.enums.rpg.abilities.*;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
@@ -24,9 +25,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
- * Represents an item's Minecraft and {@link PluginKey#ATTRIBUTE_LIST Aethel attribute},
- * {@link PluginKey#PASSIVE_LIST passive ability}, and
- * {@link PluginKey#ACTIVE_LIST active ability} lore generation.
+ * Represents an item's Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attribute},
+ * {@link Key#PASSIVE_LIST passive ability}, and
+ * {@link Key#ACTIVE_LIST active ability} lore generation.
  * <p>
  * Used with {@link ItemEditorMenuClick}.
  *
@@ -75,20 +76,20 @@ class LoreGeneration {
   private final Inventory menu;
 
   /**
-   * ItemStack's total Minecraft and {@link PluginKey#ATTRIBUTE_LIST Aethel attribute}
-   * values categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * ItemStack's total Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attribute}
+   * values categorized by {@link RpgEquipmentSlot}.
    */
   private Map<String, Map<String, Double>> attributeValues;
 
   /**
-   * ItemStack's {@link PluginKey#PASSIVE_LIST passive abilities}
-   * categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * ItemStack's {@link Key#PASSIVE_LIST passive abilities}
+   * categorized by {@link RpgEquipmentSlot}.
    */
   private Map<String, List<String>> passiveAbilities;
 
   /**
-   * ItemStack's {@link PluginKey#ACTIVE_LIST active abilities}
-   * categorized by {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * ItemStack's {@link Key#ACTIVE_LIST active abilities}
+   * categorized by {@link RpgEquipmentSlot}.
    */
   private Map<String, List<String>> activeAbilities;
 
@@ -118,25 +119,25 @@ class LoreGeneration {
   }
 
   /**
-   * Generates an item's lore based on its {@link PluginKey plugin-related data}.
+   * Generates an item's lore based on its {@link Key plugin-related data}.
    */
   protected void generateLore() {
-    if (dataContainer.has(PluginKey.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (dataContainer.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
       displayForgeId();
     }
-    if (dataContainer.has(PluginKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (dataContainer.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
       this.attributeValues = totalAttributeValues();
       addAttributeHeaders();
       menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
     }
-    if (dataContainer.has(PluginKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (dataContainer.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
       this.passiveAbilities = sortPassiveAbilities();
       addPassiveHeaders();
     }
-    if (dataContainer.has(PluginKey.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (dataContainer.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       generatedLore = true;
       this.activeAbilities = sortActiveAbilities();
       addActiveHeaders();
@@ -152,13 +153,13 @@ class LoreGeneration {
    * Adds the Forge ID to the item's lore.
    */
   private void displayForgeId() {
-    lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(PluginKey.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
+    lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
     meta.setLore(lore);
     item.setItemMeta(meta);
   }
 
   /**
-   * Totals the item's Minecraft and {@link PluginKey#ATTRIBUTE_LIST Aethel attributes} together.
+   * Totals the item's Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attributes} together.
    *
    * @return ItemStack's total attribute values
    */
@@ -172,7 +173,7 @@ class LoreGeneration {
   }
 
   /**
-   * Adds attribute {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} headers to the item's lore.
+   * Adds attribute {@link RpgEquipmentSlot} headers to the item's lore.
    */
   private void addAttributeHeaders() {
     for (String eSlot : headerOrder) {
@@ -184,29 +185,29 @@ class LoreGeneration {
   }
 
   /**
-   * Sorts {@link PluginKey#PASSIVE_LIST passive abilities}
-   * by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * Sorts {@link Key#PASSIVE_LIST passive abilities}
+   * by their {@link RpgEquipmentSlot}.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : {@link PluginKey#PASSIVE_LIST passive ability}
+   * @return {@link RpgEquipmentSlot} : {@link Key#PASSIVE_LIST passive ability}
    */
   private Map<String, List<String>> sortPassiveAbilities() {
     Map<String, List<String>> passiveAbilities = new HashMap<>();
-    for (String passive : dataContainer.get(PluginKey.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+    for (String passive : dataContainer.get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
       String[] passiveMeta = passive.split("\\.");
       String slot = passiveMeta[0];
       String condition = passiveMeta[1];
       String type = passiveMeta[2];
 
-      Trigger trigger = Trigger.valueOf(TextFormatter.formatEnum(condition));
+      TriggerType triggerType = TriggerType.valueOf(TextFormatter.formatEnum(condition));
       PassiveEffect abilityEffect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
 
       String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
       StringBuilder abilityLore = new StringBuilder();
 
       abilityLore.append(ChatColor.DARK_AQUA);
-      switch (trigger.getCondition()) {
+      switch (triggerType.getCondition()) {
         case CHANCE_COOLDOWN -> {
-          addTriggerLore(abilityLore, trigger);
+          addTriggerLore(abilityLore, triggerType);
           // Chance
           if (!abilityData[0].equals("100.0")) {
             abilityLore.append(ChatColor.WHITE).append(abilityData[0]).append("% ");
@@ -222,7 +223,7 @@ class LoreGeneration {
         }
         case HEALTH_COOLDOWN -> {
           abilityLore.append("Below ").append(abilityData[0]).append("% HP: ");
-          addTriggerLore(abilityLore, trigger);
+          addTriggerLore(abilityLore, triggerType);
           // Cooldown
           if (!abilityData[1].equals("0")) {
             abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
@@ -243,7 +244,7 @@ class LoreGeneration {
   }
 
   /**
-   * Adds passive ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} headers to the item's lore.
+   * Adds passive ability {@link RpgEquipmentSlot} headers to the item's lore.
    */
   private void addPassiveHeaders() {
     for (String eSlot : headerOrder) {
@@ -254,14 +255,14 @@ class LoreGeneration {
   }
 
   /**
-   * Sorts {@link PluginKey#ACTIVE_LIST active abilities}
-   * by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * Sorts {@link Key#ACTIVE_LIST active abilities}
+   * by their {@link RpgEquipmentSlot}.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : {@link PluginKey#ACTIVE_LIST}
+   * @return {@link RpgEquipmentSlot} : {@link Key#ACTIVE_LIST}
    */
   private Map<String, List<String>> sortActiveAbilities() {
     Map<String, List<String>> activeAbilities = new HashMap<>();
-    for (String active : dataContainer.get(PluginKey.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+    for (String active : dataContainer.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
       String slot = active.substring(0, active.indexOf("."));
       String type = active.substring(active.indexOf(".") + 1);
 
@@ -293,7 +294,7 @@ class LoreGeneration {
   }
 
   /**
-   * Adds active ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} headers to the item's lore.
+   * Adds active ability {@link RpgEquipmentSlot} headers to the item's lore.
    */
   protected void addActiveHeaders() {
     for (String eSlot : headerOrder) {
@@ -304,10 +305,10 @@ class LoreGeneration {
   }
 
   /**
-   * Adds an attribute {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * Adds an attribute {@link RpgEquipmentSlot}
    * header if it exists for its associated attribute values.
    *
-   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   private void addAttributeHeader(String eSlot) {
     if (attributeValues.containsKey(eSlot)) {
@@ -335,10 +336,10 @@ class LoreGeneration {
   }
 
   /**
-   * Adds a passive ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * Adds a passive ability {@link RpgEquipmentSlot}
    * header if it exists with its associated ability values.
    *
-   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   private void addPassiveHeader(String eSlot) {
     if (passiveAbilities.containsKey(eSlot)) {
@@ -360,10 +361,10 @@ class LoreGeneration {
   }
 
   /**
-   * Adds an active ability {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * Adds an active ability {@link RpgEquipmentSlot}
    * header if it exists for its associated ability values.
    *
-   * @param eSlot {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * @param eSlot {@link RpgEquipmentSlot}
    */
   private void addActiveHeader(String eSlot) {
     if (activeAbilities.containsKey(eSlot)) {
@@ -385,9 +386,9 @@ class LoreGeneration {
   }
 
   /**
-   * Sorts Minecraft attributes by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * Sorts Minecraft attributes by their {@link RpgEquipmentSlot}.
    *
-   * @param attributeValues {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : (attribute : value)
+   * @param attributeValues {@link RpgEquipmentSlot} : (attribute : value)
    */
   private void sortMinecraftAttributes(Map<String, Map<String, Double>> attributeValues) {
     for (Attribute attribute : meta.getAttributeModifiers().keySet()) {
@@ -413,14 +414,14 @@ class LoreGeneration {
   }
 
   /**
-   * Sorts {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}
-   * by their {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * Sorts {@link Key#ATTRIBUTE_LIST Aethel attributes}
+   * by their {@link RpgEquipmentSlot}.
    *
-   * @param attributeValues {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} : (attribute : value)
+   * @param attributeValues {@link RpgEquipmentSlot} : (attribute : value)
    */
   private void sortAethelAttributes(Map<String, Map<String, Double>> attributeValues) {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    for (String attribute : meta.getPersistentDataContainer().get(PluginKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+    for (String attribute : meta.getPersistentDataContainer().get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
       String slot = attribute.substring(0, attribute.indexOf("."));
       String name = attribute.substring(attribute.indexOf(".") + 1);
       NamespacedKey key = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
@@ -437,13 +438,13 @@ class LoreGeneration {
   }
 
   /**
-   * Adds ability {@link Trigger} lore.
+   * Adds ability {@link TriggerType} lore.
    *
    * @param abilityLore ability lore
-   * @param trigger     {@link Trigger}
+   * @param triggerType     {@link TriggerType}
    */
-  private void addTriggerLore(StringBuilder abilityLore, Trigger trigger) {
-    switch (trigger) {
+  private void addTriggerLore(StringBuilder abilityLore, TriggerType triggerType) {
+    switch (triggerType) {
       case DAMAGE_DEALT -> abilityLore.append("Damage Dealt: ");
       case DAMAGE_TAKEN -> abilityLore.append("Damage Taken: ");
       case ON_KILL -> abilityLore.append("On Kill: ");

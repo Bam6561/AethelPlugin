@@ -1,10 +1,10 @@
 package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
-import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents an {@link RpgPlayer}'s total {@link AethelAttributeType} values.
+ * Represents an {@link RpgPlayer}'s total {@link AethelAttribute} values.
  *
  * @author Danny Nguyen
  * @version 1.17.14
@@ -24,14 +24,14 @@ import java.util.Objects;
  */
 public class AethelAttributes {
   /**
-   * Total {@link AethelAttributeType} values.
+   * Total {@link AethelAttribute} values.
    */
-  private final Map<AethelAttributeType, Double> attributes = createBlankAethelAttributes();
+  private final Map<AethelAttribute, Double> attributes = createBlankAethelAttributes();
 
   /**
-   * {@link AethelAttributeType} values on {@link RpgEquipmentSlot}.
+   * {@link AethelAttribute} values on {@link RpgEquipmentSlot}.
    */
-  private final Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = new HashMap<>();
 
   /**
    * No parameter constructor.
@@ -40,13 +40,13 @@ public class AethelAttributes {
   }
 
   /**
-   * Creates a blank map of {@link AethelAttributeType} values.
+   * Creates a blank map of {@link AethelAttribute} values.
    *
-   * @return blank {@link AethelAttributeType} values
+   * @return blank {@link AethelAttribute} values
    */
-  private Map<AethelAttributeType, Double> createBlankAethelAttributes() {
-    Map<AethelAttributeType, Double> aethelAttributes = new HashMap<>();
-    for (AethelAttributeType attribute : AethelAttributeType.values()) {
+  private Map<AethelAttribute, Double> createBlankAethelAttributes() {
+    Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
+    for (AethelAttribute attribute : AethelAttribute.values()) {
       aethelAttributes.put(attribute, 0.0);
     }
     return aethelAttributes;
@@ -54,13 +54,13 @@ public class AethelAttributes {
 
   /**
    * Checks if the item is in the correct {@link RpgEquipmentSlot}
-   * before updating the player's {@link AethelAttributeType} values.
+   * before updating the player's {@link AethelAttribute} values.
    *
    * @param eSlot         {@link RpgEquipmentSlot}
    * @param dataContainer item's persistent tags
    */
   public void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] attributes = dataContainer.get(PluginKey.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    String[] attributes = dataContainer.get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(attribute.substring(0, attribute.indexOf("."))));
       if (slot == eSlot) {
@@ -70,7 +70,7 @@ public class AethelAttributes {
   }
 
   /**
-   * Adds new {@link Equipment} {@link AethelAttributeType} modifiers.
+   * Adds new {@link Equipment} {@link AethelAttribute} modifiers.
    *
    * @param eSlot         {@link RpgEquipmentSlot}
    * @param dataContainer item's persistent tags
@@ -78,40 +78,40 @@ public class AethelAttributes {
    */
   private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
-    AethelAttributeType attributeType = AethelAttributeType.valueOf(TextFormatter.formatEnum(attribute.substring(attribute.indexOf(".") + 1)));
+    AethelAttribute attributeType = AethelAttribute.valueOf(TextFormatter.formatEnum(attribute.substring(attribute.indexOf(".") + 1)));
     slotAttributes.get(eSlot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
     attributes.put(attributeType, attributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }
 
   /**
-   * Removes existing {@link Equipment} {@link AethelAttributeType} modifiers at a {@link RpgEquipmentSlot}.
+   * Removes existing {@link Equipment} {@link AethelAttribute} modifiers at a {@link RpgEquipmentSlot}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */
   public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
-    for (AethelAttributeType attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
+    for (AethelAttribute attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
       attributes.put(attribute, attributes.get(attribute) - slotAttributes.get(eSlot).get(attribute));
       slotAttributes.get(eSlot).put(attribute, 0.0);
     }
   }
 
   /**
-   * Gets total {@link AethelAttributeType} values.
+   * Gets total {@link AethelAttribute} values.
    *
-   * @return total {@link AethelAttributeType} values
+   * @return total {@link AethelAttribute} values
    */
   @NotNull
-  public Map<AethelAttributeType, Double> getAttributes() {
+  public Map<AethelAttribute, Double> getAttributes() {
     return this.attributes;
   }
 
   /**
-   * Gets {@link Equipment} {@link AethelAttributeType} values on {@link RpgEquipmentSlot}.
+   * Gets {@link Equipment} {@link AethelAttribute} values on {@link RpgEquipmentSlot}.
    *
-   * @return {@link Equipment} {@link AethelAttributeType} values on {@link RpgEquipmentSlot}
+   * @return {@link Equipment} {@link AethelAttribute} values on {@link RpgEquipmentSlot}
    */
   @NotNull
-  public Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> getSlotAttributes() {
+  public Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> getSlotAttributes() {
     return this.slotAttributes;
   }
 }

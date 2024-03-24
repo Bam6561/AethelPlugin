@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.rpg.ability.TriggerPassive;
-import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.system.*;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
@@ -141,7 +141,7 @@ public class EquipmentEvent implements Listener {
       Abilities abilities = rpgPlayer.getAbilities();
       Equipment equipment = rpgPlayer.getEquipment();
 
-      Map<RpgEquipmentSlot, Map<AethelAttributeType, Double>> slotAttributes = attributes.getSlotAttributes();
+      Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = attributes.getSlotAttributes();
       Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
       Map<RpgEquipmentSlot, List<TriggerPassive>> slotPassives = abilities.getSlotPassives();
 

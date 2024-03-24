@@ -1,5 +1,6 @@
-package me.dannynguyen.aethel.rpg.enums;
+package me.dannynguyen.aethel.enums.rpg.abilities;
 
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.jetbrains.annotations.NotNull;
 
 /**

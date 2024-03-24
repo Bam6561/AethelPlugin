@@ -2,13 +2,13 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.listeners.MessageEvent;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.rpg.enums.ActiveEffect;
-import me.dannynguyen.aethel.rpg.enums.ActiveType;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveEffect;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
 import me.dannynguyen.aethel.util.ItemDurability;
 import me.dannynguyen.aethel.util.ItemRepairCost;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -265,14 +265,14 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link PluginKey#ATTRIBUTE_LIST Aethel attribute} modifier.
+   * Sets or removes an item's {@link Key#ATTRIBUTE_LIST Aethel attribute} modifier.
    */
   public void setAethelAttribute() {
     try {
       if (!e.getMessage().equals("-")) {
-        setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), Double.parseDouble(e.getMessage()), PluginKey.ATTRIBUTE_LIST.getNamespacedKey());
+        setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), Double.parseDouble(e.getMessage()), Key.ATTRIBUTE_LIST.getNamespacedKey());
       } else {
-        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), PluginKey.ATTRIBUTE_LIST.getNamespacedKey());
+        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
       }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
@@ -342,7 +342,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link PluginKey#PASSIVE_LIST passive ability}.
+   * Sets or removes an item's {@link Key#PASSIVE_LIST passive ability}.
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
@@ -354,7 +354,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link PluginKey#ACTIVE_LIST active ability}.
+   * Sets or removes an item's {@link Key#ACTIVE_LIST active ability}.
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
@@ -364,13 +364,13 @@ public class ItemEditorMessageSent {
         case SHATTER -> readActiveShatter();
       }
     } else {
-      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), PluginKey.ACTIVE_LIST.getNamespacedKey());
+      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActive);
   }
 
   /**
-   * Sets or removes an item's {@link PluginKey Aethel tag}.
+   * Sets or removes an item's {@link Key Aethel tag}.
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -415,7 +415,7 @@ public class ItemEditorMessageSent {
         int cooldown = Integer.parseInt(args[0]);
         try {
           double distance = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, PluginKey.ACTIVE_LIST.getNamespacedKey());
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, Key.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
@@ -440,7 +440,7 @@ public class ItemEditorMessageSent {
           double distance = Double.parseDouble(args[1]);
           try {
             int delay = Integer.parseInt(args[2]);
-            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, PluginKey.ACTIVE_LIST.getNamespacedKey());
+            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, Key.ACTIVE_LIST.getNamespacedKey());
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_DELAY.getMessage());
           }
@@ -466,7 +466,7 @@ public class ItemEditorMessageSent {
         int cooldown = Integer.parseInt(args[0]);
         try {
           double radius = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, PluginKey.ACTIVE_LIST.getNamespacedKey());
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, Key.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_RADIUS.getMessage());
         }
@@ -483,7 +483,7 @@ public class ItemEditorMessageSent {
    *
    * @param keyHeader {@link KeyHeader}
    * @param keyValue  key value
-   * @param listKey   {@link PluginKey list key}
+   * @param listKey   {@link Key list key}
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
@@ -515,7 +515,7 @@ public class ItemEditorMessageSent {
    *
    * @param keyHeader {@link KeyHeader}
    * @param keyValue  key value
-   * @param listKey   {@link PluginKey list key}
+   * @param listKey   {@link Key list key}
    */
   private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
@@ -548,7 +548,7 @@ public class ItemEditorMessageSent {
    * If the list is empty after the operation, the list is also removed.
    *
    * @param keyHeader {@link KeyHeader}
-   * @param listKey   {@link PluginKey list key}
+   * @param listKey   {@link Key list key}
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);

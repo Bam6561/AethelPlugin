@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.enums;
+package me.dannynguyen.aethel.enums.rpg.abilities;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.13
  * @since 1.15.11
  */
-public enum Trigger {
+public enum TriggerType {
   /**
    * Below a % of max health.
    */
@@ -52,7 +52,7 @@ public enum Trigger {
    * @param id         trigger ID
    * @param condition  {@link TriggerCondition}
    */
-  Trigger(String properName, String id, TriggerCondition condition) {
+  TriggerType(String properName, String id, TriggerCondition condition) {
     this.properName = properName;
     this.id = id;
     this.condition = condition;

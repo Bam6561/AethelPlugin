@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.enums;
+package me.dannynguyen.aethel.enums.plugin;
 
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Danny Nguyen
  * @version 1.17.14
  * @since 1.11.9
- **/
+ */
 public enum Message {
   /**
    * Invalid file format.

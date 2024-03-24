@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.rpg.system;
 
-import me.dannynguyen.aethel.rpg.enums.StatusType;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

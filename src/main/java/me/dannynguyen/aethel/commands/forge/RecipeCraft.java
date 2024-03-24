@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -120,7 +120,7 @@ class RecipeCraft {
    * @return has enough materials
    */
   private boolean hasEnoughOfAllMaterials() {
-    NamespacedKey forgeId = PluginKey.RECIPE_FORGE_ID.getNamespacedKey();
+    NamespacedKey forgeId = Key.RECIPE_FORGE_ID.getNamespacedKey();
     for (ItemStack item : materials) {
       Material requiredMaterial = item.getType();
       if (materialSlots.containsKey(requiredMaterial)) {

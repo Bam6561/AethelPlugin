@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Directory;
+import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;

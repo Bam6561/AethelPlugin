@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.rpg.enums;
+package me.dannynguyen.aethel.enums.rpg;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.17.7
  * @since 1.9.10
  */
-public enum AethelAttributeType {
+public enum AethelAttribute {
   /**
    * Max health.
    */
@@ -72,7 +72,7 @@ public enum AethelAttributeType {
    * @param id         ability ID
    * @param baseValue  attribute's base value
    */
-  AethelAttributeType(String properName, String id, String baseValue) {
+  AethelAttribute(String properName, String id, String baseValue) {
     this.properName = properName;
     this.id = id;
     this.baseValue = baseValue;

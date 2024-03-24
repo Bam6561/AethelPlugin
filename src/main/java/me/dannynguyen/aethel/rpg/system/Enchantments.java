@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

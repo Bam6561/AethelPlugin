@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.enums;
+package me.dannynguyen.aethel.enums.plugin;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,17 +26,17 @@ public enum KeyHeader {
   FORGE(AETHEL.getHeader() + "forge."),
 
   /**
-   * {@link PluginKey#ATTRIBUTE_LIST}
+   * {@link Key#ATTRIBUTE_LIST}
    */
   ATTRIBUTE(AETHEL.getHeader() + "attribute."),
 
   /**
-   * Item {@link PluginKey#PASSIVE_LIST}
+   * Item {@link Key#PASSIVE_LIST}
    */
   PASSIVE(AETHEL.getHeader() + "passive."),
 
   /**
-   * Item {@link PluginKey#ACTIVE_LIST}
+   * Item {@link Key#ACTIVE_LIST}
    */
   ACTIVE(AETHEL.getHeader() + "active.");
 

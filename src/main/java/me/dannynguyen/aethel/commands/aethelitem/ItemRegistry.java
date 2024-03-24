@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.interfaces.DataRegistry;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemReader;
@@ -150,14 +150,14 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Sorts an item into a category based on its {@link PluginKey#ITEM_CATEGORY}.
+   * Sorts an item into a category based on its {@link Key#ITEM_CATEGORY}.
    *
    * @param categories {@link PersistentItem item} categories
    * @param item       interacting item
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
     PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    NamespacedKey itemCategory = PluginKey.ITEM_CATEGORY.getNamespacedKey();
+    NamespacedKey itemCategory = Key.ITEM_CATEGORY.getNamespacedKey();
     if (data.has(itemCategory, PersistentDataType.STRING)) {
       String category = data.get(itemCategory, PersistentDataType.STRING);
       if (categories.containsKey(category)) {

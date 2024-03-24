@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.ItemReader;

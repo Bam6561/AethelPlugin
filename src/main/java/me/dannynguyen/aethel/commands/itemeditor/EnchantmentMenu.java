@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;

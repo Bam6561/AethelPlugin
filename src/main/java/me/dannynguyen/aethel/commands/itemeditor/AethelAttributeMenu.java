@@ -1,12 +1,12 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a menu that edits an item's {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
+ * Represents a menu that edits an item's {@link Key#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
  * @version 1.17.14
@@ -33,12 +33,12 @@ import java.util.*;
  */
 public class AethelAttributeMenu implements Menu {
   /**
-   * Categorized {@link AethelAttributeType}.
+   * Categorized {@link AethelAttribute}.
    */
-  private static final Map<Category, AethelAttributeType[]> attributeCategories = Map.of(
-      Category.OFFENSE, new AethelAttributeType[]{AethelAttributeType.CRITICAL_CHANCE, AethelAttributeType.CRITICAL_DAMAGE},
-      Category.DEFENSE, new AethelAttributeType[]{AethelAttributeType.MAX_HEALTH, AethelAttributeType.COUNTER_CHANCE, AethelAttributeType.DODGE_CHANCE, AethelAttributeType.ARMOR_TOUGHNESS},
-      Category.MISCELLANEOUS, new AethelAttributeType[]{AethelAttributeType.ITEM_DAMAGE, AethelAttributeType.ITEM_COOLDOWN});
+  private static final Map<Category, AethelAttribute[]> attributeCategories = Map.of(
+      Category.OFFENSE, new AethelAttribute[]{AethelAttribute.CRITICAL_CHANCE, AethelAttribute.CRITICAL_DAMAGE},
+      Category.DEFENSE, new AethelAttribute[]{AethelAttribute.MAX_HEALTH, AethelAttribute.COUNTER_CHANCE, AethelAttribute.DODGE_CHANCE, AethelAttribute.ARMOR_TOUGHNESS},
+      Category.MISCELLANEOUS, new AethelAttribute[]{AethelAttribute.ITEM_DAMAGE, AethelAttribute.ITEM_COOLDOWN});
 
   /**
    * GUI.
@@ -66,7 +66,7 @@ public class AethelAttributeMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
+   * ItemStack {@link Key#ATTRIBUTE_LIST Aethel attributes}.
    */
   private final Map<String, List<String>> existingAethelAttributes;
 
@@ -97,7 +97,7 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with {@link AethelAttributeType}.
+   * Sets the menu to display interactions with {@link AethelAttribute}.
    *
    * @return AethelAttribute menu
    */
@@ -111,7 +111,7 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Adds {@link AethelAttributeType attributes}.
+   * Adds {@link AethelAttribute attributes}.
    */
   private void addAttributes() {
     addAttributeCategory(Category.OFFENSE, 19);
@@ -144,12 +144,12 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link PluginKey#ATTRIBUTE_LIST Aethel attributes}.
+   * Maps an item's {@link Key#ATTRIBUTE_LIST Aethel attributes}.
    *
-   * @return item's {@link PluginKey#ATTRIBUTE_LIST Aethel attributes} map
+   * @return item's {@link Key#ATTRIBUTE_LIST Aethel attributes} map
    */
   private Map<String, List<String>> mapAethelAttributes() {
-    NamespacedKey listKey = PluginKey.ATTRIBUTE_LIST.getNamespacedKey();
+    NamespacedKey listKey = Key.ATTRIBUTE_LIST.getNamespacedKey();
     boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasAttributes) {
       Map<String, List<String>> existingAethelAttributes = new HashMap<>();
@@ -169,14 +169,14 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * Adds a category of {@link AethelAttributeType attributes}.
+   * Adds a category of {@link AethelAttribute attributes}.
    *
-   * @param category {@link AethelAttributeType attributes} category
+   * @param category {@link AethelAttribute attributes} category
    * @param invSlot  inventory slot
    */
   private void addAttributeCategory(Category category, int invSlot) {
     if (existingAethelAttributes != null) {
-      for (AethelAttributeType attribute : attributeCategories.get(category)) {
+      for (AethelAttribute attribute : attributeCategories.get(category)) {
         String attributeName = attribute.getProperName();
         String attributeId = attribute.getId();
         boolean enabled = existingAethelAttributes.containsKey(attributeId);
@@ -194,7 +194,7 @@ public class AethelAttributeMenu implements Menu {
         invSlot++;
       }
     } else {
-      for (AethelAttributeType attribute : attributeCategories.get(category)) {
+      for (AethelAttribute attribute : attributeCategories.get(category)) {
         menu.setItem(invSlot, ItemCreator.createItem(Material.ITEM_FRAME, ChatColor.AQUA + attribute.getProperName()));
         invSlot++;
       }
@@ -202,7 +202,7 @@ public class AethelAttributeMenu implements Menu {
   }
 
   /**
-   * {@link AethelAttributeType} categories.
+   * {@link AethelAttribute} categories.
    */
   private enum Category {
     /**

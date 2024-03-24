@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

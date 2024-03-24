@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.enums.AethelAttributeType;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -68,7 +68,7 @@ public class Health {
     this.settings = Objects.requireNonNull(settings, "Null settings");
     healthBar.setVisible(settings.isHealthBarVisible());
     this.currentHealth = player.getHealth();
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttributeType.MAX_HEALTH);
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH);
     initializeHealth(player);
   }
 
@@ -79,7 +79,7 @@ public class Health {
    */
   private void initializeHealth(Player player) {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double healthScale = (attributes.getAttributes().get(AethelAttributeType.MAX_HEALTH) + minecraftMaxHealth) / minecraftMaxHealth;
+    double healthScale = (attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     updateDisplays();
     healthBar.addPlayer(player);
@@ -89,7 +89,7 @@ public class Health {
    * Updates the max health.
    */
   public void updateMaxHealth() {
-    setMaxHealth(Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttributeType.MAX_HEALTH));
+    setMaxHealth(Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH));
     updateDisplays();
   }
 

@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.plugin.interfaces.CategoryMenu;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  * Represents a menu that supports categorical pagination of a player's statistics.
  * <p>
- * See {@link StatisticCategory} and {@link SubstatisticCategory}.
+ * See {@link StatisticType} and {@link SubstatisticType}.
  *
  * @author Danny Nguyen
  * @version 1.17.19
@@ -105,13 +105,13 @@ public class StatMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to load a {@link SubstatisticCategory} page.
+   * Sets the menu to load a {@link SubstatisticType} page.
    *
    * @param requestedCategory requested category
    * @param requestedPage     requested page
    */
   private void loadSubstatPage(String requestedCategory, int requestedPage) {
-    List<Inventory> category = Plugin.getData().getPlayerStatRecord().getSubstatCategories().get(SubstatisticCategory.valueOf(TextFormatter.formatEnum(requestedCategory)));
+    List<Inventory> category = Plugin.getData().getPlayerStatRecord().getSubstatCategories().get(SubstatisticType.valueOf(TextFormatter.formatEnum(requestedCategory)));
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
@@ -121,12 +121,12 @@ public class StatMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to load a {@link StatisticCategory} page.
+   * Sets the menu to load a {@link StatisticType} page.
    *
    * @param requestedCategory requested category
    */
   private void loadStatsPage(String requestedCategory) {
-    menu.setContents(Plugin.getData().getPlayerStatRecord().getStatCategories().get(StatisticCategory.valueOf(TextFormatter.formatEnum(requestedCategory))).getContents());
+    menu.setContents(Plugin.getData().getPlayerStatRecord().getStatCategories().get(StatisticType.valueOf(TextFormatter.formatEnum(requestedCategory))).getContents());
   }
 
   /**
@@ -167,11 +167,11 @@ public class StatMenu implements CategoryMenu {
    */
   private void addCategories() {
     int i = 9;
-    for (StatisticCategory category : StatisticCategory.values()) {
+    for (StatisticType category : StatisticType.values()) {
       menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category.getProperName()));
       i++;
     }
-    for (SubstatisticCategory category : SubstatisticCategory.values()) {
+    for (SubstatisticType category : SubstatisticType.values()) {
       menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category.getProperName()));
       i++;
     }

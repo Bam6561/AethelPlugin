@@ -9,7 +9,7 @@ import me.dannynguyen.aethel.commands.forge.RecipeMenu;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.Bukkit;
@@ -337,7 +337,7 @@ public class MenuEvent implements Listener {
     ITEMEDITOR_MINECRAFT_ATTRIBUTE("itemeditor"),
 
     /**
-     * Edit item {@link PluginKey#ATTRIBUTE_LIST}.
+     * Edit item {@link Key#ATTRIBUTE_LIST}.
      */
     ITEMEDITOR_AETHEL_ATTRIBUTE("itemeditor"),
 
@@ -352,17 +352,17 @@ public class MenuEvent implements Listener {
     ITEMEDITOR_POTION("itemeditor"),
 
     /**
-     * Edit item {@link PluginKey#PASSIVE_LIST}.
+     * Edit item {@link Key#PASSIVE_LIST}.
      */
     ITEMEDITOR_PASSIVE("itemeditor"),
 
     /**
-     * Edit item {@link PluginKey#ACTIVE_LIST}.
+     * Edit item {@link Key#ACTIVE_LIST}.
      */
     ITEMEDITOR_ACTIVE("itemeditor"),
 
     /**
-     * Edit item {@link PluginKey Aethel tags}.
+     * Edit item {@link Key Aethel tags}.
      */
     ITEMEDITOR_TAG("itemeditor"),
 

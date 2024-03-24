@@ -1,13 +1,13 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.enums.PassiveType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -27,7 +27,7 @@ import java.util.*;
 
 /**
  * Represents a menu that allows the user to edit an item's
- * {@link PluginKey#PASSIVE_LIST passive abilities}.
+ * {@link Key#PASSIVE_LIST passive abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -55,9 +55,9 @@ public class PassiveMenu implements Menu {
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * {@link Trigger}
+   * {@link TriggerType}
    */
-  private final Trigger trigger;
+  private final TriggerType triggerType;
 
   /**
    * ItemStack data container.
@@ -65,7 +65,7 @@ public class PassiveMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack {@link PluginKey#PASSIVE_LIST passive abilities}.
+   * ItemStack {@link Key#PASSIVE_LIST passive abilities}.
    */
   private final Map<String, List<PassiveSlotCondition>> existingPassives;
 
@@ -73,13 +73,13 @@ public class PassiveMenu implements Menu {
    * Associates a new Passive menu with its user and item.
    *
    * @param user    user
-   * @param trigger {@link Trigger}
+   * @param triggerType {@link TriggerType}
    * @param eSlot   {@link RpgEquipmentSlot}
    */
-  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull Trigger trigger) {
+  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull TriggerType triggerType) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
-    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
+    this.triggerType = Objects.requireNonNull(triggerType, "Null trigger");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
     this.existingPassives = mapPassives();
@@ -92,7 +92,7 @@ public class PassiveMenu implements Menu {
    * @return Passive menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + trigger.getProperName());
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + triggerType.getProperName());
     inv.setItem(1, item);
     return inv;
   }
@@ -165,7 +165,7 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Adds {@link Trigger} buttons.
+   * Adds {@link TriggerType} buttons.
    */
   private void addTriggers() {
     menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
@@ -175,12 +175,12 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link PluginKey#PASSIVE_LIST passive abilities}.
+   * Maps an item's {@link Key#PASSIVE_LIST passive abilities}.
    *
-   * @return item's {@link PluginKey#PASSIVE_LIST passives} map
+   * @return item's {@link Key#PASSIVE_LIST passives} map
    */
   private Map<String, List<PassiveSlotCondition>> mapPassives() {
-    NamespacedKey listKey = PluginKey.PASSIVE_LIST.getNamespacedKey();
+    NamespacedKey listKey = Key.PASSIVE_LIST.getNamespacedKey();
     boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
       Map<String, List<PassiveSlotCondition>> existingPassives = new HashMap<>();

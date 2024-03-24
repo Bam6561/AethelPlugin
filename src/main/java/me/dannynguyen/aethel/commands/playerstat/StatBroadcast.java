@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.playerstat;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.util.ItemReader;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.*;
@@ -71,7 +71,7 @@ class StatBroadcast {
   }
 
   /**
-   * Sends a {@link StatisticCategory statistic} value.
+   * Sends a {@link StatisticType statistic} value.
    */
   protected void sendStat() {
     Statistic stat = Statistic.valueOf(TextFormatter.formatEnum(requestedStat));
@@ -83,7 +83,7 @@ class StatBroadcast {
   }
 
   /**
-   * Sends a {@link SubstatisticCategory substatistic} value.
+   * Sends a {@link SubstatisticType substatistic} value.
    */
   protected void sendSubstat() {
     String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
@@ -148,7 +148,7 @@ class StatBroadcast {
   /**
    * Retrieves the requested player's substat values.
    *
-   * @param category {@link SubstatisticCategory}
+   * @param category {@link SubstatisticType}
    * @param substat  substat name
    * @return substat value
    */

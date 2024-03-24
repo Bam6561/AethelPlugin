@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.util;
 
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -139,9 +140,9 @@ public class ItemCreator {
   }
 
   /**
-   * Creates a named player head from {@link me.dannynguyen.aethel.plugin.enums.PlayerHead loaded textures}.
+   * Creates a named player head from {@link PlayerHead loaded textures}.
    *
-   * @param head {@link me.dannynguyen.aethel.plugin.enums.PlayerHead player head}
+   * @param head {@link PlayerHead player head}
    * @param name item name
    * @return named player head texture
    */
@@ -155,10 +156,10 @@ public class ItemCreator {
   }
 
   /**
-   * Creates a named player head from {@link me.dannynguyen.aethel.plugin.enums.PlayerHead loaded textures}
+   * Creates a named player head from {@link PlayerHead loaded textures}
    * with lore.
    *
-   * @param head {@link me.dannynguyen.aethel.plugin.enums.PlayerHead player head}
+   * @param head {@link PlayerHead player head}
    * @param name item name
    * @param lore item lore
    * @return named player head texture with lore

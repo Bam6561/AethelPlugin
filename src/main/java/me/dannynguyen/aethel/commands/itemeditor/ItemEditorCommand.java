@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.util.ItemReader;
 import org.bukkit.command.Command;

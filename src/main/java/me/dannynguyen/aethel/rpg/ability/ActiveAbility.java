@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.rpg.ability;
 
-import me.dannynguyen.aethel.rpg.enums.ActiveEffect;
-import me.dannynguyen.aethel.rpg.enums.ActiveType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveEffect;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

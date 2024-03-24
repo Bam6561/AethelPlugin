@@ -1,7 +1,7 @@
 package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.rpg.enums.StatusType;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 

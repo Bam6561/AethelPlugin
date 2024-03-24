@@ -1,9 +1,9 @@
 package me.dannynguyen.aethel.rpg.system;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Directory;
-import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.plugin.Directory;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.jetbrains.annotations.NotNull;

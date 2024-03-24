@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.enums;
+package me.dannynguyen.aethel.enums.plugin;
 
 import me.dannynguyen.aethel.Plugin;
 import org.bukkit.NamespacedKey;
@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Danny Nguyen
  * @version 1.17.7
  * @since 1.11.9
- **/
-public enum PluginKey {
+ */
+public enum Key {
   /**
    * Item {@link me.dannynguyen.aethel.rpg.system.AethelAttributes} list.
    */
@@ -52,7 +52,7 @@ public enum PluginKey {
    *
    * @param namespacedKey namespaced key
    */
-  PluginKey(NamespacedKey namespacedKey) {
+  Key(NamespacedKey namespacedKey) {
     this.namespacedKey = namespacedKey;
   }
 

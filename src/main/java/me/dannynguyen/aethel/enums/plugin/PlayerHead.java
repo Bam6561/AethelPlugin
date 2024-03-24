@@ -1,4 +1,4 @@
-package me.dannynguyen.aethel.plugin.enums;
+package me.dannynguyen.aethel.enums.plugin;
 
 import me.dannynguyen.aethel.util.ItemCreator;
 import org.bukkit.Bukkit;
@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author Danny Nguyen
  * @version 1.17.7
  * @since 1.11.9
- **/
+ */
 public enum PlayerHead {
   /**
    * Brown backpack.

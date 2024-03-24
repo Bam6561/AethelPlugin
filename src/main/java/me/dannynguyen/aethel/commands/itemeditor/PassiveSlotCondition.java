@@ -1,15 +1,17 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerCondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 /**
  * Represents a
- * {@link PluginKey#PASSIVE_LIST passive ability's}
- * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot} and
- * {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
+ * {@link Key#PASSIVE_LIST passive ability's}
+ * {@link RpgEquipmentSlot} and
+ * {@link TriggerCondition}.
  * <p>
  * Used for text display within the {@link PassiveMenu}.
  *
@@ -19,21 +21,21 @@ import java.util.Objects;
  */
 class PassiveSlotCondition {
   /**
-   * {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * {@link RpgEquipmentSlot}
    */
   private final String slot;
 
   /**
-   * {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}
+   * {@link TriggerCondition}
    */
   private final String condition;
 
   /**
-   * Associates an {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
-   * with its {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
+   * Associates an {@link RpgEquipmentSlot}
+   * with its {@link TriggerCondition}.
    *
-   * @param eSlot     {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
-   * @param condition {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
+   * @param eSlot     {@link RpgEquipmentSlot}
+   * @param condition {@link TriggerCondition}.
    */
   PassiveSlotCondition(@NotNull String eSlot, @NotNull String condition) {
     this.slot = Objects.requireNonNull(eSlot, "Null slot");
@@ -41,9 +43,9 @@ class PassiveSlotCondition {
   }
 
   /**
-   * Gets the {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}.
+   * Gets the {@link RpgEquipmentSlot}.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot}
+   * @return {@link RpgEquipmentSlot}
    */
   @NotNull
   protected String getSlot() {
@@ -51,9 +53,9 @@ class PassiveSlotCondition {
   }
 
   /**
-   * Gets the {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}.
+   * Gets the {@link TriggerCondition}.
    *
-   * @return {@link me.dannynguyen.aethel.rpg.enums.TriggerCondition}
+   * @return {@link TriggerCondition}
    */
   @NotNull
   protected String getCondition() {

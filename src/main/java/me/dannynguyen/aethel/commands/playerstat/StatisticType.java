@@ -3,13 +3,13 @@ package me.dannynguyen.aethel.commands.playerstat;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Player statistic categories.
+ * Types of player statistics.
  *
  * @author Danny Nguyen
  * @version 1.17.14
  * @since 1.17.14
  */
-enum StatisticCategory {
+enum StatisticType {
   /**
    * Player activities.
    */
@@ -69,29 +69,29 @@ enum StatisticCategory {
       org.bukkit.Statistic.WALK_ONE_CM, org.bukkit.Statistic.WALK_UNDER_WATER_ONE_CM});
 
   /**
-   * Category's proper name.
+   * Type's proper name.
    */
   private final String properName;
 
   /**
-   * Category's statistics.
+   * Type's statistics.
    */
   private final org.bukkit.Statistic[] statistics;
 
   /***
-   * Associates the category with a proper name.
+   * Associates the type with a proper name.
    * @param properName proper name
    * @param statistics statistics
    */
-  StatisticCategory(String properName, org.bukkit.Statistic[] statistics) {
+  StatisticType(String properName, org.bukkit.Statistic[] statistics) {
     this.properName = properName;
     this.statistics = statistics;
   }
 
   /**
-   * Gets the category's proper name.
+   * Gets the type's proper name.
    *
-   * @return category's proper name
+   * @return type's proper name
    */
   @NotNull
   public String getProperName() {
@@ -99,9 +99,9 @@ enum StatisticCategory {
   }
 
   /**
-   * Gets the category's statistics.
+   * Gets the type's statistics.
    *
-   * @return category's statistics
+   * @return type's statistics
    */
   @NotNull
   public org.bukkit.Statistic[] getStatistics() {

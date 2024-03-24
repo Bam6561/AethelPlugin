@@ -1,12 +1,12 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.enums.ActiveType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
 import me.dannynguyen.aethel.util.TextFormatter;
@@ -26,7 +26,7 @@ import java.util.*;
 
 /**
  * Represents a menu that allows the user to edit an item's
- * {@link PluginKey#ACTIVE_LIST active abilities}.
+ * {@link Key#ACTIVE_LIST active abilities}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -59,7 +59,7 @@ public class ActiveMenu implements Menu {
   private final PersistentDataContainer dataContainer;
 
   /**
-   * ItemStack {@link PluginKey#ACTIVE_LIST active abilities}.
+   * ItemStack {@link Key#ACTIVE_LIST active abilities}.
    */
   private final Map<String, List<String>> existingActives;
 
@@ -156,12 +156,12 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link PluginKey#ACTIVE_LIST active abilities}.
+   * Maps an item's {@link Key#ACTIVE_LIST active abilities}.
    *
-   * @return item's {@link PluginKey#ACTIVE_LIST actives} map
+   * @return item's {@link Key#ACTIVE_LIST actives} map
    */
   private Map<String, List<String>> mapActives() {
-    NamespacedKey listKey = PluginKey.ACTIVE_LIST.getNamespacedKey();
+    NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
     boolean hasActives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasActives) {
       Map<String, List<String>> existingActives = new HashMap<>();

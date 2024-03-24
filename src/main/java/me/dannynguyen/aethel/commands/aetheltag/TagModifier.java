@@ -1,10 +1,11 @@
 package me.dannynguyen.aethel.commands.aetheltag;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
-import me.dannynguyen.aethel.rpg.enums.*;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.rpg.*;
+import me.dannynguyen.aethel.enums.rpg.abilities.*;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents an item's {@link PluginKey Aethel tag} set or remove operation.
+ * Represents an item's {@link Key Aethel tag} set or remove operation.
  * <p>
  * Used with {@link TagCommand}.
  *
@@ -76,7 +77,7 @@ class TagModifier {
   }
 
   /**
-   * Removes the {@link PluginKey Aethel tag} from the item.
+   * Removes the {@link Key Aethel tag} from the item.
    *
    * @return if the tag was removed
    */
@@ -98,7 +99,7 @@ class TagModifier {
   }
 
   /**
-   * Sets the {@link PluginKey Aethel tag} to the item.
+   * Sets the {@link Key Aethel tag} to the item.
    *
    * @param value tag value
    */
@@ -130,11 +131,11 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's {@link PluginKey#ATTRIBUTE_LIST attribute} tag.
+   * Removes an item's {@link Key#ATTRIBUTE_LIST attribute} tag.
    */
   private void removeAttributeTag() {
     if (!tag.equals("attribute.list")) {
-      NamespacedKey listKey = PluginKey.ATTRIBUTE_LIST.getNamespacedKey();
+      NamespacedKey listKey = Key.ATTRIBUTE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         tag = tag.substring(10);
         removeKeyFromList(listKey);
@@ -149,11 +150,11 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's {@link PluginKey#PASSIVE_LIST passive} tag.
+   * Removes an item's {@link Key#PASSIVE_LIST passive} tag.
    */
   private void removePassiveTag() {
     if (!tag.equals("passive.list")) {
-      NamespacedKey listKey = PluginKey.PASSIVE_LIST.getNamespacedKey();
+      NamespacedKey listKey = Key.PASSIVE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         tag = tag.substring(8);
         removeKeyFromList(listKey);
@@ -168,11 +169,11 @@ class TagModifier {
   }
 
   /**
-   * Removes an item's {@link PluginKey#ACTIVE_LIST active} tag.
+   * Removes an item's {@link Key#ACTIVE_LIST active} tag.
    */
   private void removeActiveTag() {
     if (!tag.equals("active.list")) {
-      NamespacedKey listKey = PluginKey.ACTIVE_LIST.getNamespacedKey();
+      NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
       if (dataContainer.has(listKey, PersistentDataType.STRING)) {
         tag = tag.substring(7);
         removeKeyFromList(listKey);
@@ -187,7 +188,7 @@ class TagModifier {
   }
 
   /**
-   * Checks whether the {@link PluginKey#ATTRIBUTE_LIST attribute}
+   * Checks whether the {@link Key#ATTRIBUTE_LIST attribute}
    * tag was formatted correctly before setting its tag and value.
    *
    * @param value tag value
@@ -201,7 +202,7 @@ class TagModifier {
         try {
           RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
           try {
-            AethelAttributeType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
+            AethelAttribute.valueOf(TextFormatter.formatEnum(tagMeta[1]));
             setAttributeTag(attributeValue);
           } catch (IllegalArgumentException ex) {
             user.sendMessage(ChatColor.RED + "Unrecognized Aethel attribute.");
@@ -230,7 +231,7 @@ class TagModifier {
       try {
         RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
         try {
-          TriggerCondition triggerCondition = Trigger.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
+          TriggerCondition triggerCondition = TriggerType.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
           try {
             PassiveType passiveType = PassiveType.valueOf(TextFormatter.formatEnum(tagMeta[2]));
             switch (passiveType.getEffect()) {
@@ -520,14 +521,14 @@ class TagModifier {
   }
 
   /**
-   * Sets an item's {@link PluginKey#ATTRIBUTE_LIST attribute} tag.
+   * Sets an item's {@link Key#ATTRIBUTE_LIST attribute} tag.
    *
    * @param value tag value
    */
   private void setAttributeTag(Double value) {
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + tag);
     dataContainer.set(tagKey, PersistentDataType.DOUBLE, value);
-    setKeyToList(PluginKey.ATTRIBUTE_LIST.getNamespacedKey());
+    setKeyToList(Key.ATTRIBUTE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
@@ -540,7 +541,7 @@ class TagModifier {
   private void setPassiveTag(String value) {
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + tag);
     dataContainer.set(tagKey, PersistentDataType.STRING, value);
-    setKeyToList(PluginKey.PASSIVE_LIST.getNamespacedKey());
+    setKeyToList(Key.PASSIVE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }
@@ -553,7 +554,7 @@ class TagModifier {
   private void setActiveTag(String value) {
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + tag);
     dataContainer.set(tagKey, PersistentDataType.STRING, value);
-    setKeyToList(PluginKey.ACTIVE_LIST.getNamespacedKey());
+    setKeyToList(Key.ACTIVE_LIST.getNamespacedKey());
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
   }

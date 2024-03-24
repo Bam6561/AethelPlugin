@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.plugin.system;
 
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.enums.Trigger;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.listeners.ActionEvent;
 
 import java.util.UUID;
@@ -53,9 +53,9 @@ public class PluginPlayer {
    */
   private RpgEquipmentSlot slot;
   /**
-   * {@link Trigger}
+   * {@link TriggerType}
    */
-  private Trigger trigger;
+  private TriggerType triggerType;
   /**
    * Interacting object type.
    */
@@ -231,21 +231,21 @@ public class PluginPlayer {
   }
 
   /**
-   * Gets {@link Trigger}.
+   * Gets {@link TriggerType}.
    *
-   * @return {@link Trigger}
+   * @return {@link TriggerType}
    */
-  public Trigger getTrigger() {
-    return this.trigger;
+  public TriggerType getTrigger() {
+    return this.triggerType;
   }
 
   /**
-   * Sets the {@link Trigger}.
+   * Sets the {@link TriggerType}.
    *
-   * @param trigger {@link Trigger}
+   * @param triggerType {@link TriggerType}
    */
-  public void setTrigger(Trigger trigger) {
-    this.trigger = trigger;
+  public void setTrigger(TriggerType triggerType) {
+    this.triggerType = triggerType;
   }
 
   /**

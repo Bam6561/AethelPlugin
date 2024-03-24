@@ -1,14 +1,14 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.KeyHeader;
-import me.dannynguyen.aethel.plugin.enums.Message;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
+import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.rpg.enums.PassiveEffect;
-import me.dannynguyen.aethel.rpg.enums.PassiveType;
-import me.dannynguyen.aethel.rpg.enums.Trigger;
-import me.dannynguyen.aethel.rpg.enums.TriggerCondition;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveEffect;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerCondition;
 import me.dannynguyen.aethel.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a {@link PluginKey#PASSIVE_LIST passive tag} set or remove operation.
+ * Represents a {@link Key#PASSIVE_LIST passive tag} set or remove operation.
  * <p>
  * Used with {@link ItemEditorMessageSent}.
  *
@@ -32,9 +32,9 @@ import java.util.List;
  */
 class PassiveTagModifier {
   /**
-   * {@link PluginKey#PASSIVE_LIST}
+   * {@link Key#PASSIVE_LIST}
    */
-  private static final NamespacedKey listKey = PluginKey.PASSIVE_LIST.getNamespacedKey();
+  private static final NamespacedKey listKey = Key.PASSIVE_LIST.getNamespacedKey();
 
   /**
    * {@link KeyHeader#PASSIVE}
@@ -107,10 +107,10 @@ class PassiveTagModifier {
   }
 
   /**
-   * Determines the type of {@link PluginKey#PASSIVE_LIST ability tag} to be set.
+   * Determines the type of {@link Key#PASSIVE_LIST ability tag} to be set.
    */
   protected void interpretKeyToBeSet() {
-    TriggerCondition condition = Trigger.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
+    TriggerCondition condition = TriggerType.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
     PassiveEffect effect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
     switch (condition) {
       case CHANCE_COOLDOWN -> readChanceCooldown(effect);

@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.util;
 
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;

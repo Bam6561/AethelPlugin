@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.PlayerHead;
-import me.dannynguyen.aethel.plugin.enums.PluginKey;
+import me.dannynguyen.aethel.enums.plugin.PlayerHead;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.interfaces.Menu;
 import me.dannynguyen.aethel.util.InventoryPages;
 import me.dannynguyen.aethel.util.ItemCreator;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a menu that edits an item's {@link PluginKey Aethel tags}.
+ * Represents a menu that edits an item's {@link Key Aethel tags}.
  *
  * @author Danny Nguyen
  * @version 1.17.6
@@ -29,12 +29,12 @@ import java.util.Objects;
  */
 public class TagMenu implements Menu {
   /**
-   * {@link PluginKey Aethel tags} managed by the GUI.
+   * {@link Key Aethel tags} managed by the GUI.
    */
   private static final NamespacedKey[] aethelTags = {
-      PluginKey.ITEM_CATEGORY.getNamespacedKey(),
-      PluginKey.RECIPE_CATEGORY.getNamespacedKey(),
-      PluginKey.RECIPE_FORGE_ID.getNamespacedKey()};
+      Key.ITEM_CATEGORY.getNamespacedKey(),
+      Key.RECIPE_CATEGORY.getNamespacedKey(),
+      Key.RECIPE_FORGE_ID.getNamespacedKey()};
 
   /**
    * GUI.
@@ -74,7 +74,7 @@ public class TagMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with {@link PluginKey Aethel tags}.
+   * Sets the menu to display interactions with {@link Key Aethel tags}.
    *
    * @return Tag menu
    */
@@ -87,7 +87,7 @@ public class TagMenu implements Menu {
   }
 
   /**
-   * Adds editable {@link PluginKey Aethel tags}.
+   * Adds editable {@link Key Aethel tags}.
    */
   private void addAethelTags() {
     PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();

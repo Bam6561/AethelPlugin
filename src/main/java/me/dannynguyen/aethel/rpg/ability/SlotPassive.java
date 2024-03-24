@@ -1,7 +1,8 @@
 package me.dannynguyen.aethel.rpg.ability;
 
-import me.dannynguyen.aethel.rpg.enums.PassiveType;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -10,12 +11,12 @@ import java.util.Objects;
  * Represents an {@link RpgEquipmentSlot} {@link PassiveType} pair.
  * <p>
  * Used to identify unique {@link PassiveAbility passive abilities}
- * after a {@link me.dannynguyen.aethel.rpg.enums.Trigger} is called.
+ * after a {@link TriggerType} is called.
  *
  * @author Danny Nguyen
  * @version 1.18.1
  * @since 1.16.3
- **/
+ */
 public record SlotPassive(RpgEquipmentSlot eSlot, PassiveType type) {
   /**
    * Associates an {@link RpgEquipmentSlot} with an {@link PassiveType}.

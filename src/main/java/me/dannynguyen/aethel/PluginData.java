@@ -1,13 +1,12 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
 import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.playerstat.StatArchive;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
-import me.dannynguyen.aethel.plugin.enums.Directory;
+import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.plugin.system.PluginSystem;
 import me.dannynguyen.aethel.rpg.system.RpgPlayer;
 import me.dannynguyen.aethel.rpg.system.RpgSystem;

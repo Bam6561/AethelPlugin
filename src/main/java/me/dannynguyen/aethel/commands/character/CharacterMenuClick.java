@@ -1,11 +1,11 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.plugin.enums.Message;
+import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.plugin.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.plugin.system.PluginPlayer;
-import me.dannynguyen.aethel.rpg.enums.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.listeners.ActionEvent;
 import me.dannynguyen.aethel.rpg.system.Equipment;
 import me.dannynguyen.aethel.rpg.system.Settings;
