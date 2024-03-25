@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -10,7 +11,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.17.4
+ * @version 1.18.7
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -57,16 +58,61 @@ public class ActiveAbility {
    */
   private void initializeAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
     switch (effect) {
-      case MOVEMENT, PROJECTION -> {
+      case MOVEMENT, SHATTER -> {
         this.effectData.add(dataValues[0]);
         this.effectData.add(dataValues[1]);
       }
-      case SHATTER -> {
+      case PROJECTION -> {
         this.effectData.add(dataValues[0]);
         this.effectData.add(dataValues[1]);
         this.effectData.add(dataValues[2]);
       }
     }
+  }
+
+  /**
+   * Triggers the {@link ActiveAbilityType.Effect}.
+   *
+   * @param caster ability caster
+   */
+  public void doEffect(@NotNull Player caster) {
+    Objects.requireNonNull(caster, "Null caster");
+    switch (type.getEffect()) {
+      case MOVEMENT -> moveDistance(caster);
+      case PROJECTION -> projectDistance(caster);
+      case SHATTER -> shatterBrittle(caster);
+    }
+  }
+
+  /**
+   * Performs {@link ActiveAbilityType.Effect#MOVEMENT} across a distance.
+   *
+   * @param caster ability caster
+   */
+  private void moveDistance(Player caster) {
+    switch (type) {
+      case DASH -> {
+      }
+      case BLINK -> {
+      }
+    }
+  }
+
+  /**
+   * Performs {@link ActiveAbilityType.Effect#PROJECTION} across a distance.
+   *
+   * @param caster ability caster
+   */
+  private void projectDistance(Player caster) {
+  }
+
+  /**
+   * Consumes {@link me.dannynguyen.aethel.enums.rpg.StatusType#BRITTLE}
+   * stacks on entities.
+   *
+   * @param caster ability caster
+   */
+  private void shatterBrittle(Player caster) {
   }
 
   /**

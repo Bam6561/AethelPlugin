@@ -26,7 +26,7 @@ import java.util.UUID;
  * Represents a menu that shows the player's {@link Settings}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.18.7
  * @since 1.11.5
  */
 public class SettingsMenu implements Menu {
@@ -120,15 +120,15 @@ public class SettingsMenu implements Menu {
    * Adds {@link ActiveAbility} crouch binds.
    */
   private void addActiveAbilityCrouchBinds() {
-    Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getActiveAbilityCrouchBinds();
+    Map<RpgEquipmentSlot, Integer> boundEquipmentSlots = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getAbilityBoundEquipmentSlots();
     menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Reset Active Ability Crouch Binds"));
-    menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.OFF_HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(12, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.HEAD) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(13, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.CHEST) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(14, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.LEGS) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(15, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.FEET) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.NECKLACE) + 1))));
-    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring", List.of(ChatColor.WHITE + String.valueOf(activeAbilityCrouchBinds.get(RpgEquipmentSlot.RING) + 1))));
+    menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.OFF_HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(12, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.HEAD) + 1)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(13, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.CHEST) + 1)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(14, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.LEGS) + 1)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(15, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.FEET) + 1)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.NECKLACE) + 1))));
+    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.RING) + 1))));
   }
 }
