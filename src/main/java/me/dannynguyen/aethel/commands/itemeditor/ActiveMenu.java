@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.utils.InventoryPages;
 import me.dannynguyen.aethel.utils.TextFormatter;
@@ -90,7 +90,7 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Sets the menu to display interactions with {@link ActiveType}.
+   * Sets the menu to display interactions with {@link ActiveAbilityType}.
    *
    * @return Active menu
    */
@@ -104,14 +104,14 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Adds {@link ActiveType active abilities}.
+   * Adds {@link ActiveAbilityType active abilities}.
    */
   private void addActives() {
     int invSlot = 18;
     if (existingActives != null) {
-      for (ActiveType activeType : ActiveType.values()) {
-        String activeName = activeType.getProperName();
-        String activeId = activeType.getId();
+      for (ActiveAbilityType activeAbilityType : ActiveAbilityType.values()) {
+        String activeName = activeAbilityType.getProperName();
+        String activeId = activeAbilityType.getId();
         boolean enabled = existingActives.containsKey(activeId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
@@ -127,8 +127,8 @@ public class ActiveMenu implements Menu {
         invSlot++;
       }
     } else {
-      for (ActiveType activeType : ActiveType.values()) {
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + activeType.getProperName()));
+      for (ActiveAbilityType activeAbilityType : ActiveAbilityType.values()) {
+        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + activeAbilityType.getProperName()));
         invSlot++;
       }
     }

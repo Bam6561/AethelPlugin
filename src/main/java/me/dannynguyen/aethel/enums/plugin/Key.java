@@ -31,17 +31,17 @@ public enum Key {
   ACTIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + "list")),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem Item} category.
+   * {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry Item} category.
    */
   ITEM_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHELITEM.getHeader() + "category")),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe Recipe} category.
+   * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Recipe} category.
    */
   RECIPE_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "category")),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe Recipe} Forge ID.
+   * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Recipe} Forge ID.
    */
   RECIPE_FORGE_ID(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "id"));
 

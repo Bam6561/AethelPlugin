@@ -20,12 +20,12 @@ public enum Directory {
   RESOURCES(new File("./plugins/aethel")),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem Aethel items} directory.
+   * {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry Aethel items} directory.
    */
   AETHELITEM(new File(RESOURCES.getFile().getPath() + "/aethelitem")),
 
   /**
-   * {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe Forge recipes} directory.
+   * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Forge recipes} directory.
    */
   FORGE(new File(RESOURCES.getFile().getPath() + "/forge")),
 

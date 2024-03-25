@@ -1,14 +1,13 @@
 package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.ActiveEffect;
-import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 /**
- * Represents an item's {@link ActiveType}.
+ * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
  * @version 1.17.4
@@ -16,9 +15,9 @@ import java.util.*;
  */
 public class ActiveAbility {
   /**
-   * {@link ActiveType Active abilities} on cooldown.
+   * {@link ActiveAbilityType Active abilities} on cooldown.
    */
-  private final Map<RpgEquipmentSlot, Set<ActiveType>> onCooldownActives;
+  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives;
 
   /**
    * {@link RpgEquipmentSlot}
@@ -26,24 +25,24 @@ public class ActiveAbility {
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * {@link ActiveType}
+   * {@link ActiveAbilityType}
    */
-  private final ActiveType type;
+  private final ActiveAbilityType type;
 
   /**
-   * {@link ActiveEffect} data.
+   * {@link ActiveAbilityType.Effect} data.
    */
   private final List<String> effectData = new ArrayList<>();
 
   /**
-   * Associates an {@link ActiveType active ability} with its data.
+   * Associates an {@link ActiveAbilityType active ability} with its data.
    *
-   * @param onCooldownActives {@link ActiveType} on cooldown
+   * @param onCooldownActives {@link ActiveAbilityType} on cooldown
    * @param eSlot             {@link RpgEquipmentSlot}
-   * @param type              {@link ActiveType}
+   * @param type              {@link ActiveAbilityType}
    * @param dataValues        ability data
    */
-  public ActiveAbility(@NotNull Map<RpgEquipmentSlot, Set<ActiveType>> onCooldownActives, @NotNull RpgEquipmentSlot eSlot, @NotNull ActiveType type, @NotNull String[] dataValues) {
+  public ActiveAbility(@NotNull Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives, @NotNull RpgEquipmentSlot eSlot, @NotNull ActiveAbilityType type, @NotNull String[] dataValues) {
     this.onCooldownActives = Objects.requireNonNull(onCooldownActives, "Null on cooldown actives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.type = Objects.requireNonNull(type, "Null ability");
@@ -51,12 +50,12 @@ public class ActiveAbility {
   }
 
   /**
-   * Initializes the {@link ActiveType active ability's} ability data.
+   * Initializes the {@link ActiveAbilityType active ability's} ability data.
    *
-   * @param effect     {@link ActiveEffect}
+   * @param effect     {@link ActiveAbilityType.Effect}
    * @param dataValues ability data
    */
-  private void initializeAbilityData(ActiveEffect effect, String[] dataValues) {
+  private void initializeAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
     switch (effect) {
       case MOVEMENT, PROJECTION -> {
         this.effectData.add(dataValues[0]);
@@ -82,19 +81,19 @@ public class ActiveAbility {
 
 
   /**
-   * Gets the {@link ActiveType}.
+   * Gets the {@link ActiveAbilityType}.
    *
-   * @return {@link ActiveType}
+   * @return {@link ActiveAbilityType}
    */
   @NotNull
-  public ActiveType getType() {
+  public ActiveAbilityType getType() {
     return type;
   }
 
   /**
-   * Gets the {@link ActiveEffect} data.
+   * Gets the {@link ActiveAbilityType.Effect} data.
    *
-   * @return {@link ActiveEffect} data
+   * @return {@link ActiveAbilityType.Effect} data
    */
   @NotNull
   public List<String> getEffectData() {
@@ -102,16 +101,16 @@ public class ActiveAbility {
   }
 
   /**
-   * Gets if the {@link ActiveType} is on cooldown.
+   * Gets if the {@link ActiveAbilityType} is on cooldown.
    *
-   * @return if the {@link ActiveType} is on cooldown
+   * @return if the {@link ActiveAbilityType} is on cooldown
    */
   public boolean isOnCooldown() {
     return onCooldownActives.get(eSlot).contains(type);
   }
 
   /**
-   * Sets if the {@link ActiveType} is on cooldown.
+   * Sets if the {@link ActiveAbilityType} is on cooldown.
    *
    * @param isOnCooldown is on cooldown
    */

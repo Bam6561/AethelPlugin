@@ -4,9 +4,9 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.listeners.EquipmentEvent;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
@@ -34,14 +34,14 @@ public class Abilities {
 
   /**
    * Used to identify unique {@link PassiveAbility passive abilities}
-   * after a {@link TriggerType} is called.
+   * after a {@link PassiveTriggerType} is called.
    */
-  private final Map<TriggerType, Map<SlotPassive, PassiveAbility>> triggerPassives = createPassiveTriggers();
+  private final Map<PassiveTriggerType, Map<SlotPassive, PassiveAbility>> triggerPassives = createPassiveTriggers();
 
   /**
    * {@link SlotPassive Passive abilities} on cooldown.
    */
-  private final Map<TriggerType, Set<SlotPassive>> onCooldownPassives = createPassiveCooldownTriggers();
+  private final Map<PassiveTriggerType, Set<SlotPassive>> onCooldownPassives = createPassiveCooldownTriggers();
 
   /**
    * {@link ActiveAbility Active abilities} identified by their {@link RpgEquipmentSlot} trigger.
@@ -49,9 +49,9 @@ public class Abilities {
   private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = new HashMap<>();
 
   /**
-   * {@link ActiveType Active abilities} on cooldown.
+   * {@link ActiveAbilityType Active abilities} on cooldown.
    */
-  private final Map<RpgEquipmentSlot, Set<ActiveType>> onCooldownActives = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives = new HashMap<>();
 
   /**
    * No parameter constructor.
@@ -60,28 +60,28 @@ public class Abilities {
   }
 
   /**
-   * Creates a blank map of {@link TriggerType triggerable} {@link PassiveAbility passive abilities}.
+   * Creates a blank map of {@link PassiveTriggerType triggerable} {@link PassiveAbility passive abilities}.
    *
-   * @return blank map of {@link TriggerType triggerable} {@link PassiveAbility passive abilities}
+   * @return blank map of {@link PassiveTriggerType triggerable} {@link PassiveAbility passive abilities}
    */
-  private Map<TriggerType, Map<SlotPassive, PassiveAbility>> createPassiveTriggers() {
-    Map<TriggerType, Map<SlotPassive, PassiveAbility>> triggers = new HashMap<>();
-    for (TriggerType triggerType : TriggerType.values()) {
-      triggers.put(triggerType, new HashMap<>());
+  private Map<PassiveTriggerType, Map<SlotPassive, PassiveAbility>> createPassiveTriggers() {
+    Map<PassiveTriggerType, Map<SlotPassive, PassiveAbility>> triggers = new HashMap<>();
+    for (PassiveTriggerType passiveTriggerType : PassiveTriggerType.values()) {
+      triggers.put(passiveTriggerType, new HashMap<>());
     }
     return triggers;
   }
 
   /**
-   * Creates a blank map of {@link TriggerType triggerable}
+   * Creates a blank map of {@link PassiveTriggerType triggerable}
    * {@link SlotPassive passive abilities} on cooldown.
    *
-   * @return blank map of {@link TriggerType triggerable} {@link SlotPassive passive abilities} on cooldown
+   * @return blank map of {@link PassiveTriggerType triggerable} {@link SlotPassive passive abilities} on cooldown
    */
-  private Map<TriggerType, Set<SlotPassive>> createPassiveCooldownTriggers() {
-    Map<TriggerType, Set<SlotPassive>> triggers = new HashMap<>();
-    for (TriggerType triggerType : TriggerType.values()) {
-      triggers.put(triggerType, new HashSet<>());
+  private Map<PassiveTriggerType, Set<SlotPassive>> createPassiveCooldownTriggers() {
+    Map<PassiveTriggerType, Set<SlotPassive>> triggers = new HashMap<>();
+    for (PassiveTriggerType passiveTriggerType : PassiveTriggerType.values()) {
+      triggers.put(passiveTriggerType, new HashSet<>());
     }
     return triggers;
   }
@@ -113,10 +113,10 @@ public class Abilities {
   private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String passive) {
     NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
     String[] abilityMeta = passive.split("\\.");
-    TriggerType triggerType = TriggerType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
-    PassiveType abilityType = PassiveType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
-    slotPassives.get(eSlot).add(new TriggerPassive(triggerType, abilityType));
-    triggerPassives.get(triggerType).put(new SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, triggerType, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
+    PassiveTriggerType passiveTriggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
+    PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
+    slotPassives.get(eSlot).add(new TriggerPassive(passiveTriggerType, abilityType));
+    triggerPassives.get(passiveTriggerType).put(new SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, passiveTriggerType, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
   }
 
   /**
@@ -127,7 +127,7 @@ public class Abilities {
   public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
     List<TriggerPassive> abilitiesToRemove = new ArrayList<>();
     for (TriggerPassive triggerPassive : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
-      triggerPassives.get(triggerPassive.triggerType()).remove(new SlotPassive(eSlot, triggerPassive.type()));
+      triggerPassives.get(triggerPassive.passiveTriggerType()).remove(new SlotPassive(eSlot, triggerPassive.type()));
       abilitiesToRemove.add(triggerPassive);
     }
     slotPassives.get(eSlot).removeAll(abilitiesToRemove);
@@ -145,12 +145,12 @@ public class Abilities {
   }
 
   /**
-   * Gets the player's {@link TriggerType triggerable} {@link PassiveAbility passive abilities}.
+   * Gets the player's {@link PassiveTriggerType triggerable} {@link PassiveAbility passive abilities}.
    *
-   * @return {@link TriggerType triggerable} {@link PassiveAbility passive abilities}
+   * @return {@link PassiveTriggerType triggerable} {@link PassiveAbility passive abilities}
    */
   @NotNull
-  public Map<TriggerType, Map<SlotPassive, PassiveAbility>> getTriggerPassives() {
+  public Map<PassiveTriggerType, Map<SlotPassive, PassiveAbility>> getTriggerPassives() {
     return this.triggerPassives;
   }
 
@@ -166,23 +166,23 @@ public class Abilities {
   }
 
   /**
-   * Represents an {@link RpgEquipmentSlot} {@link PassiveType} pair.
+   * Represents an {@link RpgEquipmentSlot} {@link PassiveAbilityType} pair.
    * <p>
    * Used to identify unique {@link PassiveAbility passive abilities}
-   * after a {@link TriggerType} is called.
+   * after a {@link PassiveTriggerType} is called.
    *
    * @author Danny Nguyen
    * @version 1.18.1
    * @since 1.16.3
    */
-  public record SlotPassive(RpgEquipmentSlot eSlot, PassiveType type) {
+  public record SlotPassive(RpgEquipmentSlot eSlot, PassiveAbilityType type) {
     /**
-     * Associates an {@link RpgEquipmentSlot} with an {@link PassiveType}.
+     * Associates an {@link RpgEquipmentSlot} with an {@link PassiveAbilityType}.
      *
      * @param eSlot {@link RpgEquipmentSlot}
-     * @param type  {@link PassiveType}
+     * @param type  {@link PassiveAbilityType}
      */
-    public SlotPassive(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveType type) {
+    public SlotPassive(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
       this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
       this.type = Objects.requireNonNull(type, "Null ability");
     }
@@ -199,12 +199,12 @@ public class Abilities {
     }
 
     /**
-     * Gets the {@link PassiveType}.
+     * Gets the {@link PassiveAbilityType}.
      *
-     * @return {@link PassiveType}
+     * @return {@link PassiveAbilityType}
      */
     @NotNull
-    public PassiveType type() {
+    public PassiveAbilityType type() {
       return this.type;
     }
 
@@ -234,7 +234,7 @@ public class Abilities {
   }
 
   /**
-   * Represents a {@link TriggerType} {@link PassiveType} pair.
+   * Represents a {@link PassiveTriggerType} {@link PassiveAbilityType} pair.
    * <p>
    * Used to remove abilities upon {@link EquipmentEvent}.
    *
@@ -242,35 +242,35 @@ public class Abilities {
    * @version 1.18.1
    * @since 1.16.1
    */
-  public record TriggerPassive(TriggerType triggerType, PassiveType type) {
+  public record TriggerPassive(PassiveTriggerType passiveTriggerType, PassiveAbilityType type) {
     /**
-     * Associates a {@link TriggerType} with a {@link PassiveType}.
+     * Associates a {@link PassiveTriggerType} with a {@link PassiveAbilityType}.
      *
-     * @param triggerType {@link TriggerType}
-     * @param type    {@link PassiveType}
+     * @param passiveTriggerType {@link PassiveTriggerType}
+     * @param type    {@link PassiveAbilityType}
      */
-    public TriggerPassive(@NotNull TriggerType triggerType, @NotNull PassiveType type) {
-      this.triggerType = Objects.requireNonNull(triggerType, "Null trigger");
+    public TriggerPassive(@NotNull PassiveTriggerType passiveTriggerType, @NotNull PassiveAbilityType type) {
+      this.passiveTriggerType = Objects.requireNonNull(passiveTriggerType, "Null trigger");
       this.type = Objects.requireNonNull(type, "Null ability");
     }
 
     /**
-     * Gets the {@link TriggerType}.
+     * Gets the {@link PassiveTriggerType}.
      *
-     * @return {@link TriggerType}
+     * @return {@link PassiveTriggerType}
      */
     @NotNull
-    public TriggerType triggerType() {
-      return this.triggerType;
+    public PassiveTriggerType passiveTriggerType() {
+      return this.passiveTriggerType;
     }
 
     /**
-     * Gets the {@link PassiveType}.
+     * Gets the {@link PassiveAbilityType}.
      *
-     * @return {@link PassiveType}
+     * @return {@link PassiveAbilityType}
      */
     @NotNull
-    public PassiveType type() {
+    public PassiveAbilityType type() {
       return this.type;
     }
   }

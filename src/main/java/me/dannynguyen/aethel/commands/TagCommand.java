@@ -6,7 +6,9 @@ import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.*;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.TextFormatter;
@@ -374,10 +376,10 @@ public class TagCommand implements CommandExecutor {
         try {
           RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
           try {
-            TriggerCondition triggerCondition = TriggerType.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
+            PassiveTriggerType.Condition triggerCondition = PassiveTriggerType.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
             try {
-              PassiveType passiveType = PassiveType.valueOf(TextFormatter.formatEnum(tagMeta[2]));
-              switch (passiveType.getEffect()) {
+              PassiveAbilityType passiveAbilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[2]));
+              switch (passiveAbilityType.getEffect()) {
                 case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
                 case CHAIN_DAMAGE -> readPassiveChainDamage(value, triggerCondition);
               }
@@ -408,8 +410,8 @@ public class TagCommand implements CommandExecutor {
         try {
           RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(tagMeta[0]));
           try {
-            ActiveType activeType = ActiveType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
-            switch (activeType.getEffect()) {
+            ActiveAbilityType activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
+            switch (activeAbilityType.getEffect()) {
               case MOVEMENT -> readActiveMovement(value);
               case PROJECTION -> readActiveProjection(value);
               case SHATTER -> readActiveShatter(value);
@@ -427,12 +429,12 @@ public class TagCommand implements CommandExecutor {
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link PassiveEffect#STACK_INSTANCE}.
+     * setting the {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
      *
      * @param value     tag value
-     * @param condition {@link TriggerCondition}
+     * @param condition {@link PassiveTriggerType.Condition}
      */
-    private void readPassiveStackInstance(String value, TriggerCondition condition) {
+    private void readPassiveStackInstance(String value, PassiveTriggerType.Condition condition) {
       String[] args = value.split(" ");
       switch (condition) {
         case CHANCE_COOLDOWN -> {
@@ -506,12 +508,12 @@ public class TagCommand implements CommandExecutor {
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link PassiveEffect#CHAIN_DAMAGE}.
+     * setting the {@link PassiveAbilityType.Effect#CHAIN_DAMAGE}.
      *
      * @param value     tag value
-     * @param condition {@link TriggerCondition}
+     * @param condition {@link PassiveTriggerType.Condition}
      */
-    private void readPassiveChainDamage(String value, TriggerCondition condition) {
+    private void readPassiveChainDamage(String value, PassiveTriggerType.Condition condition) {
       String[] args = value.split(" ");
       switch (condition) {
         case CHANCE_COOLDOWN -> {
@@ -585,7 +587,7 @@ public class TagCommand implements CommandExecutor {
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link ActiveEffect#MOVEMENT}.
+     * setting the {@link ActiveAbilityType.Effect#MOVEMENT}.
      *
      * @param value tag value
      */
@@ -610,7 +612,7 @@ public class TagCommand implements CommandExecutor {
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link ActiveEffect#PROJECTION}.
+     * setting the {@link ActiveAbilityType.Effect#PROJECTION}.
      *
      * @param value tag value
      */
@@ -640,7 +642,7 @@ public class TagCommand implements CommandExecutor {
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link ActiveEffect#SHATTER}.
+     * setting the {@link ActiveAbilityType.Effect#SHATTER}.
      *
      * @param value tag value
      */

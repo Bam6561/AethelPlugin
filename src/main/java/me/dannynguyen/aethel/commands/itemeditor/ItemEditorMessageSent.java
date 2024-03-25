@@ -4,7 +4,9 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.enums.rpg.abilities.*;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
@@ -357,7 +359,7 @@ public class ItemEditorMessageSent {
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      switch (ActiveType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType())).getEffect()) {
+      switch (ActiveAbilityType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType())).getEffect()) {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
@@ -405,7 +407,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link ActiveEffect#MOVEMENT}.
+   * {@link ActiveAbilityType.Effect#MOVEMENT}.
    */
   private void readActiveMovement() {
     String[] args = e.getMessage().split(" ");
@@ -428,7 +430,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link ActiveEffect#PROJECTION}.
+   * {@link ActiveAbilityType.Effect#PROJECTION}.
    */
   private void readActiveProjection() {
     String[] args = e.getMessage().split(" ");
@@ -456,7 +458,7 @@ public class ItemEditorMessageSent {
 
   /**
    * Checks if the input was formatted correctly before setting the
-   * {@link ActiveEffect#SHATTER}.
+   * {@link ActiveAbilityType.Effect#SHATTER}.
    */
   private void readActiveShatter() {
     String[] args = e.getMessage().split(" ");
@@ -753,8 +755,8 @@ public class ItemEditorMessageSent {
      * Determines the type of {@link Key#PASSIVE_LIST ability tag} to be set.
      */
     private void interpretKeyToBeSet() {
-      TriggerCondition condition = TriggerType.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
-      PassiveEffect effect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+      PassiveTriggerType.Condition condition = PassiveTriggerType.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
+      PassiveAbilityType.Effect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
       switch (condition) {
         case CHANCE_COOLDOWN -> readChanceCooldown(effect);
         case HEALTH_COOLDOWN -> readHpChanceCooldown(effect);
@@ -763,11 +765,11 @@ public class ItemEditorMessageSent {
 
     /**
      * Checks if the input was formatted correctly before setting
-     * the {@link PassiveEffect effect's} chance and cooldown.
+     * the {@link PassiveAbilityType.Effect effect's} chance and cooldown.
      *
-     * @param effect {@link PassiveEffect}
+     * @param effect {@link PassiveAbilityType.Effect}
      */
-    private void readChanceCooldown(PassiveEffect effect) {
+    private void readChanceCooldown(PassiveAbilityType.Effect effect) {
       switch (effect) {
         case STACK_INSTANCE -> {
           if (args.length == 5) {
@@ -840,11 +842,11 @@ public class ItemEditorMessageSent {
 
     /**
      * Checks if the input was formatted correctly before setting the
-     * {@link PassiveEffect effect's} HP, chance, and cooldown.
+     * {@link PassiveAbilityType.Effect effect's} HP, chance, and cooldown.
      *
-     * @param effect {@link PassiveEffect}
+     * @param effect {@link PassiveAbilityType.Effect}
      */
-    private void readHpChanceCooldown(PassiveEffect effect) {
+    private void readHpChanceCooldown(PassiveAbilityType.Effect effect) {
       switch (effect) {
         case STACK_INSTANCE -> {
           if (args.length == 5) {

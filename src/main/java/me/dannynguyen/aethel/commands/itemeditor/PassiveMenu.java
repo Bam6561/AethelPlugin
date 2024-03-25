@@ -5,9 +5,8 @@ import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerCondition;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.utils.InventoryPages;
 import me.dannynguyen.aethel.utils.TextFormatter;
@@ -56,9 +55,9 @@ public class PassiveMenu implements Menu {
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * {@link TriggerType}
+   * {@link PassiveTriggerType}
    */
-  private final TriggerType triggerType;
+  private final PassiveTriggerType passiveTriggerType;
 
   /**
    * ItemStack data container.
@@ -74,13 +73,13 @@ public class PassiveMenu implements Menu {
    * Associates a new Passive menu with its user and item.
    *
    * @param user        user
-   * @param triggerType {@link TriggerType}
+   * @param passiveTriggerType {@link PassiveTriggerType}
    * @param eSlot       {@link RpgEquipmentSlot}
    */
-  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull TriggerType triggerType) {
+  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType passiveTriggerType) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
-    this.triggerType = Objects.requireNonNull(triggerType, "Null trigger");
+    this.passiveTriggerType = Objects.requireNonNull(passiveTriggerType, "Null trigger");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
     this.existingPassives = mapPassives();
@@ -93,13 +92,13 @@ public class PassiveMenu implements Menu {
    * @return Passive menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + triggerType.getProperName());
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + passiveTriggerType.getProperName());
     inv.setItem(1, item);
     return inv;
   }
 
   /**
-   * Sets the menu to display interactions with {@link PassiveType}.
+   * Sets the menu to display interactions with {@link PassiveAbilityType}.
    *
    * @return Passive menu
    */
@@ -114,14 +113,14 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Adds {@link PassiveType passive abilities}.
+   * Adds {@link PassiveAbilityType passive abilities}.
    */
   private void addPassives() {
     int invSlot = 18;
     if (existingPassives != null) {
-      for (PassiveType passiveType : PassiveType.values()) {
-        String passiveName = passiveType.getProperName();
-        String passiveId = passiveType.getId();
+      for (PassiveAbilityType passiveAbilityType : PassiveAbilityType.values()) {
+        String passiveName = passiveAbilityType.getProperName();
+        String passiveId = passiveAbilityType.getId();
         boolean enabled = existingPassives.containsKey(passiveId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
@@ -137,8 +136,8 @@ public class PassiveMenu implements Menu {
         invSlot++;
       }
     } else {
-      for (PassiveType passiveType : PassiveType.values()) {
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passiveType.getProperName()));
+      for (PassiveAbilityType passiveAbilityType : PassiveAbilityType.values()) {
+        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passiveAbilityType.getProperName()));
         invSlot++;
       }
     }
@@ -166,7 +165,7 @@ public class PassiveMenu implements Menu {
   }
 
   /**
-   * Adds {@link TriggerType} buttons.
+   * Adds {@link PassiveTriggerType} buttons.
    */
   private void addTriggers() {
     menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
@@ -205,7 +204,7 @@ public class PassiveMenu implements Menu {
 
   /**
    * Represents a {@link Key#PASSIVE_LIST passive ability's}
-   * {@link RpgEquipmentSlot} and {@link TriggerCondition}.
+   * {@link RpgEquipmentSlot} and {@link PassiveTriggerType.Condition}.
    *
    * @author Danny Nguyen
    * @version 1.17.12
@@ -218,16 +217,16 @@ public class PassiveMenu implements Menu {
     private final String slot;
 
     /**
-     * {@link TriggerCondition}
+     * {@link PassiveTriggerType.Condition}
      */
     private final String condition;
 
     /**
      * Associates an {@link RpgEquipmentSlot}
-     * with its {@link TriggerCondition}.
+     * with its {@link PassiveTriggerType.Condition}.
      *
      * @param eSlot     {@link RpgEquipmentSlot}
-     * @param condition {@link TriggerCondition}.
+     * @param condition {@link PassiveTriggerType.Condition}.
      */
     SlotCondition(@NotNull String eSlot, @NotNull String condition) {
       this.slot = Objects.requireNonNull(eSlot, "Null slot");
@@ -245,9 +244,9 @@ public class PassiveMenu implements Menu {
     }
 
     /**
-     * Gets the {@link TriggerCondition}.
+     * Gets the {@link PassiveTriggerType.Condition}.
      *
-     * @return {@link TriggerCondition}
+     * @return {@link PassiveTriggerType.Condition}
      */
     @NotNull
     private String getCondition() {

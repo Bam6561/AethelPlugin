@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.rpg.abilities.PassiveEffect;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.RpgSystem;
@@ -88,7 +88,7 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Triggers {@link TriggerType#ON_KILL} {@link PassiveAbility passive abilities} if the player has any.
+   * Triggers {@link PassiveTriggerType#ON_KILL} {@link PassiveAbility passive abilities} if the player has any.
    *
    * @param e entity death event
    */
@@ -100,16 +100,17 @@ public class RpgEvent implements Listener {
   }
 
   /**
-   * Triggers {@link TriggerType#ON_KILL} {@link PassiveAbility passive abilities}.
+   * Triggers {@link PassiveTriggerType#ON_KILL} {@link PassiveAbility passive abilities}.
    * <p>
-   * {@link TriggerType#ON_KILL} {@link PassiveEffect#STACK_INSTANCE}
+   * {@link PassiveTriggerType#ON_KILL}
+   * {@link PassiveAbilityType.Effect#STACK_INSTANCE}
    * can only be triggered on self.
    *
    * @param killedUUID killed entity UUID
    * @param selfUUID   self UUID
    */
   private void triggerPassivesOnKill(UUID killedUUID, UUID selfUUID) {
-    Map<Abilities.SlotPassive, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getAbilities().getTriggerPassives().get(TriggerType.ON_KILL);
+    Map<Abilities.SlotPassive, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
     if (!killTriggers.isEmpty()) {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {

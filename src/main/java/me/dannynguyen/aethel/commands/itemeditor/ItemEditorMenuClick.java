@@ -6,7 +6,9 @@ import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.*;
+import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
@@ -209,10 +211,10 @@ public class ItemEditorMenuClick implements MenuClick {
       case 15 -> setPassiveMode(RpgEquipmentSlot.OFF_HAND);
       case 16 -> setPassiveMode(RpgEquipmentSlot.NECKLACE);
       case 17 -> setPassiveMode(RpgEquipmentSlot.RING);
-      case 9 -> setTriggerMode(TriggerType.BELOW_HEALTH);
-      case 10 -> setTriggerMode(TriggerType.DAMAGE_DEALT);
-      case 11 -> setTriggerMode(TriggerType.DAMAGE_TAKEN);
-      case 12 -> setTriggerMode(TriggerType.ON_KILL);
+      case 9 -> setTriggerMode(PassiveTriggerType.BELOW_HEALTH);
+      case 10 -> setTriggerMode(PassiveTriggerType.DAMAGE_DEALT);
+      case 11 -> setTriggerMode(PassiveTriggerType.DAMAGE_TAKEN);
+      case 12 -> setTriggerMode(PassiveTriggerType.ON_KILL);
       default -> readPassive();
     }
   }
@@ -322,8 +324,8 @@ public class ItemEditorMenuClick implements MenuClick {
   private void openPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
-    pluginPlayer.setTrigger(TriggerType.DAMAGE_DEALT);
-    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, TriggerType.DAMAGE_DEALT).getMainMenu());
+    pluginPlayer.setTrigger(PassiveTriggerType.DAMAGE_DEALT);
+    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -495,15 +497,15 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Sets the user's interacting {@link TriggerType} for
+   * Sets the user's interacting {@link PassiveTriggerType} for
    * {@link Key#PASSIVE_LIST passive abilities}.
    *
-   * @param triggerType {@link TriggerType}
+   * @param passiveTriggerType {@link PassiveTriggerType}
    */
-  private void setTriggerMode(TriggerType triggerType) {
+  private void setTriggerMode(PassiveTriggerType passiveTriggerType) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setTrigger(triggerType);
-    user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), triggerType).getMainMenu());
+    pluginPlayer.setTrigger(passiveTriggerType);
+    user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), passiveTriggerType).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -567,29 +569,29 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Determines the {@link PassiveType} to be set and prompts the user for an input.
+   * Determines the {@link PassiveAbilityType} to be set and prompts the user for an input.
    */
   private void readPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     RpgEquipmentSlot eSlot = pluginPlayer.getSlot();
-    TriggerType triggerType = pluginPlayer.getTrigger();
+    PassiveTriggerType passiveTriggerType = pluginPlayer.getTrigger();
     String passive = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + triggerType.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + triggerType.getCondition().getData());
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + passiveTriggerType.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + passiveTriggerType.getCondition().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbilityType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     pluginPlayer.setObjectType(TextFormatter.formatId(passive));
     awaitMessageInput(MessageEvent.Type.ITEMEDITOR_PASSIVE_ABILITY);
   }
 
   /**
-   * Determines the {@link ActiveType} to be set and prompts the user for an input.
+   * Determines the {@link ActiveAbilityType} to be set and prompts the user for an input.
    */
   private void readActive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     RpgEquipmentSlot eSlot = pluginPlayer.getSlot();
     String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbilityType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     pluginPlayer.setObjectType(TextFormatter.formatId(active));
     awaitMessageInput(MessageEvent.Type.ITEMEDITOR_ACTIVE_ABILITY);
   }
@@ -846,16 +848,16 @@ public class ItemEditorMenuClick implements MenuClick {
         String condition = passiveMeta[1];
         String type = passiveMeta[2];
 
-        TriggerType triggerType = TriggerType.valueOf(TextFormatter.formatEnum(condition));
-        PassiveEffect abilityEffect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+        PassiveTriggerType passiveTriggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(condition));
+        PassiveAbilityType.Effect abilityEffect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
 
         String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
         StringBuilder abilityLore = new StringBuilder();
 
         abilityLore.append(ChatColor.DARK_AQUA);
-        switch (triggerType.getCondition()) {
+        switch (passiveTriggerType.getCondition()) {
           case CHANCE_COOLDOWN -> {
-            addTriggerLore(abilityLore, triggerType);
+            addTriggerLore(abilityLore, passiveTriggerType);
             // Chance
             if (!abilityData[0].equals("100.0")) {
               abilityLore.append(ChatColor.WHITE).append(abilityData[0]).append("% ");
@@ -871,7 +873,7 @@ public class ItemEditorMenuClick implements MenuClick {
           }
           case HEALTH_COOLDOWN -> {
             abilityLore.append("Below ").append(abilityData[0]).append("% HP: ");
-            addTriggerLore(abilityLore, triggerType);
+            addTriggerLore(abilityLore, passiveTriggerType);
             // Cooldown
             if (!abilityData[1].equals("0")) {
               abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
@@ -929,8 +931,8 @@ public class ItemEditorMenuClick implements MenuClick {
         String slot = active.substring(0, active.indexOf("."));
         String type = active.substring(active.indexOf(".") + 1);
 
-        ActiveType abilityType = ActiveType.valueOf(TextFormatter.formatEnum(type));
-        ActiveEffect abilityEffect = abilityType.getEffect();
+        ActiveAbilityType abilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type));
+        ActiveAbilityType.Effect abilityEffect = abilityType.getEffect();
 
         String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
         StringBuilder activeLore = new StringBuilder();
@@ -1035,13 +1037,13 @@ public class ItemEditorMenuClick implements MenuClick {
     }
 
     /**
-     * Adds ability {@link TriggerType} lore.
+     * Adds ability {@link PassiveTriggerType} lore.
      *
      * @param abilityLore ability lore
-     * @param triggerType {@link TriggerType}
+     * @param passiveTriggerType {@link PassiveTriggerType}
      */
-    private void addTriggerLore(StringBuilder abilityLore, TriggerType triggerType) {
-      switch (triggerType) {
+    private void addTriggerLore(StringBuilder abilityLore, PassiveTriggerType passiveTriggerType) {
+      switch (passiveTriggerType) {
         case DAMAGE_DEALT -> abilityLore.append("Damage Dealt: ");
         case DAMAGE_TAKEN -> abilityLore.append("Damage Taken: ");
         case ON_KILL -> abilityLore.append("On Kill: ");
