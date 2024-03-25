@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
+import me.dannynguyen.aethel.enums.rpg.abilities.TriggerCondition;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.utils.InventoryPages;
@@ -67,14 +68,14 @@ public class PassiveMenu implements Menu {
   /**
    * ItemStack {@link Key#PASSIVE_LIST passive abilities}.
    */
-  private final Map<String, List<PassiveSlotCondition>> existingPassives;
+  private final Map<String, List<SlotCondition>> existingPassives;
 
   /**
    * Associates a new Passive menu with its user and item.
    *
-   * @param user    user
+   * @param user        user
    * @param triggerType {@link TriggerType}
-   * @param eSlot   {@link RpgEquipmentSlot}
+   * @param eSlot       {@link RpgEquipmentSlot}
    */
   public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull TriggerType triggerType) {
     this.user = Objects.requireNonNull(user, "Null user");
@@ -124,10 +125,10 @@ public class PassiveMenu implements Menu {
         boolean enabled = existingPassives.containsKey(passiveId);
         if (enabled) {
           List<String> lore = new ArrayList<>();
-          for (PassiveSlotCondition passiveSlotCondition : existingPassives.get(passiveId)) {
-            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passiveSlotCondition.getSlot() + "." + passiveSlotCondition.getCondition() + "." + passiveId);
+          for (SlotCondition slotCondition : existingPassives.get(passiveId)) {
+            NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slotCondition.getSlot() + "." + slotCondition.getCondition() + "." + passiveId);
             String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
-            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(passiveSlotCondition.getSlot() + " " + passiveSlotCondition.getCondition() + ": " + passiveValue));
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slotCondition.getSlot() + " " + slotCondition.getCondition() + ": " + passiveValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
         } else {
@@ -179,11 +180,11 @@ public class PassiveMenu implements Menu {
    *
    * @return item's {@link Key#PASSIVE_LIST passives} map
    */
-  private Map<String, List<PassiveSlotCondition>> mapPassives() {
+  private Map<String, List<SlotCondition>> mapPassives() {
     NamespacedKey listKey = Key.PASSIVE_LIST.getNamespacedKey();
     boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
-      Map<String, List<PassiveSlotCondition>> existingPassives = new HashMap<>();
+      Map<String, List<SlotCondition>> existingPassives = new HashMap<>();
       List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
         String[] passiveMeta = passive.split("\\.");
@@ -191,14 +192,66 @@ public class PassiveMenu implements Menu {
         String condition = passiveMeta[1];
         String passiveType = passiveMeta[2];
         if (existingPassives.containsKey(passiveType)) {
-          existingPassives.get(passiveType).add(new PassiveSlotCondition(slot, condition));
+          existingPassives.get(passiveType).add(new SlotCondition(slot, condition));
         } else {
-          existingPassives.put(passiveType, new ArrayList<>(List.of(new PassiveSlotCondition(slot, condition))));
+          existingPassives.put(passiveType, new ArrayList<>(List.of(new SlotCondition(slot, condition))));
         }
       }
       return existingPassives;
     } else {
       return null;
+    }
+  }
+
+  /**
+   * Represents a {@link Key#PASSIVE_LIST passive ability's}
+   * {@link RpgEquipmentSlot} and {@link TriggerCondition}.
+   *
+   * @author Danny Nguyen
+   * @version 1.17.12
+   * @since 1.15.12
+   */
+  private static class SlotCondition {
+    /**
+     * {@link RpgEquipmentSlot}
+     */
+    private final String slot;
+
+    /**
+     * {@link TriggerCondition}
+     */
+    private final String condition;
+
+    /**
+     * Associates an {@link RpgEquipmentSlot}
+     * with its {@link TriggerCondition}.
+     *
+     * @param eSlot     {@link RpgEquipmentSlot}
+     * @param condition {@link TriggerCondition}.
+     */
+    SlotCondition(@NotNull String eSlot, @NotNull String condition) {
+      this.slot = Objects.requireNonNull(eSlot, "Null slot");
+      this.condition = Objects.requireNonNull(condition, "Null condition");
+    }
+
+    /**
+     * Gets the {@link RpgEquipmentSlot}.
+     *
+     * @return {@link RpgEquipmentSlot}
+     */
+    @NotNull
+    private String getSlot() {
+      return this.slot;
+    }
+
+    /**
+     * Gets the {@link TriggerCondition}.
+     *
+     * @return {@link TriggerCondition}
+     */
+    @NotNull
+    private String getCondition() {
+      return this.condition;
     }
   }
 }

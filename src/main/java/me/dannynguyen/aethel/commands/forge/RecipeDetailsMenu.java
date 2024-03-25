@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents a menu containing a {@link PersistentRecipe recipe's} details.
+ * Represents a menu containing a {@link RecipeRegistry.Recipe recipe's} details.
  *
  * @author Danny Nguyen
  * @version 1.17.19
@@ -45,9 +45,9 @@ class RecipeDetailsMenu {
   private final Type type;
 
   /**
-   * {@link PersistentRecipe Recipe}
+   * {@link RecipeRegistry.Recipe Recipe}
    */
-  private PersistentRecipe recipe;
+  private RecipeRegistry.Recipe recipe;
 
   /**
    * Associates a new RecipeDetails menu with its user.
@@ -63,7 +63,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Associates a new RecipeDetails menu with its user and {@link PersistentRecipe recipe}.
+   * Associates a new RecipeDetails menu with its user and {@link RecipeRegistry.Recipe recipe}.
    *
    * @param user user
    * @param type {@link RecipeDetailsMenu.Type type}
@@ -78,7 +78,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Creates and names a RecipeDetails menu with the intent to craft or save a {@link PersistentRecipe recipe}.
+   * Creates and names a RecipeDetails menu with the intent to craft or save a {@link RecipeRegistry.Recipe recipe}.
    *
    * @param type {@link RecipeDetailsMenu.Type type}
    * @return RecipeDetails menu
@@ -98,7 +98,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Expands the {@link PersistentRecipe recipe's} details to the user before crafting.
+   * Expands the {@link RecipeRegistry.Recipe recipe's} details to the user before crafting.
    */
   protected void craftRecipeDetails() {
     addRecipeContents();
@@ -109,7 +109,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Expands the {@link PersistentRecipe recipe's} details to the user before crafting.
+   * Expands the {@link RecipeRegistry.Recipe recipe's} details to the user before crafting.
    */
   protected void editRecipeDetails() {
     addRecipeContents();
@@ -120,7 +120,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Opens the RecipeDetails menu with the intent to save a {@link PersistentRecipe recipe}.
+   * Opens the RecipeDetails menu with the intent to save a {@link RecipeRegistry.Recipe recipe}.
    */
   protected void saveRecipeDetails() {
     addContext();
@@ -153,7 +153,7 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Adds the {@link PersistentRecipe recipe's} results and materials to the menu.
+   * Adds the {@link RecipeRegistry.Recipe recipe's} results and materials to the menu.
    */
   private void addRecipeContents() {
     List<ItemStack> results = recipe.getResults();
@@ -171,12 +171,12 @@ class RecipeDetailsMenu {
    */
   protected enum Type {
     /**
-     * Craft a {@link PersistentRecipe recipe}.
+     * Craft a {@link RecipeRegistry.Recipe recipe}.
      */
     CRAFT,
 
     /**
-     * Edit or save a {@link PersistentRecipe recipe}.
+     * Edit or save a {@link RecipeRegistry.Recipe recipe}.
      */
     SAVE
   }

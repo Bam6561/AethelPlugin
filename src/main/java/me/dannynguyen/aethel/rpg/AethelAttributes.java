@@ -26,7 +26,7 @@ public class AethelAttributes {
   /**
    * Total {@link AethelAttribute} values.
    */
-  private final Map<AethelAttribute, Double> attributes = createBlankAethelAttributes();
+  private final Map<AethelAttribute, Double> attributes = createAethelAttributes();
 
   /**
    * {@link AethelAttribute} values on {@link RpgEquipmentSlot}.
@@ -44,7 +44,7 @@ public class AethelAttributes {
    *
    * @return blank {@link AethelAttribute} values
    */
-  private Map<AethelAttribute, Double> createBlankAethelAttributes() {
+  private Map<AethelAttribute, Double> createAethelAttributes() {
     Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
     for (AethelAttribute attribute : AethelAttribute.values()) {
       aethelAttributes.put(attribute, 0.0);

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 /**
  * Represents a menu that supports categorical pagination for obtaining,
- * creating, editing, and removing {@link PersistentItem items}.
+ * creating, editing, and removing {@link ItemRegistry.Item items}.
  *
  * @author Danny Nguyen
  * @version 1.17.19
@@ -74,7 +74,7 @@ public class ItemMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to view {@link PersistentItem item} categories.
+   * Sets the menu to view {@link ItemRegistry.Item item} categories.
    *
    * @return AethelItem main menu
    */
@@ -87,17 +87,17 @@ public class ItemMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to load an {@link PersistentItem item} category page.
+   * Sets the menu to load an {@link ItemRegistry.Item item} category page.
    *
    * @param requestedCategory requested category
    * @param requestedPage     requested page
-   * @return {@link PersistentItem item} category page
+   * @return {@link ItemRegistry.Item item} category page
    */
   @NotNull
   public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
     List<Inventory> category = Plugin.getData().getItemRegistry().getItemCategories().get(requestedCategory);
     int numberOfPages = category.size();
-    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
+    int pageViewed = InventoryPages.getPageViewed(numberOfPages, requestedPage);
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
@@ -155,7 +155,7 @@ public class ItemMenu implements CategoryMenu {
   }
 
   /**
-   * Adds {@link PersistentItem item} categories.
+   * Adds {@link ItemRegistry.Item item} categories.
    */
   private void addCategories() {
     Set<String> categories = Plugin.getData().getItemRegistry().getItemCategories().keySet();
@@ -173,17 +173,17 @@ public class ItemMenu implements CategoryMenu {
    */
   public enum Action {
     /**
-     * Obtain {@link PersistentItem items}.
+     * Obtain {@link ItemRegistry.Item items}.
      */
     GET,
 
     /**
-     * Remove {@link PersistentItem items}.
+     * Remove {@link ItemRegistry.Item items}.
      */
     REMOVE,
 
     /**
-     * View {@link PersistentItem item} categories.
+     * View {@link ItemRegistry.Item item} categories.
      */
     VIEW
   }

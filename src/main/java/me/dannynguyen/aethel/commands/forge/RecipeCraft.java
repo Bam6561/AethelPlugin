@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a {@link PersistentRecipe recipe} craft operation.
+ * Represents a {@link RecipeRegistry.Recipe recipe} craft operation.
  * <p>
  * Only removes items from the user's inventory if they have
- * enough materials to craft the {@link PersistentRecipe recipe}.
+ * enough materials to craft the {@link RecipeRegistry.Recipe recipe}.
  *
  * @author Danny Nguyen
  * @version 1.17.17
@@ -27,7 +27,7 @@ import java.util.*;
  */
 class RecipeCraft {
   /**
-   * User crafting the {@link PersistentRecipe recipe}.
+   * User crafting the {@link RecipeRegistry.Recipe recipe}.
    */
   private final Player user;
 
@@ -37,12 +37,12 @@ class RecipeCraft {
   private final UUID uuid;
 
   /**
-   * {@link PersistentRecipe Recipe's} results.
+   * {@link RecipeRegistry.Recipe Recipe's} results.
    */
   private final List<ItemStack> results;
 
   /**
-   * {@link PersistentRecipe Recipe's} materials.
+   * {@link RecipeRegistry.Recipe Recipe's} materials.
    */
   private final List<ItemStack> materials;
 
@@ -54,22 +54,22 @@ class RecipeCraft {
   /**
    * Map of the user's inventory by material.
    */
-  private final Map<Material, List<RecipeCraftInventory>> materialSlots;
+  private final Map<Material, List<SlotItem>> materialSlots;
 
   /**
-   * Inventory slots to update if the {@link PersistentRecipe recipe's} requirements are met.
+   * Inventory slots to update if the {@link RecipeRegistry.Recipe recipe's} requirements are met.
    */
-  private final List<RecipeCraftInventory> postCraft = new ArrayList<>();
+  private final List<SlotItem> postCraft = new ArrayList<>();
 
   /**
-   * Associates a user with the {@link PersistentRecipe recipe} being crafted.
+   * Associates a user with the {@link RecipeRegistry.Recipe recipe} being crafted.
    *
    * @param user user
    * @param item representative item of recipe
    */
   RecipeCraft(@NotNull Player user, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
-    PersistentRecipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
+    RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
     this.uuid = user.getUniqueId();
     this.results = recipe.getResults();
     this.materials = recipe.getMaterials();
@@ -82,17 +82,17 @@ class RecipeCraft {
    *
    * @return map of material : inventory slots
    */
-  private Map<Material, List<RecipeCraftInventory>> mapMaterialIndices() {
-    Map<Material, List<RecipeCraftInventory>> materialSlots = new HashMap<>();
+  private Map<Material, List<SlotItem>> mapMaterialIndices() {
+    Map<Material, List<SlotItem>> materialSlots = new HashMap<>();
     for (int i = 0; i < 36; i++) {
       ItemStack item = pInv.getItem(i);
       if (ItemReader.isNotNullOrAir(pInv.getItem(i))) {
         Material material = item.getType();
         int amount = item.getAmount();
         if (materialSlots.containsKey(material)) {
-          materialSlots.get(material).add(new RecipeCraftInventory(i, item, amount));
+          materialSlots.get(material).add(new SlotItem(i, item, amount));
         } else {
-          materialSlots.put(material, new ArrayList<>(List.of(new RecipeCraftInventory(i, item, amount))));
+          materialSlots.put(material, new ArrayList<>(List.of(new SlotItem(i, item, amount))));
         }
       }
     }
@@ -100,7 +100,7 @@ class RecipeCraft {
   }
 
   /**
-   * Crafts a {@link PersistentRecipe recipe} if the user has enough materials.
+   * Crafts a {@link RecipeRegistry.Recipe recipe} if the user has enough materials.
    */
   protected void readRecipeMaterials() {
     if (!Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).isDeveloper()) {
@@ -115,7 +115,7 @@ class RecipeCraft {
   }
 
   /**
-   * Determines if the user has enough materials to craft the {@link PersistentRecipe recipe}.
+   * Determines if the user has enough materials to craft the {@link RecipeRegistry.Recipe recipe}.
    *
    * @return has enough materials
    */
@@ -128,12 +128,12 @@ class RecipeCraft {
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         boolean hasForgeId = dataContainer.has(forgeId, PersistentDataType.STRING);
         if (!hasForgeId) {
-          if (!hasEnoughMatchingMaterials(forgeId, requiredMaterial, requiredAmount)) {
+          if (!hasEnoughMaterials(forgeId, requiredMaterial, requiredAmount)) {
             return false;
           }
         } else {
           String requiredId = dataContainer.get(forgeId, PersistentDataType.STRING);
-          if (!hasEnoughMatchingIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
+          if (!hasEnoughIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
             return false;
           }
         }
@@ -145,10 +145,10 @@ class RecipeCraft {
   }
 
   /**
-   * Removes the {@link PersistentRecipe recipe's} materials from the user's inventory and gives the {@link PersistentRecipe recipe's} results.
+   * Removes the {@link RecipeRegistry.Recipe recipe's} materials from the user's inventory and gives the {@link RecipeRegistry.Recipe recipe's} results.
    */
   private void craftRecipe() {
-    for (RecipeCraftInventory invSlot : postCraft) {
+    for (SlotItem invSlot : postCraft) {
       ItemStack item = invSlot.getItem();
       item.setAmount(invSlot.getAmount());
       pInv.setItem(invSlot.getSlot(), item);
@@ -178,8 +178,8 @@ class RecipeCraft {
    * @param requiredAmount   required amount
    * @return has enough materials
    */
-  private boolean hasEnoughMatchingMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
-    for (RecipeCraftInventory invSlot : materialSlots.get(requiredMaterial)) {
+  private boolean hasEnoughMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
+    for (SlotItem invSlot : materialSlots.get(requiredMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
       if (!dataContainer.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
         if (invSlot.getAmount() > 0) {
@@ -202,8 +202,8 @@ class RecipeCraft {
    * @param reqForgeId  required forge ID
    * @return has enough materials
    */
-  private boolean hasEnoughMatchingIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
-    for (RecipeCraftInventory invSlot : materialSlots.get(reqMaterial)) {
+  private boolean hasEnoughIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
+    for (SlotItem invSlot : materialSlots.get(reqMaterial)) {
       PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
       if (dataContainer.has(forgeId, PersistentDataType.STRING) && dataContainer.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {
         if (invSlot.getAmount() > 0) {
@@ -224,16 +224,93 @@ class RecipeCraft {
    * @param reqAmount required amount
    * @return has enough materials
    */
-  private boolean hasRequiredAmount(RecipeCraftInventory invSlot, int reqAmount) {
+  private boolean hasRequiredAmount(SlotItem invSlot, int reqAmount) {
     if (reqAmount > 0 || reqAmount == 0) {
       invSlot.setAmount(0);
-      postCraft.add(new RecipeCraftInventory(invSlot.getSlot(), invSlot.getItem(), 0));
+      postCraft.add(new SlotItem(invSlot.getSlot(), invSlot.getItem(), 0));
       return reqAmount == 0;
     } else {
       int difference = Math.abs(reqAmount);
       invSlot.setAmount(difference);
-      postCraft.add(new RecipeCraftInventory(invSlot.getSlot(), invSlot.getItem(), difference));
+      postCraft.add(new SlotItem(invSlot.getSlot(), invSlot.getItem(), difference));
       return true;
+    }
+  }
+
+  /**
+   * Represents an inventory slot containing an ItemStack.
+   * <p>
+   * The "amount" field is separate from the ItemStack's built-in amount, as it is used
+   * to set a new value post-craft only if the craft operation's requirements are met.
+   *
+   * @author Danny Nguyen
+   * @version 1.17.12
+   * @since 1.2.4
+   */
+  private static class SlotItem {
+    /**
+     * Inventory slot number.
+     */
+    private final int slot;
+
+    /**
+     * ItemStack at the inventory slot.
+     */
+    private final ItemStack item;
+
+    /**
+     * Post-craft amount of ItemStack.
+     */
+    private int amount;
+
+    /**
+     * Associates an inventory slot with its item and current amount.
+     *
+     * @param slot   inventory slot number
+     * @param item   ItemStack
+     * @param amount amount of ItemStack
+     */
+    SlotItem(int slot, @NotNull ItemStack item, int amount) {
+      this.item = Objects.requireNonNull(item, "Null item");
+      this.slot = slot;
+      this.amount = amount;
+    }
+
+    /**
+     * Gets the inventory slot.
+     *
+     * @return inventory slot
+     */
+    private int getSlot() {
+      return this.slot;
+    }
+
+    /**
+     * Gets the ItemStack.
+     *
+     * @return ItemStack
+     */
+    @NotNull
+    private ItemStack getItem() {
+      return this.item;
+    }
+
+    /**
+     * Gets the post-craft amount of ItemStack.
+     *
+     * @return post-craft amount of ItemStack
+     */
+    private int getAmount() {
+      return this.amount;
+    }
+
+    /**
+     * Sets the post-craft amount of ItemStack.
+     *
+     * @param amount post-craft amount of ItemStack
+     */
+    private void setAmount(int amount) {
+      this.amount = amount;
     }
   }
 }

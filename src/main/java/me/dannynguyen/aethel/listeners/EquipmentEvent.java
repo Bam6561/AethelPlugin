@@ -8,7 +8,6 @@ import me.dannynguyen.aethel.rpg.Enchantments;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.abilities.Abilities;
-import me.dannynguyen.aethel.rpg.abilities.TriggerPassive;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -61,7 +60,7 @@ public class EquipmentEvent implements Listener {
         switch (slot) {
           case 36, 37, 38, 39, 40 -> {
             if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-              updateEquipmentDataAtSlot(player, slot);
+              updateEquipmentSlot(player, slot);
               Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
               }, 1);
             }
@@ -147,7 +146,7 @@ public class EquipmentEvent implements Listener {
 
       Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = attributes.getSlotAttributes();
       Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
-      Map<RpgEquipmentSlot, List<TriggerPassive>> slotPassives = abilities.getSlotPassives();
+      Map<RpgEquipmentSlot, List<Abilities.TriggerPassive>> slotPassives = abilities.getSlotPassives();
 
       for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
         attributes.removeAttributes(eSlot);
@@ -158,7 +157,7 @@ public class EquipmentEvent implements Listener {
       for (RpgEquipmentSlot eSlot : slotPassives.keySet()) {
         abilities.removePassives(eSlot);
       }
-      dropJewelryItems(e.getEntity(), equipment.getJewelry());
+      dropJewelry(e.getEntity(), equipment.getJewelry());
     }
   }
 
@@ -172,14 +171,14 @@ public class EquipmentEvent implements Listener {
     switch (item.getType()) {
       case LEATHER_HELMET, CHAINMAIL_HELMET, IRON_HELMET, GOLDEN_HELMET, DIAMOND_HELMET, NETHERITE_HELMET,
           CREEPER_HEAD, ZOMBIE_HEAD, SKELETON_SKULL, WITHER_SKELETON_SKULL, PLAYER_HEAD, DRAGON_HEAD,
-          TURTLE_HELMET, PUMPKIN -> updateEquipmentDataAtSlot(player, 39);
+          TURTLE_HELMET, PUMPKIN -> updateEquipmentSlot(player, 39);
       case LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, IRON_CHESTPLATE, GOLDEN_CHESTPLATE,
-          DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE, ELYTRA -> updateEquipmentDataAtSlot(player, 38);
+          DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE, ELYTRA -> updateEquipmentSlot(player, 38);
       case LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, IRON_LEGGINGS, GOLDEN_LEGGINGS,
-          DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> updateEquipmentDataAtSlot(player, 37);
+          DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> updateEquipmentSlot(player, 37);
       case LEATHER_BOOTS, CHAINMAIL_BOOTS, IRON_BOOTS, GOLDEN_BOOTS,
-          DIAMOND_BOOTS, NETHERITE_BOOTS -> updateEquipmentDataAtSlot(player, 36);
-      case SHIELD -> updateEquipmentDataAtSlot(player, 40);
+          DIAMOND_BOOTS, NETHERITE_BOOTS -> updateEquipmentSlot(player, 36);
+      case SHIELD -> updateEquipmentSlot(player, 40);
     }
   }
 
@@ -192,7 +191,7 @@ public class EquipmentEvent implements Listener {
    * @param player interacting player
    * @param slot   slot type
    */
-  private void updateEquipmentDataAtSlot(Player player, int slot) {
+  private void updateEquipmentSlot(Player player, int slot) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
       Equipment equipment = rpgPlayer.getEquipment();
@@ -213,7 +212,7 @@ public class EquipmentEvent implements Listener {
    * @param player       interacting player
    * @param jewelrySlots player's jewelry slots
    */
-  private void dropJewelryItems(Player player, ItemStack[] jewelrySlots) {
+  private void dropJewelry(Player player, ItemStack[] jewelrySlots) {
     for (int i = 0; i < jewelrySlots.length; i++) {
       if (jewelrySlots[i] != null) {
         player.getWorld().dropItem(player.getLocation(), jewelrySlots[i]);

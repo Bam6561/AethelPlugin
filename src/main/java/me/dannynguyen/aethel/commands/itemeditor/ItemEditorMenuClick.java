@@ -2,20 +2,23 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.enums.rpg.abilities.ActiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.PassiveType;
-import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
+import me.dannynguyen.aethel.enums.rpg.abilities.*;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -23,11 +26,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.UUID;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * Inventory click event listener for {@link ItemEditorCommand} menus.
@@ -250,7 +254,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void setDisplayName() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input display name.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_DISPLAY_NAME);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_DISPLAY_NAME);
   }
 
   /**
@@ -258,7 +262,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void setCustomModelData() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input custom model data value.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_CUSTOM_MODEL_DATA);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_CUSTOM_MODEL_DATA);
   }
 
   /**
@@ -346,7 +350,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void setDurability() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_DURABILITY);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_DURABILITY);
   }
 
   /**
@@ -354,7 +358,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void setRepairCost() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_REPAIR_COST);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_REPAIR_COST);
   }
 
   /**
@@ -362,7 +366,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void setLore() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to set.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_SET);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_LORE_SET);
   }
 
   /**
@@ -383,7 +387,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void addLore() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input lore to add.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_ADD);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_LORE_ADD);
   }
 
   /**
@@ -392,7 +396,7 @@ public class ItemEditorMenuClick implements MenuClick {
   private void editLore() {
     if (meta.hasLore()) {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number and new lore.");
-      awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_EDIT);
+      awaitMessageInput(MessageEvent.Type.ITEMEDITOR_LORE_EDIT);
     } else {
       user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
@@ -404,7 +408,7 @@ public class ItemEditorMenuClick implements MenuClick {
   private void removeLore() {
     if (meta.hasLore()) {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input line number to remove.");
-      awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_LORE_REMOVE);
+      awaitMessageInput(MessageEvent.Type.ITEMEDITOR_LORE_REMOVE);
     } else {
       user.sendMessage(Message.LORE_DOES_NOT_EXIST.getMessage());
     }
@@ -441,7 +445,7 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void setPotionColor() {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input RGB value.");
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_POTION_COLOR);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_POTION_COLOR);
   }
 
   /**
@@ -526,7 +530,7 @@ public class ItemEditorMenuClick implements MenuClick {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(slot.name()) + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(getAttributeContext(attribute));
     pluginPlayer.setObjectType(attribute);
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
   }
 
   /**
@@ -539,7 +543,7 @@ public class ItemEditorMenuClick implements MenuClick {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + attribute + ChatColor.WHITE + " value.");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Base: " + AethelAttribute.valueOf(TextFormatter.formatEnum(attribute)).getBaseValue());
     pluginPlayer.setObjectType(TextFormatter.formatId(attribute));
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_AETHEL_ATTRIBUTE);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_AETHEL_ATTRIBUTE);
   }
 
   /**
@@ -549,7 +553,7 @@ public class ItemEditorMenuClick implements MenuClick {
     String enchantment = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(enchantment) + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(enchantment));
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_ENCHANTMENT);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_ENCHANTMENT);
   }
 
   /**
@@ -559,7 +563,7 @@ public class ItemEditorMenuClick implements MenuClick {
     String potionEffect = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(TextFormatter.formatId(potionEffect));
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_POTION_EFFECT);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_POTION_EFFECT);
   }
 
   /**
@@ -574,7 +578,7 @@ public class ItemEditorMenuClick implements MenuClick {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + triggerType.getCondition().getData());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     pluginPlayer.setObjectType(TextFormatter.formatId(passive));
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_PASSIVE_ABILITY);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_PASSIVE_ABILITY);
   }
 
   /**
@@ -587,7 +591,7 @@ public class ItemEditorMenuClick implements MenuClick {
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
     pluginPlayer.setObjectType(TextFormatter.formatId(active));
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_ACTIVE_ABILITY);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_ACTIVE_ABILITY);
   }
 
   /**
@@ -597,7 +601,7 @@ public class ItemEditorMenuClick implements MenuClick {
     String tag = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setObjectType(tag);
-    awaitMessageResponse(MessageEvent.Type.ITEMEDITOR_AETHEL_TAG);
+    awaitMessageInput(MessageEvent.Type.ITEMEDITOR_AETHEL_TAG);
   }
 
   /**
@@ -605,7 +609,7 @@ public class ItemEditorMenuClick implements MenuClick {
    *
    * @param messageType {@link MessageEvent.Type}
    */
-  private void awaitMessageResponse(MessageEvent.Type messageType) {
+  private void awaitMessageInput(MessageEvent.Type messageType) {
     user.closeInventory();
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMessageInput(messageType);
   }
@@ -646,6 +650,412 @@ public class ItemEditorMenuClick implements MenuClick {
       default -> {
         return null;
       }
+    }
+  }
+
+  /**
+   * Represents an item's Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attribute},
+   * {@link Key#PASSIVE_LIST passive ability}, and
+   * {@link Key#ACTIVE_LIST active ability} lore generation.
+   *
+   * @author Danny Nguyen
+   * @version 1.18.0
+   * @since 1.17.13
+   */
+  private static class LoreGeneration {
+    /**
+     * Order of headers by {@link RpgEquipmentSlot}.
+     */
+    private static final List<String> headerOrder = new ArrayList<>(List.of(
+        RpgEquipmentSlot.HEAD.getId(), RpgEquipmentSlot.CHEST.getId(),
+        RpgEquipmentSlot.LEGS.getId(), RpgEquipmentSlot.FEET.getId(),
+        RpgEquipmentSlot.NECKLACE.getId(), RpgEquipmentSlot.RING.getId(),
+        RpgEquipmentSlot.HAND.getId(), RpgEquipmentSlot.OFF_HAND.getId()));
+
+    /**
+     * Interacting user.
+     */
+    private final Player user;
+
+    /**
+     * ItemStack whose lore is being generated.
+     */
+    private final ItemStack item;
+
+    /**
+     * ItemStack's meta.
+     */
+    private final ItemMeta meta;
+
+    /**
+     * ItemStack's persistent tags.
+     */
+    private final PersistentDataContainer dataContainer;
+
+    /**
+     * ItemStack's lore.
+     */
+    private final List<String> lore;
+
+    /**
+     * Interacting menu generating the lore.
+     */
+    private final Inventory menu;
+
+    /**
+     * ItemStack's total Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attribute}
+     * values categorized by {@link RpgEquipmentSlot}.
+     */
+    private Map<String, Map<String, Double>> attributeValues;
+
+    /**
+     * ItemStack's {@link Key#PASSIVE_LIST passive abilities}
+     * categorized by {@link RpgEquipmentSlot}.
+     */
+    private Map<String, List<String>> passiveAbilities;
+
+    /**
+     * ItemStack's {@link Key#ACTIVE_LIST active abilities}
+     * categorized by {@link RpgEquipmentSlot}.
+     */
+    private Map<String, List<String>> activeAbilities;
+
+    /**
+     * If the item's lore was generated.
+     */
+    private boolean generatedLore = false;
+
+    /**
+     * Associates an item's lore generation with its user and menu being interacted with.
+     *
+     * @param user user
+     * @param menu interacting menu
+     * @param item interacting item
+     */
+    LoreGeneration(@NotNull Player user, @NotNull Inventory menu, @NotNull ItemStack item) {
+      this.user = Objects.requireNonNull(user, "Null user");
+      this.menu = Objects.requireNonNull(menu, "Null menu");
+      this.item = Objects.requireNonNull(item, "Null item");
+      this.meta = item.getItemMeta();
+      this.dataContainer = meta.getPersistentDataContainer();
+      if (meta.hasLore()) {
+        this.lore = meta.getLore();
+      } else {
+        this.lore = new ArrayList<>();
+      }
+    }
+
+    /**
+     * Generates an item's lore based on its {@link Key plugin-related data}.
+     */
+    private void generateLore() {
+      if (dataContainer.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
+        generatedLore = true;
+        displayForgeId();
+      }
+      if (dataContainer.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        generatedLore = true;
+        this.attributeValues = totalAttributeValues();
+        addAttributeHeaders();
+        menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
+      }
+      if (dataContainer.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        generatedLore = true;
+        this.passiveAbilities = sortPassiveAbilities();
+        addPassiveHeaders();
+      }
+      if (dataContainer.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        generatedLore = true;
+        this.activeAbilities = sortActiveAbilities();
+        addActiveHeaders();
+      }
+      if (generatedLore) {
+        user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
+      } else {
+        user.sendMessage(ChatColor.RED + "Not modified by plugin.");
+      }
+    }
+
+    /**
+     * Adds the Forge ID to the item's lore.
+     */
+    private void displayForgeId() {
+      lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+    }
+
+    /**
+     * Totals the item's Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attributes} together.
+     *
+     * @return ItemStack's total attribute values
+     */
+    private Map<String, Map<String, Double>> totalAttributeValues() {
+      Map<String, Map<String, Double>> attributeValues = new HashMap<>();
+      if (meta.hasAttributeModifiers()) {
+        sortMinecraftAttributes(attributeValues);
+      }
+      sortAethelAttributes(attributeValues);
+      return attributeValues;
+    }
+
+    /**
+     * Adds attribute {@link RpgEquipmentSlot} headers to the item's lore.
+     */
+    private void addAttributeHeaders() {
+      for (String eSlot : headerOrder) {
+        if (attributeValues.containsKey(eSlot)) {
+          List<String> header = new ArrayList<>(List.of(""));
+          switch (eSlot) {
+            case "head" -> header.add(ChatColor.GRAY + "When on Head:");
+            case "chest" -> header.add(ChatColor.GRAY + "When on Chest:");
+            case "legs" -> header.add(ChatColor.GRAY + "When on Legs:");
+            case "feet" -> header.add(ChatColor.GRAY + "When on Feet:");
+            case "necklace" -> header.add(ChatColor.GRAY + "When on Necklace:");
+            case "ring" -> header.add(ChatColor.GRAY + "When on Ring:");
+            case "hand" -> header.add(ChatColor.GRAY + "When in Main Hand:");
+            case "off_hand" -> header.add(ChatColor.GRAY + "When in Off Hand:");
+          }
+          DecimalFormat df3 = new DecimalFormat();
+          df3.setMaximumFractionDigits(3);
+          for (String attribute : attributeValues.get(eSlot).keySet()) {
+            switch (attribute) {
+              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
+              default -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
+            }
+          }
+          lore.addAll(header);
+        }
+      }
+      meta.setLore(lore);
+      meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+      item.setItemMeta(meta);
+    }
+
+    /**
+     * Sorts {@link Key#PASSIVE_LIST passive abilities}
+     * by their {@link RpgEquipmentSlot}.
+     *
+     * @return {@link RpgEquipmentSlot} : {@link Key#PASSIVE_LIST passive ability}
+     */
+    private Map<String, List<String>> sortPassiveAbilities() {
+      Map<String, List<String>> passiveAbilities = new HashMap<>();
+      for (String passive : dataContainer.get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+        String[] passiveMeta = passive.split("\\.");
+        String slot = passiveMeta[0];
+        String condition = passiveMeta[1];
+        String type = passiveMeta[2];
+
+        TriggerType triggerType = TriggerType.valueOf(TextFormatter.formatEnum(condition));
+        PassiveEffect abilityEffect = PassiveType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+
+        String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
+        StringBuilder abilityLore = new StringBuilder();
+
+        abilityLore.append(ChatColor.DARK_AQUA);
+        switch (triggerType.getCondition()) {
+          case CHANCE_COOLDOWN -> {
+            addTriggerLore(abilityLore, triggerType);
+            // Chance
+            if (!abilityData[0].equals("100.0")) {
+              abilityLore.append(ChatColor.WHITE).append(abilityData[0]).append("% ");
+            }
+            // Cooldown
+            if (!abilityData[1].equals("0")) {
+              abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
+            }
+            switch (abilityEffect) {
+              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
+              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+            }
+          }
+          case HEALTH_COOLDOWN -> {
+            abilityLore.append("Below ").append(abilityData[0]).append("% HP: ");
+            addTriggerLore(abilityLore, triggerType);
+            // Cooldown
+            if (!abilityData[1].equals("0")) {
+              abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
+            }
+            switch (abilityEffect) {
+              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
+              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+            }
+          }
+        }
+        if (passiveAbilities.containsKey(slot)) {
+          passiveAbilities.get(slot).add(abilityLore.toString());
+        } else {
+          passiveAbilities.put(slot, new ArrayList<>(List.of(abilityLore.toString())));
+        }
+      }
+      return passiveAbilities;
+    }
+
+    /**
+     * Adds passive ability {@link RpgEquipmentSlot} headers to the item's lore.
+     */
+    private void addPassiveHeaders() {
+      for (String eSlot : headerOrder) {
+        if (passiveAbilities.containsKey(eSlot)) {
+          List<String> header = new ArrayList<>(List.of(""));
+          String tag = ChatColor.BLUE + "Passives";
+          switch (eSlot) {
+            case "head" -> header.add(ChatColor.GRAY + "Head " + tag);
+            case "chest" -> header.add(ChatColor.GRAY + "Chest " + tag);
+            case "legs" -> header.add(ChatColor.GRAY + "Legs " + tag);
+            case "feet" -> header.add(ChatColor.GRAY + "Feet " + tag);
+            case "necklace" -> header.add(ChatColor.GRAY + "Necklace " + tag);
+            case "ring" -> header.add(ChatColor.GRAY + "Ring " + tag);
+            case "hand" -> header.add(ChatColor.GRAY + "Main Hand " + tag);
+            case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand " + tag);
+          }
+          header.addAll(passiveAbilities.get(eSlot));
+          lore.addAll(header);
+        }
+      }
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+    }
+
+    /**
+     * Sorts {@link Key#ACTIVE_LIST active abilities}
+     * by their {@link RpgEquipmentSlot}.
+     *
+     * @return {@link RpgEquipmentSlot} : {@link Key#ACTIVE_LIST}
+     */
+    private Map<String, List<String>> sortActiveAbilities() {
+      Map<String, List<String>> activeAbilities = new HashMap<>();
+      for (String active : dataContainer.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+        String slot = active.substring(0, active.indexOf("."));
+        String type = active.substring(active.indexOf(".") + 1);
+
+        ActiveType abilityType = ActiveType.valueOf(TextFormatter.formatEnum(type));
+        ActiveEffect abilityEffect = abilityType.getEffect();
+
+        String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
+        StringBuilder activeLore = new StringBuilder();
+
+        activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+        switch (abilityEffect) {
+          case MOVEMENT -> {
+            switch (abilityType) {
+              case BLINK -> activeLore.append(ChatColor.AQUA).append("Blink ");
+              case DASH -> activeLore.append(ChatColor.AQUA).append("Dash ");
+            }
+            activeLore.append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
+          }
+          case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+          case SHATTER -> activeLore.append(ChatColor.AQUA).append("Shatter ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
+        }
+        if (activeAbilities.containsKey(slot)) {
+          activeAbilities.get(slot).add(activeLore.toString());
+        } else {
+          activeAbilities.put(slot, new ArrayList<>(List.of(activeLore.toString())));
+        }
+      }
+      return activeAbilities;
+    }
+
+    /**
+     * Adds active ability {@link RpgEquipmentSlot} headers to the item's lore.
+     */
+    private void addActiveHeaders() {
+      for (String eSlot : headerOrder) {
+        if (activeAbilities.containsKey(eSlot)) {
+          List<String> header = new ArrayList<>(List.of(""));
+          String tag = ChatColor.YELLOW + "Actives";
+          switch (eSlot) {
+            case "head" -> header.add(ChatColor.GRAY + "Head " + tag);
+            case "chest" -> header.add(ChatColor.GRAY + "Chest " + tag);
+            case "legs" -> header.add(ChatColor.GRAY + "Legs " + tag);
+            case "feet" -> header.add(ChatColor.GRAY + "Feet " + tag);
+            case "necklace" -> header.add(ChatColor.GRAY + "Necklace " + tag);
+            case "ring" -> header.add(ChatColor.GRAY + "Ring " + tag);
+            case "hand" -> header.add(ChatColor.GRAY + "Main Hand " + tag);
+            case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand " + tag);
+          }
+          header.addAll(activeAbilities.get(eSlot));
+          lore.addAll(header);
+        }
+      }
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+    }
+
+    /**
+     * Sorts Minecraft attributes by their {@link RpgEquipmentSlot}.
+     *
+     * @param attributeValues {@link RpgEquipmentSlot} : (attribute : value)
+     */
+    private void sortMinecraftAttributes(Map<String, Map<String, Double>> attributeValues) {
+      for (Attribute attribute : meta.getAttributeModifiers().keySet()) {
+        for (AttributeModifier attributeModifier : meta.getAttributeModifiers(attribute)) {
+          String slot = attributeModifier.getSlot().name().toLowerCase();
+          String name;
+          switch (attribute) {
+            case GENERIC_MAX_HEALTH -> name = "max_hp";
+            case GENERIC_ARMOR_TOUGHNESS -> name = "toughness";
+            default -> name = attribute.name().substring(8).toLowerCase();
+          }
+          if (attributeValues.containsKey(slot)) {
+            if (attributeValues.get(slot).containsKey(name)) {
+              attributeValues.get(slot).put(name, attributeValues.get(slot).get(name) + attributeModifier.getAmount());
+            } else {
+              attributeValues.get(slot).put(name, attributeModifier.getAmount());
+            }
+          } else {
+            attributeValues.put(slot, new HashMap<>(Map.of(name, attributeModifier.getAmount())));
+          }
+        }
+      }
+    }
+
+    /**
+     * Sorts {@link Key#ATTRIBUTE_LIST Aethel attributes}
+     * by their {@link RpgEquipmentSlot}.
+     *
+     * @param attributeValues {@link RpgEquipmentSlot} : (attribute : value)
+     */
+    private void sortAethelAttributes(Map<String, Map<String, Double>> attributeValues) {
+      PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+      for (String attribute : meta.getPersistentDataContainer().get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+        String slot = attribute.substring(0, attribute.indexOf("."));
+        String name = attribute.substring(attribute.indexOf(".") + 1);
+        NamespacedKey key = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
+        if (attributeValues.containsKey(slot)) {
+          if (attributeValues.get(slot).containsKey(name)) {
+            attributeValues.get(slot).put(name, attributeValues.get(slot).get(name) + dataContainer.get(key, PersistentDataType.DOUBLE));
+          } else {
+            attributeValues.get(slot).put(name, dataContainer.get(key, PersistentDataType.DOUBLE));
+          }
+        } else {
+          attributeValues.put(slot, new HashMap<>(Map.of(name, dataContainer.get(key, PersistentDataType.DOUBLE))));
+        }
+      }
+    }
+
+    /**
+     * Adds ability {@link TriggerType} lore.
+     *
+     * @param abilityLore ability lore
+     * @param triggerType {@link TriggerType}
+     */
+    private void addTriggerLore(StringBuilder abilityLore, TriggerType triggerType) {
+      switch (triggerType) {
+        case DAMAGE_DEALT -> abilityLore.append("Damage Dealt: ");
+        case DAMAGE_TAKEN -> abilityLore.append("Damage Taken: ");
+        case ON_KILL -> abilityLore.append("On Kill: ");
+      }
+    }
+
+    /**
+     * Gets a time duration in ticks and converts it to seconds.
+     *
+     * @param ticks ticks
+     * @return seconds
+     */
+    private String ticksToSeconds(String ticks) {
+      return String.valueOf(Double.parseDouble(ticks) / 20);
     }
   }
 }

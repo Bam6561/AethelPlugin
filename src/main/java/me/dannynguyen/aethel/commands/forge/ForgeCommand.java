@@ -18,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Parameters:
  * <ul>
- *  <li>"" : craft {@link PersistentRecipe recipes}
- *  <li>"edit", "e": create, edit, or remove {@link PersistentRecipe recipes}
- *  <li>"reload", "r": reloads {@link PersistentRecipe recipes} into {@link RecipeRegistry}
+ *  <li>"" : craft {@link RecipeRegistry.Recipe recipes}
+ *  <li>"edit", "e": create, edit, or remove {@link RecipeRegistry.Recipe recipes}
+ *  <li>"reload", "r": reloads {@link RecipeRegistry.Recipe recipes} into {@link RecipeRegistry}
  * </ul>
  *
  * @author Danny Nguyen
@@ -66,14 +66,14 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args) {
     switch (args.length) {
-      case 0 -> openCraftingMenu(user);
+      case 0 -> openCrafting(user);
       case 1 -> interpretParameter(user, args[0].toLowerCase());
       default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
     }
   }
 
   /**
-   * Either edits {@link PersistentRecipe recipes} or reloads them into {@link RecipeRegistry}.
+   * Either edits {@link RecipeRegistry.Recipe recipes} or reloads them into {@link RecipeRegistry}.
    *
    * @param user   user
    * @param action type of interaction
@@ -82,7 +82,7 @@ public class ForgeCommand implements CommandExecutor {
     switch (action) {
       case "edit", "e" -> {
         if (user.hasPermission("aethel.forge.editor")) {
-          openEditorMenu(user);
+          openEditor(user);
         } else {
           user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
         }
@@ -100,11 +100,11 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the {@link RecipeMenu}  with the intent to craft {@link PersistentRecipe recipes}.
+   * Opens the {@link RecipeMenu} with the intent to craft {@link RecipeRegistry.Recipe recipes}.
    *
    * @param user user
    */
-  private void openCraftingMenu(Player user) {
+  private void openCrafting(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
     pluginPlayer.setMode(MenuEvent.Mode.RECIPE_MENU_CRAFT);
     pluginPlayer.setCategory("");
@@ -114,11 +114,11 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Opens the {@link RecipeMenu} with the intent to edit {@link PersistentRecipe recipes}.
+   * Opens the {@link RecipeMenu} with the intent to edit {@link RecipeRegistry.Recipe recipes}.
    *
    * @param user user
    */
-  private void openEditorMenu(Player user) {
+  private void openEditor(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
     pluginPlayer.setMode(MenuEvent.Mode.RECIPE_MENU_EDIT);
     pluginPlayer.setCategory("");

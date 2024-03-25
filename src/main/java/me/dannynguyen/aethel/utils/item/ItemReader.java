@@ -64,7 +64,7 @@ public class ItemReader {
    * @return item's {@link Key Aethel tags}
    */
   @NotNull
-  public static String readAethelTags(@NotNull ItemStack item) {
+  public static String readTags(@NotNull ItemStack item) {
     PersistentDataContainer dataContainer = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
     StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey key : dataContainer.getKeys()) {

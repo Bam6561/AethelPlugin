@@ -221,8 +221,8 @@ public class CharacterMenuClick implements MenuClick {
   private void interpretEquipItem() {
     if (ItemReader.isNotNullOrAir(e.getCursor())) {
       switch (slot) {
-        case 11 -> equipMainHandItem();
-        case 10, 12, 19, 28, 37 -> equipOffHandArmorItem();
+        case 11 -> equipMainHand();
+        case 10, 12, 19, 28, 37 -> equipOffHandArmor();
         case 20, 29 -> updateJewelryAttributes();
       }
     }
@@ -231,7 +231,7 @@ public class CharacterMenuClick implements MenuClick {
   /**
    * Equips the item to the user's main hand.
    */
-  private void equipMainHandItem() {
+  private void equipMainHand() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       PlayerInventory pInv = user.getInventory();
       int heldSlot = pInv.getHeldItemSlot();
@@ -256,7 +256,7 @@ public class CharacterMenuClick implements MenuClick {
   /**
    * Equips the item to the user's off hand or armor slot.
    */
-  private void equipOffHandArmorItem() {
+  private void equipOffHandArmor() {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       int iSlot;
       switch (slot) {

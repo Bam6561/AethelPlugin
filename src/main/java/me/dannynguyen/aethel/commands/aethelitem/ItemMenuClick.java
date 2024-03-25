@@ -63,7 +63,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Either saves a {@link PersistentItem item} or gets an {@link PersistentItem item} category page.
+   * Either saves a {@link ItemRegistry.Item item} or gets an {@link ItemRegistry.Item item} category page.
    */
   public void interpretMenuClick() {
     switch (slot) {
@@ -80,10 +80,10 @@ public class ItemMenuClick implements MenuClick {
   /**
    * Either:
    * <ul>
-   *  <li>increments or decrements an {@link PersistentItem item} category page
-   *  <li>saves a {@link PersistentItem item}
+   *  <li>increments or decrements an {@link ItemRegistry.Item item} category page
+   *  <li>saves a {@link ItemRegistry.Item item}
    *  <li>changes the {@link ItemMenu.Action interaction}
-   *  <li>contextualizes the click to get or remove {@link PersistentItem items}
+   *  <li>contextualizes the click to get or remove {@link ItemRegistry.Item items}
    * </ul>
    *
    * @param action type of {@link ItemMenu.Action} interaction
@@ -108,7 +108,8 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Checks if there is an item in the designated save slot before saving the item as a {@link PersistentItem}.
+   * Checks if there is an item in the designated save slot
+   * before saving the {@link ItemRegistry.Item item}.
    */
   private void saveItem() {
     ItemStack item = e.getClickedInventory().getItem(3);
@@ -132,7 +133,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Gets an {@link PersistentItem item} category page.
+   * Gets an {@link ItemRegistry.Item item} category page.
    */
   private void getCategoryPage() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
@@ -145,7 +146,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Gets the previous {@link PersistentItem item} category page.
+   * Gets the previous {@link ItemRegistry.Item item} category page.
    *
    * @param action type of interaction
    */
@@ -188,7 +189,7 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Gets the next {@link PersistentItem item} category page.
+   * Gets the next {@link ItemRegistry.Item item} category page.
    *
    * @param action type of interaction
    */
@@ -202,15 +203,15 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Either gets or remove an {@link PersistentItem item}.
+   * Either gets or remove an {@link ItemRegistry.Item item}.
    *
    * @param action type of interaction
    */
   private void interpretContextualClick(ItemMenu.Action action) {
-    ItemStack clickedItem = e.getCurrentItem();
+    ItemStack clicked = e.getCurrentItem();
     switch (action) {
       case GET -> {
-        ItemStack item = Plugin.getData().getItemRegistry().getItems().get(ItemReader.readName(clickedItem)).getItem();
+        ItemStack item = Plugin.getData().getItemRegistry().getItems().get(ItemReader.readName(clicked)).getItem();
         if (user.getInventory().firstEmpty() != -1) {
           user.getInventory().addItem(item);
         } else {
@@ -218,7 +219,7 @@ public class ItemMenuClick implements MenuClick {
         }
       }
       case REMOVE -> {
-        PersistentItem pItem = Plugin.getData().getItemRegistry().getItems().get(ItemReader.readName(clickedItem));
+        ItemRegistry.Item pItem = Plugin.getData().getItemRegistry().getItems().get(ItemReader.readName(clicked));
         pItem.delete();
         user.sendMessage(ChatColor.RED + "[Removed Aethel Item] " + ChatColor.WHITE + pItem.getName());
       }
@@ -226,10 +227,10 @@ public class ItemMenuClick implements MenuClick {
   }
 
   /**
-   * Names an {@link PersistentItem item} file by either its display name or material.
+   * Names an {@link ItemRegistry.Item item} file by either its display name or material.
    *
    * @param item interacting item
-   * @return {@link PersistentItem item} file name
+   * @return {@link ItemRegistry.Item item} file name
    */
   private String nameItemFile(ItemStack item) {
     ItemMeta meta = item.getItemMeta();

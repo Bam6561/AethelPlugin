@@ -6,8 +6,8 @@ import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.RpgSystem;
+import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
-import me.dannynguyen.aethel.rpg.abilities.SlotPassive;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -95,7 +95,7 @@ public class RpgEvent implements Listener {
   @EventHandler
   private void onEntityDeath(EntityDeathEvent e) {
     if (e.getEntity().getKiller() != null) {
-      triggerOnKillPassives(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
+      triggerPassivesOnKill(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
     }
   }
 
@@ -108,8 +108,8 @@ public class RpgEvent implements Listener {
    * @param killedUUID killed entity UUID
    * @param selfUUID   self UUID
    */
-  private void triggerOnKillPassives(UUID killedUUID, UUID selfUUID) {
-    Map<SlotPassive, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getAbilities().getTriggerPassives().get(TriggerType.ON_KILL);
+  private void triggerPassivesOnKill(UUID killedUUID, UUID selfUUID) {
+    Map<Abilities.SlotPassive, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getAbilities().getTriggerPassives().get(TriggerType.ON_KILL);
     if (!killTriggers.isEmpty()) {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {

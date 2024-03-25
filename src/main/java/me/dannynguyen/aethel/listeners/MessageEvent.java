@@ -56,7 +56,7 @@ public class MessageEvent implements Listener {
    * Determines which {@link me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand}
    * input is being interacted with.
    *
-   * @param e     message event
+   * @param e    message event
    * @param type {@link Type}
    */
   private void interpretItemEditor(AsyncPlayerChatEvent e, Type type) {

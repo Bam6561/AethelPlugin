@@ -30,7 +30,7 @@ public class PassiveAbility {
   /**
    * {@link PassiveType Passive abilities} on cooldown.
    */
-  private final Map<TriggerType, Set<SlotPassive>> onCooldownPassives;
+  private final Map<TriggerType, Set<Abilities.SlotPassive>> onCooldownPassives;
 
   /**
    * {@link RpgEquipmentSlot}
@@ -66,7 +66,7 @@ public class PassiveAbility {
    * @param type               {@link PassiveType}
    * @param dataValues         ability data
    */
-  public PassiveAbility(@NotNull Map<TriggerType, Set<SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull TriggerType triggerType, @NotNull PassiveType type, @NotNull String[] dataValues) {
+  public PassiveAbility(@NotNull Map<TriggerType, Set<Abilities.SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull TriggerType triggerType, @NotNull PassiveType type, @NotNull String[] dataValues) {
     this.onCooldownPassives = Objects.requireNonNull(onCooldownPassives, "Null on cooldown passives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.triggerType = Objects.requireNonNull(triggerType, "Null trigger");
@@ -260,7 +260,7 @@ public class PassiveAbility {
    * @return if the {@link PassiveType} is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownPassives.get(triggerType).contains(new SlotPassive(eSlot, type));
+    return onCooldownPassives.get(triggerType).contains(new Abilities.SlotPassive(eSlot, type));
   }
 
   /**
@@ -269,7 +269,7 @@ public class PassiveAbility {
    * @param isOnCooldown is on cooldown
    */
   public void setOnCooldown(boolean isOnCooldown) {
-    SlotPassive slotPassive = new SlotPassive(eSlot, type);
+    Abilities.SlotPassive slotPassive = new Abilities.SlotPassive(eSlot, type);
     if (isOnCooldown) {
       onCooldownPassives.get(triggerType).add(slotPassive);
     } else {

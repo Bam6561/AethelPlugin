@@ -12,14 +12,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Command invocation that allows the user to obtain {@link PersistentItem items} through clicking.
+ * Command invocation that allows the user to obtain
+ * {@link ItemRegistry.Item items} through clicking.
  * <p>
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
  * <ul>
  *  <li>"": opens {@link ItemMenu}
- *  <li>"reload", "r": reloads {@link PersistentItem items} into {@link ItemRegistry}
+ *  <li>"reload", "r": reloads {@link ItemRegistry.Item items} into {@link ItemRegistry}
  * </ul>
  *
  * @author Danny Nguyen
@@ -84,7 +85,8 @@ public class ItemCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the action is "reload" before reloading {@link PersistentItem items} into {@link ItemRegistry}.
+   * Checks if the action is "reload" before reloading
+   * {@link ItemRegistry.Item items} into {@link ItemRegistry}.
    *
    * @param user   user
    * @param action type of interaction

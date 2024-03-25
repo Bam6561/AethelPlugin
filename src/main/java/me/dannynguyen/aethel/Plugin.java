@@ -3,8 +3,8 @@ package me.dannynguyen.aethel;
 import me.dannynguyen.aethel.commands.DeveloperCommand;
 import me.dannynguyen.aethel.commands.PingCommand;
 import me.dannynguyen.aethel.commands.StatusCommand;
+import me.dannynguyen.aethel.commands.TagCommand;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
-import me.dannynguyen.aethel.commands.aetheltag.TagCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
@@ -15,8 +15,8 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
-import me.dannynguyen.aethel.rpg.abilities.SlotPassive;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
@@ -140,7 +140,7 @@ public class Plugin extends JavaPlugin {
   /**
    * Schedules the plugin's repeating tasks.
    * <ul>
-   *  <li>{@link #updateMainHandEquipmentAttributes()}
+   *  <li>{@link #updateMainHandEquipment()}
    *  <li>{@link #updateDamageOverTimeStatuses()}
    *  <li>{@link #updateOvershields()}
    *  <li>{@link #updateBelowHealthPassives()}
@@ -150,7 +150,7 @@ public class Plugin extends JavaPlugin {
    */
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
-    scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipmentAttributes, 0, 10);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipment, 0, 10);
     scheduler.scheduleSyncRepeatingTask(this, this::updateDamageOverTimeStatuses, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateBelowHealthPassives, 0, 20);
@@ -161,7 +161,7 @@ public class Plugin extends JavaPlugin {
   /**
    * Adds an interval to compare the player's main hand item for updating {@link Equipment}.
    */
-  private void updateMainHandEquipmentAttributes() {
+  private void updateMainHandEquipment() {
     Map<UUID, RpgPlayer> rpgPlayers = data.getRpgSystem().getRpgPlayers();
     for (UUID uuid : rpgPlayers.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
@@ -187,10 +187,10 @@ public class Plugin extends JavaPlugin {
         if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
           if (entity instanceof Player player) {
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
-              handlePlayerDamageOverTime(uuid, statuses, player);
+              dealPlayerDamageOverTime(uuid, statuses, player);
             }
           } else {
-            handleEntityDamageOverTime(statuses, entity);
+            dealEntityDamageOverTime(statuses, entity);
           }
         }
       }
@@ -232,7 +232,7 @@ public class Plugin extends JavaPlugin {
    */
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
-      Map<SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(TriggerType.BELOW_HEALTH);
+      Map<Abilities.SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(TriggerType.BELOW_HEALTH);
       if (!belowHealthTriggers.isEmpty()) {
         for (PassiveAbility ability : belowHealthTriggers.values()) {
           if (!ability.isOnCooldown()) {
@@ -281,7 +281,7 @@ public class Plugin extends JavaPlugin {
    * @param statuses {@link Status statuses}
    * @param damagee  player taking damage
    */
-  private void handlePlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
+  private void dealPlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
     DamageMitigation mitigation = new DamageMitigation(damagee);
     if (statuses.containsKey(StatusType.BLEED)) {
@@ -302,7 +302,7 @@ public class Plugin extends JavaPlugin {
    * @param statuses {@link Status statuses}
    * @param entity   entity taking damage
    */
-  private void handleEntityDamageOverTime(Map<StatusType, Status> statuses, LivingEntity entity) {
+  private void dealEntityDamageOverTime(Map<StatusType, Status> statuses, LivingEntity entity) {
     if (statuses.containsKey(StatusType.BLEED)) {
       entity.damage(0.1);
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));

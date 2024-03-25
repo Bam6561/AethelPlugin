@@ -130,7 +130,7 @@ public class StatusCommand implements CommandExecutor {
       case GET -> getStatuses(user, uuid);
       case REMOVE_ALL -> removeStatuses(user, uuid);
       case REMOVE -> removeStatus(user, uuid, args);
-      case SET -> readSetStatusRequest(user, uuid, args);
+      case SET -> readSetStatus(user, uuid, args);
     }
   }
 
@@ -209,7 +209,7 @@ public class StatusCommand implements CommandExecutor {
    * @param uuid entity uuid
    * @param args user provided parameters
    */
-  private void readSetStatusRequest(Player user, UUID uuid, String[] args) {
+  private void readSetStatus(Player user, UUID uuid, String[] args) {
     try {
       StatusType statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
       try {

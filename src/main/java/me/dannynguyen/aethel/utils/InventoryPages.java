@@ -28,7 +28,7 @@ public class InventoryPages {
    * @param numberOfItems number of items
    * @return number of pages
    */
-  public static int calculateTotalPages(int numberOfItems) {
+  public static int getTotalPages(int numberOfItems) {
     int numberOfPages = numberOfItems / 45;
     if ((numberOfItems % 45) > 0) {
       numberOfPages += 1;
@@ -43,7 +43,7 @@ public class InventoryPages {
    * @param requestedPage requested page
    * @return interpreted page to view
    */
-  public static int calculatePageViewed(int numberOfPages, int requestedPage) {
+  public static int getPageViewed(int numberOfPages, int requestedPage) {
     if (numberOfPages > 0) {
       if (requestedPage >= numberOfPages) {
         requestedPage = numberOfPages - 1;

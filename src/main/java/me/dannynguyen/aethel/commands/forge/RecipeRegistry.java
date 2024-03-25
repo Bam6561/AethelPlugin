@@ -19,10 +19,10 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Represents {@link PersistentRecipe recipes} in memory.
+ * Represents {@link Recipe recipes} in memory.
  * <p>
  * After the registry's creation, {@link #loadData() loadData} must
- * be called in order to load {@link PersistentRecipe recipes} from its associated directory.
+ * be called in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
  * @version 1.17.14
@@ -35,12 +35,12 @@ public class RecipeRegistry implements DataRegistry {
   private final File directory;
 
   /**
-   * Loaded {@link PersistentRecipe recipes}.
+   * Loaded {@link Recipe recipes}.
    */
-  private final Map<String, PersistentRecipe> recipes = new HashMap<>();
+  private final Map<String, Recipe> recipes = new HashMap<>();
 
   /**
-   * Loaded {@link PersistentRecipe recipe} categories represented by groups of inventories.
+   * Loaded {@link Recipe recipe} categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    */
@@ -66,7 +66,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Loads {@link PersistentRecipe recipes} into memory.
+   * Loads {@link Recipe recipes} into memory.
    */
   public void loadData() {
     File[] files = directory.listFiles();
@@ -95,7 +95,7 @@ public class RecipeRegistry implements DataRegistry {
 
   /**
    * Deserializes bytes from designated recipe file into a
-   * {@link PersistentRecipe recipe} that is then sorted into a category.
+   * {@link Recipe recipe} that is then sorted into a category.
    * <p>
    * Data is stored in two lines of text, represented by the variable dataType.
    * <ul>
@@ -104,7 +104,7 @@ public class RecipeRegistry implements DataRegistry {
    * </ul>
    *
    * @param file       recipe file
-   * @param categories {@link PersistentRecipe recipe} categories
+   * @param categories {@link Recipe recipe} categories
    */
   private void readFile(File file, Map<String, List<List<ItemStack>>> categories) {
     List<ItemStack> results = new ArrayList<>();
@@ -119,7 +119,7 @@ public class RecipeRegistry implements DataRegistry {
 
       readLines(lines, results, materials);
       if (!results.isEmpty()) {
-        PersistentRecipe pRecipe = new PersistentRecipe(file, results, materials);
+        Recipe pRecipe = new Recipe(file, results, materials);
         recipes.put(pRecipe.getName(), pRecipe);
         categories.get("All").add(results);
         sortRecipe(categories, results);
@@ -132,14 +132,14 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Creates a {@link PersistentRecipe recipe} category's pages.
+   * Creates a {@link Recipe recipe} category's pages.
    *
-   * @param recipes {@link PersistentRecipe recipes} from a {@link PersistentRecipe recipe} category
-   * @return {@link PersistentRecipe recipe} category's pages
+   * @param recipes {@link Recipe recipes} from a {@link Recipe recipe} category
+   * @return {@link Recipe recipe} category's pages
    */
   private List<Inventory> createPages(List<List<ItemStack>> recipes) {
     int totalRecipes = recipes.size();
-    int totalPages = InventoryPages.calculateTotalPages(totalRecipes);
+    int totalPages = InventoryPages.getTotalPages(totalRecipes);
 
     List<Inventory> pages = new ArrayList<>();
     int pageStart = 0;
@@ -163,7 +163,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Reads lines of text from the file and adds decoded items to the {@link PersistentRecipe recipe}.
+   * Reads lines of text from the file and adds decoded items to the {@link Recipe recipe}.
    * <p>
    * Individual encoded ItemStacks are separated by spaces.
    *
@@ -194,7 +194,7 @@ public class RecipeRegistry implements DataRegistry {
   /**
    * Sorts a recipe into a category based on its {@link Key#RECIPE_CATEGORY}.
    *
-   * @param categories {@link PersistentRecipe recipe} categories
+   * @param categories {@link Recipe recipe} categories
    * @param results    interacting recipe
    */
   private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
@@ -210,7 +210,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Creates an item display for {@link PersistentRecipe recipes} with multiple results.
+   * Creates an item display for {@link Recipe recipes} with multiple results.
    * <p>
    * Format:
    * <ul>
@@ -240,22 +240,106 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded {@link PersistentRecipe recipe}.
+   * Gets loaded {@link Recipe recipe}.
    *
-   * @return loaded {@link PersistentRecipe recipes}
+   * @return loaded {@link Recipe recipes}
    */
   @NotNull
-  protected Map<String, PersistentRecipe> getRecipes() {
+  protected Map<String, Recipe> getRecipes() {
     return this.recipes;
   }
 
   /**
-   * Gets loaded {@link PersistentRecipe recipe} categories.
+   * Gets loaded {@link Recipe recipe} categories.
    *
-   * @return loaded {@link PersistentRecipe recipe} categories
+   * @return loaded {@link Recipe recipe} categories
    */
   @NotNull
   protected Map<String, List<Inventory>> getRecipeCategories() {
     return this.recipeCategories;
+  }
+
+  /**
+   * Represents a recipe stored in the file system.
+   * <p>
+   * Loaded into memory when {@link #loadData()} is called.
+   *
+   * @author Danny Nguyen
+   * @version 1.17.12
+   * @since 1.0.3
+   */
+  static class Recipe {
+    /**
+     * Recipe file.
+     * <ul>
+     *  <li>May be deleted from file system.
+     *  <li>Path persists until data is reloaded.
+     * </ul>
+     */
+    private final File file;
+
+    /**
+     * Recipe results.
+     */
+    private final List<ItemStack> results;
+
+    /**
+     * Recipe materials.
+     */
+    private final List<ItemStack> materials;
+
+    /**
+     * Effective recipe name.
+     */
+    private final String name;
+
+    /**
+     * Associates a recipe with its file.
+     *
+     * @param file      recipe file
+     * @param results   recipe results
+     * @param materials recipe materials
+     * @throws IllegalArgumentException if provided file is not a file
+     */
+    Recipe(File file, List<ItemStack> results, List<ItemStack> materials) {
+      this.file = file;
+      this.results = results;
+      this.materials = materials;
+      this.name = ItemReader.readName(results.get(0));
+    }
+
+    /**
+     * Deletes the recipe file from the file system.
+     */
+    protected void delete() {
+      file.delete();
+    }
+
+    /**
+     * Gets the recipe's results.
+     *
+     * @return recipe results
+     */
+    protected List<ItemStack> getResults() {
+      return this.results;
+    }
+
+    /**
+     * Gets the recipe's materials.
+     *
+     * @return recipe materials
+     */
+    protected List<ItemStack> getMaterials() {
+      return this.materials;
+    }
+
+    /**
+     * Gets the recipe's effective name.
+     *
+     * @return recipe name
+     */
+    protected String getName() {
+      return this.name;
+    }
   }
 }

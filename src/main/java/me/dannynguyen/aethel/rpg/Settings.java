@@ -30,7 +30,7 @@ public class Settings {
   /**
    * {@link ActiveAbility} crouch binds.
    */
-  private final Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = createBlankActiveAbilityCrouchBinds();
+  private final Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = createActiveAbilityCrouchBinds();
 
   /**
    * If {@link Health health bar} visible.
@@ -57,7 +57,7 @@ public class Settings {
    *
    * @return blank {@link ActiveAbility} crouch binds
    */
-  private Map<RpgEquipmentSlot, Integer> createBlankActiveAbilityCrouchBinds() {
+  private Map<RpgEquipmentSlot, Integer> createActiveAbilityCrouchBinds() {
     Map<RpgEquipmentSlot, Integer> activeAbilityCrouchBinds = new HashMap<>();
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
       activeAbilityCrouchBinds.put(eSlot, -1);

@@ -21,7 +21,7 @@ import java.util.*;
  * Represents items in memory.
  * <p>
  * After the registry's creation, {@link #loadData() loadData} must be called in
- * order to load {@link PersistentItem items} from its associated directory.
+ * order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
  * @version 1.17.14
@@ -34,12 +34,12 @@ public class ItemRegistry implements DataRegistry {
   private final File directory;
 
   /**
-   * Loaded {@link PersistentItem items}.
+   * Loaded {@link Item items}.
    */
-  private final Map<String, PersistentItem> items = new HashMap<>();
+  private final Map<String, Item> items = new HashMap<>();
 
   /**
-   * Loaded {@link PersistentItem item} categories represented by groups of inventories.
+   * Loaded {@link Item item} categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    */
@@ -65,7 +65,7 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Loads data by reading {@link PersistentItem item} files from the provided directory.
+   * Loads data by reading {@link Item item} files from the provided directory.
    */
   public void loadData() {
     File[] files = directory.listFiles();
@@ -94,7 +94,7 @@ public class ItemRegistry implements DataRegistry {
 
   /**
    * Deserializes bytes from designated item file into an
-   * {@link PersistentItem item} that is then sorted into a category.
+   * {@link Item item} that is then sorted into a category.
    *
    * @param file       item file
    * @param categories item categories
@@ -106,7 +106,7 @@ public class ItemRegistry implements DataRegistry {
       scanner.close();
 
       if (ItemReader.isNotNullOrAir(item)) {
-        PersistentItem pItem = new PersistentItem(file, item);
+        Item pItem = new Item(file, item);
         items.put(pItem.getName(), pItem);
         categories.get("All").add(item);
         sortItem(categories, item);
@@ -119,14 +119,14 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Creates an {@link PersistentItem item} category's pages.
+   * Creates an {@link Item item} category's pages.
    *
-   * @param items items from an {@link PersistentItem item} category
-   * @return {@link PersistentItem item} category's pages
+   * @param items items from an {@link Item item} category
+   * @return {@link Item item} category's pages
    */
   private List<Inventory> createPages(List<ItemStack> items) {
     int totalItems = items.size();
-    int totalPages = InventoryPages.calculateTotalPages(totalItems);
+    int totalPages = InventoryPages.getTotalPages(totalItems);
 
     List<Inventory> pages = new ArrayList<>();
     int pageStart = 0;
@@ -152,7 +152,7 @@ public class ItemRegistry implements DataRegistry {
   /**
    * Sorts an item into a category based on its {@link Key#ITEM_CATEGORY}.
    *
-   * @param categories {@link PersistentItem item} categories
+   * @param categories {@link Item item} categories
    * @param item       interacting item
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
@@ -169,22 +169,92 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded {@link PersistentItem items}.
+   * Gets loaded {@link Item items}.
    *
-   * @return loaded {@link PersistentItem items}
+   * @return loaded {@link Item items}
    */
   @NotNull
-  protected Map<String, PersistentItem> getItems() {
+  protected Map<String, Item> getItems() {
     return this.items;
   }
 
   /**
-   * Gets loaded {@link PersistentItem item} categories.
+   * Gets loaded {@link Item item} categories.
    *
-   * @return loaded {@link PersistentItem item} categories
+   * @return loaded {@link Item item} categories
    */
   @NotNull
   protected Map<String, List<Inventory>> getItemCategories() {
     return this.itemCategories;
+  }
+
+  /**
+   * Represents an ItemStack stored in the file system.
+   * <p>
+   * Loaded into memory when {@link #loadData()} is called.
+   *
+   * @author Danny Nguyen
+   * @version 1.17.12
+   * @since 1.3.2
+   */
+  static class Item {
+    /**
+     * Item file.
+     * <ul>
+     *  <li>May be deleted from file system.
+     *  <li>Path persists until data is reloaded.
+     * </ul>
+     */
+    private final File file;
+
+    /**
+     * ItemStack.
+     */
+    private final ItemStack item;
+
+    /**
+     * Effective item name.
+     */
+    private final String name;
+
+    /**
+     * Associates an ItemStack with its file.
+     *
+     * @param file item file
+     * @param item ItemStack
+     * @throws IllegalArgumentException if provided file is not a file
+     */
+    Item(File file, ItemStack item) throws IllegalArgumentException {
+      this.file = file;
+      this.item = item;
+      this.name = ItemReader.readName(item);
+    }
+
+    /**
+     * Deletes the item file from the file system.
+     */
+    protected void delete() {
+      file.delete();
+    }
+
+    /**
+     * Gets the ItemStack.
+     *
+     * @return ItemStack
+     */
+    @NotNull
+    protected ItemStack getItem() {
+      return this.item;
+    }
+
+    /**
+     * Gets the ItemStack's effective name.
+     *
+     * @return item name
+     */
+    @NotNull
+    protected String getName() {
+      return this.name;
+    }
   }
 }

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 /**
  * Represents a menu that supports categorical pagination for
- * crafting, editing, and removing {@link PersistentRecipe recipes}.
+ * crafting, editing, and removing {@link RecipeRegistry.Recipe recipes}.
  *
  * @author Danny Nguyen
  * @version 1.18.1
@@ -76,7 +76,7 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to view {@link PersistentRecipe recipe} categories.
+   * Sets the menu to view {@link RecipeRegistry.Recipe recipe} categories.
    *
    * @return Recipe menu
    */
@@ -90,17 +90,17 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Sets the menu to load a {@link PersistentRecipe recipe} category page.
+   * Sets the menu to load a {@link RecipeRegistry.Recipe recipe} category page.
    *
    * @param requestedCategory requested category
    * @param requestedPage     requested page
-   * @return {@link PersistentRecipe recipe} category page
+   * @return {@link RecipeRegistry.Recipe recipe} category page
    */
   @NotNull
   public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
     List<Inventory> category = Plugin.getData().getRecipeRegistry().getRecipeCategories().get(requestedCategory);
     int numberOfPages = category.size();
-    int pageViewed = InventoryPages.calculatePageViewed(numberOfPages, requestedPage);
+    int pageViewed = InventoryPages.getPageViewed(numberOfPages, requestedPage);
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
@@ -154,7 +154,7 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Adds {@link PersistentRecipe recipe} categories.
+   * Adds {@link RecipeRegistry.Recipe recipe} categories.
    */
   private void addCategories() {
     Set<String> categories = Plugin.getData().getRecipeRegistry().getRecipeCategories().keySet();
@@ -172,18 +172,18 @@ public class RecipeMenu implements CategoryMenu {
    */
   public enum Action {
     /**
-     * Craft {@link PersistentRecipe recipes}.
+     * Craft {@link RecipeRegistry.Recipe recipes}.
      */
     CRAFT,
 
     /**
-     * Edit {@link PersistentRecipe recipes}.
+     * Edit {@link RecipeRegistry.Recipe recipes}.
      */
     EDIT,
 
     /**
-     * Remove {@link PersistentRecipe recipes}.
+     * Remove {@link RecipeRegistry.Recipe recipes}.
      */
-    REMOVE;
+    REMOVE
   }
 }

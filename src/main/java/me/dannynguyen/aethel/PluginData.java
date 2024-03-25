@@ -4,7 +4,6 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemRegistry;
 import me.dannynguyen.aethel.commands.forge.RecipeRegistry;
 import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
-import me.dannynguyen.aethel.commands.playerstat.StatArchive;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.plugin.PluginSystem;
@@ -29,19 +28,14 @@ import java.util.logging.Logger;
  */
 public class PluginData {
   /**
-   * Registered {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
+   * Registered {@link ItemRegistry items}.
    */
   private final ItemRegistry itemRegistry = new ItemRegistry(Directory.AETHELITEM.getFile());
 
   /**
-   * Registered {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+   * Registered {@link RecipeRegistry recipes}.
    */
   private final RecipeRegistry recipeRegistry = new RecipeRegistry(Directory.FORGE.getFile());
-
-  /**
-   * Available {@link StatArchive player stats}.
-   */
-  private final StatArchive statArchive = new StatArchive();
 
   /**
    * Currently {@link EditedItemCache editing items}.
@@ -77,8 +71,8 @@ public class PluginData {
   /**
    * Loads persistent plugin data. Creates data directories if they do not already exist.
    * <ul>
-   *  <li>{@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem}
-   *  <li>{@link me.dannynguyen.aethel.commands.forge.PersistentRecipe}
+   *  <li>{@link ItemRegistry}
+   *  <li>{@link RecipeRegistry}
    *  <li>{@link Equipment Jewelry}
    *  <li>{@link Settings}
    * </ul>
@@ -176,16 +170,6 @@ public class PluginData {
   @NotNull
   public RecipeRegistry getRecipeRegistry() {
     return this.recipeRegistry;
-  }
-
-  /**
-   * Gets the plugin's {@link StatArchive}.
-   *
-   * @return plugin's {@link StatArchive}
-   */
-  @NotNull
-  public StatArchive getPlayerStatRecord() {
-    return this.statArchive;
   }
 
   /**

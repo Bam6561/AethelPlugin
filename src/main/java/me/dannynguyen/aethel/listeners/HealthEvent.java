@@ -5,8 +5,8 @@ import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.TriggerType;
 import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
-import me.dannynguyen.aethel.rpg.abilities.SlotPassive;
 import me.dannynguyen.aethel.utils.item.ItemDurability;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -57,16 +57,16 @@ public class HealthEvent implements Listener {
     if (e instanceof EntityDamageByEntityEvent event) {
       if (event.getDamager() instanceof Player || event.getEntity() instanceof Player) {
         if (event.getDamager() instanceof Player damager && !(event.getEntity() instanceof Player)) { // PvE
-          triggerDamageDealtPassives(event, damager);
+          triggerPassivesDamageDealt(event, damager);
           calculatePlayerDamageDone(event, damager);
         } else {
           Player damagee = (Player) event.getEntity();
           DamageMitigation mitigation = new DamageMitigation(damagee);
           if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
-            triggerDamageDealtPassives(event, damager);
+            triggerPassivesDamageDealt(event, damager);
             calculatePlayerDamageDone(event, damager);
           }
-          triggerDamageTakenPassives(event, damagee);
+          triggerPassivesDamageTaken(event, damagee);
           calculatePlayerDamageTaken(event, damagee, mitigation);
         }
       }
@@ -105,9 +105,9 @@ public class HealthEvent implements Listener {
    * @param e       entity damage by entity event
    * @param damager interacting player
    */
-  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
+  private void triggerPassivesDamageDealt(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-      Map<SlotPassive, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAbilities().getTriggerPassives().get(TriggerType.DAMAGE_DEALT);
+      Map<Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAbilities().getTriggerPassives().get(TriggerType.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
         if (e.getEntity() instanceof LivingEntity damagee) {
           Random random = new Random();
@@ -137,8 +137,8 @@ public class HealthEvent implements Listener {
    * @param e       entity damage by entity event
    * @param damagee interacting player
    */
-  private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
-    Map<SlotPassive, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAbilities().getTriggerPassives().get(TriggerType.DAMAGE_TAKEN);
+  private void triggerPassivesDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
+    Map<Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAbilities().getTriggerPassives().get(TriggerType.DAMAGE_TAKEN);
     if (!damageTakenTriggers.isEmpty()) {
       if (e.getDamager() instanceof LivingEntity damager) {
         Random random = new Random();
