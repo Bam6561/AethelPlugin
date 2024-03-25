@@ -5,7 +5,10 @@ import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.listeners.ActionEvent;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -55,7 +58,7 @@ public class PluginPlayer {
   /**
    * {@link PassiveTriggerType}
    */
-  private PassiveTriggerType passiveTriggerType;
+  private PassiveTriggerType trigger;
   /**
    * Interacting object type.
    */
@@ -90,6 +93,7 @@ public class PluginPlayer {
    *
    * @return {@link ActionEvent.Input}
    */
+  @Nullable
   public ActionEvent.Input getActionInput() {
     return this.actionInput;
   }
@@ -99,7 +103,7 @@ public class PluginPlayer {
    *
    * @param actionInput {@link ActionEvent.Input}
    */
-  public void setActionInput(ActionEvent.Input actionInput) {
+  public void setActionInput(@Nullable ActionEvent.Input actionInput) {
     this.actionInput = actionInput;
   }
 
@@ -108,6 +112,7 @@ public class PluginPlayer {
    *
    * @return {@link MessageEvent.Type}
    */
+  @Nullable
   public MessageEvent.Type getMessageInput() {
     return this.messageType;
   }
@@ -117,7 +122,7 @@ public class PluginPlayer {
    *
    * @param messageType {@link MessageEvent.Type}
    */
-  public void setMessageInput(MessageEvent.Type messageType) {
+  public void setMessageInput(@Nullable MessageEvent.Type messageType) {
     this.messageType = messageType;
   }
 
@@ -126,6 +131,7 @@ public class PluginPlayer {
    *
    * @return {@link MenuEvent.Menu menu type}
    */
+  @Nullable
   public MenuEvent.Menu getMenu() {
     return this.menu;
   }
@@ -136,7 +142,7 @@ public class PluginPlayer {
    *
    * @param menu {@link MenuEvent.Menu menu type}
    */
-  public void setMenu(MenuEvent.Menu menu) {
+  public void setMenu(@Nullable MenuEvent.Menu menu) {
     this.menu = menu;
   }
 
@@ -145,6 +151,7 @@ public class PluginPlayer {
    *
    * @return {@link MenuEvent.Mode menu mode}
    */
+  @Nullable
   public MenuEvent.Mode getMode() {
     return this.mode;
   }
@@ -154,7 +161,7 @@ public class PluginPlayer {
    *
    * @param mode {@link MenuEvent.Mode menu mode}
    */
-  public void setMode(MenuEvent.Mode mode) {
+  public void setMode(@Nullable MenuEvent.Mode mode) {
     this.mode = mode;
   }
 
@@ -163,6 +170,7 @@ public class PluginPlayer {
    *
    * @return menu category
    */
+  @NotNull
   public String getCategory() {
     return this.category;
   }
@@ -172,8 +180,8 @@ public class PluginPlayer {
    *
    * @param category menu category
    */
-  public void setCategory(String category) {
-    this.category = category;
+  public void setCategory(@NotNull String category) {
+    this.category = Objects.requireNonNull(category, "Null category");
   }
 
   /**
@@ -199,6 +207,7 @@ public class PluginPlayer {
    *
    * @return target player's UUID
    */
+  @Nullable
   public UUID getTarget() {
     return this.target;
   }
@@ -208,7 +217,7 @@ public class PluginPlayer {
    *
    * @param target target's UUID
    */
-  public void setTarget(UUID target) {
+  public void setTarget(@Nullable UUID target) {
     this.target = target;
   }
 
@@ -217,6 +226,7 @@ public class PluginPlayer {
    *
    * @return {@link RpgEquipmentSlot}
    */
+  @Nullable
   public RpgEquipmentSlot getSlot() {
     return this.slot;
   }
@@ -226,7 +236,7 @@ public class PluginPlayer {
    *
    * @param slot {@link RpgEquipmentSlot}
    */
-  public void setSlot(RpgEquipmentSlot slot) {
+  public void setSlot(@Nullable RpgEquipmentSlot slot) {
     this.slot = slot;
   }
 
@@ -235,17 +245,18 @@ public class PluginPlayer {
    *
    * @return {@link PassiveTriggerType}
    */
+  @Nullable
   public PassiveTriggerType getTrigger() {
-    return this.passiveTriggerType;
+    return this.trigger;
   }
 
   /**
    * Sets the {@link PassiveTriggerType}.
    *
-   * @param passiveTriggerType {@link PassiveTriggerType}
+   * @param trigger {@link PassiveTriggerType}
    */
-  public void setTrigger(PassiveTriggerType passiveTriggerType) {
-    this.passiveTriggerType = passiveTriggerType;
+  public void setTrigger(@Nullable PassiveTriggerType trigger) {
+    this.trigger = trigger;
   }
 
   /**
@@ -253,6 +264,7 @@ public class PluginPlayer {
    *
    * @return object type
    */
+  @NotNull
   public String getObjectType() {
     return this.objectType;
   }
@@ -262,7 +274,7 @@ public class PluginPlayer {
    *
    * @param objectType object type
    */
-  public void setObjectType(String objectType) {
-    this.objectType = objectType;
+  public void setObjectType(@NotNull String objectType) {
+    this.objectType = Objects.requireNonNull(objectType, "Null object type");
   }
 }

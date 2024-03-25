@@ -263,17 +263,17 @@ public class MenuEvent implements Listener {
    */
   public enum Menu {
     /**
-     * View {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem item} categories.
+     * View {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry item} categories.
      */
     AETHELITEM_CATEGORY("aethelitem"),
 
     /**
-     * Get {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
+     * Get {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry items}.
      */
     AETHELITEM_GET("aethelitem"),
 
     /**
-     * Remove {@link me.dannynguyen.aethel.commands.aethelitem.PersistentItem items}.
+     * Remove {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry items}.
      */
     AETHELITEM_REMOVE("aethelitem"),
 
@@ -298,32 +298,32 @@ public class MenuEvent implements Listener {
     CHARACTER_SETTINGS("character"),
 
     /**
-     * View {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} categories.
+     * View {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipe} categories.
      */
     FORGE_CATEGORY("forge"),
 
     /**
-     * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     * Craft {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
     FORGE_CRAFT("forge"),
 
     /**
-     * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipe} operation.
+     * Craft {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipe} operation.
      */
     FORGE_CRAFT_RECIPE("forge"),
 
     /**
-     * Edit {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     * Edit {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
     FORGE_EDIT("forge"),
 
     /**
-     * Remove {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     * Remove {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
     FORGE_REMOVE("forge"),
 
     /**
-     * Save {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     * Save {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
     FORGE_SAVE("forge"),
 
@@ -422,12 +422,12 @@ public class MenuEvent implements Listener {
    */
   public enum Mode {
     /**
-     * Craft {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     * Craft {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
     RECIPE_MENU_CRAFT("craft"),
 
     /**
-     * Edit {@link me.dannynguyen.aethel.commands.forge.PersistentRecipe recipes}.
+     * Edit {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
     RECIPE_MENU_EDIT("edit");
 

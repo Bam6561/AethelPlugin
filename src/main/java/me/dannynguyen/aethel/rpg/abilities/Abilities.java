@@ -46,12 +46,12 @@ public class Abilities {
   /**
    * {@link ActiveAbility Active abilities} identified by their {@link RpgEquipmentSlot} trigger.
    */
-  private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = new HashMap<>();
+  private final Map<RpgEquipmentSlot, List<ActiveAbility>> triggerActives = createActiveTriggers();
 
   /**
    * {@link ActiveAbilityType Active abilities} on cooldown.
    */
-  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives = createActiveCooldownTriggers();
 
   /**
    * No parameter constructor.
@@ -87,18 +87,62 @@ public class Abilities {
   }
 
   /**
+   * Creates a blank map of {@link RpgEquipmentSlot triggerable} {@link ActiveAbility active abilities}.
+   *
+   * @return blank map of {@link RpgEquipmentSlot triggerable} {@link ActiveAbility active abilities}
+   */
+  private Map<RpgEquipmentSlot, List<ActiveAbility>> createActiveTriggers() {
+    Map<RpgEquipmentSlot, List<ActiveAbility>> triggers = new HashMap<>();
+    for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
+      triggers.put(slot, new ArrayList<>());
+    }
+    return triggers;
+  }
+
+  /**
+   * Creates a blank map of {@link RpgEquipmentSlot triggerable}
+   * {@link ActiveAbilityType active abilities} on cooldown.
+   *
+   * @return blank map of {@link RpgEquipmentSlot triggerable} {@link ActiveAbilityType active abilities} on cooldown
+   */
+  private Map<RpgEquipmentSlot, Set<ActiveAbilityType>> createActiveCooldownTriggers() {
+    Map<RpgEquipmentSlot, Set<ActiveAbilityType>> triggers = new HashMap<>();
+    for (RpgEquipmentSlot slot : RpgEquipmentSlot.values()) {
+      triggers.put(slot, new HashSet<>());
+    }
+    return triggers;
+  }
+
+  /**
    * Checks if the item is in the correct {@link RpgEquipmentSlot}
    * before updating the player's {@link PassiveAbility passive abilities}.
    *
    * @param eSlot         {@link RpgEquipmentSlot}
    * @param dataContainer item's persistent tags
    */
-  public void readPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] passives = dataContainer.get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+  public void readPassives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
+    String[] passives = Objects.requireNonNull(dataContainer, "Null data container").get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split("");
     for (String passive : passives) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(passive.substring(0, passive.indexOf("."))));
-      if (slot == eSlot) {
+      if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
         addPassives(eSlot, dataContainer, passive);
+      }
+    }
+  }
+
+  /**
+   * Checks if the item is in the correct {@link RpgEquipmentSlot}
+   * before updating the player's {@link ActiveAbility active abilities}.
+   *
+   * @param eSlot         {@link RpgEquipmentSlot}
+   * @param dataContainer item's persistent tags
+   */
+  public void readActives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
+    String[] actives = Objects.requireNonNull(dataContainer, "Null data container").get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    for (String active : actives) {
+      RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(active.substring(0, active.indexOf("."))));
+      if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
+        addActives(eSlot, dataContainer, active);
       }
     }
   }
@@ -120,6 +164,20 @@ public class Abilities {
   }
 
   /**
+   * Adds new {@link Equipment} {@link ActiveAbility active abilities}.
+   *
+   * @param eSlot         {@link RpgEquipmentSlot}
+   * @param dataContainer item's persistent tags
+   * @param active        {@link ActiveAbility} data
+   */
+  private void addActives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String active) {
+    NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + active);
+    String[] abilityMeta = active.split("\\.");
+    ActiveAbilityType activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
+    triggerActives.get(eSlot).add(new ActiveAbility(onCooldownActives, eSlot, activeAbilityType, dataContainer.get(activeKey, PersistentDataType.STRING).split(" ")));
+  }
+
+  /**
    * Removes existing {@link Equipment} {@link PassiveAbility passive abilities} at an {@link RpgEquipmentSlot}.
    *
    * @param eSlot {@link RpgEquipmentSlot}
@@ -127,10 +185,19 @@ public class Abilities {
   public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
     List<TriggerPassive> abilitiesToRemove = new ArrayList<>();
     for (TriggerPassive triggerPassive : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
-      triggerPassives.get(triggerPassive.passiveTriggerType()).remove(new SlotPassive(eSlot, triggerPassive.type()));
+      triggerPassives.get(triggerPassive.trigger()).remove(new SlotPassive(eSlot, triggerPassive.ability()));
       abilitiesToRemove.add(triggerPassive);
     }
     slotPassives.get(eSlot).removeAll(abilitiesToRemove);
+  }
+
+  /**
+   * Removes existing {@link Equipment} {@link ActiveAbility active abilities} at an {@link RpgEquipmentSlot}.
+   *
+   * @param eSlot {@link RpgEquipmentSlot}
+   */
+  public void removeActives(@NotNull RpgEquipmentSlot eSlot) {
+    triggerActives.get(eSlot).clear();
   }
 
   /**
@@ -171,11 +238,13 @@ public class Abilities {
    * Used to identify unique {@link PassiveAbility passive abilities}
    * after a {@link PassiveTriggerType} is called.
    *
+   * @param eSlot {@link RpgEquipmentSlot}
+   * @param type  {@link PassiveAbilityType}
    * @author Danny Nguyen
    * @version 1.18.1
    * @since 1.16.3
    */
-  public record SlotPassive(RpgEquipmentSlot eSlot, PassiveAbilityType type) {
+  public record SlotPassive(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
     /**
      * Associates an {@link RpgEquipmentSlot} with an {@link PassiveAbilityType}.
      *
@@ -238,20 +307,22 @@ public class Abilities {
    * <p>
    * Used to remove abilities upon {@link EquipmentEvent}.
    *
+   * @param trigger {@link PassiveTriggerType}
+   * @param ability {@link PassiveAbilityType}
    * @author Danny Nguyen
    * @version 1.18.1
    * @since 1.16.1
    */
-  public record TriggerPassive(PassiveTriggerType passiveTriggerType, PassiveAbilityType type) {
+  public record TriggerPassive(@NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType ability) {
     /**
      * Associates a {@link PassiveTriggerType} with a {@link PassiveAbilityType}.
      *
-     * @param passiveTriggerType {@link PassiveTriggerType}
-     * @param type    {@link PassiveAbilityType}
+     * @param trigger {@link PassiveTriggerType}
+     * @param ability {@link PassiveAbilityType}
      */
-    public TriggerPassive(@NotNull PassiveTriggerType passiveTriggerType, @NotNull PassiveAbilityType type) {
-      this.passiveTriggerType = Objects.requireNonNull(passiveTriggerType, "Null trigger");
-      this.type = Objects.requireNonNull(type, "Null ability");
+    public TriggerPassive(@NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType ability) {
+      this.trigger = Objects.requireNonNull(trigger, "Null trigger");
+      this.ability = Objects.requireNonNull(ability, "Null ability");
     }
 
     /**
@@ -260,8 +331,8 @@ public class Abilities {
      * @return {@link PassiveTriggerType}
      */
     @NotNull
-    public PassiveTriggerType passiveTriggerType() {
-      return this.passiveTriggerType;
+    public PassiveTriggerType trigger() {
+      return this.trigger;
     }
 
     /**
@@ -270,8 +341,8 @@ public class Abilities {
      * @return {@link PassiveAbilityType}
      */
     @NotNull
-    public PassiveAbilityType type() {
-      return this.type;
+    public PassiveAbilityType ability() {
+      return this.ability;
     }
   }
 }

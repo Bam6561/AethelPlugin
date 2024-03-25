@@ -57,7 +57,7 @@ public class PassiveMenu implements Menu {
   /**
    * {@link PassiveTriggerType}
    */
-  private final PassiveTriggerType passiveTriggerType;
+  private final PassiveTriggerType trigger;
 
   /**
    * ItemStack data container.
@@ -72,14 +72,14 @@ public class PassiveMenu implements Menu {
   /**
    * Associates a new Passive menu with its user and item.
    *
-   * @param user        user
-   * @param passiveTriggerType {@link PassiveTriggerType}
-   * @param eSlot       {@link RpgEquipmentSlot}
+   * @param user    user
+   * @param trigger {@link PassiveTriggerType}
+   * @param eSlot   {@link RpgEquipmentSlot}
    */
-  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType passiveTriggerType) {
+  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType trigger) {
     this.user = Objects.requireNonNull(user, "Null user");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
-    this.passiveTriggerType = Objects.requireNonNull(passiveTriggerType, "Null trigger");
+    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
     this.dataContainer = item.getItemMeta().getPersistentDataContainer();
     this.existingPassives = mapPassives();
@@ -92,7 +92,7 @@ public class PassiveMenu implements Menu {
    * @return Passive menu
    */
   private Inventory createMenu() {
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + passiveTriggerType.getProperName());
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Passives " + ChatColor.DARK_AQUA + eSlot.getProperName() + " " + ChatColor.YELLOW + trigger.getProperName());
     inv.setItem(1, item);
     return inv;
   }

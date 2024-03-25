@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 
 /**
@@ -36,10 +37,10 @@ public class PastItemHistory {
    * @param user item owner
    * @param item original item
    */
-  protected void addPastItem(Player user, ItemStack item) {
-    ItemStack pastItem = item.clone();
+  protected void addPastItem(@NotNull Player user, @NotNull ItemStack item) {
+    ItemStack pastItem = Objects.requireNonNull(item, "Null item").clone();
     ItemMeta meta = pastItem.getItemMeta();
-    meta.setDisplayName(ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " " + ItemReader.readName(pastItem));
+    meta.setDisplayName(ChatColor.DARK_PURPLE + Objects.requireNonNull(user, "Null user").getName() + ChatColor.WHITE + "" + ItemReader.readName(pastItem));
     pastItem.setItemMeta(meta);
 
     if (pastItems.size() == 27) {

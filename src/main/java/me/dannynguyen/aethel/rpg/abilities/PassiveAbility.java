@@ -38,7 +38,7 @@ public class PassiveAbility {
   /**
    * {@link PassiveTriggerType}
    */
-  private final PassiveTriggerType passiveTriggerType;
+  private final PassiveTriggerType trigger;
 
   /**
    * {@link PassiveAbilityType}
@@ -60,16 +60,16 @@ public class PassiveAbility {
    *
    * @param onCooldownPassives {@link PassiveAbilityType} on cooldown
    * @param eSlot              {@link RpgEquipmentSlot}
-   * @param passiveTriggerType        {@link PassiveTriggerType}
+   * @param trigger            {@link PassiveTriggerType}
    * @param type               {@link PassiveAbilityType}
    * @param dataValues         ability data
    */
-  public PassiveAbility(@NotNull Map<PassiveTriggerType, Set<Abilities.SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType passiveTriggerType, @NotNull PassiveAbilityType type, @NotNull String[] dataValues) {
+  public PassiveAbility(@NotNull Map<PassiveTriggerType, Set<Abilities.SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType type, @NotNull String[] dataValues) {
     this.onCooldownPassives = Objects.requireNonNull(onCooldownPassives, "Null on cooldown passives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
-    this.passiveTriggerType = Objects.requireNonNull(passiveTriggerType, "Null trigger");
+    this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.type = Objects.requireNonNull(type, "Null ability");
-    initializeAbilityData(passiveTriggerType.getCondition(), type.getEffect(), dataValues);
+    initializeAbilityData(trigger.getCondition(), type.getEffect(), dataValues);
   }
 
   /**
@@ -101,7 +101,8 @@ public class PassiveAbility {
    *
    * @param targetUUID target UUID
    */
-  public void doEffect(UUID targetUUID) {
+  public void doEffect(@NotNull UUID targetUUID) {
+    Objects.requireNonNull(targetUUID, "Null target UUID");
     switch (type.getEffect()) {
       case STACK_INSTANCE -> applyStackInstance(targetUUID);
       case CHAIN_DAMAGE -> chainDamage(targetUUID);
@@ -219,7 +220,7 @@ public class PassiveAbility {
    */
   @NotNull
   public PassiveTriggerType getTrigger() {
-    return this.passiveTriggerType;
+    return this.trigger;
   }
 
   /**
@@ -258,7 +259,7 @@ public class PassiveAbility {
    * @return if the {@link PassiveAbilityType} is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownPassives.get(passiveTriggerType).contains(new Abilities.SlotPassive(eSlot, type));
+    return onCooldownPassives.get(trigger).contains(new Abilities.SlotPassive(eSlot, type));
   }
 
   /**
@@ -269,9 +270,9 @@ public class PassiveAbility {
   public void setOnCooldown(boolean isOnCooldown) {
     Abilities.SlotPassive slotPassive = new Abilities.SlotPassive(eSlot, type);
     if (isOnCooldown) {
-      onCooldownPassives.get(passiveTriggerType).add(slotPassive);
+      onCooldownPassives.get(trigger).add(slotPassive);
     } else {
-      onCooldownPassives.get(passiveTriggerType).remove(slotPassive);
+      onCooldownPassives.get(trigger).remove(slotPassive);
     }
   }
 }

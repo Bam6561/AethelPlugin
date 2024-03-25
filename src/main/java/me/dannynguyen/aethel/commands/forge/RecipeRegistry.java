@@ -320,6 +320,7 @@ public class RecipeRegistry implements DataRegistry {
      *
      * @return recipe results
      */
+    @NotNull
     protected List<ItemStack> getResults() {
       return this.results;
     }
@@ -329,6 +330,7 @@ public class RecipeRegistry implements DataRegistry {
      *
      * @return recipe materials
      */
+    @NotNull
     protected List<ItemStack> getMaterials() {
       return this.materials;
     }
@@ -338,6 +340,7 @@ public class RecipeRegistry implements DataRegistry {
      *
      * @return recipe name
      */
+    @NotNull
     protected String getName() {
       return this.name;
     }

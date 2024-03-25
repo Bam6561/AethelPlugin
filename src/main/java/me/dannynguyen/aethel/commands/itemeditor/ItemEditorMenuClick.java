@@ -1039,7 +1039,7 @@ public class ItemEditorMenuClick implements MenuClick {
     /**
      * Adds ability {@link PassiveTriggerType} lore.
      *
-     * @param abilityLore ability lore
+     * @param abilityLore        ability lore
      * @param passiveTriggerType {@link PassiveTriggerType}
      */
     private void addTriggerLore(StringBuilder abilityLore, PassiveTriggerType passiveTriggerType) {

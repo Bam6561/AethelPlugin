@@ -59,11 +59,11 @@ public class AethelAttributes {
    * @param eSlot         {@link RpgEquipmentSlot}
    * @param dataContainer item's persistent tags
    */
-  public void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer) {
-    String[] attributes = dataContainer.get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+  public void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
+    String[] attributes = Objects.requireNonNull(dataContainer, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(attribute.substring(0, attribute.indexOf("."))));
-      if (slot == eSlot) {
+      if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
         addAttributes(eSlot, dataContainer, attribute);
       }
     }

@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.18.6
  * @since 1.13.4
  */
 public class Equipment {
@@ -173,6 +173,10 @@ public class Equipment {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
       abilities.readPassives(eSlot, dataContainer);
     }
+    if (dataContainer.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      abilities.getTriggerActives().put(eSlot, new ArrayList<>());
+      abilities.readActives(eSlot, dataContainer);
+    }
   }
 
   /**
@@ -189,6 +193,9 @@ public class Equipment {
     }
     if (abilities.getSlotPassives().containsKey(eSlot)) {
       abilities.removePassives(eSlot);
+    }
+    if (abilities.getTriggerActives().containsKey(eSlot)) {
+      abilities.removeActives(eSlot);
     }
   }
 

@@ -63,7 +63,8 @@ public class ForgeMenuClick implements MenuClick {
   }
 
   /**
-   * Either saves a {@link RecipeRegistry.Recipe recipe} or opens a {@link RecipeRegistry.Recipe recipe} category page.
+   * Either saves a {@link RecipeRegistry.Recipe recipe} or
+   * opens a {@link RecipeRegistry.Recipe recipe} category page.
    */
   public void interpretMenuClick() {
     switch (slot) {
@@ -164,7 +165,8 @@ public class ForgeMenuClick implements MenuClick {
   /**
    * Opens the {@link RecipeMenu} with the intent to edit {@link RecipeRegistry.Recipe recipe}.
    * <p>
-   * The player can return to either the {@link RecipeMenu} or a {@link RecipeRegistry.Recipe recipe} category.
+   * The player can return to either the {@link RecipeMenu}
+   * or a {@link RecipeRegistry.Recipe recipe} category.
    */
   private void openForgeEdit() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);

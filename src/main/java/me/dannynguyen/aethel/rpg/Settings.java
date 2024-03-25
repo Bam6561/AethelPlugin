@@ -126,8 +126,8 @@ public class Settings {
    * @param eSlot    {@link RpgEquipmentSlot}
    * @param heldSlot hotbar slot
    */
-  public void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot, int heldSlot) {
-    activeAbilityCrouchBinds.put(eSlot, heldSlot);
+  public void setActiveAbilityCrouchBind(@NotNull RpgEquipmentSlot eSlot, int heldSlot) {
+    activeAbilityCrouchBinds.put(Objects.requireNonNull(eSlot, "Null slot"), heldSlot);
   }
 
   /**

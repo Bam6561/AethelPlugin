@@ -145,7 +145,8 @@ class RecipeCraft {
   }
 
   /**
-   * Removes the {@link RecipeRegistry.Recipe recipe's} materials from the user's inventory and gives the {@link RecipeRegistry.Recipe recipe's} results.
+   * Removes the {@link RecipeRegistry.Recipe recipe's} materials from the
+   * user's inventory and gives the {@link RecipeRegistry.Recipe recipe's} results.
    */
   private void craftRecipe() {
     for (SlotItem invSlot : postCraft) {
