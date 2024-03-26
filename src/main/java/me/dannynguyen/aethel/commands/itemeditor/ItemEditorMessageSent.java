@@ -42,7 +42,7 @@ import java.util.UUID;
  * Called with {@link MessageEvent}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.18.8
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -363,6 +363,7 @@ public class ItemEditorMessageSent {
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
+        case TELEPORT -> readActiveTeleport();
       }
     } else {
       removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
@@ -415,10 +416,10 @@ public class ItemEditorMessageSent {
       try {
         int cooldown = Integer.parseInt(args[0]);
         try {
-          double distance = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, Key.ACTIVE_LIST.getNamespacedKey());
+          double modifier = Double.parseDouble(args[1]);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + modifier, Key.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+          user.sendMessage(Message.INVALID_MODIFIER.getMessage());
         }
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
@@ -438,7 +439,7 @@ public class ItemEditorMessageSent {
       try {
         int cooldown = Integer.parseInt(args[0]);
         try {
-          double distance = Double.parseDouble(args[1]);
+          int distance = Integer.parseInt(args[1]);
           try {
             int delay = Integer.parseInt(args[2]);
             setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, Key.ACTIVE_LIST.getNamespacedKey());
@@ -470,6 +471,29 @@ public class ItemEditorMessageSent {
           setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, Key.ACTIVE_LIST.getNamespacedKey());
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_RADIUS.getMessage());
+        }
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      }
+    } else {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    }
+  }
+
+  /**
+   * Checks if the input was formatted correctly before setting the
+   * {@link ActiveAbilityType.Effect#TELEPORT}.
+   */
+  private void readActiveTeleport() {
+    String[] args = e.getMessage().split(" ");
+    if (args.length == 2) {
+      try {
+        int cooldown = Integer.parseInt(args[0]);
+        try {
+          int distance = Integer.parseInt(args[1]);
+          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, Key.ACTIVE_LIST.getNamespacedKey());
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         }
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
@@ -893,8 +917,8 @@ public class ItemEditorMessageSent {
                     try {
                       double damage = Integer.parseInt(args[3]);
                       try {
-                        double distance = Double.parseDouble(args[4]);
-                        setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + damage + " " + distance);
+                        double radius = Double.parseDouble(args[4]);
+                        setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + damage + " " + radius);
                       } catch (NumberFormatException ex) {
                         user.sendMessage(Message.INVALID_RADIUS.getMessage());
                       }

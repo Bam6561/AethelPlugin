@@ -19,7 +19,7 @@ import java.util.UUID;
  * Collection of player action listeners.
  *
  * @author Danny Nguyen
- * @version 1.18.7
+ * @version 1.18.8
  * @since 1.17.3
  */
 public class ActionEvent implements Listener {
@@ -46,7 +46,7 @@ public class ActionEvent implements Listener {
         int heldSlot = player.getInventory().getHeldItemSlot();
 
         settings.setActiveAbilityCrouchBind(slot, heldSlot);
-        player.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Crouch Bind] " + ChatColor.WHITE + heldSlot + 1);
+        player.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Crouch Bind] " + ChatColor.WHITE + (heldSlot + 1));
         pluginPlayer.setActionInput(null);
         player.openInventory(new SettingsMenu(player).getMainMenu());
         pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);

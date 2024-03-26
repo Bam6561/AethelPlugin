@@ -7,14 +7,14 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.18.8
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
   /**
    * Forward facing teleport.
    */
-  BLINK("Blink", "blink", Effect.MOVEMENT),
+  BLINK("Blink", "blink", Effect.TELEPORT),
 
   /**
    * Forward facing movement.
@@ -99,19 +99,24 @@ public enum ActiveAbilityType {
    */
   public enum Effect {
     /**
-     * Causes movement.
+     * Causes movement with velocity.
      */
-    MOVEMENT("Cooldown(t), Distance(m)"),
+    MOVEMENT("Cooldown(t), Modifier(%)"),
 
     /**
-     * Causes movement that returns to the original location after a delay.
+     * Causes instant movement that returns to the original location after a delay.
      */
-    PROJECTION("Cooldown(t), Distance(m), Delay(t)"),
+    PROJECTION("Cooldown(t), Modifier(%), Delay(t)"),
 
     /**
      * Causes Shatter.
      */
-    SHATTER("Cooldown(t), Radius(m)");
+    SHATTER("Cooldown(t), Radius(m)"),
+
+    /**
+     * Causes instant movement.
+     */
+    TELEPORT("Cooldown(t), Distance(m)");
 
     /**
      * Active ability effect's data.

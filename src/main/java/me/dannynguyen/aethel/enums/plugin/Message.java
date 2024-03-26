@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin messages.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.18.8
  * @since 1.11.9
  */
 public enum Message {
@@ -137,14 +137,19 @@ public enum Message {
   INVALID_DAMAGE(Message.ERROR.getMessage() + "Invalid damage."),
 
   /**
-   * Invalid distance.
+   * Invalid modifier.
    */
-  INVALID_DISTANCE(Message.ERROR.getMessage() + "Invalid distance."),
+  INVALID_MODIFIER(Message.ERROR.getMessage() + "Invalid modifier."),
 
   /**
    * Invalid delay.
    */
-  INVALID_DELAY(Message.ERROR.getMessage() + "Invalid delay.");
+  INVALID_DELAY(Message.ERROR.getMessage() + "Invalid delay."),
+
+  /**
+   * Invalid distance.
+   */
+  INVALID_DISTANCE(Message.ERROR.getMessage() + "Invalid distance.");
 
   /**
    * Message content.

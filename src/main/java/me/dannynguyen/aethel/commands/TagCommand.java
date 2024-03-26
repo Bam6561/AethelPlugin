@@ -43,7 +43,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.18.8
  * @since 1.2.6
  */
 public class TagCommand implements CommandExecutor {
@@ -415,6 +415,7 @@ public class TagCommand implements CommandExecutor {
               case MOVEMENT -> readActiveMovement(value);
               case PROJECTION -> readActiveProjection(value);
               case SHATTER -> readActiveShatter(value);
+              case TELEPORT -> readActiveTeleport(value);
             }
           } catch (IllegalArgumentException ex) {
             user.sendMessage(ChatColor.RED + "Unrecognized active ability.");
@@ -531,7 +532,7 @@ public class TagCommand implements CommandExecutor {
                         double distance = Double.parseDouble(args[4]);
                         setPassiveTag(chance + " " + cooldown + " " + self + " " + damage + " " + distance);
                       } catch (NumberFormatException ex) {
-                        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+                        user.sendMessage(Message.INVALID_MODIFIER.getMessage());
                       }
                     } catch (NumberFormatException ex) {
                       user.sendMessage(Message.INVALID_DAMAGE.getMessage());
@@ -564,7 +565,7 @@ public class TagCommand implements CommandExecutor {
                         double distance = Double.parseDouble(args[4]);
                         setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + damage + " " + distance);
                       } catch (NumberFormatException ex) {
-                        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+                        user.sendMessage(Message.INVALID_MODIFIER.getMessage());
                       }
                     } catch (NumberFormatException ex) {
                       user.sendMessage(Message.INVALID_DAMAGE.getMessage());
@@ -597,10 +598,10 @@ public class TagCommand implements CommandExecutor {
         try {
           int cooldown = Integer.parseInt(args[0]);
           try {
-            double distance = Double.parseDouble(args[1]);
-            setActiveTag(cooldown + " " + distance);
+            double modifier = Double.parseDouble(args[1]);
+            setActiveTag(cooldown + " " + modifier);
           } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+            user.sendMessage(Message.INVALID_MODIFIER.getMessage());
           }
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
@@ -622,7 +623,7 @@ public class TagCommand implements CommandExecutor {
         try {
           int cooldown = Integer.parseInt(args[0]);
           try {
-            double distance = Double.parseDouble(args[1]);
+            int distance = Integer.parseInt(args[1]);
             try {
               int delay = Integer.parseInt(args[2]);
               setActiveTag(cooldown + " " + distance + " " + delay);
@@ -666,11 +667,36 @@ public class TagCommand implements CommandExecutor {
     }
 
     /**
+     * Checks if the input was formatted correctly before
+     * setting the {@link ActiveAbilityType.Effect#TELEPORT}.
+     *
+     * @param value tag value
+     */
+    private void readActiveTeleport(String value) {
+      String[] args = value.split(" ");
+      if (args.length == 2) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            int distance = Integer.parseInt(args[1]);
+            setActiveTag(cooldown + " " + distance);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
      * Sets an item's {@link Key#ATTRIBUTE_LIST attribute} tag.
      *
      * @param value tag value
      */
-    private void setAttributeTag(Double value) {
+    private void setAttributeTag(double value) {
       NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + tag);
       dataContainer.set(tagKey, PersistentDataType.DOUBLE, value);
       setKeyToList(Key.ATTRIBUTE_LIST.getNamespacedKey());

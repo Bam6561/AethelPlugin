@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.18.8
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -939,15 +939,10 @@ public class ItemEditorMenuClick implements MenuClick {
 
         activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
         switch (abilityEffect) {
-          case MOVEMENT -> {
-            switch (abilityType) {
-              case BLINK -> activeLore.append(ChatColor.AQUA).append("Blink ");
-              case DASH -> activeLore.append(ChatColor.AQUA).append("Dash ");
-            }
-            activeLore.append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
-          }
+          case MOVEMENT -> activeLore.append(ChatColor.AQUA).append("Dash ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("%)");
           case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
           case SHATTER -> activeLore.append(ChatColor.AQUA).append("Shatter ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
+          case TELEPORT -> activeLore.append(ChatColor.AQUA).append("Blink ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
         }
         if (activeAbilities.containsKey(slot)) {
           activeAbilities.get(slot).add(activeLore.toString());

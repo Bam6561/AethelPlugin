@@ -18,7 +18,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
- * @version 1.18.7
+ * @version 1.18.8
  * @since 1.16.4
  */
 public class Settings {
@@ -77,16 +77,11 @@ public class Settings {
       try {
         Scanner scanner = new Scanner(file);
         String[] settings = scanner.nextLine().split(" ");
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.HAND, Integer.parseInt(settings[0]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.OFF_HAND, Integer.parseInt(settings[1]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.HEAD, Integer.parseInt(settings[2]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.CHEST, Integer.parseInt(settings[3]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.LEGS, Integer.parseInt(settings[4]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.FEET, Integer.parseInt(settings[5]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.NECKLACE, Integer.parseInt(settings[6]));
-        abilityBoundEquipmentSlots.put(RpgEquipmentSlot.RING, Integer.parseInt(settings[7]));
-        for (RpgEquipmentSlot eSlot : abilityBoundEquipmentSlots.keySet()) {
+        int i = 0;
+        for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+          abilityBoundEquipmentSlots.put(eSlot, Integer.parseInt(settings[i]));
           abilityBoundHotbar.put(abilityBoundEquipmentSlots.get(eSlot), eSlot);
+          i++;
         }
 
         settings = scanner.nextLine().split(" ");

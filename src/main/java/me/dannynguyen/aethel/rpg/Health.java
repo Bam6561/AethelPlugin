@@ -217,7 +217,7 @@ public class Health {
    * @param condition {@link Condition}
    * @param lifeRatio hearts displayed : true max health
    */
-  private void updateBarDisplay(Condition condition, Double lifeRatio) {
+  private void updateBarDisplay(Condition condition, double lifeRatio) {
     if (healthBar.isVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
@@ -290,7 +290,7 @@ public class Health {
    *
    * @param currentHealth new current health value
    */
-  private void setCurrentHealth(Double currentHealth) {
+  private void setCurrentHealth(double currentHealth) {
     this.currentHealth = currentHealth;
   }
 
@@ -308,7 +308,7 @@ public class Health {
    *
    * @param maxHealth new max health value
    */
-  private void setMaxHealth(Double maxHealth) {
+  private void setMaxHealth(double maxHealth) {
     this.maxHealth = maxHealth;
   }
 

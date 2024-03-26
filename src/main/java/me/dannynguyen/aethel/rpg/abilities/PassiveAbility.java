@@ -21,7 +21,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.18.8
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -182,7 +182,7 @@ public class PassiveAbility {
    * @param targetUUID     source entity
    * @param meters         distance
    */
-  private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, Double meters) {
+  private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, double meters) {
     List<LivingEntity> newSoakedTargets = new ArrayList<>();
     for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
       if (entity instanceof LivingEntity livingEntity) {
@@ -267,7 +267,7 @@ public class PassiveAbility {
    *
    * @param isOnCooldown is on cooldown
    */
-  public void setOnCooldown(boolean isOnCooldown) {
+  private void setOnCooldown(boolean isOnCooldown) {
     Abilities.SlotPassive slotPassive = new Abilities.SlotPassive(eSlot, type);
     if (isOnCooldown) {
       onCooldownPassives.get(trigger).add(slotPassive);
