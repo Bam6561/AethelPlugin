@@ -2,11 +2,18 @@ package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import me.dannynguyen.aethel.rpg.DamageMitigation;
+import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +24,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.0
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -114,7 +121,14 @@ public class ActiveAbility {
    * @param caster ability caster
    */
   private void projectDistance(Player caster) {
-
+    final Location castOrigin = caster.getLocation().clone();
+    Location origin = caster.getLocation();
+    caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> caster.teleport(castOrigin), Integer.parseInt(effectData.get(1)));
+    if (cooldown > 0) {
+      setOnCooldown(true);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+    }
   }
 
   /**
@@ -124,7 +138,33 @@ public class ActiveAbility {
    * @param caster ability caster
    */
   private void shatterBrittle(Player caster) {
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    double meters = Double.parseDouble(effectData.get(0));
 
+    for (Entity entity : caster.getNearbyEntities(meters, meters, meters)) {
+      if (entity instanceof LivingEntity livingEntity) {
+        UUID livingEntityUUID = livingEntity.getUniqueId();
+        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.BRITTLE)) {
+          Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
+          if (livingEntity instanceof Player player) {
+            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+              RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
+              double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
+              player.damage(0.1);
+              rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateProtectionResistance(damage));
+            }
+          } else {
+            livingEntity.damage(0.1);
+            livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (0.5 * statuses.get(StatusType.BRITTLE).getStackAmount())));
+          }
+          statuses.remove(StatusType.BRITTLE);
+        }
+      }
+    }
+    if (cooldown > 0) {
+      setOnCooldown(true);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+    }
   }
 
   /**

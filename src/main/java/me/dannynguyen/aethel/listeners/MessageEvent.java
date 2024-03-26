@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.commands.character.CharacterMessageSent;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.event.EventHandler;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.19.0
  * @since 1.6.7
  */
 public class MessageEvent implements Listener {
@@ -38,6 +39,7 @@ public class MessageEvent implements Listener {
       String inputType = type.getId();
       switch (inputType) {
         case "itemeditor" -> interpretItemEditor(e, type);
+        case "character" -> interpretCharacter(e, type);
       }
     }
   }
@@ -78,6 +80,20 @@ public class MessageEvent implements Listener {
       case ITEMEDITOR_PASSIVE_ABILITY -> msg.setPassive();
       case ITEMEDITOR_ACTIVE_ABILITY -> msg.setActive();
       case ITEMEDITOR_AETHEL_TAG -> msg.setTag();
+    }
+  }
+
+  /**
+   * Determines which {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
+   * input is being interacted with.
+   *
+   * @param e    message event
+   * @param type {@link Type}
+   */
+  private void interpretCharacter(AsyncPlayerChatEvent e, Type type) {
+    CharacterMessageSent msg = new CharacterMessageSent(e);
+    switch (type) {
+      case CHARACTER_CROUCH_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityCrouchBind();
     }
   }
 
@@ -163,7 +179,12 @@ public class MessageEvent implements Listener {
     /**
      * Aethel tag.
      */
-    ITEMEDITOR_AETHEL_TAG("itemeditor");
+    ITEMEDITOR_AETHEL_TAG("itemeditor"),
+
+    /**
+     * Crouch bind active ability.
+     */
+    CHARACTER_CROUCH_BIND_ACTIVE_ABILITY("character");
 
     /**
      * Input ID.

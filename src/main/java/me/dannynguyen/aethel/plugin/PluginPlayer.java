@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.plugin;
 
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
-import me.dannynguyen.aethel.listeners.ActionEvent;
 import me.dannynguyen.aethel.listeners.MenuEvent;
 import me.dannynguyen.aethel.listeners.MessageEvent;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +14,7 @@ import java.util.UUID;
  * Represents a player's plugin metadata.
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.19.0
  * @since 1.17.16
  */
 public class PluginPlayer {
@@ -23,10 +22,6 @@ public class PluginPlayer {
    * {@link me.dannynguyen.aethel.commands.DeveloperCommand}
    */
   private boolean isDeveloper;
-  /**
-   * {@link ActionEvent.Input}
-   */
-  private ActionEvent.Input actionInput;
   /**
    * {@link MessageEvent.Type}
    */
@@ -86,25 +81,6 @@ public class PluginPlayer {
    */
   public void setIsDeveloper(boolean developer) {
     this.isDeveloper = developer;
-  }
-
-  /**
-   * Gets {@link ActionEvent.Input}.
-   *
-   * @return {@link ActionEvent.Input}
-   */
-  @Nullable
-  public ActionEvent.Input getActionInput() {
-    return this.actionInput;
-  }
-
-  /**
-   * Sets the {@link ActionEvent.Input}.
-   *
-   * @param actionInput {@link ActionEvent.Input}
-   */
-  public void setActionInput(@Nullable ActionEvent.Input actionInput) {
-    this.actionInput = actionInput;
   }
 
   /**

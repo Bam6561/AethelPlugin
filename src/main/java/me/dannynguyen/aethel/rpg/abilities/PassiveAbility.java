@@ -163,7 +163,7 @@ public class PassiveAbility {
         }
       } else {
         livingEntity.damage(0.1);
-        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0)));
+        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0))));
       }
     }
 

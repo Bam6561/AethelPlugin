@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.0
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -106,7 +106,7 @@ public enum ActiveAbilityType {
     /**
      * Causes instant movement that returns to the original location after a delay.
      */
-    PROJECTION("Cooldown(t), Modifier(%), Delay(t)"),
+    PROJECTION("Cooldown(t), Distance(m), Delay(t)"),
 
     /**
      * Causes Shatter.
