@@ -18,7 +18,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.1
  * @since 1.16.4
  */
 public class Settings {
@@ -28,14 +28,14 @@ public class Settings {
   private final UUID uuid;
 
   /**
-   * {@link ActiveAbility} crouch binds by {@link RpgEquipmentSlot}.
+   * {@link ActiveAbility} binds by {@link RpgEquipmentSlot}.
    */
-  private final Map<RpgEquipmentSlot, Integer> abilityBoundEquipmentSlots = new HashMap<>();
+  private final Map<RpgEquipmentSlot, Set<Integer>> abilityBoundEquipmentSlots = new HashMap<>();
 
   /**
-   * {@link ActiveAbility} crouch binds by hotbar slot.
+   * {@link ActiveAbility} binds by hotbar slot.
    */
-  private final Map<Integer, RpgEquipmentSlot> abilityBoundHotbar = new HashMap<>();
+  private final Map<Integer, Set<RpgEquipmentSlot>> abilityBoundHotbar = new HashMap<>();
 
   /**
    * If {@link Health health bar} visible.
@@ -59,12 +59,14 @@ public class Settings {
   }
 
   /**
-   * Creates a blank sets of {@link ActiveAbility} crouch binds.
+   * Creates a blank sets of {@link ActiveAbility} binds.
    */
   private void createActiveAbilityBinds() {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-      abilityBoundEquipmentSlots.put(eSlot, -1);
-      abilityBoundHotbar.put(-1, eSlot);
+      abilityBoundEquipmentSlots.put(eSlot, new HashSet<>());
+    }
+    for (int i = 0; i < 10; i++) {
+      abilityBoundHotbar.put(i, new HashSet<>());
     }
   }
 
@@ -76,12 +78,20 @@ public class Settings {
     if (file.exists()) {
       try {
         Scanner scanner = new Scanner(file);
-        String[] settings = scanner.nextLine().split(" ");
-        int i = 0;
+
+        String[] settings = scanner.nextLine().split(",");
+        int slot = 0;
         for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-          abilityBoundEquipmentSlots.put(eSlot, Integer.parseInt(settings[i]));
-          abilityBoundHotbar.put(abilityBoundEquipmentSlots.get(eSlot), eSlot);
-          i++;
+          String[] hotbarArray = settings[slot].split(" ");
+          Set<Integer> hotbarSet = new HashSet<>();
+          for (String hotbarString : hotbarArray) {
+            hotbarSet.add(Integer.parseInt(hotbarString));
+          }
+          abilityBoundEquipmentSlots.get(eSlot).addAll(hotbarSet);
+          for (int hotbarSlot : hotbarSet) {
+            abilityBoundHotbar.get(hotbarSlot).add(eSlot);
+          }
+          slot++;
         }
 
         settings = scanner.nextLine().split(" ");
@@ -101,9 +111,17 @@ public class Settings {
     File file = new File(Directory.SETTINGS.getFile().getPath() + "/" + uuid.toString() + "_set.txt");
     try {
       FileWriter fw = new FileWriter(file);
+
+      StringBuilder activeAbilityBinds = new StringBuilder();
       for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-        fw.write(abilityBoundEquipmentSlots.get(eSlot) + " ");
+        StringBuilder activeAbilityBind = new StringBuilder();
+        for (int hotbarSlot : abilityBoundEquipmentSlots.get(eSlot)) {
+          activeAbilityBind.append(hotbarSlot).append(" ");
+        }
+        activeAbilityBinds.append(activeAbilityBind.toString().trim()).append(",");
       }
+      fw.write(activeAbilityBinds.toString());
+
       fw.write("\n");
       fw.write(healthBarVisible + " " + healthActionVisible);
       fw.close();
@@ -113,24 +131,26 @@ public class Settings {
   }
 
   /**
-   * Resets {@link ActiveAbility} crouch binds.
+   * Resets {@link ActiveAbility} binds.
    */
-  public void resetActiveAbilityCrouchBinds() {
+  public void resetActiveAbilityBinds() {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-      abilityBoundEquipmentSlots.put(eSlot, -1);
-      abilityBoundHotbar.put(-1, eSlot);
+      abilityBoundEquipmentSlots.put(eSlot, new HashSet<>());
     }
+    abilityBoundHotbar.clear();
   }
 
   /**
-   * Sets the {@link ActiveAbility} crouch bind.
+   * Sets the {@link ActiveAbility} bind.
    *
-   * @param eSlot    {@link RpgEquipmentSlot}
-   * @param heldSlot hotbar slot
+   * @param eSlot       {@link RpgEquipmentSlot}
+   * @param hotbarSlots hotbar slots
    */
-  public void setActiveAbilityCrouchBind(@NotNull RpgEquipmentSlot eSlot, int heldSlot) {
-    abilityBoundEquipmentSlots.put(Objects.requireNonNull(eSlot, "Null slot"), heldSlot);
-    abilityBoundHotbar.put(heldSlot, eSlot);
+  public void setActiveAbilityBind(@NotNull RpgEquipmentSlot eSlot, Set<Integer> hotbarSlots) {
+    abilityBoundEquipmentSlots.get(Objects.requireNonNull(eSlot, "Null slot")).addAll(Objects.requireNonNull(hotbarSlots, "Null hotbar slots"));
+    for (int hotbarSlot : hotbarSlots) {
+      abilityBoundHotbar.get(hotbarSlot).add(eSlot);
+    }
   }
 
   /**
@@ -157,20 +177,20 @@ public class Settings {
   }
 
   /**
-   * Gets {@link ActiveAbility} crouch binds by {@link RpgEquipmentSlot}.
+   * Gets {@link ActiveAbility} binds by {@link RpgEquipmentSlot}.
    *
-   * @return {@link ActiveAbility} crouch binds by {@link RpgEquipmentSlot}
+   * @return {@link ActiveAbility} binds by {@link RpgEquipmentSlot}
    */
-  public Map<RpgEquipmentSlot, Integer> getAbilityBoundEquipmentSlots() {
+  public Map<RpgEquipmentSlot, Set<Integer>> getAbilityBoundEquipmentSlots() {
     return this.abilityBoundEquipmentSlots;
   }
 
   /**
-   * Gets {@link ActiveAbility} crouch binds by hotbar.
+   * Gets {@link ActiveAbility} binds by hotbar slot.
    *
-   * @return {@link ActiveAbility} crouch binds by hotbar.
+   * @return {@link ActiveAbility} binds by hotbar slot.
    */
-  public Map<Integer, RpgEquipmentSlot> getAbilityBoundHotbar() {
+  public Map<Integer, Set<RpgEquipmentSlot>> getAbilityBoundHotbar() {
     return this.abilityBoundHotbar;
   }
 

@@ -12,14 +12,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
  * Message sent listener for Character text inputs.
  *
  * @author Danny Nguyen
- * @version 1.19.0
+ * @version 1.19.1
  * @since 1.19.0
  */
 public class CharacterMessageSent {
@@ -51,20 +53,24 @@ public class CharacterMessageSent {
   }
 
   /**
-   * Sets the player's active ability crouch bind.
+   * Sets the player's active ability bind.
    */
-  public void setActiveAbilityCrouchBind() {
+  public void setActiveAbilityBind() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
     RpgEquipmentSlot slot = pluginPlayer.getSlot();
     try {
-      int heldSlot = Integer.parseInt(e.getMessage());
-      if (0 < heldSlot && heldSlot < 10) {
-        settings.setActiveAbilityCrouchBind(slot, heldSlot - 1);
-        user.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Crouch Bind] " + ChatColor.WHITE + (heldSlot));
-      } else {
-        user.sendMessage(Message.INVALID_VALUE.getMessage());
+      StringBuilder hotbarBuilder = new StringBuilder();
+      Set<Integer> hotbarSet = new HashSet<>();
+      for (String hotbarString : e.getMessage().split(" ")) {
+        int hotbarSlot = Integer.parseInt(hotbarString);
+        if (0 < hotbarSlot && hotbarSlot < 10) {
+          hotbarBuilder.append(hotbarSlot + " ");
+          hotbarSet.add(hotbarSlot - 1);
+        }
       }
+      settings.setActiveAbilityBind(slot, hotbarSet);
+      user.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Binds] " + ChatColor.WHITE + hotbarBuilder.toString().trim());
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
     }

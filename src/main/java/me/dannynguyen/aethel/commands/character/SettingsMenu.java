@@ -17,16 +17,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a menu that shows the player's {@link Settings}.
  *
  * @author Danny Nguyen
- * @version 1.18.7
+ * @version 1.19.1
  * @since 1.11.5
  */
 public class SettingsMenu implements Menu {
@@ -91,7 +88,7 @@ public class SettingsMenu implements Menu {
   private void addSettings() {
     addDisplayHealthBar();
     addDisplayHealthAction();
-    addActiveAbilityCrouchBinds();
+    addActiveAbilityBinds();
   }
 
   /**
@@ -117,18 +114,33 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Adds {@link ActiveAbility} crouch binds.
+   * Adds {@link ActiveAbility} binds.
    */
-  private void addActiveAbilityCrouchBinds() {
-    Map<RpgEquipmentSlot, Integer> boundEquipmentSlots = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getAbilityBoundEquipmentSlots();
-    menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Reset Active Ability Crouch Binds"));
-    menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.OFF_HAND) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(12, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.HEAD) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(13, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.CHEST) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(14, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.LEGS) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(15, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.FEET) + 1)), ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.NECKLACE) + 1))));
-    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring", List.of(ChatColor.WHITE + String.valueOf(boundEquipmentSlots.get(RpgEquipmentSlot.RING) + 1))));
+  private void addActiveAbilityBinds() {
+    Map<RpgEquipmentSlot, Set<Integer>> boundEquipmentSlots = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getAbilityBoundEquipmentSlots();
+    menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.TRASH_CAN.getHead(), ChatColor.AQUA + "Reset Active Ability Binds"));
+    menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.HAND)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.OFF_HAND)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(12, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.HEAD)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(13, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.CHEST)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(14, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.LEGS)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(15, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.FEET)), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.NECKLACE))));
+    menu.setItem(17, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring", List.of(ChatColor.WHITE + getHotbarSlotsAsString(boundEquipmentSlots, RpgEquipmentSlot.RING))));
+  }
+
+  /**
+   * Returns a text display of hotbar slots.
+   *
+   * @param eSlot               {@link RpgEquipmentSlot}
+   * @param boundEquipmentSlots assigned hotbar slots
+   * @return text display of hotbar slots
+   */
+  private String getHotbarSlotsAsString(Map<RpgEquipmentSlot, Set<Integer>> boundEquipmentSlots, RpgEquipmentSlot eSlot) {
+    StringBuilder hotbarBuilder = new StringBuilder();
+    for (int hotbarSlot : boundEquipmentSlots.get(eSlot)) {
+      hotbarBuilder.append(hotbarSlot + 1).append(" ");
+    }
+    return hotbarBuilder.toString().trim();
   }
 }

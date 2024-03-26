@@ -93,7 +93,7 @@ public class MessageEvent implements Listener {
   private void interpretCharacter(AsyncPlayerChatEvent e, Type type) {
     CharacterMessageSent msg = new CharacterMessageSent(e);
     switch (type) {
-      case CHARACTER_CROUCH_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityCrouchBind();
+      case CHARACTER_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityBind();
     }
   }
 
@@ -182,9 +182,9 @@ public class MessageEvent implements Listener {
     ITEMEDITOR_AETHEL_TAG("itemeditor"),
 
     /**
-     * Crouch bind active ability.
+     * Bind active ability.
      */
-    CHARACTER_CROUCH_BIND_ACTIVE_ABILITY("character");
+    CHARACTER_BIND_ACTIVE_ABILITY("character");
 
     /**
      * Input ID.

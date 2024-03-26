@@ -214,9 +214,9 @@ public class Abilities {
 
   /**
    * Gets the player's {@link RpgEquipmentSlot} {@link ActiveAbility active abilities}
-   * triggered by crouch binds.
+   * triggered by binds.
    *
-   * @return {@link RpgEquipmentSlot} {@link ActiveAbility active abilities} triggered by crouch binds
+   * @return {@link RpgEquipmentSlot} {@link ActiveAbility active abilities} triggered by binds
    */
   @NotNull
   public Map<RpgEquipmentSlot, List<ActiveAbility>> getTriggerActives() {

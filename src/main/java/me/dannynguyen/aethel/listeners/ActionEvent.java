@@ -9,11 +9,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
+import java.util.Set;
+
 /**
  * Collection of player action listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.0
+ * @version 1.19.1
  * @since 1.17.3
  */
 public class ActionEvent implements Listener {
@@ -33,11 +35,13 @@ public class ActionEvent implements Listener {
     if (e.isSneaking()) {
       Player player = e.getPlayer();
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
-      RpgEquipmentSlot eSlot = rpgPlayer.getSettings().getAbilityBoundHotbar().get(player.getInventory().getHeldItemSlot());
-      if (eSlot != null) {
-        for (ActiveAbility ability : rpgPlayer.getAbilities().getTriggerActives().get(eSlot)) {
-          if (!ability.isOnCooldown()) {
-            ability.doEffect(player);
+      Set<RpgEquipmentSlot> eSlots = rpgPlayer.getSettings().getAbilityBoundHotbar().get(player.getInventory().getHeldItemSlot());
+      if (eSlots != null) {
+        for (RpgEquipmentSlot eSlot : eSlots) {
+          for (ActiveAbility ability : rpgPlayer.getAbilities().getTriggerActives().get(eSlot)) {
+            if (!ability.isOnCooldown()) {
+              ability.doEffect(player);
+            }
           }
         }
       }
