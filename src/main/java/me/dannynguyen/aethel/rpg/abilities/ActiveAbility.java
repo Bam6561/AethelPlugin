@@ -24,7 +24,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.19.5
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -137,9 +137,26 @@ public class ActiveAbility {
    * @param caster ability caster
    */
   private void moveDistance(Player caster) {
+    Vector vector = new Vector();
     double multiplier = 0.65 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
-    Vector vector = caster.getLocation().getDirection().multiply(multiplier);
-    caster.setVelocity(vector.setY(0.2));
+    switch (type) {
+      case DASH -> {
+        vector = caster.getLocation().getDirection().multiply(multiplier);
+        vector.setY(0.2);
+      }
+      case LEAP -> vector = caster.getLocation().getDirection().multiply(multiplier);
+      case SPRING -> {
+        vector.setX(0);
+        vector.setY(1);
+        vector.setZ(0);
+        vector = vector.multiply(multiplier);
+      }
+      case WITHDRAW -> {
+        vector = caster.getLocation().getDirection().multiply(-multiplier);
+        caster.setVelocity(vector.setY(0.2));
+      }
+    }
+    caster.setVelocity(vector);
     if (cooldown > 0) {
       setOnCooldown(true);
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);

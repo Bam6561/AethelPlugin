@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.19.5
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -32,6 +32,11 @@ public enum ActiveAbilityType {
   DISREGARD("Disregard", "disregard", Effect.CLEAR_STATUS),
 
   /**
+   * Forward angular movement.
+   */
+  LEAP("Leap", "leap", Effect.MOVEMENT),
+
+  /**
    * Forward facing teleport that after a delay,
    * teleports the user back to their original location.
    */
@@ -40,7 +45,17 @@ public enum ActiveAbilityType {
   /**
    * Immediately consumes all stacks of {@link StatusType#BRITTLE} from nearby enemies.
    */
-  SHATTER("Shatter", "shatter", Effect.SHATTER);
+  SHATTER("Shatter", "shatter", Effect.SHATTER),
+
+  /**
+   * Upwards facing movement.
+   */
+  SPRING("Spring", "spring", Effect.MOVEMENT),
+
+  /**
+   * Backwards facing movement.
+   */
+  WITHDRAW("Withdraw", "withdraw", Effect.MOVEMENT);
 
   /**
    * Proper name.

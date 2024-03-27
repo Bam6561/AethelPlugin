@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.19.5
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -916,7 +916,15 @@ public class ItemEditorMenuClick implements MenuClick {
               case DISREGARD -> activeLore.append(ChatColor.AQUA).append("Disregard");
             }
           }
-          case MOVEMENT -> activeLore.append(ChatColor.AQUA).append("Dash ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("%)");
+          case MOVEMENT -> {
+            switch (abilityType) {
+              case DASH -> activeLore.append(ChatColor.AQUA).append("Dash ");
+              case LEAP -> activeLore.append(ChatColor.AQUA).append("Leap ");
+              case SPRING -> activeLore.append(ChatColor.AQUA).append("Spring ");
+              case WITHDRAW -> activeLore.append(ChatColor.AQUA).append("Withdraw ");
+            }
+            activeLore.append(ChatColor.WHITE).append("(").append(abilityData[1]).append("%)");
+          }
           case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
           case SHATTER -> activeLore.append(ChatColor.AQUA).append("Shatter ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
           case TELEPORT -> activeLore.append(ChatColor.AQUA).append("Blink ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
