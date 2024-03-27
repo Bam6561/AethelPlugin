@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.4
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -122,7 +122,7 @@ public class ItemEditorMenuClick implements MenuClick {
       case 45 -> addLore();
       case 46 -> editLore();
       case 47 -> removeLore();
-      case 48 -> new LoreGeneration(user, menu, item).generateLore();
+      case 48 -> new LoreGeneration().generateLore();
       case 41, 42, 43, 44, 50, 51, 52, 53 -> toggleItemFlag();
     }
   }
@@ -661,10 +661,10 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.18.0
+   * @version 1.19.4
    * @since 1.17.13
    */
-  private static class LoreGeneration {
+  private class LoreGeneration {
     /**
      * Order of headers by {@link RpgEquipmentSlot}.
      */
@@ -675,34 +675,14 @@ public class ItemEditorMenuClick implements MenuClick {
         RpgEquipmentSlot.HAND.getId(), RpgEquipmentSlot.OFF_HAND.getId()));
 
     /**
-     * Interacting user.
-     */
-    private final Player user;
-
-    /**
-     * ItemStack whose lore is being generated.
-     */
-    private final ItemStack item;
-
-    /**
-     * ItemStack's meta.
-     */
-    private final ItemMeta meta;
-
-    /**
      * ItemStack's persistent tags.
      */
-    private final PersistentDataContainer dataContainer;
+    private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
     /**
      * ItemStack's lore.
      */
     private final List<String> lore;
-
-    /**
-     * Interacting menu generating the lore.
-     */
-    private final Inventory menu;
 
     /**
      * ItemStack's total Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attribute}
@@ -728,18 +708,9 @@ public class ItemEditorMenuClick implements MenuClick {
     private boolean generatedLore = false;
 
     /**
-     * Associates an item's lore generation with its user and menu being interacted with.
-     *
-     * @param user user
-     * @param menu interacting menu
-     * @param item interacting item
+     * No parameter constructor.
      */
-    LoreGeneration(@NotNull Player user, @NotNull Inventory menu, @NotNull ItemStack item) {
-      this.user = Objects.requireNonNull(user, "Null user");
-      this.menu = Objects.requireNonNull(menu, "Null menu");
-      this.item = Objects.requireNonNull(item, "Null item");
-      this.meta = item.getItemMeta();
-      this.dataContainer = meta.getPersistentDataContainer();
+    private LoreGeneration() {
       if (meta.hasLore()) {
         this.lore = meta.getLore();
       } else {
@@ -939,6 +910,12 @@ public class ItemEditorMenuClick implements MenuClick {
 
         activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
         switch (abilityEffect) {
+          case CLEAR_STATUS -> {
+            switch (abilityType) {
+              case DISMISS -> activeLore.append(ChatColor.AQUA).append("Dismiss");
+              case DISREGARD -> activeLore.append(ChatColor.AQUA).append("Disregard");
+            }
+          }
           case MOVEMENT -> activeLore.append(ChatColor.AQUA).append("Dash ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("%)");
           case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
           case SHATTER -> activeLore.append(ChatColor.AQUA).append("Shatter ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");

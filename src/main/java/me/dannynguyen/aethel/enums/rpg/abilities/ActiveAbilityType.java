@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.0
+ * @version 1.19.4
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -20,6 +20,16 @@ public enum ActiveAbilityType {
    * Forward facing movement.
    */
   DASH("Dash", "dash", Effect.MOVEMENT),
+
+  /**
+   * Clears all non-damaging statuses.
+   */
+  DISMISS("Dismiss", "dismiss", Effect.CLEAR_STATUS),
+
+  /**
+   * Clears all damaging statuses.
+   */
+  DISREGARD("Disregard", "disregard", Effect.CLEAR_STATUS),
 
   /**
    * Forward facing teleport that after a delay,
@@ -94,7 +104,7 @@ public enum ActiveAbilityType {
    * Effects of {@link ActiveAbilityType active abilities}.
    *
    * @author Danny Nguyen
-   * @version 1.17.7
+   * @version 1.19.4
    * @since 1.15.9
    */
   public enum Effect {
@@ -102,6 +112,11 @@ public enum ActiveAbilityType {
      * Causes movement with velocity.
      */
     MOVEMENT("Cooldown(t), Modifier(%)"),
+
+    /**
+     * Causes statuses to be removed.
+     */
+    CLEAR_STATUS("Cooldown(t)"),
 
     /**
      * Causes instant movement that returns to the original location after a delay.

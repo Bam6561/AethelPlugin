@@ -273,7 +273,9 @@ public class HealthEvent implements Listener {
   /**
    * If the target has {@link StatusType#FRACTURE}, multiply the damage by its number of stacks.
    *
-   * @param e entity damage by entity event
+   * @param e        entity damage by entity event
+   * @param damagee  entity taking damage
+   * @param statuses entity's statuses
    */
   private void ifFracture(EntityDamageByEntityEvent e, LivingEntity damagee, Map<StatusType, Status> statuses) {
     if (statuses.containsKey(StatusType.FRACTURE)) {
@@ -287,7 +289,8 @@ public class HealthEvent implements Listener {
   /**
    * If the target has the {@link StatusType#VULNERABLE}, multiply the damage by its number of stacks.
    *
-   * @param e entity damage by entity event
+   * @param e        entity damage by entity event
+   * @param statuses entity's statuses
    */
   private void ifVulnerable(EntityDamageByEntityEvent e, Map<StatusType, Status> statuses) {
     if (statuses.containsKey(StatusType.VULNERABLE)) {

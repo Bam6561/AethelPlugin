@@ -24,7 +24,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.0
+ * @version 1.19.4
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -93,10 +93,41 @@ public class ActiveAbility {
   public void doEffect(@NotNull Player caster) {
     Objects.requireNonNull(caster, "Null caster");
     switch (type.getEffect()) {
+      case CLEAR_STATUS -> clearStatus(caster);
       case MOVEMENT -> moveDistance(caster);
       case PROJECTION -> projectDistance(caster);
       case SHATTER -> shatterBrittle(caster);
       case TELEPORT -> teleportDistance(caster);
+    }
+  }
+
+  /**
+   * Performs {@link ActiveAbilityType.Effect#CLEAR_STATUS} for {@link Status} based
+   * on the {@link StatusType.Type}.
+   *
+   * @param caster ability caster
+   */
+  private void clearStatus(Player caster) {
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    UUID uuid = caster.getUniqueId();
+    if (entityStatuses.containsKey(uuid)) {
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      switch (type) {
+        case DISMISS -> {
+          for (StatusType type : StatusType.Type.NON_DAMAGE.getStatusTypes()) {
+            statuses.remove(type);
+          }
+        }
+        case DISREGARD -> {
+          for (StatusType type : StatusType.Type.DAMAGE.getStatusTypes()) {
+            statuses.remove(type);
+          }
+        }
+      }
+    }
+    if (cooldown > 0) {
+      setOnCooldown(true);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
 

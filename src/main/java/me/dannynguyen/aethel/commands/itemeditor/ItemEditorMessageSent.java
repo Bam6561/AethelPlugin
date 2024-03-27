@@ -42,7 +42,7 @@ import java.util.UUID;
  * Called with {@link MessageEvent}.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.4
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -347,9 +347,9 @@ public class ItemEditorMessageSent {
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
-      new PassiveTagModification(e.getMessage(), user, item).interpretKeyToBeSet();
+      new PassiveTagModification().interpretKeyToBeSet();
     } else {
-      new PassiveTagModification(e.getMessage(), user, item).removeKeyFromList();
+      new PassiveTagModification().removeKeyFromList();
     }
     Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassive);
   }
@@ -359,12 +359,7 @@ public class ItemEditorMessageSent {
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      switch (ActiveAbilityType.valueOf(TextFormatter.formatEnum(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType())).getEffect()) {
-        case MOVEMENT -> readActiveMovement();
-        case PROJECTION -> readActiveProjection();
-        case SHATTER -> readActiveShatter();
-        case TELEPORT -> readActiveTeleport();
-      }
+      new ActiveTagSetter().interpretKeyToBeSet();
     } else {
       removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
     }
@@ -407,103 +402,6 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Checks if the input was formatted correctly before setting the
-   * {@link ActiveAbilityType.Effect#MOVEMENT}.
-   */
-  private void readActiveMovement() {
-    String[] args = e.getMessage().split(" ");
-    if (args.length == 2) {
-      try {
-        int cooldown = Integer.parseInt(args[0]);
-        try {
-          double modifier = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + modifier, Key.ACTIVE_LIST.getNamespacedKey());
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_MODIFIER.getMessage());
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-      }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Checks if the input was formatted correctly before setting the
-   * {@link ActiveAbilityType.Effect#PROJECTION}.
-   */
-  private void readActiveProjection() {
-    String[] args = e.getMessage().split(" ");
-    if (args.length == 3) {
-      try {
-        int cooldown = Integer.parseInt(args[0]);
-        try {
-          int distance = Integer.parseInt(args[1]);
-          try {
-            int delay = Integer.parseInt(args[2]);
-            setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance + " " + delay, Key.ACTIVE_LIST.getNamespacedKey());
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_DELAY.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-      }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Checks if the input was formatted correctly before setting the
-   * {@link ActiveAbilityType.Effect#SHATTER}.
-   */
-  private void readActiveShatter() {
-    String[] args = e.getMessage().split(" ");
-    if (args.length == 2) {
-      try {
-        int cooldown = Integer.parseInt(args[0]);
-        try {
-          double radius = Double.parseDouble(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + radius, Key.ACTIVE_LIST.getNamespacedKey());
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_RADIUS.getMessage());
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-      }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Checks if the input was formatted correctly before setting the
-   * {@link ActiveAbilityType.Effect#TELEPORT}.
-   */
-  private void readActiveTeleport() {
-    String[] args = e.getMessage().split(" ");
-    if (args.length == 2) {
-      try {
-        int cooldown = Integer.parseInt(args[0]);
-        try {
-          int distance = Integer.parseInt(args[1]);
-          setKeyStringToList(KeyHeader.ACTIVE.getHeader(), cooldown + " " + distance, Key.ACTIVE_LIST.getNamespacedKey());
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_DISTANCE.getMessage());
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-      }
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
    * Sets a key with a double value to a {@link KeyHeader key header's} list of keys.
    *
    * @param keyHeader {@link KeyHeader}
@@ -533,38 +431,6 @@ public class ItemEditorMessageSent {
     dataContainer.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
-  }
-
-  /**
-   * Sets a key with a String value to a {@link KeyHeader key header's} list of keys.
-   *
-   * @param keyHeader {@link KeyHeader}
-   * @param keyValue  key value
-   * @param listKey   {@link Key list key}
-   */
-  private void setKeyStringToList(String keyHeader, String keyValue, NamespacedKey listKey) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String slot = pluginPlayer.getSlot().getId();
-    String type = pluginPlayer.getObjectType();
-    String stringKeyToSet = slot + "." + type;
-    NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-
-    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-      List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
-      StringBuilder newKeys = new StringBuilder();
-      for (String key : keys) {
-        if (!key.equals(stringKeyToSet)) {
-          newKeys.append(key).append(" ");
-        }
-      }
-      dataContainer.set(listKey, PersistentDataType.STRING, newKeys + stringKeyToSet);
-    } else {
-      dataContainer.set(listKey, PersistentDataType.STRING, stringKeyToSet);
-    }
-    dataContainer.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
-    item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
   }
 
   /**
@@ -692,14 +558,12 @@ public class ItemEditorMessageSent {
 
   /**
    * Represents a {@link Key#PASSIVE_LIST passive tag} set or remove operation.
-   * <p>
-   * Used with {@link ItemEditorMessageSent}.
    *
    * @author Danny Nguyen
-   * @version 1.17.19
+   * @version 1.19.4
    * @since 1.15.13
    */
-  private static class PassiveTagModification {
+  private class PassiveTagModification {
     /**
      * {@link Key#PASSIVE_LIST}
      */
@@ -713,27 +577,12 @@ public class ItemEditorMessageSent {
     /**
      * User input.
      */
-    private final String[] args;
-
-    /**
-     * Player who sent the message.
-     */
-    private final Player user;
-
-    /**
-     * ItemStack being edited.
-     */
-    private final ItemStack item;
-
-    /**
-     * ItemStack's meta.
-     */
-    private final ItemMeta meta;
+    private final String[] args = e.getMessage().split(" ");
 
     /**
      * ItemStack's persistent tags.
      */
-    private final PersistentDataContainer dataContainer;
+    private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
     /**
      * {@link PluginPlayer#getSlot()}
@@ -756,18 +605,9 @@ public class ItemEditorMessageSent {
     private final String interactingKey;
 
     /**
-     * Associates a passive set or remove operation with a message, user, and item.
-     *
-     * @param message user input
-     * @param user    user
-     * @param item    interacting item
+     * No parameter constructor.
      */
-    PassiveTagModification(String message, Player user, ItemStack item) {
-      this.args = message.split(" ");
-      this.user = user;
-      this.item = item;
-      this.meta = item.getItemMeta();
-      this.dataContainer = meta.getPersistentDataContainer();
+    private PassiveTagModification() {
       PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
       this.slot = pluginPlayer.getSlot().getId();
       this.trigger = pluginPlayer.getTrigger().getId();
@@ -987,6 +827,210 @@ public class ItemEditorMessageSent {
       }
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+    }
+  }
+
+  /**
+   * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.19.4
+   * @since 1.19.4
+   */
+  private class ActiveTagSetter {
+    /**
+     * {@link Key#ACTIVE_LIST}
+     */
+    private static final NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
+
+    /**
+     * {@link KeyHeader#ACTIVE}
+     */
+    private static final String activeHeader = KeyHeader.ACTIVE.getHeader();
+
+    /**
+     * User input.
+     */
+    private final String[] args = e.getMessage().split(" ");
+
+    /**
+     * ItemStack's persistent tags.
+     */
+    private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+
+    /**
+     * {@link PluginPlayer#getSlot()}
+     */
+    private final String slot;
+
+    /**
+     * {@link PluginPlayer#getObjectType()}
+     */
+    private final String type;
+
+    /**
+     * Interacting key.
+     */
+    private final String interactingKey;
+
+    /**
+     * No parameter constructor.
+     */
+    private ActiveTagSetter() {
+      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+      this.slot = pluginPlayer.getSlot().getId();
+      this.type = pluginPlayer.getObjectType();
+      this.interactingKey = slot + "." + type;
+    }
+
+    /**
+     * Determines the type of {@link Key#ACTIVE_LIST ability tag} to be set.
+     */
+    private void interpretKeyToBeSet() {
+      ActiveAbilityType.Effect effect = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+      switch (effect) {
+        case CLEAR_STATUS -> readActiveClearStatus();
+        case MOVEMENT -> readActiveMovement();
+        case PROJECTION -> readActiveProjection();
+        case SHATTER -> readActiveShatter();
+        case TELEPORT -> readActiveTeleport();
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting the
+     * {@link ActiveAbilityType.Effect#CLEAR_STATUS}.
+     */
+    private void readActiveClearStatus() {
+      if (args.length == 1) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          setKeyStringToList(String.valueOf(cooldown));
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting the
+     * {@link ActiveAbilityType.Effect#MOVEMENT}.
+     */
+    private void readActiveMovement() {
+      if (args.length == 2) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            double modifier = Double.parseDouble(args[1]);
+            setKeyStringToList(cooldown + " " + modifier);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_MODIFIER.getMessage());
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting the
+     * {@link ActiveAbilityType.Effect#PROJECTION}.
+     */
+    private void readActiveProjection() {
+      if (args.length == 3) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            int distance = Integer.parseInt(args[1]);
+            try {
+              int delay = Integer.parseInt(args[2]);
+              setKeyStringToList(cooldown + " " + distance + " " + delay);
+            } catch (NumberFormatException ex) {
+              user.sendMessage(Message.INVALID_DELAY.getMessage());
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting the
+     * {@link ActiveAbilityType.Effect#SHATTER}.
+     */
+    private void readActiveShatter() {
+      if (args.length == 2) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            double radius = Double.parseDouble(args[1]);
+            setKeyStringToList(cooldown + " " + radius);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_RADIUS.getMessage());
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting the
+     * {@link ActiveAbilityType.Effect#TELEPORT}.
+     */
+    private void readActiveTeleport() {
+      if (args.length == 2) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            int distance = Integer.parseInt(args[1]);
+            setKeyStringToList(cooldown + " " + distance);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
+     * Sets a key with a String value to a {@link KeyHeader key header's} list of keys.
+     *
+     * @param keyValue key value
+     */
+    private void setKeyStringToList(String keyValue) {
+      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+
+      NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), activeHeader + interactingKey);
+      PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+
+      if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+        StringBuilder newKeys = new StringBuilder();
+        for (String key : keys) {
+          if (!key.equals(interactingKey)) {
+            newKeys.append(key).append(" ");
+          }
+        }
+        dataContainer.set(listKey, PersistentDataType.STRING, newKeys + interactingKey);
+      } else {
+        dataContainer.set(listKey, PersistentDataType.STRING, interactingKey);
+      }
+      dataContainer.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
     }
   }
 }

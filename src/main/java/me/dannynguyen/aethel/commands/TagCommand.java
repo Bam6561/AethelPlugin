@@ -43,7 +43,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.4
  * @since 1.2.6
  */
 public class TagCommand implements CommandExecutor {
@@ -412,6 +412,7 @@ public class TagCommand implements CommandExecutor {
           try {
             ActiveAbilityType activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
             switch (activeAbilityType.getEffect()) {
+              case CLEAR_STATUS -> readActiveStatusClear(value);
               case MOVEMENT -> readActiveMovement(value);
               case PROJECTION -> readActiveProjection(value);
               case SHATTER -> readActiveShatter(value);
@@ -582,6 +583,24 @@ public class TagCommand implements CommandExecutor {
           } else {
             user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
           }
+        }
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before
+     * setting the {@link ActiveAbilityType.Effect#CLEAR_STATUS}.
+     *
+     * @param value tag value
+     */
+    private void readActiveStatusClear(String value) {
+      String[] args = value.split(" ");
+      if (args.length == 1) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          setActiveTag(String.valueOf(cooldown));
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
         }
       }
     }

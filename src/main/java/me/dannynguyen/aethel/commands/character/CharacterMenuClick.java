@@ -377,7 +377,7 @@ public class CharacterMenuClick implements MenuClick {
    */
   private void setActiveAbilityBind(RpgEquipmentSlot eSlot) {
     user.closeInventory();
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + " Binds.");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "Binds:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Hotbar (Slot #'s)");
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setMessageInput(MessageEvent.Type.CHARACTER_BIND_ACTIVE_ABILITY);

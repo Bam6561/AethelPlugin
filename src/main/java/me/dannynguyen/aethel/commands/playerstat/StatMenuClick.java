@@ -24,7 +24,7 @@ import java.util.UUID;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.19.4
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClick {
@@ -88,7 +88,7 @@ public class StatMenuClick implements MenuClick {
       }
       case 5 -> returnToMenu();
       case 8 -> nextPage();
-      default -> new StatBroadcast(e, user).sendStat();
+      default -> new StatBroadcast().sendStat();
     }
   }
 
@@ -107,7 +107,7 @@ public class StatMenuClick implements MenuClick {
       }
       case 5 -> returnToMenu();
       case 8 -> nextPage();
-      default -> new StatBroadcast(e, user).sendSubstat();
+      default -> new StatBroadcast().sendSubstat();
     }
   }
 
@@ -153,59 +153,45 @@ public class StatMenuClick implements MenuClick {
    * Represents the retrieval and broadcast of a player statistic.
    *
    * @author Danny Nguyen
-   * @version 1.17.19
+   * @version 1.19.4
    * @since 1.4.10
    */
-  private static class StatBroadcast {
-    /**
-     * Player who requested the value.
-     */
-    private final Player user;
-
+  private class StatBroadcast {
     /**
      * User's UUID.
      */
-    private final UUID uuid;
+    private final UUID uuid = user.getUniqueId();
 
     /**
      * OfflinePlayer object of the player statistic owner.
      */
-    private final OfflinePlayer owner;
+    private final OfflinePlayer owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getTarget());
 
     /**
      * Player statistic owner's name.
      */
-    private final String ownerName;
+    private final String ownerName = owner.getName();
 
     /**
      * Requested player statistic.
      */
-    private final String requestedStat;
+    private final String requestedStat = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
 
     /**
      * Whether to broadcast the value to all online players.
      */
-    private final boolean isGlobalBroadcast;
+    private final boolean isGlobalBroadcast = e.isShiftClick();
 
     /**
-     * Associates a user with the player statistic request and whether to broadcast its value globally.
-     *
-     * @param e    inventory click event
-     * @param user user
+     * No parameter constructor.
      */
-    StatBroadcast(@NotNull InventoryClickEvent e, @NotNull Player user) {
-      this.user = Objects.requireNonNull(user, "Null user");
-      this.requestedStat = ChatColor.stripColor(ItemReader.readName(Objects.requireNonNull(e, "Null inventory click event").getCurrentItem()));
-      this.uuid = user.getUniqueId();
-      this.owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getTarget());
-      this.ownerName = owner.getName();
-      this.isGlobalBroadcast = e.isShiftClick();
+    private StatBroadcast() {
     }
 
     /**
      * Sends a player's statistic value.
      */
-    protected void sendStat() {
+    private void sendStat() {
       Statistic stat = Statistic.valueOf(TextFormatter.formatEnum(requestedStat));
       String statName = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.YELLOW + requestedStat;
       String statValue = formatStatValue(requestedStat, stat);
@@ -217,7 +203,7 @@ public class StatMenuClick implements MenuClick {
     /**
      * Sends a player's substatistic value.
      */
-    protected void sendSubstat() {
+    private void sendSubstat() {
       String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
       String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
       String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
