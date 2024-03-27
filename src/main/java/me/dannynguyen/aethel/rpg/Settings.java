@@ -18,7 +18,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
- * @version 1.19.1
+ * @version 1.19.2
  * @since 1.16.4
  */
 public class Settings {
@@ -79,19 +79,17 @@ public class Settings {
       try {
         Scanner scanner = new Scanner(file);
 
-        String[] settings = scanner.nextLine().split(",");
-        int slot = 0;
+        String[] settings = scanner.nextLine().split(", ");
+        int slotOrder = 0;
         for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-          String[] hotbarArray = settings[slot].split(" ");
-          Set<Integer> hotbarSet = new HashSet<>();
-          for (String hotbarString : hotbarArray) {
-            hotbarSet.add(Integer.parseInt(hotbarString));
+          for (String hotbarString : settings[slotOrder].split(" ")) {
+            if (!hotbarString.isBlank()) {
+              int hotbarSlot = Integer.parseInt(hotbarString);
+              abilityBoundEquipmentSlots.get(eSlot).add(hotbarSlot);
+              abilityBoundHotbar.get(hotbarSlot).add(eSlot);
+            }
           }
-          abilityBoundEquipmentSlots.get(eSlot).addAll(hotbarSet);
-          for (int hotbarSlot : hotbarSet) {
-            abilityBoundHotbar.get(hotbarSlot).add(eSlot);
-          }
-          slot++;
+          slotOrder++;
         }
 
         settings = scanner.nextLine().split(" ");
@@ -118,9 +116,9 @@ public class Settings {
         for (int hotbarSlot : abilityBoundEquipmentSlots.get(eSlot)) {
           activeAbilityBind.append(hotbarSlot).append(" ");
         }
-        activeAbilityBinds.append(activeAbilityBind.toString().trim()).append(",");
+        activeAbilityBinds.append(activeAbilityBind).append(" , ");
       }
-      fw.write(activeAbilityBinds.toString());
+      fw.write(activeAbilityBinds.substring(0, activeAbilityBinds.length() - 2));
 
       fw.write("\n");
       fw.write(healthBarVisible + " " + healthActionVisible);
@@ -137,7 +135,9 @@ public class Settings {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
       abilityBoundEquipmentSlots.put(eSlot, new HashSet<>());
     }
-    abilityBoundHotbar.clear();
+    for (int i = 0; i < 10; i++) {
+      abilityBoundHotbar.put(i, new HashSet<>());
+    }
   }
 
   /**

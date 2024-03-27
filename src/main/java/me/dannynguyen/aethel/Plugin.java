@@ -20,6 +20,7 @@ import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,9 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents the plugin as an object.
@@ -41,7 +40,7 @@ import java.util.UUID;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.19.2
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -293,6 +292,9 @@ public class Plugin extends JavaPlugin {
       double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       damagee.damage(0.1);
       rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
+      if (rpgPlayer.getHealth().getCurrentHealth() < 0) {
+        propagateElectrocuteStacks(damagee, rpgPlayer.getHealth().getCurrentHealth());
+      }
     }
   }
 
@@ -308,8 +310,47 @@ public class Plugin extends JavaPlugin {
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+      double remainingHealth = entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       entity.damage(0.1);
-      entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2));
+      if (remainingHealth > 0) {
+        entity.setHealth(remainingHealth);
+      } else {
+        entity.setHealth(0);
+        propagateElectrocuteStacks(entity, remainingHealth);
+      }
+    }
+  }
+
+  /**
+   * Propagates remaining electrocute stacks to a random nearby target.
+   *
+   * @param sourceEntity    source entity that died
+   * @param remainingHealth negative health value
+   */
+  private void propagateElectrocuteStacks(LivingEntity sourceEntity, double remainingHealth) {
+    List<LivingEntity> nearbyLivingEntities = new ArrayList<>();
+    for (Entity entity : sourceEntity.getNearbyEntities(4, 4, 4)) {
+      if (entity instanceof LivingEntity livingEntity) {
+        nearbyLivingEntities.add(livingEntity);
+      }
+    }
+
+    if (!nearbyLivingEntities.isEmpty()) {
+      double remainingStacks = Math.abs(remainingHealth / 0.2);
+      int appliedStacks = (int) Math.max(1, remainingStacks / nearbyLivingEntities.size());
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      for (LivingEntity livingEntity : nearbyLivingEntities) {
+        UUID uuid = livingEntity.getUniqueId();
+        if (!entityStatuses.containsKey(uuid)) {
+          entityStatuses.put(uuid, new HashMap<>());
+        }
+        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+        if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+          statuses.get(StatusType.ELECTROCUTE).addStacks(appliedStacks, 60);
+        } else {
+          statuses.put(StatusType.ELECTROCUTE, new Status(uuid, StatusType.ELECTROCUTE, appliedStacks, 60));
+        }
+      }
     }
   }
 

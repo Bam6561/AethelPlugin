@@ -23,7 +23,7 @@ import java.util.*;
  * and {@link ActiveAbility active} abilities.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.2
  * @since 1.17.9
  */
 public class Abilities {
@@ -121,7 +121,7 @@ public class Abilities {
    * @param dataContainer item's persistent tags
    */
   public void readPassives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
-    String[] passives = Objects.requireNonNull(dataContainer, "Null data container").get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split("");
+    String[] passives = Objects.requireNonNull(dataContainer, "Null data container").get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String passive : passives) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(passive.substring(0, passive.indexOf("."))));
       if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
