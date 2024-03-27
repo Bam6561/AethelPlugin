@@ -22,7 +22,7 @@ public enum StatusType {
 
   /**
    * Cumulative stacking damage over time that spreads
-   * its remaining stacks to a nearby entity upon death.
+   * its remaining stacks to a nearby entities upon death.
    */
   ELECTROCUTE("Electrocute", true),
 

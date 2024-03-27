@@ -7,14 +7,29 @@ import org.jetbrains.annotations.NotNull;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.19.3
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
   /**
+   * Applies stacks of {@link StatusType#BLEED}.
+   */
+  BLEED("Bleed", "bleed", Effect.STACK_INSTANCE),
+
+  /**
    * Applies stacks of {@link StatusType#BRITTLE}.
    */
   BRITTLE("Brittle", "brittle", Effect.STACK_INSTANCE),
+
+  /**
+   * Applies stacks of {@link StatusType#ELECTROCUTE}.
+   */
+  ELECTROCUTE("Electrocute", "electrocute", Effect.STACK_INSTANCE),
+
+  /**
+   * Applies stacks of {@link StatusType#FRACTURE}.
+   */
+  FRACTURE("Fracture", "fracture", Effect.STACK_INSTANCE),
 
   /**
    * Apply stacks of {@link StatusType#SOAKED}.
@@ -27,9 +42,9 @@ public enum PassiveAbilityType {
   SPARK("Spark", "spark", Effect.CHAIN_DAMAGE),
 
   /**
-   * Applies stacks of {@link StatusType#BLEED}.
+   * Applies stacks of {@link StatusType#VULNERABLE}.
    */
-  BLEED("Bleed", "bleed", Effect.STACK_INSTANCE);
+  VULNERABLE("Vulnerable", "vulnerable", Effect.STACK_INSTANCE);
 
   /**
    * Proper name.

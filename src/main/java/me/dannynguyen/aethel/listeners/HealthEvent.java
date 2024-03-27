@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.19.3
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -171,7 +171,17 @@ public class HealthEvent implements Listener {
     Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
     Random random = new Random();
     ifCriticallyHit(e, attributes, random);
-    ifVulnerable(e);
+
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    UUID uuid = e.getEntity().getUniqueId();
+    LivingEntity damagee = (LivingEntity) e.getEntity();
+
+    if (entityStatuses.containsKey(uuid)) {
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      ifFracture(e, damagee, statuses);
+      ifVulnerable(e, statuses);
+    }
+
     final double finalDamage = e.getDamage();
     e.setDamage(finalDamage);
   }
@@ -261,19 +271,28 @@ public class HealthEvent implements Listener {
   }
 
   /**
+   * If the target has {@link StatusType#FRACTURE}, multiply the damage by its number of stacks.
+   *
+   * @param e entity damage by entity event
+   */
+  private void ifFracture(EntityDamageByEntityEvent e, LivingEntity damagee, Map<StatusType, Status> statuses) {
+    if (statuses.containsKey(StatusType.FRACTURE)) {
+      int armor = (int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+      armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
+      double damage = e.getDamage();
+      e.setDamage(damage - (damage * Math.min(armor * 0.2, .4)));
+    }
+  }
+
+  /**
    * If the target has the {@link StatusType#VULNERABLE}, multiply the damage by its number of stacks.
    *
    * @param e entity damage by entity event
    */
-  private void ifVulnerable(EntityDamageByEntityEvent e) {
-    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    UUID uuid = e.getEntity().getUniqueId();
-    if (entityStatuses.containsKey(uuid)) {
-      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-      if (statuses.containsKey(StatusType.VULNERABLE)) {
-        int vulnerable = statuses.get(StatusType.VULNERABLE).getStackAmount();
-        e.setDamage(e.getDamage() * (1 + (vulnerable * 0.025)));
-      }
+  private void ifVulnerable(EntityDamageByEntityEvent e, Map<StatusType, Status> statuses) {
+    if (statuses.containsKey(StatusType.VULNERABLE)) {
+      int vulnerable = statuses.get(StatusType.VULNERABLE).getStackAmount();
+      e.setDamage(e.getDamage() * (1 + (vulnerable * 0.025)));
     }
   }
 
