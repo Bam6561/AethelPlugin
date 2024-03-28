@@ -40,7 +40,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.7
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -239,7 +239,7 @@ public class Plugin extends JavaPlugin {
             if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
               boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
               if (self) {
-                ability.doEffect(rpgPlayer.getUUID());
+                ability.doEffect(rpgPlayer, rpgPlayer.getUUID());
               }
             }
           }

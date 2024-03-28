@@ -26,7 +26,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.17.12
+ * @version 1.19.7
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -110,7 +110,8 @@ public class RpgEvent implements Listener {
    * @param selfUUID   self UUID
    */
   private void triggerPassivesOnKill(UUID killedUUID, UUID selfUUID) {
-    Map<Abilities.SlotPassive, PassiveAbility> killTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID).getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID);
+    Map<Abilities.SlotPassive, PassiveAbility> killTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
     if (!killTriggers.isEmpty()) {
       Random random = new Random();
       for (PassiveAbility ability : killTriggers.values()) {
@@ -122,7 +123,7 @@ public class RpgEvent implements Listener {
             switch (ability.getType().getEffect()) {
               case STACK_INSTANCE -> {
                 if (self) {
-                  ability.doEffect(selfUUID);
+                  ability.doEffect(rpgPlayer, selfUUID);
                 }
               }
               case CHAIN_DAMAGE -> {
@@ -131,7 +132,7 @@ public class RpgEvent implements Listener {
                 } else {
                   targetUUID = killedUUID;
                 }
-                ability.doEffect(targetUUID);
+                ability.doEffect(rpgPlayer, targetUUID);
               }
             }
           }

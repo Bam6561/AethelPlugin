@@ -15,7 +15,7 @@ import java.util.Set;
  * Collection of player action listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.1
+ * @version 1.19.7
  * @since 1.17.3
  */
 public class ActionEvent implements Listener {
@@ -40,7 +40,7 @@ public class ActionEvent implements Listener {
         for (RpgEquipmentSlot eSlot : eSlots) {
           for (ActiveAbility ability : rpgPlayer.getAbilities().getTriggerActives().get(eSlot)) {
             if (!ability.isOnCooldown()) {
-              ability.doEffect(player);
+              ability.doEffect(rpgPlayer, player);
             }
           }
         }

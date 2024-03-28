@@ -25,7 +25,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.7
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -47,7 +47,7 @@ public class ActiveAbility {
   /**
    * Ability cooldown in ticks.
    */
-  private final int cooldown;
+  private final int baseCooldown;
 
   /**
    * {@link ActiveAbilityType.Effect} data.
@@ -66,7 +66,7 @@ public class ActiveAbility {
     this.onCooldownActives = Objects.requireNonNull(onCooldownActives, "Null on cooldown actives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.type = Objects.requireNonNull(type, "Null ability");
-    this.cooldown = Integer.parseInt(dataValues[0]);
+    this.baseCooldown = Integer.parseInt(dataValues[0]);
     initializeAbilityData(type.getEffect(), dataValues);
   }
 
@@ -89,17 +89,19 @@ public class ActiveAbility {
   /**
    * Triggers the {@link ActiveAbilityType.Effect}.
    *
-   * @param caster ability caster
+   * @param rpgPlayer {@link RpgPlayer}
+   * @param caster    ability caster
    */
-  public void doEffect(@NotNull Player caster) {
+  public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull Player caster) {
+    double cooldownModifier = Objects.requireNonNull(rpgPlayer, "Null RPG player").getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_COOLDOWN) / 100;
     Objects.requireNonNull(caster, "Null caster");
     switch (type.getEffect()) {
-      case CLEAR_STATUS -> clearStatus(caster);
-      case DISTANCE_DAMAGE -> dealDistanceDamage(caster);
-      case MOVEMENT -> moveDistance(caster);
-      case PROJECTION -> projectDistance(caster);
-      case SHATTER -> shatterBrittle(caster);
-      case TELEPORT -> teleportDistance(caster);
+      case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
+      case DISTANCE_DAMAGE -> dealDistanceDamage(cooldownModifier, caster);
+      case MOVEMENT -> moveDistance(cooldownModifier, caster);
+      case PROJECTION -> projectDistance(cooldownModifier, caster);
+      case SHATTER -> shatterBrittle(cooldownModifier, caster);
+      case TELEPORT -> teleportDistance(cooldownModifier, caster);
     }
   }
 
@@ -107,9 +109,10 @@ public class ActiveAbility {
    * Performs {@link ActiveAbilityType.Effect#CLEAR_STATUS} for {@link Status} based
    * on the {@link StatusType.Type}.
    *
-   * @param caster ability caster
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
    */
-  private void clearStatus(Player caster) {
+  private void clearStatus(double cooldownModifier, Player caster) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     UUID uuid = caster.getUniqueId();
     if (entityStatuses.containsKey(uuid)) {
@@ -127,8 +130,9 @@ public class ActiveAbility {
         }
       }
     }
-    if (cooldown > 0) {
+    if (baseCooldown > 0) {
       setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -136,9 +140,10 @@ public class ActiveAbility {
   /**
    * Performs {@link ActiveAbilityType.Effect#DISTANCE_DAMAGE} across a distance.
    *
-   * @param caster ability caster
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
    */
-  private void dealDistanceDamage(Player caster) {
+  private void dealDistanceDamage(double cooldownModifier, Player caster) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
     double damage = Double.parseDouble(effectData.get(0)) * (1 + rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) / 100);
     double distance = Double.parseDouble(effectData.get(1));
@@ -174,8 +179,9 @@ public class ActiveAbility {
       }
     }
 
-    if (cooldown > 0) {
+    if (baseCooldown > 0) {
       setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -183,9 +189,10 @@ public class ActiveAbility {
   /**
    * Performs {@link ActiveAbilityType.Effect#MOVEMENT} across a distance.
    *
-   * @param caster ability caster
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
    */
-  private void moveDistance(Player caster) {
+  private void moveDistance(double cooldownModifier, Player caster) {
     Vector vector = new Vector();
     double multiplier = 0.325 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 3.25;
     switch (type) {
@@ -206,8 +213,9 @@ public class ActiveAbility {
       }
     }
     caster.setVelocity(vector);
-    if (cooldown > 0) {
+    if (baseCooldown > 0) {
       setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -215,15 +223,17 @@ public class ActiveAbility {
   /**
    * Performs {@link ActiveAbilityType.Effect#PROJECTION} across a distance.
    *
-   * @param caster ability caster
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
    */
-  private void projectDistance(Player caster) {
+  private void projectDistance(double cooldownModifier, Player caster) {
     final Location castOrigin = caster.getLocation().clone();
     Location origin = caster.getLocation();
     caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> caster.teleport(castOrigin), Integer.parseInt(effectData.get(1)));
-    if (cooldown > 0) {
+    if (baseCooldown > 0) {
       setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -232,9 +242,10 @@ public class ActiveAbility {
    * Consumes {@link me.dannynguyen.aethel.enums.rpg.StatusType#BRITTLE}
    * stacks on entities.
    *
-   * @param caster ability caster
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
    */
-  private void shatterBrittle(Player caster) {
+  private void shatterBrittle(double cooldownModifier, Player caster) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     double meters = Double.parseDouble(effectData.get(0));
 
@@ -248,7 +259,7 @@ public class ActiveAbility {
               RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
               double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
               player.damage(0.1);
-              rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateProtectionResistance(damage));
+              rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
             }
           } else {
             livingEntity.damage(0.1);
@@ -258,8 +269,9 @@ public class ActiveAbility {
         }
       }
     }
-    if (cooldown > 0) {
+    if (baseCooldown > 0) {
       setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -267,13 +279,15 @@ public class ActiveAbility {
   /**
    * Performs {@link ActiveAbilityType.Effect#TELEPORT} across a distance.
    *
-   * @param caster ability caster
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
    */
-  private void teleportDistance(Player caster) {
+  private void teleportDistance(double cooldownModifier, Player caster) {
     Location origin = caster.getLocation();
     caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
-    if (cooldown > 0) {
+    if (baseCooldown > 0) {
       setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }

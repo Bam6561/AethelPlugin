@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
@@ -21,7 +22,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.7
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -99,22 +100,25 @@ public class PassiveAbility {
   /**
    * Triggers the {@link PassiveAbilityType.Effect}.
    *
+   * @param rpgPlayer  {@link RpgPlayer}
    * @param targetUUID target UUID
    */
-  public void doEffect(@NotNull UUID targetUUID) {
+  public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull UUID targetUUID) {
+    double cooldownModifier = Objects.requireNonNull(rpgPlayer, "Null RPG player").getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_COOLDOWN) / 100;
     Objects.requireNonNull(targetUUID, "Null target UUID");
     switch (type.getEffect()) {
-      case STACK_INSTANCE -> applyStackInstance(targetUUID);
-      case CHAIN_DAMAGE -> chainDamage(targetUUID);
+      case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
+      case CHAIN_DAMAGE -> chainDamage(cooldownModifier, targetUUID);
     }
   }
 
   /**
    * Applies {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
    *
-   * @param targetUUID entity to receive {@link PassiveAbilityType.Effect#STACK_INSTANCE}
+   * @param cooldownModifier cooldown modifier
+   * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#STACK_INSTANCE}
    */
-  private void applyStackInstance(UUID targetUUID) {
+  private void applyStackInstance(double cooldownModifier, UUID targetUUID) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     Map<StatusType, Status> statuses;
     if (!entityStatuses.containsKey(targetUUID)) {
@@ -134,6 +138,7 @@ public class PassiveAbility {
     int cooldown = Integer.parseInt(conditionData.get(1));
     if (cooldown > 0) {
       setOnCooldown(true);
+      cooldown = (int) Math.min(1, cooldown - (cooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -141,9 +146,10 @@ public class PassiveAbility {
   /**
    * {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} between entities.
    *
-   * @param targetUUID {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} source
+   * @param cooldownModifier cooldown modifier
+   * @param targetUUID       {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} source
    */
-  private void chainDamage(UUID targetUUID) {
+  private void chainDamage(double cooldownModifier, UUID targetUUID) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
 
     double chainDamage = Double.parseDouble(effectData.get(1));
@@ -170,6 +176,7 @@ public class PassiveAbility {
     int cooldown = Integer.parseInt(conditionData.get(1));
     if (cooldown > 0) {
       setOnCooldown(true);
+      cooldown = (int) Math.min(1, cooldown - (cooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }

@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.3
+ * @version 1.19.7
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -107,7 +107,8 @@ public class HealthEvent implements Listener {
    */
   private void triggerPassivesDamageDealt(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-      Map<Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_DEALT);
+      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId());
+      Map<Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_DEALT);
       if (!damageDealtTriggers.isEmpty()) {
         if (e.getEntity() instanceof LivingEntity damagee) {
           Random random = new Random();
@@ -122,7 +123,7 @@ public class HealthEvent implements Listener {
                 } else {
                   targetUUID = damagee.getUniqueId();
                 }
-                ability.doEffect(targetUUID);
+                ability.doEffect(rpgPlayer, targetUUID);
               }
             }
           }
@@ -138,7 +139,8 @@ public class HealthEvent implements Listener {
    * @param damagee interacting player
    */
   private void triggerPassivesDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
-    Map<Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
+    Map<Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
     if (!damageTakenTriggers.isEmpty()) {
       if (e.getDamager() instanceof LivingEntity damager) {
         Random random = new Random();
@@ -153,7 +155,7 @@ public class HealthEvent implements Listener {
               } else {
                 targetUUID = damager.getUniqueId();
               }
-              ability.doEffect(targetUUID);
+              ability.doEffect(rpgPlayer, targetUUID);
             }
           }
         }
