@@ -43,7 +43,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.19.6
  * @since 1.2.6
  */
 public class TagCommand implements CommandExecutor {
@@ -412,7 +412,8 @@ public class TagCommand implements CommandExecutor {
           try {
             ActiveAbilityType activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
             switch (activeAbilityType.getEffect()) {
-              case CLEAR_STATUS -> readActiveStatusClear(value);
+              case CLEAR_STATUS -> readActiveClearStatus(value);
+              case DISTANCE_DAMAGE -> readActiveDistanceDamage(value);
               case MOVEMENT -> readActiveMovement(value);
               case PROJECTION -> readActiveProjection(value);
               case SHATTER -> readActiveShatter(value);
@@ -593,12 +594,40 @@ public class TagCommand implements CommandExecutor {
      *
      * @param value tag value
      */
-    private void readActiveStatusClear(String value) {
+    private void readActiveClearStatus(String value) {
       String[] args = value.split(" ");
       if (args.length == 1) {
         try {
           int cooldown = Integer.parseInt(args[0]);
           setActiveTag(String.valueOf(cooldown));
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before
+     * setting the {@link ActiveAbilityType.Effect#DISTANCE_DAMAGE}.
+     *
+     * @param value tag value
+     */
+    private void readActiveDistanceDamage(String value) {
+      String[] args = value.split(" ");
+      if (args.length == 3) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            double damage = Double.parseDouble(args[1]);
+            try {
+              double distance = Double.parseDouble(args[2]);
+              setActiveTag(cooldown + " " + damage + " " + distance);
+            } catch (NumberFormatException ex) {
+              user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+          }
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
         }

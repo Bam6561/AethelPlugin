@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.5
+ * @version 1.19.6
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -51,6 +51,16 @@ public enum ActiveAbilityType {
    * Upwards facing movement.
    */
   SPRING("Spring", "spring", Effect.MOVEMENT),
+
+  /**
+   * Forward facing horizontal arc shaped attack.
+   */
+  FORCE_SWEEP("Force Sweep", "force_sweep", Effect.DISTANCE_DAMAGE),
+
+  /**
+   * Forward facing vertical arc shaped attack.
+   */
+  FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
 
   /**
    * Backwards facing movement.
@@ -119,7 +129,7 @@ public enum ActiveAbilityType {
    * Effects of {@link ActiveAbilityType active abilities}.
    *
    * @author Danny Nguyen
-   * @version 1.19.4
+   * @version 1.19.6
    * @since 1.15.9
    */
   public enum Effect {
@@ -132,6 +142,11 @@ public enum ActiveAbilityType {
      * Causes statuses to be removed.
      */
     CLEAR_STATUS("Cooldown(t)"),
+
+    /**
+     * Causes damage at a distance.
+     */
+    DISTANCE_DAMAGE("Cooldown(t), Damage, Distance(m)"),
 
     /**
      * Causes instant movement that returns to the original location after a delay.

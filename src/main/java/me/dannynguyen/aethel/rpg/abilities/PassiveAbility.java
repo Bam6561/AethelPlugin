@@ -21,7 +21,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.6
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -183,7 +183,7 @@ public class PassiveAbility {
    * @param meters         distance
    */
   private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, double meters) {
-    List<LivingEntity> newSoakedTargets = new ArrayList<>();
+    Set<LivingEntity> newSoakedTargets = new HashSet<>();
     for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
       if (entity instanceof LivingEntity livingEntity) {
         UUID livingEntityUUID = livingEntity.getUniqueId();

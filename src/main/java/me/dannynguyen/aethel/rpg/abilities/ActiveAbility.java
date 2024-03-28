@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
@@ -24,7 +25,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.5
+ * @version 1.19.6
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -78,7 +79,7 @@ public class ActiveAbility {
   private void initializeAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
     switch (effect) {
       case MOVEMENT, SHATTER, TELEPORT -> effectData.add(dataValues[1]);
-      case PROJECTION -> {
+      case DISTANCE_DAMAGE, PROJECTION -> {
         effectData.add(dataValues[1]);
         effectData.add(dataValues[2]);
       }
@@ -94,6 +95,7 @@ public class ActiveAbility {
     Objects.requireNonNull(caster, "Null caster");
     switch (type.getEffect()) {
       case CLEAR_STATUS -> clearStatus(caster);
+      case DISTANCE_DAMAGE -> dealDistanceDamage(caster);
       case MOVEMENT -> moveDistance(caster);
       case PROJECTION -> projectDistance(caster);
       case SHATTER -> shatterBrittle(caster);
@@ -132,13 +134,60 @@ public class ActiveAbility {
   }
 
   /**
+   * Performs {@link ActiveAbilityType.Effect#DISTANCE_DAMAGE} across a distance.
+   *
+   * @param caster ability caster
+   */
+  private void dealDistanceDamage(Player caster) {
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
+    double damage = Double.parseDouble(effectData.get(0)) * (1 + rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) / 100);
+    double distance = Double.parseDouble(effectData.get(1));
+
+    Vector casterDirection = caster.getLocation().getDirection();
+    Set<LivingEntity> targets = new HashSet<>();
+
+    switch (type) {
+      case FORCE_SWEEP -> {
+        for (Entity entity : caster.getNearbyEntities(distance, 1.5, distance)) {
+          if (entity instanceof LivingEntity livingEntity) {
+            if (getLivingEntityDirectionAngle(caster.getLocation(), casterDirection, livingEntity) <= 45) {
+              targets.add(livingEntity);
+            }
+          }
+        }
+      }
+      case FORCE_WAVE -> {
+        getForceWaveTargets(targets, caster.getLocation(), casterDirection, distance);
+        targets.remove(caster);
+      }
+    }
+
+    for (LivingEntity livingEntity : targets) {
+      if (livingEntity instanceof Player player) {
+        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+          player.damage(0.1);
+          rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
+        }
+      } else {
+        livingEntity.damage(0.1);
+        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - damage));
+      }
+    }
+
+    if (cooldown > 0) {
+      setOnCooldown(true);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+    }
+  }
+
+  /**
    * Performs {@link ActiveAbilityType.Effect#MOVEMENT} across a distance.
    *
    * @param caster ability caster
    */
   private void moveDistance(Player caster) {
     Vector vector = new Vector();
-    double multiplier = 0.65 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
+    double multiplier = 0.325 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 3.25;
     switch (type) {
       case DASH -> {
         vector = caster.getLocation().getDirection().multiply(multiplier);
@@ -227,6 +276,53 @@ public class ActiveAbility {
       setOnCooldown(true);
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
+  }
+
+  /**
+   * Gets a living entity's direction angle from on the location of the caster.
+   *
+   * @param casterLocation  caster's location
+   * @param casterDirection caster's direction
+   * @param livingEntity    living entity
+   * @return living entity's direction angle
+   */
+  private double getLivingEntityDirectionAngle(Location casterLocation, Vector casterDirection, LivingEntity livingEntity) {
+    Vector casterLocationVector = casterLocation.toVector();
+    Vector entityDirection = livingEntity.getLocation().toVector().subtract(casterLocationVector);
+
+    double x1 = casterDirection.getX();
+    double z1 = casterDirection.getZ();
+    double x2 = entityDirection.getX();
+    double z2 = entityDirection.getZ();
+
+    double dotProduct = x1 * x2 + z1 * z2;
+    double vectorLengths = Math.sqrt(Math.pow(x1, 2) + Math.pow(z1, 2)) * Math.sqrt(Math.pow(x2, 2) + Math.pow(z2, 2));
+    return Math.acos(dotProduct / vectorLengths) * (180 / Math.PI);
+  }
+
+  /**
+   * Recursively finds forcewave-affected targets.
+   *
+   * @param targets         set of affected targets
+   * @param origin          origin location
+   * @param casterDirection caster's direction
+   * @param meters          distance
+   * @return set of forcewave-affected targets
+   */
+  private Set<LivingEntity> getForceWaveTargets(Set<LivingEntity> targets, Location origin, Vector casterDirection, double meters) {
+    if (meters < 1.5) {
+      return targets;
+    }
+    if (meters >= 1.5) {
+      origin = origin.add(casterDirection.multiply(1.5)).clone();
+      meters -= 1.5;
+      for (Entity entity : origin.getWorld().getNearbyEntities(origin, 1.5, 1.5, 1.5)) {
+        if (entity instanceof LivingEntity livingEntity) {
+          targets.add(livingEntity);
+        }
+      }
+    }
+    return getForceWaveTargets(targets, origin, casterDirection, meters);
   }
 
   /**

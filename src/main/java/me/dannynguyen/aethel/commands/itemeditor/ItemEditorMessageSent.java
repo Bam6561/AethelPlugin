@@ -42,7 +42,7 @@ import java.util.UUID;
  * Called with {@link MessageEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.19.6
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -834,7 +834,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
    *
    * @author Danny Nguyen
-   * @version 1.19.4
+   * @version 1.19.6
    * @since 1.19.4
    */
   private class ActiveTagSetter {
@@ -852,11 +852,6 @@ public class ItemEditorMessageSent {
      * User input.
      */
     private final String[] args = e.getMessage().split(" ");
-
-    /**
-     * ItemStack's persistent tags.
-     */
-    private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
     /**
      * {@link PluginPlayer#getSlot()}
@@ -890,6 +885,7 @@ public class ItemEditorMessageSent {
       ActiveAbilityType.Effect effect = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
       switch (effect) {
         case CLEAR_STATUS -> readActiveClearStatus();
+        case DISTANCE_DAMAGE -> readDistanceDamage();
         case MOVEMENT -> readActiveMovement();
         case PROJECTION -> readActiveProjection();
         case SHATTER -> readActiveShatter();
@@ -906,6 +902,31 @@ public class ItemEditorMessageSent {
         try {
           int cooldown = Integer.parseInt(args[0]);
           setKeyStringToList(String.valueOf(cooldown));
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting the
+     * {@link ActiveAbilityType.Effect#DISTANCE_DAMAGE}.
+     */
+    private void readDistanceDamage() {
+      if (args.length == 3) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            double damage = Double.parseDouble(args[1]);
+            try {
+              double distance = Double.parseDouble(args[2]);
+              setKeyStringToList(cooldown + " " + damage + " " + distance);
+            } catch (NumberFormatException ex) {
+              user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+          }
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
         }

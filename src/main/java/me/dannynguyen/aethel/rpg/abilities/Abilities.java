@@ -23,7 +23,7 @@ import java.util.*;
  * and {@link ActiveAbility active} abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.2
+ * @version 1.19.6
  * @since 1.17.9
  */
 public class Abilities {
@@ -189,6 +189,15 @@ public class Abilities {
       abilitiesToRemove.add(triggerPassive);
     }
     slotPassives.get(eSlot).removeAll(abilitiesToRemove);
+  }
+
+  /**
+   * Removes existing {@link Equipment} {@link ActiveAbility active abilities} at an {@link RpgEquipmentSlot}.
+   *
+   * @param eSlot {@link RpgEquipmentSlot}
+   */
+  public void removeActives(@NotNull RpgEquipmentSlot eSlot) {
+    triggerActives.get(eSlot).clear();
   }
 
   /**

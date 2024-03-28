@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.5
+ * @version 1.19.6
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -644,7 +644,7 @@ public class ItemEditorMenuClick implements MenuClick {
         return context + "0.0 [Max: 1.0]";
       }
       case GENERIC_MOVEMENT_SPEED -> {
-        return context + "2.0 [Input * 20]";
+        return context + "0.1";
       }
       case GENERIC_LUCK -> {
         return context + "0.0";
@@ -819,16 +819,17 @@ public class ItemEditorMenuClick implements MenuClick {
         String condition = passiveMeta[1];
         String type = passiveMeta[2];
 
-        PassiveTriggerType passiveTriggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(condition));
-        PassiveAbilityType.Effect abilityEffect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+        PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type));
+        PassiveTriggerType triggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(condition));
+        PassiveAbilityType.Effect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
 
         String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
         StringBuilder abilityLore = new StringBuilder();
 
         abilityLore.append(ChatColor.DARK_AQUA);
-        switch (passiveTriggerType.getCondition()) {
+        switch (triggerType.getCondition()) {
           case CHANCE_COOLDOWN -> {
-            addTriggerLore(abilityLore, passiveTriggerType);
+            addTriggerLore(abilityLore, triggerType);
             // Chance
             if (!abilityData[0].equals("100.0")) {
               abilityLore.append(ChatColor.WHITE).append(abilityData[0]).append("% ");
@@ -837,21 +838,21 @@ public class ItemEditorMenuClick implements MenuClick {
             if (!abilityData[1].equals("0")) {
               abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
             }
-            switch (abilityEffect) {
-              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
-              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+            switch (effect) {
+              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
+              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
             }
           }
           case HEALTH_COOLDOWN -> {
             abilityLore.append("Below ").append(abilityData[0]).append("% HP: ");
-            addTriggerLore(abilityLore, passiveTriggerType);
+            addTriggerLore(abilityLore, triggerType);
             // Cooldown
             if (!abilityData[1].equals("0")) {
               abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
             }
-            switch (abilityEffect) {
-              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
-              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(type)).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+            switch (effect) {
+              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
+              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
             }
           }
         }
@@ -910,24 +911,11 @@ public class ItemEditorMenuClick implements MenuClick {
 
         activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
         switch (abilityEffect) {
-          case CLEAR_STATUS -> {
-            switch (abilityType) {
-              case DISMISS -> activeLore.append(ChatColor.AQUA).append("Dismiss");
-              case DISREGARD -> activeLore.append(ChatColor.AQUA).append("Disregard");
-            }
-          }
-          case MOVEMENT -> {
-            switch (abilityType) {
-              case DASH -> activeLore.append(ChatColor.AQUA).append("Dash ");
-              case LEAP -> activeLore.append(ChatColor.AQUA).append("Leap ");
-              case SPRING -> activeLore.append(ChatColor.AQUA).append("Spring ");
-              case WITHDRAW -> activeLore.append(ChatColor.AQUA).append("Withdraw ");
-            }
-            activeLore.append(ChatColor.WHITE).append("(").append(abilityData[1]).append("%)");
-          }
-          case PROJECTION -> activeLore.append(ChatColor.AQUA).append("Projection ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
-          case SHATTER -> activeLore.append(ChatColor.AQUA).append("Shatter ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
-          case TELEPORT -> activeLore.append(ChatColor.AQUA).append("Blink ").append(ChatColor.WHITE).append("(").append(abilityData[1]).append("m)");
+          case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
+          case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
+          case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+          case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+          case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
         }
         if (activeAbilities.containsKey(slot)) {
           activeAbilities.get(slot).add(activeLore.toString());

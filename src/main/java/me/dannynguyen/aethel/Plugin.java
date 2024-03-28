@@ -40,7 +40,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.19.2
+ * @version 1.19.6
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -322,13 +322,13 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Propagates remaining electrocute stacks to a random nearby target.
+   * Propagates remaining electrocute stacks to nearby targets.
    *
    * @param sourceEntity    source entity that died
    * @param remainingHealth negative health value
    */
   private void propagateElectrocuteStacks(LivingEntity sourceEntity, double remainingHealth) {
-    List<LivingEntity> nearbyLivingEntities = new ArrayList<>();
+    Set<LivingEntity> nearbyLivingEntities = new HashSet<>();
     for (Entity entity : sourceEntity.getNearbyEntities(4, 4, 4)) {
       if (entity instanceof LivingEntity livingEntity) {
         nearbyLivingEntities.add(livingEntity);

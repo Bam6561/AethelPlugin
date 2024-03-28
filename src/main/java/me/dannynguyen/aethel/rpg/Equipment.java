@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.18.8
+ * @version 1.19.6
  * @since 1.13.4
  */
 public class Equipment {
@@ -194,7 +194,9 @@ public class Equipment {
     if (abilities.getSlotPassives().containsKey(eSlot)) {
       abilities.removePassives(eSlot);
     }
-    // Active abilities are overwritten.
+    if (abilities.getTriggerActives().containsKey(eSlot)) {
+      abilities.removeActives(eSlot);
+    }
   }
 
   /**

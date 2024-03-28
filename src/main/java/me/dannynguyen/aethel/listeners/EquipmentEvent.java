@@ -33,7 +33,7 @@ import java.util.Map;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.19.6
  * @since 1.9.0
  */
 public class EquipmentEvent implements Listener {
@@ -156,6 +156,9 @@ public class EquipmentEvent implements Listener {
       }
       for (RpgEquipmentSlot eSlot : slotPassives.keySet()) {
         abilities.removePassives(eSlot);
+      }
+      for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+        abilities.removeActives(eSlot);
       }
       dropJewelry(e.getEntity(), equipment.getJewelry());
     }

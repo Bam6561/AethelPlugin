@@ -40,7 +40,7 @@ public class PastItemHistory {
   protected void addPastItem(@NotNull Player user, @NotNull ItemStack item) {
     ItemStack pastItem = Objects.requireNonNull(item, "Null item").clone();
     ItemMeta meta = pastItem.getItemMeta();
-    meta.setDisplayName(ChatColor.DARK_PURPLE + Objects.requireNonNull(user, "Null user").getName() + ChatColor.WHITE + "" + ItemReader.readName(pastItem));
+    meta.setDisplayName(ChatColor.DARK_PURPLE + Objects.requireNonNull(user, "Null user").getName() + ChatColor.WHITE + " " + ItemReader.readName(pastItem));
     pastItem.setItemMeta(meta);
 
     if (pastItems.size() == 27) {
