@@ -172,7 +172,7 @@ public class TagCommand implements CommandExecutor {
    * Represents an item's {@link Key Aethel tag} set or remove operation.
    *
    * @author Danny Nguyen
-   * @version 1.17.14
+   * @version 1.19.11
    * @since 1.13.9
    */
   private static class TagModifier {
@@ -417,6 +417,7 @@ public class TagCommand implements CommandExecutor {
               case CLEAR_STATUS -> readActiveClearStatus(value);
               case DISTANCE_DAMAGE -> readActiveDistanceDamage(value);
               case MOVEMENT -> readActiveMovement(value);
+              case POTION_EFFECT -> readActivePotionEffect(value);
               case PROJECTION -> readActiveProjection(value);
               case SHATTER -> readActiveShatter(value);
               case TELEPORT -> readActiveTeleport(value);
@@ -612,21 +613,21 @@ public class TagCommand implements CommandExecutor {
                     PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
                     if (potionEffectType != null) {
                       try {
-                        int ticks = Integer.parseInt(args[4]);
+                        int amplifier = Integer.parseInt(args[4]);
                         try {
-                          int amplifier = Integer.parseInt(args[5]);
+                          int ticks = Integer.parseInt(args[5]);
                           switch (args[6]) {
                             case "true", "false" -> {
                               boolean ambient = Boolean.parseBoolean(args[6]);
-                              setPassiveTag(chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + ticks + " " + amplifier + " " + ambient);
+                              setPassiveTag(chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
                             }
                             default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
                           }
                         } catch (NumberFormatException ex) {
-                          user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+                          user.sendMessage(Message.INVALID_TICKS.getMessage());
                         }
                       } catch (NullPointerException ex) {
-                        user.sendMessage(Message.INVALID_TICKS.getMessage());
+                        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
                       }
                     } else {
                       user.sendMessage(Message.INVALID_TYPE.getMessage());
@@ -656,21 +657,21 @@ public class TagCommand implements CommandExecutor {
                     PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
                     if (potionEffectType != null) {
                       try {
-                        int ticks = Integer.parseInt(args[4]);
+                        int amplifier = Integer.parseInt(args[4]);
                         try {
-                          int amplifier = Integer.parseInt(args[5]);
+                          int ticks = Integer.parseInt(args[5]);
                           switch (args[6]) {
                             case "true", "false" -> {
                               boolean ambient = Boolean.parseBoolean(args[6]);
-                              setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + ticks + " " + amplifier + " " + ambient);
+                              setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
                             }
                             default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
                           }
                         } catch (NumberFormatException ex) {
-                          user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+                          user.sendMessage(Message.INVALID_TICKS.getMessage());
                         }
                       } catch (NullPointerException ex) {
-                        user.sendMessage(Message.INVALID_TICKS.getMessage());
+                        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
                       }
                     } else {
                       user.sendMessage(Message.INVALID_TYPE.getMessage());
@@ -753,6 +754,50 @@ public class TagCommand implements CommandExecutor {
             setActiveTag(cooldown + " " + modifier);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_MODIFIER.getMessage());
+          }
+        } catch (NumberFormatException ex) {
+          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        }
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before
+     * setting the {@link ActiveAbilityType.Effect#POTION_EFFECT}.
+     *
+     * @param value tag value
+     */
+    private void readActivePotionEffect(String value) {
+      String[] args = value.split(" ");
+      if (args.length == 5) {
+        try {
+          int cooldown = Integer.parseInt(args[0]);
+          try {
+            PotionEffectType potionEffectType = PotionEffectType.getByName(args[1]);
+            if (potionEffectType != null) {
+              try {
+                int amplifier = Integer.parseInt(args[2]);
+                try {
+                  int ticks = Integer.parseInt(args[3]);
+                  switch (args[4]) {
+                    case "true", "false" -> {
+                      boolean ambient = Boolean.parseBoolean(args[4]);
+                      setActiveTag(cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
+                    }
+                  }
+                } catch (NumberFormatException ex) {
+                  user.sendMessage(Message.INVALID_TICKS.getMessage());
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+              }
+            } else {
+              user.sendMessage(Message.INVALID_TYPE.getMessage());
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
           }
         } catch (NumberFormatException ex) {
           user.sendMessage(Message.INVALID_COOLDOWN.getMessage());

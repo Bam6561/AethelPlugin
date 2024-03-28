@@ -26,7 +26,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.7
+ * @version 1.19.11
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -121,7 +121,7 @@ public class RpgEvent implements Listener {
             boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
             UUID targetUUID;
             switch (ability.getType().getEffect()) {
-              case STACK_INSTANCE -> {
+              case STACK_INSTANCE, POTION_EFFECT -> {
                 if (self) {
                   ability.doEffect(rpgPlayer, selfUUID);
                 }

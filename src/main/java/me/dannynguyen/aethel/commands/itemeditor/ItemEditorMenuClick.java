@@ -661,7 +661,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.19.4
+   * @version 1.19.11
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -841,7 +841,10 @@ public class ItemEditorMenuClick implements MenuClick {
             switch (effect) {
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
-              case POTION_EFFECT -> abilityLore.append(ChatColor.WHITE).append("Gain ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityData[4]).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self] (" : "Target]");
+              case POTION_EFFECT -> {
+                int amplifier = Integer.parseInt(abilityData[4]) + 1;
+                abilityLore.append(ChatColor.WHITE).append("Gain ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[3]))).append(" ").append(amplifier).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
+              }
             }
           }
           case HEALTH_COOLDOWN -> {
@@ -854,7 +857,10 @@ public class ItemEditorMenuClick implements MenuClick {
             switch (effect) {
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
-              case POTION_EFFECT -> abilityLore.append(ChatColor.WHITE).append("Gain ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityData[4]).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self] (" : "Target]");
+              case POTION_EFFECT -> {
+                int amplifier = Integer.parseInt(abilityData[4]) + 1;
+                abilityLore.append(ChatColor.WHITE).append("Gain ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[3]))).append(" ").append(amplifier).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
+              }
             }
           }
         }
@@ -916,6 +922,7 @@ public class ItemEditorMenuClick implements MenuClick {
           case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
           case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
           case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+          case POTION_EFFECT -> activeLore.append("Gain ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(Integer.parseInt(abilityData[2] + 1)).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append(")");
           case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
           case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
         }
@@ -1028,6 +1035,28 @@ public class ItemEditorMenuClick implements MenuClick {
      */
     private String ticksToSeconds(String ticks) {
       return String.valueOf(Double.parseDouble(ticks) / 20);
+    }
+
+    /**
+     * Gets the potion effect type as an ID.
+     *
+     * @param potionEffect potion effect name
+     * @return potion effect ID
+     */
+    private String getPotionEffectTypeAsId(String potionEffect) {
+      potionEffect = potionEffect.toLowerCase();
+      switch (potionEffect) {
+        case "confusion" -> potionEffect = "nausea";
+        case "damage_resistance" -> potionEffect = "resistance";
+        case "fast_digging" -> potionEffect = "haste";
+        case "harm" -> potionEffect = "instant_damage";
+        case "heal" -> potionEffect = "instant_health";
+        case "increase_damage" -> potionEffect = "strength";
+        case "jump" -> potionEffect = "leap_boost";
+        case "slow" -> potionEffect = "slowness";
+        case "slow_digging" -> potionEffect = "mining_fatigue";
+      }
+      return potionEffect;
     }
   }
 }

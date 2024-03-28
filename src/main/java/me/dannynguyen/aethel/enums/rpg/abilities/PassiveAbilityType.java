@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.19.11
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
@@ -130,7 +130,7 @@ public enum PassiveAbilityType {
     /**
      * Causes a potion effect to be applied.
      */
-    POTION_EFFECT("Self, PotionEffect, Duration(t), Amplifier, Ambient");
+    POTION_EFFECT("Self, PotionEffect, Amplifier, Duration(t), Ambient");
 
     /**
      * Passive ability effect's data.

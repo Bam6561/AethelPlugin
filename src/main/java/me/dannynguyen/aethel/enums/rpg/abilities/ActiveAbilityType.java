@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.8
+ * @version 1.19.11
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -44,6 +44,11 @@ public enum ActiveAbilityType {
    * Omnidirectional.
    */
   LEAP("Leap", "leap", Effect.MOVEMENT),
+
+  /**
+   * Apply a potion effect.
+   */
+  POTION_EFFECT("Potion Effect", "potion_effect", Effect.POTION_EFFECT),
 
   /**
    * Forward facing teleport that after a delay,
@@ -147,7 +152,7 @@ public enum ActiveAbilityType {
    * Effects of {@link ActiveAbilityType active abilities}.
    *
    * @author Danny Nguyen
-   * @version 1.19.6
+   * @version 1.19.11
    * @since 1.15.9
    */
   public enum Effect {
@@ -165,6 +170,11 @@ public enum ActiveAbilityType {
      * Causes damage at a distance.
      */
     DISTANCE_DAMAGE("Cooldown(t), Damage, Distance(m)"),
+
+    /**
+     * Applies a potion effect.
+     */
+    POTION_EFFECT("Cooldown(t), PotionEffect, Amplifier, Duration(t), Ambient"),
 
     /**
      * Causes instant movement that returns to the original location after a delay.

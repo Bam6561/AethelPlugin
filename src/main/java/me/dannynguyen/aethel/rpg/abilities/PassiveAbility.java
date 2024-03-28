@@ -24,7 +24,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.19.11
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -199,8 +199,8 @@ public class PassiveAbility {
    */
   private void applyPotionEffect(double cooldownModifier, UUID targetUUID) {
     PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(1));
-    int duration = Integer.parseInt(effectData.get(2));
-    int amplifier = Integer.parseInt(effectData.get(3));
+    int amplifier = Integer.parseInt(effectData.get(2));
+    int duration = Integer.parseInt(effectData.get(3));
     boolean ambient = Boolean.parseBoolean(effectData.get(4));
     LivingEntity target = (LivingEntity) Bukkit.getEntity(targetUUID);
 

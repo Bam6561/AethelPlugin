@@ -16,6 +16,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.8
+ * @version 1.19.11
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -78,10 +80,19 @@ public class ActiveAbility {
    */
   private void initializeAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
     switch (effect) {
+      case CLEAR_STATUS -> {
+        // No data to initialize.
+      }
       case MOVEMENT, SHATTER, TELEPORT -> effectData.add(dataValues[1]);
       case DISTANCE_DAMAGE, PROJECTION -> {
         effectData.add(dataValues[1]);
         effectData.add(dataValues[2]);
+      }
+      case POTION_EFFECT -> {
+        effectData.add(dataValues[1]);
+        effectData.add(dataValues[2]);
+        effectData.add(dataValues[3]);
+        effectData.add(dataValues[4]);
       }
     }
   }
@@ -99,6 +110,7 @@ public class ActiveAbility {
       case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
       case DISTANCE_DAMAGE -> dealDistanceDamage(cooldownModifier, caster);
       case MOVEMENT -> moveDistance(cooldownModifier, caster);
+      case POTION_EFFECT -> applyPotionEffect(cooldownModifier, caster);
       case PROJECTION -> projectDistance(cooldownModifier, caster);
       case SHATTER -> shatterBrittle(cooldownModifier, caster);
       case TELEPORT -> teleportDistance(cooldownModifier, caster);
@@ -229,6 +241,27 @@ public class ActiveAbility {
       }
     }
     caster.setVelocity(vector);
+    if (baseCooldown > 0) {
+      setOnCooldown(true);
+      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+    }
+  }
+
+  /**
+   * Applies {@link ActiveAbilityType.Effect#POTION_EFFECT} on the caster.
+   *
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
+   */
+  private void applyPotionEffect(double cooldownModifier, Player caster) {
+    PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(0));
+    int amplifier = Integer.parseInt(effectData.get(1));
+    int duration = Integer.parseInt(effectData.get(2));
+    boolean ambient = Boolean.parseBoolean(effectData.get(3));
+
+    caster.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient));
+
     if (baseCooldown > 0) {
       setOnCooldown(true);
       int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
