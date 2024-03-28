@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.11
+ * @version 1.20.0
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -144,7 +144,7 @@ public class ActiveAbility {
     }
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -209,7 +209,7 @@ public class ActiveAbility {
 
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -243,7 +243,7 @@ public class ActiveAbility {
     caster.setVelocity(vector);
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -264,7 +264,7 @@ public class ActiveAbility {
 
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -282,7 +282,7 @@ public class ActiveAbility {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> caster.teleport(castOrigin), Integer.parseInt(effectData.get(1)));
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -320,7 +320,7 @@ public class ActiveAbility {
     }
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -336,7 +336,7 @@ public class ActiveAbility {
     caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
     if (baseCooldown > 0) {
       setOnCooldown(true);
-      int cooldown = (int) Math.min(1, baseCooldown - (baseCooldown * cooldownModifier));
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }

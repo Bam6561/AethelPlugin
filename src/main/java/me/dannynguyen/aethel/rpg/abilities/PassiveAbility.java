@@ -24,7 +24,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.11
+ * @version 1.20.0
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -139,6 +139,13 @@ public class PassiveAbility {
     StatusType statusType = StatusType.valueOf(type.toString());
     int stacks = Integer.parseInt(effectData.get(1));
     int ticks = Integer.parseInt(effectData.get(2));
+
+    Entity entity = Bukkit.getEntity(targetUUID);
+    if (entity instanceof Player) {
+      double tenacity = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID).getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY);
+      ticks = (int) Math.max(1, ticks - (ticks * tenacity / 100));
+    }
+
     if (statuses.containsKey(statusType)) {
       statuses.get(statusType).addStacks(stacks, ticks);
     } else {
@@ -148,7 +155,7 @@ public class PassiveAbility {
     int cooldown = Integer.parseInt(conditionData.get(1));
     if (cooldown > 0) {
       setOnCooldown(true);
-      cooldown = (int) Math.min(1, cooldown - (cooldown * cooldownModifier));
+      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -186,7 +193,7 @@ public class PassiveAbility {
     int cooldown = Integer.parseInt(conditionData.get(1));
     if (cooldown > 0) {
       setOnCooldown(true);
-      cooldown = (int) Math.min(1, cooldown - (cooldown * cooldownModifier));
+      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
@@ -209,7 +216,7 @@ public class PassiveAbility {
     int cooldown = Integer.parseInt(conditionData.get(1));
     if (cooldown > 0) {
       setOnCooldown(true);
-      cooldown = (int) Math.min(1, cooldown - (cooldown * cooldownModifier));
+      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }

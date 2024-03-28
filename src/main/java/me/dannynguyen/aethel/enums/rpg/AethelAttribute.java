@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.20.0
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -48,7 +48,12 @@ public enum AethelAttribute {
   /**
    * Item cooldown multiplier.
    */
-  ITEM_COOLDOWN("Item Cooldown", "item_cooldown", "-0.0%");
+  ITEM_COOLDOWN("Item Cooldown", "item_cooldown", "-0.0%"),
+
+  /**
+   * Reduces the duration of statuses.
+   */
+  TENACITY("Tenacity", "tenacity", "-0.0%");
 
   /**
    * Proper name.

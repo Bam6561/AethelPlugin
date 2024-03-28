@@ -661,7 +661,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.19.11
+   * @version 1.20.0
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -793,7 +793,7 @@ public class ItemEditorMenuClick implements MenuClick {
           df3.setMaximumFractionDigits(3);
           for (String attribute : attributeValues.get(eSlot).keySet()) {
             switch (attribute) {
-              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown" -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
+              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
               default -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
             }
           }
@@ -922,7 +922,10 @@ public class ItemEditorMenuClick implements MenuClick {
           case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
           case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
           case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
-          case POTION_EFFECT -> activeLore.append("Gain ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(Integer.parseInt(abilityData[2] + 1)).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append(")");
+          case POTION_EFFECT -> {
+            int amplifier = Integer.parseInt(abilityData[2] + 1);
+            activeLore.append("Gain ").append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
+          }
           case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
           case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
         }
