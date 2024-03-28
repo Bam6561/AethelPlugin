@@ -14,6 +14,8 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -22,7 +24,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.7
+ * @version 1.19.10
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -92,6 +94,13 @@ public class PassiveAbility {
             effectData.add(dataValues[3]);
             effectData.add(dataValues[4]);
           }
+          case POTION_EFFECT -> {
+            effectData.add(dataValues[2]);
+            effectData.add(dataValues[3]);
+            effectData.add(dataValues[4]);
+            effectData.add(dataValues[5]);
+            effectData.add(dataValues[6]);
+          }
         }
       }
     }
@@ -109,6 +118,7 @@ public class PassiveAbility {
     switch (type.getEffect()) {
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
       case CHAIN_DAMAGE -> chainDamage(cooldownModifier, targetUUID);
+      case POTION_EFFECT -> applyPotionEffect(cooldownModifier, targetUUID);
     }
   }
 
@@ -172,6 +182,29 @@ public class PassiveAbility {
         livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0))));
       }
     }
+
+    int cooldown = Integer.parseInt(conditionData.get(1));
+    if (cooldown > 0) {
+      setOnCooldown(true);
+      cooldown = (int) Math.min(1, cooldown - (cooldown * cooldownModifier));
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+    }
+  }
+
+  /**
+   * Applies a potion effect.
+   *
+   * @param cooldownModifier cooldown modifier
+   * @param targetUUID       entity to receive potion effects
+   */
+  private void applyPotionEffect(double cooldownModifier, UUID targetUUID) {
+    PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(1));
+    int duration = Integer.parseInt(effectData.get(2));
+    int amplifier = Integer.parseInt(effectData.get(3));
+    boolean ambient = Boolean.parseBoolean(effectData.get(4));
+    LivingEntity target = (LivingEntity) Bukkit.getEntity(targetUUID);
+
+    target.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient));
 
     int cooldown = Integer.parseInt(conditionData.get(1));
     if (cooldown > 0) {

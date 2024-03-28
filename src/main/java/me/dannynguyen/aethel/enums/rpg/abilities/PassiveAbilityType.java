@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.3
+ * @version 1.19.10
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
@@ -30,6 +30,11 @@ public enum PassiveAbilityType {
    * Applies stacks of {@link StatusType#FRACTURE}.
    */
   FRACTURE("Fracture", "fracture", Effect.STACK_INSTANCE),
+
+  /**
+   * Applies potion effects.
+   */
+  POTION_EFFECT("Potion Effect", "potion_effect", Effect.POTION_EFFECT),
 
   /**
    * Apply stacks of {@link StatusType#SOAKED}.
@@ -108,7 +113,7 @@ public enum PassiveAbilityType {
    * Effects of {@link PassiveAbilityType}.
    *
    * @author Danny Nguyen
-   * @version 1.17.7
+   * @version 1.19.10
    * @since 1.15.9
    */
   public enum Effect {
@@ -120,7 +125,12 @@ public enum PassiveAbilityType {
     /**
      * Causes chain damage.
      */
-    CHAIN_DAMAGE("Self, Damage, Radius(m)");
+    CHAIN_DAMAGE("Self, Damage, Radius(m)"),
+
+    /**
+     * Causes a potion effect to be applied.
+     */
+    POTION_EFFECT("Self, PotionEffect, Duration(t), Amplifier, Ambient");
 
     /**
      * Passive ability effect's data.

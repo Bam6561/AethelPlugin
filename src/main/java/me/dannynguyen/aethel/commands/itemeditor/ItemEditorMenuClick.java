@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.9
+ * @version 1.19.10
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -200,11 +200,9 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   public void interpretPassiveClick() {
     switch (e.getSlot()) {
-      case 0, 1 -> { // Context, Item
+      case 3, 4 -> { // Context, Item
       }
-      case 2 -> returnToCosmetic();
-      case 6 -> setPassiveMode(MenuEvent.Mode.ITEMEDITOR_ABILITIES);
-      case 8 -> setPassiveMode(MenuEvent.Mode.ITEMEDITOR_POTION_EFFECTS);
+      case 5 -> returnToCosmetic();
       case 9 -> setPassiveSlot(RpgEquipmentSlot.HEAD);
       case 10 -> setPassiveSlot(RpgEquipmentSlot.CHEST);
       case 11 -> setPassiveSlot(RpgEquipmentSlot.LEGS);
@@ -325,10 +323,9 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void openPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setMode(MenuEvent.Mode.ITEMEDITOR_ABILITIES);
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     pluginPlayer.setTrigger(PassiveTriggerType.DAMAGE_DEALT);
-    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.ABILITIES, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
+    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -487,19 +484,6 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Sets the user's interacting {@link PassiveMenu.Mode} for
-   * {@link Key#PASSIVE_LIST passive abilities}.
-   *
-   * @param mode {@link PassiveMenu.Mode}
-   */
-  private void setPassiveMode(MenuEvent.Mode mode) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setMode(mode);
-    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
-    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
-  }
-
-  /**
    * Sets the user's interacting {@link RpgEquipmentSlot} for
    * {@link Key#PASSIVE_LIST passive abilities}.
    *
@@ -508,7 +492,7 @@ public class ItemEditorMenuClick implements MenuClick {
   private void setPassiveSlot(RpgEquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(eSlot);
-    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), eSlot, pluginPlayer.getTrigger()).getMainMenu());
+    user.openInventory(new PassiveMenu(user, eSlot, pluginPlayer.getTrigger()).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -521,7 +505,7 @@ public class ItemEditorMenuClick implements MenuClick {
   private void setPassiveTrigger(PassiveTriggerType passiveTriggerType) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setTrigger(passiveTriggerType);
-    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), pluginPlayer.getSlot(), passiveTriggerType).getMainMenu());
+    user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), passiveTriggerType).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -857,6 +841,7 @@ public class ItemEditorMenuClick implements MenuClick {
             switch (effect) {
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+              case POTION_EFFECT -> abilityLore.append(ChatColor.WHITE).append("Gain ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityData[4]).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self] (" : "Target]");
             }
           }
           case HEALTH_COOLDOWN -> {
@@ -869,6 +854,7 @@ public class ItemEditorMenuClick implements MenuClick {
             switch (effect) {
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+              case POTION_EFFECT -> abilityLore.append(ChatColor.WHITE).append("Gain ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityData[4]).append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self] (" : "Target]");
             }
           }
         }

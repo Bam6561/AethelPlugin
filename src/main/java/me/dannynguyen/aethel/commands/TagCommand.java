@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.10
  * @since 1.2.6
  */
 public class TagCommand implements CommandExecutor {
@@ -382,6 +383,7 @@ public class TagCommand implements CommandExecutor {
               switch (passiveAbilityType.getEffect()) {
                 case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
                 case CHAIN_DAMAGE -> readPassiveChainDamage(value, triggerCondition);
+                case POTION_EFFECT -> readPassivePotionEffect(value, triggerCondition);
               }
             } catch (IllegalArgumentException ex) {
               user.sendMessage(ChatColor.RED + "Unrecognized passive ability.");
@@ -571,6 +573,107 @@ public class TagCommand implements CommandExecutor {
                       }
                     } catch (NumberFormatException ex) {
                       user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+                    }
+                  }
+                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(Message.INVALID_HEALTH.getMessage());
+            }
+          } else {
+            user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+          }
+        }
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before
+     * setting the {@link PassiveAbilityType.Effect#POTION_EFFECT}.
+     *
+     * @param value     tag value
+     * @param condition {@link PassiveTriggerType.Condition}
+     */
+    private void readPassivePotionEffect(String value, PassiveTriggerType.Condition condition) {
+      String[] args = value.split(" ");
+      switch (condition) {
+        case CHANCE_COOLDOWN -> {
+          if (args.length == 7) {
+            try {
+              double chance = Double.parseDouble(args[0]);
+              try {
+                int cooldown = Integer.parseInt(args[1]);
+                switch (args[2]) {
+                  case "true", "false" -> {
+                    boolean self = Boolean.parseBoolean(args[2]);
+                    PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
+                    if (potionEffectType != null) {
+                      try {
+                        int ticks = Integer.parseInt(args[4]);
+                        try {
+                          int amplifier = Integer.parseInt(args[5]);
+                          switch (args[6]) {
+                            case "true", "false" -> {
+                              boolean ambient = Boolean.parseBoolean(args[6]);
+                              setPassiveTag(chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + ticks + " " + amplifier + " " + ambient);
+                            }
+                            default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+                          }
+                        } catch (NumberFormatException ex) {
+                          user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+                        }
+                      } catch (NullPointerException ex) {
+                        user.sendMessage(Message.INVALID_TICKS.getMessage());
+                      }
+                    } else {
+                      user.sendMessage(Message.INVALID_TYPE.getMessage());
+                    }
+                  }
+                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+                }
+              } catch (NumberFormatException ex) {
+                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+              }
+            } catch (NumberFormatException ex) {
+              user.sendMessage(Message.INVALID_CHANCE.getMessage());
+            }
+          } else {
+            user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+          }
+        }
+        case HEALTH_COOLDOWN -> {
+          if (args.length == 7) {
+            try {
+              double percentHealth = Double.parseDouble(args[0]);
+              try {
+                int cooldown = Integer.parseInt(args[1]);
+                switch (args[2]) {
+                  case "true", "false" -> {
+                    boolean self = Boolean.parseBoolean(args[2]);
+                    PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
+                    if (potionEffectType != null) {
+                      try {
+                        int ticks = Integer.parseInt(args[4]);
+                        try {
+                          int amplifier = Integer.parseInt(args[5]);
+                          switch (args[6]) {
+                            case "true", "false" -> {
+                              boolean ambient = Boolean.parseBoolean(args[6]);
+                              setPassiveTag(percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + ticks + " " + amplifier + " " + ambient);
+                            }
+                            default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+                          }
+                        } catch (NumberFormatException ex) {
+                          user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+                        }
+                      } catch (NullPointerException ex) {
+                        user.sendMessage(Message.INVALID_TICKS.getMessage());
+                      }
+                    } else {
+                      user.sendMessage(Message.INVALID_TYPE.getMessage());
                     }
                   }
                   default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());

@@ -30,7 +30,7 @@ class RecipeDetailsMenu {
   private final Inventory menu;
 
   /**
-   * Recipe details menu {@link Mode}.
+   * {@link Mode}
    */
   private final Mode mode;
 

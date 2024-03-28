@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.19.9
+ * @version 1.19.10
  * @since 1.0.2
  */
 public class MenuEvent implements Listener {
@@ -421,18 +421,6 @@ public class MenuEvent implements Listener {
    * {@link me.dannynguyen.aethel.interfaces.Menu} modes.
    */
   public enum Mode {
-    /**
-     * Edit {@link Key#PASSIVE_LIST passive abilities}
-     * and {@link Key#ACTIVE_LIST active abilities}.
-     */
-    ITEMEDITOR_ABILITIES("ABILITIES"),
-
-    /**
-     * Edit {@link Key#PASSIVE_LIST passive ability}
-     * and {@link Key#ACTIVE_LIST}potion effects.
-     */
-    ITEMEDITOR_POTION_EFFECTS("POTION_EFFECTS"),
-
     /**
      * Craft {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
