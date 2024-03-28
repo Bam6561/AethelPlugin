@@ -25,7 +25,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.19.7
+ * @version 1.19.8
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -152,8 +152,16 @@ public class ActiveAbility {
     Set<LivingEntity> targets = new HashSet<>();
 
     switch (type) {
+      case EXPLODE -> {
+        for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
+          if (entity instanceof LivingEntity livingEntity) {
+            targets.add(livingEntity);
+          }
+        }
+        targets.remove(caster);
+      }
       case FORCE_SWEEP -> {
-        for (Entity entity : caster.getNearbyEntities(distance, 1.5, distance)) {
+        for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
             if (getLivingEntityDirectionAngle(caster.getLocation(), casterDirection, livingEntity) <= 45) {
               targets.add(livingEntity);
@@ -163,6 +171,14 @@ public class ActiveAbility {
       }
       case FORCE_WAVE -> {
         getForceWaveTargets(targets, caster.getLocation(), casterDirection, distance);
+        targets.remove(caster);
+      }
+      case QUAKE -> {
+        for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
+          if (entity instanceof LivingEntity livingEntity) {
+            targets.add(livingEntity);
+          }
+        }
         targets.remove(caster);
       }
     }

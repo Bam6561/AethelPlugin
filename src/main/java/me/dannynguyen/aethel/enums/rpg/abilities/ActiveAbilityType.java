@@ -7,12 +7,14 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.8
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
   /**
    * Forward facing teleport.
+   * <p>
+   * Omnidirectional.
    */
   BLINK("Blink", "blink", Effect.TELEPORT),
 
@@ -32,15 +34,29 @@ public enum ActiveAbilityType {
   DISREGARD("Disregard", "disregard", Effect.CLEAR_STATUS),
 
   /**
-   * Forward angular movement.
+   * Spherical shaped attack.
+   */
+  EXPLODE("Explode", "explode", Effect.DISTANCE_DAMAGE),
+
+  /**
+   * Forward facing angular movement.
+   * <p>
+   * Omnidirectional.
    */
   LEAP("Leap", "leap", Effect.MOVEMENT),
 
   /**
    * Forward facing teleport that after a delay,
    * teleports the user back to their original location.
+   * <p>
+   * Omnidirectional.
    */
   PROJECTION("Projection", "projection", Effect.PROJECTION),
+
+  /**
+   * Circular shaped attack.
+   */
+  QUAKE("Quake", "quake", Effect.DISTANCE_DAMAGE),
 
   /**
    * Immediately consumes all stacks of {@link StatusType#BRITTLE} from nearby enemies.
@@ -53,12 +69,14 @@ public enum ActiveAbilityType {
   SPRING("Spring", "spring", Effect.MOVEMENT),
 
   /**
-   * Forward facing horizontal arc shaped attack.
+   * Forward facing triangular arc shaped attack.
    */
   FORCE_SWEEP("Force Sweep", "force_sweep", Effect.DISTANCE_DAMAGE),
 
   /**
-   * Forward facing vertical arc shaped attack.
+   * Forward facing line shaped attack.
+   * <p>
+   * Omnidirectional.
    */
   FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
 
