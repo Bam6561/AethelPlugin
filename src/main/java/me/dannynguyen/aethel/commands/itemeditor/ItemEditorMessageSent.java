@@ -42,7 +42,7 @@ import java.util.UUID;
  * Called with {@link MessageEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.9
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -529,7 +529,7 @@ public class ItemEditorMessageSent {
   private void returnToPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
+      user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
       pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
     });
   }

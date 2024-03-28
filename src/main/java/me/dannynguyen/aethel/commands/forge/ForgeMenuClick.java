@@ -26,7 +26,7 @@ import java.util.UUID;
  * Called through {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.19.9
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -70,7 +70,7 @@ public class ForgeMenuClick implements MenuClick {
     switch (slot) {
       case 2, 4 -> { // Context
       }
-      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
+      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
       default -> viewRecipeCategory();
     }
   }
@@ -92,9 +92,9 @@ public class ForgeMenuClick implements MenuClick {
       case 0 -> previousRecipePage(action);
       case 2 -> { // Context
       }
-      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE).saveRecipeDetails();
+      case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
       case 4 -> {
-        if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMode() == MenuEvent.Mode.RECIPE_MENU_EDIT) {
+        if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMode() == MenuEvent.Mode.RECIPE_DETAILS_MENU_EDIT) {
           openForgeEdit();
         }
       }
@@ -139,7 +139,7 @@ public class ForgeMenuClick implements MenuClick {
    */
   private void viewRecipeCategory() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(pluginPlayer.getMode().getId()));
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(pluginPlayer.getMode().getEnumString());
     String category = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
     int requestedPage = pluginPlayer.getPage();
 
@@ -198,7 +198,7 @@ public class ForgeMenuClick implements MenuClick {
    */
   private void returnToMainMenu() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(TextFormatter.formatEnum(pluginPlayer.getMode().getId()));
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(pluginPlayer.getMode().getEnumString());
 
     pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, action).getMainMenu());
@@ -239,8 +239,8 @@ public class ForgeMenuClick implements MenuClick {
    */
   private void interpretContextualClick(RecipeMenu.Action action) {
     switch (action) {
-      case CRAFT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.CRAFT, e.getCurrentItem()).craftRecipeDetails();
-      case EDIT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Type.SAVE, e.getCurrentItem()).editRecipeDetails();
+      case CRAFT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.CRAFT, e.getCurrentItem()).getRecipeDetails();
+      case EDIT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.EDIT, e.getCurrentItem()).getRecipeDetails();
       case REMOVE -> removeRecipe();
     }
   }

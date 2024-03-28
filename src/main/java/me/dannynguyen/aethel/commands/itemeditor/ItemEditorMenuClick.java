@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.19.9
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -135,12 +135,12 @@ public class ItemEditorMenuClick implements MenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmetic();
-      case 5 -> setAttributeMode(EquipmentSlot.HEAD);
-      case 6 -> setAttributeMode(EquipmentSlot.CHEST);
-      case 7 -> setAttributeMode(EquipmentSlot.LEGS);
-      case 8 -> setAttributeMode(EquipmentSlot.FEET);
-      case 14 -> setAttributeMode(EquipmentSlot.HAND);
-      case 15 -> setAttributeMode(EquipmentSlot.OFF_HAND);
+      case 5 -> setAttributeSlot(EquipmentSlot.HEAD);
+      case 6 -> setAttributeSlot(EquipmentSlot.CHEST);
+      case 7 -> setAttributeSlot(EquipmentSlot.LEGS);
+      case 8 -> setAttributeSlot(EquipmentSlot.FEET);
+      case 14 -> setAttributeSlot(EquipmentSlot.HAND);
+      case 15 -> setAttributeSlot(EquipmentSlot.OFF_HAND);
       case 18, 27, 36 -> { // Context
       }
       default -> readMinecraftAttribute();
@@ -156,14 +156,14 @@ public class ItemEditorMenuClick implements MenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmetic();
-      case 5 -> setAethelAttributeMode(RpgEquipmentSlot.HEAD);
-      case 6 -> setAethelAttributeMode(RpgEquipmentSlot.CHEST);
-      case 7 -> setAethelAttributeMode(RpgEquipmentSlot.LEGS);
-      case 8 -> setAethelAttributeMode(RpgEquipmentSlot.FEET);
-      case 14 -> setAethelAttributeMode(RpgEquipmentSlot.HAND);
-      case 15 -> setAethelAttributeMode(RpgEquipmentSlot.OFF_HAND);
-      case 16 -> setAethelAttributeMode(RpgEquipmentSlot.NECKLACE);
-      case 17 -> setAethelAttributeMode(RpgEquipmentSlot.RING);
+      case 5 -> setAethelAttributeSlot(RpgEquipmentSlot.HEAD);
+      case 6 -> setAethelAttributeSlot(RpgEquipmentSlot.CHEST);
+      case 7 -> setAethelAttributeSlot(RpgEquipmentSlot.LEGS);
+      case 8 -> setAethelAttributeSlot(RpgEquipmentSlot.FEET);
+      case 14 -> setAethelAttributeSlot(RpgEquipmentSlot.HAND);
+      case 15 -> setAethelAttributeSlot(RpgEquipmentSlot.OFF_HAND);
+      case 16 -> setAethelAttributeSlot(RpgEquipmentSlot.NECKLACE);
+      case 17 -> setAethelAttributeSlot(RpgEquipmentSlot.RING);
       case 18, 27, 36 -> { // Context
       }
       default -> readAethelAttribute();
@@ -203,18 +203,20 @@ public class ItemEditorMenuClick implements MenuClick {
       case 0, 1 -> { // Context, Item
       }
       case 2 -> returnToCosmetic();
-      case 5 -> setPassiveMode(RpgEquipmentSlot.HEAD);
-      case 6 -> setPassiveMode(RpgEquipmentSlot.CHEST);
-      case 7 -> setPassiveMode(RpgEquipmentSlot.LEGS);
-      case 8 -> setPassiveMode(RpgEquipmentSlot.FEET);
-      case 14 -> setPassiveMode(RpgEquipmentSlot.HAND);
-      case 15 -> setPassiveMode(RpgEquipmentSlot.OFF_HAND);
-      case 16 -> setPassiveMode(RpgEquipmentSlot.NECKLACE);
-      case 17 -> setPassiveMode(RpgEquipmentSlot.RING);
-      case 9 -> setTriggerMode(PassiveTriggerType.BELOW_HEALTH);
-      case 10 -> setTriggerMode(PassiveTriggerType.DAMAGE_DEALT);
-      case 11 -> setTriggerMode(PassiveTriggerType.DAMAGE_TAKEN);
-      case 12 -> setTriggerMode(PassiveTriggerType.ON_KILL);
+      case 6 -> setPassiveMode(MenuEvent.Mode.ITEMEDITOR_ABILITIES);
+      case 8 -> setPassiveMode(MenuEvent.Mode.ITEMEDITOR_POTION_EFFECTS);
+      case 9 -> setPassiveSlot(RpgEquipmentSlot.HEAD);
+      case 10 -> setPassiveSlot(RpgEquipmentSlot.CHEST);
+      case 11 -> setPassiveSlot(RpgEquipmentSlot.LEGS);
+      case 12 -> setPassiveSlot(RpgEquipmentSlot.FEET);
+      case 14 -> setPassiveSlot(RpgEquipmentSlot.HAND);
+      case 15 -> setPassiveSlot(RpgEquipmentSlot.OFF_HAND);
+      case 16 -> setPassiveSlot(RpgEquipmentSlot.NECKLACE);
+      case 17 -> setPassiveSlot(RpgEquipmentSlot.RING);
+      case 18 -> setPassiveTrigger(PassiveTriggerType.BELOW_HEALTH);
+      case 19 -> setPassiveTrigger(PassiveTriggerType.DAMAGE_DEALT);
+      case 20 -> setPassiveTrigger(PassiveTriggerType.DAMAGE_TAKEN);
+      case 21 -> setPassiveTrigger(PassiveTriggerType.ON_KILL);
       default -> readPassive();
     }
   }
@@ -323,9 +325,10 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   private void openPassive() {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    pluginPlayer.setMode(MenuEvent.Mode.ITEMEDITOR_ABILITIES);
     pluginPlayer.setSlot(RpgEquipmentSlot.HAND);
     pluginPlayer.setTrigger(PassiveTriggerType.DAMAGE_DEALT);
-    user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
+    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.ABILITIES, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -463,7 +466,7 @@ public class ItemEditorMenuClick implements MenuClick {
    *
    * @param eSlot equipment slot
    */
-  private void setAttributeMode(EquipmentSlot eSlot) {
+  private void setAttributeSlot(EquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(RpgEquipmentSlot.valueOf(eSlot.name()));
     user.openInventory(new AttributeMenu(user, eSlot).getMainMenu());
@@ -476,11 +479,24 @@ public class ItemEditorMenuClick implements MenuClick {
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */
-  private void setAethelAttributeMode(RpgEquipmentSlot eSlot) {
+  private void setAethelAttributeSlot(RpgEquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(eSlot);
     user.openInventory(new AethelAttributeMenu(user, eSlot).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+  }
+
+  /**
+   * Sets the user's interacting {@link PassiveMenu.Mode} for
+   * {@link Key#PASSIVE_LIST passive abilities}.
+   *
+   * @param mode {@link PassiveMenu.Mode}
+   */
+  private void setPassiveMode(MenuEvent.Mode mode) {
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    pluginPlayer.setMode(mode);
+    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
+    pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
   /**
@@ -489,10 +505,10 @@ public class ItemEditorMenuClick implements MenuClick {
    *
    * @param eSlot {@link RpgEquipmentSlot}
    */
-  private void setPassiveMode(RpgEquipmentSlot eSlot) {
+  private void setPassiveSlot(RpgEquipmentSlot eSlot) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setSlot(eSlot);
-    user.openInventory(new PassiveMenu(user, eSlot, pluginPlayer.getTrigger()).getMainMenu());
+    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), eSlot, pluginPlayer.getTrigger()).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 
@@ -502,10 +518,10 @@ public class ItemEditorMenuClick implements MenuClick {
    *
    * @param passiveTriggerType {@link PassiveTriggerType}
    */
-  private void setTriggerMode(PassiveTriggerType passiveTriggerType) {
+  private void setPassiveTrigger(PassiveTriggerType passiveTriggerType) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     pluginPlayer.setTrigger(passiveTriggerType);
-    user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), passiveTriggerType).getMainMenu());
+    user.openInventory(new PassiveMenu(user, PassiveMenu.Mode.valueOf(pluginPlayer.getMode().getEnumString()), pluginPlayer.getSlot(), passiveTriggerType).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
   }
 

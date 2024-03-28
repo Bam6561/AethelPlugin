@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.19.9
  * @since 1.0.2
  */
 public class MenuEvent implements Listener {
@@ -422,37 +422,54 @@ public class MenuEvent implements Listener {
    */
   public enum Mode {
     /**
+     * Edit {@link Key#PASSIVE_LIST passive abilities}
+     * and {@link Key#ACTIVE_LIST active abilities}.
+     */
+    ITEMEDITOR_ABILITIES("ABILITIES"),
+
+    /**
+     * Edit {@link Key#PASSIVE_LIST passive ability}
+     * and {@link Key#ACTIVE_LIST}potion effects.
+     */
+    ITEMEDITOR_POTION_EFFECTS("POTION_EFFECTS"),
+
+    /**
      * Craft {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
-    RECIPE_MENU_CRAFT("craft"),
+    RECIPE_DETAILS_MENU_CRAFT("CRAFT"),
 
     /**
      * Edit {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
-    RECIPE_MENU_EDIT("edit");
+    RECIPE_DETAILS_MENU_EDIT("EDIT"),
 
     /**
-     * Mode ID.
+     * Save {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry recipes}.
      */
-    private final String id;
+    RECIPE_DETAILS_MENU_SAVE("SAVE");
 
     /**
-     * Associates a menu mode with its ID.
+     * Mode enum string.
+     */
+    private final String enumString;
+
+    /**
+     * Associates a menu mode with its enum string.
      *
-     * @param id ID
+     * @param enumString enum string
      */
-    Mode(String id) {
-      this.id = id;
+    Mode(String enumString) {
+      this.enumString = enumString;
     }
 
     /**
-     * Gets the mode's ID.
+     * Gets the mode's enum string.
      *
-     * @return mode's ID
+     * @return mode's enum string
      */
     @NotNull
-    public String getId() {
-      return this.id;
+    public String getEnumString() {
+      return this.enumString;
     }
   }
 }

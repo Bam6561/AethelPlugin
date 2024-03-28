@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -30,7 +31,7 @@ import java.util.*;
  * {@link Key#PASSIVE_LIST passive abilities}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.19.9
  * @since 1.15.1
  */
 public class PassiveMenu implements Menu {
@@ -38,6 +39,11 @@ public class PassiveMenu implements Menu {
    * GUI.
    */
   private final Inventory menu;
+
+  /**
+   * Passive menu {@link Mode}.
+   */
+  private final Mode mode;
 
   /**
    * GUI user.
@@ -73,11 +79,13 @@ public class PassiveMenu implements Menu {
    * Associates a new Passive menu with its user and item.
    *
    * @param user    user
+   * @param mode    passive menu mode
    * @param trigger {@link PassiveTriggerType}
    * @param eSlot   {@link RpgEquipmentSlot}
    */
-  public PassiveMenu(@NotNull Player user, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType trigger) {
+  public PassiveMenu(@NotNull Player user, @NotNull PassiveMenu.Mode mode, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType trigger) {
     this.user = Objects.requireNonNull(user, "Null user");
+    this.mode = Objects.requireNonNull(mode, "Null mode");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
@@ -104,9 +112,13 @@ public class PassiveMenu implements Menu {
    */
   @NotNull
   public Inventory getMainMenu() {
-    addPassives();
+    switch (mode) {
+      case ABILITIES -> addAbilities();
+      case POTION_EFFECTS -> addPotionEffects();
+    }
     addContext();
-    addActions();
+    addModes();
+    addSlots();
     addTriggers();
     InventoryPages.addBackButton(menu, 2);
     return menu;
@@ -115,8 +127,8 @@ public class PassiveMenu implements Menu {
   /**
    * Adds {@link PassiveAbilityType passive abilities}.
    */
-  private void addPassives() {
-    int invSlot = 18;
+  private void addAbilities() {
+    int invSlot = 27;
     if (existingPassives != null) {
       for (PassiveAbilityType passiveAbilityType : PassiveAbilityType.values()) {
         String passiveName = passiveAbilityType.getProperName();
@@ -144,6 +156,17 @@ public class PassiveMenu implements Menu {
   }
 
   /**
+   * Adds potion effects.
+   */
+  private void addPotionEffects() {
+    int invSlot = 27;
+    for (PotionEffectType potionEffectType : PotionEffectType.values()) {
+      menu.setItem(invSlot, ItemCreator.createItem(Material.GLASS_BOTTLE, ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffectType.getName())));
+      invSlot++;
+    }
+  }
+
+  /**
    * Adds contextual help.
    */
   private void addContext() {
@@ -151,13 +174,23 @@ public class PassiveMenu implements Menu {
   }
 
   /**
+   * Adds menu {@link Mode} buttons.
+   */
+  private void addModes() {
+    switch (mode) {
+      case ABILITIES -> menu.setItem(8, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
+      case POTION_EFFECTS -> menu.setItem(6, ItemCreator.createItem(Material.SUGAR, ChatColor.AQUA + "Abilities"));
+    }
+  }
+
+  /**
    * Adds {@link RpgEquipmentSlot} buttons.
    */
-  private void addActions() {
-    menu.setItem(5, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(6, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(7, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(8, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
+  private void addSlots() {
+    menu.setItem(9, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(10, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(11, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(12, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(14, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Hand", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(15, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace"));
@@ -168,10 +201,10 @@ public class PassiveMenu implements Menu {
    * Adds {@link PassiveTriggerType} buttons.
    */
   private void addTriggers() {
-    menu.setItem(9, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
-    menu.setItem(10, ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Damage Dealt"));
-    menu.setItem(11, ItemCreator.createItem(Material.GRAY_DYE, ChatColor.AQUA + "Damage Taken"));
-    menu.setItem(12, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "Kill"));
+    menu.setItem(18, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
+    menu.setItem(19, ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Damage Dealt"));
+    menu.setItem(20, ItemCreator.createItem(Material.GRAY_DYE, ChatColor.AQUA + "Damage Taken"));
+    menu.setItem(21, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "Kill"));
   }
 
   /**
@@ -200,6 +233,21 @@ public class PassiveMenu implements Menu {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Passive menu modes.
+   */
+  protected enum Mode {
+    /**
+     * Passive abilities.
+     */
+    ABILITIES,
+
+    /**
+     * Passive potion effects.
+     */
+    POTION_EFFECTS
   }
 
   /**

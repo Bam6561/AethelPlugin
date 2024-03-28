@@ -20,7 +20,7 @@ import java.util.UUID;
  * Represents a menu containing a {@link RecipeRegistry.Recipe recipe's} details.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.19.9
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -28,6 +28,11 @@ class RecipeDetailsMenu {
    * GUI.
    */
   private final Inventory menu;
+
+  /**
+   * Recipe details menu {@link Mode}.
+   */
+  private final Mode mode;
 
   /**
    * GUI user.
@@ -40,11 +45,6 @@ class RecipeDetailsMenu {
   private final UUID uuid;
 
   /**
-   * Recipe details menu {@link Type type}.
-   */
-  private final Type type;
-
-  /**
    * {@link RecipeRegistry.Recipe Recipe}
    */
   private RecipeRegistry.Recipe recipe;
@@ -53,42 +53,42 @@ class RecipeDetailsMenu {
    * Associates a new RecipeDetails menu with its user.
    *
    * @param user user
-   * @param type recipe details type
+   * @param mode recipe details mode
    */
-  RecipeDetailsMenu(@NotNull Player user, @NotNull Type type) {
+  RecipeDetailsMenu(@NotNull Player user, @NotNull Mode mode) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.type = Objects.requireNonNull(type, "Null type");
+    this.mode = Objects.requireNonNull(mode, "Null mode");
     this.uuid = user.getUniqueId();
-    this.menu = createMenu(type);
+    this.menu = createMenu(mode);
   }
 
   /**
    * Associates a new RecipeDetails menu with its user and {@link RecipeRegistry.Recipe recipe}.
    *
    * @param user user
-   * @param type {@link RecipeDetailsMenu.Type type}
+   * @param mode {@link RecipeDetailsMenu.Mode}
    * @param item requested item
    */
-  RecipeDetailsMenu(@NotNull Player user, @NotNull Type type, @NotNull ItemStack item) {
+  RecipeDetailsMenu(@NotNull Player user, @NotNull Mode mode, @NotNull ItemStack item) {
     this.user = Objects.requireNonNull(user, "Null user");
-    this.type = Objects.requireNonNull(type, "Null type");
+    this.mode = Objects.requireNonNull(mode, "Null mode");
     this.recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
     this.uuid = user.getUniqueId();
-    this.menu = createMenu(type);
+    this.menu = createMenu(mode);
   }
 
   /**
    * Creates and names a RecipeDetails menu with the intent to craft or save a {@link RecipeRegistry.Recipe recipe}.
    *
-   * @param type {@link RecipeDetailsMenu.Type type}
+   * @param mode {@link RecipeDetailsMenu.Mode}
    * @return RecipeDetails menu
    */
-  private Inventory createMenu(Type type) {
-    switch (type) {
+  private Inventory createMenu(Mode mode) {
+    switch (mode) {
       case CRAFT -> {
         return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "Forge" + ChatColor.BLUE + " Craft");
       }
-      case SAVE -> {
+      case EDIT, SAVE -> {
         return Bukkit.createInventory(user, 27, ChatColor.DARK_GRAY + "Forge" + ChatColor.DARK_GREEN + " Save");
       }
       default -> {
@@ -98,35 +98,27 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Expands the {@link RecipeRegistry.Recipe recipe's} details to the user before crafting.
+   * Sets the menu to display interactions with the {@link RecipeRegistry.Recipe recipe's} details.
    */
-  protected void craftRecipeDetails() {
-    addRecipeContents();
+  protected void getRecipeDetails() {
     addContext();
     addActions();
-    user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_CRAFT_RECIPE);
-  }
-
-  /**
-   * Expands the {@link RecipeRegistry.Recipe recipe's} details to the user before crafting.
-   */
-  protected void editRecipeDetails() {
-    addRecipeContents();
-    addContext();
-    addActions();
-    user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
-  }
-
-  /**
-   * Opens the RecipeDetails menu with the intent to save a {@link RecipeRegistry.Recipe recipe}.
-   */
-  protected void saveRecipeDetails() {
-    addContext();
-    addActions();
-    user.openInventory(menu);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
+    switch (mode) {
+      case CRAFT -> {
+        addRecipeContents();
+        user.openInventory(menu);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_CRAFT_RECIPE);
+      }
+      case EDIT -> {
+        addRecipeContents();
+        user.openInventory(menu);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
+      }
+      case SAVE -> {
+        user.openInventory(menu);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
+      }
+    }
   }
 
   /**
@@ -145,9 +137,9 @@ class RecipeDetailsMenu {
    * Adds craft or save and back buttons.
    */
   private void addActions() {
-    switch (type) {
+    switch (mode) {
       case CRAFT -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Craft"));
-      case SAVE -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PlayerHead.STACK_OF_PAPER.getHead(), ChatColor.AQUA + "Save"));
+      case EDIT, SAVE -> menu.setItem(25, ItemCreator.createPluginPlayerHead(PlayerHead.STACK_OF_PAPER.getHead(), ChatColor.AQUA + "Save"));
     }
     menu.setItem(26, ItemCreator.createPluginPlayerHead(PlayerHead.BACKWARD_GRAY.getHead(), ChatColor.AQUA + "Back"));
   }
@@ -167,16 +159,21 @@ class RecipeDetailsMenu {
   }
 
   /**
-   * Recipe details menu types.
+   * Recipe details menu modes.
    */
-  protected enum Type {
+  protected enum Mode {
     /**
      * Craft a {@link RecipeRegistry.Recipe recipe}.
      */
     CRAFT,
 
     /**
-     * Edit or save a {@link RecipeRegistry.Recipe recipe}.
+     * Edit a {@link RecipeRegistry.Recipe recipe}.
+     */
+    EDIT,
+
+    /**
+     * Save a {@link RecipeRegistry.Recipe recipe}.
      */
     SAVE
   }

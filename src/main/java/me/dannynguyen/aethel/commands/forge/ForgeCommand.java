@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.19.9
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -106,7 +106,7 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openCrafting(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setMode(MenuEvent.Mode.RECIPE_MENU_CRAFT);
+    pluginPlayer.setMode(MenuEvent.Mode.RECIPE_DETAILS_MENU_CRAFT);
     pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.FORGE_CATEGORY);
@@ -120,7 +120,7 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openEditor(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setMode(MenuEvent.Mode.RECIPE_MENU_EDIT);
+    pluginPlayer.setMode(MenuEvent.Mode.RECIPE_DETAILS_MENU_EDIT);
     pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
     pluginPlayer.setMenu(MenuEvent.Menu.FORGE_CATEGORY);
