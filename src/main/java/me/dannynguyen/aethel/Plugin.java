@@ -40,7 +40,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.19.7
+ * @version 1.20.3
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -232,16 +232,18 @@ public class Plugin extends JavaPlugin {
   private void updateBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
       Map<Abilities.SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.BELOW_HEALTH);
-      if (!belowHealthTriggers.isEmpty()) {
-        for (PassiveAbility ability : belowHealthTriggers.values()) {
-          if (!ability.isOnCooldown()) {
-            double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
-            if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
-              boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-              if (self) {
-                ability.doEffect(rpgPlayer, rpgPlayer.getUUID());
-              }
-            }
+      if (belowHealthTriggers.isEmpty()) {
+        continue;
+      }
+      for (PassiveAbility ability : belowHealthTriggers.values()) {
+        if (ability.isOnCooldown()) {
+          continue;
+        }
+        double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
+        if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
+          boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+          if (self) {
+            ability.doEffect(rpgPlayer, rpgPlayer.getUUID());
           }
         }
       }

@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.20.1
+ * @version 1.20.3
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -106,28 +106,30 @@ public class HealthEvent implements Listener {
    * @param damager interacting player
    */
   private void triggerPassivesDamageDealt(EntityDamageByEntityEvent e, Player damager) {
-    if (damager.getAttackCooldown() >= 0.75 && e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
-      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId());
-      Map<Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_DEALT);
-      if (!damageDealtTriggers.isEmpty()) {
-        if (e.getEntity() instanceof LivingEntity damagee) {
-          Random random = new Random();
-          for (PassiveAbility ability : damageDealtTriggers.values()) {
-            if (!ability.isOnCooldown()) {
-              double chance = Double.parseDouble(ability.getConditionData().get(0));
-              if (chance > random.nextDouble() * 100) {
-                boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-                UUID targetUUID;
-                if (self) {
-                  targetUUID = damager.getUniqueId();
-                } else {
-                  targetUUID = damagee.getUniqueId();
-                }
-                ability.doEffect(rpgPlayer, targetUUID);
-              }
-            }
-          }
+    if (damager.getAttackCooldown() < 0.75 || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
+      return;
+    }
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId());
+    Map<Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_DEALT);
+    if (damageDealtTriggers.isEmpty() || !(e.getEntity() instanceof LivingEntity damagee)) {
+      return;
+    }
+
+    Random random = new Random();
+    for (PassiveAbility ability : damageDealtTriggers.values()) {
+      if (ability.isOnCooldown()) {
+        continue;
+      }
+      double chance = Double.parseDouble(ability.getConditionData().get(0));
+      if (chance > random.nextDouble() * 100) {
+        boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+        UUID targetUUID;
+        if (self) {
+          targetUUID = damager.getUniqueId();
+        } else {
+          targetUUID = damagee.getUniqueId();
         }
+        ability.doEffect(rpgPlayer, targetUUID);
       }
     }
   }
@@ -141,24 +143,25 @@ public class HealthEvent implements Listener {
   private void triggerPassivesDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
     Map<Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
-    if (!damageTakenTriggers.isEmpty()) {
-      if (e.getDamager() instanceof LivingEntity damager) {
-        Random random = new Random();
-        for (PassiveAbility ability : damageTakenTriggers.values()) {
-          if (!ability.isOnCooldown()) {
-            double chance = Double.parseDouble(ability.getConditionData().get(0));
-            if (chance > random.nextDouble() * 100) {
-              boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-              UUID targetUUID;
-              if (self) {
-                targetUUID = damagee.getUniqueId();
-              } else {
-                targetUUID = damager.getUniqueId();
-              }
-              ability.doEffect(rpgPlayer, targetUUID);
-            }
-          }
+    if (damageTakenTriggers.isEmpty() || !(e.getDamager() instanceof LivingEntity damager)) {
+      return;
+    }
+
+    Random random = new Random();
+    for (PassiveAbility ability : damageTakenTriggers.values()) {
+      if (ability.isOnCooldown()) {
+        continue;
+      }
+      double chance = Double.parseDouble(ability.getConditionData().get(0));
+      if (chance > random.nextDouble() * 100) {
+        boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+        UUID targetUUID;
+        if (self) {
+          targetUUID = damagee.getUniqueId();
+        } else {
+          targetUUID = damager.getUniqueId();
         }
+        ability.doEffect(rpgPlayer, targetUUID);
       }
     }
   }
@@ -170,23 +173,25 @@ public class HealthEvent implements Listener {
    * @param damager interacting player
    */
   private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
-    if (e.getEntity() instanceof LivingEntity damagee) {
-      Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
-      Random random = new Random();
-      ifCriticallyHit(e, attributes, random);
-
-      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-      UUID uuid = e.getEntity().getUniqueId();
-
-      if (entityStatuses.containsKey(uuid)) {
-        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-        ifFracture(e, damagee, statuses);
-        ifVulnerable(e, statuses);
-      }
-
-      final double finalDamage = e.getDamage();
-      e.setDamage(finalDamage);
+    if (!(e.getEntity() instanceof LivingEntity damagee)) {
+      return;
     }
+
+    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
+    Random random = new Random();
+    ifCriticallyHit(e, attributes, random);
+
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    UUID uuid = e.getEntity().getUniqueId();
+
+    if (entityStatuses.containsKey(uuid)) {
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      ifFracture(e, damagee, statuses);
+      ifVulnerable(e, statuses);
+    }
+
+    final double finalDamage = e.getDamage();
+    e.setDamage(finalDamage);
   }
 
   /**
@@ -375,11 +380,13 @@ public class HealthEvent implements Listener {
    * @return if the damager died
    */
   private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Random random, Entity damager, Player damagee) {
-    if (cause != EntityDamageEvent.DamageCause.PROJECTILE && damager instanceof LivingEntity attacker) {
-      if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
-        attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
-        return attacker.getHealth() <= 0.0;
-      }
+    if (cause == EntityDamageEvent.DamageCause.PROJECTILE || !(damager instanceof LivingEntity attacker)) {
+      return false;
+    }
+
+    if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+      attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
+      return attacker.getHealth() <= 0.0;
     }
     return false;
   }

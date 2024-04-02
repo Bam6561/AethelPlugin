@@ -26,7 +26,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.11
+ * @version 1.20.3
  * @since 1.10.6
  */
 public class RpgEvent implements Listener {
@@ -112,29 +112,31 @@ public class RpgEvent implements Listener {
   private void triggerPassivesOnKill(UUID killedUUID, UUID selfUUID) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID);
     Map<Abilities.SlotPassive, PassiveAbility> killTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
-    if (!killTriggers.isEmpty()) {
-      Random random = new Random();
-      for (PassiveAbility ability : killTriggers.values()) {
-        if (!ability.isOnCooldown()) {
-          double chance = Double.parseDouble(ability.getConditionData().get(0));
-          if (chance > random.nextDouble() * 100) {
-            boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-            UUID targetUUID;
-            switch (ability.getType().getEffect()) {
-              case STACK_INSTANCE, POTION_EFFECT -> {
-                if (self) {
-                  ability.doEffect(rpgPlayer, selfUUID);
-                }
-              }
-              case CHAIN_DAMAGE -> {
-                if (self) {
-                  targetUUID = selfUUID;
-                } else {
-                  targetUUID = killedUUID;
-                }
-                ability.doEffect(rpgPlayer, targetUUID);
-              }
+    if (killTriggers.isEmpty()) {
+      return;
+    }
+    Random random = new Random();
+    for (PassiveAbility ability : killTriggers.values()) {
+      if (ability.isOnCooldown()) {
+        continue;
+      }
+      double chance = Double.parseDouble(ability.getConditionData().get(0));
+      if (chance > random.nextDouble() * 100) {
+        boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+        UUID targetUUID;
+        switch (ability.getType().getEffect()) {
+          case STACK_INSTANCE, POTION_EFFECT -> {
+            if (self) {
+              ability.doEffect(rpgPlayer, selfUUID);
             }
+          }
+          case CHAIN_DAMAGE -> {
+            if (self) {
+              targetUUID = selfUUID;
+            } else {
+              targetUUID = killedUUID;
+            }
+            ability.doEffect(rpgPlayer, targetUUID);
           }
         }
       }

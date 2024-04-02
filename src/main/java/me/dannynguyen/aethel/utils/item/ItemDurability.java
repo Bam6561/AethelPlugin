@@ -20,7 +20,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.20.3
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -90,24 +90,24 @@ public class ItemDurability {
   public static void increaseDamage(@NotNull Player player, @NotNull EquipmentSlot eSlot, int damage) {
     PlayerInventory pInv = Objects.requireNonNull(player, "Null player").getInventory();
     ItemStack item = pInv.getItem(Objects.requireNonNull(eSlot, "Null slot"));
-    if (ItemReader.isNotNullOrAir(item)) {
-      if (item.getItemMeta() instanceof Damageable durability) {
-        int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
-        if (unbreaking > 0) {
-          double damageChance = 1.0 / (unbreaking + 1);
-          if (damageChance < new Random().nextDouble()) {
-            return;
-          }
-        }
-        durability.setDamage(durability.getDamage() + damage);
-        if (durability.getDamage() > item.getType().getMaxDurability()) {
-          pInv.setItem(eSlot, new ItemStack(Material.AIR));
-          player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(eSlot.name())), true);
-        } else {
-          item.setItemMeta(durability);
-        }
+    if (ItemReader.isNullOrAir(item) || !(item.getItemMeta() instanceof Damageable durability)) {
+      return;
+    }
+
+    int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
+    if (unbreaking > 0) {
+      double damageChance = 1.0 / (unbreaking + 1);
+      if (damageChance < new Random().nextDouble()) {
+        return;
       }
+    }
+    durability.setDamage(durability.getDamage() + damage);
+    if (durability.getDamage() > item.getType().getMaxDurability()) {
+      pInv.setItem(eSlot, new ItemStack(Material.AIR));
+      player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+      Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(eSlot.name())), true);
+    } else {
+      item.setItemMeta(durability);
     }
   }
 
