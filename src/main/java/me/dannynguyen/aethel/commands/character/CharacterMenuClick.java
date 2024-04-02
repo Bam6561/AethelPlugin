@@ -25,6 +25,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -36,10 +37,21 @@ import java.util.UUID;
  * Called through {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.1
+ * @version 1.20.4
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
+  /**
+   * Shulker boxes.
+   * <p>
+   * Cannot be put in equipment slots.
+   */
+  private static final Set<Material> shulkerBoxes = Set.of(Material.SHULKER_BOX,
+      Material.BLACK_SHULKER_BOX, Material.BLUE_SHULKER_BOX, Material.BROWN_SHULKER_BOX, Material.CYAN_SHULKER_BOX,
+      Material.GRAY_SHULKER_BOX, Material.GREEN_SHULKER_BOX, Material.LIGHT_BLUE_SHULKER_BOX, Material.LIGHT_GRAY_SHULKER_BOX,
+      Material.LIME_SHULKER_BOX, Material.MAGENTA_SHULKER_BOX, Material.ORANGE_SHULKER_BOX, Material.PINK_SHULKER_BOX,
+      Material.PURPLE_SHULKER_BOX, Material.RED_SHULKER_BOX, Material.WHITE_SHULKER_BOX, Material.YELLOW_SHULKER_BOX);
+
   /**
    * Inventory click event.
    */
@@ -83,18 +95,54 @@ public class CharacterMenuClick implements MenuClick {
         case 25 -> openQuests();
         case 34 -> openCollectibles();
         case 43 -> openSettings();
-        case 10, 11, 12, 19, 28, 37 -> {
+        case 10, 11, 12, 19, 28, 37 -> { // Armor & Hands
           e.setCancelled(false);
-          unequipArmorHands(); // Armor & Hands
+          unequipArmorHands();
         }
-        case 20, 29 -> {
-          e.setCancelled(false);
-          updateJewelryAttributes(); // Necklace & Ring
+        case 20 -> { // Necklace
+          if (e.getCursor() == null || e.getCursor().getType() == Material.AIR || (e.getCursor() != null && e.getCursor().getType() == Material.IRON_NUGGET)) {
+            e.setCancelled(false);
+            updateJewelryAttributes();
+          } else {
+            user.sendMessage(ChatColor.RED + "Necklace-only slot.");
+          }
+        }
+        case 29 -> { // Ring
+          if (e.getCursor() == null || e.getCursor().getType() == Material.AIR || (e.getCursor() != null && e.getCursor().getType() == Material.GOLD_NUGGET)) {
+            e.setCancelled(false);
+            updateJewelryAttributes();
+          } else {
+            user.sendMessage(ChatColor.RED + "Ring-only slot.");
+          }
         }
       }
     } else {
       switch (slot) {
-        case 10, 11, 12, 19, 20, 28, 29, 37 -> {
+        case 11, 12 -> {
+          e.setCancelled(false);
+          interpretEquipItem();
+        }
+        case 10, 19, 28, 37 -> {
+          if (e.getCursor() != null && shulkerBoxes.contains(e.getCursor().getType())) {
+            user.sendMessage(ChatColor.RED + "Cannot equip shulker boxes.");
+            return;
+          }
+          e.setCancelled(false);
+          interpretEquipItem();
+        }
+        case 20 -> {
+          if (e.getCursor() != null && e.getCursor().getType() != Material.IRON_NUGGET) {
+            user.sendMessage(ChatColor.RED + "Necklace-only slot.");
+            return;
+          }
+          e.setCancelled(false);
+          interpretEquipItem();
+        }
+        case 29 -> {
+          if (e.getCursor() != null && e.getCursor().getType() != Material.GOLD_NUGGET) {
+            user.sendMessage(ChatColor.RED + "Ring-only slot.");
+            return;
+          }
           e.setCancelled(false);
           interpretEquipItem();
         }

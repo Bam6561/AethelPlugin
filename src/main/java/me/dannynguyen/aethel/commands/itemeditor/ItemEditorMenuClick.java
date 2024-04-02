@@ -668,11 +668,11 @@ public class ItemEditorMenuClick implements MenuClick {
     /**
      * Order of headers by {@link RpgEquipmentSlot}.
      */
-    private static final List<String> headerOrder = new ArrayList<>(List.of(
+    private static final List<String> headerOrder = List.of(
         RpgEquipmentSlot.HEAD.getId(), RpgEquipmentSlot.CHEST.getId(),
         RpgEquipmentSlot.LEGS.getId(), RpgEquipmentSlot.FEET.getId(),
         RpgEquipmentSlot.NECKLACE.getId(), RpgEquipmentSlot.RING.getId(),
-        RpgEquipmentSlot.HAND.getId(), RpgEquipmentSlot.OFF_HAND.getId()));
+        RpgEquipmentSlot.HAND.getId(), RpgEquipmentSlot.OFF_HAND.getId());
 
     /**
      * ItemStack's persistent tags.
