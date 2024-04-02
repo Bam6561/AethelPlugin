@@ -46,7 +46,7 @@ public enum ActiveAbilityType {
   LEAP("Leap", "leap", Effect.MOVEMENT),
 
   /**
-   * Apply a potion effect.
+   * Applies a potion effect.
    */
   POTION_EFFECT("Potion Effect", "potion_effect", Effect.POTION_EFFECT),
 

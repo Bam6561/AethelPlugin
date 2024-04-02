@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an {@link RpgPlayer}'s health.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.20.1
  * @since 1.13.4
  */
 public class Health {
@@ -98,9 +98,11 @@ public class Health {
    */
   public void updateOvershield() {
     Player player = Bukkit.getPlayer(uuid);
-    setCurrentHealth(currentHealth + player.getAbsorptionAmount());
-    player.setAbsorptionAmount(0);
-    updateDisplays();
+    if (player != null) {
+      setCurrentHealth(currentHealth + player.getAbsorptionAmount());
+      player.setAbsorptionAmount(0);
+      updateDisplays();
+    }
   }
 
   /**

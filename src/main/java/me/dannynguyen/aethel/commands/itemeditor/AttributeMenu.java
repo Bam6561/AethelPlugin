@@ -28,7 +28,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.20.1
  * @since 1.7.0
  */
 public class AttributeMenu implements Menu {
@@ -155,7 +155,11 @@ public class AttributeMenu implements Menu {
       } else {
         List<String> lore = new ArrayList<>();
         for (AttributeModifier attributeModifier : existingAttributes.get(attribute)) {
-          lore.add(ChatColor.WHITE + "" + TextFormatter.capitalizePhrase(attributeModifier.getSlot().name()) + ": " + attributeModifier.getAmount());
+          if (attributeModifier.getSlot() != null) {
+            lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(attributeModifier.getSlot().name()) + ": " + attributeModifier.getAmount());
+          } else {
+            lore.add(ChatColor.WHITE + "All: " + attributeModifier.getAmount());
+          }
         }
         menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));
       }

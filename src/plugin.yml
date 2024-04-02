@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.20.0
+version: 1.20.1
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -35,6 +35,10 @@ commands:
     description: Responds with server latency.
     usage: /ping
     aliases: [ p ]
+  playerstat:
+    description: Gets a player's statistics.
+    usage: /stats [<playerName>]
+    aliases: [ ps, stat ]
   showitem:
     description: Shows main hand item to chat.
     usage: /showitem
@@ -43,7 +47,3 @@ commands:
     description: Edits an entity's statuses.
     usage: /status [get <playerName|UUID>|remove <playerName|UUID>|remove <playerName|UUID> <status>|set <playerName|UUID> <status> <stacks> <ticks>]
     aliases: [ s ]
-  playerstat:
-    description: Gets a player's statistics.
-    usage: /stats [<playerName>]
-    aliases: [ ps, stat ]

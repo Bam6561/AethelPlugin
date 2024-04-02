@@ -32,7 +32,7 @@ public enum PassiveAbilityType {
   FRACTURE("Fracture", "fracture", Effect.STACK_INSTANCE),
 
   /**
-   * Applies potion effects.
+   * Applies a potion effect.
    */
   POTION_EFFECT("Potion Effect", "potion_effect", Effect.POTION_EFFECT),
 

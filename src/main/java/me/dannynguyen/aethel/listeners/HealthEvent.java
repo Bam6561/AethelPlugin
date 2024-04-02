@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.7
+ * @version 1.20.1
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -170,22 +170,23 @@ public class HealthEvent implements Listener {
    * @param damager interacting player
    */
   private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
-    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
-    Random random = new Random();
-    ifCriticallyHit(e, attributes, random);
+    if (e.getEntity() instanceof LivingEntity damagee) {
+      Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
+      Random random = new Random();
+      ifCriticallyHit(e, attributes, random);
 
-    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    UUID uuid = e.getEntity().getUniqueId();
-    LivingEntity damagee = (LivingEntity) e.getEntity();
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      UUID uuid = e.getEntity().getUniqueId();
 
-    if (entityStatuses.containsKey(uuid)) {
-      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-      ifFracture(e, damagee, statuses);
-      ifVulnerable(e, statuses);
+      if (entityStatuses.containsKey(uuid)) {
+        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+        ifFracture(e, damagee, statuses);
+        ifVulnerable(e, statuses);
+      }
+
+      final double finalDamage = e.getDamage();
+      e.setDamage(finalDamage);
     }
-
-    final double finalDamage = e.getDamage();
-    e.setDamage(finalDamage);
   }
 
   /**
@@ -361,6 +362,8 @@ public class HealthEvent implements Listener {
 
   /**
    * Ignores damage taken if the player killed the damager by counterattacks.
+   * <p>
+   * The number of counterattacks done is based on the player's attack speed.
    * <p>
    * Projectile attacks cannot trigger counterattacks.
    *
