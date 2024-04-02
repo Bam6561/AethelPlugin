@@ -24,7 +24,7 @@ import java.util.*;
  * order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.20.2
  * @since 1.3.2
  */
 public class ItemRegistry implements DataRegistry {
@@ -52,15 +52,16 @@ public class ItemRegistry implements DataRegistry {
    * @throws IllegalArgumentException if provided file is not a directory
    */
   public ItemRegistry(@NotNull File directory) throws IllegalArgumentException {
-    if (Objects.requireNonNull(directory, "Null directory").exists()) {
-      if (directory.isDirectory()) {
-        this.directory = directory;
-      } else {
-        throw new IllegalArgumentException("Non-directory");
-      }
-    } else {
+    if (!Objects.requireNonNull(directory, "Null directory").exists()) {
       this.directory = directory;
       directory.mkdirs();
+      return;
+    }
+
+    if (directory.isDirectory()) {
+      this.directory = directory;
+    } else {
+      throw new IllegalArgumentException("Non-directory");
     }
   }
 
@@ -69,24 +70,25 @@ public class ItemRegistry implements DataRegistry {
    */
   public void loadData() {
     File[] files = directory.listFiles();
-    if (files != null) {
-      items.clear();
-      itemCategories.clear();
+    if (files == null) {
+      return;
+    }
 
-      if (files.length > 0) {
-        Arrays.sort(files);
+    items.clear();
+    itemCategories.clear();
 
-        Map<String, List<ItemStack>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
-        for (File file : files) {
-          if (file.getName().endsWith("_itm.txt")) {
-            readFile(file, categories);
-          }
+    if (files.length > 0) {
+      Arrays.sort(files);
+
+      Map<String, List<ItemStack>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
+      for (File file : files) {
+        if (file.getName().endsWith("_itm.txt")) {
+          readFile(file, categories);
         }
-
-        if (!items.isEmpty()) {
-          for (String category : categories.keySet()) {
-            itemCategories.put(category, createPages(categories.get(category)));
-          }
+      }
+      if (!items.isEmpty()) {
+        for (String category : categories.keySet()) {
+          itemCategories.put(category, createPages(categories.get(category)));
         }
       }
     }

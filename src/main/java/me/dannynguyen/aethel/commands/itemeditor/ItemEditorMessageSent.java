@@ -42,7 +42,7 @@ import java.util.UUID;
  * Called with {@link MessageEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.20.2
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -113,17 +113,21 @@ public class ItemEditorMessageSent {
    * Sets the item's damage or durability.
    */
   public void setDurability() {
+    int value;
     try {
-      int value = Integer.parseInt(e.getMessage());
-      if (value >= 0) {
-        ItemDurability.setDurability(item, value);
-        user.sendMessage(ChatColor.GREEN + "[Set Durability] " + ChatColor.WHITE + e.getMessage());
-      } else {
-        ItemDurability.setDamage(item, Math.abs(value));
-        user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
-      }
+      value = Integer.parseInt(e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
+      returnToCosmetic();
+      return;
+    }
+
+    if (value >= 0) {
+      ItemDurability.setDurability(item, value);
+      user.sendMessage(ChatColor.GREEN + "[Set Durability] " + ChatColor.WHITE + e.getMessage());
+    } else {
+      ItemDurability.setDamage(item, Math.abs(value));
+      user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
     }
     returnToCosmetic();
   }
@@ -172,20 +176,28 @@ public class ItemEditorMessageSent {
    */
   public void editLore() {
     String[] input = e.getMessage().split(" ", 2);
-    if (input.length == 2) {
-      try {
-        List<String> lore = meta.getLore();
-        lore.set(Integer.parseInt(input[0]) - 1, ChatColor.translateAlternateColorCodes('&', input[1]));
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        user.sendMessage(ChatColor.GREEN + "[Edited Lore]");
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_LINE.getMessage());
-      } catch (IndexOutOfBoundsException ex) {
-        user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
-      }
-    } else {
+    if (input.length != 2) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      returnToCosmetic();
+      return;
+    }
+    int line;
+    try {
+      line = Integer.parseInt(input[0]) - 1;
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_LINE.getMessage());
+      returnToCosmetic();
+      return;
+    }
+
+    try {
+      List<String> lore = meta.getLore();
+      lore.set(line, ChatColor.translateAlternateColorCodes('&', input[1]));
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.GREEN + "[Edited Lore]");
+    } catch (IndexOutOfBoundsException ex) {
+      user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
     }
     returnToCosmetic();
   }
@@ -194,14 +206,21 @@ public class ItemEditorMessageSent {
    * Removes a line of lore.
    */
   public void removeLore() {
+    int line;
+    try {
+      line = Integer.parseInt(e.getMessage()) - 1;
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_LINE.getMessage());
+      returnToCosmetic();
+      return;
+    }
+
     try {
       List<String> lore = meta.getLore();
-      lore.remove(Integer.parseInt(e.getMessage()) - 1);
+      lore.remove(line);
       meta.setLore(lore);
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Removed Lore]");
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_LINE.getMessage());
     } catch (IndexOutOfBoundsException ex) {
       user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
     }
@@ -213,55 +232,70 @@ public class ItemEditorMessageSent {
    */
   public void setPotionColor() {
     String[] input = e.getMessage().split(" ", 3);
-    if (input.length == 3) {
-      PotionMeta potion = (PotionMeta) meta;
-      try {
-        int red = Integer.parseInt(input[0]);
-        try {
-          int green = Integer.parseInt(input[1]);
-          try {
-            int blue = Integer.parseInt(input[2]);
-            potion.setColor(org.bukkit.Color.fromRGB(red, green, blue));
-            item.setItemMeta(potion);
-            user.sendMessage(ChatColor.GREEN + "[Set Potion Color]");
-          } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid Blue.");
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid Green.");
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid Red.");
-      }
-    } else {
+    if (input.length != 3) {
       user.sendMessage(ChatColor.RED + "Invalid RGB.");
+      return;
     }
+
+    PotionMeta potion = (PotionMeta) meta;
+    int red;
+    try {
+      red = Integer.parseInt(input[0]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid Red.");
+      returnToPotion();
+      return;
+    }
+    int green;
+    try {
+      green = Integer.parseInt(input[1]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid Green.");
+      returnToPotion();
+      return;
+    }
+    int blue;
+    try {
+      blue = Integer.parseInt(input[2]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(ChatColor.RED + "Invalid Blue.");
+      returnToPotion();
+      return;
+    }
+
+    potion.setColor(org.bukkit.Color.fromRGB(red, green, blue));
+    item.setItemMeta(potion);
+    user.sendMessage(ChatColor.GREEN + "[Set Potion Color]");
+    returnToPotion();
   }
 
   /**
    * Sets or removes an item's Minecraft attribute modifier.
    */
   public void setMinecraftAttribute() {
-    try {
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-      String type = pluginPlayer.getObjectType();
-      Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
-      String slot = pluginPlayer.getSlot().getId();
-      EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
+    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    String type = pluginPlayer.getObjectType();
+    Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
+    String slot = pluginPlayer.getSlot().getId();
+    EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
 
-      if (!e.getMessage().equals("-")) {
-        AttributeModifier attributeModifier = new AttributeModifier(UUID.randomUUID(), "attribute", Double.parseDouble(e.getMessage()), AttributeModifier.Operation.ADD_NUMBER, equipmentSlot);
-        removeExistingAttributeModifiers(attribute, equipmentSlot);
-        meta.addAttributeModifier(attribute, attributeModifier);
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
-      } else {
-        removeExistingAttributeModifiers(attribute, equipmentSlot);
-        user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
+    if (!e.getMessage().equals("-")) {
+      double attributeValue;
+      try {
+        attributeValue = Double.parseDouble(e.getMessage());
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_VALUE.getMessage());
+        returnToAttribute();
+        return;
       }
-      item.setItemMeta(meta);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_VALUE.getMessage());
+      removeExistingAttributeModifiers(attribute, equipmentSlot);
+      meta.addAttributeModifier(attribute, new AttributeModifier(UUID.randomUUID(), "attribute", attributeValue, AttributeModifier.Operation.ADD_NUMBER, equipmentSlot));
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
+    } else {
+      removeExistingAttributeModifiers(attribute, equipmentSlot);
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
     }
+    item.setItemMeta(meta);
     returnToAttribute();
   }
 
@@ -269,14 +303,19 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's {@link Key#ATTRIBUTE_LIST Aethel attribute} modifier.
    */
   public void setAethelAttribute() {
+    double attributeValue;
     try {
-      if (!e.getMessage().equals("-")) {
-        setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), Double.parseDouble(e.getMessage()), Key.ATTRIBUTE_LIST.getNamespacedKey());
-      } else {
-        removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
-      }
+      attributeValue = Double.parseDouble(e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
+      returnToAethelAttribute();
+      return;
+    }
+
+    if (!e.getMessage().equals("-")) {
+      setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), attributeValue, Key.ATTRIBUTE_LIST.getNamespacedKey());
+    } else {
+      removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
     }
     returnToAethelAttribute();
   }
@@ -288,22 +327,26 @@ public class ItemEditorMessageSent {
     NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType());
 
     if (!e.getMessage().equals("-")) {
+      int level;
       try {
-        int level = Integer.parseInt(e.getMessage());
-        if (level > 0 && level < 32768) {
-          item.addUnsafeEnchantment(Enchantment.getByKey(enchantment), level);
-          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
-        } else {
-          user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
-        }
+        level = Integer.parseInt(e.getMessage());
       } catch (NumberFormatException ex) {
         user.sendMessage(ChatColor.RED + "Invalid level.");
+        returnToEnchantment();
+        return;
+      }
+
+      if (level > 0 && level < 32768) {
+        item.addUnsafeEnchantment(Enchantment.getByKey(enchantment), level);
+        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
+      } else {
+        user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
       }
     } else {
       item.removeEnchantment(Enchantment.getByKey(enchantment));
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToEnchantment);
+    returnToEnchantment();
   }
 
   /**
@@ -316,30 +359,47 @@ public class ItemEditorMessageSent {
 
     if (!e.getMessage().equals("-")) {
       String[] input = e.getMessage().split(" ", 3);
-      if (input.length == 3) {
-        try {
-          int duration = Integer.parseInt(input[0]);
-          try {
-            int amplifier = Integer.parseInt(input[1]);
-            boolean ambient = Boolean.parseBoolean(input[2]);
-            PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, ambient);
-            potion.addCustomEffect(potionEffect, true);
-            user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
-          } catch (NumberFormatException ex) {
-            user.sendMessage(ChatColor.RED + "Invalid amplifier.");
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(ChatColor.RED + "Invalid duration");
+      if (input.length != 3) {
+        user.sendMessage("Invalid effect.");
+        returnToPotion();
+        return;
+      }
+      int duration;
+      try {
+        duration = Integer.parseInt(input[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid duration");
+        returnToPotion();
+        return;
+      }
+      int amplifier;
+      try {
+        amplifier = Integer.parseInt(input[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(ChatColor.RED + "Invalid amplifier.");
+        returnToPotion();
+        return;
+      }
+
+      switch (input[2]) {
+        case "true", "false" -> {
+          boolean ambient = Boolean.parseBoolean(input[2]);
+          PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, ambient);
+          potion.addCustomEffect(potionEffect, true);
+          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
         }
-      } else {
-        user.sendMessage(ChatColor.RED + "Invalid effect");
+        default -> {
+          user.sendMessage("Invalid true/false.");
+          returnToPotion();
+          return;
+        }
       }
     } else {
       potion.removeCustomEffect(potionEffectType);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
     }
     item.setItemMeta(potion);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPotion);
+    returnToPotion();
   }
 
   /**
@@ -351,7 +411,7 @@ public class ItemEditorMessageSent {
     } else {
       new PassiveTagModification().removeKeyFromList();
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToPassive);
+    returnToPassive();
   }
 
   /**
@@ -363,7 +423,7 @@ public class ItemEditorMessageSent {
     } else {
       removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
     }
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToActive);
+    returnToActive();
   }
 
   /**
@@ -382,7 +442,7 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), this::returnToTag);
+    returnToTag();
   }
 
   /**
@@ -560,7 +620,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#PASSIVE_LIST passive tag} set or remove operation.
    *
    * @author Danny Nguyen
-   * @version 1.19.11
+   * @version 1.20.2
    * @since 1.15.13
    */
   private class PassiveTagModification {
@@ -619,252 +679,329 @@ public class ItemEditorMessageSent {
      * Determines the type of {@link Key#PASSIVE_LIST ability tag} to be set.
      */
     private void interpretKeyToBeSet() {
-      PassiveTriggerType.Condition condition = PassiveTriggerType.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
       PassiveAbilityType.Effect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
-      switch (condition) {
-        case CHANCE_COOLDOWN -> readChanceCooldown(effect);
-        case HEALTH_COOLDOWN -> readHpChanceCooldown(effect);
+      PassiveTriggerType.Condition condition = PassiveTriggerType.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
+      switch (effect) {
+        case CHAIN_DAMAGE -> readChainDamage(condition);
+        case STACK_INSTANCE -> readStackInstance(condition);
+        case POTION_EFFECT -> readPotionEffect(condition);
       }
     }
 
     /**
      * Checks if the input was formatted correctly before setting
-     * the {@link PassiveAbilityType.Effect effect's} chance and cooldown.
+     * the {@link PassiveAbilityType.Effect#CHAIN_DAMAGE}.
      *
-     * @param effect {@link PassiveAbilityType.Effect}
+     * @param condition {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition}
      */
-    private void readChanceCooldown(PassiveAbilityType.Effect effect) {
-      switch (effect) {
-        case STACK_INSTANCE -> {
-          if (args.length == 5) {
-            try {
-              double chance = Double.parseDouble(args[0]);
-              try {
-                int cooldown = Integer.parseInt(args[1]);
-                switch (args[2]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[2]);
-                    try {
-                      int stacks = Integer.parseInt(args[3]);
-                      try {
-                        int ticks = Integer.parseInt(args[4]);
-                        setKeyStringToList(chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
-                      } catch (NumberFormatException ex) {
-                        user.sendMessage(Message.INVALID_TICKS.getMessage());
-                      }
-                    } catch (NumberFormatException ex) {
-                      user.sendMessage(Message.INVALID_STACKS.getMessage());
-                    }
-                  }
-                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_CHANCE.getMessage());
-            }
-          } else {
+    private void readChainDamage(PassiveTriggerType.Condition condition) {
+      switch (condition) {
+        case CHANCE_COOLDOWN -> {
+          if (args.length != 5) {
             user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+            return;
           }
+          double chance;
+          try {
+            chance = Double.parseDouble(args[0]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
+            return;
+          }
+          int cooldown;
+          try {
+            cooldown = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+            return;
+          }
+          boolean self;
+          switch (args[2]) {
+            case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          double damage;
+          try {
+            damage = Integer.parseInt(args[3]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+            return;
+          }
+          double distance;
+          try {
+            distance = Double.parseDouble(args[4]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_RADIUS.getMessage());
+            return;
+          }
+          setKeyStringToList(chance + " " + cooldown + " " + self + " " + damage + " " + distance);
         }
-        case CHAIN_DAMAGE -> {
-          if (args.length == 5) {
-            try {
-              double chance = Double.parseDouble(args[0]);
-              try {
-                int cooldown = Integer.parseInt(args[1]);
-                switch (args[2]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[2]);
-                    try {
-                      double damage = Integer.parseInt(args[3]);
-                      try {
-                        double distance = Double.parseDouble(args[4]);
-                        setKeyStringToList(chance + " " + cooldown + " " + self + " " + damage + " " + distance);
-                      } catch (NumberFormatException ex) {
-                        user.sendMessage(Message.INVALID_RADIUS.getMessage());
-                      }
-                    } catch (NumberFormatException ex) {
-                      user.sendMessage(Message.INVALID_DAMAGE.getMessage());
-                    }
-                  }
-                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_CHANCE.getMessage());
-            }
-          } else {
+        case HEALTH_COOLDOWN -> {
+          if (args.length != 5) {
             user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+            return;
           }
-        }
-        case POTION_EFFECT -> {
-          if (args.length == 7) {
-            try {
-              double chance = Double.parseDouble(args[0]);
-              try {
-                int cooldown = Integer.parseInt(args[1]);
-                switch (args[2]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[2]);
-                    PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
-                    if (potionEffectType != null) {
-                      try {
-                        int amplifier = Integer.parseInt(args[4]);
-                        try {
-                          int ticks = Integer.parseInt(args[5]);
-                          switch (args[6]) {
-                            case "true", "false" -> {
-                              boolean ambient = Boolean.parseBoolean(args[6]);
-                              setKeyStringToList(chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
-                            }
-                            default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                          }
-                        } catch (NumberFormatException ex) {
-                          user.sendMessage(Message.INVALID_TICKS.getMessage());
-                        }
-                      } catch (NullPointerException ex) {
-                        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
-                      }
-                    } else {
-                      user.sendMessage(Message.INVALID_TYPE.getMessage());
-                    }
-                  }
-                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_CHANCE.getMessage());
+          double percentHealth;
+          try {
+            percentHealth = Double.parseDouble(args[0]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
+            return;
+          }
+          int cooldown;
+          try {
+            cooldown = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+            return;
+          }
+          boolean self;
+          switch (args[2]) {
+            case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
             }
-          } else {
-            user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
           }
+          double damage;
+          try {
+            damage = Integer.parseInt(args[3]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+            return;
+          }
+          double radius;
+          try {
+            radius = Double.parseDouble(args[4]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_RADIUS.getMessage());
+            return;
+          }
+          setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + damage + " " + radius);
         }
       }
     }
 
     /**
-     * Checks if the input was formatted correctly before setting the
-     * {@link PassiveAbilityType.Effect effect's} HP, chance, and cooldown.
+     * Checks if the input was formatted correctly before setting
+     * the {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
      *
-     * @param effect {@link PassiveAbilityType.Effect}
+     * @param condition {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition}
      */
-    private void readHpChanceCooldown(PassiveAbilityType.Effect effect) {
-      switch (effect) {
-        case STACK_INSTANCE -> {
-          if (args.length == 5) {
-            try {
-              double percentHealth = Double.parseDouble(args[0]);
-              try {
-                int cooldown = Integer.parseInt(args[1]);
-                switch (args[2]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[2]);
-                    try {
-                      int stacks = Integer.parseInt(args[3]);
-                      try {
-                        int ticks = Integer.parseInt(args[4]);
-                        setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + stacks + " " + ticks);
-                      } catch (NumberFormatException ex) {
-                        user.sendMessage(Message.INVALID_TICKS.getMessage());
-                      }
-                    } catch (NumberFormatException ex) {
-                      user.sendMessage(Message.INVALID_STACKS.getMessage());
-                    }
-                  }
-                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_HEALTH.getMessage());
-            }
-          } else {
+    private void readStackInstance(PassiveTriggerType.Condition condition) {
+      switch (condition) {
+        case CHANCE_COOLDOWN -> {
+          if (args.length != 5) {
             user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+            return;
           }
+          double chance;
+          try {
+            chance = Double.parseDouble(args[0]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
+            return;
+          }
+          int cooldown;
+          try {
+            cooldown = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+            return;
+          }
+          boolean self;
+          switch (args[2]) {
+            case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          int stacks;
+          try {
+            stacks = Integer.parseInt(args[3]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_STACKS.getMessage());
+            return;
+          }
+          int ticks;
+          try {
+            ticks = Integer.parseInt(args[4]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_TICKS.getMessage());
+            return;
+          }
+          setKeyStringToList(chance + " " + cooldown + " " + self + " " + stacks + " " + ticks);
         }
-        case CHAIN_DAMAGE -> {
-          if (args.length == 5) {
-            try {
-              double percentHealth = Double.parseDouble(args[0]);
-              try {
-                int cooldown = Integer.parseInt(args[1]);
-                switch (args[2]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[2]);
-                    try {
-                      double damage = Integer.parseInt(args[3]);
-                      try {
-                        double radius = Double.parseDouble(args[4]);
-                        setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + damage + " " + radius);
-                      } catch (NumberFormatException ex) {
-                        user.sendMessage(Message.INVALID_RADIUS.getMessage());
-                      }
-                    } catch (NumberFormatException ex) {
-                      user.sendMessage(Message.INVALID_DAMAGE.getMessage());
-                    }
-                  }
-                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_HEALTH.getMessage());
-            }
+        case HEALTH_COOLDOWN -> {
+          if (args.length != 5) {
           } else {
             user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+            return;
           }
+          double percentHealth;
+          try {
+            percentHealth = Double.parseDouble(args[0]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
+            return;
+          }
+          int cooldown;
+          try {
+            cooldown = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+            return;
+          }
+          boolean self;
+          switch (args[2]) {
+            case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          int stacks;
+          try {
+            stacks = Integer.parseInt(args[3]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_STACKS.getMessage());
+            return;
+          }
+          int ticks;
+          try {
+            ticks = Integer.parseInt(args[4]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_TICKS.getMessage());
+            return;
+          }
+          setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + stacks + " " + ticks);
         }
-        case POTION_EFFECT -> {
-          if (args.length == 7) {
-            try {
-              double percentHealth = Double.parseDouble(args[0]);
-              try {
-                int cooldown = Integer.parseInt(args[1]);
-                switch (args[2]) {
-                  case "true", "false" -> {
-                    boolean self = Boolean.parseBoolean(args[2]);
-                    PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
-                    if (potionEffectType != null) {
-                      try {
-                        int amplifier = Integer.parseInt(args[4]);
-                        try {
-                          int ticks = Integer.parseInt(args[5]);
-                          switch (args[6]) {
-                            case "true", "false" -> {
-                              boolean ambient = Boolean.parseBoolean(args[6]);
-                              setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
-                            }
-                            default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                          }
-                        } catch (NumberFormatException ex) {
-                          user.sendMessage(Message.INVALID_TICKS.getMessage());
-                        }
-                      } catch (NullPointerException ex) {
-                        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
-                      }
-                    } else {
-                      user.sendMessage(Message.INVALID_TYPE.getMessage());
-                    }
-                  }
-                  default -> user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-              }
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_HEALTH.getMessage());
-            }
-          } else {
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting
+     * the {@link PassiveAbilityType.Effect#POTION_EFFECT}.
+     *
+     * @param condition {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition}
+     */
+    private void readPotionEffect(PassiveTriggerType.Condition condition) {
+      switch (condition) {
+        case CHANCE_COOLDOWN -> {
+          if (args.length != 7) {
             user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+            return;
           }
+          double chance;
+          try {
+            chance = Double.parseDouble(args[0]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_CHANCE.getMessage());
+            return;
+          }
+          int cooldown;
+          try {
+            cooldown = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+            return;
+          }
+          boolean self;
+          switch (args[2]) {
+            case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
+          if (potionEffectType == null) {
+            user.sendMessage(Message.INVALID_TYPE.getMessage());
+            return;
+          }
+          int amplifier;
+          try {
+            amplifier = Integer.parseInt(args[4]);
+          } catch (NullPointerException ex) {
+            user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+            return;
+          }
+          int ticks;
+          try {
+            ticks = Integer.parseInt(args[5]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_TICKS.getMessage());
+            return;
+          }
+          boolean ambient;
+          switch (args[6]) {
+            case "true", "false" -> ambient = Boolean.parseBoolean(args[6]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          setKeyStringToList(chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
+        }
+        case HEALTH_COOLDOWN -> {
+          if (args.length != 7) {
+            user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+            return;
+          }
+          double percentHealth;
+          try {
+            percentHealth = Double.parseDouble(args[0]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_HEALTH.getMessage());
+            return;
+          }
+          int cooldown;
+          try {
+            cooldown = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+            return;
+          }
+          boolean self;
+          switch (args[2]) {
+            case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
+          if (potionEffectType == null) {
+            user.sendMessage(Message.INVALID_TYPE.getMessage());
+            return;
+          }
+          int amplifier;
+          try {
+            amplifier = Integer.parseInt(args[4]);
+          } catch (NullPointerException ex) {
+            user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+            return;
+          }
+          int ticks;
+          try {
+            ticks = Integer.parseInt(args[5]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_TICKS.getMessage());
+            return;
+          }
+          boolean ambient;
+          switch (args[6]) {
+            case "true", "false" -> ambient = Boolean.parseBoolean(args[6]);
+            default -> {
+              user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+              return;
+            }
+          }
+          setKeyStringToList(percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
         }
       }
     }
@@ -922,7 +1059,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
    *
    * @author Danny Nguyen
-   * @version 1.19.11
+   * @version 1.20.2
    * @since 1.19.4
    */
   private class ActiveTagSetter {
@@ -987,14 +1124,18 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#CLEAR_STATUS}.
      */
     private void readActiveClearStatus() {
-      if (args.length == 1) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          setKeyStringToList(String.valueOf(cooldown));
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
+      if (args.length != 1) {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      setKeyStringToList(String.valueOf(cooldown));
     }
 
     /**
@@ -1002,24 +1143,32 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#DISTANCE_DAMAGE}.
      */
     private void readDistanceDamage() {
-      if (args.length == 3) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          try {
-            double damage = Double.parseDouble(args[1]);
-            try {
-              double distance = Double.parseDouble(args[2]);
-              setKeyStringToList(cooldown + " " + damage + " " + distance);
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_DISTANCE.getMessage());
-            }
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_DAMAGE.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
+      if (args.length != 3) {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      double damage;
+      try {
+        damage = Double.parseDouble(args[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+        return;
+      }
+      double distance;
+      try {
+        distance = Double.parseDouble(args[2]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return;
+      }
+      setKeyStringToList(cooldown + " " + damage + " " + distance);
     }
 
     /**
@@ -1027,21 +1176,25 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#MOVEMENT}.
      */
     private void readActiveMovement() {
-      if (args.length == 2) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          try {
-            double modifier = Double.parseDouble(args[1]);
-            setKeyStringToList(cooldown + " " + modifier);
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_MODIFIER.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
-      } else {
+      if (args.length != 2) {
         user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      double modifier;
+      try {
+        modifier = Double.parseDouble(args[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_MODIFIER.getMessage());
+        return;
+      }
+      setKeyStringToList(cooldown + " " + modifier);
     }
 
     /**
@@ -1049,40 +1202,46 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#POTION_EFFECT}.
      */
     private void readActivePotionEffect() {
-      if (args.length == 5) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          try {
-            PotionEffectType potionEffectType = PotionEffectType.getByName(args[1]);
-            if (potionEffectType != null) {
-              try {
-                int amplifier = Integer.parseInt(args[2]);
-                try {
-                  int ticks = Integer.parseInt(args[3]);
-                  switch (args[4]) {
-                    case "true", "false" -> {
-                      boolean ambient = Boolean.parseBoolean(args[4]);
-                      setKeyStringToList(cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
-                    }
-                  }
-                } catch (NumberFormatException ex) {
-                  user.sendMessage(Message.INVALID_TICKS.getMessage());
-                }
-              } catch (NumberFormatException ex) {
-                user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
-              }
-            } else {
-              user.sendMessage(Message.INVALID_TYPE.getMessage());
-            }
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
-      } else {
+      if (args.length != 5) {
         user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      PotionEffectType potionEffectType = PotionEffectType.getByName(args[1]);
+      if (potionEffectType == null) {
+      } else {
+        user.sendMessage(Message.INVALID_TYPE.getMessage());
+        return;
+      }
+      int amplifier;
+      try {
+        amplifier = Integer.parseInt(args[2]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+        return;
+      }
+      int ticks;
+      try {
+        ticks = Integer.parseInt(args[3]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_TICKS.getMessage());
+        return;
+      }
+      boolean ambient;
+      switch (args[4]) {
+        case "true", "false" -> ambient = Boolean.parseBoolean(args[4]);
+        default -> {
+          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+          return;
+        }
+      }
+      setKeyStringToList(cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient);
     }
 
     /**
@@ -1090,26 +1249,32 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#PROJECTION}.
      */
     private void readActiveProjection() {
-      if (args.length == 3) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          try {
-            int distance = Integer.parseInt(args[1]);
-            try {
-              int delay = Integer.parseInt(args[2]);
-              setKeyStringToList(cooldown + " " + distance + " " + delay);
-            } catch (NumberFormatException ex) {
-              user.sendMessage(Message.INVALID_DELAY.getMessage());
-            }
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
-      } else {
+      if (args.length != 3) {
         user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      int distance;
+      try {
+        distance = Integer.parseInt(args[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return;
+      }
+      int delay;
+      try {
+        delay = Integer.parseInt(args[2]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_DELAY.getMessage());
+        return;
+      }
+      setKeyStringToList(cooldown + " " + distance + " " + delay);
     }
 
     /**
@@ -1117,21 +1282,25 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#SHATTER}.
      */
     private void readActiveShatter() {
-      if (args.length == 2) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          try {
-            double radius = Double.parseDouble(args[1]);
-            setKeyStringToList(cooldown + " " + radius);
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_RADIUS.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
-      } else {
+      if (args.length != 2) {
         user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      double radius;
+      try {
+        radius = Double.parseDouble(args[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_RADIUS.getMessage());
+        return;
+      }
+      setKeyStringToList(cooldown + " " + radius);
     }
 
     /**
@@ -1139,21 +1308,25 @@ public class ItemEditorMessageSent {
      * {@link ActiveAbilityType.Effect#TELEPORT}.
      */
     private void readActiveTeleport() {
-      if (args.length == 2) {
-        try {
-          int cooldown = Integer.parseInt(args[0]);
-          try {
-            int distance = Integer.parseInt(args[1]);
-            setKeyStringToList(cooldown + " " + distance);
-          } catch (NumberFormatException ex) {
-            user.sendMessage(Message.INVALID_DISTANCE.getMessage());
-          }
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        }
-      } else {
+      if (args.length != 2) {
         user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
       }
+      int cooldown;
+      try {
+        cooldown = Integer.parseInt(args[0]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return;
+      }
+      int distance;
+      try {
+        distance = Integer.parseInt(args[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return;
+      }
+      setKeyStringToList(cooldown + " " + distance);
     }
 
     /**
@@ -1162,8 +1335,6 @@ public class ItemEditorMessageSent {
      * @param keyValue key value
      */
     private void setKeyStringToList(String keyValue) {
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-
       NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), activeHeader + interactingKey);
       PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 

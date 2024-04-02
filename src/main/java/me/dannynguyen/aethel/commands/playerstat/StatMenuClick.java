@@ -153,7 +153,7 @@ public class StatMenuClick implements MenuClick {
    * Represents the retrieval and broadcast of a player statistic.
    *
    * @author Danny Nguyen
-   * @version 1.19.4
+   * @version 1.20.2
    * @since 1.4.10
    */
   private class StatBroadcast {
@@ -227,18 +227,19 @@ public class StatMenuClick implements MenuClick {
     private void broadcastMessage(String message, String stat, List<String> statValues) {
       if (!isGlobalBroadcast) {
         user.sendMessage(message);
-      } else {
-        if (user.getUniqueId().equals(owner.getUniqueId())) {
-          for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.sendMessage(Message.NOTIFICATION_GLOBAL.getMessage() + message);
-          }
-        } else {
-          for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.sendMessage(Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
-          }
-        }
-        Plugin.getData().getPastStatHistory().addPastStat(stat, statValues);
+        return;
       }
+
+      if (user.getUniqueId().equals(owner.getUniqueId())) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.sendMessage(Message.NOTIFICATION_GLOBAL.getMessage() + message);
+        }
+      } else {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.sendMessage(Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + ChatColor.WHITE + " -> " + message);
+        }
+      }
+      Plugin.getData().getPastStatHistory().addPastStat(stat, statValues);
     }
 
     /**

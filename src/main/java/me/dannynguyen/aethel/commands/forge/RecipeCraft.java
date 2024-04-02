@@ -22,7 +22,7 @@ import java.util.*;
  * enough materials to craft the {@link RecipeRegistry.Recipe recipe}.
  *
  * @author Danny Nguyen
- * @version 1.17.17
+ * @version 1.20.2
  * @since 1.4.15
  */
 class RecipeCraft {
@@ -86,14 +86,16 @@ class RecipeCraft {
     Map<Material, List<SlotItem>> materialSlots = new HashMap<>();
     for (int i = 0; i < 36; i++) {
       ItemStack item = pInv.getItem(i);
-      if (ItemReader.isNotNullOrAir(pInv.getItem(i))) {
-        Material material = item.getType();
-        int amount = item.getAmount();
-        if (materialSlots.containsKey(material)) {
-          materialSlots.get(material).add(new SlotItem(i, item, amount));
-        } else {
-          materialSlots.put(material, new ArrayList<>(List.of(new SlotItem(i, item, amount))));
-        }
+      if (ItemReader.isNullOrAir(pInv.getItem(i))) {
+        continue;
+      }
+
+      Material material = item.getType();
+      int amount = item.getAmount();
+      if (materialSlots.containsKey(material)) {
+        materialSlots.get(material).add(new SlotItem(i, item, amount));
+      } else {
+        materialSlots.put(material, new ArrayList<>(List.of(new SlotItem(i, item, amount))));
       }
     }
     return materialSlots;
@@ -103,14 +105,15 @@ class RecipeCraft {
    * Crafts a {@link RecipeRegistry.Recipe recipe} if the user has enough materials.
    */
   protected void readRecipeMaterials() {
-    if (!Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).isDeveloper()) {
-      if (hasEnoughOfAllMaterials()) {
-        craftRecipe();
-      } else {
-        user.sendMessage(ChatColor.RED + "Not enough materials.");
-      }
-    } else {
+    if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).isDeveloper()) {
       giveResults();
+      return;
+    }
+
+    if (hasEnoughOfAllMaterials()) {
+      craftRecipe();
+    } else {
+      user.sendMessage(ChatColor.RED + "Not enough materials.");
     }
   }
 
@@ -123,22 +126,23 @@ class RecipeCraft {
     NamespacedKey forgeId = Key.RECIPE_FORGE_ID.getNamespacedKey();
     for (ItemStack item : materials) {
       Material requiredMaterial = item.getType();
-      if (materialSlots.containsKey(requiredMaterial)) {
-        int requiredAmount = item.getAmount();
-        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        boolean hasForgeId = dataContainer.has(forgeId, PersistentDataType.STRING);
-        if (!hasForgeId) {
-          if (!hasEnoughMaterials(forgeId, requiredMaterial, requiredAmount)) {
-            return false;
-          }
-        } else {
-          String requiredId = dataContainer.get(forgeId, PersistentDataType.STRING);
-          if (!hasEnoughIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
-            return false;
-          }
+      if (!materialSlots.containsKey(requiredMaterial)) {
+        return false;
+      }
+
+      int requiredAmount = item.getAmount();
+      PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+      boolean hasForgeId = dataContainer.has(forgeId, PersistentDataType.STRING);
+
+      if (!hasForgeId) {
+        if (!hasEnoughMaterials(forgeId, requiredMaterial, requiredAmount)) {
+          return false;
         }
       } else {
-        return false;
+        String requiredId = dataContainer.get(forgeId, PersistentDataType.STRING);
+        if (!hasEnoughIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
+          return false;
+        }
       }
     }
     return true;

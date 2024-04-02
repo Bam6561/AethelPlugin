@@ -22,7 +22,7 @@ import java.util.Objects;
  * Reads and decodes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.15.3
+ * @version 1.20.2
  * @since 1.1.4
  */
 public class ItemReader {
@@ -33,7 +33,17 @@ public class ItemReader {
   }
 
   /**
-   * Checks if the item is not null or air.
+   * Checks if the item is null or air.
+   *
+   * @param item interacting item
+   * @return item is null or air
+   */
+  public static boolean isNullOrAir(@Nullable ItemStack item) {
+    return item == null || item.getType() == Material.AIR;
+  }
+
+  /**
+   * Checks if the item is not null and not air.
    *
    * @param item interacting item
    * @return item is not null or air

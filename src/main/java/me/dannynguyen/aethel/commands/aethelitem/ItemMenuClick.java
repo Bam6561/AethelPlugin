@@ -26,7 +26,7 @@ import java.util.UUID;
  * Called with {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.20.2
  * @since 1.4.0
  */
 public class ItemMenuClick implements MenuClick {
@@ -113,22 +113,23 @@ public class ItemMenuClick implements MenuClick {
    */
   private void saveItem() {
     ItemStack item = e.getClickedInventory().getItem(3);
-    if (ItemReader.isNotNullOrAir(item)) {
-      String encodedItem = ItemCreator.encodeItem(item);
-      if (encodedItem != null) {
-        try {
-          FileWriter fw = new FileWriter(Directory.AETHELITEM.getFile().getPath() + "/" + nameItemFile(item) + "_itm.txt");
-          fw.write(encodedItem);
-          fw.close();
-          user.sendMessage(ChatColor.GREEN + "[Saved Aethel Item] " + ChatColor.WHITE + ItemReader.readName(item));
-        } catch (IOException ex) {
-          user.sendMessage(ChatColor.RED + "Failed to write item to file.");
-        }
-      } else {
-        user.sendMessage(ChatColor.RED + "Failed to save item.");
-      }
-    } else {
+    if (ItemReader.isNullOrAir(item)) {
       user.sendMessage(ChatColor.RED + "No item to save.");
+      return;
+    }
+    String encodedItem = ItemCreator.encodeItem(item);
+    if (encodedItem == null) {
+      user.sendMessage(ChatColor.RED + "Failed to save item.");
+      return;
+    }
+
+    try {
+      FileWriter fw = new FileWriter(Directory.AETHELITEM.getFile().getPath() + "/" + nameItemFile(item) + "_itm.txt");
+      fw.write(encodedItem);
+      fw.close();
+      user.sendMessage(ChatColor.GREEN + "[Saved Aethel Item] " + ChatColor.WHITE + ItemReader.readName(item));
+    } catch (IOException ex) {
+      user.sendMessage(ChatColor.RED + "Failed to write item to file.");
     }
   }
 
@@ -169,12 +170,15 @@ public class ItemMenuClick implements MenuClick {
     String category = pluginPlayer.getCategory();
     int pageRequest = pluginPlayer.getPage();
 
-    if (action == ItemMenu.Action.GET) {
-      user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).getCategoryPage(category, pageRequest));
-      pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_REMOVE);
-    } else if (action == ItemMenu.Action.REMOVE) {
-      user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
-      pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_GET);
+    switch (action) {
+      case GET -> {
+        user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).getCategoryPage(category, pageRequest));
+        pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_REMOVE);
+      }
+      case REMOVE -> {
+        user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
+        pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_GET);
+      }
     }
   }
 

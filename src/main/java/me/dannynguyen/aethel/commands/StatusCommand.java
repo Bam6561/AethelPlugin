@@ -33,7 +33,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.20.2
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -111,18 +111,22 @@ public class StatusCommand implements CommandExecutor {
    * @param args   user provided parameters
    */
   private void readEntityTarget(Player user, Action action, String[] args) {
-    UUID uuid = null;
+    UUID uuid;
     String target = args[1];
     if (Bukkit.getPlayer(target) != null) {
       uuid = Bukkit.getPlayer(target).getUniqueId();
     } else {
       try {
-        Entity entity = Bukkit.getEntity(UUID.fromString(target));
-        if (entity instanceof LivingEntity) {
-          uuid = UUID.fromString(target);
-        }
+        uuid = UUID.fromString(target);
       } catch (IllegalArgumentException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid target.");
+        user.sendMessage(ChatColor.RED + "Invalid UUID.");
+        return;
+      }
+      Entity entity = Bukkit.getEntity(uuid);
+      if (entity instanceof LivingEntity) {
+        uuid = UUID.fromString(target);
+      } else {
+        user.sendMessage(ChatColor.RED + "Not a living entity.");
         return;
       }
     }
@@ -142,28 +146,29 @@ public class StatusCommand implements CommandExecutor {
    */
   private void getStatuses(Player user, UUID uuid) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    if (entityStatuses.get(uuid) != null) {
-      Map<StatusType, Status> statusTypes = entityStatuses.get(uuid);
-      StringBuilder statusesBuilder = new StringBuilder();
-      statusesBuilder.append(ChatColor.GREEN).append("[Get Statuses] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
-      for (StatusType statusType : statusTypes.keySet()) {
-        Status status = statusTypes.get(statusType);
-        statusesBuilder.append(ChatColor.AQUA).append(statusType.getProperName()).append(" ");
-        statusesBuilder.append(ChatColor.WHITE).append(status.getStackAmount()).append(" ");
-        Map<Integer, Integer> stackInstances = status.getStackInstances();
-        if (!stackInstances.isEmpty()) {
-          statusesBuilder.append("[");
-          for (Integer stackAmount : stackInstances.values()) {
-            statusesBuilder.append(stackAmount).append(", ");
-          }
-          statusesBuilder.delete(statusesBuilder.length() - 2, statusesBuilder.length());
-          statusesBuilder.append("] ");
-        }
-      }
-      user.sendMessage(statusesBuilder.toString());
-    } else {
+    if (entityStatuses.get(uuid) == null) {
       user.sendMessage(ChatColor.RED + "No statuses found.");
+      return;
     }
+
+    Map<StatusType, Status> statusTypes = entityStatuses.get(uuid);
+    StringBuilder statusesBuilder = new StringBuilder();
+    statusesBuilder.append(ChatColor.GREEN).append("[Get Statuses] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
+    for (StatusType statusType : statusTypes.keySet()) {
+      Status status = statusTypes.get(statusType);
+      statusesBuilder.append(ChatColor.AQUA).append(statusType.getProperName()).append(" ");
+      statusesBuilder.append(ChatColor.WHITE).append(status.getStackAmount()).append(" ");
+      Map<Integer, Integer> stackInstances = status.getStackInstances();
+      if (!stackInstances.isEmpty()) {
+        statusesBuilder.append("[");
+        for (Integer stackAmount : stackInstances.values()) {
+          statusesBuilder.append(stackAmount).append(", ");
+        }
+        statusesBuilder.delete(statusesBuilder.length() - 2, statusesBuilder.length());
+        statusesBuilder.append("] ");
+      }
+    }
+    user.sendMessage(statusesBuilder.toString());
   }
 
   /**
@@ -185,20 +190,23 @@ public class StatusCommand implements CommandExecutor {
    * @param args user provided parameters
    */
   private void removeStatus(Player user, UUID uuid, String[] args) {
+    StatusType statusType;
     try {
-      StatusType statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
-      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-      if (entityStatuses.get(uuid) != null) {
-        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-        statuses.remove(statusType);
-        if (statuses.isEmpty()) {
-          entityStatuses.remove(uuid);
-        }
-      }
-      user.sendMessage(ChatColor.RED + "[Status Removed] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + statusType.getProperName());
+      statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
     } catch (IllegalArgumentException ex) {
       user.sendMessage(Message.UNRECOGNIZED_STATUS.getMessage());
+      return;
     }
+
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    if (entityStatuses.get(uuid) != null) {
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      statuses.remove(statusType);
+      if (statuses.isEmpty()) {
+        entityStatuses.remove(uuid);
+      }
+    }
+    user.sendMessage(ChatColor.RED + "[Status Removed] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + statusType.getProperName());
   }
 
   /**
@@ -210,22 +218,28 @@ public class StatusCommand implements CommandExecutor {
    * @param args user provided parameters
    */
   private void readSetStatus(Player user, UUID uuid, String[] args) {
+    StatusType statusType;
     try {
-      StatusType statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
-      try {
-        int stacks = Integer.parseInt(args[3]);
-        try {
-          int ticks = Integer.parseInt(args[4]);
-          setStatus(user, uuid, statusType, stacks, ticks);
-        } catch (NumberFormatException ex) {
-          user.sendMessage(Message.INVALID_TICKS.getMessage());
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_STACKS.getMessage());
-      }
+      statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
     } catch (IllegalArgumentException ex) {
       user.sendMessage(Message.UNRECOGNIZED_STATUS.getMessage());
+      return;
     }
+    int stacks;
+    try {
+      stacks = Integer.parseInt(args[3]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_STACKS.getMessage());
+      return;
+    }
+    int ticks;
+    try {
+      ticks = Integer.parseInt(args[4]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      return;
+    }
+    setStatus(user, uuid, statusType, stacks, ticks);
   }
 
   /**

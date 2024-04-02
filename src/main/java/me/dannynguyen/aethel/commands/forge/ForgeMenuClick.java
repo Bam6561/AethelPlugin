@@ -26,7 +26,7 @@ import java.util.UUID;
  * Called through {@link MenuEvent}.
  *
  * @author Danny Nguyen
- * @version 1.19.9
+ * @version 1.20.2
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -252,22 +252,23 @@ public class ForgeMenuClick implements MenuClick {
   private void readSaveClick() {
     ItemStack[] contents = e.getInventory().getContents();
     String file = nameFile(contents);
-    if (file != null) {
-      String encodedRecipe = encodeRecipe(contents);
-      if (encodedRecipe != null) {
-        try {
-          FileWriter fw = new FileWriter(Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
-          fw.write(encodedRecipe);
-          fw.close();
-          user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(file));
-        } catch (IOException ex) {
-          user.sendMessage(ChatColor.RED + "Failed to write recipe to file.");
-        }
-      } else {
-        user.sendMessage(ChatColor.RED + "No recipe materials.");
-      }
-    } else {
+    if (file == null) {
       user.sendMessage(ChatColor.RED + "No recipe results.");
+      return;
+    }
+    String encodedRecipe = encodeRecipe(contents);
+    if (encodedRecipe == null) {
+      user.sendMessage(ChatColor.RED + "No recipe materials.");
+      return;
+    }
+
+    try {
+      FileWriter fw = new FileWriter(Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
+      fw.write(encodedRecipe);
+      fw.close();
+      user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(file));
+    } catch (IOException ex) {
+      user.sendMessage(ChatColor.RED + "Failed to write recipe to file.");
     }
   }
 
@@ -289,13 +290,15 @@ public class ForgeMenuClick implements MenuClick {
   private String nameFile(ItemStack[] menuContents) {
     for (int i = 0; i < 8; i++) {
       ItemStack item = menuContents[i];
-      if (ItemReader.isNotNullOrAir(item)) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta.hasDisplayName()) {
-          return TextFormatter.formatId(meta.getDisplayName());
-        } else {
-          return TextFormatter.formatId(item.getType().name());
-        }
+      if (ItemReader.isNullOrAir(item)) {
+        continue;
+      }
+
+      ItemMeta meta = item.getItemMeta();
+      if (meta.hasDisplayName()) {
+        return TextFormatter.formatId(meta.getDisplayName());
+      } else {
+        return TextFormatter.formatId(item.getType().name());
       }
     }
     return null;

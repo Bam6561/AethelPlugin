@@ -21,7 +21,7 @@ import java.util.UUID;
  * Message sent listener for Character text inputs.
  *
  * @author Danny Nguyen
- * @version 1.19.1
+ * @version 1.20.2
  * @since 1.19.0
  */
 public class CharacterMessageSent {
@@ -59,21 +59,28 @@ public class CharacterMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
     RpgEquipmentSlot slot = pluginPlayer.getSlot();
-    try {
-      StringBuilder hotbarBuilder = new StringBuilder();
-      Set<Integer> hotbarSet = new HashSet<>();
-      for (String hotbarString : e.getMessage().split(" ")) {
-        int hotbarSlot = Integer.parseInt(hotbarString);
-        if (0 < hotbarSlot && hotbarSlot < 10) {
-          hotbarBuilder.append(hotbarSlot + " ");
-          hotbarSet.add(hotbarSlot - 1);
-        }
+
+    StringBuilder hotbarBuilder = new StringBuilder();
+    Set<Integer> hotbarSet = new HashSet<>();
+    for (String hotbarString : e.getMessage().split(" ")) {
+      int hotbarSlot;
+      try {
+        hotbarSlot = Integer.parseInt(hotbarString);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_VALUE.getMessage());
+        Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+          user.openInventory(new SettingsMenu(user).getMainMenu());
+          pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);
+        });
+        return;
       }
-      settings.setActiveAbilityBind(slot, hotbarSet);
-      user.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Binds] " + ChatColor.WHITE + hotbarBuilder.toString().trim());
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_VALUE.getMessage());
+      if (0 < hotbarSlot && hotbarSlot < 10) {
+        hotbarBuilder.append(hotbarSlot + " ");
+        hotbarSet.add(hotbarSlot - 1);
+      }
     }
+    settings.setActiveAbilityBind(slot, hotbarSet);
+    user.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Binds] " + ChatColor.WHITE + hotbarBuilder.toString().trim());
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new SettingsMenu(user).getMainMenu());
       pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);
