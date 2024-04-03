@@ -232,14 +232,14 @@ public class StatusCommand implements CommandExecutor {
       user.sendMessage(Message.INVALID_STACKS.getMessage());
       return;
     }
-    int ticks;
+    int duration;
     try {
-      ticks = Integer.parseInt(args[4]);
+      duration = Integer.parseInt(args[4]);
     } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
       return;
     }
-    setStatus(user, uuid, statusType, stacks, ticks);
+    setStatus(user, uuid, statusType, stacks, duration);
   }
 
   /**

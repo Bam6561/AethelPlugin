@@ -122,9 +122,9 @@ public enum Message {
   INVALID_STACKS(Message.ERROR.getMessage() + "Invalid stacks."),
 
   /**
-   * Invalid ticks.
+   * Invalid duration.
    */
-  INVALID_TICKS(Message.ERROR.getMessage() + "Invalid ticks."),
+  INVALID_DURATION(Message.ERROR.getMessage() + "Invalid duration."),
 
   /**
    * Invalid radius.

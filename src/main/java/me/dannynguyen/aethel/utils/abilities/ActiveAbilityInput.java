@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffectType;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.5
+ * @version 1.20.6
  * @since 1.20.5
  */
 public class ActiveAbilityInput {
@@ -34,6 +34,10 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -56,6 +60,10 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -70,6 +78,10 @@ public class ActiveAbilityInput {
     double distance;
     try {
       distance = Double.parseDouble(args[2]);
+      if (distance < 0 || 64 < distance) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_DISTANCE.getMessage());
       return null;
@@ -92,6 +104,10 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -99,6 +115,10 @@ public class ActiveAbilityInput {
     double modifier;
     try {
       modifier = Double.parseDouble(args[1]);
+      if (modifier < 0 || 1000 < modifier) {
+        user.sendMessage(Message.INVALID_MODIFIER.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_MODIFIER.getMessage());
       return null;
@@ -121,28 +141,39 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
     }
     PotionEffectType potionEffectType = PotionEffectType.getByName(args[1]);
     if (potionEffectType == null) {
-    } else {
       user.sendMessage(Message.INVALID_TYPE.getMessage());
       return null;
     }
     int amplifier;
     try {
       amplifier = Integer.parseInt(args[2]);
+      if (amplifier < 0 || 255 < amplifier) {
+        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
       return null;
     }
-    int ticks;
+    int duration;
     try {
-      ticks = Integer.parseInt(args[3]);
+      duration = Integer.parseInt(args[3]);
+      if (duration < 0) {
+        user.sendMessage(Message.INVALID_DURATION.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
     boolean ambient;
@@ -153,7 +184,7 @@ public class ActiveAbilityInput {
         return null;
       }
     }
-    return cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient;
+    return cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
   }
 
   /**
@@ -171,6 +202,10 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -178,6 +213,10 @@ public class ActiveAbilityInput {
     int distance;
     try {
       distance = Integer.parseInt(args[1]);
+      if (distance < 0 || 64 < distance) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_DISTANCE.getMessage());
       return null;
@@ -185,6 +224,10 @@ public class ActiveAbilityInput {
     int delay;
     try {
       delay = Integer.parseInt(args[2]);
+      if (delay < 0) {
+        user.sendMessage(Message.INVALID_DELAY.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_DELAY.getMessage());
       return null;
@@ -207,6 +250,10 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -214,6 +261,10 @@ public class ActiveAbilityInput {
     double radius;
     try {
       radius = Double.parseDouble(args[1]);
+      if (radius < 0 || 64 < radius) {
+        user.sendMessage(Message.INVALID_RADIUS.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_RADIUS.getMessage());
       return null;
@@ -236,6 +287,10 @@ public class ActiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -243,6 +298,10 @@ public class ActiveAbilityInput {
     int distance;
     try {
       distance = Integer.parseInt(args[1]);
+      if (distance < 0 || 64 < distance) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_DISTANCE.getMessage());
       return null;

@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffectType;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.5
+ * @version 1.20.6
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -35,6 +35,10 @@ public class PassiveAbilityInput {
     double chance;
     try {
       chance = Double.parseDouble(args[0]);
+      if (chance < 0 || 100 < chance) {
+        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_CHANCE.getMessage());
       return null;
@@ -42,58 +46,10 @@ public class PassiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[1]);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-      return null;
-    }
-    boolean self;
-    switch (args[2]) {
-      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-      default -> {
-        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
         return null;
       }
-    }
-    double damage;
-    try {
-      damage = Integer.parseInt(args[3]);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_DAMAGE.getMessage());
-      return null;
-    }
-    double distance;
-    try {
-      distance = Double.parseDouble(args[4]);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_RADIUS.getMessage());
-      return null;
-    }
-    return chance + " " + cooldown + " " + self + " " + damage + " " + distance;
-  }
-
-  /**
-   * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}
-   * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#CHAIN_DAMAGE}.
-   *
-   * @param user interacting user
-   * @param args user provided parameters
-   * @return ability data if set correctly, otherwise null
-   */
-  public static String healthCooldownChainDamage(Player user, String[] args) {
-    if (args.length != 5) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-      return null;
-    }
-    double percentHealth;
-    try {
-      percentHealth = Double.parseDouble(args[0]);
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_HEALTH.getMessage());
-      return null;
-    }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[1]);
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -116,6 +72,74 @@ public class PassiveAbilityInput {
     double radius;
     try {
       radius = Double.parseDouble(args[4]);
+      if (radius < 0 || 64 < radius) {
+        user.sendMessage(Message.INVALID_RADIUS.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_RADIUS.getMessage());
+      return null;
+    }
+    return chance + " " + cooldown + " " + self + " " + damage + " " + radius;
+  }
+
+  /**
+   * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}
+   * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#CHAIN_DAMAGE}.
+   *
+   * @param user interacting user
+   * @param args user provided parameters
+   * @return ability data if set correctly, otherwise null
+   */
+  public static String healthCooldownChainDamage(Player user, String[] args) {
+    if (args.length != 5) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return null;
+    }
+    double percentHealth;
+    try {
+      percentHealth = Double.parseDouble(args[0]);
+      if (percentHealth < 0) {
+        user.sendMessage(Message.INVALID_HEALTH.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_HEALTH.getMessage());
+      return null;
+    }
+    int cooldown;
+    try {
+      cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return null;
+    }
+    boolean self;
+    switch (args[2]) {
+      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+      default -> {
+        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+        return null;
+      }
+    }
+    double damage;
+    try {
+      damage = Integer.parseInt(args[3]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+      return null;
+    }
+    double radius;
+    try {
+      radius = Double.parseDouble(args[4]);
+      if (radius < 0 || 64 < radius) {
+        user.sendMessage(Message.INVALID_RADIUS.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_RADIUS.getMessage());
       return null;
@@ -139,6 +163,10 @@ public class PassiveAbilityInput {
     double chance;
     try {
       chance = Double.parseDouble(args[0]);
+      if (chance < 0 || 100 < chance) {
+        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_CHANCE.getMessage());
       return null;
@@ -146,6 +174,10 @@ public class PassiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -165,14 +197,18 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_STACKS.getMessage());
       return null;
     }
-    int ticks;
+    int duration;
     try {
-      ticks = Integer.parseInt(args[4]);
+      duration = Integer.parseInt(args[4]);
+      if (duration < 0) {
+        user.sendMessage(Message.INVALID_DURATION.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
-    return chance + " " + cooldown + " " + self + " " + stacks + " " + ticks;
+    return chance + " " + cooldown + " " + self + " " + stacks + " " + duration;
   }
 
   /**
@@ -191,6 +227,10 @@ public class PassiveAbilityInput {
     double percentHealth;
     try {
       percentHealth = Double.parseDouble(args[0]);
+      if (percentHealth < 0) {
+        user.sendMessage(Message.INVALID_HEALTH.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_HEALTH.getMessage());
       return null;
@@ -198,6 +238,10 @@ public class PassiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -217,14 +261,18 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_STACKS.getMessage());
       return null;
     }
-    int ticks;
+    int duration;
     try {
-      ticks = Integer.parseInt(args[4]);
+      duration = Integer.parseInt(args[4]);
+      if (duration < 0) {
+        user.sendMessage(Message.INVALID_DURATION.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
-    return percentHealth + " " + cooldown + " " + self + " " + stacks + " " + ticks;
+    return percentHealth + " " + cooldown + " " + self + " " + stacks + " " + duration;
   }
 
   /**
@@ -243,6 +291,10 @@ public class PassiveAbilityInput {
     double chance;
     try {
       chance = Double.parseDouble(args[0]);
+      if (chance < 0 || 100 < chance) {
+        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_CHANCE.getMessage());
       return null;
@@ -250,6 +302,10 @@ public class PassiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -270,15 +326,23 @@ public class PassiveAbilityInput {
     int amplifier;
     try {
       amplifier = Integer.parseInt(args[4]);
+      if (amplifier < 0 || 255 < amplifier) {
+        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+        return null;
+      }
     } catch (NullPointerException ex) {
       user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
       return null;
     }
-    int ticks;
+    int duration;
     try {
-      ticks = Integer.parseInt(args[5]);
+      duration = Integer.parseInt(args[5]);
+      if (duration < 0) {
+        user.sendMessage(Message.INVALID_DURATION.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
     boolean ambient;
@@ -289,7 +353,7 @@ public class PassiveAbilityInput {
         return null;
       }
     }
-    return chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient;
+    return chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
   }
 
   /**
@@ -308,6 +372,10 @@ public class PassiveAbilityInput {
     double percentHealth;
     try {
       percentHealth = Double.parseDouble(args[0]);
+      if (percentHealth < 0) {
+        user.sendMessage(Message.INVALID_HEALTH.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_HEALTH.getMessage());
       return null;
@@ -315,6 +383,10 @@ public class PassiveAbilityInput {
     int cooldown;
     try {
       cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
@@ -335,15 +407,23 @@ public class PassiveAbilityInput {
     int amplifier;
     try {
       amplifier = Integer.parseInt(args[4]);
+      if (amplifier < 0 || 255 < amplifier) {
+        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+        return null;
+      }
     } catch (NullPointerException ex) {
       user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
       return null;
     }
-    int ticks;
+    int duration;
     try {
-      ticks = Integer.parseInt(args[5]);
+      duration = Integer.parseInt(args[5]);
+      if (duration < 0) {
+        user.sendMessage(Message.INVALID_DURATION.getMessage());
+        return null;
+      }
     } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_TICKS.getMessage());
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
     boolean ambient;
@@ -354,6 +434,6 @@ public class PassiveAbilityInput {
         return null;
       }
     }
-    return percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + ticks + " " + ambient;
+    return percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
   }
 }
