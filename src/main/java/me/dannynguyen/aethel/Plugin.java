@@ -142,7 +142,7 @@ public class Plugin extends JavaPlugin {
    *  <li>{@link #updateMainHandEquipment()}
    *  <li>{@link #updateDamageOverTimeStatuses()}
    *  <li>{@link #updateOvershields()}
-   *  <li>{@link #updateBelowHealthPassives()}
+   *  <li>{@link #triggerBelowHealthPassives()}
    *  <li>{@link #updateActionDisplay()}
    *  <li>{@link #updateEnvironmentalProtections()}
    * </ul>
@@ -152,7 +152,7 @@ public class Plugin extends JavaPlugin {
     scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipment, 0, 10);
     scheduler.scheduleSyncRepeatingTask(this, this::updateDamageOverTimeStatuses, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
-    scheduler.scheduleSyncRepeatingTask(this, this::updateBelowHealthPassives, 0, 20);
+    scheduler.scheduleSyncRepeatingTask(this, this::triggerBelowHealthPassives, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateActionDisplay, 0, 40);
     scheduler.scheduleSyncRepeatingTask(this, this::updateEnvironmentalProtections, 0, 100);
   }
@@ -229,7 +229,7 @@ public class Plugin extends JavaPlugin {
    * <p>
    * {@link PassiveTriggerType#BELOW_HEALTH}{@link PassiveAbility} can only be triggered on self.
    */
-  private void updateBelowHealthPassives() {
+  private void triggerBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : data.getRpgSystem().getRpgPlayers().values()) {
       Map<Abilities.SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.BELOW_HEALTH);
       if (belowHealthTriggers.isEmpty()) {

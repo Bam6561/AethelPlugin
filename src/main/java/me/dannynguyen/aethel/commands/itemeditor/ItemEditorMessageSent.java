@@ -622,7 +622,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#PASSIVE_LIST passive tag} set or remove operation.
    *
    * @author Danny Nguyen
-   * @version 1.20.5
+   * @version 1.20.7
    * @since 1.15.13
    */
   private class PassiveTagModification {
@@ -682,11 +682,11 @@ public class ItemEditorMessageSent {
      */
     private void interpretKeyToBeSet() {
       PassiveAbilityType.Effect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
-      PassiveTriggerType.Condition condition = PassiveTriggerType.valueOf(TextFormatter.formatEnum(trigger)).getCondition();
+      PassiveTriggerType triggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(trigger));
       switch (effect) {
-        case CHAIN_DAMAGE -> readChainDamage(condition);
-        case STACK_INSTANCE -> readStackInstance(condition);
-        case POTION_EFFECT -> readPotionEffect(condition);
+        case CHAIN_DAMAGE -> readChainDamage(triggerType);
+        case STACK_INSTANCE -> readStackInstance(triggerType);
+        case POTION_EFFECT -> readPotionEffect(triggerType);
       }
     }
 
@@ -694,10 +694,10 @@ public class ItemEditorMessageSent {
      * Checks if the input was formatted correctly before setting
      * the {@link PassiveAbilityType.Effect#CHAIN_DAMAGE}.
      *
-     * @param condition {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition}
+     * @param trigger {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType}
      */
-    private void readChainDamage(PassiveTriggerType.Condition condition) {
-      switch (condition) {
+    private void readChainDamage(PassiveTriggerType trigger) {
+      switch (trigger.getCondition()) {
         case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownChainDamage(user, args));
         case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownChainDamage(user, args));
       }
@@ -705,27 +705,27 @@ public class ItemEditorMessageSent {
 
     /**
      * Checks if the input was formatted correctly before setting
-     * the {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
+     * the {@link PassiveAbilityType.Effect#POTION_EFFECT}.
      *
-     * @param condition {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition}
+     * @param trigger {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType}
      */
-    private void readStackInstance(PassiveTriggerType.Condition condition) {
-      switch (condition) {
-        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownStackInstance(user, args));
-        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownStackInstance(user, args));
+    private void readPotionEffect(PassiveTriggerType trigger) {
+      switch (trigger.getCondition()) {
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownPotionEffect(user, args, trigger));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownPotionEffect(user, args));
       }
     }
 
     /**
      * Checks if the input was formatted correctly before setting
-     * the {@link PassiveAbilityType.Effect#POTION_EFFECT}.
+     * the {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
      *
-     * @param condition {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition}
+     * @param trigger {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType}
      */
-    private void readPotionEffect(PassiveTriggerType.Condition condition) {
-      switch (condition) {
-        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownPotionEffect(user, args));
-        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownPotionEffect(user, args));
+    private void readStackInstance(PassiveTriggerType trigger) {
+      switch (trigger.getCondition()) {
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownStackInstance(user, args, trigger));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownStackInstance(user, args));
       }
     }
 

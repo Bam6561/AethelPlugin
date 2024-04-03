@@ -95,7 +95,7 @@ public class RpgEvent implements Listener {
   @EventHandler
   private void onEntityDeath(EntityDeathEvent e) {
     if (e.getEntity().getKiller() != null) {
-      triggerPassivesOnKill(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
+      triggerOnKillPassives(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
     }
   }
 
@@ -109,7 +109,7 @@ public class RpgEvent implements Listener {
    * @param killedUUID killed entity UUID
    * @param selfUUID   self UUID
    */
-  private void triggerPassivesOnKill(UUID killedUUID, UUID selfUUID) {
+  private void triggerOnKillPassives(UUID killedUUID, UUID selfUUID) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID);
     Map<Abilities.SlotPassive, PassiveAbility> killTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
     if (killTriggers.isEmpty()) {

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.utils.abilities;
 
 import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -9,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.6
+ * @version 1.20.7
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -118,13 +119,10 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
     }
-    boolean self;
-    switch (args[2]) {
-      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-      default -> {
-        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-        return null;
-      }
+    // Self
+    if (!args[2].equals("true")) {
+      user.sendMessage(Message.TRUE_ONLY.getMessage());
+      return null;
     }
     double damage;
     try {
@@ -144,18 +142,19 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_RADIUS.getMessage());
       return null;
     }
-    return percentHealth + " " + cooldown + " " + self + " " + damage + " " + radius;
+    return percentHealth + " " + cooldown + " " + true + " " + damage + " " + radius;
   }
 
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}
    * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#STACK_INSTANCE}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
+   * @param user    interacting user
+   * @param args    user provided parameters
+   * @param trigger {@link PassiveTriggerType}
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownStackInstance(Player user, String[] args) {
+  public static String chanceCooldownStackInstance(Player user, String[] args, PassiveTriggerType trigger) {
     if (args.length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
@@ -183,11 +182,20 @@ public class PassiveAbilityInput {
       return null;
     }
     boolean self;
-    switch (args[2]) {
-      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-      default -> {
-        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+    if (trigger == PassiveTriggerType.ON_KILL) {
+      if (args[2].equals("true")) {
+        self = true;
+      } else {
+        user.sendMessage(Message.TRUE_ONLY.getMessage());
         return null;
+      }
+    } else {
+      switch (args[2]) {
+        case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+        default -> {
+          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+          return null;
+        }
       }
     }
     int stacks;
@@ -246,13 +254,10 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
     }
-    boolean self;
-    switch (args[2]) {
-      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-      default -> {
-        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-        return null;
-      }
+    // Self
+    if (!args[2].equals("true")) {
+      user.sendMessage(Message.TRUE_ONLY.getMessage());
+      return null;
     }
     int stacks;
     try {
@@ -272,18 +277,19 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
-    return percentHealth + " " + cooldown + " " + self + " " + stacks + " " + duration;
+    return percentHealth + " " + cooldown + " " + true + " " + stacks + " " + duration;
   }
 
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}
    * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#POTION_EFFECT}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
+   * @param user    interacting user
+   * @param args    user provided parameters
+   * @param trigger {@link PassiveTriggerType}
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownPotionEffect(Player user, String[] args) {
+  public static String chanceCooldownPotionEffect(Player user, String[] args, PassiveTriggerType trigger) {
     if (args.length != 7) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
@@ -311,11 +317,20 @@ public class PassiveAbilityInput {
       return null;
     }
     boolean self;
-    switch (args[2]) {
-      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-      default -> {
-        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+    if (trigger == PassiveTriggerType.ON_KILL) {
+      if (args[2].equals("true")) {
+        self = true;
+      } else {
+        user.sendMessage(Message.TRUE_ONLY.getMessage());
         return null;
+      }
+    } else {
+      switch (args[2]) {
+        case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+        default -> {
+          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+          return null;
+        }
       }
     }
     PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
@@ -391,13 +406,10 @@ public class PassiveAbilityInput {
       user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
       return null;
     }
-    boolean self;
-    switch (args[2]) {
-      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-      default -> {
-        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-        return null;
-      }
+    // Self
+    if (!args[2].equals("true")) {
+      user.sendMessage(Message.TRUE_ONLY.getMessage());
+      return null;
     }
     PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
     if (potionEffectType == null) {
@@ -434,6 +446,6 @@ public class PassiveAbilityInput {
         return null;
       }
     }
-    return percentHealth + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
+    return percentHealth + " " + cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
   }
 }

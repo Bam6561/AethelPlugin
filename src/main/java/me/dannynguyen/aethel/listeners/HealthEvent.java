@@ -57,16 +57,16 @@ public class HealthEvent implements Listener {
     if (e instanceof EntityDamageByEntityEvent event) {
       if (event.getDamager() instanceof Player || event.getEntity() instanceof Player) {
         if (event.getDamager() instanceof Player damager && !(event.getEntity() instanceof Player)) { // PvE
-          triggerPassivesDamageDealt(event, damager);
+          triggerDamageDealtPassives(event, damager);
           calculatePlayerDamageDone(event, damager);
         } else {
           Player damagee = (Player) event.getEntity();
           DamageMitigation mitigation = new DamageMitigation(damagee);
           if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
-            triggerPassivesDamageDealt(event, damager);
+            triggerDamageDealtPassives(event, damager);
             calculatePlayerDamageDone(event, damager);
           }
-          triggerPassivesDamageTaken(event, damagee);
+          triggerDamageTakenPassives(event, damagee);
           calculatePlayerDamageTaken(event, damagee, mitigation);
         }
       }
@@ -105,7 +105,7 @@ public class HealthEvent implements Listener {
    * @param e       entity damage by entity event
    * @param damager interacting player
    */
-  private void triggerPassivesDamageDealt(EntityDamageByEntityEvent e, Player damager) {
+  private void triggerDamageDealtPassives(EntityDamageByEntityEvent e, Player damager) {
     if (damager.getAttackCooldown() < 0.75 || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
       return;
     }
@@ -140,7 +140,7 @@ public class HealthEvent implements Listener {
    * @param e       entity damage by entity event
    * @param damagee interacting player
    */
-  private void triggerPassivesDamageTaken(EntityDamageByEntityEvent e, Player damagee) {
+  private void triggerDamageTakenPassives(EntityDamageByEntityEvent e, Player damagee) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
     Map<Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
     if (damageTakenTriggers.isEmpty() || !(e.getDamager() instanceof LivingEntity damager)) {

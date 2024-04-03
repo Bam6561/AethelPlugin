@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin messages.
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.20.7
  * @since 1.11.9
  */
 public enum Message {
@@ -159,7 +159,12 @@ public enum Message {
   /**
    * Invalid amplifier.
    */
-  INVALID_AMPLIFIER(Message.ERROR.getMessage() + "Invalid amplifier");
+  INVALID_AMPLIFIER(Message.ERROR.getMessage() + "Invalid amplifier"),
+
+  /**
+   * True only.
+   */
+  TRUE_ONLY(Message.ERROR.getMessage() + "True only.");
 
   /**
    * Message content.

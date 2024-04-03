@@ -173,7 +173,7 @@ public class TagCommand implements CommandExecutor {
    * Represents an item's {@link Key Aethel tag} set or remove operation.
    *
    * @author Danny Nguyen
-   * @version 1.20.5
+   * @version 1.20.7
    * @since 1.13.9
    */
   private static class TagModifier {
@@ -388,9 +388,9 @@ public class TagCommand implements CommandExecutor {
         user.sendMessage(Message.UNRECOGNIZED_EQUIPMENT_SLOT.getMessage());
         return;
       }
-      PassiveTriggerType.Condition triggerCondition;
+      PassiveTriggerType trigger;
       try {
-        triggerCondition = PassiveTriggerType.valueOf(TextFormatter.formatEnum(tagMeta[1])).getCondition();
+        trigger = PassiveTriggerType.valueOf(TextFormatter.formatEnum(tagMeta[1]));
       } catch (IllegalArgumentException ex) {
         user.sendMessage(ChatColor.RED + "Unrecognized trigger condition.");
         return;
@@ -404,9 +404,9 @@ public class TagCommand implements CommandExecutor {
       }
 
       switch (passiveAbilityType.getEffect()) {
-        case STACK_INSTANCE -> readPassiveStackInstance(value, triggerCondition);
-        case CHAIN_DAMAGE -> readPassiveChainDamage(value, triggerCondition);
-        case POTION_EFFECT -> readPassivePotionEffect(value, triggerCondition);
+        case STACK_INSTANCE -> readPassiveStackInstance(value, trigger);
+        case CHAIN_DAMAGE -> readPassiveChainDamage(value, trigger);
+        case POTION_EFFECT -> readPassivePotionEffect(value, trigger);
       }
     }
 
@@ -453,12 +453,12 @@ public class TagCommand implements CommandExecutor {
      * Checks if the input was formatted correctly before
      * setting the {@link PassiveAbilityType.Effect#CHAIN_DAMAGE}.
      *
-     * @param value     tag value
-     * @param condition {@link PassiveTriggerType.Condition}
+     * @param value   tag value
+     * @param trigger {@link PassiveTriggerType}
      */
-    private void readPassiveChainDamage(String value, PassiveTriggerType.Condition condition) {
+    private void readPassiveChainDamage(String value, PassiveTriggerType trigger) {
       String[] args = value.split(" ");
-      switch (condition) {
+      switch (trigger.getCondition()) {
         case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownChainDamage(user, args));
         case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownChainDamage(user, args));
       }
@@ -466,31 +466,31 @@ public class TagCommand implements CommandExecutor {
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
+     * setting the {@link PassiveAbilityType.Effect#POTION_EFFECT}.
      *
-     * @param value     tag value
-     * @param condition {@link PassiveTriggerType.Condition}
+     * @param value   tag value
+     * @param trigger {@link PassiveTriggerType}
      */
-    private void readPassiveStackInstance(String value, PassiveTriggerType.Condition condition) {
+    private void readPassivePotionEffect(String value, PassiveTriggerType trigger) {
       String[] args = value.split(" ");
-      switch (condition) {
-        case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownStackInstance(user, args));
-        case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownStackInstance(user, args));
+      switch (trigger.getCondition()) {
+        case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownPotionEffect(user, args, trigger));
+        case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownPotionEffect(user, args));
       }
     }
 
     /**
      * Checks if the input was formatted correctly before
-     * setting the {@link PassiveAbilityType.Effect#POTION_EFFECT}.
+     * setting the {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
      *
-     * @param value     tag value
-     * @param condition {@link PassiveTriggerType.Condition}
+     * @param value   tag value
+     * @param trigger {@link PassiveTriggerType}
      */
-    private void readPassivePotionEffect(String value, PassiveTriggerType.Condition condition) {
+    private void readPassiveStackInstance(String value, PassiveTriggerType trigger) {
       String[] args = value.split(" ");
-      switch (condition) {
-        case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownPotionEffect(user, args));
-        case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownPotionEffect(user, args));
+      switch (trigger.getCondition()) {
+        case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownStackInstance(user, args, trigger));
+        case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownStackInstance(user, args));
       }
     }
 
