@@ -40,7 +40,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.20.3
+ * @version 1.20.9
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -87,6 +87,7 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's event listeners.
    * <ul>
    *  <li>{@link ActionEvent}
+   *  <li>{@link Buffs}
    *  <li>{@link MenuEvent}
    *  <li>{@link MessageEvent}
    *  <li>{@link PluginEvent}
@@ -99,6 +100,7 @@ public class Plugin extends JavaPlugin {
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
     manager.registerEvents(new ActionEvent(), this);
+    manager.registerEvents(new BuffEvent(), this);
     manager.registerEvents(new MenuEvent(), this);
     manager.registerEvents(new MessageEvent(), this);
     manager.registerEvents(new PluginEvent(), this);

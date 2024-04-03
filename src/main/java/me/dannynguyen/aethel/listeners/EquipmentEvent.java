@@ -139,28 +139,29 @@ public class EquipmentEvent implements Listener {
   private void onDeath(PlayerDeathEvent e) {
     if (!e.getKeepInventory()) {
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId());
+
       AethelAttributes attributes = rpgPlayer.getAethelAttributes();
-      Enchantments enchantments = rpgPlayer.getEnchantments();
-      Abilities abilities = rpgPlayer.getAbilities();
-      Equipment equipment = rpgPlayer.getEquipment();
-
       Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = attributes.getSlotAttributes();
-      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
-      Map<RpgEquipmentSlot, List<Abilities.TriggerPassive>> slotPassives = abilities.getSlotPassives();
-
       for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
         attributes.removeAttributes(eSlot);
       }
+
+      Enchantments enchantments = rpgPlayer.getEnchantments();
+      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
       for (RpgEquipmentSlot eSlot : slotEnchantments.keySet()) {
         enchantments.removeEnchantments(eSlot);
       }
+
+      Abilities abilities = rpgPlayer.getAbilities();
+      Map<RpgEquipmentSlot, List<Abilities.TriggerPassive>> slotPassives = abilities.getSlotPassives();
       for (RpgEquipmentSlot eSlot : slotPassives.keySet()) {
         abilities.removePassives(eSlot);
       }
       for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
         abilities.removeActives(eSlot);
       }
-      dropJewelry(e.getEntity(), equipment.getJewelry());
+
+      dropJewelry(e.getEntity(), rpgPlayer.getEquipment().getJewelry());
     }
   }
 
