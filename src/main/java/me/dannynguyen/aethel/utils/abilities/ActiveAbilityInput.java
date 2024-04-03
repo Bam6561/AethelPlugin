@@ -4,12 +4,15 @@ import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.6
+ * @version 1.20.8
  * @since 1.20.5
  */
 public class ActiveAbilityInput {
@@ -26,8 +29,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String clearStatus(Player user, String[] args) {
-    if (args.length != 1) {
+  public static String clearStatus(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 1) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -52,8 +56,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String distanceDamage(Player user, String[] args) {
-    if (args.length != 3) {
+  public static String distanceDamage(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 3) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -96,8 +101,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String movement(Player user, String[] args) {
-    if (args.length != 2) {
+  public static String movement(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 2) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -133,8 +139,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String potionEffect(Player user, String[] args) {
-    if (args.length != 5) {
+  public static String potionEffect(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -194,8 +201,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String projection(Player user, String[] args) {
-    if (args.length != 3) {
+  public static String projection(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 3) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -242,8 +250,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String shatter(Player user, String[] args) {
-    if (args.length != 2) {
+  public static String shatter(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 2) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -279,8 +288,9 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String teleport(Player user, String[] args) {
-    if (args.length != 2) {
+  public static String teleport(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 2) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }

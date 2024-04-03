@@ -157,11 +157,6 @@ public enum ActiveAbilityType {
    */
   public enum Effect {
     /**
-     * Causes movement with velocity.
-     */
-    MOVEMENT("Cooldown(t), Modifier(%)"),
-
-    /**
      * Causes statuses to be removed.
      */
     CLEAR_STATUS("Cooldown(t)"),
@@ -170,6 +165,11 @@ public enum ActiveAbilityType {
      * Causes damage at a distance.
      */
     DISTANCE_DAMAGE("Cooldown(t), Damage, Distance(m)"),
+
+    /**
+     * Causes movement with velocity.
+     */
+    MOVEMENT("Cooldown(t), Modifier(%)"),
 
     /**
      * Applies a potion effect.

@@ -5,12 +5,15 @@ import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.7
+ * @version 1.20.8
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -28,8 +31,9 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownChainDamage(Player user, String[] args) {
-    if (args.length != 5) {
+  public static String chanceCooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -92,8 +96,9 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String healthCooldownChainDamage(Player user, String[] args) {
-    if (args.length != 5) {
+  public static String healthCooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -154,8 +159,9 @@ public class PassiveAbilityInput {
    * @param trigger {@link PassiveTriggerType}
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownStackInstance(Player user, String[] args, PassiveTriggerType trigger) {
-    if (args.length != 5) {
+  public static String chanceCooldownStackInstance(@NotNull Player user, @NotNull String[] args, PassiveTriggerType trigger) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -227,8 +233,9 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String healthCooldownStackInstance(Player user, String[] args) {
-    if (args.length != 5) {
+  public static String healthCooldownStackInstance(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -289,8 +296,9 @@ public class PassiveAbilityInput {
    * @param trigger {@link PassiveTriggerType}
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownPotionEffect(Player user, String[] args, PassiveTriggerType trigger) {
-    if (args.length != 7) {
+  public static String chanceCooldownPotionEffect(@NotNull Player user, @NotNull String[] args, PassiveTriggerType trigger) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 7) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }
@@ -379,8 +387,9 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
-  public static String healthCooldownPotionEffect(Player user, String[] args) {
-    if (args.length != 7) {
+  public static String healthCooldownPotionEffect(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 7) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
     }

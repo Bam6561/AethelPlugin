@@ -118,14 +118,14 @@ public enum PassiveAbilityType {
    */
   public enum Effect {
     /**
-     * Causes {@link StatusType stack instances}.
-     */
-    STACK_INSTANCE("Self, Stacks, Duration(t)"),
-
-    /**
      * Causes chain damage.
      */
     CHAIN_DAMAGE("Self, Damage, Radius(m)"),
+
+    /**
+     * Causes {@link StatusType stack instances}.
+     */
+    STACK_INSTANCE("Self, Stacks, Duration(t)"),
 
     /**
      * Causes a potion effect to be applied.
