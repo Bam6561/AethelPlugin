@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
+import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.DamageMitigation;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.Status;
@@ -13,6 +14,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.5
+ * @version 1.20.10
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -80,13 +82,17 @@ public class ActiveAbility {
    */
   private void initializeAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
     switch (effect) {
-      case CLEAR_STATUS -> {
-        // No data to initialize.
+      case CLEAR_STATUS -> { // No data to initialize.
       }
       case MOVEMENT, SHATTER, TELEPORT -> effectData.add(dataValues[1]);
       case DISTANCE_DAMAGE, PROJECTION -> {
         effectData.add(dataValues[1]);
         effectData.add(dataValues[2]);
+      }
+      case BUFF -> {
+        effectData.add(dataValues[1]);
+        effectData.add(dataValues[2]);
+        effectData.add(dataValues[3]);
       }
       case POTION_EFFECT -> {
         effectData.add(dataValues[1]);
@@ -107,6 +113,7 @@ public class ActiveAbility {
     double cooldownModifier = Objects.requireNonNull(rpgPlayer, "Null RPG player").getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_COOLDOWN) / 100;
     Objects.requireNonNull(caster, "Null caster");
     switch (type.getEffect()) {
+      case BUFF -> applyBuff(cooldownModifier, caster);
       case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
       case DISTANCE_DAMAGE -> dealDistanceDamage(cooldownModifier, caster);
       case MOVEMENT -> moveDistance(cooldownModifier, caster);
@@ -114,6 +121,55 @@ public class ActiveAbility {
       case PROJECTION -> projectDistance(cooldownModifier, caster);
       case SHATTER -> shatterBrittle(cooldownModifier, caster);
       case TELEPORT -> teleportDistance(cooldownModifier, caster);
+    }
+  }
+
+  /**
+   * Performs {@link ActiveAbilityType.Effect#BUFF} for the attribute.
+   *
+   * @param cooldownModifier cooldown modifier
+   * @param caster           ability caster
+   */
+  private void applyBuff(double cooldownModifier, Player caster) {
+    Buffs buffs = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId()).getBuffs();
+    double value = Double.parseDouble(effectData.get(1));
+    int duration = Integer.parseInt(effectData.get(2));
+
+    Attribute attribute = null;
+    AethelAttribute aethelAttribute = null;
+    try {
+      attribute = Attribute.valueOf(effectData.get(0).toUpperCase());
+    } catch (IllegalArgumentException ignored) {
+    }
+    try {
+      aethelAttribute = AethelAttribute.valueOf(effectData.get(0).toUpperCase());
+    } catch (IllegalArgumentException ignored) {
+    }
+
+    if (attribute != null) {
+      AttributeInstance playerAttribute = caster.getAttribute(attribute);
+      playerAttribute.setBaseValue(playerAttribute.getBaseValue() + value);
+
+      Map<Attribute, Double> attributes = buffs.getAttributes();
+      attributes.put(attribute, attributes.get(attribute) + value);
+
+      Attribute finalAttribute = attribute;
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        playerAttribute.setBaseValue(playerAttribute.getBaseValue() - value);
+        attributes.put(finalAttribute, attributes.get(finalAttribute) - value);
+      }, duration);
+    } else {
+      Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
+      aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) + Double.parseDouble(effectData.get(1)));
+
+      AethelAttribute finalAethelAttribute = aethelAttribute;
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value), duration);
+    }
+
+    if (baseCooldown > 0) {
+      setOnCooldown(true);
+      int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
 

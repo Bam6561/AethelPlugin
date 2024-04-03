@@ -786,7 +786,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
    *
    * @author Danny Nguyen
-   * @version 1.20.5
+   * @version 1.20.10
    * @since 1.19.4
    */
   private class ActiveTagSetter {
@@ -836,6 +836,7 @@ public class ItemEditorMessageSent {
     private void interpretKeyToBeSet() {
       ActiveAbilityType.Effect effect = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
       switch (effect) {
+        case BUFF -> setKeyStringToList(ActiveAbilityInput.buff(user, args));
         case CLEAR_STATUS -> setKeyStringToList(ActiveAbilityInput.clearStatus(user, args));
         case DISTANCE_DAMAGE -> setKeyStringToList(ActiveAbilityInput.distanceDamage(user, args));
         case MOVEMENT -> setKeyStringToList(ActiveAbilityInput.movement(user, args));

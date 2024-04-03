@@ -7,10 +7,20 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.11
+ * @version 1.20.10
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
+  /**
+   * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute} {@link me.dannynguyen.aethel.rpg.Buffs}.
+   */
+  AETHEL_ATTRIBUTE("Aethel Attribute", "aethel_attribute", Effect.BUFF),
+
+  /**
+   * Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
+   */
+  ATTRIBUTE("Attribute", "attribute", Effect.BUFF),
+
   /**
    * Forward facing teleport.
    * <p>
@@ -152,10 +162,15 @@ public enum ActiveAbilityType {
    * Effects of {@link ActiveAbilityType active abilities}.
    *
    * @author Danny Nguyen
-   * @version 1.19.11
+   * @version 1.20.10
    * @since 1.15.9
    */
   public enum Effect {
+    /**
+     * Causes {@link me.dannynguyen.aethel.rpg.Buffs}.
+     */
+    BUFF("Cooldown(t), Attribute, Value, Duration(t)"),
+
     /**
      * Causes statuses to be removed.
      */

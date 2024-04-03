@@ -1,7 +1,9 @@
 package me.dannynguyen.aethel.utils.abilities;
 
 import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +14,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.8
+ * @version 1.20.10
  * @since 1.20.5
  */
 public class ActiveAbilityInput {
@@ -20,6 +22,58 @@ public class ActiveAbilityInput {
    * Static methods only.
    */
   private ActiveAbilityInput() {
+  }
+
+  /**
+   * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#BUFF}.
+   *
+   * @param user interacting user
+   * @param args user provided parameters
+   * @return ability data if set correctly, otherwise null
+   */
+  public static String buff(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 4) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return null;
+    }
+    int cooldown;
+    try {
+      cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return null;
+    }
+    String attribute = args[1];
+    try {
+      Attribute.valueOf(args[1].toUpperCase());
+    } catch (IllegalArgumentException ex1) {
+      try {
+        AethelAttribute.valueOf(args[1].toUpperCase());
+      } catch (IllegalArgumentException ex2) {
+        user.sendMessage(Message.INVALID_ATTRIBUTE.getMessage());
+        return null;
+      }
+    }
+    double value;
+    try {
+      value = Double.parseDouble(args[2]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
+      return null;
+    }
+    int duration;
+    try {
+      duration = Integer.parseInt(args[3]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
+      return null;
+    }
+    return cooldown + " " + attribute + " " + value + " " + duration;
   }
 
   /**

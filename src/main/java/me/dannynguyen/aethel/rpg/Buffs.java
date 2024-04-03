@@ -1,30 +1,20 @@
 package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
- * Represents an {@link RpgPlayer}'s temporary stat changes.
+ * Represents an {@link RpgPlayer}'s temporary attribute stat changes.
  *
  * @author Danny Nguyen
- * @version 1.20.9
+ * @version 1.20.10
  * @since 1.20.9
  */
 public class Buffs {
-  /**
-   * Buffs owner.
-   */
-  private final UUID uuid;
-
   /**
    * Temporary {@link Attribute} values.
    */
@@ -36,10 +26,9 @@ public class Buffs {
   private final Map<AethelAttribute, Double> aethelAttributes = createAethelAttributes();
 
   /**
-   * Associates buffs with its owning player.
+   * No parameter constructor.
    */
-  public Buffs(UUID uuid) {
-    this.uuid = Objects.requireNonNull(uuid, "Null UUID");
+  public Buffs() {
   }
 
   /**
@@ -66,25 +55,6 @@ public class Buffs {
       aethelAttributes.put(attribute, 0.0);
     }
     return aethelAttributes;
-  }
-
-  /**
-   * Removes attribute buffs.
-   */
-  public void removeAttributeBuffs() {
-    Player player = Bukkit.getPlayer(uuid);
-    for (Attribute attribute : attributes.keySet()) {
-      AttributeInstance playerAttribute = player.getAttribute(attribute);
-      playerAttribute.setBaseValue(playerAttribute.getBaseValue() - attributes.get(attribute));
-    }
-    attributes.replaceAll((a, v) -> 0.0);
-  }
-
-  /**
-   * Removes {@link AethelAttribute} buffs.
-   */
-  public void removeAethelAttributeBuffs() {
-    aethelAttributes.replaceAll((a, v) -> 0.0);
   }
 
   /**
