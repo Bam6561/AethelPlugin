@@ -661,7 +661,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.20.10
+   * @version 1.20.11
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -839,6 +839,13 @@ public class ItemEditorMenuClick implements MenuClick {
               abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
             }
             switch (effect) {
+              case BUFF -> {
+                String attributeName = abilityData[3];
+                if (attributeName.startsWith("generic_")) {
+                  attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
+                }
+                abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[4]).append(") (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
+              }
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
               case POTION_EFFECT -> {
@@ -855,6 +862,13 @@ public class ItemEditorMenuClick implements MenuClick {
               abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[1])).append("s) ");
             }
             switch (effect) {
+              case BUFF -> {
+                String attributeName = abilityData[3];
+                if (attributeName.startsWith("generic_")) {
+                  attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
+                }
+                abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[4]).append(") (").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
+              }
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
               case POTION_EFFECT -> {
@@ -922,7 +936,7 @@ public class ItemEditorMenuClick implements MenuClick {
           case BUFF -> {
             String attributeName = abilityData[1];
             if (attributeName.startsWith("generic_")) {
-              attributeName = attributeName.substring(attributeName.indexOf("_"));
+              attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
             }
             activeLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[2]).append(") (").append(ticksToSeconds(abilityData[3])).append("s)");
           }

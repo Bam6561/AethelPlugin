@@ -622,7 +622,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#PASSIVE_LIST passive tag} set or remove operation.
    *
    * @author Danny Nguyen
-   * @version 1.20.7
+   * @version 1.20.11
    * @since 1.15.13
    */
   private class PassiveTagModification {
@@ -684,9 +684,23 @@ public class ItemEditorMessageSent {
       PassiveAbilityType.Effect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
       PassiveTriggerType triggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(trigger));
       switch (effect) {
+        case BUFF -> readBuff(triggerType);
         case CHAIN_DAMAGE -> readChainDamage(triggerType);
         case STACK_INSTANCE -> readStackInstance(triggerType);
         case POTION_EFFECT -> readPotionEffect(triggerType);
+      }
+    }
+
+    /**
+     * Checks if the input was formatted correctly before setting
+     * the {@link PassiveAbilityType.Effect#BUFF}.
+     *
+     * @param trigger {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType}
+     */
+    private void readBuff(PassiveTriggerType trigger) {
+      switch (trigger.getCondition()) {
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownBuff(user, args));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownBuff(user, args));
       }
     }
 

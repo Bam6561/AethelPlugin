@@ -1,8 +1,10 @@
 package me.dannynguyen.aethel.utils.abilities;
 
 import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +15,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.8
+ * @version 1.20.11
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -21,6 +23,147 @@ public class PassiveAbilityInput {
    * Static methods only.
    */
   private PassiveAbilityInput() {
+  }
+
+  /**
+   * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}
+   * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#BUFF}.
+   *
+   * @param user interacting user
+   * @param args user provided parameters
+   * @return ability data if set correctly, otherwise null
+   */
+  public static String chanceCooldownBuff(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 6) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return null;
+    }
+    double chance;
+    try {
+      chance = Double.parseDouble(args[0]);
+      if (chance < 0 || 100 < chance) {
+        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_CHANCE.getMessage());
+      return null;
+    }
+    int cooldown;
+    try {
+      cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return null;
+    }
+    boolean self;
+    switch (args[2]) {
+      case "true", "false" -> self = Boolean.parseBoolean(args[2]);
+      default -> {
+        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+        return null;
+      }
+    }
+    String attribute = args[3];
+    try {
+      Attribute.valueOf(args[3].toUpperCase());
+    } catch (IllegalArgumentException ex1) {
+      try {
+        AethelAttribute.valueOf(args[3].toUpperCase());
+      } catch (IllegalArgumentException ex2) {
+        user.sendMessage(Message.INVALID_ATTRIBUTE.getMessage());
+        return null;
+      }
+    }
+    double value;
+    try {
+      value = Double.parseDouble(args[4]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
+      return null;
+    }
+    int duration;
+    try {
+      duration = Integer.parseInt(args[5]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
+      return null;
+    }
+    return chance + " " + cooldown + " " + self + " " + attribute + " " + value + " " + duration;
+  }
+
+  /**
+   * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}
+   * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#BUFF}.
+   *
+   * @param user interacting user
+   * @param args user provided parameters
+   * @return ability data if set correctly, otherwise null
+   */
+  public static String healthCooldownBuff(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 6) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return null;
+    }
+    double percentHealth;
+    try {
+      percentHealth = Double.parseDouble(args[0]);
+      if (percentHealth < 0) {
+        user.sendMessage(Message.INVALID_HEALTH.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_HEALTH.getMessage());
+      return null;
+    }
+    int cooldown;
+    try {
+      cooldown = Integer.parseInt(args[1]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return null;
+    }
+    // Self
+    if (!args[2].equals("true")) {
+      user.sendMessage(Message.TRUE_ONLY.getMessage());
+      return null;
+    }
+    String attribute = args[3];
+    try {
+      Attribute.valueOf(args[3].toUpperCase());
+    } catch (IllegalArgumentException ex1) {
+      try {
+        AethelAttribute.valueOf(args[3].toUpperCase());
+      } catch (IllegalArgumentException ex2) {
+        user.sendMessage(Message.INVALID_ATTRIBUTE.getMessage());
+        return null;
+      }
+    }
+    double value;
+    try {
+      value = Double.parseDouble(args[4]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
+      return null;
+    }
+    int duration;
+    try {
+      duration = Integer.parseInt(args[5]);
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_DURATION.getMessage());
+      return null;
+    }
+    return percentHealth + " " + cooldown + " " + true + " " + attribute + " " + value + " " + duration;
   }
 
   /**

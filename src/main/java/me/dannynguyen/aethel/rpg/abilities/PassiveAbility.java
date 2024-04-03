@@ -6,11 +6,14 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
+import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.DamageMitigation;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.0
+ * @version 1.20.11
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -94,6 +97,12 @@ public class PassiveAbility {
             effectData.add(dataValues[3]);
             effectData.add(dataValues[4]);
           }
+          case BUFF -> {
+            effectData.add(dataValues[2]);
+            effectData.add(dataValues[3]);
+            effectData.add(dataValues[4]);
+            effectData.add(dataValues[5]);
+          }
           case POTION_EFFECT -> {
             effectData.add(dataValues[2]);
             effectData.add(dataValues[3]);
@@ -116,9 +125,61 @@ public class PassiveAbility {
     double cooldownModifier = Objects.requireNonNull(rpgPlayer, "Null RPG player").getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_COOLDOWN) / 100;
     Objects.requireNonNull(targetUUID, "Null target UUID");
     switch (type.getEffect()) {
+      case BUFF -> applyBuff(cooldownModifier, targetUUID);
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
       case CHAIN_DAMAGE -> chainDamage(cooldownModifier, targetUUID);
       case POTION_EFFECT -> applyPotionEffect(cooldownModifier, targetUUID);
+    }
+  }
+
+  /**
+   * Applies {@link PassiveAbilityType.Effect#BUFF}.
+   *
+   * @param cooldownModifier cooldown modifier
+   * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#BUFF}
+   */
+  private void applyBuff(double cooldownModifier, UUID targetUUID) {
+    Player player = Bukkit.getPlayer(targetUUID);
+    Buffs buffs = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID).getBuffs();
+    double value = Double.parseDouble(effectData.get(2));
+    int duration = Integer.parseInt(effectData.get(3));
+
+    Attribute attribute = null;
+    AethelAttribute aethelAttribute = null;
+    try {
+      attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
+    } catch (IllegalArgumentException ignored) {
+    }
+    try {
+      aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
+    } catch (IllegalArgumentException ignored) {
+    }
+
+    if (attribute != null) {
+      AttributeInstance playerAttribute = player.getAttribute(attribute);
+      playerAttribute.setBaseValue(playerAttribute.getBaseValue() + value);
+
+      Map<Attribute, Double> attributes = buffs.getAttributes();
+      attributes.put(attribute, attributes.get(attribute) + value);
+
+      Attribute finalAttribute = attribute;
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        playerAttribute.setBaseValue(playerAttribute.getBaseValue() - value);
+        attributes.put(finalAttribute, attributes.get(finalAttribute) - value);
+      }, duration);
+    } else {
+      Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
+      aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) + Double.parseDouble(effectData.get(2)));
+
+      AethelAttribute finalAethelAttribute = aethelAttribute;
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value), duration);
+    }
+
+    int cooldown = Integer.parseInt(conditionData.get(1));
+    if (cooldown > 0) {
+      setOnCooldown(true);
+      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
     }
   }
 

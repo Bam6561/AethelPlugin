@@ -7,10 +7,20 @@ import org.jetbrains.annotations.NotNull;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.19.11
+ * @version 1.20.11
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
+  /**
+   * Applies {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute} {@link me.dannynguyen.aethel.rpg.Buffs}.
+   */
+  AETHEL_ATTRIBUTE("Aethel Attribute", "aethel_attribute", Effect.BUFF),
+
+  /**
+   * Applies Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
+   */
+  ATTRIBUTE("Attribute", "attribute", Effect.BUFF),
+
   /**
    * Applies stacks of {@link StatusType#BLEED}.
    */
@@ -113,10 +123,15 @@ public enum PassiveAbilityType {
    * Effects of {@link PassiveAbilityType}.
    *
    * @author Danny Nguyen
-   * @version 1.19.10
+   * @version 1.20.11
    * @since 1.15.9
    */
   public enum Effect {
+    /**
+     * Causes {@link me.dannynguyen.aethel.rpg.Buffs}.
+     */
+    BUFF("Self, Attribute, Value, Duration(t)"),
+
     /**
      * Causes chain damage.
      */
