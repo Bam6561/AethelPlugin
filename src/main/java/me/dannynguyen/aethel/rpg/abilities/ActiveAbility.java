@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.0
+ * @version 1.20.5
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -159,8 +159,6 @@ public class ActiveAbility {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
     double damage = Double.parseDouble(effectData.get(0)) * (1 + rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) / 100);
     double distance = Double.parseDouble(effectData.get(1));
-
-    Vector casterDirection = caster.getLocation().getDirection();
     Set<LivingEntity> targets = new HashSet<>();
 
     switch (type) {
@@ -173,6 +171,7 @@ public class ActiveAbility {
         targets.remove(caster);
       }
       case FORCE_SWEEP -> {
+        Vector casterDirection = caster.getLocation().getDirection();
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
             if (getLivingEntityDirectionAngle(caster.getLocation(), casterDirection, livingEntity) <= 45) {
@@ -182,6 +181,7 @@ public class ActiveAbility {
         }
       }
       case FORCE_WAVE -> {
+        Vector casterDirection = caster.getEyeLocation().getDirection();
         getForceWaveTargets(targets, caster.getLocation(), casterDirection, distance);
         targets.remove(caster);
       }

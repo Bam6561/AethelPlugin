@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -20,7 +21,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.20.3
+ * @version 1.20.5
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -104,7 +105,7 @@ public class ItemDurability {
     durability.setDamage(durability.getDamage() + damage);
     if (durability.getDamage() > item.getType().getMaxDurability()) {
       pInv.setItem(eSlot, new ItemStack(Material.AIR));
-      player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+      player.playSound(player.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
       Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(eSlot.name())), true);
     } else {
       item.setItemMeta(durability);
