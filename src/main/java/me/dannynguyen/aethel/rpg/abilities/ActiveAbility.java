@@ -5,10 +5,7 @@ import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
-import me.dannynguyen.aethel.rpg.Buffs;
-import me.dannynguyen.aethel.rpg.DamageMitigation;
-import me.dannynguyen.aethel.rpg.RpgPlayer;
-import me.dannynguyen.aethel.rpg.Status;
+import me.dannynguyen.aethel.rpg.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -29,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.12
+ * @version 1.21.0
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -110,8 +107,12 @@ public class ActiveAbility {
    * @param caster    ability caster
    */
   public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull Player caster) {
-    double cooldownModifier = Objects.requireNonNull(rpgPlayer, "Null RPG player").getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_COOLDOWN) / 100;
+    Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(caster, "Null caster");
+    Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
+    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
+    double cooldownValue = aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + buffs.get(AethelAttribute.ITEM_COOLDOWN);
+    double cooldownModifier = cooldownValue / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, caster);
       case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
@@ -217,7 +218,9 @@ public class ActiveAbility {
    */
   private void dealDistanceDamage(double cooldownModifier, Player caster) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
-    double damage = Double.parseDouble(effectData.get(0)) * (1 + rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) / 100);
+    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
+    double damageValue = 1 + rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) + buffs.get(AethelAttribute.ITEM_DAMAGE);
+    double damage = Double.parseDouble(effectData.get(0)) * (damageValue / 100);
     double distance = Double.parseDouble(effectData.get(1));
     Set<LivingEntity> targets = new HashSet<>();
 

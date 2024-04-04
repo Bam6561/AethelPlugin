@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.12
+ * @version 1.21.0
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -122,8 +122,12 @@ public class PassiveAbility {
    * @param targetUUID target UUID
    */
   public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull UUID targetUUID) {
-    double cooldownModifier = Objects.requireNonNull(rpgPlayer, "Null RPG player").getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_COOLDOWN) / 100;
+    Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(targetUUID, "Null target UUID");
+    Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
+    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
+    double cooldownValue = aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + buffs.get(AethelAttribute.ITEM_COOLDOWN);
+    double cooldownModifier = cooldownValue / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, targetUUID);
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
@@ -213,7 +217,9 @@ public class PassiveAbility {
 
     Entity entity = Bukkit.getEntity(targetUUID);
     if (entity instanceof Player) {
-      double tenacity = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID).getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY);
+      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID);
+      Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
+      double tenacity = rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY) + buffs.get(AethelAttribute.TENACITY);
       ticks = (int) Math.max(1, ticks - (ticks * tenacity / 100));
     }
 

@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.20.3
+ * @version 1.21.0
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -177,9 +177,11 @@ public class HealthEvent implements Listener {
       return;
     }
 
-    Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId()).getAethelAttributes().getAttributes();
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId());
+    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
+    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
     Random random = new Random();
-    ifCriticallyHit(e, attributes, random);
+    ifCriticallyHit(e, buffs, attributes, random);
 
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     UUID uuid = e.getEntity().getUniqueId();
@@ -210,16 +212,17 @@ public class HealthEvent implements Listener {
       return;
     }
 
+    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
     Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
     Random random = new Random();
 
-    if (ifCountered(e.getCause(), attributes, random, damager, damagee)) {
+    if (ifCountered(e.getCause(), attributes, buffs, random, damager, damagee)) {
       e.setCancelled(true);
       return;
-    } else if (ifDodged(attributes, random)) {
+    } else if (ifDodged(attributes, buffs, random)) {
       e.setCancelled(true);
       return;
-    } else if (ifTougher(e, attributes, damagee)) {
+    } else if (ifTougher(e, attributes, buffs, damagee)) {
       e.setCancelled(true);
       return;
     }
@@ -252,10 +255,12 @@ public class HealthEvent implements Listener {
         if (e.getDamage() <= 0) {
           return true;
         }
-        Map<AethelAttribute, Double> attributes = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId()).getAethelAttributes().getAttributes();
-        if (ifDodged(attributes, new Random())) {
+        RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
+        Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
+        Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
+        if (ifDodged(attributes, buffs, new Random())) {
           return true;
-        } else if (ifTougher(e, attributes, damagee)) {
+        } else if (ifTougher(e, attributes, buffs, damagee)) {
           return true;
         }
         e.setDamage(mitigation.mitigateArmorProtection(e.getDamage()));
@@ -269,12 +274,15 @@ public class HealthEvent implements Listener {
    * If the player dealt a critical hit, multiply the damage by its modifier.
    *
    * @param e          entity damage by entity event
-   * @param attributes player's attributes
+   * @param attributes {@link AethelAttributes}
+   * @param buffs      {@link Buffs}
    * @param random     rng
    */
-  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Random random) {
-    if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
-      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
+  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Map<AethelAttribute, Double> buffs, Random random) {
+    double criticalChance = attributes.get(AethelAttribute.CRITICAL_CHANCE) + buffs.get(AethelAttribute.CRITICAL_CHANCE);
+    if (criticalChance > random.nextDouble() * 100) {
+      double criticalDamage = 1.25 + attributes.get(AethelAttribute.CRITICAL_DAMAGE) + buffs.get(AethelAttribute.CRITICAL_DAMAGE);
+      e.setDamage(e.getDamage() * (criticalDamage / 100));
     }
   }
 
@@ -374,17 +382,19 @@ public class HealthEvent implements Listener {
    *
    * @param cause      damage cause
    * @param attributes {@link AethelAttributes}
+   * @param buffs      {@link Buffs}
    * @param random     rng
    * @param damager    damager
    * @param damagee    player taking damage
    * @return if the damager died
    */
-  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Random random, Entity damager, Player damagee) {
+  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Map<AethelAttribute, Double> buffs, Random random, Entity damager, Player damagee) {
     if (cause == EntityDamageEvent.DamageCause.PROJECTILE || !(damager instanceof LivingEntity attacker)) {
       return false;
     }
 
-    if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+    double counterChance = attributes.get(AethelAttribute.COUNTER_CHANCE) + buffs.get(AethelAttribute.COUNTER_CHANCE);
+    if (counterChance > random.nextDouble() * 100) {
       attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
       return attacker.getHealth() <= 0.0;
     }
@@ -394,12 +404,14 @@ public class HealthEvent implements Listener {
   /**
    * Ignore damage taken if the player dodged.
    *
-   * @param attributes player's attributes
+   * @param attributes {@link AethelAttributes}
+   * @param buffs      {@link Buffs}
    * @param random     rng
    * @return if dodged
    */
-  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random) {
-    return attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
+  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Map<AethelAttribute, Double> buffs, Random random) {
+    double dodgeChance = attributes.get(AethelAttribute.DODGE_CHANCE) + buffs.get(AethelAttribute.DODGE_CHANCE);
+    return dodgeChance > random.nextDouble() * 100;
   }
 
   /**
@@ -408,11 +420,12 @@ public class HealthEvent implements Listener {
    *
    * @param e          entity damage event
    * @param attributes {@link AethelAttributes}
+   * @param buffs      {@link Buffs}
    * @param damagee    player taking damage
    * @return if tougher than damage
    */
-  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
-    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS);
+  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Map<AethelAttribute, Double> buffs, Player damagee) {
+    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS) + buffs.get(AethelAttribute.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
     return e.getDamage() == 0;
   }

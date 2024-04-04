@@ -29,7 +29,7 @@ import java.util.*;
  * {@link Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.20.12
+ * @version 1.21.0
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -151,15 +151,11 @@ public class SheetMenu implements Menu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
-    Map<UUID, Buffs> entityBuffs = rpgSystem.getBuffs();
-    if (entityBuffs.get(uuid) == null) {
-      entityBuffs.put(uuid, new Buffs());
-    }
-    Buffs buffs = rpgSystem.getBuffs().get(uuid);
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
+    Buffs buffs = rpgPlayer.getBuffs();
     Map<Attribute, Double> attributeBuffs = buffs.getAttributes();
     Map<AethelAttribute, Double> aethelAttributeBuffs = buffs.getAethelAttributes();
-    Map<AethelAttribute, Double> aethelAttributes = rpgSystem.getRpgPlayers().get(uuid).getAethelAttributes().getAttributes();
+    Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
 
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
