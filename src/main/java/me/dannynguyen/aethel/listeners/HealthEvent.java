@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.21.0
+ * @version 1.21.1
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -281,8 +281,7 @@ public class HealthEvent implements Listener {
   private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Map<AethelAttribute, Double> buffs, Random random) {
     double criticalChance = attributes.get(AethelAttribute.CRITICAL_CHANCE) + buffs.get(AethelAttribute.CRITICAL_CHANCE);
     if (criticalChance > random.nextDouble() * 100) {
-      double criticalDamage = 1.25 + attributes.get(AethelAttribute.CRITICAL_DAMAGE) + buffs.get(AethelAttribute.CRITICAL_DAMAGE);
-      e.setDamage(e.getDamage() * (criticalDamage / 100));
+      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) + buffs.get(AethelAttribute.CRITICAL_DAMAGE)) / 100));
     }
   }
 

@@ -44,7 +44,7 @@ import java.util.UUID;
  * Called with {@link MessageEvent}.
  *
  * @author Danny Nguyen
- * @version 1.20.2
+ * @version 1.21.1
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -305,16 +305,15 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's {@link Key#ATTRIBUTE_LIST Aethel attribute} modifier.
    */
   public void setAethelAttribute() {
-    double attributeValue;
-    try {
-      attributeValue = Double.parseDouble(e.getMessage());
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_VALUE.getMessage());
-      returnToAethelAttribute();
-      return;
-    }
-
     if (!e.getMessage().equals("-")) {
+      double attributeValue;
+      try {
+        attributeValue = Double.parseDouble(e.getMessage());
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_VALUE.getMessage());
+        returnToAethelAttribute();
+        return;
+      }
       setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), attributeValue, Key.ATTRIBUTE_LIST.getNamespacedKey());
     } else {
       removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());

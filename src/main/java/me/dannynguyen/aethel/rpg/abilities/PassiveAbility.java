@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.0
+ * @version 1.21.1
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -126,8 +126,7 @@ public class PassiveAbility {
     Objects.requireNonNull(targetUUID, "Null target UUID");
     Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
     Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
-    double cooldownValue = aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + buffs.get(AethelAttribute.ITEM_COOLDOWN);
-    double cooldownModifier = cooldownValue / 100;
+    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + buffs.get(AethelAttribute.ITEM_COOLDOWN)) / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, targetUUID);
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
