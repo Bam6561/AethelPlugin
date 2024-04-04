@@ -11,7 +11,7 @@ import java.util.UUID;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.20.12
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -24,11 +24,6 @@ public class RpgPlayer {
    * {@link Settings}
    */
   private final Settings settings;
-
-  /**
-   * {@link Buffs}
-   */
-  private final Buffs buffs;
 
   /**
    * {@link AethelAttributes}
@@ -63,7 +58,6 @@ public class RpgPlayer {
   public RpgPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.settings = new Settings(uuid);
-    this.buffs = new Buffs();
     this.aethelAttributes = new AethelAttributes();
     this.enchantments = new Enchantments(uuid);
     this.abilities = new Abilities();
@@ -89,11 +83,6 @@ public class RpgPlayer {
   @NotNull
   public Settings getSettings() {
     return this.settings;
-  }
-
-  @NotNull
-  public Buffs getBuffs() {
-    return this.buffs;
   }
 
   /**

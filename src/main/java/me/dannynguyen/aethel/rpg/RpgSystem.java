@@ -11,7 +11,7 @@ import java.util.*;
  * Represents RPG metadata in memory.
  *
  * @author Danny Nguyen
- * @version 1.14.7
+ * @version 1.20.12
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -26,6 +26,11 @@ public class RpgSystem {
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
       Enchantment.PROTECTION_FALL, new HashSet<>(),
       Enchantment.PROTECTION_FIRE, new HashSet<>()));
+
+  /**
+   * Living entities affected by {@link Buffs}.
+   */
+  private final Map<UUID, Buffs> buffs = new HashMap<>();
 
   /**
    * Living entities affected by {@link Status statuses}.
@@ -65,6 +70,16 @@ public class RpgSystem {
   @NotNull
   public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
     return this.sufficientEnchantments;
+  }
+
+  /**
+   * Gets entities affected by {@link Buffs}.
+   *
+   * @return entities with {@link Buffs}
+   */
+  @NotNull
+  public Map<UUID, Buffs> getBuffs() {
+    return this.buffs;
   }
 
   /**

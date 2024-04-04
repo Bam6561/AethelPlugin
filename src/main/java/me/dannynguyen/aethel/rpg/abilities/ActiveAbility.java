@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.20.12
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -131,7 +131,11 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void applyBuff(double cooldownModifier, Player caster) {
-    Buffs buffs = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId()).getBuffs();
+    Map<UUID, Buffs> entityBuffs = Plugin.getData().getRpgSystem().getBuffs();
+    if (entityBuffs.get(caster.getUniqueId()) == null) {
+      entityBuffs.put(caster.getUniqueId(), new Buffs());
+    }
+    Buffs buffs = entityBuffs.get(caster.getUniqueId());
     double value = Double.parseDouble(effectData.get(1));
     int duration = Integer.parseInt(effectData.get(2));
 

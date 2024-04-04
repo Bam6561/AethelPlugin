@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.20.11
+ * @version 1.20.12
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -139,8 +139,15 @@ public class PassiveAbility {
    * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#BUFF}
    */
   private void applyBuff(double cooldownModifier, UUID targetUUID) {
-    Player player = Bukkit.getPlayer(targetUUID);
-    Buffs buffs = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID).getBuffs();
+    if (!(Bukkit.getEntity(targetUUID) instanceof LivingEntity livingEntity)) {
+      return;
+    }
+
+    Map<UUID, Buffs> entityBuffs = Plugin.getData().getRpgSystem().getBuffs();
+    if (entityBuffs.get(targetUUID) == null) {
+      entityBuffs.put(targetUUID, new Buffs());
+    }
+    Buffs buffs = entityBuffs.get(targetUUID);
     double value = Double.parseDouble(effectData.get(2));
     int duration = Integer.parseInt(effectData.get(3));
 
@@ -156,15 +163,18 @@ public class PassiveAbility {
     }
 
     if (attribute != null) {
-      AttributeInstance playerAttribute = player.getAttribute(attribute);
-      playerAttribute.setBaseValue(playerAttribute.getBaseValue() + value);
+      AttributeInstance entityAttribute = livingEntity.getAttribute(attribute);
+      if (entityAttribute == null) {
+        return;
+      }
+      entityAttribute.setBaseValue(entityAttribute.getBaseValue() + value);
 
       Map<Attribute, Double> attributes = buffs.getAttributes();
       attributes.put(attribute, attributes.get(attribute) + value);
 
       Attribute finalAttribute = attribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        playerAttribute.setBaseValue(playerAttribute.getBaseValue() - value);
+        entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
         attributes.put(finalAttribute, attributes.get(finalAttribute) - value);
       }, duration);
     } else {
