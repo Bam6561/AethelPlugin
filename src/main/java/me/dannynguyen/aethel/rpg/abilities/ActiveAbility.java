@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.1
+ * @version 1.21.2
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -113,8 +113,12 @@ public class ActiveAbility {
     Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(caster, "Null caster");
     Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
-    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
-    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + buffs.get(AethelAttribute.ITEM_COOLDOWN)) / 100;
+    Buffs buffs = rpgPlayer.getBuffs();
+    double cooldownModifierBuff = 0.0;
+    if (buffs != null) {
+      cooldownModifierBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.ITEM_COOLDOWN, 0.0);
+    }
+    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + cooldownModifierBuff) / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, caster);
       case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
@@ -146,31 +150,59 @@ public class ActiveAbility {
     AethelAttribute aethelAttribute = null;
     try {
       attribute = Attribute.valueOf(effectData.get(0).toUpperCase());
-    } catch (IllegalArgumentException ignored) {
+    } catch (IllegalArgumentException ex) {
+      try {
+        aethelAttribute = AethelAttribute.valueOf(effectData.get(0).toUpperCase());
+      } catch (IllegalArgumentException ignored) {
+      }
     }
-    try {
-      aethelAttribute = AethelAttribute.valueOf(effectData.get(0).toUpperCase());
-    } catch (IllegalArgumentException ignored) {
-    }
+
+    Map<Attribute, Double> attributes = buffs.getAttributes();
+    Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
 
     if (attribute != null) {
       AttributeInstance playerAttribute = caster.getAttribute(attribute);
+      if (playerAttribute == null) {
+        return;
+      }
       playerAttribute.setBaseValue(playerAttribute.getBaseValue() + value);
 
-      Map<Attribute, Double> attributes = buffs.getAttributes();
-      attributes.put(attribute, attributes.get(attribute) + value);
+      double mapValue = 0.0;
+      if (attributes.get(attribute) != null) {
+        mapValue = attributes.get(attribute);
+      }
+      attributes.put(attribute, mapValue + value);
 
       Attribute finalAttribute = attribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         playerAttribute.setBaseValue(playerAttribute.getBaseValue() - value);
         attributes.put(finalAttribute, attributes.get(finalAttribute) - value);
+
+        if (attributes.get(finalAttribute) == 0.0) {
+          attributes.remove(finalAttribute);
+          if (attributes.isEmpty() && aethelAttributes.isEmpty()) {
+            entityBuffs.remove(caster.getUniqueId());
+          }
+        }
       }, duration);
     } else {
-      Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
-      aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) + Double.parseDouble(effectData.get(1)));
+      double mapValue = 0.0;
+      if (aethelAttributes.get(aethelAttribute) != null) {
+        mapValue = aethelAttributes.get(aethelAttribute);
+      }
+      aethelAttributes.put(aethelAttribute, mapValue + Double.parseDouble(effectData.get(1)));
 
       AethelAttribute finalAethelAttribute = aethelAttribute;
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value), duration);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value);
+
+        if (aethelAttributes.get(finalAethelAttribute) == 0.0) {
+          aethelAttributes.remove(finalAethelAttribute);
+          if (aethelAttributes.isEmpty() && attributes.isEmpty()) {
+            entityBuffs.remove(caster.getUniqueId());
+          }
+        }
+      }, duration);
     }
 
     if (baseCooldown > 0) {
@@ -220,8 +252,12 @@ public class ActiveAbility {
    */
   private void dealDistanceDamage(double cooldownModifier, Player caster) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
-    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
-    double damageModifier = 1 + (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) + buffs.get(AethelAttribute.ITEM_DAMAGE)) / 100;
+    Buffs buffs = rpgPlayer.getBuffs();
+    double damageModifierBuff = 0.0;
+    if (buffs != null) {
+      damageModifierBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.ITEM_DAMAGE, 0.0);
+    }
+    double damageModifier = 1 + (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) + damageModifierBuff) / 100;
     double damage = Double.parseDouble(effectData.get(0)) * damageModifier;
     double distance = Double.parseDouble(effectData.get(1));
     Set<LivingEntity> targets = new HashSet<>();

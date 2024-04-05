@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.1
+ * @version 1.21.2
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -125,8 +125,12 @@ public class PassiveAbility {
     Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(targetUUID, "Null target UUID");
     Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
-    Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
-    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + buffs.get(AethelAttribute.ITEM_COOLDOWN)) / 100;
+    Buffs buffs = rpgPlayer.getBuffs();
+    double cooldownModifierBuff = 0.0;
+    if (buffs != null) {
+      cooldownModifierBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.ITEM_COOLDOWN, 0.0);
+    }
+    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + cooldownModifierBuff) / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, targetUUID);
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
@@ -158,12 +162,15 @@ public class PassiveAbility {
     AethelAttribute aethelAttribute = null;
     try {
       attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
-    } catch (IllegalArgumentException ignored) {
+    } catch (IllegalArgumentException ex) {
+      try {
+        aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
+      } catch (IllegalArgumentException ignored) {
+      }
     }
-    try {
-      aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
-    } catch (IllegalArgumentException ignored) {
-    }
+
+    Map<Attribute, Double> attributes = buffs.getAttributes();
+    Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
 
     if (attribute != null) {
       AttributeInstance entityAttribute = livingEntity.getAttribute(attribute);
@@ -171,21 +178,34 @@ public class PassiveAbility {
         return;
       }
       entityAttribute.setBaseValue(entityAttribute.getBaseValue() + value);
-
-      Map<Attribute, Double> attributes = buffs.getAttributes();
       attributes.put(attribute, attributes.get(attribute) + value);
 
       Attribute finalAttribute = attribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
         attributes.put(finalAttribute, attributes.get(finalAttribute) - value);
+
+        if (attributes.get(finalAttribute) == 0.0) {
+          attributes.remove(finalAttribute);
+          if (attributes.isEmpty() && aethelAttributes.isEmpty()) {
+            entityBuffs.remove(targetUUID);
+          }
+        }
       }, duration);
     } else {
-      Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
       aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) + Double.parseDouble(effectData.get(2)));
 
       AethelAttribute finalAethelAttribute = aethelAttribute;
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value), duration);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value);
+
+        if (aethelAttributes.get(finalAethelAttribute) == 0.0) {
+          aethelAttributes.remove(finalAethelAttribute);
+          if (aethelAttributes.isEmpty() && attributes.isEmpty()) {
+            entityBuffs.remove(targetUUID);
+          }
+        }
+      }, duration);
     }
 
     int cooldown = Integer.parseInt(conditionData.get(1));
@@ -217,9 +237,12 @@ public class PassiveAbility {
     Entity entity = Bukkit.getEntity(targetUUID);
     if (entity instanceof Player) {
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID);
-      Map<AethelAttribute, Double> buffs = rpgPlayer.getBuffs().getAethelAttributes();
-      double tenacity = rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY) + buffs.get(AethelAttribute.TENACITY);
-      ticks = (int) Math.max(1, ticks - (ticks * tenacity / 100));
+      Buffs buffs = rpgPlayer.getBuffs();
+      double tenacityBuff = 0.0;
+      if (buffs != null) {
+        tenacityBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.TENACITY, 0.0);
+      }
+      ticks = (int) Math.max(1, ticks - (ticks * (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY) + tenacityBuff) / 100));
     }
 
     if (statuses.containsKey(statusType)) {

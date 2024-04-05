@@ -1,9 +1,11 @@
 package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +15,7 @@ import java.util.UUID;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.21.0
+ * @version 1.21.2
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -26,11 +28,6 @@ public class RpgPlayer {
    * {@link Settings}
    */
   private final Settings settings;
-
-  /**
-   * {@link Buffs}
-   */
-  private final Buffs buffs;
 
   /**
    * {@link AethelAttributes}
@@ -65,14 +62,11 @@ public class RpgPlayer {
   public RpgPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.settings = new Settings(uuid);
-    Map<UUID, Buffs> entityBuffs = Plugin.getData().getRpgSystem().getBuffs();
-    entityBuffs.put(uuid, new Buffs());
-    this.buffs = entityBuffs.get(uuid);
     this.aethelAttributes = new AethelAttributes();
     this.enchantments = new Enchantments(uuid);
     this.abilities = new Abilities();
     this.equipment = new Equipment(player, aethelAttributes, enchantments, abilities);
-    this.health = new Health(player, buffs, aethelAttributes, settings);
+    this.health = new Health(player, aethelAttributes, settings);
   }
 
   /**
@@ -96,13 +90,23 @@ public class RpgPlayer {
   }
 
   /**
-   * Gets the {@link Buffs}.
+   * Gets the affecting {@link Buffs}.
    *
-   * @return {@link Buffs}
+   * @return affecting {@link Buffs}
    */
-  @NotNull
+  @Nullable
   public Buffs getBuffs() {
-    return this.buffs;
+    return Plugin.getData().getRpgSystem().getBuffs().get(uuid);
+  }
+
+  /**
+   * Gets the affecting {@link Status statuses}.
+   *
+   * @return affecting {@link Status statuses}
+   */
+  @Nullable
+  public Map<StatusType, Status> getStatuses() {
+    return Plugin.getData().getRpgSystem().getStatuses().get(uuid);
   }
 
   /**

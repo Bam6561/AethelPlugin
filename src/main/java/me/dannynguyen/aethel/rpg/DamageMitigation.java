@@ -16,7 +16,7 @@ import java.util.UUID;
  * Represents player damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.17.9
+ * @version 1.21.2
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -48,9 +48,9 @@ public class DamageMitigation {
   public DamageMitigation(@NotNull Player damagee) {
     this.damagee = Objects.requireNonNull(damagee, "Null damagee");
     this.uuid = damagee.getUniqueId();
-    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
-    this.enchantments = rpgSystem.getRpgPlayers().get(uuid).getEnchantments().getTotalEnchantments();
-    this.statuses = rpgSystem.getStatuses().get(uuid);
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
+    this.enchantments = rpgPlayer.getEnchantments().getTotalEnchantments();
+    this.statuses = rpgPlayer.getStatuses();
   }
 
   /**

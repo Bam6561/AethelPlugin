@@ -11,50 +11,24 @@ import java.util.Map;
  * Represents an {@link RpgPlayer}'s temporary attribute stat changes.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.21.2
  * @since 1.20.9
  */
 public class Buffs {
   /**
    * Temporary {@link Attribute} values.
    */
-  private final Map<Attribute, Double> attributes = createAttributes();
+  private final Map<Attribute, Double> attributes = new HashMap<>();
 
   /**
    * Temporary {@link AethelAttribute} values.
    */
-  private final Map<AethelAttribute, Double> aethelAttributes = createAethelAttributes();
+  private final Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
 
   /**
    * No parameter constructor.
    */
   public Buffs() {
-  }
-
-  /**
-   * Creates a blank map of Minecraft attribute values.
-   *
-   * @return blank Minecraft attribute values
-   */
-  private Map<Attribute, Double> createAttributes() {
-    Map<Attribute, Double> attributes = new HashMap<>();
-    for (Attribute attribute : Attribute.values()) {
-      attributes.put(attribute, 0.0);
-    }
-    return attributes;
-  }
-
-  /**
-   * Creates a blank map of {@link AethelAttribute} values.
-   *
-   * @return blank {@link AethelAttribute} values
-   */
-  private Map<AethelAttribute, Double> createAethelAttributes() {
-    Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
-    for (AethelAttribute attribute : AethelAttribute.values()) {
-      aethelAttributes.put(attribute, 0.0);
-    }
-    return aethelAttributes;
   }
 
   /**

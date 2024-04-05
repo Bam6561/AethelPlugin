@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an {@link RpgPlayer}'s health.
  *
  * @author Danny Nguyen
- * @version 1.21.0
+ * @version 1.21.2
  * @since 1.13.4
  */
 public class Health {
@@ -29,11 +29,6 @@ public class Health {
    * Player's UUID.
    */
   private final UUID uuid;
-
-  /**
-   * {@link Buffs}
-   */
-  private final Buffs buffs;
 
   /**
    * {@link AethelAttributes}
@@ -64,13 +59,11 @@ public class Health {
    * Associates RPG health with a player.
    *
    * @param player     interacting player
-   * @param buffs      {@link Buffs}
    * @param attributes {@link AethelAttributes}
    * @param settings   {@link Settings}
    */
-  public Health(@NotNull Player player, @NotNull Buffs buffs, @NotNull AethelAttributes attributes, @NotNull Settings settings) {
+  public Health(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.buffs = Objects.requireNonNull(buffs, "Null buffs");
     this.attributes = Objects.requireNonNull(attributes, "Null Aethel attributes");
     this.settings = Objects.requireNonNull(settings, "Null settings");
     healthBar.setVisible(settings.isHealthBarVisible());
@@ -96,7 +89,12 @@ public class Health {
    * Updates the max health.
    */
   public void updateMaxHealth() {
-    double maxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + buffs.getAethelAttributes().get(AethelAttribute.MAX_HEALTH);
+    Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
+    double maxHealthBuff = 0.0;
+    if (buffs != null) {
+      maxHealthBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.MAX_HEALTH, 0.0);
+    }
+    double maxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + maxHealthBuff;
     setMaxHealth(maxHealth);
     updateDisplays();
   }
