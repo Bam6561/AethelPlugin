@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.2
+ * @version 1.21.3
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -167,11 +167,7 @@ public class ActiveAbility {
       }
       playerAttribute.setBaseValue(playerAttribute.getBaseValue() + value);
 
-      double mapValue = 0.0;
-      if (attributes.get(attribute) != null) {
-        mapValue = attributes.get(attribute);
-      }
-      attributes.put(attribute, mapValue + value);
+      attributes.put(attribute, attributes.getOrDefault(attribute, 0.0) + value);
 
       Attribute finalAttribute = attribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -186,11 +182,7 @@ public class ActiveAbility {
         }
       }, duration);
     } else {
-      double mapValue = 0.0;
-      if (aethelAttributes.get(aethelAttribute) != null) {
-        mapValue = aethelAttributes.get(aethelAttribute);
-      }
-      aethelAttributes.put(aethelAttribute, mapValue + Double.parseDouble(effectData.get(1)));
+      aethelAttributes.put(aethelAttribute, aethelAttributes.getOrDefault(aethelAttribute, 0.0) + Double.parseDouble(effectData.get(1)));
 
       AethelAttribute finalAethelAttribute = aethelAttribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {

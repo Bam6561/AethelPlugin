@@ -27,7 +27,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.2
+ * @version 1.21.3
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -178,7 +178,7 @@ public class PassiveAbility {
         return;
       }
       entityAttribute.setBaseValue(entityAttribute.getBaseValue() + value);
-      attributes.put(attribute, attributes.get(attribute) + value);
+      attributes.put(attribute, attributes.getOrDefault(attribute,0.0) + value);
 
       Attribute finalAttribute = attribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -193,7 +193,7 @@ public class PassiveAbility {
         }
       }, duration);
     } else {
-      aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) + Double.parseDouble(effectData.get(2)));
+      aethelAttributes.put(aethelAttribute, aethelAttributes.getOrDefault(aethelAttribute, 0.0) + Double.parseDouble(effectData.get(2)));
 
       AethelAttribute finalAethelAttribute = aethelAttribute;
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {

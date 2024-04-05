@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.21.2
+ * @version 1.21.3
  * @since 1.9.4
  */
 public class HealthEvent implements Listener {
@@ -185,7 +185,7 @@ public class HealthEvent implements Listener {
       ifCriticallyHit(e, attributes, random);
     } else {
       Map<AethelAttribute, Double> aethelBuffs = rpgPlayer.getBuffs().getAethelAttributes();
-      ifCriticallyHit(e, aethelBuffs, attributes, random);
+      ifCriticallyHit(e, attributes, aethelBuffs, random);
     }
 
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();

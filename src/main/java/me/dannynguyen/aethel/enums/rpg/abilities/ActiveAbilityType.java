@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.21.3
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -17,9 +17,19 @@ public enum ActiveAbilityType {
   AETHEL_ATTRIBUTE("Aethel Attribute", "aethel_attribute", Effect.BUFF),
 
   /**
+   * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute} {@link me.dannynguyen.aethel.rpg.Buffs}.
+   */
+  AETHEL_ATTRIBUTE_2("Aethel Attribute 2", "aethel_attribute_2", Effect.BUFF),
+
+  /**
    * Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
    */
   ATTRIBUTE("Attribute", "attribute", Effect.BUFF),
+
+  /**
+   * Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
+   */
+  ATTRIBUTE_2("Attribute 2", "attribute_2", Effect.BUFF),
 
   /**
    * Forward facing teleport.
@@ -59,6 +69,11 @@ public enum ActiveAbilityType {
    * Applies a potion effect.
    */
   POTION_EFFECT("Potion Effect", "potion_effect", Effect.POTION_EFFECT),
+
+  /**
+   * Applies a potion effect.
+   */
+  POTION_EFFECT_2("Potion Effect 2", "potion_effect_2", Effect.POTION_EFFECT),
 
   /**
    * Forward facing teleport that after a delay,
