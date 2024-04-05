@@ -15,9 +15,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Command invocation that allows the user to retrieve,
@@ -31,9 +29,12 @@ import java.util.UUID;
  *  <li>"set", "s": sets a {@link Status status} on the entity
  *  <li>"remove", "r": removes a status or all {@link Status statuses} from the entity
  * </ul>
+ * <p>
+ * For multiple targets, use the "D:," target radius selector.
+ * The self user is included by default, unless "D:!s," is specified.
  *
  * @author Danny Nguyen
- * @version 1.20.2
+ * @version 1.21.4
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -104,37 +105,97 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Determines which target the user is referring to.
+   * Determines which target(s) the user is referring to.
    *
    * @param user   user
    * @param action type of interaction
    * @param args   user provided parameters
    */
   private void readEntityTarget(Player user, Action action, String[] args) {
-    UUID uuid;
-    String target = args[1];
-    if (Bukkit.getPlayer(target) != null) {
-      uuid = Bukkit.getPlayer(target).getUniqueId();
-    } else {
-      try {
-        uuid = UUID.fromString(target);
-      } catch (IllegalArgumentException ex) {
-        user.sendMessage(ChatColor.RED + "Invalid UUID.");
-        return;
-      }
-      Entity entity = Bukkit.getEntity(uuid);
-      if (entity instanceof LivingEntity) {
-        uuid = UUID.fromString(target);
+    if (!args[1].startsWith("D:")) {
+      UUID uuid;
+      String target = args[1];
+      if (Bukkit.getPlayer(target) != null) {
+        uuid = Bukkit.getPlayer(target).getUniqueId();
       } else {
-        user.sendMessage(ChatColor.RED + "Not a living entity.");
+        try {
+          uuid = UUID.fromString(target);
+        } catch (IllegalArgumentException ex) {
+          user.sendMessage(ChatColor.RED + "Invalid UUID.");
+          return;
+        }
+        Entity entity = Bukkit.getEntity(uuid);
+        if (entity instanceof LivingEntity) {
+          uuid = UUID.fromString(target);
+        } else {
+          user.sendMessage(ChatColor.RED + "Not a living entity.");
+          return;
+        }
+      }
+      switch (action) {
+        case GET -> getStatuses(user, uuid);
+        case REMOVE_ALL -> removeStatuses(user, uuid);
+        case REMOVE -> removeStatus(user, uuid, args);
+        case SET -> readSetStatus(user, uuid, args);
+      }
+    } else {
+      String[] radiusParameters = args[1].split(",");
+      if (radiusParameters.length != 4) {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         return;
       }
-    }
-    switch (action) {
-      case GET -> getStatuses(user, uuid);
-      case REMOVE_ALL -> removeStatuses(user, uuid);
-      case REMOVE -> removeStatus(user, uuid, args);
-      case SET -> readSetStatus(user, uuid, args);
+      double x;
+      try {
+        x = Double.parseDouble(radiusParameters[1]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_X.getMessage());
+        return;
+      }
+      double y;
+      try {
+        y = Double.parseDouble(radiusParameters[2]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_Y.getMessage());
+        return;
+      }
+      double z;
+      try {
+        z = Double.parseDouble(radiusParameters[3]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_Z.getMessage());
+        return;
+      }
+      Set<UUID> targets = new HashSet<>();
+      if (!radiusParameters[0].equals("D:!s")) {
+        targets.add(user.getUniqueId());
+      }
+      for (Entity entity : user.getNearbyEntities(x, y, z)) {
+        if (entity instanceof LivingEntity livingEntity) {
+          targets.add(livingEntity.getUniqueId());
+        }
+      }
+      switch (action) {
+        case GET -> {
+          for (UUID uuid : targets) {
+            getStatuses(user, uuid);
+          }
+        }
+        case REMOVE_ALL -> {
+          for (UUID uuid : targets) {
+            removeStatuses(user, uuid);
+          }
+        }
+        case REMOVE -> {
+          for (UUID uuid : targets) {
+            removeStatus(user, uuid, args);
+          }
+        }
+        case SET -> {
+          for (UUID uuid : targets) {
+            readSetStatus(user, uuid, args);
+          }
+        }
+      }
     }
   }
 
@@ -147,7 +208,7 @@ public class StatusCommand implements CommandExecutor {
   private void getStatuses(Player user, UUID uuid) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     if (entityStatuses.get(uuid) == null) {
-      user.sendMessage(ChatColor.RED + "No statuses found.");
+      user.sendMessage(ChatColor.RED + "[No Statuses Found] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName());
       return;
     }
 

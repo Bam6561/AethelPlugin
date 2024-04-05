@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin messages.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.21.4
  * @since 1.11.9
  */
 public enum Message {
@@ -165,6 +165,21 @@ public enum Message {
    * Invalid Minecraft attribute or {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute}.
    */
   INVALID_ATTRIBUTE(Message.ERROR.getMessage() + "Invalid attribute."),
+
+  /**
+   * Invalid X.
+   */
+  INVALID_X(Message.ERROR.getMessage() + "Invalid x."),
+
+  /**
+   * Invalid Y.
+   */
+  INVALID_Y(Message.ERROR.getMessage() + "Invalid y."),
+
+  /**
+   * Invalid Z.
+   */
+  INVALID_Z(Message.ERROR.getMessage() + "Invalid z."),
 
   /**
    * True only.

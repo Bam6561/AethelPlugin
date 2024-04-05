@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.3
+ * @version 1.21.4
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -261,7 +261,6 @@ public class ActiveAbility {
             targets.add(livingEntity);
           }
         }
-        targets.remove(caster);
       }
       case FORCE_SWEEP -> {
         Vector casterDirection = caster.getLocation().getDirection();
@@ -284,7 +283,6 @@ public class ActiveAbility {
             targets.add(livingEntity);
           }
         }
-        targets.remove(caster);
       }
     }
 
