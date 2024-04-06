@@ -1,9 +1,6 @@
 package me.dannynguyen.aethel;
 
-import me.dannynguyen.aethel.commands.DeveloperCommand;
-import me.dannynguyen.aethel.commands.PingCommand;
-import me.dannynguyen.aethel.commands.StatusCommand;
-import me.dannynguyen.aethel.commands.TagCommand;
+import me.dannynguyen.aethel.commands.*;
 import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
@@ -40,7 +37,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.21.5
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -112,6 +109,7 @@ public class Plugin extends JavaPlugin {
    * Registers the plugin's commands.
    * <ul>
    *  <li>{@link ItemCommand}
+   *  <li>{@link BuffCommand}
    *  <li>{@link TagCommand}
    *  <li>{@link CharacterCommand}
    *  <li>{@link DeveloperCommand}
@@ -125,6 +123,7 @@ public class Plugin extends JavaPlugin {
    */
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
+    this.getCommand("buff").setExecutor(new BuffCommand());
     this.getCommand("aetheltag").setExecutor(new TagCommand());
     this.getCommand("character").setExecutor(new CharacterCommand());
     this.getCommand("developermode").setExecutor(new DeveloperCommand());

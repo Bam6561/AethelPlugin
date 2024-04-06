@@ -74,6 +74,10 @@ public class RpgSystem {
 
   /**
    * Gets entities affected by {@link Buffs}.
+   * <p>
+   * Note: Do not call any removals on the Map directly!
+   * Use built-in function {@link Buffs#removeAllBuffs()}
+   * to safely clean up attribute buffs and their timers instead.
    *
    * @return entities with {@link Buffs}
    */

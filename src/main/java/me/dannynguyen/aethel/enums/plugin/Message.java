@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin messages.
  *
  * @author Danny Nguyen
- * @version 1.21.4
+ * @version 1.21.5
  * @since 1.11.9
  */
 public enum Message {
@@ -70,6 +70,11 @@ public enum Message {
    * Unrecognized equipment slot.
    */
   UNRECOGNIZED_EQUIPMENT_SLOT(Message.ERROR.getMessage() + "Unrecognized equipment slot."),
+
+  /**
+   * Unrecognized attribute.
+   */
+  UNRECOGNIZED_ATTRIBUTE(Message.ERROR.getMessage() + "Unrecognized attribute type."),
 
   /**
    * Unrecognized status.

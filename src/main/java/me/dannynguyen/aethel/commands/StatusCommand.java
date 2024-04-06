@@ -26,7 +26,7 @@ import java.util.*;
  * Parameters:
  * <ul>
  *  <li>"get", "g": reads the entity's {@link Status statuses}
- *  <li>"set", "s": sets a {@link Status status} on the entity
+ *  <li>"add", "a": adds a {@link Status status} to the entity
  *  <li>"remove", "r": removes a status or all {@link Status statuses} from the entity
  * </ul>
  * <p>
@@ -34,7 +34,7 @@ import java.util.*;
  * The self user is included by default, unless "D:!s," is specified.
  *
  * @author Danny Nguyen
- * @version 1.21.4
+ * @version 1.21.5
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -96,7 +96,7 @@ public class StatusCommand implements CommandExecutor {
       }
       case 5 -> {
         switch (action) {
-          case "s", "set" -> readEntityTarget(user, Action.SET, args);
+          case "a", "add" -> readEntityTarget(user, Action.ADD, args);
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }
@@ -136,7 +136,7 @@ public class StatusCommand implements CommandExecutor {
         case GET -> getStatuses(user, uuid);
         case REMOVE_ALL -> removeStatuses(user, uuid);
         case REMOVE -> removeStatus(user, uuid, args);
-        case SET -> readSetStatus(user, uuid, args);
+        case ADD -> readAddStatus(user, uuid, args);
       }
     } else {
       String[] radiusParameters = args[1].split(",");
@@ -190,9 +190,9 @@ public class StatusCommand implements CommandExecutor {
             removeStatus(user, uuid, args);
           }
         }
-        case SET -> {
+        case ADD -> {
           for (UUID uuid : targets) {
-            readSetStatus(user, uuid, args);
+            readAddStatus(user, uuid, args);
           }
         }
       }
@@ -206,13 +206,12 @@ public class StatusCommand implements CommandExecutor {
    * @param uuid entity uuid
    */
   private void getStatuses(Player user, UUID uuid) {
-    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    if (entityStatuses.get(uuid) == null) {
-      user.sendMessage(ChatColor.RED + "[No Statuses Found] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName());
+    Map<StatusType, Status> statusTypes = Plugin.getData().getRpgSystem().getStatuses().get(uuid);
+    if (statusTypes == null) {
+      user.sendMessage(ChatColor.RED + "[No Statuses] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName());
       return;
     }
 
-    Map<StatusType, Status> statusTypes = entityStatuses.get(uuid);
     StringBuilder statusesBuilder = new StringBuilder();
     statusesBuilder.append(ChatColor.GREEN).append("[Get Statuses] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
     for (StatusType statusType : statusTypes.keySet()) {
@@ -260,8 +259,8 @@ public class StatusCommand implements CommandExecutor {
     }
 
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    if (entityStatuses.get(uuid) != null) {
-      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+    Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+    if (statuses != null) {
       statuses.remove(statusType);
       if (statuses.isEmpty()) {
         entityStatuses.remove(uuid);
@@ -271,14 +270,14 @@ public class StatusCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the SetStatus request was formatted correctly
-   * before setting a {@link Status status} on the entity.
+   * Checks if the AddStatus request was formatted correctly
+   * before adding a {@link Status status} on the entity.
    *
    * @param user user
    * @param uuid entity uuid
    * @param args user provided parameters
    */
-  private void readSetStatus(Player user, UUID uuid, String[] args) {
+  private void readAddStatus(Player user, UUID uuid, String[] args) {
     StatusType statusType;
     try {
       statusType = StatusType.valueOf(TextFormatter.formatEnum(args[2]));
@@ -300,11 +299,11 @@ public class StatusCommand implements CommandExecutor {
       user.sendMessage(Message.INVALID_DURATION.getMessage());
       return;
     }
-    setStatus(user, uuid, statusType, stacks, duration);
+    addStatus(user, uuid, statusType, stacks, duration);
   }
 
   /**
-   * Sets a {@link Status status} on the entity.
+   * Adds a {@link Status status} on the entity.
    *
    * @param user   user
    * @param uuid   entity uuid
@@ -312,7 +311,7 @@ public class StatusCommand implements CommandExecutor {
    * @param stacks number of stacks to apply
    * @param ticks  duration
    */
-  private void setStatus(Player user, UUID uuid, StatusType status, int stacks, int ticks) {
+  private void addStatus(Player user, UUID uuid, StatusType status, int stacks, int ticks) {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     if (!entityStatuses.containsKey(uuid)) {
       entityStatuses.put(uuid, new HashMap<>());
@@ -336,9 +335,9 @@ public class StatusCommand implements CommandExecutor {
     GET,
 
     /**
-     * Sets a {@link Status status} on the entity.
+     * Adds a {@link Status status} on the entity.
      */
-    SET,
+    ADD,
 
     /**
      * Removes a {@link Status status} from the entity.

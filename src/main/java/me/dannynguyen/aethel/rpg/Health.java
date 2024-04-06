@@ -21,7 +21,7 @@ import java.util.UUID;
  * Represents an {@link RpgPlayer}'s health.
  *
  * @author Danny Nguyen
- * @version 1.21.2
+ * @version 1.21.5
  * @since 1.13.4
  */
 public class Health {
@@ -92,7 +92,7 @@ public class Health {
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
     double maxHealthBuff = 0.0;
     if (buffs != null) {
-      maxHealthBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.MAX_HEALTH, 0.0);
+      maxHealthBuff = buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);
     }
     double maxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + maxHealthBuff;
     setMaxHealth(maxHealth);

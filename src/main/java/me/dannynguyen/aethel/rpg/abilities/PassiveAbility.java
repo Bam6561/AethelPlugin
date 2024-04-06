@@ -13,7 +13,6 @@ import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.3
+ * @version 1.21.5
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -128,7 +127,7 @@ public class PassiveAbility {
     Buffs buffs = rpgPlayer.getBuffs();
     double cooldownModifierBuff = 0.0;
     if (buffs != null) {
-      cooldownModifierBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.ITEM_COOLDOWN, 0.0);
+      cooldownModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
     }
     double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + cooldownModifierBuff) / 100;
     switch (type.getEffect()) {
@@ -146,66 +145,27 @@ public class PassiveAbility {
    * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#BUFF}
    */
   private void applyBuff(double cooldownModifier, UUID targetUUID) {
-    if (!(Bukkit.getEntity(targetUUID) instanceof LivingEntity livingEntity)) {
+    if (!(Bukkit.getEntity(targetUUID) instanceof LivingEntity)) {
       return;
     }
 
     Map<UUID, Buffs> entityBuffs = Plugin.getData().getRpgSystem().getBuffs();
     if (entityBuffs.get(targetUUID) == null) {
-      entityBuffs.put(targetUUID, new Buffs());
+      entityBuffs.put(targetUUID, new Buffs(targetUUID));
     }
     Buffs buffs = entityBuffs.get(targetUUID);
     double value = Double.parseDouble(effectData.get(2));
     int duration = Integer.parseInt(effectData.get(3));
 
-    Attribute attribute = null;
-    AethelAttribute aethelAttribute = null;
     try {
-      attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
+      Attribute attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
+      buffs.addAttributeBuff(attribute, value, duration);
     } catch (IllegalArgumentException ex) {
       try {
-        aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
+        AethelAttribute aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
+        buffs.addAethelAttributeBuff(aethelAttribute, value, duration);
       } catch (IllegalArgumentException ignored) {
       }
-    }
-
-    Map<Attribute, Double> attributes = buffs.getAttributes();
-    Map<AethelAttribute, Double> aethelAttributes = buffs.getAethelAttributes();
-
-    if (attribute != null) {
-      AttributeInstance entityAttribute = livingEntity.getAttribute(attribute);
-      if (entityAttribute == null) {
-        return;
-      }
-      entityAttribute.setBaseValue(entityAttribute.getBaseValue() + value);
-      attributes.put(attribute, attributes.getOrDefault(attribute,0.0) + value);
-
-      Attribute finalAttribute = attribute;
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
-        attributes.put(finalAttribute, attributes.get(finalAttribute) - value);
-
-        if (attributes.get(finalAttribute) == 0.0) {
-          attributes.remove(finalAttribute);
-          if (attributes.isEmpty() && aethelAttributes.isEmpty()) {
-            entityBuffs.remove(targetUUID);
-          }
-        }
-      }, duration);
-    } else {
-      aethelAttributes.put(aethelAttribute, aethelAttributes.getOrDefault(aethelAttribute, 0.0) + Double.parseDouble(effectData.get(2)));
-
-      AethelAttribute finalAethelAttribute = aethelAttribute;
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        aethelAttributes.put(finalAethelAttribute, aethelAttributes.get(finalAethelAttribute) - value);
-
-        if (aethelAttributes.get(finalAethelAttribute) == 0.0) {
-          aethelAttributes.remove(finalAethelAttribute);
-          if (aethelAttributes.isEmpty() && attributes.isEmpty()) {
-            entityBuffs.remove(targetUUID);
-          }
-        }
-      }, duration);
     }
 
     int cooldown = Integer.parseInt(conditionData.get(1));
@@ -240,7 +200,7 @@ public class PassiveAbility {
       Buffs buffs = rpgPlayer.getBuffs();
       double tenacityBuff = 0.0;
       if (buffs != null) {
-        tenacityBuff = buffs.getAethelAttributes().getOrDefault(AethelAttribute.TENACITY, 0.0);
+        tenacityBuff = buffs.getAethelAttributeBuff(AethelAttribute.TENACITY);
       }
       ticks = (int) Math.max(1, ticks - (ticks * (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY) + tenacityBuff) / 100));
     }
