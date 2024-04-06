@@ -9,10 +9,7 @@ import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.DamageMitigation;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.Status;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -28,7 +25,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.21.6
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -172,17 +169,24 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void clearStatus(double cooldownModifier, Player caster) {
+    World world = caster.getWorld();
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     UUID uuid = caster.getUniqueId();
-    if (entityStatuses.containsKey(uuid)) {
-      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-      switch (type) {
-        case DISMISS -> {
+    Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+    switch (type) {
+      case DISMISS -> {
+        world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 1.5f);
+        world.spawnParticle(Particle.SCRAPE, caster.getLocation().add(0, 1, 0), 10, 0.75, 0.75, 0.75);
+        if (statuses != null) {
           for (StatusType type : StatusType.Type.NON_DAMAGE.getStatusTypes()) {
             statuses.remove(type);
           }
         }
-        case DISREGARD -> {
+      }
+      case DISREGARD -> {
+        world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 2);
+        world.spawnParticle(Particle.EGG_CRACK, caster.getLocation().add(0, 1, 0), 10, 0.75, 0.75, 0.75);
+        if (statuses != null) {
           for (StatusType type : StatusType.Type.DAMAGE.getStatusTypes()) {
             statuses.remove(type);
           }
@@ -203,6 +207,7 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void dealDistanceDamage(double cooldownModifier, Player caster) {
+    World world = caster.getWorld();
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
     Buffs buffs = rpgPlayer.getBuffs();
     double damageModifierBuff = 0.0;
@@ -216,6 +221,8 @@ public class ActiveAbility {
 
     switch (type) {
       case EXPLODE -> {
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 1, 0.5f);
+        world.spawnParticle(Particle.EXPLOSION_LARGE, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
         for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
             targets.add(livingEntity);
@@ -235,9 +242,10 @@ public class ActiveAbility {
       case FORCE_WAVE -> {
         Vector casterDirection = caster.getEyeLocation().getDirection();
         getForceWaveTargets(targets, caster.getLocation(), casterDirection, distance);
-        targets.remove(caster);
       }
       case QUAKE -> {
+        world.playSound(caster.getEyeLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.25f, 2);
+        world.spawnParticle(Particle.BLOCK_DUST, caster.getLocation(), 20, 1.5, 0.25, 1.5, Bukkit.createBlockData(Material.DIRT));
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
             targets.add(livingEntity);
@@ -245,6 +253,7 @@ public class ActiveAbility {
         }
       }
     }
+    targets.remove(caster);
 
     for (LivingEntity livingEntity : targets) {
       if (livingEntity instanceof Player player) {
@@ -272,14 +281,27 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void moveDistance(double cooldownModifier, Player caster) {
+    World world = caster.getWorld();
     Vector vector = new Vector();
     double multiplier = 0.325 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 3.25;
     switch (type) {
       case DASH -> {
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITHER_SHOOT, SoundCategory.PLAYERS, 0.25f, 0.5f);
         vector = caster.getLocation().getDirection().multiply(multiplier);
         vector.setY(0.2);
+        world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+          world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+            world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
+          }, 5);
+        }, 5);
       }
-      case LEAP -> vector = caster.getLocation().getDirection().multiply(multiplier);
+      case LEAP -> {
+        world.playSound(caster.getLocation(), Sound.ENTITY_SLIME_JUMP, SoundCategory.PLAYERS, 1, 0);
+        world.spawnParticle(Particle.SLIME, caster.getLocation(), 15, 0.75, 0.25, 0.75);
+        vector = caster.getLocation().getDirection().multiply(multiplier);
+      }
       case SPRING -> {
         vector.setX(0);
         vector.setY(1);
@@ -327,10 +349,19 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void projectDistance(double cooldownModifier, Player caster) {
+    World world = caster.getWorld();
     final Location castOrigin = caster.getLocation().clone();
     Location origin = caster.getLocation();
+    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
     caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> caster.teleport(castOrigin), Integer.parseInt(effectData.get(1)));
+    world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
+    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
+      caster.teleport(castOrigin);
+      world.playSound(caster.getEyeLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, SoundCategory.PLAYERS, 0.5f, 0.75f);
+      world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
+    }, Integer.parseInt(effectData.get(1)));
     if (baseCooldown > 0) {
       setOnCooldown(true);
       int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -383,8 +414,12 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void teleportDistance(double cooldownModifier, Player caster) {
+    World world = caster.getWorld();
     Location origin = caster.getLocation();
+    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
     caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
+    world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
+    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
     if (baseCooldown > 0) {
       setOnCooldown(true);
       int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
