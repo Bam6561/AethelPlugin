@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.8.1
+ * @version 1.21.9
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -173,11 +173,20 @@ public class ActiveAbility {
     World world = caster.getWorld();
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     UUID uuid = caster.getUniqueId();
+    Collection<PotionEffect> activePotionEffects = caster.getActivePotionEffects();
+    List<PotionEffectType> potionEffectsToRemove = new ArrayList<>();
     Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+
     switch (type) {
       case DISMISS -> {
         world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 1.5f);
         world.spawnParticle(Particle.SCRAPE, caster.getLocation().add(0, 1, 0), 10, 0.75, 0.75, 0.75);
+        for (PotionEffect potionEffect : activePotionEffects) {
+          switch (potionEffect.getType().getName()) {
+            case "BAD_OMEN", "BLINDNESS", "CONFUSION", "DARKNESS", "GLOWING", "HUNGER", "LEVITATION",
+                "SLOW", "SLOW_DIGGING", "UNLUCK", "WEAKNESS" -> potionEffectsToRemove.add(potionEffect.getType());
+          }
+        }
         if (statuses != null) {
           for (StatusType type : StatusType.Type.NON_DAMAGE.getStatusTypes()) {
             statuses.remove(type);
@@ -187,6 +196,11 @@ public class ActiveAbility {
       case DISREGARD -> {
         world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 2);
         world.spawnParticle(Particle.EGG_CRACK, caster.getLocation().add(0, 1, 0), 10, 0.75, 0.75, 0.75);
+        for (PotionEffect potionEffect : activePotionEffects) {
+          switch (potionEffect.getType().getName()) {
+            case "HARM", "POISON", "WITHER" -> potionEffectsToRemove.add(potionEffect.getType());
+          }
+        }
         if (statuses != null) {
           for (StatusType type : StatusType.Type.DAMAGE.getStatusTypes()) {
             statuses.remove(type);
@@ -194,6 +208,10 @@ public class ActiveAbility {
         }
       }
     }
+    for (PotionEffectType potionEffectType : potionEffectsToRemove) {
+      caster.removePotionEffect(potionEffectType);
+    }
+
     if (baseCooldown > 0) {
       setOnCooldown(true);
       int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -222,7 +240,7 @@ public class ActiveAbility {
 
     switch (type) {
       case EXPLODE -> {
-        world.playSound(caster.getEyeLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 1, 0.5f);
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
         world.spawnParticle(Particle.EXPLOSION_LARGE, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
         for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
@@ -231,7 +249,7 @@ public class ActiveAbility {
         }
       }
       case FORCE_SWEEP -> {
-        world.playSound(caster.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.75f, 0);
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.65f, 0);
         Vector casterDirection = caster.getLocation().getDirection();
         world.spawnParticle(Particle.SWEEP_ATTACK, caster.getLocation().add(0, 1, 0).add(casterDirection.setY(0).multiply(1.5)), 3, 0.125, 0.125, 0.125);
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
@@ -243,7 +261,7 @@ public class ActiveAbility {
         }
       }
       case FORCE_WAVE -> {
-        world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.75f, 0);
+        world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.65f, 0);
         Vector casterDirection = caster.getLocation().getDirection();
         getForceWaveTargets(world, targets, caster.getEyeLocation(), casterDirection, distance);
       }
@@ -315,7 +333,7 @@ public class ActiveAbility {
         vector = vector.multiply(multiplier);
       }
       case WITHDRAW -> {
-        world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITCH_THROW, SoundCategory.PLAYERS, 1, 0.5f);
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITCH_THROW, SoundCategory.PLAYERS, 0.65f, 0.5f);
         world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 10, 0.125, 0.125, 0.125, 0.025);
         vector = caster.getLocation().getDirection().multiply(-multiplier);
         caster.setVelocity(vector.setY(0.2));
