@@ -14,6 +14,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -25,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.6
+ * @version 1.21.7
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -230,7 +231,9 @@ public class ActiveAbility {
         }
       }
       case FORCE_SWEEP -> {
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.75f, 0);
         Vector casterDirection = caster.getLocation().getDirection();
+        world.spawnParticle(Particle.SWEEP_ATTACK, caster.getLocation().add(0, 1, 0).add(casterDirection.setY(0).multiply(1.5)), 3, 0.125, 0.125, 0.125);
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
             if (getLivingEntityDirectionAngle(caster.getLocation(), casterDirection, livingEntity) <= 45) {
@@ -240,8 +243,9 @@ public class ActiveAbility {
         }
       }
       case FORCE_WAVE -> {
-        Vector casterDirection = caster.getEyeLocation().getDirection();
-        getForceWaveTargets(targets, caster.getLocation(), casterDirection, distance);
+        world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.75f, 0);
+        Vector casterDirection = caster.getLocation().getDirection();
+        getForceWaveTargets(world, targets, caster.getEyeLocation(), casterDirection, distance);
       }
       case QUAKE -> {
         world.playSound(caster.getEyeLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.25f, 2);
@@ -303,12 +307,16 @@ public class ActiveAbility {
         vector = caster.getLocation().getDirection().multiply(multiplier);
       }
       case SPRING -> {
+        world.playSound(caster.getEyeLocation(), Sound.BLOCK_WET_SPONGE_BREAK, SoundCategory.PLAYERS, 1, 0);
+        world.spawnParticle(Particle.SLIME, caster.getLocation(), 15, 0.5, 0.25, 0.25);
         vector.setX(0);
         vector.setY(1);
         vector.setZ(0);
         vector = vector.multiply(multiplier);
       }
       case WITHDRAW -> {
+        world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITCH_THROW, SoundCategory.PLAYERS, 1, 0.5f);
+        world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 10, 0.125, 0.125, 0.125, 0.025);
         vector = caster.getLocation().getDirection().multiply(-multiplier);
         caster.setVelocity(vector.setY(0.2));
       }
@@ -377,13 +385,16 @@ public class ActiveAbility {
    * @param caster           ability caster
    */
   private void shatterBrittle(double cooldownModifier, Player caster) {
+    World world = caster.getWorld();
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     double meters = Double.parseDouble(effectData.get(0));
 
+    world.playSound(caster.getEyeLocation(), Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 0.5f, 0.25f);
     for (Entity entity : caster.getNearbyEntities(meters, meters, meters)) {
       if (entity instanceof LivingEntity livingEntity) {
         UUID livingEntityUUID = livingEntity.getUniqueId();
         if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.BRITTLE)) {
+          world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
           Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
           if (livingEntity instanceof Player player) {
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
@@ -452,17 +463,19 @@ public class ActiveAbility {
   /**
    * Recursively finds forcewave-affected targets.
    *
+   * @param world           world
    * @param targets         set of affected targets
    * @param origin          origin location
    * @param casterDirection caster's direction
    * @param meters          distance
    * @return set of forcewave-affected targets
    */
-  private Set<LivingEntity> getForceWaveTargets(Set<LivingEntity> targets, Location origin, Vector casterDirection, double meters) {
+  private Set<LivingEntity> getForceWaveTargets(World world, Set<LivingEntity> targets, Location origin, Vector casterDirection, double meters) {
     if (meters < 1.5) {
       return targets;
     }
     if (meters >= 1.5) {
+      world.spawnParticle(Particle.CLOUD, origin, 3, 0.125, 0.125, 0.125, 0.025);
       origin = origin.add(casterDirection.multiply(1.5)).clone();
       meters -= 1.5;
       for (Entity entity : origin.getWorld().getNearbyEntities(origin, 1.5, 1.5, 1.5)) {
@@ -471,7 +484,7 @@ public class ActiveAbility {
         }
       }
     }
-    return getForceWaveTargets(targets, origin, casterDirection, meters);
+    return getForceWaveTargets(world, targets, origin, casterDirection, meters);
   }
 
   /**

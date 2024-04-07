@@ -14,8 +14,7 @@ import me.dannynguyen.aethel.listeners.*;
 import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -37,7 +36,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.21.7
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -139,7 +138,7 @@ public class Plugin extends JavaPlugin {
    * Schedules the plugin's repeating tasks.
    * <ul>
    *  <li>{@link #updateMainHandEquipment()}
-   *  <li>{@link #updateDamageOverTimeStatuses()}
+   *  <li>{@link #updateStatusEffects()}
    *  <li>{@link #updateOvershields()}
    *  <li>{@link #triggerBelowHealthPassives()}
    *  <li>{@link #updateActionDisplay()}
@@ -149,7 +148,7 @@ public class Plugin extends JavaPlugin {
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
     scheduler.scheduleSyncRepeatingTask(this, this::updateMainHandEquipment, 0, 10);
-    scheduler.scheduleSyncRepeatingTask(this, this::updateDamageOverTimeStatuses, 0, 20);
+    scheduler.scheduleSyncRepeatingTask(this, this::updateStatusEffects, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateOvershields, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::triggerBelowHealthPassives, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, this::updateActionDisplay, 0, 40);
@@ -175,20 +174,21 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Adds an interval to calculate damage taken from damage over time {@link Status statuses}.
+   * Adds an interval to spawn particles and calculate damage
+   * taken from damage over time {@link Status statuses}.
    */
-  private void updateDamageOverTimeStatuses() {
+  private void updateStatusEffects() {
     Map<UUID, Map<StatusType, Status>> entityStatuses = data.getRpgSystem().getStatuses();
     for (UUID uuid : entityStatuses.keySet()) {
       Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE)) {
+      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED)) {
         if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
           if (entity instanceof Player player) {
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
-              dealPlayerDamageOverTime(uuid, statuses, player);
+              processPlayerStatuses(uuid, statuses, player);
             }
           } else {
-            dealEntityDamageOverTime(statuses, entity);
+            processEntityStatuses(statuses, entity);
           }
         }
       }
@@ -281,21 +281,28 @@ public class Plugin extends JavaPlugin {
    * @param statuses {@link Status statuses}
    * @param damagee  player taking damage
    */
-  private void dealPlayerDamageOverTime(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
+  private void processPlayerStatuses(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
+    World world = damagee.getWorld();
+    Location location = damagee.getLocation().add(0, 1, 0);
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
     DamageMitigation mitigation = new DamageMitigation(damagee);
     if (statuses.containsKey(StatusType.BLEED)) {
+      world.spawnParticle(Particle.BLOCK_DUST, location, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
       double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
       damagee.damage(0.1);
       rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+      world.spawnParticle(Particle.WAX_OFF, location, 3, 0.25, 0.5, 0.25);
       double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       damagee.damage(0.1);
       rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
       if (rpgPlayer.getHealth().getCurrentHealth() < 0) {
         propagateElectrocuteStacks(damagee, rpgPlayer.getHealth().getCurrentHealth());
       }
+    }
+    if (statuses.containsKey(StatusType.SOAKED)) {
+      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, location, 3, 0.25, 0.5, 0.25);
     }
   }
 
@@ -305,12 +312,16 @@ public class Plugin extends JavaPlugin {
    * @param statuses {@link Status statuses}
    * @param entity   entity taking damage
    */
-  private void dealEntityDamageOverTime(Map<StatusType, Status> statuses, LivingEntity entity) {
+  private void processEntityStatuses(Map<StatusType, Status> statuses, LivingEntity entity) {
+    World world = entity.getWorld();
+    Location location = entity.getLocation().add(0, 1, 0);
     if (statuses.containsKey(StatusType.BLEED)) {
+      world.spawnParticle(Particle.BLOCK_DUST, location, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
       entity.damage(0.1);
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+      world.spawnParticle(Particle.WAX_OFF, location, 3, 0.25, 0.5, 0.25);
       double remainingHealth = entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       entity.damage(0.1);
       if (remainingHealth > 0) {
@@ -319,6 +330,9 @@ public class Plugin extends JavaPlugin {
         entity.setHealth(0);
         propagateElectrocuteStacks(entity, remainingHealth);
       }
+    }
+    if (statuses.containsKey(StatusType.SOAKED)) {
+      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, location, 3, 0.25, 0.5, 0.25);
     }
   }
 
