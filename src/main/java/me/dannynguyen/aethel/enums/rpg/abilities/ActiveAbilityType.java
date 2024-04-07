@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.21.3
+ * @version 1.21.8
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -59,6 +59,18 @@ public enum ActiveAbilityType {
   EXPLODE("Explode", "explode", Effect.DISTANCE_DAMAGE),
 
   /**
+   * Forward facing triangular arc shaped attack.
+   */
+  FORCE_SWEEP("Force Sweep", "force_sweep", Effect.DISTANCE_DAMAGE),
+
+  /**
+   * Forward facing line shaped attack.
+   * <p>
+   * Omnidirectional.
+   */
+  FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
+
+  /**
    * Forward facing angular movement.
    * <p>
    * Omnidirectional.
@@ -97,18 +109,6 @@ public enum ActiveAbilityType {
    * Upwards facing movement.
    */
   SPRING("Spring", "spring", Effect.MOVEMENT),
-
-  /**
-   * Forward facing triangular arc shaped attack.
-   */
-  FORCE_SWEEP("Force Sweep", "force_sweep", Effect.DISTANCE_DAMAGE),
-
-  /**
-   * Forward facing line shaped attack.
-   * <p>
-   * Omnidirectional.
-   */
-  FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
 
   /**
    * Backwards facing movement.

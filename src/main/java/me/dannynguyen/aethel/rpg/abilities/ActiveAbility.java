@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.7
+ * @version 1.21.8
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -263,7 +263,7 @@ public class ActiveAbility {
       if (livingEntity instanceof Player player) {
         if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
           player.damage(0.1);
-          rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
         }
       } else {
         livingEntity.damage(0.1);
@@ -471,14 +471,14 @@ public class ActiveAbility {
    * @return set of forcewave-affected targets
    */
   private Set<LivingEntity> getForceWaveTargets(World world, Set<LivingEntity> targets, Location origin, Vector casterDirection, double meters) {
-    if (meters < 1.5) {
+    if (meters < 1) {
       return targets;
     }
-    if (meters >= 1.5) {
+    if (meters >= 1) {
       world.spawnParticle(Particle.CLOUD, origin, 3, 0.125, 0.125, 0.125, 0.025);
-      origin = origin.add(casterDirection.multiply(1.5)).clone();
-      meters -= 1.5;
-      for (Entity entity : origin.getWorld().getNearbyEntities(origin, 1.5, 1.5, 1.5)) {
+      origin = origin.add(casterDirection.multiply(1)).clone();
+      meters -= 1;
+      for (Entity entity : origin.getWorld().getNearbyEntities(origin, 1.25, 1.25, 1.25)) {
         if (entity instanceof LivingEntity livingEntity) {
           targets.add(livingEntity);
         }
