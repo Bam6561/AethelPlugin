@@ -38,7 +38,7 @@ import java.util.UUID;
  * The self user is included by default, unless "D:!s," is specified.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.21.8.1
  * @since 1.21.5
  */
 public class BuffCommand implements CommandExecutor {
@@ -79,7 +79,7 @@ public class BuffCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args) {
     int numberOfParameters = args.length;
-    String action = "";
+    String action = null;
     if (numberOfParameters > 0) {
       action = args[0].toLowerCase();
     }

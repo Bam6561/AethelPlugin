@@ -66,8 +66,7 @@ public class DeveloperCommand implements CommandExecutor {
   }
 
   /**
-   * {@link PluginPlayer#setIsDeveloper Toggles}
-   * developer mode on or off for the user.
+   * {@link PluginPlayer#setIsDeveloper Toggles} developer mode on or off for the user.
    *
    * @param user user
    */

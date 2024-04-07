@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents a menu that allows the user to edit an item's
- * {@link Key#PASSIVE_LIST passive abilities}.
+ * Represents a menu that allows the user to edit
+ * an item's {@link Key#PASSIVE_LIST passive abilities}.
  *
  * @author Danny Nguyen
  * @version 1.19.10

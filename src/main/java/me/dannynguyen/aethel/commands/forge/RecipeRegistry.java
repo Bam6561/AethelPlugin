@@ -21,8 +21,8 @@ import java.util.*;
 /**
  * Represents {@link Recipe recipes} in memory.
  * <p>
- * After the registry's creation, {@link #loadData() loadData} must
- * be called in order to load {@link Recipe recipes} from its associated directory.
+ * After the registry's creation, {@link #loadData() loadData} must be called
+ * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
  * @version 1.20.2

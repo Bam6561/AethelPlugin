@@ -44,7 +44,8 @@ public class EquipmentEvent implements Listener {
   }
 
   /**
-   * Checks clicks within player inventories to determine whether to update a player's {@link Equipment}.
+   * Checks clicks within player inventories to determine
+   * whether to update a player's {@link Equipment}.
    *
    * @param e inventory click event
    */

@@ -20,8 +20,8 @@ import java.util.*;
 /**
  * Represents items in memory.
  * <p>
- * After the registry's creation, {@link #loadData() loadData} must be called in
- * order to load {@link Item items} from its associated directory.
+ * After the registry's creation, {@link #loadData() loadData} must be
+ * called in order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
  * @version 1.20.2

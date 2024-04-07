@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.8
+ * @version 1.21.8.1
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -261,7 +261,7 @@ public class ActiveAbility {
 
     for (LivingEntity livingEntity : targets) {
       if (livingEntity instanceof Player player) {
-        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
           player.damage(0.1);
           Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
         }
@@ -397,7 +397,7 @@ public class ActiveAbility {
           world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
           Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
           if (livingEntity instanceof Player player) {
-            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
               RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
               double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
               player.damage(0.1);

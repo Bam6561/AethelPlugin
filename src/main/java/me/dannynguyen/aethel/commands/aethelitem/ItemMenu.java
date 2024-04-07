@@ -22,7 +22,7 @@ import java.util.UUID;
  * creating, editing, and removing {@link ItemRegistry.Item items}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.21.8.1
  * @since 1.4.0
  */
 public class ItemMenu implements CategoryMenu {
@@ -65,12 +65,13 @@ public class ItemMenu implements CategoryMenu {
    * @return AethelItem menu
    */
   private Inventory createMenu() {
-    String title = ChatColor.DARK_GRAY + "Aethel Item";
+    StringBuilder title = new StringBuilder(ChatColor.DARK_GRAY + "Aethel Item");
+    String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
     switch (action) {
-      case GET -> title += ChatColor.GREEN + " Get " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
-      case REMOVE -> title += ChatColor.RED + " Remove " + ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+      case GET -> title.append(ChatColor.GREEN).append(" Get ").append(ChatColor.WHITE).append(category);
+      case REMOVE -> title.append(ChatColor.RED).append(" Remove ").append(ChatColor.WHITE).append(category);
     }
-    return Bukkit.createInventory(user, 54, title);
+    return Bukkit.createInventory(user, 54, title.toString());
   }
 
   /**

@@ -28,7 +28,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.20.1
+ * @version 1.21.8.1
  * @since 1.7.0
  */
 public class AttributeMenu implements Menu {
@@ -85,12 +85,12 @@ public class AttributeMenu implements Menu {
    * @return Attribute menu
    */
   private Inventory createMenu() {
-    String actionString = "";
+    String action = null;
     switch (eSlot) {
-      case HEAD, CHEST, LEGS, FEET, HAND -> actionString = TextFormatter.capitalizeWord(eSlot.name());
-      case OFF_HAND -> actionString = "Off Hand";
+      case HEAD, CHEST, LEGS, FEET, HAND -> action = TextFormatter.capitalizeWord(eSlot.name());
+      case OFF_HAND -> action = "Off Hand";
     }
-    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Attributes " + ChatColor.DARK_AQUA + actionString);
+    Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Attributes " + ChatColor.DARK_AQUA + action);
     inv.setItem(1, item);
     return inv;
   }

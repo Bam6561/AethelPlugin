@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.21.8.1
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -237,7 +237,7 @@ public class PassiveAbility {
     for (LivingEntity livingEntity : soakedTargets.keySet()) {
       Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
       if (livingEntity instanceof Player player) {
-        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
           RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
           double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
           player.damage(0.1);

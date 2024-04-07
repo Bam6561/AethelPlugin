@@ -79,6 +79,6 @@ public class QuestsMenu implements Menu {
    * Adds quests.
    */
   private void addQuests() {
-    // TO DO
+    // TODO
   }
 }

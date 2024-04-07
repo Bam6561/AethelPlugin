@@ -79,6 +79,6 @@ public class CollectiblesMenu implements Menu {
    * Adds collectibles.
    */
   private void addCollectibles() {
-    // TO DO
+    // TODO
   }
 }

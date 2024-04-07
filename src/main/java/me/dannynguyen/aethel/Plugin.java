@@ -36,7 +36,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.21.7
+ * @version 1.21.8.1
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -184,7 +184,7 @@ public class Plugin extends JavaPlugin {
       if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED)) {
         if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
           if (entity instanceof Player player) {
-            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
               processPlayerStatuses(uuid, statuses, player);
             }
           } else {
@@ -283,26 +283,26 @@ public class Plugin extends JavaPlugin {
    */
   private void processPlayerStatuses(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
     World world = damagee.getWorld();
-    Location location = damagee.getLocation().add(0, 1, 0);
+    Location bodyLocation = damagee.getLocation().add(0, 1, 0);
     RpgPlayer rpgPlayer = data.getRpgSystem().getRpgPlayers().get(uuid);
     DamageMitigation mitigation = new DamageMitigation(damagee);
+    if (statuses.containsKey(StatusType.SOAKED)) {
+      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
+    }
     if (statuses.containsKey(StatusType.BLEED)) {
-      world.spawnParticle(Particle.BLOCK_DUST, location, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
+      world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
       double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
       damagee.damage(0.1);
       rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
-      world.spawnParticle(Particle.WAX_OFF, location, 3, 0.25, 0.5, 0.25);
+      world.spawnParticle(Particle.WAX_OFF, bodyLocation, 3, 0.25, 0.5, 0.25);
       double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       damagee.damage(0.1);
       rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
       if (rpgPlayer.getHealth().getCurrentHealth() < 0) {
         propagateElectrocuteStacks(damagee, rpgPlayer.getHealth().getCurrentHealth());
       }
-    }
-    if (statuses.containsKey(StatusType.SOAKED)) {
-      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, location, 3, 0.25, 0.5, 0.25);
     }
   }
 
@@ -314,14 +314,17 @@ public class Plugin extends JavaPlugin {
    */
   private void processEntityStatuses(Map<StatusType, Status> statuses, LivingEntity entity) {
     World world = entity.getWorld();
-    Location location = entity.getLocation().add(0, 1, 0);
+    Location bodyLocation = entity.getLocation().add(0, 1, 0);
+    if (statuses.containsKey(StatusType.SOAKED)) {
+      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
+    }
     if (statuses.containsKey(StatusType.BLEED)) {
-      world.spawnParticle(Particle.BLOCK_DUST, location, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
+      world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
       entity.damage(0.1);
       entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));
     }
     if (statuses.containsKey(StatusType.ELECTROCUTE)) {
-      world.spawnParticle(Particle.WAX_OFF, location, 3, 0.25, 0.5, 0.25);
+      world.spawnParticle(Particle.WAX_OFF, bodyLocation, 3, 0.25, 0.5, 0.25);
       double remainingHealth = entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
       entity.damage(0.1);
       if (remainingHealth > 0) {
@@ -330,9 +333,6 @@ public class Plugin extends JavaPlugin {
         entity.setHealth(0);
         propagateElectrocuteStacks(entity, remainingHealth);
       }
-    }
-    if (statuses.containsKey(StatusType.SOAKED)) {
-      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, location, 3, 0.25, 0.5, 0.25);
     }
   }
 
