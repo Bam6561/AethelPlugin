@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s temporary attribute stat changes.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.21.11
  * @since 1.20.9
  */
 public class Buffs {
@@ -64,14 +65,28 @@ public class Buffs {
     if (entityAttribute == null) {
       return;
     }
+    if (attribute == Attribute.GENERIC_ATTACK_SPEED && entityAttribute.getBaseValue() + value <= 0) {
+      return;
+    }
 
     entityAttribute.setBaseValue(entityAttribute.getBaseValue() + value);
     attributes.put(attribute, attributes.getOrDefault(attribute, 0.0) + value);
 
-    int taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
-      attributes.put(attribute, attributes.get(attribute) - value);
-    }, duration).getTaskId();
+    int taskID;
+    if (attribute == Attribute.GENERIC_MAX_HEALTH && Bukkit.getEntity(uuid) instanceof Player) {
+      Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
+      health.updateMaxHealth();
+      taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
+        attributes.put(attribute, attributes.get(attribute) - value);
+        health.updateMaxHealth();
+      }, duration).getTaskId();
+    } else {
+      taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
+        attributes.put(attribute, attributes.get(attribute) - value);
+      }, duration).getTaskId();
+    }
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeAttributeBuffsIfEmpty(taskID, attribute), duration);
     attributeBuffs.add(taskID);
   }
@@ -86,7 +101,17 @@ public class Buffs {
   public void addAethelAttributeBuff(@NotNull AethelAttribute aethelAttribute, double value, int duration) {
     aethelAttributes.put(aethelAttribute, aethelAttributes.getOrDefault(aethelAttribute, 0.0) + value);
 
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value), duration);
+    if (aethelAttribute == AethelAttribute.MAX_HEALTH && Bukkit.getEntity(uuid) instanceof Player) {
+      Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
+      health.updateMaxHealth();
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value);
+        health.updateMaxHealth();
+      }, duration);
+    } else {
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value), duration);
+    }
+
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeAethelAttributeBuffsIfEmpty(aethelAttribute), duration);
   }
 
