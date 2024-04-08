@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.8.1
+ * @version 1.21.10
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -307,26 +307,6 @@ public class PassiveAbility {
     for (LivingEntity livingEntity : newSoakedTargets) {
       getSoakedTargets(entityStatuses, soakedTargets, livingEntity.getUniqueId(), meters);
     }
-  }
-
-  /**
-   * Gets the {@link RpgEquipmentSlot}.
-   *
-   * @return {@link RpgEquipmentSlot}
-   */
-  @NotNull
-  public RpgEquipmentSlot getSlot() {
-    return this.eSlot;
-  }
-
-  /**
-   * Gets the {@link PassiveTriggerType}.
-   *
-   * @return {@link PassiveTriggerType}
-   */
-  @NotNull
-  public PassiveTriggerType getTrigger() {
-    return this.trigger;
   }
 
   /**

@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.9
+ * @version 1.21.10
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -235,7 +235,7 @@ public class ActiveAbility {
     }
     double damageModifier = 1 + (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) + damageModifierBuff) / 100;
     double damage = Double.parseDouble(effectData.get(0)) * damageModifier;
-    double distance = Double.parseDouble(effectData.get(1));
+    int distance = Integer.parseInt(effectData.get(1));
     Set<LivingEntity> targets = new HashSet<>();
 
     switch (type) {
@@ -244,7 +244,9 @@ public class ActiveAbility {
         world.spawnParticle(Particle.EXPLOSION_LARGE, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
         for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
-            targets.add(livingEntity);
+            if (isTargetUnobstructed(caster, livingEntity)) {
+              targets.add(livingEntity);
+            }
           }
         }
       }
@@ -254,7 +256,7 @@ public class ActiveAbility {
         world.spawnParticle(Particle.SWEEP_ATTACK, caster.getLocation().add(0, 1, 0).add(casterDirection.setY(0).multiply(1.5)), 3, 0.125, 0.125, 0.125);
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
-            if (getLivingEntityDirectionAngle(caster.getLocation(), casterDirection, livingEntity) <= 45) {
+            if (getDirectionAngle(caster, livingEntity) <= 45 && isTargetUnobstructed(caster, livingEntity)) {
               targets.add(livingEntity);
             }
           }
@@ -270,7 +272,9 @@ public class ActiveAbility {
         world.spawnParticle(Particle.BLOCK_DUST, caster.getLocation(), 20, 1.5, 0.25, 1.5, Bukkit.createBlockData(Material.DIRT));
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
           if (entity instanceof LivingEntity livingEntity) {
-            targets.add(livingEntity);
+            if (isTargetUnobstructed(caster, livingEntity)) {
+              targets.add(livingEntity);
+            }
           }
         }
       }
@@ -314,9 +318,7 @@ public class ActiveAbility {
         world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
           world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
-          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-            world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
-          }, 5);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025), 5);
         }, 5);
       }
       case LEAP -> {
@@ -376,17 +378,17 @@ public class ActiveAbility {
    */
   private void projectDistance(double cooldownModifier, Player caster) {
     World world = caster.getWorld();
-    final Location castOrigin = caster.getLocation().clone();
-    Location origin = caster.getLocation();
-    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
-    caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
+    final Location abilityLocation = caster.getLocation().clone();
+    Location casterLocation = caster.getLocation();
+    world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+    caster.teleport(ifValidTeleportThroughBlock(casterLocation, casterLocation, casterLocation.getDirection(), Integer.parseInt(effectData.get(0))));
     world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
-    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
+    world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-      world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
-      caster.teleport(castOrigin);
+      world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+      caster.teleport(abilityLocation);
       world.playSound(caster.getEyeLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, SoundCategory.PLAYERS, 0.5f, 0.75f);
-      world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
+      world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
     }, Integer.parseInt(effectData.get(1)));
     if (baseCooldown > 0) {
       setOnCooldown(true);
@@ -444,11 +446,11 @@ public class ActiveAbility {
    */
   private void teleportDistance(double cooldownModifier, Player caster) {
     World world = caster.getWorld();
-    Location origin = caster.getLocation();
-    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
-    caster.teleport(ifValidTeleportThroughBlock(origin, origin.getDirection(), origin, Integer.parseInt(effectData.get(0))));
+    Location casterLocation = caster.getLocation();
+    world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+    caster.teleport(ifValidTeleportThroughBlock(casterLocation, casterLocation, casterLocation.getDirection(), Integer.parseInt(effectData.get(0))));
     world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
-    world.spawnParticle(Particle.PORTAL, origin, 15, 0.5, 0.5, 0.5);
+    world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
     if (baseCooldown > 0) {
       setOnCooldown(true);
       int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -457,14 +459,60 @@ public class ActiveAbility {
   }
 
   /**
-   * Gets a living entity's direction angle from on the location of the caster.
+   * Checks if the target is unobstructed by solid blocks.
+   * <p>
+   * A path is drawn starting from the entity in the direction of
+   * the caster because for long-distance computations, the likelihood
+   * a block exists closer to the entity and obstructs the path is greater.
    *
-   * @param casterLocation  caster's location
-   * @param casterDirection caster's direction
-   * @param livingEntity    living entity
+   * @param caster       ability caster
+   * @param livingEntity living entity
+   * @return if the target is obstructed
+   */
+  private boolean isTargetUnobstructed(Player caster, LivingEntity livingEntity) {
+    // Checks eye-to-eye, covers edge cases where caster is against a wall
+    Location casterEyeLocation = caster.getEyeLocation();
+    Location entityEyeLocation = livingEntity.getEyeLocation();
+    Vector eyeDirection = casterEyeLocation.toVector().subtract(entityEyeLocation.toVector()).normalize();
+    if (casterEyeLocation.add(eyeDirection.multiply(-0.5)).getBlock().getType().isSolid()) {
+      return false;
+    }
+
+    // Checks feet-to-feet
+    Location casterLocation = caster.getLocation();
+    Location entityLocation = livingEntity.getLocation();
+    Vector direction = casterLocation.toVector().subtract(entityLocation.toVector()).normalize();
+    return isUnobstructed(entityLocation, direction, (int) casterLocation.distance(entityLocation));
+  }
+
+  /**
+   * Recursively finds if the path leading from a location is unobstructed by solid blocks.
+   *
+   * @param location  current location
+   * @param direction direction
+   * @param distance  number of meters to check
+   * @return if the path from a location is obstructed by blocks
+   */
+  private boolean isUnobstructed(Location location, Vector direction, int distance) {
+    if (distance <= 0) {
+      return true;
+    }
+    if (location.getBlock().getType().isSolid()) {
+      return false;
+    }
+    return isUnobstructed(location.add(direction), direction, distance - 1);
+  }
+
+  /**
+   * Gets a living entity's direction angle from the location of the caster.
+   *
+   * @param caster       ability caster
+   * @param livingEntity living entity
    * @return living entity's direction angle
    */
-  private double getLivingEntityDirectionAngle(Location casterLocation, Vector casterDirection, LivingEntity livingEntity) {
+  private double getDirectionAngle(Player caster, LivingEntity livingEntity) {
+    Location casterLocation = caster.getLocation();
+    Vector casterDirection = casterLocation.getDirection();
     Vector casterLocationVector = casterLocation.toVector();
     Vector entityDirection = livingEntity.getLocation().toVector().subtract(casterLocationVector);
 
@@ -481,83 +529,44 @@ public class ActiveAbility {
   /**
    * Recursively finds forcewave-affected targets.
    *
-   * @param world           world
-   * @param targets         set of affected targets
-   * @param origin          origin location
-   * @param casterDirection caster's direction
-   * @param meters          distance
+   * @param world     world
+   * @param targets   set of affected targets
+   * @param location  current location
+   * @param direction caster's direction
+   * @param distance  distance in meters to check
    * @return set of forcewave-affected targets
    */
-  private Set<LivingEntity> getForceWaveTargets(World world, Set<LivingEntity> targets, Location origin, Vector casterDirection, double meters) {
-    if (meters < 1) {
+  private Set<LivingEntity> getForceWaveTargets(World world, Set<LivingEntity> targets, Location location, Vector direction, int distance) {
+    if (distance <= 0 || location.getBlock().getType().isSolid()) {
       return targets;
     }
-    if (meters >= 1) {
-      world.spawnParticle(Particle.CLOUD, origin, 3, 0.125, 0.125, 0.125, 0.025);
-      origin = origin.add(casterDirection.multiply(1)).clone();
-      meters -= 1;
-      for (Entity entity : origin.getWorld().getNearbyEntities(origin, 1.25, 1.25, 1.25)) {
-        if (entity instanceof LivingEntity livingEntity) {
-          targets.add(livingEntity);
-        }
+    world.spawnParticle(Particle.CLOUD, location, 2, 0.125, 0.125, 0.125, 0.025);
+    for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+      if (entity instanceof LivingEntity livingEntity) {
+        targets.add(livingEntity);
       }
     }
-    return getForceWaveTargets(world, targets, origin, casterDirection, meters);
+    return getForceWaveTargets(world, targets, location.add(direction).clone(), direction, distance - 1);
   }
 
   /**
    * Gets if the teleport action can proceed through the next block.
    *
-   * @param origin   origin location
-   * @param vector   direction
-   * @param location current location
-   * @param distance number of meters to check
+   * @param validTeleportLocation valid teleport location
+   * @param location              current location
+   * @param direction             caster's direction
+   * @param distance              number of meters to check
    * @return the furthest valid teleport location
    */
-  private Location ifValidTeleportThroughBlock(Location origin, Vector vector, Location location, int distance) {
-    if (distance < 0) {
-      return origin;
-    }
+  private Location ifValidTeleportThroughBlock(Location validTeleportLocation, Location location, Vector direction, int distance) {
     Material blockType = location.getBlock().getType();
-    if (blockType == Material.BEDROCK || blockType == Material.BARRIER) {
-      return origin;
+    if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
+      return validTeleportLocation;
     }
-    distance -= 1;
     if (!blockType.isSolid()) {
-      origin = location.clone();
+      validTeleportLocation = location.clone();
     }
-    return ifValidTeleportThroughBlock(origin, vector, location.add(vector), distance);
-  }
-
-  /**
-   * Gets the {@link RpgEquipmentSlot}.
-   *
-   * @return {@link RpgEquipmentSlot}
-   */
-  @NotNull
-  public RpgEquipmentSlot getSlot() {
-    return eSlot;
-  }
-
-
-  /**
-   * Gets the {@link ActiveAbilityType}.
-   *
-   * @return {@link ActiveAbilityType}
-   */
-  @NotNull
-  public ActiveAbilityType getType() {
-    return type;
-  }
-
-  /**
-   * Gets the {@link ActiveAbilityType.Effect} data.
-   *
-   * @return {@link ActiveAbilityType.Effect} data
-   */
-  @NotNull
-  public List<String> getEffectData() {
-    return effectData;
+    return ifValidTeleportThroughBlock(validTeleportLocation, location.add(direction), direction, distance - 1);
   }
 
   /**

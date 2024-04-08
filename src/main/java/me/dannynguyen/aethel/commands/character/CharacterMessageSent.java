@@ -75,7 +75,7 @@ public class CharacterMessageSent {
         return;
       }
       if (0 < hotbarSlot && hotbarSlot < 10) {
-        hotbarBuilder.append(hotbarSlot + " ");
+        hotbarBuilder.append(hotbarSlot).append(" ");
         hotbarSet.add(hotbarSlot - 1);
       }
     }

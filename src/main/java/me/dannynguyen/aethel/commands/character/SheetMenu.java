@@ -268,7 +268,7 @@ public class SheetMenu implements Menu {
    * @param df2              0.00 decimal format
    */
   private void addDefenseAttributes(Map<AethelAttribute, Double> aethelAttributes, Buffs buffs, DecimalFormat df2) {
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);;
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
     Map<Enchantment, Integer> enchantments = rpgPlayer.getEnchantments().getTotalEnchantments();
 
     double maxHealthBuff = buffs.getAttributeBuff(Attribute.GENERIC_MAX_HEALTH) + buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);

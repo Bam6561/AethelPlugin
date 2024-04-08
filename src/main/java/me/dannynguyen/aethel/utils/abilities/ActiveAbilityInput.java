@@ -14,7 +14,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.10
+ * @version 1.21.10
  * @since 1.20.5
  */
 public class ActiveAbilityInput {
@@ -134,9 +134,9 @@ public class ActiveAbilityInput {
       user.sendMessage(Message.INVALID_DAMAGE.getMessage());
       return null;
     }
-    double distance;
+    int distance;
     try {
-      distance = Double.parseDouble(args[2]);
+      distance = Integer.parseInt(args[2]);
       if (distance < 0 || 64 < distance) {
         user.sendMessage(Message.INVALID_DISTANCE.getMessage());
         return null;
