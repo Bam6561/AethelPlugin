@@ -19,11 +19,11 @@ import java.util.Set;
  * @version 1.21.8
  * @since 1.17.3
  */
-public class ActionEvent implements Listener {
+public class ActionListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public ActionEvent() {
+  public ActionListener() {
   }
 
   /**

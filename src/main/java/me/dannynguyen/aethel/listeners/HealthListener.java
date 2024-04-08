@@ -35,7 +35,7 @@ import java.util.UUID;
  * @version 1.21.5
  * @since 1.9.4
  */
-public class HealthEvent implements Listener {
+public class HealthListener implements Listener {
   /**
    * Ignored damage causes.
    */
@@ -44,7 +44,7 @@ public class HealthEvent implements Listener {
   /**
    * No parameter constructor.
    */
-  public HealthEvent() {
+  public HealthListener() {
   }
 
   /**

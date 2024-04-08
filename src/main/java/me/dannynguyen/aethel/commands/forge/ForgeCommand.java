@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -106,10 +106,10 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openCrafting(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setMode(MenuEvent.Mode.RECIPE_DETAILS_MENU_CRAFT);
+    pluginPlayer.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_CRAFT);
     pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
-    pluginPlayer.setMenu(MenuEvent.Menu.FORGE_CATEGORY);
+    pluginPlayer.setMenu(MenuListener.Menu.FORGE_CATEGORY);
     pluginPlayer.setPage(0);
   }
 
@@ -120,10 +120,10 @@ public class ForgeCommand implements CommandExecutor {
    */
   private void openEditor(Player user) {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setMode(MenuEvent.Mode.RECIPE_DETAILS_MENU_EDIT);
+    pluginPlayer.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT);
     pluginPlayer.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-    pluginPlayer.setMenu(MenuEvent.Menu.FORGE_CATEGORY);
+    pluginPlayer.setMenu(MenuListener.Menu.FORGE_CATEGORY);
     pluginPlayer.setPage(0);
   }
 }

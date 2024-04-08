@@ -30,11 +30,11 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.19.10
  * @since 1.0.2
  */
-public class MenuEvent implements Listener {
+public class MenuListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public MenuEvent() {
+  public MenuListener() {
   }
 
   /**

@@ -7,7 +7,7 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
-import me.dannynguyen.aethel.listeners.EquipmentEvent;
+import me.dannynguyen.aethel.listeners.EquipmentListener;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class Abilities {
   /**
-   * Used to remove abilities upon {@link EquipmentEvent}.
+   * Used to remove abilities upon {@link EquipmentListener}.
    */
   private final Map<RpgEquipmentSlot, List<TriggerPassive>> slotPassives = new HashMap<>();
 
@@ -305,7 +305,7 @@ public class Abilities {
   /**
    * Represents a {@link PassiveTriggerType} {@link PassiveAbilityType} pair.
    * <p>
-   * Used to remove abilities upon {@link EquipmentEvent}.
+   * Used to remove abilities upon {@link EquipmentListener}.
    *
    * @param trigger {@link PassiveTriggerType}
    * @param ability {@link PassiveAbilityType}

@@ -29,11 +29,11 @@ import java.util.UUID;
  * @version 1.20.11
  * @since 1.10.6
  */
-public class RpgEvent implements Listener {
+public class RpgListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public RpgEvent() {
+  public RpgListener() {
   }
 
   /**

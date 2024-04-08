@@ -82,26 +82,26 @@ public class Plugin extends JavaPlugin {
   /**
    * Registers the plugin's event listeners.
    * <ul>
-   *  <li>{@link ActionEvent}
-   *  <li>{@link MenuEvent}
-   *  <li>{@link MessageEvent}
-   *  <li>{@link PluginEvent}
-   *  <li>{@link HealthEvent}
-   *  <li>{@link EquipmentEvent}
-   *  <li>{@link RpgEvent}
-   *  <li>{@link StatusEvent}
+   *  <li>{@link ActionListener}
+   *  <li>{@link MenuListener}
+   *  <li>{@link MessageListener}
+   *  <li>{@link PluginListener}
+   *  <li>{@link HealthListener}
+   *  <li>{@link EquipmentListener}
+   *  <li>{@link RpgListener}
+   *  <li>{@link StatusListener}
    * </ul>
    */
   private void registerEventListeners() {
     PluginManager manager = getServer().getPluginManager();
-    manager.registerEvents(new ActionEvent(), this);
-    manager.registerEvents(new MenuEvent(), this);
-    manager.registerEvents(new MessageEvent(), this);
-    manager.registerEvents(new PluginEvent(), this);
-    manager.registerEvents(new HealthEvent(), this);
-    manager.registerEvents(new EquipmentEvent(), this);
-    manager.registerEvents(new RpgEvent(), this);
-    manager.registerEvents(new StatusEvent(), this);
+    manager.registerEvents(new ActionListener(), this);
+    manager.registerEvents(new MenuListener(), this);
+    manager.registerEvents(new MessageListener(), this);
+    manager.registerEvents(new PluginListener(), this);
+    manager.registerEvents(new HealthListener(), this);
+    manager.registerEvents(new EquipmentListener(), this);
+    manager.registerEvents(new RpgListener(), this);
+    manager.registerEvents(new StatusListener(), this);
   }
 
   /**

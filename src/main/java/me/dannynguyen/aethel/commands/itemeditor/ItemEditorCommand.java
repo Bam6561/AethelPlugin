@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -82,6 +82,6 @@ public class ItemEditorCommand implements CommandExecutor {
     UUID uuid = user.getUniqueId();
     Plugin.getData().getEditedItemCache().getEditedItems().put(uuid, item);
     user.openInventory(new CosmeticMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.ITEMEDITOR_COSMETIC);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
   }
 }

@@ -36,11 +36,11 @@ import java.util.Map;
  * @version 1.19.6
  * @since 1.9.0
  */
-public class EquipmentEvent implements Listener {
+public class EquipmentListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public EquipmentEvent() {
+  public EquipmentListener() {
   }
 
   /**

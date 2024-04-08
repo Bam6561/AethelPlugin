@@ -2,8 +2,8 @@ package me.dannynguyen.aethel.plugin;
 
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
-import me.dannynguyen.aethel.listeners.MenuEvent;
-import me.dannynguyen.aethel.listeners.MessageEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.listeners.MessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,17 +23,17 @@ public class PluginPlayer {
    */
   private boolean isDeveloper;
   /**
-   * {@link MessageEvent.Type}
+   * {@link MessageListener.Type}
    */
-  private MessageEvent.Type messageType;
+  private MessageListener.Type messageType;
   /**
-   * {@link MenuEvent.Menu}
+   * {@link MenuListener.Menu}
    */
-  private MenuEvent.Menu menu;
+  private MenuListener.Menu menu;
   /**
-   * {@link MenuEvent.Mode}
+   * {@link MenuListener.Mode}
    */
-  private MenuEvent.Mode mode;
+  private MenuListener.Mode mode;
   /**
    * Menu category.
    */
@@ -84,60 +84,60 @@ public class PluginPlayer {
   }
 
   /**
-   * Gets {@link MessageEvent.Type}.
+   * Gets {@link MessageListener.Type}.
    *
-   * @return {@link MessageEvent.Type}
+   * @return {@link MessageListener.Type}
    */
   @Nullable
-  public MessageEvent.Type getMessageInput() {
+  public MessageListener.Type getMessageInput() {
     return this.messageType;
   }
 
   /**
-   * Sets the {@link MessageEvent.Type}.
+   * Sets the {@link MessageListener.Type}.
    *
-   * @param messageType {@link MessageEvent.Type}
+   * @param messageType {@link MessageListener.Type}
    */
-  public void setMessageInput(@Nullable MessageEvent.Type messageType) {
+  public void setMessageInput(@Nullable MessageListener.Type messageType) {
     this.messageType = messageType;
   }
 
   /**
-   * Gets {@link MenuEvent.Menu menu type}.
+   * Gets {@link MenuListener.Menu menu type}.
    *
-   * @return {@link MenuEvent.Menu menu type}
+   * @return {@link MenuListener.Menu menu type}
    */
   @Nullable
-  public MenuEvent.Menu getMenu() {
+  public MenuListener.Menu getMenu() {
     return this.menu;
   }
 
 
   /**
-   * Sets the {@link MenuEvent.Menu menu type}.
+   * Sets the {@link MenuListener.Menu menu type}.
    *
-   * @param menu {@link MenuEvent.Menu menu type}
+   * @param menu {@link MenuListener.Menu menu type}
    */
-  public void setMenu(@Nullable MenuEvent.Menu menu) {
+  public void setMenu(@Nullable MenuListener.Menu menu) {
     this.menu = menu;
   }
 
   /**
-   * Gets {@link MenuEvent.Mode menu mode}.
+   * Gets {@link MenuListener.Mode menu mode}.
    *
-   * @return {@link MenuEvent.Mode menu mode}
+   * @return {@link MenuListener.Mode menu mode}
    */
   @Nullable
-  public MenuEvent.Mode getMode() {
+  public MenuListener.Mode getMode() {
     return this.mode;
   }
 
   /**
-   * Sets the {@link MenuEvent.Mode menu mode}
+   * Sets the {@link MenuListener.Mode menu mode}
    *
-   * @param mode {@link MenuEvent.Mode menu mode}
+   * @param mode {@link MenuListener.Mode menu mode}
    */
-  public void setMode(@Nullable MenuEvent.Mode mode) {
+  public void setMode(@Nullable MenuListener.Mode mode) {
     this.mode = mode;
   }
 

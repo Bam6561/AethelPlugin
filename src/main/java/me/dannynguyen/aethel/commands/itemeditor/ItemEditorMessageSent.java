@@ -7,8 +7,8 @@ import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
-import me.dannynguyen.aethel.listeners.MenuEvent;
-import me.dannynguyen.aethel.listeners.MessageEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.listeners.MessageListener;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.abilities.ActiveAbilityInput;
@@ -41,7 +41,7 @@ import java.util.UUID;
 /**
  * Message sent listener for ItemEditor text inputs.
  * <p>
- * Called with {@link MessageEvent}.
+ * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
  * @version 1.21.1
@@ -536,7 +536,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_COSMETIC);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
     });
   }
 
@@ -547,7 +547,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(pluginPlayer.getSlot().name())).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
     });
   }
 
@@ -558,7 +558,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new AethelAttributeMenu(user, pluginPlayer.getSlot()).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
     });
   }
 
@@ -569,7 +569,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_ENCHANTMENT);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
     });
   }
 
@@ -580,7 +580,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_POTION);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
     });
   }
 
@@ -591,7 +591,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_PASSIVE);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
     });
   }
 
@@ -602,7 +602,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new ActiveMenu(user, pluginPlayer.getSlot()).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_ACTIVE);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
     });
   }
 
@@ -613,7 +613,7 @@ public class ItemEditorMessageSent {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new TagMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.ITEMEDITOR_TAG);
+      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
     });
   }
 

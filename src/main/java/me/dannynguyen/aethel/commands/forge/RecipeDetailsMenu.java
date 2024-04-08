@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
@@ -107,16 +107,16 @@ class RecipeDetailsMenu {
       case CRAFT -> {
         addRecipeContents();
         user.openInventory(menu);
-        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_CRAFT_RECIPE);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.FORGE_CRAFT_RECIPE);
       }
       case EDIT -> {
         addRecipeContents();
         user.openInventory(menu);
-        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.FORGE_SAVE);
       }
       case SAVE -> {
         user.openInventory(menu);
-        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuEvent.Menu.FORGE_SAVE);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.FORGE_SAVE);
       }
     }
   }

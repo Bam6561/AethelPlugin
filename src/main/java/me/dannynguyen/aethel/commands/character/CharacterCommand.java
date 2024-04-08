@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,7 +85,7 @@ public class CharacterCommand implements CommandExecutor {
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
     pluginPlayer.setTarget(target);
     user.openInventory(new SheetMenu(user, user).getMainMenu());
-    pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SHEET);
+    pluginPlayer.setMenu(MenuListener.Menu.CHARACTER_SHEET);
   }
 
   /**
@@ -101,7 +101,7 @@ public class CharacterCommand implements CommandExecutor {
         PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
         pluginPlayer.setTarget(target);
         user.openInventory(new SheetMenu(user, player).getMainMenu());
-        pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SHEET);
+        pluginPlayer.setMenu(MenuListener.Menu.CHARACTER_SHEET);
         return;
       }
     }

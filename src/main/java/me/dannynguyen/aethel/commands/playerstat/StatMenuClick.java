@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.MenuClick;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemReader;
@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Inventory click event listener for {@link StatCommand} menus.
  * <p>
- * Called with {@link MenuEvent}.
+ * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
  * @version 1.19.4
@@ -67,8 +67,8 @@ public class StatMenuClick implements MenuClick {
       pluginPlayer.setCategory(item);
       user.openInventory(new StatMenu(user, owner).getCategoryPage(item, 0));
       switch (item) {
-        case "Entity Types", "Materials" -> pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_SUBSTAT);
-        default -> pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_STAT);
+        case "Entity Types", "Materials" -> pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+        default -> pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_STAT);
       }
     }
   }
@@ -121,7 +121,7 @@ public class StatMenuClick implements MenuClick {
     int pageRequest = pluginPlayer.getPage();
 
     user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest - 1));
-    pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_SUBSTAT);
+    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
   }
 
   /**
@@ -132,7 +132,7 @@ public class StatMenuClick implements MenuClick {
     String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
 
     user.openInventory(new StatMenu(user, owner).getMainMenu());
-    pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_CATEGORY);
+    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
     pluginPlayer.setPage(0);
   }
 
@@ -146,7 +146,7 @@ public class StatMenuClick implements MenuClick {
     int pageRequest = pluginPlayer.getPage();
 
     user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest + 1));
-    pluginPlayer.setMenu(MenuEvent.Menu.PLAYERSTAT_SUBSTAT);
+    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
   }
 
   /**

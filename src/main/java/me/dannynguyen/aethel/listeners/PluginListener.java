@@ -18,11 +18,11 @@ import java.util.UUID;
  * @version 1.17.19
  * @since 1.10.1
  */
-public class PluginEvent implements Listener {
+public class PluginListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public PluginEvent() {
+  public PluginListener() {
   }
 
   /**

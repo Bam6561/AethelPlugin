@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.character;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.rpg.Settings;
 import org.bukkit.Bukkit;
@@ -70,7 +70,7 @@ public class CharacterMessageSent {
         user.sendMessage(Message.INVALID_VALUE.getMessage());
         Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
           user.openInventory(new SettingsMenu(user).getMainMenu());
-          pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);
+          pluginPlayer.setMenu(MenuListener.Menu.CHARACTER_SETTINGS);
         });
         return;
       }
@@ -83,7 +83,7 @@ public class CharacterMessageSent {
     user.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Binds] " + ChatColor.WHITE + hotbarBuilder.toString().trim());
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new SettingsMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuEvent.Menu.CHARACTER_SETTINGS);
+      pluginPlayer.setMenu(MenuListener.Menu.CHARACTER_SETTINGS);
     });
   }
 }

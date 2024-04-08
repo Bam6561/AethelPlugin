@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.interfaces.MenuClick;
-import me.dannynguyen.aethel.listeners.MenuEvent;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  * Inventory click event listener for {@link ItemCommand} menus.
  * <p>
- * Called with {@link MenuEvent}.
+ * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
  * @version 1.20.2
@@ -143,7 +143,7 @@ public class ItemMenuClick implements MenuClick {
 
     pluginPlayer.setCategory(category);
     user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
-    pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_GET);
+    pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_GET);
   }
 
   /**
@@ -157,7 +157,7 @@ public class ItemMenuClick implements MenuClick {
     int pageRequest = pluginPlayer.getPage();
 
     user.openInventory(new ItemMenu(user, action).getCategoryPage(category, pageRequest - 1));
-    pluginPlayer.setMenu(MenuEvent.Menu.valueOf("AETHELITEM_" + action.name()));
+    pluginPlayer.setMenu(MenuListener.Menu.valueOf("AETHELITEM_" + action.name()));
   }
 
   /**
@@ -173,11 +173,11 @@ public class ItemMenuClick implements MenuClick {
     switch (action) {
       case GET -> {
         user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).getCategoryPage(category, pageRequest));
-        pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_REMOVE);
+        pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_REMOVE);
       }
       case REMOVE -> {
         user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
-        pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_GET);
+        pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_GET);
       }
     }
   }
@@ -188,7 +188,7 @@ public class ItemMenuClick implements MenuClick {
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
     PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setMenu(MenuEvent.Menu.AETHELITEM_CATEGORY);
+    pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
     pluginPlayer.setPage(0);
   }
 
@@ -203,7 +203,7 @@ public class ItemMenuClick implements MenuClick {
     int pageRequest = pluginPlayer.getPage();
 
     user.openInventory(new ItemMenu(user, action).getCategoryPage(category, pageRequest + 1));
-    pluginPlayer.setMenu(MenuEvent.Menu.valueOf("AETHELITEM_" + action.name()));
+    pluginPlayer.setMenu(MenuListener.Menu.valueOf("AETHELITEM_" + action.name()));
   }
 
   /**

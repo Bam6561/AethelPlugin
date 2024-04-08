@@ -13,11 +13,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  * @version 1.16.5
  * @since 1.16.5
  */
-public class StatusEvent implements Listener {
+public class StatusListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public StatusEvent() {
+  public StatusListener() {
   }
 
   /**

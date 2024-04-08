@@ -19,11 +19,11 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.19.0
  * @since 1.6.7
  */
-public class MessageEvent implements Listener {
+public class MessageListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public MessageEvent() {
+  public MessageListener() {
   }
 
   /**
