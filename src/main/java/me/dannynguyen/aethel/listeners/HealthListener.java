@@ -8,7 +8,7 @@ import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.item.ItemDurability;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.22.0
  * @since 1.9.4
  */
 public class HealthListener implements Listener {
@@ -223,7 +223,7 @@ public class HealthListener implements Listener {
       if (ifCountered(e.getCause(), attributes, random, damager, damagee)) {
         e.setCancelled(true);
         return;
-      } else if (ifDodged(attributes, random)) {
+      } else if (ifDodged(attributes, random, damagee)) {
         e.setCancelled(true);
         return;
       } else if (ifTougher(e, attributes, damagee)) {
@@ -234,7 +234,7 @@ public class HealthListener implements Listener {
       if (ifCountered(e.getCause(), attributes, buffs, random, damager, damagee)) {
         e.setCancelled(true);
         return;
-      } else if (ifDodged(attributes, buffs, random)) {
+      } else if (ifDodged(attributes, buffs, random, damagee)) {
         e.setCancelled(true);
         return;
       } else if (ifTougher(e, attributes, buffs, damagee)) {
@@ -275,13 +275,13 @@ public class HealthListener implements Listener {
         Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
         Buffs buffs = rpgPlayer.getBuffs();
         if (buffs == null) {
-          if (ifDodged(attributes, new Random())) {
+          if (ifDodged(attributes, new Random(), damagee)) {
             return true;
           } else if (ifTougher(e, attributes, damagee)) {
             return true;
           }
         } else {
-          if (ifDodged(attributes, buffs, new Random())) {
+          if (ifDodged(attributes, buffs, new Random(), damagee)) {
             return true;
           } else if (ifTougher(e, attributes, buffs, damagee)) {
             return true;
@@ -303,6 +303,10 @@ public class HealthListener implements Listener {
    */
   private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Random random) {
     if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
+      LivingEntity entity = (LivingEntity) e.getEntity();
+      World world = entity.getWorld();
+      world.spawnParticle(Particle.CRIT, entity.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5);
+      world.playSound(entity.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.PLAYERS, 0.65f, 1);
       e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
     }
   }
@@ -317,6 +321,10 @@ public class HealthListener implements Listener {
    */
   private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Buffs buffs, Random random) {
     if (attributes.get(AethelAttribute.CRITICAL_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
+      LivingEntity entity = (LivingEntity) e.getEntity();
+      World world = entity.getWorld();
+      world.spawnParticle(Particle.CRIT, entity.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5);
+      world.playSound(entity.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.PLAYERS, 0.65f, 1);
       e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) + buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_DAMAGE)) / 100));
     }
   }
@@ -428,6 +436,9 @@ public class HealthListener implements Listener {
     }
 
     if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+      World world = attacker.getWorld();
+      world.spawnParticle(Particle.FIREWORKS_SPARK, attacker.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(attacker.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.5f, 0.75f);
       attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
       return attacker.getHealth() <= 0.0;
     }
@@ -455,6 +466,9 @@ public class HealthListener implements Listener {
     }
 
     if (attributes.get(AethelAttribute.COUNTER_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+      World world = attacker.getWorld();
+      world.spawnParticle(Particle.FIREWORKS_SPARK, attacker.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(attacker.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.65f, 0.75f);
       attacker.damage((int) damagee.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue() * damagee.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
       return attacker.getHealth() <= 0.0;
     }
@@ -468,8 +482,14 @@ public class HealthListener implements Listener {
    * @param random     rng
    * @return if dodged
    */
-  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random) {
-    return attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
+  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random, Player damagee) {
+    if (attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100) {
+      World world = damagee.getWorld();
+      world.spawnParticle(Particle.EXPLOSION_NORMAL, damagee.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(damagee.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -480,8 +500,14 @@ public class HealthListener implements Listener {
    * @param random     rng
    * @return if dodged
    */
-  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Buffs buffs, Random random) {
-    return attributes.get(AethelAttribute.DODGE_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100;
+  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Buffs buffs, Random random, Player damagee) {
+    if (attributes.get(AethelAttribute.DODGE_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100) {
+      World world = damagee.getWorld();
+      world.spawnParticle(Particle.EXPLOSION_NORMAL, damagee.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(damagee.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -496,7 +522,13 @@ public class HealthListener implements Listener {
   private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
     double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
-    return e.getDamage() == 0;
+    if (e.getDamage() == 0) {
+      World world = damagee.getWorld();
+      world.spawnParticle(Particle.END_ROD, damagee.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(damagee.getEyeLocation(), Sound.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 1, 0);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -512,7 +544,13 @@ public class HealthListener implements Listener {
   private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Buffs buffs, Player damagee) {
     double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS) + buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
-    return e.getDamage() == 0;
+    if (e.getDamage() == 0) {
+      World world = damagee.getWorld();
+      world.spawnParticle(Particle.END_ROD, damagee.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(damagee.getEyeLocation(), Sound.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 1, 0);
+      return true;
+    }
+    return false;
   }
 
   /**

@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.10
+ * @version 1.22.0
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -327,7 +327,7 @@ public class ActiveAbility {
         vector = caster.getLocation().getDirection().multiply(multiplier);
       }
       case SPRING -> {
-        world.playSound(caster.getEyeLocation(), Sound.BLOCK_WET_SPONGE_BREAK, SoundCategory.PLAYERS, 1, 0);
+        world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEEHIVE_ENTER, SoundCategory.PLAYERS, 1, 2);
         world.spawnParticle(Particle.SLIME, caster.getLocation(), 15, 0.5, 0.25, 0.25);
         vector.setX(0);
         vector.setY(1);
