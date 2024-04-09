@@ -44,12 +44,12 @@ public enum ActiveAbilityType {
   DASH("Dash", "dash", Effect.MOVEMENT),
 
   /**
-   * Clears all non-damaging statuses.
+   * Clears all non-damaging potion effects and statuses.
    */
   DISMISS("Dismiss", "dismiss", Effect.CLEAR_STATUS),
 
   /**
-   * Clears all damaging statuses.
+   * Clears all damaging potion effects and statuses.
    */
   DISREGARD("Disregard", "disregard", Effect.CLEAR_STATUS),
 
@@ -101,7 +101,8 @@ public enum ActiveAbilityType {
   QUAKE("Quake", "quake", Effect.DISTANCE_DAMAGE),
 
   /**
-   * Immediately consumes all stacks of {@link StatusType#BRITTLE} from nearby enemies.
+   * Immediately consumes all stacks of {@link StatusType#BRITTLE}
+   * from nearby enemies to deal an instance of damage.
    */
   SHATTER("Shatter", "shatter", Effect.SHATTER),
 

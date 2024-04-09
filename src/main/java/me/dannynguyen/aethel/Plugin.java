@@ -36,7 +36,7 @@ import java.util.*;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.21.8.1
+ * @version 1.22.1
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -118,6 +118,7 @@ public class Plugin extends JavaPlugin {
    *  <li>{@link ShowItemCommand}
    *  <li>{@link StatusCommand}
    *  <li>{@link StatCommand}
+   *  <li>{@link WhatsThatCommand}</li>
    * </ul>
    */
   private void registerCommands() {
@@ -132,6 +133,7 @@ public class Plugin extends JavaPlugin {
     this.getCommand("showitem").setExecutor(new ShowItemCommand());
     this.getCommand("status").setExecutor(new StatusCommand());
     this.getCommand("playerstat").setExecutor(new StatCommand());
+    this.getCommand("whatsthisfeature").setExecutor(new WhatsThatCommand());
   }
 
   /**

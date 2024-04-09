@@ -23,6 +23,7 @@ import java.util.UUID;
  * Parameters:
  * <ul>
  *   <li>"": opens a {@link StatMenu}
+ *   <li>playerName: opens a {@link StatMenu} belonging to the player
  *   <li>"past", "p": opens a {@link PastStatMenu} with the last 27 shown stats
  * </ul>
  *

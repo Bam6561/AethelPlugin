@@ -18,13 +18,15 @@ public enum StatusType {
   BLEED("Bleed", true),
 
   /**
-   * Cumulative stacks that can be triggered to deal an instance of damage.
+   * Cumulative stacks that can be triggered by
+   * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#SHATTER}
+   * to deal an instance of damage.
    */
   BRITTLE("Brittle", true),
 
   /**
    * Cumulative stacking damage over time that spreads
-   * its remaining stacks to a nearby entities upon death.
+   * its remaining stacks to nearby entities upon death.
    */
   ELECTROCUTE("Electrocute", true),
 
