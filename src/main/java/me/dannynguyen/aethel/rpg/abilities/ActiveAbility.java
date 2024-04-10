@@ -68,18 +68,18 @@ public class ActiveAbility {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.type = Objects.requireNonNull(type, "Null ability");
     this.baseCooldown = Integer.parseInt(dataValues[0]);
-    initializeAbilityData(type.getEffect(), dataValues);
+    loadAbilityData(type.getEffect(), dataValues);
   }
 
   /**
-   * Initializes the {@link ActiveAbilityType active ability's} ability data.
+   * Loads the {@link ActiveAbilityType active ability's} ability data.
    *
    * @param effect     {@link ActiveAbilityType.Effect}
    * @param dataValues ability data
    */
-  private void initializeAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
+  private void loadAbilityData(ActiveAbilityType.Effect effect, String[] dataValues) {
     switch (effect) {
-      case CLEAR_STATUS -> { // No data to initialize.
+      case CLEAR_STATUS -> { // No data to load.
       }
       case MOVEMENT, SHATTER, TELEPORT -> effectData.add(dataValues[1]);
       case DISTANCE_DAMAGE, PROJECTION -> {

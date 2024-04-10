@@ -69,15 +69,15 @@ public class Health {
     healthBar.setVisible(settings.isHealthBarVisible());
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH);
-    initializeHealth(player);
+    loadHealth(player);
   }
 
   /**
-   * Initializes the player's health.
+   * Loads the player's health.
    *
    * @param player interacting player
    */
-  private void initializeHealth(Player player) {
+  private void loadHealth(Player player) {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     double healthScale = (attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + minecraftMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);

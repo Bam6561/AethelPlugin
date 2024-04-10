@@ -48,7 +48,7 @@ public class HealthListener implements Listener {
   }
 
   /**
-   * Calculates player damage dealt and taken interactions.
+   * Processes player damage dealt and taken interactions.
    *
    * @param e entity damage event
    */
@@ -58,16 +58,16 @@ public class HealthListener implements Listener {
       if (event.getDamager() instanceof Player || event.getEntity() instanceof Player) {
         if (event.getDamager() instanceof Player damager && !(event.getEntity() instanceof Player)) { // PvE
           triggerDamageDealtPassives(event, damager);
-          calculatePlayerDamageDone(event, damager);
+          processPlayerDamageDone(event, damager);
         } else {
           Player damagee = (Player) event.getEntity();
           DamageMitigation mitigation = new DamageMitigation(damagee);
           if (event.getDamager() instanceof Player damager) { // PvP, otherwise EvP
             triggerDamageDealtPassives(event, damager);
-            calculatePlayerDamageDone(event, damager);
+            processPlayerDamageDone(event, damager);
           }
           triggerDamageTakenPassives(event, damagee);
-          calculatePlayerDamageTaken(event, damagee, mitigation);
+          processPlayerDamageTaken(event, damagee, mitigation);
         }
       }
     } else if (e.getEntity() instanceof Player damagee && !ignoredDamageCauses.contains(e.getCause())) {
@@ -87,7 +87,7 @@ public class HealthListener implements Listener {
   }
 
   /**
-   * Calculates damage healed by players.
+   * Processes damage healed by players.
    *
    * @param e entity regain health event
    */
@@ -167,12 +167,12 @@ public class HealthListener implements Listener {
   }
 
   /**
-   * Calculates damage done to the entity by the player.
+   * Processes damage done to the entity by the player.
    *
    * @param e       entity damage by entity event
    * @param damager interacting player
    */
-  private void calculatePlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
+  private void processPlayerDamageDone(EntityDamageByEntityEvent e, Player damager) {
     if (!(e.getEntity() instanceof LivingEntity damagee)) {
       return;
     }
@@ -201,13 +201,13 @@ public class HealthListener implements Listener {
   }
 
   /**
-   * Calculates damage taken by the player.
+   * Processes damage taken by the player.
    *
    * @param e          entity damage by entity event
    * @param damagee    interacting player
    * @param mitigation {@link DamageMitigation}
    */
-  private void calculatePlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee, DamageMitigation mitigation) {
+  private void processPlayerDamageTaken(EntityDamageByEntityEvent e, Player damagee, DamageMitigation mitigation) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
     Entity damager = e.getDamager();
 

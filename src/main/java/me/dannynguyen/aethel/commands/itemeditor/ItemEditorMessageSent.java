@@ -222,7 +222,7 @@ public class ItemEditorMessageSent {
       lore.remove(line);
       meta.setLore(lore);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Removed Lore]");
+      user.sendMessage(ChatColor.RED + "[Removed Lore]");
     } catch (IndexOutOfBoundsException ex) {
       user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
     }

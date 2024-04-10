@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.enums.plugin;
 
+import me.dannynguyen.aethel.commands.LocationCommand;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.Settings;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,7 @@ import java.io.File;
  * Plugin directories.
  *
  * @author Danny Nguyen
- * @version 1.22.3
+ * @version 1.22.5
  * @since 1.11.9
  */
 public enum Directory {
@@ -28,6 +29,11 @@ public enum Directory {
    * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Forge recipes} directory.
    */
   FORGE(new File(RESOURCES.getFile().getPath() + "/forge")),
+
+  /**
+   * {@link LocationCommand Locations} directory.
+   */
+  LOCATION(new File(RESOURCES.getFile().getPath() + "/location")),
 
   /**
    * {@link Equipment RPG jewelry} directory.

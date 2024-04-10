@@ -224,9 +224,8 @@ public class ItemRegistry implements DataRegistry {
      *
      * @param file item file
      * @param item ItemStack
-     * @throws IllegalArgumentException if provided file is not a file
      */
-    Item(File file, ItemStack item) throws IllegalArgumentException {
+    Item(File file, ItemStack item) {
       this.file = file;
       this.item = item;
       this.name = ItemReader.readName(item);

@@ -55,7 +55,7 @@ public class Settings {
   public Settings(@NotNull UUID uuid) {
     this.uuid = Objects.requireNonNull(uuid, "Null UUID");
     createActiveAbilityBinds();
-    initializeSettings();
+    loadSettings();
   }
 
   /**
@@ -71,9 +71,9 @@ public class Settings {
   }
 
   /**
-   * Initializes the player's settings from a file if it exists.
+   * Loads the player's settings from a file if it exists.
    */
-  private void initializeSettings() {
+  private void loadSettings() {
     File file = new File(Directory.SETTINGS.getFile().getPath() + "/" + uuid.toString() + "_set.txt");
     if (file.exists()) {
       try {

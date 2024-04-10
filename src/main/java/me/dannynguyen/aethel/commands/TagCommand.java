@@ -92,7 +92,7 @@ public class TagCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args, ItemStack item) {
     int numberOfParameters = args.length;
-    String action = "";
+    String action = null;
     if (numberOfParameters > 0) {
       action = args[0].toLowerCase();
     }

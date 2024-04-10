@@ -74,18 +74,18 @@ public class PassiveAbility {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.type = Objects.requireNonNull(type, "Null ability");
-    initializeAbilityData(trigger.getCondition(), type.getEffect(), dataValues);
+    loadAbilityData(trigger.getCondition(), type.getEffect(), dataValues);
   }
 
   /**
-   * Initializes the {@link PassiveAbilityType passive ability's}
+   * Loads the {@link PassiveAbilityType passive ability's}
    * {@link PassiveTriggerType.Condition} and {@link PassiveAbilityType.Effect} data.
    *
    * @param condition  {@link PassiveTriggerType.Condition}
    * @param effect     {@link PassiveAbilityType.Effect}
    * @param dataValues ability data
    */
-  private void initializeAbilityData(PassiveTriggerType.Condition condition, PassiveAbilityType.Effect effect, String[] dataValues) {
+  private void loadAbilityData(PassiveTriggerType.Condition condition, PassiveAbilityType.Effect effect, String[] dataValues) {
     switch (condition) {
       case CHANCE_COOLDOWN, HEALTH_COOLDOWN -> {
         conditionData.add(dataValues[0]);

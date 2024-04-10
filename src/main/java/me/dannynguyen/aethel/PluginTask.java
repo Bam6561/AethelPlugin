@@ -50,7 +50,7 @@ public class PluginTask {
   }
 
   /**
-   * Spawn particles and calculates damage taken from damage over time {@link Status statuses}.
+   * Spawn particles and processes damage taken from damage over time {@link Status statuses}.
    */
   public void triggerStatuses() {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();

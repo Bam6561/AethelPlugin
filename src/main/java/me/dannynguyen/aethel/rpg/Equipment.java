@@ -74,14 +74,14 @@ public class Equipment {
     this.enchantments = Objects.requireNonNull(enchantments, "Null enchantments");
     this.abilities = Objects.requireNonNull(abilities, "Null abilities");
     this.heldItem = player.getInventory().getItemInMainHand();
-    initializeJewelrySlots();
-    initializeEquipment(player);
+    loadJewelrySlots();
+    loadEquipment(player);
   }
 
   /**
-   * Initializes the player's equipped jewelry from a file if it exists.
+   * Loads the player's equipped jewelry from a file if it exists.
    */
-  private void initializeJewelrySlots() {
+  private void loadJewelrySlots() {
     File file = new File(Directory.JEWELRY.getFile().getPath() + "/" + uuid.toString() + "_jwl.txt");
     if (file.exists()) {
       try {
@@ -96,11 +96,11 @@ public class Equipment {
   }
 
   /**
-   * Initializes the player's equipment-related {@link Key Aethel tags}.
+   * Loads the player's equipment-related {@link Key Aethel tags}.
    *
    * @param player interacting player
    */
-  private void initializeEquipment(Player player) {
+  private void loadEquipment(Player player) {
     PlayerInventory pInv = player.getInventory();
     readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND, false);
     readSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND, false);

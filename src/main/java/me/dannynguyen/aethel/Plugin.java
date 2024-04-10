@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.22.2
+ * @version 1.22.5
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -76,6 +76,7 @@ public class Plugin extends JavaPlugin {
    *  <li>{@link DeveloperCommand}
    *  <li>{@link ForgeCommand}
    *  <li>{@link ItemEditorCommand}
+   *  <li>{@link LocationCommand}
    *  <li>{@link PingCommand}
    *  <li>{@link ShowItemCommand}
    *  <li>{@link StatusCommand}
@@ -91,6 +92,7 @@ public class Plugin extends JavaPlugin {
     this.getCommand("developermode").setExecutor(new DeveloperCommand());
     this.getCommand("forge").setExecutor(new ForgeCommand());
     this.getCommand("itemeditor").setExecutor(new ItemEditorCommand());
+    this.getCommand("location").setExecutor(new LocationCommand());
     this.getCommand("ping").setExecutor(new PingCommand());
     this.getCommand("showitem").setExecutor(new ShowItemCommand());
     this.getCommand("status").setExecutor(new StatusCommand());

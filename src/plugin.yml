@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.22.4
+version: 1.22.5
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -13,15 +13,15 @@ commands:
     aliases: [ ai, aitem ]
   aetheltag:
     description: Edits Aethel plugin tags.
-    usage: /aetheltag [get|remove <tag>|set <tag> <data>]
+    usage: /aetheltag [get][set][remove]
     aliases: [ at, atag ]
   buff:
     description: Edits an entity's buffs.
-    usage: /buff [get <playerName|UUID>|remove <playerName|UUID>|remove <playerName|UUID> <status>|add <playerName|UUID> <status> <stacks> <ticks>]
+    usage: /buff [get][add][remove]
     aliases: [ b ]
   character:
     description: Opens an RPG character sheet.
-    usage: /character
+    usage: /character [<playerName>]
     aliases: [ c, char ]
   developermode:
     description: Developer mode.
@@ -29,12 +29,16 @@ commands:
     aliases: [ dm, dev ]
   forge:
     description: Opens a Forge menu.
-    usage: /forge [edit|reload]
+    usage: /forge [edit][reload]
     aliases: [ f ]
   itemeditor:
     description: Edits an item's metadata.
     usage: /itemeditor
     aliases: [ ie, iedit ]
+  location:
+    description: Saves, tracks, and compares locations.
+    usage: /location [get]|[add][remove][track][compares]
+    aliases: [ l, loc ]
   ping:
     description: Responds with server latency.
     usage: /ping
@@ -49,7 +53,7 @@ commands:
     aliases: [ si, show ]
   status:
     description: Edits an entity's statuses.
-    usage: /status [get <playerName|UUID>|remove <playerName|UUID>|remove <playerName|UUID> <status>|add <playerName|UUID> <status> <stacks> <ticks>]
+    usage: /status  [get][add][remove]
     aliases: [ s ]
   whatsthisfeature:
     description: Gets a key word's description.
