@@ -10,14 +10,14 @@ import java.io.File;
  * Plugin directories.
  *
  * @author Danny Nguyen
- * @version 1.17.7
+ * @version 1.22.3
  * @since 1.11.9
  */
 public enum Directory {
   /**
    * Resources directory.
    */
-  RESOURCES(new File("./plugins/aethel")),
+  RESOURCES(new File("./plugins/Aethel")),
 
   /**
    * {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry Aethel items} directory.
