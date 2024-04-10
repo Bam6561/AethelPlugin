@@ -682,7 +682,7 @@ public class WhatsThatCommand implements CommandExecutor {
     }),
 
     /**
-     * {@link {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#DASH}
+     * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#DASH}
      */
     DASH(new String[]{
         ChatColor.GREEN + "Dash",

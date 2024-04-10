@@ -10,7 +10,6 @@ import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
 import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.rpg.Settings;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.22.4
  * @since 1.0.2
  */
 public class MenuListener implements Listener {
@@ -45,7 +44,7 @@ public class MenuListener implements Listener {
   @EventHandler
   private void onClick(InventoryClickEvent e) {
     if (e.getClickedInventory() != null) {
-      Menu menu = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenu();
+      Menu menu = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenuInput().getMenu();
       if (menu != null && e.getAction() != InventoryAction.COLLECT_TO_CURSOR) {// Prevents item duplication
         e.setCancelled(true);
         String invType = menu.getId();
@@ -68,7 +67,7 @@ public class MenuListener implements Listener {
    */
   @EventHandler
   private void onDrag(InventoryDragEvent e) {
-    Menu menu = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenu();
+    Menu menu = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenuInput().getMenu();
     if (menu != null) {
       e.setCancelled(true);
       switch (menu) {
@@ -113,7 +112,7 @@ public class MenuListener implements Listener {
    * @param menu {@link Menu}
    */
   private void interpretCharacter(InventoryClickEvent e, Menu menu) {
-    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getTarget()).getName();
+    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getWhoClicked().getUniqueId()).getMenuInput().getTarget()).getName();
     if (owner.equals(e.getWhoClicked().getName())) {
       CharacterMenuClick click = new CharacterMenuClick(e);
       if (e.getClickedInventory().getType() == InventoryType.CHEST) {
@@ -235,7 +234,7 @@ public class MenuListener implements Listener {
   }
 
   /**
-   * Removes plugin {@link PluginPlayer#getMenu()} when a menu is closed.
+   * Removes plugin {@link me.dannynguyen.aethel.plugin.MenuInput#getMenu()} when a menu is closed.
    * <p>
    * Since opening a new inventory while one already exists triggers
    * the InventoryCloseEvent, always add new inventory metadata AFTER
@@ -245,7 +244,7 @@ public class MenuListener implements Listener {
    */
   @EventHandler
   private void onClose(InventoryCloseEvent e) {
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).setMenu(null);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMenuInput().setMenu(null);
   }
 
   /**

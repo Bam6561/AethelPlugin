@@ -480,6 +480,7 @@ public class HealthListener implements Listener {
    *
    * @param attributes {@link AethelAttributes}
    * @param random     rng
+   * @param damagee    player taking damage
    * @return if dodged
    */
   private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random, Player damagee) {
@@ -498,6 +499,7 @@ public class HealthListener implements Listener {
    * @param attributes {@link AethelAttributes}
    * @param buffs      {@link Buffs}
    * @param random     rng
+   * @param damagee    player taking damage
    * @return if dodged
    */
   private boolean ifDodged(Map<AethelAttribute, Double> attributes, Buffs buffs, Random random, Player damagee) {

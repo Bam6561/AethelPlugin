@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
@@ -26,7 +27,7 @@ import java.util.UUID;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.20.2
+ * @version 1.22.4
  * @since 1.4.0
  */
 public class ItemMenuClick implements MenuClick {
@@ -137,13 +138,13 @@ public class ItemMenuClick implements MenuClick {
    * Gets an {@link ItemRegistry.Item item} category page.
    */
   private void getCategoryPage() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     String category = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-    int pageRequest = pluginPlayer.getPage();
+    int pageRequest = menuInput.getPage();
 
-    pluginPlayer.setCategory(category);
+    menuInput.setCategory(category);
     user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
-    pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_GET);
+    menuInput.setMenu(MenuListener.Menu.AETHELITEM_GET);
   }
 
   /**
@@ -152,12 +153,12 @@ public class ItemMenuClick implements MenuClick {
    * @param action type of interaction
    */
   private void previousPage(ItemMenu.Action action) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int pageRequest = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int pageRequest = menuInput.getPage();
 
     user.openInventory(new ItemMenu(user, action).getCategoryPage(category, pageRequest - 1));
-    pluginPlayer.setMenu(MenuListener.Menu.valueOf("AETHELITEM_" + action.name()));
+    menuInput.setMenu(MenuListener.Menu.valueOf("AETHELITEM_" + action.name()));
   }
 
   /**
@@ -166,18 +167,18 @@ public class ItemMenuClick implements MenuClick {
    * @param action type of interaction
    */
   private void toggleAction(ItemMenu.Action action) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int pageRequest = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int pageRequest = menuInput.getPage();
 
     switch (action) {
       case GET -> {
         user.openInventory(new ItemMenu(user, ItemMenu.Action.REMOVE).getCategoryPage(category, pageRequest));
-        pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_REMOVE);
+        menuInput.setMenu(MenuListener.Menu.AETHELITEM_REMOVE);
       }
       case REMOVE -> {
         user.openInventory(new ItemMenu(user, ItemMenu.Action.GET).getCategoryPage(category, pageRequest));
-        pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_GET);
+        menuInput.setMenu(MenuListener.Menu.AETHELITEM_GET);
       }
     }
   }
@@ -187,9 +188,9 @@ public class ItemMenuClick implements MenuClick {
    */
   private void returnToMainMenu() {
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
-    pluginPlayer.setPage(0);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    menuInput.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
+    menuInput.setPage(0);
   }
 
   /**
@@ -198,12 +199,12 @@ public class ItemMenuClick implements MenuClick {
    * @param action type of interaction
    */
   private void nextPage(ItemMenu.Action action) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int pageRequest = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int pageRequest = menuInput.getPage();
 
     user.openInventory(new ItemMenu(user, action).getCategoryPage(category, pageRequest + 1));
-    pluginPlayer.setMenu(MenuListener.Menu.valueOf("AETHELITEM_" + action.name()));
+    menuInput.setMenu(MenuListener.Menu.valueOf("AETHELITEM_" + action.name()));
   }
 
   /**

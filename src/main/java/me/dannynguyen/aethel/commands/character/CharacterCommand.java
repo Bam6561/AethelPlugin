@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.character;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuListener;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -28,7 +28,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.22.4
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -82,10 +82,10 @@ public class CharacterCommand implements CommandExecutor {
    */
   private void openSheetSelf(Player user) {
     UUID target = user.getUniqueId();
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
-    pluginPlayer.setTarget(target);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(target).getMenuInput();
+    menuInput.setTarget(target);
     user.openInventory(new SheetMenu(user, user).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.CHARACTER_SHEET);
+    menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
   }
 
   /**
@@ -98,10 +98,10 @@ public class CharacterCommand implements CommandExecutor {
     for (Player player : Bukkit.getOnlinePlayers()) {
       if (player.getName().equals(requestedPlayer)) {
         UUID target = player.getUniqueId();
-        PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-        pluginPlayer.setTarget(target);
+        MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+        menuInput.setTarget(target);
         user.openInventory(new SheetMenu(user, player).getMainMenu());
-        pluginPlayer.setMenu(MenuListener.Menu.CHARACTER_SHEET);
+        menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
         return;
       }
     }

@@ -19,7 +19,7 @@ import java.util.UUID;
  * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.22.4
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -82,6 +82,6 @@ public class ItemEditorCommand implements CommandExecutor {
     UUID uuid = user.getUniqueId();
     Plugin.getData().getEditedItemCache().getEditedItems().put(uuid, item);
     user.openInventory(new CosmeticMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
   }
 }

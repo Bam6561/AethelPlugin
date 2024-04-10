@@ -2,7 +2,7 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
- * @version 1.17.17
+ * @version 1.22.4
  * @since 1.4.6
  */
 public class DeveloperCommand implements CommandExecutor {
@@ -51,7 +51,7 @@ public class DeveloperCommand implements CommandExecutor {
 
   /**
    * Checks if the command request was formatted correctly before
-   * {@link PluginPlayer#setIsDeveloper toggling} developer mode.
+   * {@link MenuInput#setIsDeveloper toggling} developer mode.
    *
    * @param user user
    * @param args user provided parameters
@@ -66,17 +66,17 @@ public class DeveloperCommand implements CommandExecutor {
   }
 
   /**
-   * {@link PluginPlayer#setIsDeveloper Toggles} developer mode on or off for the user.
+   * {@link MenuInput#setIsDeveloper Toggles} developer mode on or off for the user.
    *
    * @param user user
    */
   private void toggleDeveloperMode(Player user) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    if (!pluginPlayer.isDeveloper()) {
-      pluginPlayer.setIsDeveloper(true);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    if (!menuInput.isDeveloper()) {
+      menuInput.setIsDeveloper(true);
       user.sendMessage(ChatColor.GREEN + "[Developer Mode On]");
     } else {
-      pluginPlayer.setIsDeveloper(false);
+      menuInput.setIsDeveloper(false);
       user.sendMessage(ChatColor.RED + "[Developer Mode Off]");
     }
   }

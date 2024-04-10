@@ -9,7 +9,7 @@ import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.listeners.MessageListener;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.abilities.ActiveAbilityInput;
 import me.dannynguyen.aethel.utils.abilities.PassiveAbilityInput;
@@ -44,7 +44,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.21.1
+ * @version 1.22.4
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -275,10 +275,10 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's Minecraft attribute modifier.
    */
   public void setMinecraftAttribute() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String type = pluginPlayer.getObjectType();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String type = menuInput.getObjectType();
     Attribute attribute = Attribute.valueOf(TextFormatter.formatEnum(type));
-    String slot = pluginPlayer.getSlot().getId();
+    String slot = menuInput.getSlot().getId();
     EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(TextFormatter.formatEnum(slot));
 
     if (!e.getMessage().equals("-")) {
@@ -325,7 +325,7 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's enchantment.
    */
   public void setEnchantment() {
-    NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType());
+    NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getObjectType());
 
     if (!e.getMessage().equals("-")) {
       int level;
@@ -355,7 +355,7 @@ public class ItemEditorMessageSent {
    */
   public void setPotionEffect() {
     PotionMeta potion = (PotionMeta) meta;
-    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType());
+    NamespacedKey potionEffectKey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getObjectType());
     PotionEffectType potionEffectType = PotionEffectType.getByKey(potionEffectKey);
 
     if (!e.getMessage().equals("-")) {
@@ -432,7 +432,7 @@ public class ItemEditorMessageSent {
    */
   public void setTag() {
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    String tagType = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getObjectType();
+    String tagType = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getObjectType();
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tagType);
 
     if (!e.getMessage().equals("-")) {
@@ -470,9 +470,9 @@ public class ItemEditorMessageSent {
    * @param listKey   {@link Key list key}
    */
   private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String slot = pluginPlayer.getSlot().getId();
-    String type = pluginPlayer.getObjectType();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String slot = menuInput.getSlot().getId();
+    String type = menuInput.getObjectType();
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -503,9 +503,9 @@ public class ItemEditorMessageSent {
    * @param listKey   {@link Key list key}
    */
   private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String slot = pluginPlayer.getSlot().getId();
-    String type = pluginPlayer.getObjectType();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String slot = menuInput.getSlot().getId();
+    String type = menuInput.getObjectType();
     String stringKeyToRemove = slot + "." + type;
     NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
     PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -533,10 +533,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link CosmeticMenu}.
    */
   private void returnToCosmetic() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new CosmeticMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
     });
   }
 
@@ -544,10 +544,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link AttributeMenu}.
    */
   private void returnToAttribute() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(pluginPlayer.getSlot().name())).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(menuInput.getSlot().name())).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
     });
   }
 
@@ -555,10 +555,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link AethelAttributeMenu}.
    */
   private void returnToAethelAttribute() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AethelAttributeMenu(user, pluginPlayer.getSlot()).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+      user.openInventory(new AethelAttributeMenu(user, menuInput.getSlot()).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
     });
   }
 
@@ -566,10 +566,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link EnchantmentMenu}.
    */
   private void returnToEnchantment() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new EnchantmentMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
     });
   }
 
@@ -577,10 +577,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link PotionMenu}.
    */
   private void returnToPotion() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new PotionMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
     });
   }
 
@@ -588,10 +588,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link PassiveMenu}.
    */
   private void returnToPassive() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, pluginPlayer.getSlot(), pluginPlayer.getTrigger()).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
+      user.openInventory(new PassiveMenu(user, menuInput.getSlot(), menuInput.getTrigger()).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
     });
   }
 
@@ -599,10 +599,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link ActiveMenu}.
    */
   private void returnToActive() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveMenu(user, pluginPlayer.getSlot()).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
+      user.openInventory(new ActiveMenu(user, menuInput.getSlot()).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
     });
   }
 
@@ -610,10 +610,10 @@ public class ItemEditorMessageSent {
    * Returns to the {@link TagMenu}.
    */
   private void returnToTag() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
       user.openInventory(new TagMenu(user).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
     });
   }
 
@@ -646,17 +646,17 @@ public class ItemEditorMessageSent {
     private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
     /**
-     * {@link PluginPlayer#getSlot()}
+     * {@link MenuInput#getSlot()}
      */
     private final String slot;
 
     /**
-     * {@link PluginPlayer#getTrigger()}
+     * {@link MenuInput#getTrigger()}
      */
     private final String trigger;
 
     /**
-     * {@link PluginPlayer#getObjectType()}
+     * {@link MenuInput#getObjectType()}
      */
     private final String type;
 
@@ -669,10 +669,10 @@ public class ItemEditorMessageSent {
      * No parameter constructor.
      */
     private PassiveTagModification() {
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-      this.slot = pluginPlayer.getSlot().getId();
-      this.trigger = pluginPlayer.getTrigger().getId();
-      this.type = pluginPlayer.getObjectType();
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      this.slot = menuInput.getSlot().getId();
+      this.trigger = menuInput.getTrigger().getId();
+      this.type = menuInput.getObjectType();
       this.interactingKey = slot + "." + trigger + "." + type;
     }
 
@@ -819,12 +819,12 @@ public class ItemEditorMessageSent {
     private final String[] args = e.getMessage().split(" ");
 
     /**
-     * {@link PluginPlayer#getSlot()}
+     * {@link MenuInput#getSlot()}
      */
     private final String slot;
 
     /**
-     * {@link PluginPlayer#getObjectType()}
+     * {@link MenuInput#getObjectType()}
      */
     private final String type;
 
@@ -837,9 +837,9 @@ public class ItemEditorMessageSent {
      * No parameter constructor.
      */
     private ActiveTagSetter() {
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-      this.slot = pluginPlayer.getSlot().getId();
-      this.type = pluginPlayer.getObjectType();
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      this.slot = menuInput.getSlot().getId();
+      this.type = menuInput.getObjectType();
       this.interactingKey = slot + "." + type;
     }
 

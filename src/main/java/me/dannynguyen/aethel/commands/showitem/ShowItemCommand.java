@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.22.4
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -103,7 +103,7 @@ public class ShowItemCommand implements CommandExecutor {
   private void interpretParameter(Player user, String action) {
     if (action.equals("p") || action.equals("past")) {
       user.openInventory(new PastItemMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuListener.Menu.SHOWITEM_PAST);
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMenu(MenuListener.Menu.SHOWITEM_PAST);
     } else {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
     }

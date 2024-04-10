@@ -22,7 +22,7 @@ import java.util.UUID;
  * creating, editing, and removing {@link ItemRegistry.Item items}.
  *
  * @author Danny Nguyen
- * @version 1.21.8.1
+ * @version 1.22.4
  * @since 1.4.0
  */
 public class ItemMenu implements CategoryMenu {
@@ -66,7 +66,7 @@ public class ItemMenu implements CategoryMenu {
    */
   private Inventory createMenu() {
     StringBuilder title = new StringBuilder(ChatColor.DARK_GRAY + "Aethel Item");
-    String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+    String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getCategory();
     switch (action) {
       case GET -> title.append(ChatColor.GREEN).append(" Get ").append(ChatColor.WHITE).append(category);
       case REMOVE -> title.append(ChatColor.RED).append(" Remove ").append(ChatColor.WHITE).append(category);
@@ -99,7 +99,7 @@ public class ItemMenu implements CategoryMenu {
     List<Inventory> category = Plugin.getData().getItemRegistry().getItemCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.getPageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext(requestedCategory);

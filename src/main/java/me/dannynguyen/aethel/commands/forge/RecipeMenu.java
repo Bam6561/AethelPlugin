@@ -22,7 +22,7 @@ import java.util.UUID;
  * crafting, editing, and removing {@link RecipeRegistry.Recipe recipes}.
  *
  * @author Danny Nguyen
- * @version 1.18.1
+ * @version 1.22.4
  * @since 1.0.6
  */
 public class RecipeMenu implements CategoryMenu {
@@ -66,7 +66,7 @@ public class RecipeMenu implements CategoryMenu {
    */
   private Inventory createMenu() {
     String title = ChatColor.DARK_GRAY + "Forge";
-    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+    String category = ChatColor.WHITE + Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getCategory();
     switch (action) {
       case CRAFT -> title += ChatColor.BLUE + " Craft ";
       case EDIT -> title += ChatColor.YELLOW + " Edit ";
@@ -101,7 +101,7 @@ public class RecipeMenu implements CategoryMenu {
     List<Inventory> category = Plugin.getData().getRecipeRegistry().getRecipeCategories().get(requestedCategory);
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.getPageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
     addContext();

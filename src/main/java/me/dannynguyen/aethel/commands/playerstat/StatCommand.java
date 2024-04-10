@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.playerstat;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuListener;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +28,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.18.0
+ * @version 1.22.4
  * @since 1.4.7
  */
 public class StatCommand implements CommandExecutor {
@@ -86,7 +86,7 @@ public class StatCommand implements CommandExecutor {
   private void interpretParameter(Player user, String parameter) {
     if (parameter.equals("p") || parameter.equals("past")) {
       user.openInventory(new PastStatMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).setMenu(MenuListener.Menu.PLAYERSTAT_PAST);
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMenu(MenuListener.Menu.PLAYERSTAT_PAST);
     } else {
       openPlayerStatOther(user, parameter);
     }
@@ -99,11 +99,11 @@ public class StatCommand implements CommandExecutor {
    */
   private void openPlayerStatSelf(Player user) {
     UUID target = user.getUniqueId();
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(target);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(target).getMenuInput();
 
-    pluginPlayer.setTarget(target);
+    menuInput.setTarget(target);
     user.openInventory(new StatMenu(user, user.getName()).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
+    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
   }
 
   /**
@@ -116,11 +116,11 @@ public class StatCommand implements CommandExecutor {
     OfflinePlayer player = Bukkit.getOfflinePlayer(owner);
     if (player.hasPlayedBefore()) {
       UUID target = player.getUniqueId();
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
 
-      pluginPlayer.setTarget(target);
+      menuInput.setTarget(target);
       user.openInventory(new StatMenu(user, player.getName()).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
+      menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
     } else {
       user.sendMessage(ChatColor.RED + owner + " has never played on this server.");
     }

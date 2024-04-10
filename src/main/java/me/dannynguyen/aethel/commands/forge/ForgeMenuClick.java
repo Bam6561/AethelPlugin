@@ -5,7 +5,7 @@ import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
@@ -31,7 +31,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.3
+ * @version 1.22.4
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -99,7 +99,7 @@ public class ForgeMenuClick implements MenuClick {
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
       case 4 -> {
-        if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMode() == MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT) {
+        if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getMode() == MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT) {
           openForgeEdit();
         }
       }
@@ -143,14 +143,14 @@ public class ForgeMenuClick implements MenuClick {
    * Views a {@link RecipeRegistry.Recipe recipe} category.
    */
   private void viewRecipeCategory() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(pluginPlayer.getMode().getEnumString());
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(menuInput.getMode().getEnumString());
     String category = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-    int requestedPage = pluginPlayer.getPage();
+    int requestedPage = menuInput.getPage();
 
-    pluginPlayer.setCategory(category);
+    menuInput.setCategory(category);
     user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage));
-    pluginPlayer.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
+    menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
   }
 
   /**
@@ -159,12 +159,12 @@ public class ForgeMenuClick implements MenuClick {
    * @param action type of interaction
    */
   private void previousRecipePage(RecipeMenu.Action action) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int requestedPage = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int requestedPage = menuInput.getPage();
 
     user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage - 1));
-    pluginPlayer.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
+    menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
   }
 
   /**
@@ -174,15 +174,15 @@ public class ForgeMenuClick implements MenuClick {
    * or a {@link RecipeRegistry.Recipe recipe} category.
    */
   private void openForgeEdit() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
     if (category.equals("")) {
       user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-      pluginPlayer.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+      menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
     } else {
-      int requestedPage = pluginPlayer.getPage();
+      int requestedPage = menuInput.getPage();
       user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getCategoryPage(category, requestedPage));
-      pluginPlayer.setMenu(MenuListener.Menu.FORGE_EDIT);
+      menuInput.setMenu(MenuListener.Menu.FORGE_EDIT);
     }
   }
 
@@ -190,37 +190,37 @@ public class ForgeMenuClick implements MenuClick {
    * Opens the {@link RecipeMenu} with the intent to remove {@link RecipeRegistry.Recipe recipe}.
    */
   private void openForgeRemove() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int requestedPage = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int requestedPage = menuInput.getPage();
 
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.REMOVE).getCategoryPage(category, requestedPage));
-    pluginPlayer.setMenu(MenuListener.Menu.FORGE_REMOVE);
+    menuInput.setMenu(MenuListener.Menu.FORGE_REMOVE);
   }
 
   /**
    * Opens the {@link RecipeMenu} with the {@link MenuListener.Mode} in mind.
    */
   private void returnToMainMenu() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(pluginPlayer.getMode().getEnumString());
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    RecipeMenu.Action action = RecipeMenu.Action.valueOf(menuInput.getMode().getEnumString());
 
-    pluginPlayer.setCategory("");
+    menuInput.setCategory("");
     user.openInventory(new RecipeMenu(user, action).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    pluginPlayer.setPage(0);
+    menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+    menuInput.setPage(0);
   }
 
   /**
    * Opens the {@link RecipeMenu} with the intent to craft {@link RecipeRegistry.Recipe recipes}.
    */
   private void openForgeCraft() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int requestedPage = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int requestedPage = menuInput.getPage();
 
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getCategoryPage(category, requestedPage));
-    pluginPlayer.setMenu(MenuListener.Menu.FORGE_CRAFT);
+    menuInput.setMenu(MenuListener.Menu.FORGE_CRAFT);
   }
 
   /**
@@ -229,12 +229,12 @@ public class ForgeMenuClick implements MenuClick {
    * @param action type of interaction
    */
   private void nextRecipePage(RecipeMenu.Action action) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    String category = pluginPlayer.getCategory();
-    int requestedPage = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    String category = menuInput.getCategory();
+    int requestedPage = menuInput.getPage();
 
     user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage + 1));
-    pluginPlayer.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
+    menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
   }
 
   /**
@@ -418,7 +418,7 @@ public class ForgeMenuClick implements MenuClick {
      * Crafts a {@link RecipeRegistry.Recipe recipe} if the user has enough materials.
      */
     protected void readRecipeMaterials() {
-      if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).isDeveloper()) {
+      if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().isDeveloper()) {
         giveResults();
         return;
       }

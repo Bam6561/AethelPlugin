@@ -22,7 +22,7 @@ import java.util.*;
  * See {@link StatCategory.StatisticType} and {@link StatCategory.SubstatisticType}.
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.22.4
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -110,7 +110,7 @@ public class StatMenu implements CategoryMenu {
     List<Inventory> category = StatCategory.getSubstatCategories().get(StatCategory.SubstatisticType.valueOf(TextFormatter.formatEnum(requestedCategory)));
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.getPageViewed(numberOfPages, requestedPage);
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setPage(pageViewed);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
     InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
@@ -149,7 +149,7 @@ public class StatMenu implements CategoryMenu {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-    OfflinePlayer owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getTarget());
+    OfflinePlayer owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getTarget());
     String statOwner = owner.getName();
 
     meta.setOwningPlayer(owner);

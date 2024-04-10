@@ -20,7 +20,7 @@ import java.util.UUID;
  * Represents a menu containing a {@link RecipeRegistry.Recipe recipe's} details.
  *
  * @author Danny Nguyen
- * @version 1.19.9
+ * @version 1.22.4
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -107,16 +107,16 @@ class RecipeDetailsMenu {
       case CRAFT -> {
         addRecipeContents();
         user.openInventory(menu);
-        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.FORGE_CRAFT_RECIPE);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.FORGE_CRAFT_RECIPE);
       }
       case EDIT -> {
         addRecipeContents();
         user.openInventory(menu);
-        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.FORGE_SAVE);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.FORGE_SAVE);
       }
       case SAVE -> {
         user.openInventory(menu);
-        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.FORGE_SAVE);
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.FORGE_SAVE);
       }
     }
   }

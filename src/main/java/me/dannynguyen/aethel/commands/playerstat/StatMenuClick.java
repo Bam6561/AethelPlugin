@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemReader;
@@ -24,7 +25,7 @@ import java.util.UUID;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.22.4
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClick {
@@ -60,15 +61,15 @@ public class StatMenuClick implements MenuClick {
    */
   public void interpretMenuClick() {
     if (slot > 8) {
-      PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-      String owner = Bukkit.getOfflinePlayer(pluginPlayer.getTarget()).getName();
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
       String item = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
 
-      pluginPlayer.setCategory(item);
+      menuInput.setCategory(item);
       user.openInventory(new StatMenu(user, owner).getCategoryPage(item, 0));
       switch (item) {
-        case "Entity Types", "Materials" -> pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
-        default -> pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_STAT);
+        case "Entity Types", "Materials" -> menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+        default -> menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_STAT);
       }
     }
   }
@@ -115,38 +116,38 @@ public class StatMenuClick implements MenuClick {
    * Opens the previous stat category page.
    */
   private void previousPage() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    String owner = Bukkit.getOfflinePlayer(pluginPlayer.getTarget()).getName();
-    String category = pluginPlayer.getCategory();
-    int pageRequest = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
+    String category = menuInput.getCategory();
+    int pageRequest = menuInput.getPage();
 
     user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest - 1));
-    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
   }
 
   /**
    * Opens a {@link StatMenu}.
    */
   private void returnToMenu() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
 
     user.openInventory(new StatMenu(user, owner).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
-    pluginPlayer.setPage(0);
+    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
+    menuInput.setPage(0);
   }
 
   /**
    * Opens the next stat category page.
    */
   private void nextPage() {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    String owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getTarget()).getName();
-    String category = pluginPlayer.getCategory();
-    int pageRequest = pluginPlayer.getPage();
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
+    String category = menuInput.getCategory();
+    int pageRequest = menuInput.getPage();
 
     user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest + 1));
-    pluginPlayer.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
   }
 
   /**
@@ -165,7 +166,7 @@ public class StatMenuClick implements MenuClick {
     /**
      * OfflinePlayer object of the player statistic owner.
      */
-    private final OfflinePlayer owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getTarget());
+    private final OfflinePlayer owner = Bukkit.getOfflinePlayer(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getTarget());
 
     /**
      * Player statistic owner's name.
@@ -205,7 +206,7 @@ public class StatMenuClick implements MenuClick {
      */
     private void sendSubstat() {
       String substat = ChatColor.stripColor(TextFormatter.formatEnum(requestedStat));
-      String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getCategory();
+      String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getCategory();
       String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
       List<String> statValues = getSubstatValues(category, substat);
 

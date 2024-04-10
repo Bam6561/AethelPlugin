@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.listeners.MessageListener;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.Settings;
@@ -37,7 +37,7 @@ import java.util.UUID;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.20.4
+ * @version 1.22.4
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
@@ -222,7 +222,7 @@ public class CharacterMenuClick implements MenuClick {
    */
   private void openQuests() {
     user.openInventory(new QuestsMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.CHARACTER_QUESTS);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.CHARACTER_QUESTS);
   }
 
   /**
@@ -230,7 +230,7 @@ public class CharacterMenuClick implements MenuClick {
    */
   private void openCollectibles() {
     user.openInventory(new CollectiblesMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.CHARACTER_COLLECTIBLES);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.CHARACTER_COLLECTIBLES);
   }
 
   /**
@@ -238,7 +238,7 @@ public class CharacterMenuClick implements MenuClick {
    */
   private void openSettings() {
     user.openInventory(new SettingsMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.CHARACTER_SETTINGS);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.CHARACTER_SETTINGS);
   }
 
   /**
@@ -366,7 +366,7 @@ public class CharacterMenuClick implements MenuClick {
    */
   private void returnToSheet() {
     user.openInventory(new SheetMenu(user, user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).setMenu(MenuListener.Menu.CHARACTER_SHEET);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.CHARACTER_SHEET);
   }
 
   /**
@@ -427,8 +427,8 @@ public class CharacterMenuClick implements MenuClick {
     user.closeInventory();
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "Binds:");
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Hotbar (Slot #'s)");
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid);
-    pluginPlayer.setMessageInput(MessageListener.Type.CHARACTER_BIND_ACTIVE_ABILITY);
-    pluginPlayer.setSlot(eSlot);
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    menuInput.setMessageInput(MessageListener.Type.CHARACTER_BIND_ACTIVE_ABILITY);
+    menuInput.setSlot(eSlot);
   }
 }

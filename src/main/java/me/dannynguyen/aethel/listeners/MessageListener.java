@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.listeners;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.commands.character.CharacterMessageSent;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.19.0
+ * @version 1.22.4
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -33,7 +32,7 @@ public class MessageListener implements Listener {
    */
   @EventHandler
   private void onPlayerChat(AsyncPlayerChatEvent e) {
-    Type type = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMessageInput();
+    Type type = Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMenuInput().getMessageInput();
     if (type != null) {
       e.setCancelled(true);
       String inputType = type.getId();
@@ -45,13 +44,13 @@ public class MessageListener implements Listener {
   }
 
   /**
-   * Removes plugin {@link PluginPlayer#getMessageInput()} when an inventory is opened.
+   * Removes plugin {@link me.dannynguyen.aethel.plugin.MenuInput#getMessageInput()} when an inventory is opened.
    *
    * @param e inventory open event
    */
   @EventHandler
   private void onOpenInventory(InventoryOpenEvent e) {
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).setMessageInput(null);
+    Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMenuInput().setMessageInput(null);
   }
 
   /**

@@ -3,6 +3,7 @@ package me.dannynguyen.aethel.commands.aethelitem;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.17.19
+ * @version 1.22.4
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -77,11 +78,11 @@ public class ItemCommand implements CommandExecutor {
    * @param user user
    */
   private void openMenu(Player user) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setCategory("");
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    menuInput.setCategory("");
     user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
-    pluginPlayer.setPage(0);
+    menuInput.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
+    menuInput.setPage(0);
   }
 
   /**

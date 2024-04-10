@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuListener;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.19.9
+ * @version 1.22.4
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -105,12 +105,12 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openCrafting(Player user) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_CRAFT);
-    pluginPlayer.setCategory("");
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_CRAFT);
+    menuInput.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    pluginPlayer.setPage(0);
+    menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+    menuInput.setPage(0);
   }
 
   /**
@@ -119,11 +119,11 @@ public class ForgeCommand implements CommandExecutor {
    * @param user user
    */
   private void openEditor(Player user) {
-    PluginPlayer pluginPlayer = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId());
-    pluginPlayer.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT);
-    pluginPlayer.setCategory("");
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+    menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT);
+    menuInput.setCategory("");
     user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-    pluginPlayer.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    pluginPlayer.setPage(0);
+    menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+    menuInput.setPage(0);
   }
 }
