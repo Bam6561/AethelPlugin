@@ -28,7 +28,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.5
+ * @version 1.22.6
  * @since 1.22.5
  */
 public class LocationCommand implements CommandExecutor {
@@ -144,7 +144,7 @@ public class LocationCommand implements CommandExecutor {
             user.sendMessage(ChatColor.RED + "Location does not exist.");
             return;
           }
-          user.sendMessage(ChatColor.GREEN + "[Get Location] " + ChatColor.AQUA + location.getWorld().getName() + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getBlockZ());
+          user.sendMessage(ChatColor.GREEN + "[Get Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getWorld().getName() + " " + location.getX() + ", " + location.getY() + ", " + location.getBlockZ());
         }
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
@@ -164,24 +164,24 @@ public class LocationCommand implements CommandExecutor {
           locations.put(args[1], location);
           user.sendMessage(ChatColor.GREEN + "[Saved Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
-        case 4 -> {
+        case 5 -> {
           double x;
           try {
-            x = Double.parseDouble(args[1]);
+            x = Double.parseDouble(args[2]);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_X.getMessage());
             return;
           }
           double y;
           try {
-            y = Double.parseDouble(args[2]);
+            y = Double.parseDouble(args[3]);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_Y.getMessage());
             return;
           }
           double z;
           try {
-            z = Double.parseDouble(args[3]);
+            z = Double.parseDouble(args[4]);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_Z.getMessage());
             return;
@@ -214,18 +214,54 @@ public class LocationCommand implements CommandExecutor {
      */
     private void trackLocation() {
       switch (args.length) {
+        case 1 -> {
+          Plugin.getData().getPluginSystem().getTrackedLocations().remove(user.getUniqueId());
+          user.sendMessage(ChatColor.RED + "[Stopped Location Tracking]");
+        }
         case 2 -> {
-          // TODO: track here to location
+          Location location = locations.get(args[1]);
+          if (location == null) {
+            user.sendMessage(ChatColor.RED + "Location does not exist.");
+            return;
+          }
+          Plugin.getData().getPluginSystem().getTrackedLocations().put(user.getUniqueId(), location);
+          user.sendMessage(ChatColor.GREEN + "[Tracking Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
         case 4 -> {
-          // TODO: track coordinates
+          double x;
+          try {
+            x = Double.parseDouble(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_X.getMessage());
+            return;
+          }
+          double y;
+          try {
+            y = Double.parseDouble(args[2]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_Y.getMessage());
+            return;
+          }
+          double z;
+          try {
+            z = Double.parseDouble(args[3]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_Z.getMessage());
+            return;
+          }
+          DecimalFormat df2 = new DecimalFormat();
+          df2.setMaximumFractionDigits(2);
+
+          Location location = new Location(user.getLocation().getWorld(), Double.parseDouble(df2.format(x)), Double.parseDouble(df2.format(y)), Double.parseDouble(df2.format(z)));
+          Plugin.getData().getPluginSystem().getTrackedLocations().put(user.getUniqueId(), location);
+          user.sendMessage(ChatColor.GREEN + "[Tracking Location] " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
     }
 
     /**
-     * Calculates volume between locations.
+     * Compares two locations.
      */
     private void compareLocations() {
       switch (args.length) {
@@ -257,12 +293,16 @@ public class LocationCommand implements CommandExecutor {
             return;
           }
 
-          user.sendMessage(ChatColor.GREEN + "[Compare Locations] " +
-              here.getX() + ", " + here.getY() + ", " + here.getZ() +
-              " -> " +
-              there.getX() + ", " + there.getY() + ", " + there.getZ() +
-              ChatColor.GOLD + " Distance: " + df2.format(here.distance(there)));
-          // TODO: volume calculation
+          double xLength = Math.abs(here.getX() - there.getX());
+          double yLength = Math.abs(here.getY() - there.getY());
+          double zLength = Math.abs(here.getZ() - there.getZ());
+
+          user.sendMessage(ChatColor.GREEN + "[Compare Locations] " + ChatColor.AQUA + here.getX() + ", " + here.getY() + ", " + here.getZ() + ChatColor.WHITE + " -> " + ChatColor.AQUA + there.getX() + ", " + there.getY() + ", " + there.getZ());
+          user.sendMessage(ChatColor.GOLD + "Lengths: " + ChatColor.WHITE + df2.format(xLength) + ", " + df2.format(yLength) + ", " + df2.format(zLength));
+          user.sendMessage(ChatColor.GOLD + "Midpoint: " + ChatColor.WHITE + df2.format((here.getX() + there.getX() / 2)) + ", " + df2.format((here.getY() + there.getY() / 2)) + ", " + df2.format((here.getZ() + there.getZ() / 2)));
+          user.sendMessage(ChatColor.GOLD + "Distance: " + ChatColor.WHITE + df2.format(here.distance(there)));
+          user.sendMessage(ChatColor.GOLD + "Area: " + ChatColor.WHITE + df2.format((xLength * zLength)));
+          user.sendMessage(ChatColor.GOLD + "Volume: " + ChatColor.WHITE + df2.format((xLength * yLength * zLength)));
         }
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }

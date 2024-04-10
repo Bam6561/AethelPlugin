@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.plugin.Directory;
+import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.plugin.PluginSystem;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.16.4
+ * @version 1.22.6
  * @since 1.1.7
  */
 public class PluginData {
@@ -96,6 +97,11 @@ public class PluginData {
     finish = System.nanoTime();
     log.info("[Aethel] Loaded Forge Recipes: " + longToMs(df2, start, finish));
 
+    File locationDirectory = Directory.LOCATION.getFile();
+    if (!locationDirectory.exists()) {
+      locationDirectory.mkdirs();
+    }
+
     File rpgJewelryDirectory = Directory.JEWELRY.getFile();
     if (!rpgJewelryDirectory.exists()) {
       rpgJewelryDirectory.mkdirs();
@@ -122,6 +128,15 @@ public class PluginData {
     df2.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Saving Resources");
+
+    Collection<PluginPlayer> pluginPlayers = Plugin.getData().getPluginSystem().getPluginPlayers().values();
+
+    start = System.nanoTime();
+    for (PluginPlayer pluginPlayer : pluginPlayers) {
+      pluginPlayer.getLocationRegistry().saveLocations();
+    }
+    finish = System.nanoTime();
+    log.info("[Aethel] Saved Plugin Locations: " + longToMs(df2, start, finish));
 
     Collection<RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers().values();
 

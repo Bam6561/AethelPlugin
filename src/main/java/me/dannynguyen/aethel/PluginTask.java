@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -21,7 +22,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.2
+ * @version 1.22.6
  * @since 1.22.2
  */
 public class PluginTask {
@@ -71,33 +72,6 @@ public class PluginTask {
   }
 
   /**
-   * Update players' {@link Health health in action bar} display.
-   */
-  public void updateActionDisplay() {
-    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
-    for (UUID uuid : rpgPlayers.keySet()) {
-      if (Bukkit.getPlayer(uuid) != null) {
-        rpgPlayers.get(uuid).getHealth().updateActionDisplay();
-      }
-    }
-  }
-
-  /**
-   * Decay players' overcapped {@link Health overshields}.
-   * <p>
-   * An overshield begins to decay when current health
-   * exceeds max health by a factor greater than x1.2.
-   */
-  public void updateOvershields() {
-    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
-    for (UUID uuid : rpgPlayers.keySet()) {
-      if (Bukkit.getPlayer(uuid) != null) {
-        rpgPlayers.get(uuid).getHealth().decayOvershield();
-      }
-    }
-  }
-
-  /**
    * Triggers {@link PassiveTriggerType#BELOW_HEALTH} {@link PassiveAbility passive abilities}.
    * <p>
    * {@link PassiveTriggerType#BELOW_HEALTH}{@link PassiveAbility} can only be triggered on self.
@@ -119,6 +93,59 @@ public class PluginTask {
             ability.doEffect(rpgPlayer, rpgPlayer.getUUID());
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Decay players' overcapped {@link Health overshields}.
+   * <p>
+   * An overshield begins to decay when current health
+   * exceeds max health by a factor greater than x1.2.
+   */
+  public void updateOvershields() {
+    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
+    for (UUID uuid : rpgPlayers.keySet()) {
+      if (Bukkit.getPlayer(uuid) != null) {
+        rpgPlayers.get(uuid).getHealth().decayOvershield();
+      }
+    }
+  }
+
+  /**
+   * Update players' {@link Health health in action bar} display.
+   */
+  public void updateActionDisplay() {
+    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
+    for (UUID uuid : rpgPlayers.keySet()) {
+      if (Bukkit.getPlayer(uuid) != null) {
+        rpgPlayers.get(uuid).getHealth().updateActionDisplay();
+      }
+    }
+  }
+
+  /**
+   * Spawns particle trails for currently tracked locations.
+   */
+  public void trackLocations() {
+    Map<UUID, Location> trackedLocations = Plugin.getData().getPluginSystem().getTrackedLocations();
+    for (UUID uuid : trackedLocations.keySet()) {
+      Player player = Bukkit.getPlayer(uuid);
+      Location here = player.getLocation().add(0, 1, 0);
+      Location there = trackedLocations.get(uuid);
+      if (here.getWorld().getName().equals(there.getWorld().getName())) {
+        if (there.getWorld().getNearbyEntities(there, 4, 4, 4).contains(player)) {
+          player.sendMessage(ChatColor.RED + "[Stopped Location Tracking]");
+          trackedLocations.remove(uuid);
+        }
+        Vector direction = there.toVector().subtract(here.toVector()).normalize();
+        player.spawnParticle(Particle.FLAME, here.add(direction), 1, 0, 0, 0, 0);
+        player.spawnParticle(Particle.FLAME, here.add(direction.clone().multiply(2)), 1, 0, 0, 0, 0);
+        player.spawnParticle(Particle.FLAME, here.add(direction.clone().multiply(4)), 1, 0, 0, 0, 0);
+        player.spawnParticle(Particle.FLAME, here.add(direction.clone().multiply(8)), 1, 0, 0, 0, 0);
+      } else {
+        player.sendMessage(ChatColor.RED + "[Stopped Location Tracking]");
+        trackedLocations.remove(uuid);
       }
     }
   }

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.22.5
+ * @version 1.22.6
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -146,6 +146,7 @@ public class Plugin extends JavaPlugin {
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerBelowHealthPassives, 5, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateOvershields, 10, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateActionDisplay, 0, 40);
+    scheduler.scheduleSyncRepeatingTask(this, pluginTask::trackLocations, 0, 50);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::refreshEnchantmentEffects, 0, 100);
   }
 

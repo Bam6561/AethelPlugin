@@ -10,7 +10,7 @@ import java.util.UUID;
  * Represents a player's plugin metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.5
+ * @version 1.22.6
  * @since 1.17.16
  */
 public class PluginPlayer {
@@ -38,10 +38,21 @@ public class PluginPlayer {
   }
 
   /**
+   * Gets the UUID the Plugin player belongs to.
+   *
+   * @return Plugin player owner
+   */
+  @NotNull
+  public UUID getUuid() {
+    return this.uuid;
+  }
+
+  /**
    * Gets the {@link MenuInput}.
    *
    * @return {@link MenuInput}
    */
+  @NotNull
   public MenuInput getMenuInput() {
     return this.menuInput;
   }
@@ -51,6 +62,7 @@ public class PluginPlayer {
    *
    * @return {@link LocationRegistry}
    */
+  @NotNull
   public LocationRegistry getLocationRegistry() {
     return this.locationRegistry;
   }
