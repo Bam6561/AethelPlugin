@@ -1,5 +1,5 @@
 name: Aethel
-version: 1.22.14
+version: 1.22.15
 api-version: 1.20
 author: Bam6561
 main: me.dannynguyen.aethel.Plugin
@@ -11,10 +11,14 @@ commands:
     description: Opens an AethelItem menu.
     usage: /aethelitem [reload]
     aliases: [ ai, aitem ]
-  aetheltag:
-    description: Edits Aethel plugin tags.
-    usage: /aetheltag [get][set][remove]
-    aliases: [ at, atag ]
+  aethelentitytag:
+    description: Edits an entity's Aethel plugin tags.
+    usage: /aethelentitytag [get][set][remove]
+    aliases: [ aet, etag ]
+  aethelitemtag:
+    description: Edits an item's Aethel plugin tags.
+    usage: /aethelitemtag [get][set][remove]
+    aliases: [ ait, itag ]
   buff:
     description: Edits an entity's buffs.
     usage: /buff [get][add][remove]

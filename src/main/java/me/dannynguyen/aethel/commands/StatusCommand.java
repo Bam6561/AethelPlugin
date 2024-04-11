@@ -30,11 +30,11 @@ import java.util.*;
  *  <li>"remove", "r": removes a status or all {@link Status statuses} from the entity
  * </ul>
  * <p>
- * For multiple targets, use the "D:," target radius selector.
- * The self user is included by default, unless "D:!s," is specified.
+ * For multiple targets, use the "r:," target radius selector.
+ * The self user is included by default, unless "r:!s," is specified.
  *
  * @author Danny Nguyen
- * @version 1.21.8.1
+ * @version 1.22.15
  * @since 1.14.8
  */
 public class StatusCommand implements CommandExecutor {
@@ -75,12 +75,13 @@ public class StatusCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args) {
     int numberOfParameters = args.length;
-    String action = null;
-    if (numberOfParameters > 0) {
-      action = args[0].toLowerCase();
+    if (numberOfParameters == 0) {
+      user.sendMessage(Message.NO_PARAMETERS.getMessage());
+      return;
     }
+
+    String action = args[0].toLowerCase();
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(Message.NO_PARAMETERS.getMessage());
       case 2 -> {
         switch (action) {
           case "g", "get" -> readEntityTarget(user, Action.GET, args);
@@ -112,7 +113,7 @@ public class StatusCommand implements CommandExecutor {
    * @param args   user provided parameters
    */
   private void readEntityTarget(Player user, Action action, String[] args) {
-    if (!args[1].startsWith("D:")) {
+    if (!args[1].startsWith("r:")) {
       UUID uuid;
       String target = args[1];
       if (Bukkit.getPlayer(target) != null) {
@@ -166,7 +167,7 @@ public class StatusCommand implements CommandExecutor {
         return;
       }
       Set<UUID> targets = new HashSet<>();
-      if (!radiusParameters[0].equals("D:!s")) {
+      if (!radiusParameters[0].equals("r:!s")) {
         targets.add(user.getUniqueId());
       }
       for (Entity entity : user.getNearbyEntities(x, y, z)) {

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.15
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -71,7 +71,8 @@ public class Plugin extends JavaPlugin {
    * <ul>
    *  <li>{@link ItemCommand}
    *  <li>{@link BuffCommand}
-   *  <li>{@link TagCommand}
+   *  <li>{@link EntityTagCommand}
+   *  <li>{@link ItemTagCommand}
    *  <li>{@link CharacterCommand}
    *  <li>{@link DeveloperCommand}
    *  <li>{@link ForgeCommand}
@@ -87,7 +88,8 @@ public class Plugin extends JavaPlugin {
   private void registerCommands() {
     this.getCommand("aethelitem").setExecutor(new ItemCommand());
     this.getCommand("buff").setExecutor(new BuffCommand());
-    this.getCommand("aetheltag").setExecutor(new TagCommand());
+    this.getCommand("aethelentitytag").setExecutor(new EntityTagCommand());
+    this.getCommand("aethelitemtag").setExecutor(new ItemTagCommand());
     this.getCommand("character").setExecutor(new CharacterCommand());
     this.getCommand("developermode").setExecutor(new DeveloperCommand());
     this.getCommand("forge").setExecutor(new ForgeCommand());

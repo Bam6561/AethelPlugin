@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Command invocation that allows the user to retrieve, set, or remove
- * {@link Key Aethel tags} to their main hand item.
+ * Command invocation that allows the user to retrieve, set,
+ * or remove {@link Key Aethel tags} to their main hand item.
  * <p>
  * Registered through {@link me.dannynguyen.aethel.Plugin}.
  * <p>
@@ -45,18 +45,18 @@ import java.util.Objects;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.22.15
  * @since 1.2.6
  */
-public class TagCommand implements CommandExecutor {
+public class ItemTagCommand implements CommandExecutor {
   /**
    * No parameter constructor.
    */
-  public TagCommand() {
+  public ItemTagCommand() {
   }
 
   /**
-   * Executes the AethelTag command.
+   * Executes the AethelItemTag command.
    *
    * @param sender  command source
    * @param command executed command
@@ -67,7 +67,7 @@ public class TagCommand implements CommandExecutor {
   @Override
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
-      if (user.hasPermission("aethel.aetheltag")) {
+      if (user.hasPermission("aethel.aethelitemtag")) {
         ItemStack item = user.getInventory().getItemInMainHand();
         if (ItemReader.isNotNullOrAir(item)) {
           readRequest(user, args, item);
@@ -92,12 +92,13 @@ public class TagCommand implements CommandExecutor {
    */
   private void readRequest(Player user, String[] args, ItemStack item) {
     int numberOfParameters = args.length;
-    String action = null;
-    if (numberOfParameters > 0) {
-      action = args[0].toLowerCase();
+    if (numberOfParameters == 0) {
+      user.sendMessage(Message.NO_PARAMETERS.getMessage());
+      return;
     }
+
+    String action = args[0].toLowerCase();
     switch (numberOfParameters) {
-      case 0 -> user.sendMessage(Message.NO_PARAMETERS.getMessage());
       case 1 -> {
         switch (action) {
           case "g", "get" -> getTags(user, item);
