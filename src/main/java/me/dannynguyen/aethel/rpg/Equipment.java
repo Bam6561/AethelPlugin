@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.12
  * @since 1.13.4
  */
 public class Equipment {
@@ -109,30 +109,60 @@ public class Equipment {
    */
   private void loadEquipment(Player player) {
     PlayerInventory pInv = player.getInventory();
-    readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND, false);
-    readSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND, false);
-    readSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD, false);
-    readSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST, false);
-    readSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS, false);
-    readSlot(pInv.getBoots(), RpgEquipmentSlot.FEET, false);
-    readSlot(jewelry[0], RpgEquipmentSlot.NECKLACE, false);
-    readSlot(jewelry[1], RpgEquipmentSlot.RING, false);
+    loadSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);
+    loadSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST);
+    loadSlot(pInv.getLeggings(), RpgEquipmentSlot.LEGS);
+    loadSlot(pInv.getBoots(), RpgEquipmentSlot.FEET);
+    loadSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND);
+    loadSlot(pInv.getItemInOffHand(), RpgEquipmentSlot.OFF_HAND);
+    loadSlot(jewelry[0], RpgEquipmentSlot.NECKLACE);
+    loadSlot(jewelry[1], RpgEquipmentSlot.RING);
   }
 
   /**
    * Checks if the item has {@link Key#ATTRIBUTE_LIST Aethel attributes},
    * enchantments, {@link Key#PASSIVE_LIST passive abilities},
-   * and {@link Key#ACTIVE_LIST active abilities}
-   * before checking whether the item is in the correct equipment slot.
+   * and {@link Key#ACTIVE_LIST active abilities} before checking
+   * whether the item is in the correct equipment slot.
+   *
+   * @param item  interacting item
+   * @param eSlot {@link RpgEquipmentSlot}
+   */
+  private void loadSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot eSlot) {
+    if (ItemReader.isNotNullOrAir(item)) {
+      PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+      if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        attributes.getSlotAttributes().put(eSlot, new HashMap<>());
+        attributes.readAttributes(eSlot, itemTags, true);
+      }
+      if (item.getItemMeta().hasEnchants()) {
+        enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
+        enchantments.addEnchantments(eSlot, item);
+      }
+      if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        abilities.getSlotPassives().put(eSlot, new ArrayList<>());
+        abilities.readPassives(eSlot, itemTags);
+      }
+      if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        abilities.getTriggerActives().put(eSlot, new ArrayList<>());
+        abilities.readActives(eSlot, itemTags);
+      }
+    }
+  }
+
+  /**
+   * Checks if the item has {@link Key#ATTRIBUTE_LIST Aethel attributes},
+   * enchantments, {@link Key#PASSIVE_LIST passive abilities},
+   * and {@link Key#ACTIVE_LIST active abilities} before checking
+   * whether the item is in the correct equipment slot.
    * <p>
    * A 2 tick delay is added to max health updates due to items containing
    * Minecraft's Generic Health attribute requiring 1 tick to update.
    *
-   * @param item            interacting item
-   * @param eSlot           {@link RpgEquipmentSlot}
-   * @param maxHealthUpdate whether to update the player's max health
+   * @param item  interacting item
+   * @param eSlot {@link RpgEquipmentSlot}
    */
-  public void readSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot eSlot, boolean maxHealthUpdate) {
+  public void readSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot eSlot) {
     Objects.requireNonNull(eSlot, "Null RPG equipment slot");
     if (ItemReader.isNotNullOrAir(item)) {
       removeSlotData(eSlot);
@@ -140,9 +170,7 @@ public class Equipment {
     } else {
       removeSlotData(eSlot);
     }
-    if (maxHealthUpdate) {
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().updateMaxHealth(), 2);
-    }
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().updateMaxHealth(), 2);
   }
 
   /**
@@ -170,7 +198,7 @@ public class Equipment {
     PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
     if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       attributes.getSlotAttributes().put(eSlot, new HashMap<>());
-      attributes.readAttributes(eSlot, itemTags);
+      attributes.readAttributes(eSlot, itemTags, false);
     }
     if (item.getItemMeta().hasEnchants()) {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
@@ -317,15 +345,16 @@ public class Equipment {
      * Checks if the item is in the correct {@link RpgEquipmentSlot}
      * before updating the player's {@link AethelAttribute} values.
      *
-     * @param eSlot    {@link RpgEquipmentSlot}
-     * @param itemTags item's persistent tags
+     * @param eSlot      {@link RpgEquipmentSlot}
+     * @param itemTags   item's persistent tags
+     * @param alreadySet if the attribute has already been set to tags, true only on equipment initialization
      */
-    private void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
+    private void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags, boolean alreadySet) {
       String[] slotAttributes = Objects.requireNonNull(itemTags, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
       for (String slotAttribute : slotAttributes) {
         RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(slotAttribute.substring(0, slotAttribute.indexOf("."))));
         if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
-          addAttributes(eSlot, itemTags, slotAttribute);
+          addAttributes(eSlot, itemTags, slotAttribute, alreadySet);
         }
       }
     }
@@ -336,17 +365,20 @@ public class Equipment {
      * @param eSlot         {@link RpgEquipmentSlot}
      * @param itemContainer item's persistent tags
      * @param slotAttribute attribute modifier
+     * @param alreadySet    if the attribute has already been set to tags, true only on equipment initialization
      */
-    private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer itemContainer, String slotAttribute) {
+    private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer itemContainer, String slotAttribute, boolean alreadySet) {
       NamespacedKey itemAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slotAttribute);
       String attributeId = slotAttribute.substring(slotAttribute.indexOf(".") + 1);
       AethelAttribute attributeType = AethelAttribute.valueOf(TextFormatter.formatEnum(attributeId));
       double itemAttributeValue = itemContainer.get(itemAttributeKey, PersistentDataType.DOUBLE);
       slotAttributes.get(eSlot).put(attributeType, itemAttributeValue);
 
-      NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeId);
-      double entityAttributeValue = playerTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
-      playerTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue + itemAttributeValue);
+      if (!alreadySet) {
+        NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeId);
+        double entityAttributeValue = playerTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
+        playerTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue + itemAttributeValue);
+      }
     }
 
     /**

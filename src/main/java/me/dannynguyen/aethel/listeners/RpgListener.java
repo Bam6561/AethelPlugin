@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.12
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -49,15 +49,18 @@ public class RpgListener implements Listener {
    */
   @EventHandler
   private void onJoin(PlayerJoinEvent e) {
-    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
     Player player = e.getPlayer();
     UUID uuid = player.getUniqueId();
 
-    if (rpgSystem.getRpgPlayers().get(uuid) == null) {
-      rpgSystem.loadRpgPlayer(player);
-      rpgSystem.getRpgPlayers().get(uuid).getEquipment().setHeldItem(player.getInventory().getItemInMainHand());
+    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
+    RpgPlayer rpgPlayer = rpgPlayers.get(uuid);
+
+    if (rpgPlayer == null) {
+      rpgPlayer = new RpgPlayer(player);
+      rpgPlayer.getEquipment().setHeldItem(player.getInventory().getItemInMainHand());
+      rpgPlayers.put(uuid, rpgPlayer);
     } else {
-      BossBar healthBar = rpgSystem.getRpgPlayers().get(uuid).getHealth().getBar();
+      BossBar healthBar = rpgPlayer.getHealth().getBar();
       healthBar.removeAll();
       healthBar.addPlayer(player);
     }

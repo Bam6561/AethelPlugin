@@ -37,7 +37,7 @@ import java.util.UUID;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.22.12
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
@@ -210,7 +210,7 @@ public class CharacterMenuClick implements MenuClick {
         e.getInventory().setItem(11, user.getInventory().getItem(e.getSlot()));
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().readSlot(item, RpgEquipmentSlot.HAND, true);
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().readSlot(item, RpgEquipmentSlot.HAND);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, e.getInventory())::addAttributes, 3);
         }, 1);
       }, 1);
@@ -328,12 +328,12 @@ public class CharacterMenuClick implements MenuClick {
       Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment();
       ItemStack wornItem = user.getInventory().getItem(iSlot);
       switch (iSlot) {
-        case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
-        case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
-        case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
-        case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET, true);
-        case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
-        default -> equipment.readSlot(wornItem, RpgEquipmentSlot.HAND, true);
+        case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD);
+        case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST);
+        case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS);
+        case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET);
+        case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND);
+        default -> equipment.readSlot(wornItem, RpgEquipmentSlot.HAND);
       }
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, e.getClickedInventory())::addAttributes, 3);
     }, 1);
@@ -350,11 +350,11 @@ public class CharacterMenuClick implements MenuClick {
       switch (slot) {
         case 20 -> {
           equipment.getJewelry()[0] = wornItem;
-          equipment.readSlot(wornItem, RpgEquipmentSlot.NECKLACE, true);
+          equipment.readSlot(wornItem, RpgEquipmentSlot.NECKLACE);
         }
         case 29 -> {
           equipment.getJewelry()[1] = wornItem;
-          equipment.readSlot(wornItem, RpgEquipmentSlot.RING, true);
+          equipment.readSlot(wornItem, RpgEquipmentSlot.RING);
         }
       }
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, menu)::addAttributes, 3);

@@ -11,7 +11,7 @@ import java.util.*;
  * Represents RPG metadata in memory.
  *
  * @author Danny Nguyen
- * @version 1.20.12
+ * @version 1.22.12
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -33,22 +33,13 @@ public class RpgSystem {
   /**
    * Players with sufficient {@link Equipment.Enchantments} level requirements.
    */
-  private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
-      Enchantment.PROTECTION_FALL, new HashSet<>(), Enchantment.PROTECTION_FIRE, new HashSet<>()));
+  private final Map<Enchantment, Set<UUID>> sufficientEnchantments = Map.of(
+      Enchantment.PROTECTION_FALL, new HashSet<>(), Enchantment.PROTECTION_FIRE, new HashSet<>());
 
   /**
    * No parameter constructor.
    */
   public RpgSystem() {
-  }
-
-  /**
-   * Loads an {@link RpgPlayer} into memory.
-   *
-   * @param player interacting player
-   */
-  public void loadRpgPlayer(@NotNull Player player) {
-    rpgPlayers.put(Objects.requireNonNull(player, "Null player").getUniqueId(), new RpgPlayer(player));
   }
 
   /**

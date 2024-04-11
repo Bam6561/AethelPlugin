@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.12
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -71,7 +71,7 @@ public class EquipmentListener implements Listener {
   private void onItemHeld(PlayerItemHeldEvent e) {
     Player player = e.getPlayer();
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
-    rpgPlayer.getEquipment().readSlot(player.getInventory().getItem(e.getNewSlot()), RpgEquipmentSlot.HAND, true);
+    rpgPlayer.getEquipment().readSlot(player.getInventory().getItem(e.getNewSlot()), RpgEquipmentSlot.HAND);
   }
 
   /**
@@ -82,7 +82,7 @@ public class EquipmentListener implements Listener {
   @EventHandler
   private void onSwapHandItem(PlayerSwapHandItemsEvent e) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId());
-    rpgPlayer.getEquipment().readSlot(e.getOffHandItem(), RpgEquipmentSlot.OFF_HAND, true);
+    rpgPlayer.getEquipment().readSlot(e.getOffHandItem(), RpgEquipmentSlot.OFF_HAND);
   }
 
   /**
@@ -158,11 +158,11 @@ public class EquipmentListener implements Listener {
       Equipment equipment = rpgPlayer.getEquipment();
       final ItemStack wornItem = player.getInventory().getItem(slot);
       switch (slot) {
-        case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET, true);
-        case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS, true);
-        case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST, true);
-        case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD, true);
-        case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
+        case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET);
+        case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS);
+        case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST);
+        case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD);
+        case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND);
       }
     }, 1);
   }

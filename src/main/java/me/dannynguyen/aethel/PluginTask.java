@@ -21,7 +21,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.12
  * @since 1.22.2
  */
 public class PluginTask {
@@ -43,7 +43,7 @@ public class PluginTask {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         if (!heldItem.equals(equipment.getHeldItem())) {
           equipment.setHeldItem(heldItem);
-          equipment.readSlot(heldItem, RpgEquipmentSlot.HAND, true);
+          equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
         }
       }
     }

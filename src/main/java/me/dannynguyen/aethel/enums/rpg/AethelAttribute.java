@@ -21,6 +21,11 @@ public enum AethelAttribute {
   CRITICAL_DAMAGE("Critical Damage", "critical_damage", "1.25x [Input / 100]"),
 
   /**
+   * Max health.
+   */
+  MAX_HEALTH("Max Health", "max_health", "20.0"),
+
+  /**
    * Counterattack chance.
    */
   COUNTER_CHANCE("Counter Chance", "counter_chance", "0.0%"),
@@ -29,11 +34,6 @@ public enum AethelAttribute {
    * Dodge chance.
    */
   DODGE_CHANCE("Dodge Chance", "dodge_chance", "0.0%"),
-
-  /**
-   * Max health.
-   */
-  MAX_HEALTH("Max Health", "max_health", "20.0"),
 
   /**
    * Flat damage blocked.
