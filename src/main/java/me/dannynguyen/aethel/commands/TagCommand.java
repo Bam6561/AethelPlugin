@@ -195,7 +195,7 @@ public class TagCommand implements CommandExecutor {
     /**
      * ItemStack's persistent data tags.
      */
-    private final PersistentDataContainer dataContainer;
+    private final PersistentDataContainer itemTags;
 
     /**
      * Tag to be modified.
@@ -220,7 +220,7 @@ public class TagCommand implements CommandExecutor {
       this.originalTag = Objects.requireNonNull(tag, "Null tag");
       this.tag = originalTag;
       this.meta = item.getItemMeta();
-      this.dataContainer = meta.getPersistentDataContainer();
+      this.itemTags = meta.getPersistentDataContainer();
     }
 
     /**
@@ -230,8 +230,8 @@ public class TagCommand implements CommandExecutor {
      */
     private boolean removeTag() {
       NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag);
-      if (dataContainer.has(tagKey, PersistentDataType.STRING) || dataContainer.has(tagKey, PersistentDataType.DOUBLE)) {
-        dataContainer.remove(tagKey);
+      if (itemTags.has(tagKey, PersistentDataType.STRING) || itemTags.has(tagKey, PersistentDataType.DOUBLE)) {
+        itemTags.remove(tagKey);
         if (tag.startsWith("attribute.")) {
           removeAttributeTag();
         } else if (tag.startsWith("passive.")) {
@@ -271,7 +271,7 @@ public class TagCommand implements CommandExecutor {
           user.sendMessage(ChatColor.RED + "Cannot set active.list directly.");
         }
       } else {
-        dataContainer.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.STRING, value);
+        itemTags.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.STRING, value);
         item.setItemMeta(meta);
         user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
       }
@@ -283,14 +283,14 @@ public class TagCommand implements CommandExecutor {
     private void removeAttributeTag() {
       if (!tag.equals("attribute.list")) {
         NamespacedKey listKey = Key.ATTRIBUTE_LIST.getNamespacedKey();
-        if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+        if (itemTags.has(listKey, PersistentDataType.STRING)) {
           tag = tag.substring(10);
           removeKeyFromList(listKey);
         }
       } else {
-        for (NamespacedKey key : dataContainer.getKeys()) {
+        for (NamespacedKey key : itemTags.getKeys()) {
           if (key.getKey().startsWith(KeyHeader.ATTRIBUTE.getHeader())) {
-            dataContainer.remove(key);
+            itemTags.remove(key);
           }
         }
       }
@@ -302,14 +302,14 @@ public class TagCommand implements CommandExecutor {
     private void removePassiveTag() {
       if (!tag.equals("passive.list")) {
         NamespacedKey listKey = Key.PASSIVE_LIST.getNamespacedKey();
-        if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+        if (itemTags.has(listKey, PersistentDataType.STRING)) {
           tag = tag.substring(8);
           removeKeyFromList(listKey);
         }
       } else {
-        for (NamespacedKey key : dataContainer.getKeys()) {
+        for (NamespacedKey key : itemTags.getKeys()) {
           if (key.getKey().startsWith(KeyHeader.PASSIVE.getHeader())) {
-            dataContainer.remove(key);
+            itemTags.remove(key);
           }
         }
       }
@@ -321,14 +321,14 @@ public class TagCommand implements CommandExecutor {
     private void removeActiveTag() {
       if (!tag.equals("active.list")) {
         NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
-        if (dataContainer.has(listKey, PersistentDataType.STRING)) {
+        if (itemTags.has(listKey, PersistentDataType.STRING)) {
           tag = tag.substring(7);
           removeKeyFromList(listKey);
         }
       } else {
-        for (NamespacedKey key : dataContainer.getKeys()) {
+        for (NamespacedKey key : itemTags.getKeys()) {
           if (key.getKey().startsWith(KeyHeader.ACTIVE.getHeader())) {
-            dataContainer.remove(key);
+            itemTags.remove(key);
           }
         }
       }
@@ -501,7 +501,7 @@ public class TagCommand implements CommandExecutor {
      */
     private void setAttributeTag(double value) {
       NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + tag);
-      dataContainer.set(tagKey, PersistentDataType.DOUBLE, value);
+      itemTags.set(tagKey, PersistentDataType.DOUBLE, value);
       setKeyToList(Key.ATTRIBUTE_LIST.getNamespacedKey());
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
@@ -518,7 +518,7 @@ public class TagCommand implements CommandExecutor {
       }
 
       NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + tag);
-      dataContainer.set(tagKey, PersistentDataType.STRING, value);
+      itemTags.set(tagKey, PersistentDataType.STRING, value);
       setKeyToList(Key.PASSIVE_LIST.getNamespacedKey());
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
@@ -535,7 +535,7 @@ public class TagCommand implements CommandExecutor {
       }
 
       NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + tag);
-      dataContainer.set(tagKey, PersistentDataType.STRING, value);
+      itemTags.set(tagKey, PersistentDataType.STRING, value);
       setKeyToList(Key.ACTIVE_LIST.getNamespacedKey());
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
@@ -547,7 +547,7 @@ public class TagCommand implements CommandExecutor {
      * @param listKey list key
      */
     private void removeKeyFromList(NamespacedKey listKey) {
-      List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newKeys = new StringBuilder();
       for (String key : keys) {
         if (!key.equals(tag)) {
@@ -555,9 +555,9 @@ public class TagCommand implements CommandExecutor {
         }
       }
       if (!newKeys.isEmpty()) {
-        dataContainer.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
       } else {
-        dataContainer.remove(listKey);
+        itemTags.remove(listKey);
       }
     }
 
@@ -567,17 +567,17 @@ public class TagCommand implements CommandExecutor {
      * @param listKey list key
      */
     private void setKeyToList(NamespacedKey listKey) {
-      if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-        List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
         StringBuilder newKeys = new StringBuilder();
         for (String key : keys) {
           if (!key.equals(tag)) {
             newKeys.append(key).append(" ");
           }
         }
-        dataContainer.set(listKey, PersistentDataType.STRING, newKeys + tag);
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys + tag);
       } else {
-        dataContainer.set(listKey, PersistentDataType.STRING, tag);
+        itemTags.set(listKey, PersistentDataType.STRING, tag);
       }
     }
   }

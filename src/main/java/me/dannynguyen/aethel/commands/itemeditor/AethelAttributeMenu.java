@@ -61,9 +61,9 @@ public class AethelAttributeMenu implements Menu {
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * ItemStack data container.
+   * ItemStack's persistent tags.
    */
-  private final PersistentDataContainer dataContainer;
+  private final PersistentDataContainer itemTags;
 
   /**
    * ItemStack {@link Key#ATTRIBUTE_LIST Aethel attributes}.
@@ -80,7 +80,7 @@ public class AethelAttributeMenu implements Menu {
     this.user = Objects.requireNonNull(user, "Null user");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
-    this.dataContainer = item.getItemMeta().getPersistentDataContainer();
+    this.itemTags = item.getItemMeta().getPersistentDataContainer();
     this.existingAethelAttributes = mapAethelAttributes();
     this.menu = createMenu();
   }
@@ -150,10 +150,10 @@ public class AethelAttributeMenu implements Menu {
    */
   private Map<String, List<String>> mapAethelAttributes() {
     NamespacedKey listKey = Key.ATTRIBUTE_LIST.getNamespacedKey();
-    boolean hasAttributes = dataContainer.has(listKey, PersistentDataType.STRING);
+    boolean hasAttributes = itemTags.has(listKey, PersistentDataType.STRING);
     if (hasAttributes) {
       Map<String, List<String>> existingAethelAttributes = new HashMap<>();
-      List<String> attributes = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      List<String> attributes = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String attribute : attributes) {
         String attributeType = attribute.substring(attribute.indexOf(".") + 1);
         if (existingAethelAttributes.containsKey(attributeType)) {
@@ -184,7 +184,7 @@ public class AethelAttributeMenu implements Menu {
           List<String> lore = new ArrayList<>();
           for (String slot : existingAethelAttributes.get(attributeId)) {
             NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slot + "." + attributeId);
-            double attributeValue = dataContainer.get(attributeKey, PersistentDataType.DOUBLE);
+            double attributeValue = itemTags.get(attributeKey, PersistentDataType.DOUBLE);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + attributeValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.GLOW_ITEM_FRAME, ChatColor.AQUA + attributeName, lore));

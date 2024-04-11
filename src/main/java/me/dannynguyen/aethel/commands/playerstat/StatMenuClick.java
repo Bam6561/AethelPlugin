@@ -5,7 +5,6 @@ import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.*;

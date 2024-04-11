@@ -117,15 +117,15 @@ public class Abilities {
    * Checks if the item is in the correct {@link RpgEquipmentSlot}
    * before updating the player's {@link PassiveAbility passive abilities}.
    *
-   * @param eSlot         {@link RpgEquipmentSlot}
-   * @param dataContainer item's persistent tags
+   * @param eSlot    {@link RpgEquipmentSlot}
+   * @param itemTags item's persistent tags
    */
-  public void readPassives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
-    String[] passives = Objects.requireNonNull(dataContainer, "Null data container").get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+  public void readPassives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
+    String[] passives = Objects.requireNonNull(itemTags, "Null data container").get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String passive : passives) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(passive.substring(0, passive.indexOf("."))));
       if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
-        addPassives(eSlot, dataContainer, passive);
+        addPassives(eSlot, itemTags, passive);
       }
     }
   }
@@ -134,15 +134,15 @@ public class Abilities {
    * Checks if the item is in the correct {@link RpgEquipmentSlot}
    * before updating the player's {@link ActiveAbility active abilities}.
    *
-   * @param eSlot         {@link RpgEquipmentSlot}
-   * @param dataContainer item's persistent tags
+   * @param eSlot    {@link RpgEquipmentSlot}
+   * @param itemTags item's persistent tags
    */
-  public void readActives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
-    String[] actives = Objects.requireNonNull(dataContainer, "Null data container").get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+  public void readActives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
+    String[] actives = Objects.requireNonNull(itemTags, "Null data container").get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String active : actives) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(active.substring(0, active.indexOf("."))));
       if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
-        addActives(eSlot, dataContainer, active);
+        addActives(eSlot, itemTags, active);
       }
     }
   }
@@ -150,31 +150,31 @@ public class Abilities {
   /**
    * Adds new {@link Equipment} {@link PassiveAbility passive abilities}.
    *
-   * @param eSlot         {@link RpgEquipmentSlot}
-   * @param dataContainer item's persistent tags
-   * @param passive       {@link PassiveAbility} data
+   * @param eSlot    {@link RpgEquipmentSlot}
+   * @param itemTags item's persistent tags
+   * @param passive  {@link PassiveAbility} data
    */
-  private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String passive) {
+  private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags, String passive) {
     NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
     String[] abilityMeta = passive.split("\\.");
     PassiveTriggerType passiveTriggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
     PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
     slotPassives.get(eSlot).add(new TriggerPassive(passiveTriggerType, abilityType));
-    triggerPassives.get(passiveTriggerType).put(new SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, passiveTriggerType, abilityType, dataContainer.get(passiveKey, PersistentDataType.STRING).split(" ")));
+    triggerPassives.get(passiveTriggerType).put(new SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, passiveTriggerType, abilityType, itemTags.get(passiveKey, PersistentDataType.STRING).split(" ")));
   }
 
   /**
    * Adds new {@link Equipment} {@link ActiveAbility active abilities}.
    *
-   * @param eSlot         {@link RpgEquipmentSlot}
-   * @param dataContainer item's persistent tags
-   * @param active        {@link ActiveAbility} data
+   * @param eSlot    {@link RpgEquipmentSlot}
+   * @param itemTags item's persistent tags
+   * @param active   {@link ActiveAbility} data
    */
-  private void addActives(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String active) {
+  private void addActives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags, String active) {
     NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + active);
     String[] abilityMeta = active.split("\\.");
     ActiveAbilityType activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
-    triggerActives.get(eSlot).add(new ActiveAbility(onCooldownActives, eSlot, activeAbilityType, dataContainer.get(activeKey, PersistentDataType.STRING).split(" ")));
+    triggerActives.get(eSlot).add(new ActiveAbility(onCooldownActives, eSlot, activeAbilityType, itemTags.get(activeKey, PersistentDataType.STRING).split(" ")));
   }
 
   /**

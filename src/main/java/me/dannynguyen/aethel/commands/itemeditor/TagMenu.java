@@ -90,13 +90,13 @@ public class TagMenu implements Menu {
    * Adds editable {@link Key Aethel tags}.
    */
   private void addAethelTags() {
-    PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+    PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
     int invSlot = 9;
     for (NamespacedKey tag : aethelTags) {
-      boolean disabled = !dataContainer.has(tag, PersistentDataType.STRING);
+      boolean disabled = !itemTags.has(tag, PersistentDataType.STRING);
       menu.setItem(invSlot, disabled ?
           ItemCreator.createItem(Material.ENDER_PEARL, ChatColor.AQUA + tag.getKey().substring(7)) :
-          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag.getKey().substring(7), List.of(ChatColor.WHITE + dataContainer.get(tag, PersistentDataType.STRING))));
+          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag.getKey().substring(7), List.of(ChatColor.WHITE + itemTags.get(tag, PersistentDataType.STRING))));
       invSlot++;
     }
   }

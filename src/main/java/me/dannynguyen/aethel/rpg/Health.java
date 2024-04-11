@@ -36,7 +36,7 @@ public class Health {
   /**
    * Persistent data tags.
    */
-  private final PersistentDataContainer dataContainer;
+  private final PersistentDataContainer entityTags;
 
   /**
    * {@link Settings}
@@ -61,17 +61,17 @@ public class Health {
   /**
    * Associates RPG health with a player.
    *
-   * @param player        interacting player
-   * @param dataContainer player's persistent tags
-   * @param settings      {@link Settings}
+   * @param player     interacting player
+   * @param entityTags player's persistent tags
+   * @param settings   {@link Settings}
    */
-  public Health(@NotNull Player player, @NotNull PersistentDataContainer dataContainer, @NotNull Settings settings) {
+  public Health(@NotNull Player player, @NotNull PersistentDataContainer entityTags, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.dataContainer = dataContainer;
+    this.entityTags = entityTags;
     this.settings = Objects.requireNonNull(settings, "Null settings");
     healthBar.setVisible(settings.isHealthBarVisible());
     this.currentHealth = player.getHealth();
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + dataContainer.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     loadHealth(player);
   }
 
@@ -82,7 +82,7 @@ public class Health {
    */
   private void loadHealth(Player player) {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double pluginMaxHealth = dataContainer.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double pluginMaxHealth = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double healthScale = (minecraftMaxHealth + pluginMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     updateDisplays();
@@ -99,7 +99,7 @@ public class Health {
       maxHealthBuff = buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);
     }
     double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double pluginMaxHealth = dataContainer.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double pluginMaxHealth = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double maxHealth = minecraftMaxHealth + pluginMaxHealth + maxHealthBuff;
     setMaxHealth(maxHealth);
     updateDisplays();

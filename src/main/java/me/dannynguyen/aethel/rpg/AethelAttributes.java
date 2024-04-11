@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utils.TextFormatter;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -47,15 +46,15 @@ public class AethelAttributes {
    * Checks if the item is in the correct {@link RpgEquipmentSlot}
    * before updating the player's {@link AethelAttribute} values.
    *
-   * @param eSlot         {@link RpgEquipmentSlot}
-   * @param dataContainer item's persistent tags
+   * @param eSlot    {@link RpgEquipmentSlot}
+   * @param itemTags item's persistent tags
    */
-  public void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer dataContainer) {
-    String[] attributes = Objects.requireNonNull(dataContainer, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+  public void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
+    String[] attributes = Objects.requireNonNull(itemTags, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
     for (String attribute : attributes) {
       RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(attribute.substring(0, attribute.indexOf("."))));
       if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
-        addAttributes(eSlot, dataContainer, attribute);
+        addAttributes(eSlot, itemTags, attribute);
       }
     }
   }

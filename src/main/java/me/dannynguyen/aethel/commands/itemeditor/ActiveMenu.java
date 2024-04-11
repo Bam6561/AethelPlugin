@@ -54,9 +54,9 @@ public class ActiveMenu implements Menu {
   private final RpgEquipmentSlot eSlot;
 
   /**
-   * ItemStack data container.
+   * ItemStack's persistent tags.
    */
-  private final PersistentDataContainer dataContainer;
+  private final PersistentDataContainer itemTags;
 
   /**
    * ItemStack {@link Key#ACTIVE_LIST active abilities}.
@@ -73,7 +73,7 @@ public class ActiveMenu implements Menu {
     this.user = Objects.requireNonNull(user, "Null user");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
-    this.dataContainer = item.getItemMeta().getPersistentDataContainer();
+    this.itemTags = item.getItemMeta().getPersistentDataContainer();
     this.existingActives = mapActives();
     this.menu = createMenu();
   }
@@ -117,7 +117,7 @@ public class ActiveMenu implements Menu {
           List<String> lore = new ArrayList<>();
           for (String slot : existingActives.get(activeId)) {
             NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + activeId);
-            String activeValue = dataContainer.get(activeKey, PersistentDataType.STRING);
+            String activeValue = itemTags.get(activeKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + activeValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.GOLD_INGOT, ChatColor.AQUA + activeName, lore));
@@ -162,10 +162,10 @@ public class ActiveMenu implements Menu {
    */
   private Map<String, List<String>> mapActives() {
     NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
-    boolean hasActives = dataContainer.has(listKey, PersistentDataType.STRING);
+    boolean hasActives = itemTags.has(listKey, PersistentDataType.STRING);
     if (hasActives) {
       Map<String, List<String>> existingActives = new HashMap<>();
-      List<String> actives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      List<String> actives = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String active : actives) {
         String activeType = active.substring(active.indexOf(".") + 1);
         if (existingActives.containsKey(activeType)) {

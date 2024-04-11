@@ -677,7 +677,7 @@ public class ItemEditorMenuClick implements MenuClick {
     /**
      * ItemStack's persistent tags.
      */
-    private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    private final PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
     /**
      * ItemStack's lore.
@@ -722,22 +722,22 @@ public class ItemEditorMenuClick implements MenuClick {
      * Generates an item's lore based on its {@link Key plugin-related data}.
      */
     private void generateLore() {
-      if (dataContainer.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
+      if (itemTags.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         displayForgeId();
       }
-      if (dataContainer.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.attributeValues = totalAttributeValues();
         addAttributeHeaders();
         menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
       }
-      if (dataContainer.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.passiveAbilities = sortPassiveAbilities();
         addPassiveHeaders();
       }
-      if (dataContainer.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.activeAbilities = sortActiveAbilities();
         addActiveHeaders();
@@ -753,7 +753,7 @@ public class ItemEditorMenuClick implements MenuClick {
      * Adds the Forge ID to the item's lore.
      */
     private void displayForgeId() {
-      lore.add(ChatColor.DARK_GRAY + "Forge ID: " + dataContainer.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
+      lore.add(ChatColor.DARK_GRAY + "Forge ID: " + itemTags.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
       meta.setLore(lore);
       item.setItemMeta(meta);
     }
@@ -813,7 +813,7 @@ public class ItemEditorMenuClick implements MenuClick {
      */
     private Map<String, List<String>> sortPassiveAbilities() {
       Map<String, List<String>> passiveAbilities = new HashMap<>();
-      for (String passive : dataContainer.get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+      for (String passive : itemTags.get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
         String[] passiveMeta = passive.split("\\.");
         String slot = passiveMeta[0];
         String condition = passiveMeta[1];
@@ -823,7 +823,7 @@ public class ItemEditorMenuClick implements MenuClick {
         PassiveTriggerType triggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(condition));
         PassiveAbilityType.Effect effect = PassiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
 
-        String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
+        String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slot + "." + condition + "." + type), PersistentDataType.STRING).split(" ");
         StringBuilder abilityLore = new StringBuilder();
 
         abilityLore.append(ChatColor.DARK_AQUA);
@@ -921,14 +921,14 @@ public class ItemEditorMenuClick implements MenuClick {
      */
     private Map<String, List<String>> sortActiveAbilities() {
       Map<String, List<String>> activeAbilities = new HashMap<>();
-      for (String active : dataContainer.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+      for (String active : itemTags.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
         String slot = active.substring(0, active.indexOf("."));
         String type = active.substring(active.indexOf(".") + 1);
 
         ActiveAbilityType abilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type));
         ActiveAbilityType.Effect abilityEffect = abilityType.getEffect();
 
-        String[] abilityData = dataContainer.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
+        String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
         StringBuilder activeLore = new StringBuilder();
 
         activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
@@ -1020,19 +1020,19 @@ public class ItemEditorMenuClick implements MenuClick {
      * @param attributeValues {@link RpgEquipmentSlot} : (attribute : value)
      */
     private void sortAethelAttributes(Map<String, Map<String, Double>> attributeValues) {
-      PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
       for (String attribute : meta.getPersistentDataContainer().get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
         String slot = attribute.substring(0, attribute.indexOf("."));
         String name = attribute.substring(attribute.indexOf(".") + 1);
         NamespacedKey key = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
         if (attributeValues.containsKey(slot)) {
           if (attributeValues.get(slot).containsKey(name)) {
-            attributeValues.get(slot).put(name, attributeValues.get(slot).get(name) + dataContainer.get(key, PersistentDataType.DOUBLE));
+            attributeValues.get(slot).put(name, attributeValues.get(slot).get(name) + itemTags.get(key, PersistentDataType.DOUBLE));
           } else {
-            attributeValues.get(slot).put(name, dataContainer.get(key, PersistentDataType.DOUBLE));
+            attributeValues.get(slot).put(name, itemTags.get(key, PersistentDataType.DOUBLE));
           }
         } else {
-          attributeValues.put(slot, new HashMap<>(Map.of(name, dataContainer.get(key, PersistentDataType.DOUBLE))));
+          attributeValues.put(slot, new HashMap<>(Map.of(name, itemTags.get(key, PersistentDataType.DOUBLE))));
         }
       }
     }

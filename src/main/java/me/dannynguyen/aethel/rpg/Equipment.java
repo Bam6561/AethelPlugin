@@ -160,22 +160,22 @@ public class Equipment {
    * @param item  interacting item
    */
   private void setSlotData(RpgEquipmentSlot eSlot, ItemStack item) {
-    PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-    if (dataContainer.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+    if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       attributes.getSlotAttributes().put(eSlot, new HashMap<>());
-      attributes.readAttributes(eSlot, dataContainer);
+      attributes.readAttributes(eSlot, itemTags);
     }
     if (item.getItemMeta().hasEnchants()) {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
       enchantments.addEnchantments(eSlot, item);
     }
-    if (dataContainer.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
-      abilities.readPassives(eSlot, dataContainer);
+      abilities.readPassives(eSlot, itemTags);
     }
-    if (dataContainer.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getTriggerActives().put(eSlot, new ArrayList<>());
-      abilities.readActives(eSlot, dataContainer);
+      abilities.readActives(eSlot, itemTags);
     }
   }
 

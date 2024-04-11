@@ -60,9 +60,9 @@ public class PassiveMenu implements Menu {
   private final PassiveTriggerType trigger;
 
   /**
-   * ItemStack data container.
+   * ItemStack's persistent tags.
    */
-  private final PersistentDataContainer dataContainer;
+  private final PersistentDataContainer itemTags;
 
   /**
    * ItemStack {@link Key#PASSIVE_LIST passive abilities}.
@@ -81,7 +81,7 @@ public class PassiveMenu implements Menu {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.item = Plugin.getData().getEditedItemCache().getEditedItems().get(user.getUniqueId());
-    this.dataContainer = item.getItemMeta().getPersistentDataContainer();
+    this.itemTags = item.getItemMeta().getPersistentDataContainer();
     this.existingPassives = mapPassives();
     this.menu = createMenu();
   }
@@ -126,7 +126,7 @@ public class PassiveMenu implements Menu {
           List<String> lore = new ArrayList<>();
           for (SlotCondition slotCondition : existingPassives.get(passiveId)) {
             NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + slotCondition.getSlot() + "." + slotCondition.getCondition() + "." + passiveId);
-            String passiveValue = dataContainer.get(passiveKey, PersistentDataType.STRING);
+            String passiveValue = itemTags.get(passiveKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slotCondition.getSlot() + " " + slotCondition.getCondition() + ": " + passiveValue));
           }
           menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
@@ -181,10 +181,10 @@ public class PassiveMenu implements Menu {
    */
   private Map<String, List<SlotCondition>> mapPassives() {
     NamespacedKey listKey = Key.PASSIVE_LIST.getNamespacedKey();
-    boolean hasPassives = dataContainer.has(listKey, PersistentDataType.STRING);
+    boolean hasPassives = itemTags.has(listKey, PersistentDataType.STRING);
     if (hasPassives) {
       Map<String, List<SlotCondition>> existingPassives = new HashMap<>();
-      List<String> passives = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      List<String> passives = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
       for (String passive : passives) {
         String[] passiveMeta = passive.split("\\.");
         String slot = passiveMeta[0];

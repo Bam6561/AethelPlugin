@@ -112,8 +112,8 @@ public class ActiveAbility {
   public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull Player caster) {
     Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(caster, "Null caster");
-    PersistentDataContainer dataContainer = Bukkit.getPlayer(caster.getUniqueId()).getPersistentDataContainer();
-    double itemCooldownBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    PersistentDataContainer entityTags = Bukkit.getPlayer(caster.getUniqueId()).getPersistentDataContainer();
+    double itemCooldownBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = rpgPlayer.getBuffs();
     double cooldownModifierBuff = 0.0;
     if (buffs != null) {
@@ -231,9 +231,9 @@ public class ActiveAbility {
    */
   private void dealDistanceDamage(double cooldownModifier, Player caster) {
     World world = caster.getWorld();
-    PersistentDataContainer dataContainer = caster.getPersistentDataContainer();
+    PersistentDataContainer entityTags = caster.getPersistentDataContainer();
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
-    double itemDamageBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double itemDamageBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = rpgPlayer.getBuffs();
     double damageModifierBuff = 0.0;
     if (buffs != null) {

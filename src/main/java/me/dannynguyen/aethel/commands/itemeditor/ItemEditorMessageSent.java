@@ -431,15 +431,15 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's {@link Key Aethel tag}.
    */
   public void setTag() {
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
     String tagType = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getObjectType();
     NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tagType);
 
     if (!e.getMessage().equals("-")) {
-      dataContainer.set(tagKey, PersistentDataType.STRING, e.getMessage());
+      itemTags.set(tagKey, PersistentDataType.STRING, e.getMessage());
       user.sendMessage(ChatColor.GREEN + "[Set " + tagType + "]");
     } else {
-      dataContainer.remove(tagKey);
+      itemTags.remove(tagKey);
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
@@ -475,21 +475,21 @@ public class ItemEditorMessageSent {
     String type = menuInput.getObjectType();
     String stringKeyToSet = slot + "." + type;
     NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
-    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-      List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+    if (itemTags.has(listKey, PersistentDataType.STRING)) {
+      List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newKeys = new StringBuilder();
       for (String key : keys) {
         if (!key.equals(stringKeyToSet)) {
           newKeys.append(key).append(" ");
         }
       }
-      dataContainer.set(listKey, PersistentDataType.STRING, newKeys + stringKeyToSet);
+      itemTags.set(listKey, PersistentDataType.STRING, newKeys + stringKeyToSet);
     } else {
-      dataContainer.set(listKey, PersistentDataType.STRING, stringKeyToSet);
+      itemTags.set(listKey, PersistentDataType.STRING, stringKeyToSet);
     }
-    dataContainer.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
+    itemTags.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
   }
@@ -508,10 +508,10 @@ public class ItemEditorMessageSent {
     String type = menuInput.getObjectType();
     String stringKeyToRemove = slot + "." + type;
     NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
-    if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-      List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+    if (itemTags.has(listKey, PersistentDataType.STRING)) {
+      List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
       StringBuilder newKeys = new StringBuilder();
       for (String key : keys) {
         if (!key.equals(stringKeyToRemove)) {
@@ -519,11 +519,11 @@ public class ItemEditorMessageSent {
         }
       }
       if (!newKeys.isEmpty()) {
-        dataContainer.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
       } else {
-        dataContainer.remove(listKey);
+        itemTags.remove(listKey);
       }
-      dataContainer.remove(namespacedKeyToRemove);
+      itemTags.remove(namespacedKeyToRemove);
     }
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
@@ -643,7 +643,7 @@ public class ItemEditorMessageSent {
     /**
      * ItemStack's persistent tags.
      */
-    private final PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    private final PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
     /**
      * {@link MenuInput#getSlot()}
@@ -752,19 +752,19 @@ public class ItemEditorMessageSent {
         return;
       }
 
-      if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-        List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
         StringBuilder newKeys = new StringBuilder();
         for (String key : keys) {
           if (!key.equals(interactingKey)) {
             newKeys.append(key).append(" ");
           }
         }
-        dataContainer.set(listKey, PersistentDataType.STRING, newKeys + interactingKey);
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys + interactingKey);
       } else {
-        dataContainer.set(listKey, PersistentDataType.STRING, interactingKey);
+        itemTags.set(listKey, PersistentDataType.STRING, interactingKey);
       }
-      dataContainer.set(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey), PersistentDataType.STRING, keyValue);
+      itemTags.set(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey), PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
     }
@@ -775,8 +775,8 @@ public class ItemEditorMessageSent {
      * If the list is empty after the operation, the list is also removed.
      */
     private void removeKeyFromList() {
-      if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-        List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
         StringBuilder newKeys = new StringBuilder();
         for (String key : keys) {
           if (!key.equals(interactingKey)) {
@@ -784,11 +784,11 @@ public class ItemEditorMessageSent {
           }
         }
         if (!newKeys.isEmpty()) {
-          dataContainer.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
+          itemTags.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
         } else {
-          dataContainer.remove(listKey);
+          itemTags.remove(listKey);
         }
-        dataContainer.remove(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey));
+        itemTags.remove(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey));
       }
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
@@ -871,21 +871,21 @@ public class ItemEditorMessageSent {
       }
 
       NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), activeHeader + interactingKey);
-      PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
-      if (dataContainer.has(listKey, PersistentDataType.STRING)) {
-        List<String> keys = new ArrayList<>(List.of(dataContainer.get(listKey, PersistentDataType.STRING).split(" ")));
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
         StringBuilder newKeys = new StringBuilder();
         for (String key : keys) {
           if (!key.equals(interactingKey)) {
             newKeys.append(key).append(" ");
           }
         }
-        dataContainer.set(listKey, PersistentDataType.STRING, newKeys + interactingKey);
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys + interactingKey);
       } else {
-        dataContainer.set(listKey, PersistentDataType.STRING, interactingKey);
+        itemTags.set(listKey, PersistentDataType.STRING, interactingKey);
       }
-      dataContainer.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
+      itemTags.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
     }

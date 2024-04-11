@@ -75,20 +75,20 @@ public class ItemReader {
    */
   @NotNull
   public static String readTags(@NotNull ItemStack item) {
-    PersistentDataContainer dataContainer = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
+    PersistentDataContainer itemTags = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
     StringBuilder aethelTags = new StringBuilder();
-    for (NamespacedKey key : dataContainer.getKeys()) {
+    for (NamespacedKey key : itemTags.getKeys()) {
       String keyName = key.getKey();
       if (keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
         keyName = keyName.substring(7);
         if (keyName.startsWith("attribute.")) {
           if (keyName.matches("attribute.list")) {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
           } else {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.DOUBLE)).append(" ");
+            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.DOUBLE)).append(" ");
           }
         } else {
-          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(dataContainer.get(key, PersistentDataType.STRING)).append(" ");
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
         }
       }
     }

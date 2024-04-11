@@ -444,15 +444,15 @@ public class ForgeMenuClick implements MenuClick {
         }
 
         int requiredAmount = item.getAmount();
-        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        boolean hasForgeId = dataContainer.has(forgeId, PersistentDataType.STRING);
+        PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+        boolean hasForgeId = itemTags.has(forgeId, PersistentDataType.STRING);
 
         if (!hasForgeId) {
           if (!hasEnoughMaterials(forgeId, requiredMaterial, requiredAmount)) {
             return false;
           }
         } else {
-          String requiredId = dataContainer.get(forgeId, PersistentDataType.STRING);
+          String requiredId = itemTags.get(forgeId, PersistentDataType.STRING);
           if (!hasEnoughIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
             return false;
           }
@@ -498,8 +498,8 @@ public class ForgeMenuClick implements MenuClick {
      */
     private boolean hasEnoughMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
       for (SlotItem invSlot : materialSlots.get(requiredMaterial)) {
-        PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
-        if (!dataContainer.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
+        PersistentDataContainer itemTags = invSlot.getItem().getItemMeta().getPersistentDataContainer();
+        if (!itemTags.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
           if (invSlot.getAmount() > 0) {
             requiredAmount -= invSlot.getAmount();
             if (hasRequiredAmount(invSlot, requiredAmount)) {
@@ -522,8 +522,8 @@ public class ForgeMenuClick implements MenuClick {
      */
     private boolean hasEnoughIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
       for (SlotItem invSlot : materialSlots.get(reqMaterial)) {
-        PersistentDataContainer dataContainer = invSlot.getItem().getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(forgeId, PersistentDataType.STRING) && dataContainer.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {
+        PersistentDataContainer itemTags = invSlot.getItem().getItemMeta().getPersistentDataContainer();
+        if (itemTags.has(forgeId, PersistentDataType.STRING) && itemTags.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {
           if (invSlot.getAmount() > 0) {
             reqAmount -= invSlot.getAmount();
             if (hasRequiredAmount(invSlot, reqAmount)) {

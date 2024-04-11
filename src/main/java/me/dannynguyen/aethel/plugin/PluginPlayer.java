@@ -31,6 +31,8 @@ public class PluginPlayer {
 
   /**
    * Associates a player with plugin metadata.
+   *
+   * @param player interacting player
    */
   public PluginPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
