@@ -16,6 +16,16 @@ import java.util.*;
  */
 public class RpgSystem {
   /**
+   * Entities affected by {@link Buffs}.
+   */
+  private final Map<UUID, Buffs> buffs = new HashMap<>();
+
+  /**
+   * Entities affected by {@link Status statuses}.
+   */
+  private final Map<UUID, Map<StatusType, Status>> statuses = new HashMap<>();
+
+  /**
    * {@link RpgPlayer RPG players}.
    */
   private final Map<UUID, RpgPlayer> rpgPlayers = new HashMap<>();
@@ -24,18 +34,7 @@ public class RpgSystem {
    * Players with sufficient {@link Equipment.Enchantments} level requirements.
    */
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
-      Enchantment.PROTECTION_FALL, new HashSet<>(),
-      Enchantment.PROTECTION_FIRE, new HashSet<>()));
-
-  /**
-   * Living entities affected by {@link Buffs}.
-   */
-  private final Map<UUID, Buffs> buffs = new HashMap<>();
-
-  /**
-   * Living entities affected by {@link Status statuses}.
-   */
-  private final Map<UUID, Map<StatusType, Status>> statuses = new HashMap<>();
+      Enchantment.PROTECTION_FALL, new HashSet<>(), Enchantment.PROTECTION_FIRE, new HashSet<>()));
 
   /**
    * No parameter constructor.
@@ -50,26 +49,6 @@ public class RpgSystem {
    */
   public void loadRpgPlayer(@NotNull Player player) {
     rpgPlayers.put(Objects.requireNonNull(player, "Null player").getUniqueId(), new RpgPlayer(player));
-  }
-
-  /**
-   * Gets {@link RpgPlayer RPG players}.
-   *
-   * @return {@link RpgPlayer RPG players}
-   */
-  @NotNull
-  public Map<UUID, RpgPlayer> getRpgPlayers() {
-    return this.rpgPlayers;
-  }
-
-  /**
-   * Gets players with sufficient {@link Equipment.Enchantments} level requirements.
-   *
-   * @return players with sufficient {@link Equipment.Enchantments} level requirements
-   */
-  @NotNull
-  public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
-    return this.sufficientEnchantments;
   }
 
   /**
@@ -94,5 +73,25 @@ public class RpgSystem {
   @NotNull
   public Map<UUID, Map<StatusType, Status>> getStatuses() {
     return this.statuses;
+  }
+
+  /**
+   * Gets {@link RpgPlayer RPG players}.
+   *
+   * @return {@link RpgPlayer RPG players}
+   */
+  @NotNull
+  public Map<UUID, RpgPlayer> getRpgPlayers() {
+    return this.rpgPlayers;
+  }
+
+  /**
+   * Gets players with sufficient {@link Equipment.Enchantments} level requirements.
+   *
+   * @return players with sufficient {@link Equipment.Enchantments} level requirements
+   */
+  @NotNull
+  public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
+    return this.sufficientEnchantments;
   }
 }

@@ -24,7 +24,7 @@ import java.util.UUID;
  * Represents an {@link RpgPlayer}'s health.
  *
  * @author Danny Nguyen
- * @version 1.22.7
+ * @version 1.22.11
  * @since 1.13.4
  */
 public class Health {
@@ -61,14 +61,13 @@ public class Health {
   /**
    * Associates RPG health with a player.
    *
-   * @param player     interacting player
-   * @param entityTags player's persistent tags
-   * @param settings   {@link Settings}
+   * @param player   interacting player
+   * @param settings {@link Settings}
    */
-  public Health(@NotNull Player player, @NotNull PersistentDataContainer entityTags, @NotNull Settings settings) {
+  public Health(@NotNull Player player, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.entityTags = entityTags;
     this.settings = Objects.requireNonNull(settings, "Null settings");
+    this.entityTags = player.getPersistentDataContainer();
     healthBar.setVisible(settings.isHealthBarVisible());
     this.currentHealth = player.getHealth();
     this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
@@ -96,7 +95,7 @@ public class Health {
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
     double maxHealthBuff = 0.0;
     if (buffs != null) {
-      maxHealthBuff = buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);
+      maxHealthBuff = buffs.getAethelAttribute(AethelAttribute.MAX_HEALTH);
     }
     double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     double pluginMaxHealth = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);

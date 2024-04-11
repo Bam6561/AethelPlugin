@@ -32,7 +32,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.11
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -178,7 +178,7 @@ public class RpgListener implements Listener {
         switch (ability.getType().getEffect()) {
           case BUFF, STACK_INSTANCE, POTION_EFFECT -> {
             if (self) {
-              ability.doEffect(rpgPlayer, selfUUID);
+              ability.doEffect(rpgPlayer.getUUID(), selfUUID);
             }
           }
           case CHAIN_DAMAGE -> {
@@ -187,7 +187,7 @@ public class RpgListener implements Listener {
             } else {
               targetUUID = killedUUID;
             }
-            ability.doEffect(rpgPlayer, targetUUID);
+            ability.doEffect(rpgPlayer.getUUID(), targetUUID);
           }
         }
       }

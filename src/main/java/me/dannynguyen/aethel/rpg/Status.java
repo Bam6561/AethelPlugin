@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents {@link StatusType statuses} that affect Living Entities.
+ * Represents {@link StatusType statuses} that affect entities.
  *
  * @author Danny Nguyen
  * @version 1.16.7

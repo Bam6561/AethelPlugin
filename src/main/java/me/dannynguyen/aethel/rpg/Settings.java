@@ -181,6 +181,7 @@ public class Settings {
    *
    * @return {@link ActiveAbility} binds by {@link RpgEquipmentSlot}
    */
+  @NotNull
   public Map<RpgEquipmentSlot, Set<Integer>> getAbilityBoundEquipmentSlots() {
     return this.abilityBoundEquipmentSlots;
   }
@@ -190,6 +191,7 @@ public class Settings {
    *
    * @return {@link ActiveAbility} binds by hotbar slot.
    */
+  @NotNull
   public Map<Integer, Set<RpgEquipmentSlot>> getAbilityBoundHotbar() {
     return this.abilityBoundHotbar;
   }

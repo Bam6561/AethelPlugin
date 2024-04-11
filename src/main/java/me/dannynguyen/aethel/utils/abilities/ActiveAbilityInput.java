@@ -7,6 +7,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -31,6 +32,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String buff(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 4) {
@@ -83,6 +85,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String clearStatus(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 1) {
@@ -110,6 +113,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String distanceDamage(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 3) {
@@ -155,6 +159,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String movement(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 2) {
@@ -193,6 +198,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String potionEffect(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 5) {
@@ -255,6 +261,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String projection(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 3) {
@@ -304,6 +311,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String shatter(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 2) {
@@ -342,6 +350,7 @@ public class ActiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String teleport(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 2) {

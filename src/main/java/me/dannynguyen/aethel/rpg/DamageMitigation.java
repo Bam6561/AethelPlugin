@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents living entity damage mitigation.
+ * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
  * @version 1.22.10

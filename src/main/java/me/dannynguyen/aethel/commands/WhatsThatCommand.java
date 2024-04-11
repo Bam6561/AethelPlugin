@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.1
+ * @version 1.22.11
  * @since 1.22.1
  */
 public class WhatsThatCommand implements CommandExecutor {
@@ -192,7 +192,7 @@ public class WhatsThatCommand implements CommandExecutor {
     COMMANDS(new String[]{
         ChatColor.GREEN + "Commands",
         ChatColor.GRAY + "These are commands you are able to use by default.",
-        "Related: " + ChatColor.AQUA + "character, forge, ping, playerstat, showitem"}),
+        "Related: " + ChatColor.AQUA + "character, forge, location, ping, playerstat, showitem, whatsthatfeature"}),
 
     /**
      * World types.
@@ -200,8 +200,7 @@ public class WhatsThatCommand implements CommandExecutor {
     WORLD_TYPES(new String[]{
         ChatColor.GREEN + "World Types",
         ChatColor.GRAY + "There are six different world types.",
-        "Related: " + ChatColor.AQUA + "overworld, nether, end, resource, event, rpg"
-    }),
+        "Related: " + ChatColor.AQUA + "overworld, nether, end, resource, event, rpg"}),
 
     /**
      * Modified enchantments.
@@ -209,8 +208,7 @@ public class WhatsThatCommand implements CommandExecutor {
     ENCHANTMENTS(new String[]{
         ChatColor.GREEN + "Enchantments",
         ChatColor.GRAY + "Modified enchantments are listed below.",
-        "Related: " + ChatColor.AQUA + "protection, blast protection, fire protection, projectile protection, feather falling"
-    }),
+        "Related: " + ChatColor.AQUA + "protection, blast protection, fire protection, projectile protection, feather falling"}),
 
     /**
      * Modified potion effects.
@@ -218,8 +216,7 @@ public class WhatsThatCommand implements CommandExecutor {
     POTION_EFFECTS(new String[]{
         ChatColor.GREEN + "Potion Effects",
         ChatColor.GRAY + "Modified potion effects are listed below.",
-        "Related: " + ChatColor.AQUA + "absorption, resistance"
-    }),
+        "Related: " + ChatColor.AQUA + "absorption, resistance"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute}
@@ -227,33 +224,29 @@ public class WhatsThatCommand implements CommandExecutor {
     ATTRIBUTES(new String[]{
         ChatColor.GREEN + "Attributes",
         ChatColor.GRAY + "Custom attributes are listed below.",
-        "Related: " + ChatColor.AQUA + "max health, counter chance, dodge chance, armor toughness, armor, item damage, item cooldown, tenacity"
-    }),
+        "Related: " + ChatColor.AQUA + "max health, counter chance, dodge chance, armor toughness, armor, item damage, item cooldown, tenacity"}),
 
     /**
-     * {@link me.dannynguyen.aethel.rpg.abilities.Abilities}
+     * {@link me.dannynguyen.aethel.rpg.Equipment.Abilities}
      */
     ABILITIES(new String[]{
         ChatColor.GREEN + "Abilities",
         ChatColor.GRAY + "Abilities are obtained from wearing equipment.",
-        "Related: " + ChatColor.AQUA + "passive triggers, passive abilities, active abilities"
-    }),
+        "Related: " + ChatColor.AQUA + "passive triggers, passive abilities, active abilities"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType}
      */
     PASSIVE_TRIGGERS(new String[]{
         ChatColor.GREEN + "Passive Triggers",
-        "Related: " + ChatColor.AQUA + "below health, damage dealt, damage taken, on kill"
-    }),
+        "Related: " + ChatColor.AQUA + "below health, damage dealt, damage taken, on kill"}),
 
     /**
      * {@link me.dannynguyen.aethel.rpg.abilities.PassiveAbility}
      */
     PASSIVE_ABILITIES(new String[]{
         ChatColor.GREEN + "Passive Abilities",
-        "Related: " + ChatColor.AQUA + "buff, chain damage, effect, stack instance"
-    }),
+        "Related: " + ChatColor.AQUA + "buff, chain damage, effect, stack instance"}),
 
     /**
      * {@link me.dannynguyen.aethel.rpg.abilities.ActiveAbility}
@@ -262,8 +255,7 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GREEN + "Active Abilities",
         ChatColor.GRAY + "Must be bound through the character sheet menu settings first before being able to be used.",
         ChatColor.GRAY + "To activate an active ability, select the hotbar slot the ability slot is bound to and crouch.",
-        "Related: " + ChatColor.AQUA + "buff, clear status, distance damage, movement, potion effect, shatter, teleport"
-    }),
+        "Related: " + ChatColor.AQUA + "buff, clear status, distance damage, movement, potion effect, shatter, teleport"}),
 
     /**
      * {@link me.dannynguyen.aethel.rpg.Status}
@@ -271,8 +263,7 @@ public class WhatsThatCommand implements CommandExecutor {
     STATUSES(new String[]{
         ChatColor.GREEN + "Statuses",
         ChatColor.GRAY + "Statuses are like potion effects, except that statuses are measured in stacks that have individual durations.",
-        "Related: " + ChatColor.AQUA + "cumulative, highest instance"
-    }),
+        "Related: " + ChatColor.AQUA + "cumulative, highest instance"}),
 
     /**
      * {@link me.dannynguyen.aethel.rpg.Status}
@@ -280,8 +271,7 @@ public class WhatsThatCommand implements CommandExecutor {
     CUMULATIVE(new String[]{
         ChatColor.GREEN + "Cumulative",
         ChatColor.GRAY + "Stacks are represented together.",
-        "Related: " + ChatColor.AQUA + "bleed, brittle, electrocute, soaked"
-    }),
+        "Related: " + ChatColor.AQUA + "bleed, brittle, electrocute, soaked"}),
 
     /**
      * {@link me.dannynguyen.aethel.rpg.Status}
@@ -289,8 +279,7 @@ public class WhatsThatCommand implements CommandExecutor {
     HIGHEST_INSTANCE(new String[]{
         ChatColor.GREEN + "Highest Instance",
         ChatColor.GRAY + "Stacks are represented by their highest stack application.",
-        "Related: " + ChatColor.AQUA + "fracture, vulnerable"
-    }),
+        "Related: " + ChatColor.AQUA + "fracture, vulnerable"}),
 
     /**
      * {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
@@ -312,6 +301,21 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GRAY + ": Opens the Forge crafting menu."}),
 
     /**
+     * {@link LocationCommand}
+     */
+    LOCATION(new String[]{
+        ChatColor.GREEN + "Location",
+        ChatColor.GRAY + "/location, /loc, /l",
+        ChatColor.GRAY + "Saves, tracks, and compares locations.",
+        ChatColor.GRAY + "You can reference a location by either name or coordinates.",
+        ChatColor.GRAY + "If no second location is provided, it will default to your current location.",
+        ChatColor.GRAY + "get, g: gets saved locations",
+        ChatColor.GRAY + "add, a: saves a new location - provide a name",
+        ChatColor.GRAY + "remove, r: removes a saved location",
+        ChatColor.GRAY + "track, t: tracks a location",
+        ChatColor.GRAY + "compare, c: compares two locations"}),
+
+    /**
      * {@link PingCommand}
      */
     PING(new String[]{
@@ -328,8 +332,7 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GRAY + "/playerstat, /stat, /ps",
         ChatColor.GRAY + "Gets player statistics.",
         ChatColor.GRAY + ": Opens a player statistics menu belonging to the user.",
-        ChatColor.GRAY + "<playerName>: Opens a player statistics menu belonging to the player."
-    }),
+        ChatColor.GRAY + "<playerName>: Opens a player statistics menu belonging to the player."}),
 
     /**
      * {@link me.dannynguyen.aethel.commands.showitem.ShowItemCommand}
@@ -339,8 +342,16 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GRAY + "/showitem, /show, /si",
         ChatColor.GRAY + "Shows main hand item to chat.",
         ChatColor.GRAY + ": Shows your main hand item to chat.",
-        ChatColor.GRAY + "past: Opens a past shared items menu."
-    }),
+        ChatColor.GRAY + "past: Opens a past shared items menu."}),
+
+    /**
+     * {@link WhatsThatCommand}
+     */
+    WHATSTHATFEATURE(new String[]{
+        ChatColor.GREEN + "WhatsThatFeature",
+        ChatColor.GRAY + "/whatsthatfeature, /wtf",
+        ChatColor.GRAY + "Looks up a keyword.",
+        ChatColor.GRAY + "<keyWord>: Gets keyword's description.",}),
 
     /**
      * Overworld dimension.
@@ -348,8 +359,7 @@ public class WhatsThatCommand implements CommandExecutor {
     OVERWORLD(new String[]{
         ChatColor.GREEN + "Overworld",
         ChatColor.GRAY + "Seasonal, bordered at 10k.",
-        ChatColor.GRAY + "Primary SMP world.",
-    }),
+        ChatColor.GRAY + "Primary SMP world.",}),
 
     /**
      * Nether dimension.
@@ -357,8 +367,7 @@ public class WhatsThatCommand implements CommandExecutor {
     NETHER(new String[]{
         ChatColor.GREEN + "Nether",
         ChatColor.GRAY + "Seasonal, bordered at 10k.",
-        ChatColor.GRAY + "Border expanded as necessary."
-    }),
+        ChatColor.GRAY + "Border expanded as necessary."}),
 
     /**
      * End dimension.
@@ -366,8 +375,7 @@ public class WhatsThatCommand implements CommandExecutor {
     END(new String[]{
         ChatColor.GREEN + "End",
         ChatColor.GRAY + "Renewable, no world border.",
-        ChatColor.GRAY + "Regenerated as necessary."
-    }),
+        ChatColor.GRAY + "Regenerated as necessary."}),
 
     /**
      * Resource world.
@@ -375,8 +383,7 @@ public class WhatsThatCommand implements CommandExecutor {
     RESOURCE(new String[]{
         ChatColor.GREEN + "Resource",
         ChatColor.GRAY + "Renewable, no world border.",
-        ChatColor.GRAY + "Regenerated as necessary."
-    }),
+        ChatColor.GRAY + "Regenerated as necessary."}),
 
     /**
      * Event world.
@@ -384,8 +391,7 @@ public class WhatsThatCommand implements CommandExecutor {
     EVENT(new String[]{
         ChatColor.GREEN + "Event",
         ChatColor.GRAY + "Permanent.",
-        ChatColor.GRAY + "Minigames and events."
-    }),
+        ChatColor.GRAY + "Minigames and events."}),
 
     /**
      * RPG world.
@@ -393,16 +399,14 @@ public class WhatsThatCommand implements CommandExecutor {
     RPG(new String[]{
         ChatColor.GREEN + "RPG",
         ChatColor.GRAY + "Permanent.",
-        ChatColor.GRAY + "Handmade adventure world."
-    }),
+        ChatColor.GRAY + "Handmade adventure world."}),
 
     /**
      * Protection enchantment.
      */
     PROTECTION(new String[]{
         ChatColor.GREEN + "Protection",
-        ChatColor.GRAY + "Each level of Protection mitigates non-environmental damage by 1%, up to a maximum of 20%."
-    }),
+        ChatColor.GRAY + "Each level of Protection mitigates non-environmental damage by 1%, up to a maximum of 20%."}),
 
     /**
      * Blast protection enchantment.
@@ -410,8 +414,7 @@ public class WhatsThatCommand implements CommandExecutor {
     BLAST_PROTECTION(new String[]{
         ChatColor.GREEN + "Blast Protection",
         ChatColor.GRAY + "Each level of Blast Protection mitigates explosion damage by 10%.",
-        ChatColor.GRAY + "At 10 levels of Blast Protection across all equipment, the wearer heals 20% of the explosion's damage and fills their hunger."
-    }),
+        ChatColor.GRAY + "At 10 levels of Blast Protection across all equipment, the wearer heals 20% of the explosion's damage and fills their hunger."}),
 
     /**
      * Fire protection enchantment.
@@ -419,8 +422,7 @@ public class WhatsThatCommand implements CommandExecutor {
     FIRE_PROTECTION(new String[]{
         ChatColor.GREEN + "Fire Protection",
         ChatColor.GRAY + "Each level of fire protection mitigates fire damage by 10%.",
-        ChatColor.GRAY + "At 10 levels of Fire Protection across all equipment, the wearer gains permanent Fire Resistance."
-    }),
+        ChatColor.GRAY + "At 10 levels of Fire Protection across all equipment, the wearer gains permanent Fire Resistance."}),
 
     /**
      * Projectile protection enchantment.
@@ -428,8 +430,7 @@ public class WhatsThatCommand implements CommandExecutor {
     PROJECTILE_PROTECTION(new String[]{
         ChatColor.GREEN + "Projectile Protection",
         ChatColor.GRAY + "Each level of Projectile Protection mitigates projectile protection by 5%, up to a maximum of 50%.",
-        ChatColor.GRAY + "At 10 levels of Projectile Protection across all equipment, the wearer gains the ability to catch all types of arrows, fireballs, and snowballs."
-    }),
+        ChatColor.GRAY + "At 10 levels of Projectile Protection across all equipment, the wearer gains the ability to catch all types of arrows, fireballs, and snowballs."}),
 
     /**
      * Feather falling enchantment.
@@ -437,8 +438,7 @@ public class WhatsThatCommand implements CommandExecutor {
     FEATHER_FALLING(new String[]{
         ChatColor.GREEN + "Feather Falling",
         ChatColor.GRAY + "Each level of Feather Falling mitigates fall damage by 20%.",
-        ChatColor.GRAY + "At 5 levels of Feather Falling across all equipment, the wearer gains permanent Slow Falling."
-    }),
+        ChatColor.GRAY + "At 5 levels of Feather Falling across all equipment, the wearer gains permanent Slow Falling."}),
 
     /**
      * Absorption potion effect.
@@ -446,24 +446,21 @@ public class WhatsThatCommand implements CommandExecutor {
     ABSORPTION(new String[]{
         ChatColor.GREEN + "Absorption",
         ChatColor.GRAY + "Absorption is immediately added to health.",
-        ChatColor.GRAY + "Health above maximum health is called Overshield. Overshield begins to decay above x1.2 maximum health."
-    }),
+        ChatColor.GRAY + "Health above maximum health is called Overshield. Overshield begins to decay above x1.2 maximum health."}),
 
     /**
      * Resistance potion effect.
      */
     RESISTANCE(new String[]{
         ChatColor.GREEN + "Resistance",
-        ChatColor.GRAY + "Each level of resistance mitigates all forms of damage by 5%."
-    }),
+        ChatColor.GRAY + "Each level of resistance mitigates all forms of damage by 5%."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#MAX_HEALTH}
      */
     MAX_HEALTH(new String[]{
         ChatColor.GREEN + "Max Health",
-        ChatColor.GRAY + "Adds max health without visually displaying additional heart containers."
-    }),
+        ChatColor.GRAY + "Adds max health without visually displaying additional heart containers."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#COUNTER_CHANCE}
@@ -473,16 +470,14 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GRAY + "Chance to deal counter attacks.",
         ChatColor.GRAY + "The number of counter attacks dealt is based on the defender's attack speed, at least 1, with the attack speed's whole number rounded down.",
         ChatColor.GRAY + "The damage dealt per counterattack is based on the defender's attack damage, with no chance to deal critical damage.",
-        ChatColor.GRAY + "If the attacker dies from counter attacks, no damage is dealt to the defender."
-    }),
+        ChatColor.GRAY + "If the attacker dies from counter attacks, no damage is dealt to the defender."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#DODGE_CHANCE}
      */
     DODGE_CHANCE(new String[]{
         ChatColor.GREEN + "Dodge Chance",
-        ChatColor.GRAY + "Chance to ignore damage from attacking entities or explosions."
-    }),
+        ChatColor.GRAY + "Chance to ignore damage from attacking entities or explosions."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#ARMOR_TOUGHNESS}
@@ -491,8 +486,7 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GREEN + "Armor Toughness",
         ChatColor.GRAY + "Flat damage mitigation from non-magical and non-environmental sources.",
         ChatColor.GRAY + "Flat damage blocked is based on armor toughness divided by 2.",
-        ChatColor.GRAY + "If the damage blocked is higher than the incoming damage, then no damage is dealt to the defender."
-    }),
+        ChatColor.GRAY + "If the damage blocked is higher than the incoming damage, then no damage is dealt to the defender."}),
 
     /**
      * Armor attribute.
@@ -500,40 +494,35 @@ public class WhatsThatCommand implements CommandExecutor {
     ARMOR(new String[]{
         ChatColor.GREEN + "Armor",
         ChatColor.GRAY + "Percentage damage mitigation from non-magical and non-environmental sources.",
-        ChatColor.GRAY + "Each point of armor mitigates incoming damage by 2%, to a maximum of 40%."
-    }),
+        ChatColor.GRAY + "Each point of armor mitigates incoming damage by 2%, to a maximum of 40%."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#ITEM_DAMAGE}
      */
     ITEM_DAMAGE(new String[]{
         ChatColor.GREEN + "Item Damage",
-        ChatColor.GRAY + "Item ability damage modifier."
-    }),
+        ChatColor.GRAY + "Item ability damage modifier."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#ITEM_COOLDOWN}
      */
     ITEM_COOLDOWN(new String[]{
         ChatColor.GREEN + "Item Cooldown",
-        ChatColor.GRAY + "Item ability cooldown modifier."
-    }),
+        ChatColor.GRAY + "Item ability cooldown modifier."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#TENACITY}
      */
     TENACITY(new String[]{
         ChatColor.GREEN + "Tenacity",
-        ChatColor.GRAY + "Reduces the duration of negative statuses."
-    }),
+        ChatColor.GRAY + "Reduces the duration of negative statuses."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType#BELOW_HEALTH}
      */
     BELOW_HEALTH(new String[]{
         ChatColor.GREEN + "Below Health",
-        ChatColor.GRAY + "Activates below a certain % of health."
-    }),
+        ChatColor.GRAY + "Activates below a certain % of health."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType#DAMAGE_DEALT}
@@ -541,24 +530,21 @@ public class WhatsThatCommand implements CommandExecutor {
     DAMAGE_DEALT(new String[]{
         ChatColor.GREEN + "Damage Dealt",
         ChatColor.GRAY + "Activated on damage dealt.",
-        ChatColor.GRAY + "The attack must be at least 75% charged to activate damage dealt passive abilities."
-    }),
+        ChatColor.GRAY + "The attack must be at least 75% charged to activate damage dealt passive abilities."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType#DAMAGE_TAKEN}
      */
     DAMAGE_TAKEN(new String[]{
         ChatColor.GREEN + "Damage Taken",
-        ChatColor.GRAY + "Activated when taking damage."
-    }),
+        ChatColor.GRAY + "Activated when taking damage."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType#ON_KILL}
      */
     ON_KILL(new String[]{
         ChatColor.GREEN + "On Kill",
-        ChatColor.GRAY + "Activated on killing any living entity."
-    }),
+        ChatColor.GRAY + "Activated on killing any living entity."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType#AETHEL_ATTRIBUTE}
@@ -568,8 +554,7 @@ public class WhatsThatCommand implements CommandExecutor {
      */
     BUFF(new String[]{
         ChatColor.GREEN + "Buff",
-        ChatColor.GRAY + "Applies a buff."
-    }),
+        ChatColor.GRAY + "Applies a buff."}),
 
     /**
      * {@link PassiveAbilityType.Effect#CHAIN_DAMAGE}
@@ -577,16 +562,14 @@ public class WhatsThatCommand implements CommandExecutor {
     CHAIN_DAMAGE(new String[]{
         ChatColor.GREEN + "Chain Damage",
         ChatColor.GRAY + "Deals chain damage.",
-        "Related: " + ChatColor.AQUA + "spark"
-    }),
+        "Related: " + ChatColor.AQUA + "spark"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType#SPARK}
      */
     SPARK(new String[]{
         ChatColor.GREEN + "Spark",
-        ChatColor.GRAY + "Attacks chain to entities with soaked status."
-    }),
+        ChatColor.GRAY + "Attacks chain to entities with soaked status."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType#POTION_EFFECT}
@@ -594,8 +577,7 @@ public class WhatsThatCommand implements CommandExecutor {
      */
     EFFECT(new String[]{
         ChatColor.GREEN + "Effect",
-        ChatColor.GRAY + "Applies potion effects."
-    }),
+        ChatColor.GRAY + "Applies potion effects."}),
 
     /**
      * {@link PassiveAbilityType.Effect#STACK_INSTANCE}
@@ -603,8 +585,7 @@ public class WhatsThatCommand implements CommandExecutor {
     STACK_INSTANCE(new String[]{
         ChatColor.GREEN + "Stack Instance",
         ChatColor.GRAY + "Applies stacks of Statuses.",
-        "Related: " + ChatColor.AQUA + "bleed, brittle, electrocute, fracture, soaked, vulnerable"
-    }),
+        "Related: " + ChatColor.AQUA + "bleed, brittle, electrocute, fracture, soaked, vulnerable"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#CLEAR_STATUS}
@@ -612,24 +593,21 @@ public class WhatsThatCommand implements CommandExecutor {
     CLEAR_STATUS(new String[]{
         ChatColor.GREEN + "Clear Status",
         ChatColor.GRAY + "Clears statuses to be removed.",
-        "Related: " + ChatColor.AQUA + "dismiss, disregard"
-    }),
+        "Related: " + ChatColor.AQUA + "dismiss, disregard"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#DISMISS}
      */
     DISMISS(new String[]{
         ChatColor.GREEN + "Dismiss",
-        ChatColor.GRAY + "Clears all non-damaging potion effects and statuses."
-    }),
+        ChatColor.GRAY + "Clears all non-damaging potion effects and statuses."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#DISREGARD}
      */
     DISREGARD(new String[]{
         ChatColor.GREEN + "Disregard",
-        ChatColor.GRAY + "Clears all damaging potion effects and statuses."
-    }),
+        ChatColor.GRAY + "Clears all damaging potion effects and statuses."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DISTANCE_DAMAGE}
@@ -637,40 +615,35 @@ public class WhatsThatCommand implements CommandExecutor {
     DISTANCE_DAMAGE(new String[]{
         ChatColor.GREEN + "Distance Damage",
         ChatColor.GRAY + "Causes damage at a distance",
-        "Related: " + ChatColor.AQUA + "explode, force sweep, force wave, quake"
-    }),
+        "Related: " + ChatColor.AQUA + "explode, force sweep, force wave, quake"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#EXPLODE}
      */
     EXPLODE(new String[]{
         ChatColor.GREEN + "Explode",
-        ChatColor.GRAY + "Spherical shaped attack."
-    }),
+        ChatColor.GRAY + "Spherical shaped attack."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#FORCE_SWEEP}
      */
     FORCE_SWEEP(new String[]{
         ChatColor.GREEN + "Force Sweep",
-        ChatColor.GRAY + "Forward facing triangular arc shaped attack."
-    }),
+        ChatColor.GRAY + "Forward facing triangular arc shaped attack."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#FORCE_WAVE}
      */
     FORCE_WAVE(new String[]{
         ChatColor.GREEN + "Force Wave",
-        ChatColor.GRAY + "Omnidirectional forward-facing line-shaped attack."
-    }),
+        ChatColor.GRAY + "Omnidirectional forward-facing line-shaped attack."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#QUAKE}
      */
     QUAKE(new String[]{
         ChatColor.GREEN + "Quake",
-        ChatColor.GRAY + "Circular shaped attack."
-    }),
+        ChatColor.GRAY + "Circular shaped attack."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#MOVEMENT}
@@ -678,48 +651,42 @@ public class WhatsThatCommand implements CommandExecutor {
     MOVEMENT(new String[]{
         ChatColor.GREEN + "Movement",
         ChatColor.GRAY + "Causes movement with velocity.",
-        "Related: " + ChatColor.AQUA + "dash, leap, spring, withdraw"
-    }),
+        "Related: " + ChatColor.AQUA + "dash, leap, spring, withdraw"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#DASH}
      */
     DASH(new String[]{
         ChatColor.GREEN + "Dash",
-        ChatColor.GRAY + "Forward facing movement."
-    }),
+        ChatColor.GRAY + "Forward facing movement."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#LEAP}
      */
     LEAP(new String[]{
         ChatColor.GREEN + "Leap",
-        ChatColor.GRAY + "Omnidirectional forward-facing angular movement."
-    }),
+        ChatColor.GRAY + "Omnidirectional forward-facing angular movement."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#SPRING}
      */
     SPRING(new String[]{
         ChatColor.GREEN + "Spring",
-        ChatColor.GRAY + "Upwards facing movement."
-    }),
+        ChatColor.GRAY + "Upwards facing movement."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#WITHDRAW}
      */
     WITHDRAW(new String[]{
         ChatColor.GREEN + "Withdraw",
-        ChatColor.GRAY + "Backwards facing movement."
-    }),
+        ChatColor.GRAY + "Backwards facing movement."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#SHATTER}
      */
     SHATTER(new String[]{
         ChatColor.GREEN + "Shatter",
-        ChatColor.GRAY + "Immediately consumes all stacks of Brittle from nearby enemies to deal an instance of damage."
-    }),
+        ChatColor.GRAY + "Immediately consumes all stacks of Brittle from nearby enemies to deal an instance of damage."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#TELEPORT}
@@ -727,72 +694,63 @@ public class WhatsThatCommand implements CommandExecutor {
     TELEPORT(new String[]{
         ChatColor.GREEN + "Teleport",
         "Causes instant movement.",
-        "Section: " + ChatColor.AQUA + "blink, projection"
-    }),
+        "Section: " + ChatColor.AQUA + "blink, projection"}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#BLINK}
      */
     BLINK(new String[]{
         ChatColor.GREEN + "Blink",
-        ChatColor.GRAY + "Omnidirectional forward-facing teleport."
-    }),
+        ChatColor.GRAY + "Omnidirectional forward-facing teleport."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#PROJECTION}
      */
     PROJECTION(new String[]{
         ChatColor.GREEN + "Projection",
-        ChatColor.GRAY + "Omnidirectional forward-facing teleport that after a delay, teleports the user back to their original location."
-    }),
+        ChatColor.GRAY + "Omnidirectional forward-facing teleport that after a delay, teleports the user back to their original location."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.StatusType#BLEED}}
      */
     BLEED(new String[]{
         ChatColor.GREEN + "Bleed",
-        ChatColor.GRAY + "Damage over time."
-    }),
+        ChatColor.GRAY + "Damage over time."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.StatusType#BRITTLE}
      */
     BRITTLE(new String[]{
         ChatColor.GREEN + "Brittle",
-        ChatColor.GRAY + "Can be triggered by Shatter to deal an instance of damage."
-    }),
+        ChatColor.GRAY + "Can be triggered by Shatter to deal an instance of damage."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.StatusType#ELECTROCUTE}
      */
     ELECTROCUTE(new String[]{
         ChatColor.GREEN + "Electrocute",
-        ChatColor.GRAY + "Damage over time that spreads its remaining stacks to nearby entities on death."
-    }),
+        ChatColor.GRAY + "Damage over time that spreads its remaining stacks to nearby entities on death."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.StatusType#SOAKED}
      */
     SOAKED(new String[]{
         ChatColor.GREEN + "Soaked",
-        ChatColor.GRAY + "Allows and increases chain damage between entities."
-    }),
+        ChatColor.GRAY + "Allows and increases chain damage between entities."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.StatusType#FRACTURE}
      */
     FRACTURE(new String[]{
         ChatColor.GREEN + "Fracture",
-        ChatColor.GRAY + "Reduces an entity's effective armor value in damage calculations by 1 per stack."
-    }),
+        ChatColor.GRAY + "Reduces an entity's effective armor value in damage calculations by 1 per stack."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.StatusType#VULNERABLE}
      */
     VULNERABLE(new String[]{
         ChatColor.GREEN + "Vulnerable",
-        ChatColor.GRAY + "Increases the damage taken by the entity by 2.5% per stack."
-    });
+        ChatColor.GRAY + "Increases the damage taken by the entity by 2.5% per stack."});
 
     /**
      * Description.

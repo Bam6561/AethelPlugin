@@ -34,7 +34,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.11
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -128,7 +128,7 @@ public class DamageListener implements Listener {
         } else {
           targetUUID = defender.getUniqueId();
         }
-        ability.doEffect(rpgPlayer, targetUUID);
+        ability.doEffect(rpgPlayer.getUUID(), targetUUID);
       }
     }
   }
@@ -164,7 +164,7 @@ public class DamageListener implements Listener {
         } else {
           targetUUID = attacker.getUniqueId();
         }
-        ability.doEffect(rpgPlayer, targetUUID);
+        ability.doEffect(rpgPlayer.getUUID(), targetUUID);
       }
     }
   }
@@ -246,9 +246,8 @@ public class DamageListener implements Listener {
           return true;
         }
 
-        RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId());
         PersistentDataContainer entityTags = defender.getPersistentDataContainer();
-        Buffs buffs = rpgPlayer.getBuffs();
+        Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(defender.getUniqueId());
 
         if (ifDodged(entityTags, buffs, new Random(), defender)) {
           return true;
@@ -274,7 +273,7 @@ public class DamageListener implements Listener {
     double criticalChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_CRITICAL_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double criticalChanceBuff = 0.0;
     if (buffs != null) {
-      criticalChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_CHANCE);
+      criticalChanceBuff = buffs.getAethelAttribute(AethelAttribute.CRITICAL_CHANCE);
     }
 
     if (criticalChanceBase + criticalChanceBuff > random.nextDouble() * 100) {
@@ -286,7 +285,7 @@ public class DamageListener implements Listener {
       double criticalDamageBase = entityTags.getOrDefault(Key.ATTRIBUTE_CRITICAL_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
       double criticalDamageBuff = 0.0;
       if (buffs != null) {
-        criticalDamageBuff = buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_DAMAGE);
+        criticalDamageBuff = buffs.getAethelAttribute(AethelAttribute.CRITICAL_DAMAGE);
       }
 
       e.setDamage(e.getDamage() * (1.25 + (criticalDamageBase + criticalDamageBuff) / 100));
@@ -403,7 +402,7 @@ public class DamageListener implements Listener {
     double counterChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double counterChanceBuff = 0.0;
     if (buffs != null) {
-      counterChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.COUNTER_CHANCE);
+      counterChanceBuff = buffs.getAethelAttribute(AethelAttribute.COUNTER_CHANCE);
     }
 
     if (counterChanceBase + counterChanceBuff > random.nextDouble() * 100) {
@@ -446,7 +445,7 @@ public class DamageListener implements Listener {
     double dodgeChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double dodgeChanceBuff = 0.0;
     if (buffs != null) {
-      dodgeChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE);
+      dodgeChanceBuff = buffs.getAethelAttribute(AethelAttribute.DODGE_CHANCE);
     }
 
     if (dodgeChanceBase + dodgeChanceBuff > random.nextDouble() * 100) {
@@ -472,7 +471,7 @@ public class DamageListener implements Listener {
     double toughnessBase = entityTags.getOrDefault(Key.ATTRIBUTE_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double toughnessBuff = 0.0;
     if (buffs != null) {
-      toughnessBuff = buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS);
+      toughnessBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR_TOUGHNESS);
     }
     double toughness = defender.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + toughnessBase + toughnessBuff;
 

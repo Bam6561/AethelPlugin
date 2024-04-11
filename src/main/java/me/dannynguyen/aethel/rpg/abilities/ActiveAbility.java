@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.7
+ * @version 1.22.11
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -106,20 +106,20 @@ public class ActiveAbility {
   /**
    * Triggers the {@link ActiveAbilityType.Effect}.
    *
-   * @param rpgPlayer {@link RpgPlayer}
-   * @param caster    ability caster
+   * @param caster ability caster
    */
-  public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull Player caster) {
-    Objects.requireNonNull(rpgPlayer, "Null RPG player");
-    Objects.requireNonNull(caster, "Null caster");
-    PersistentDataContainer entityTags = Bukkit.getPlayer(caster.getUniqueId()).getPersistentDataContainer();
+  public void doEffect(@NotNull Player caster) {
+    UUID uuid = Objects.requireNonNull(caster, "Null caster").getUniqueId();
+    PersistentDataContainer entityTags = Bukkit.getPlayer(uuid).getPersistentDataContainer();
+    Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
+
     double itemCooldownBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    Buffs buffs = rpgPlayer.getBuffs();
     double cooldownModifierBuff = 0.0;
     if (buffs != null) {
-      cooldownModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
+      cooldownModifierBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_COOLDOWN);
     }
     double cooldownModifier = (itemCooldownBase + cooldownModifierBuff) / 100;
+
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, caster);
       case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
@@ -150,11 +150,11 @@ public class ActiveAbility {
 
     try {
       Attribute attribute = Attribute.valueOf(effectData.get(0).toUpperCase());
-      buffs.addAttributeBuff(attribute, value, duration);
+      buffs.addAttribute(attribute, value, duration);
     } catch (IllegalArgumentException ex) {
       try {
         AethelAttribute aethelAttribute = AethelAttribute.valueOf(effectData.get(0).toUpperCase());
-        buffs.addAethelAttributeBuff(aethelAttribute, value, duration);
+        buffs.addAethelAttribute(aethelAttribute, value, duration);
       } catch (IllegalArgumentException ignored) {
       }
     }
@@ -232,12 +232,12 @@ public class ActiveAbility {
   private void dealDistanceDamage(double cooldownModifier, Player caster) {
     World world = caster.getWorld();
     PersistentDataContainer entityTags = caster.getPersistentDataContainer();
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
+    Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(caster.getUniqueId());
+
     double itemDamageBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    Buffs buffs = rpgPlayer.getBuffs();
     double damageModifierBuff = 0.0;
     if (buffs != null) {
-      damageModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_DAMAGE);
+      damageModifierBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_DAMAGE);
     }
     double damageModifier = 1 + (itemDamageBase + damageModifierBuff) / 100;
     double damage = Double.parseDouble(effectData.get(0)) * damageModifier;
@@ -465,7 +465,7 @@ public class ActiveAbility {
   }
 
   /**
-   * Checks if the living entity is unobstructed by solid blocks.
+   * Checks if the entity is unobstructed by solid blocks.
    * <p>
    * A path is drawn starting from the entity in the direction of
    * the caster because for long-distance computations, the likelihood
@@ -510,11 +510,11 @@ public class ActiveAbility {
   }
 
   /**
-   * Gets a living entity's direction angle from the location of the caster.
+   * Gets an entity's direction angle from the location of the caster.
    *
    * @param caster ability caster
    * @param entity potential target entity
-   * @return living entity's direction angle
+   * @return entity's direction angle
    */
   private double getDirectionAngle(Player caster, LivingEntity entity) {
     Location casterLocation = caster.getLocation();

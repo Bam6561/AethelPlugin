@@ -206,13 +206,13 @@ public class BuffCommand implements CommandExecutor {
 
     StringBuilder buffsBuilder = new StringBuilder();
     buffsBuilder.append(ChatColor.GREEN).append("[Get Buffs] ").append(ChatColor.DARK_PURPLE).append(Bukkit.getEntity(uuid).getName()).append(" ");
-    for (Attribute attribute : buffs.getBuffedAttributes()) {
+    for (Attribute attribute : buffs.getAttributeBuffs()) {
       buffsBuilder.append(ChatColor.AQUA).append(TextFormatter.capitalizePhrase(attribute.name())).append(" ");
-      buffsBuilder.append(ChatColor.WHITE).append(buffs.getAttributeBuff(attribute)).append(" ");
+      buffsBuilder.append(ChatColor.WHITE).append(buffs.getAttribute(attribute)).append(" ");
     }
-    for (AethelAttribute aethelAttribute : buffs.getBuffedAethelAttributes()) {
+    for (AethelAttribute aethelAttribute : buffs.getAethelAttributeBuffs()) {
       buffsBuilder.append(ChatColor.AQUA).append(aethelAttribute.getProperName()).append(" ");
-      buffsBuilder.append(ChatColor.WHITE).append(buffs.getAethelAttributeBuff(aethelAttribute)).append(" ");
+      buffsBuilder.append(ChatColor.WHITE).append(buffs.getAethelAttribute(aethelAttribute)).append(" ");
     }
     user.sendMessage(buffsBuilder.toString());
   }
@@ -287,7 +287,7 @@ public class BuffCommand implements CommandExecutor {
     if (!entityBuffs.containsKey(uuid)) {
       entityBuffs.put(uuid, new Buffs(uuid));
     }
-    entityBuffs.get(uuid).addAttributeBuff(attribute, value, ticks);
+    entityBuffs.get(uuid).addAttribute(attribute, value, ticks);
     user.sendMessage(ChatColor.GREEN + "[Buff Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + TextFormatter.capitalizePhrase(attribute.name()) + " " + ChatColor.WHITE + value + " " + ticks);
   }
 
@@ -305,7 +305,7 @@ public class BuffCommand implements CommandExecutor {
     if (!entityBuffs.containsKey(uuid)) {
       entityBuffs.put(uuid, new Buffs(uuid));
     }
-    entityBuffs.get(uuid).addAethelAttributeBuff(aethelAttribute, value, ticks);
+    entityBuffs.get(uuid).addAethelAttribute(aethelAttribute, value, ticks);
     user.sendMessage(ChatColor.GREEN + "[Buff Added] " + ChatColor.DARK_PURPLE + Bukkit.getEntity(uuid).getName() + " " + ChatColor.AQUA + TextFormatter.capitalizePhrase(aethelAttribute.name()) + " " + ChatColor.WHITE + value + " " + ticks);
   }
 

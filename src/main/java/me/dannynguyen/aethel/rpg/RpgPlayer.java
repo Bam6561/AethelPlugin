@@ -1,12 +1,8 @@
 package me.dannynguyen.aethel.rpg;
 
-import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,7 +10,7 @@ import java.util.UUID;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.11
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -47,7 +43,7 @@ public class RpgPlayer {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.settings = new Settings(uuid);
     this.equipment = new Equipment(player);
-    this.health = new Health(player, player.getPersistentDataContainer(), settings);
+    this.health = new Health(player, settings);
   }
 
   /**
@@ -69,27 +65,6 @@ public class RpgPlayer {
   public Settings getSettings() {
     return this.settings;
   }
-
-  /**
-   * Gets the affecting {@link Buffs}.
-   *
-   * @return affecting {@link Buffs}
-   */
-  @Nullable
-  public Buffs getBuffs() {
-    return Plugin.getData().getRpgSystem().getBuffs().get(uuid);
-  }
-
-  /**
-   * Gets the affecting {@link Status statuses}.
-   *
-   * @return affecting {@link Status statuses}
-   */
-  @Nullable
-  public Map<StatusType, Status> getStatuses() {
-    return Plugin.getData().getRpgSystem().getStatuses().get(uuid);
-  }
-
 
   /**
    * Gets the {@link Equipment}.

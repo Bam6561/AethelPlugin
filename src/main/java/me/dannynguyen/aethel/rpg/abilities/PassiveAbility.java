@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.11
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -117,20 +117,22 @@ public class PassiveAbility {
   /**
    * Triggers the {@link PassiveAbilityType.Effect}.
    *
-   * @param rpgPlayer  {@link RpgPlayer}
+   * @param casterUUID ability caster UUID
    * @param targetUUID target UUID
    */
-  public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull UUID targetUUID) {
-    Objects.requireNonNull(rpgPlayer, "Null RPG player");
+  public void doEffect(@NotNull UUID casterUUID, @NotNull UUID targetUUID) {
+    Objects.requireNonNull(casterUUID, "Null caster UUID");
     Objects.requireNonNull(targetUUID, "Null target UUID");
-    PersistentDataContainer entityTags = Bukkit.getPlayer(rpgPlayer.getUUID()).getPersistentDataContainer();
+    PersistentDataContainer entityTags = Bukkit.getPlayer(casterUUID).getPersistentDataContainer();
+    Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(casterUUID);
+
     double itemCooldownBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    Buffs buffs = rpgPlayer.getBuffs();
     double cooldownModifierBuff = 0.0;
     if (buffs != null) {
-      cooldownModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
+      cooldownModifierBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_COOLDOWN);
     }
     double cooldownModifier = (itemCooldownBase + cooldownModifierBuff) / 100;
+
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, targetUUID);
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
@@ -160,11 +162,11 @@ public class PassiveAbility {
 
     try {
       Attribute attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
-      buffs.addAttributeBuff(attribute, value, duration);
+      buffs.addAttribute(attribute, value, duration);
     } catch (IllegalArgumentException ex) {
       try {
         AethelAttribute aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
-        buffs.addAethelAttributeBuff(aethelAttribute, value, duration);
+        buffs.addAethelAttribute(aethelAttribute, value, duration);
       } catch (IllegalArgumentException ignored) {
       }
     }
@@ -198,13 +200,14 @@ public class PassiveAbility {
     Entity entity = Bukkit.getEntity(targetUUID);
     if (entity instanceof Player) {
       PersistentDataContainer entityTags = Bukkit.getPlayer(targetUUID).getPersistentDataContainer();
+      Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(targetUUID);
+
       double tenacityBase = entityTags.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID);
-      Buffs buffs = rpgPlayer.getBuffs();
       double tenacityBuff = 0.0;
       if (buffs != null) {
-        tenacityBuff = buffs.getAethelAttributeBuff(AethelAttribute.TENACITY);
+        tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
       }
+
       ticks = (int) Math.max(1, ticks - (ticks * (tenacityBase + tenacityBuff) / 100));
     }
 

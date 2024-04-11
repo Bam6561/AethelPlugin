@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Represents an {@link RpgPlayer}'s temporary attribute stat changes.
+ * Represents an entity's temporary attribute stat changes.
  *
  * @author Danny Nguyen
- * @version 1.21.11
+ * @version 1.22.11
  * @since 1.20.9
  */
 public class Buffs {
@@ -59,7 +59,7 @@ public class Buffs {
    * @param value     value
    * @param duration  duration in ticks
    */
-  public void addAttributeBuff(@NotNull Attribute attribute, double value, int duration) {
+  public void addAttribute(@NotNull Attribute attribute, double value, int duration) {
     LivingEntity entity = (LivingEntity) Bukkit.getEntity(uuid);
     AttributeInstance entityAttribute = entity.getAttribute(Objects.requireNonNull(attribute, "Null attribute"));
     if (entityAttribute == null) {
@@ -87,7 +87,7 @@ public class Buffs {
         attributes.put(attribute, attributes.get(attribute) - value);
       }, duration).getTaskId();
     }
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeAttributeBuffsIfEmpty(taskID, attribute), duration);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeAttributeIfEmpty(taskID, attribute), duration);
     attributeBuffs.add(taskID);
   }
 
@@ -98,7 +98,7 @@ public class Buffs {
    * @param value           value
    * @param duration        duration in ticks
    */
-  public void addAethelAttributeBuff(@NotNull AethelAttribute aethelAttribute, double value, int duration) {
+  public void addAethelAttribute(@NotNull AethelAttribute aethelAttribute, double value, int duration) {
     aethelAttributes.put(aethelAttribute, aethelAttributes.getOrDefault(aethelAttribute, 0.0) + value);
 
     if (aethelAttribute == AethelAttribute.MAX_HEALTH && Bukkit.getEntity(uuid) instanceof Player) {
@@ -112,7 +112,7 @@ public class Buffs {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value), duration);
     }
 
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeAethelAttributeBuffsIfEmpty(aethelAttribute), duration);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeAethelAttributeIfEmpty(aethelAttribute), duration);
   }
 
   /**
@@ -121,7 +121,7 @@ public class Buffs {
    * @param taskID    task ID to be removed
    * @param attribute attribute to be removed
    */
-  private void removeAttributeBuffsIfEmpty(int taskID, Attribute attribute) {
+  private void removeAttributeIfEmpty(int taskID, Attribute attribute) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       attributeBuffs.remove(taskID);
       if (attributes.get(attribute) == 0.0) {
@@ -138,7 +138,7 @@ public class Buffs {
    *
    * @param aethelAttribute {@link AethelAttribute} to be removed
    */
-  private void removeAethelAttributeBuffsIfEmpty(AethelAttribute aethelAttribute) {
+  private void removeAethelAttributeIfEmpty(AethelAttribute aethelAttribute) {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       if (aethelAttributes.get(aethelAttribute) == 0.0) {
         aethelAttributes.remove(aethelAttribute);
@@ -155,7 +155,7 @@ public class Buffs {
    * @param attribute attribute
    * @return attribute buff value
    */
-  public double getAttributeBuff(@NotNull Attribute attribute) {
+  public double getAttribute(@NotNull Attribute attribute) {
     return attributes.getOrDefault(Objects.requireNonNull(attribute), 0.0);
   }
 
@@ -165,7 +165,7 @@ public class Buffs {
    * @param aethelAttribute {@link AethelAttribute}
    * @return {@link AethelAttribute} buff value
    */
-  public double getAethelAttributeBuff(@NotNull AethelAttribute aethelAttribute) {
+  public double getAethelAttribute(@NotNull AethelAttribute aethelAttribute) {
     return aethelAttributes.getOrDefault(Objects.requireNonNull(aethelAttribute), 0.0);
   }
 
@@ -175,7 +175,7 @@ public class Buffs {
    * @return buffed attributes
    */
   @NotNull
-  public Set<Attribute> getBuffedAttributes() {
+  public Set<Attribute> getAttributeBuffs() {
     return attributes.keySet();
   }
 
@@ -185,7 +185,7 @@ public class Buffs {
    * @return buffed {@link AethelAttribute Aethel attributes}
    */
   @NotNull
-  public Set<AethelAttribute> getBuffedAethelAttributes() {
+  public Set<AethelAttribute> getAethelAttributeBuffs() {
     return aethelAttributes.keySet();
   }
 

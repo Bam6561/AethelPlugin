@@ -21,7 +21,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.11
  * @since 1.22.2
  */
 public class PluginTask {
@@ -89,7 +89,7 @@ public class PluginTask {
         if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
           boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
           if (self) {
-            ability.doEffect(rpgPlayer, rpgPlayer.getUUID());
+            ability.doEffect(rpgPlayer.getUUID(), rpgPlayer.getUUID());
           }
         }
       }

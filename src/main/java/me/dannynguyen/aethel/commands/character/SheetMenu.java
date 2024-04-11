@@ -211,10 +211,10 @@ public class SheetMenu implements Menu {
     double criticalChanceBuff = 0.0;
     double criticalDamageBuff = 0.0;
     if (buffs != null) {
-      damageBuff = buffs.getAttributeBuff(Attribute.GENERIC_ATTACK_DAMAGE);
-      attackSpeedBuff = buffs.getAttributeBuff(Attribute.GENERIC_ATTACK_SPEED);
-      criticalChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_CHANCE);
-      criticalDamageBuff = buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_DAMAGE);
+      damageBuff = buffs.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+      attackSpeedBuff = buffs.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+      criticalChanceBuff = buffs.getAethelAttribute(AethelAttribute.CRITICAL_CHANCE);
+      criticalDamageBuff = buffs.getAethelAttribute(AethelAttribute.CRITICAL_DAMAGE);
     }
 
     String damage = ChatColor.RED + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG" + (damageBuff != 0.0 ? " [" + df2.format(damageBuff) + "]" : "");
@@ -245,13 +245,13 @@ public class SheetMenu implements Menu {
     double armorToughnessBuff = 0.0;
     double armorBuff = 0.0;
     if (buffs != null) {
-      genericMaxHealthBuff = buffs.getAttributeBuff(Attribute.GENERIC_MAX_HEALTH);
-      maxHealthBuff = buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);
-      counterChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.COUNTER_CHANCE);
-      dodgeChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE);
-      genericArmorToughnessBuff = buffs.getAttributeBuff(Attribute.GENERIC_ARMOR_TOUGHNESS);
-      armorToughnessBuff = buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS);
-      armorBuff = buffs.getAttributeBuff(Attribute.GENERIC_ARMOR);
+      genericMaxHealthBuff = buffs.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+      maxHealthBuff = buffs.getAethelAttribute(AethelAttribute.MAX_HEALTH);
+      counterChanceBuff = buffs.getAethelAttribute(AethelAttribute.COUNTER_CHANCE);
+      dodgeChanceBuff = buffs.getAethelAttribute(AethelAttribute.DODGE_CHANCE);
+      genericArmorToughnessBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+      armorToughnessBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR_TOUGHNESS);
+      armorBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR);
     }
 
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
@@ -295,12 +295,12 @@ public class SheetMenu implements Menu {
     double knockbackResistanceBuff = 0.0;
     double tenacityBuff = 0.0;
     if (buffs != null) {
-      itemDamageBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_DAMAGE);
-      itemCooldownBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
-      speedBuff = buffs.getAttributeBuff(Attribute.GENERIC_MOVEMENT_SPEED);
-      luckBuff = buffs.getAttributeBuff(Attribute.GENERIC_LUCK);
-      knockbackResistanceBuff = buffs.getAttributeBuff(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
-      tenacityBuff = buffs.getAethelAttributeBuff(AethelAttribute.TENACITY);
+      itemDamageBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_DAMAGE);
+      itemCooldownBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_COOLDOWN);
+      speedBuff = buffs.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+      luckBuff = buffs.getAttribute(Attribute.GENERIC_LUCK);
+      knockbackResistanceBuff = buffs.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+      tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
     }
 
     String itemDamage = ChatColor.LIGHT_PURPLE + df2.format(1.0 + (itemDamageBase + itemDamageBuff) / 100) + "x ITEM DMG" + (itemDamageBuff != 0.0 ? " [" + df2.format(itemDamageBuff) + "]" : "");

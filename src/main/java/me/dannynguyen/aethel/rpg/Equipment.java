@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.11
  * @since 1.13.4
  */
 public class Equipment {
@@ -229,6 +229,7 @@ public class Equipment {
    *
    * @return {@link AethelAttributes}
    */
+  @NotNull
   public AethelAttributes getAttributes() {
     return this.attributes;
   }
@@ -238,6 +239,7 @@ public class Equipment {
    *
    * @return {@link Enchantments}
    */
+  @NotNull
   public Enchantments getEnchantments() {
     return this.enchantments;
   }
@@ -247,6 +249,7 @@ public class Equipment {
    *
    * @return {@link Abilities}
    */
+  @NotNull
   public Abilities getAbilities() {
     return this.abilities;
   }
@@ -294,7 +297,7 @@ public class Equipment {
     /**
      * Player's persistent tags.
      */
-    private final PersistentDataContainer playerContainer;
+    private final PersistentDataContainer playerTags;
 
     /**
      * {@link AethelAttribute} values on {@link RpgEquipmentSlot}.
@@ -304,10 +307,10 @@ public class Equipment {
     /**
      * Associates the player's persistent tags with Aethel attributes.
      *
-     * @param playerContainer player's persistent tags
+     * @param playerTags player's persistent tags
      */
-    private AethelAttributes(@NotNull PersistentDataContainer playerContainer) {
-      this.playerContainer = playerContainer;
+    private AethelAttributes(@NotNull PersistentDataContainer playerTags) {
+      this.playerTags = playerTags;
     }
 
     /**
@@ -318,11 +321,11 @@ public class Equipment {
      * @param itemTags item's persistent tags
      */
     private void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
-      String[] attributes = Objects.requireNonNull(itemTags, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
-      for (String attribute : attributes) {
-        RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(attribute.substring(0, attribute.indexOf("."))));
+      String[] slotAttributes = Objects.requireNonNull(itemTags, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+      for (String slotAttribute : slotAttributes) {
+        RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(slotAttribute.substring(0, slotAttribute.indexOf("."))));
         if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
-          addAttributes(eSlot, itemTags, attribute);
+          addAttributes(eSlot, itemTags, slotAttribute);
         }
       }
     }
@@ -332,16 +335,18 @@ public class Equipment {
      *
      * @param eSlot         {@link RpgEquipmentSlot}
      * @param itemContainer item's persistent tags
-     * @param attribute     attribute modifier
+     * @param slotAttribute attribute modifier
      */
-    private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer itemContainer, String attribute) {
-      NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
-      AethelAttribute attributeType = AethelAttribute.valueOf(TextFormatter.formatEnum(attribute.substring(attribute.indexOf(".") + 1)));
-      slotAttributes.get(eSlot).put(attributeType, itemContainer.get(attributeKey, PersistentDataType.DOUBLE));
+    private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer itemContainer, String slotAttribute) {
+      NamespacedKey itemAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + slotAttribute);
+      String attributeId = slotAttribute.substring(slotAttribute.indexOf(".") + 1);
+      AethelAttribute attributeType = AethelAttribute.valueOf(TextFormatter.formatEnum(attributeId));
+      double itemAttributeValue = itemContainer.get(itemAttributeKey, PersistentDataType.DOUBLE);
+      slotAttributes.get(eSlot).put(attributeType, itemAttributeValue);
 
-      NamespacedKey setAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeType.getId());
-      double attributeValue = playerContainer.getOrDefault(setAttributeKey, PersistentDataType.DOUBLE, 0.0);
-      playerContainer.set(setAttributeKey, PersistentDataType.DOUBLE, attributeValue + itemContainer.get(attributeKey, PersistentDataType.DOUBLE));
+      NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeId);
+      double entityAttributeValue = playerTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
+      playerTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue + itemAttributeValue);
     }
 
     /**
@@ -351,9 +356,9 @@ public class Equipment {
      */
     public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
       for (AethelAttribute attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
-        NamespacedKey setAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute.getId());
-        double attributeValue = playerContainer.getOrDefault(setAttributeKey, PersistentDataType.DOUBLE, 0.0);
-        playerContainer.set(setAttributeKey, PersistentDataType.DOUBLE, attributeValue - slotAttributes.get(eSlot).get(attribute));
+        NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute.getId());
+        double entityAttributeValue = playerTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
+        playerTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue - slotAttributes.get(eSlot).get(attribute));
         slotAttributes.get(eSlot).put(attribute, 0.0);
       }
     }
@@ -480,8 +485,8 @@ public class Equipment {
   }
 
   /**
-   * Represents an {@link RpgPlayer}'s {@link PassiveAbility passive}
-   * and {@link ActiveAbility active} abilities.
+   * Represents an {@link RpgPlayer}'s {@link Equipment}
+   * {@link PassiveAbility passive} and {@link ActiveAbility active} abilities.
    *
    * @author Danny Nguyen
    * @version 1.19.6

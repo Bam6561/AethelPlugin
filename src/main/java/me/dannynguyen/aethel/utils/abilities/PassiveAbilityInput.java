@@ -8,6 +8,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.20.11
+ * @version 1.22.11
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -33,6 +34,7 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String chanceCooldownBuff(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 6) {
@@ -105,6 +107,7 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String healthCooldownBuff(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 6) {
@@ -174,6 +177,7 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String chanceCooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 5) {
@@ -239,6 +243,7 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String healthCooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 5) {
@@ -302,8 +307,10 @@ public class PassiveAbilityInput {
    * @param trigger {@link PassiveTriggerType}
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownStackInstance(@NotNull Player user, @NotNull String[] args, PassiveTriggerType trigger) {
+  @Nullable
+  public static String chanceCooldownStackInstance(@NotNull Player user, @NotNull String[] args, @NotNull PassiveTriggerType trigger) {
     Objects.requireNonNull(user, "Null user");
+    Objects.requireNonNull(trigger, "Null trigger");
     if (Objects.requireNonNull(args, "Null arguments").length != 5) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
@@ -376,6 +383,7 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String healthCooldownStackInstance(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 5) {
@@ -439,8 +447,10 @@ public class PassiveAbilityInput {
    * @param trigger {@link PassiveTriggerType}
    * @return ability data if set correctly, otherwise null
    */
-  public static String chanceCooldownPotionEffect(@NotNull Player user, @NotNull String[] args, PassiveTriggerType trigger) {
+  @Nullable
+  public static String chanceCooldownPotionEffect(@NotNull Player user, @NotNull String[] args, @NotNull PassiveTriggerType trigger) {
     Objects.requireNonNull(user, "Null user");
+    Objects.requireNonNull(trigger, "Null trigger");
     if (Objects.requireNonNull(args, "Null arguments").length != 7) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       return null;
@@ -530,6 +540,7 @@ public class PassiveAbilityInput {
    * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
+  @Nullable
   public static String healthCooldownPotionEffect(@NotNull Player user, @NotNull String[] args) {
     Objects.requireNonNull(user, "Null user");
     if (Objects.requireNonNull(args, "Null arguments").length != 7) {
