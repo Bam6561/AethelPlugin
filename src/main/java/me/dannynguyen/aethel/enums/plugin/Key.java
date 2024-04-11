@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.22.13
+ * @version 1.22.16
  * @since 1.11.9
  */
 public enum Key {
@@ -59,6 +59,16 @@ public enum Key {
    * {@link AethelAttribute#CRITICAL_DAMAGE}
    */
   ATTRIBUTE_CRITICAL_DAMAGE(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.CRITICAL_DAMAGE.getId())),
+
+  /**
+   * {@link AethelAttribute#FEINT_SKILL}
+   */
+  ATTRIBUTE_FEINT_SKILL(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.FEINT_SKILL.getId())),
+
+  /**
+   * {@link AethelAttribute#ACCURACY_SKILL}
+   */
+  ATTRIBUTE_ACCURACY_SKILL(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.ACCURACY_SKILL.getId())),
 
   /**
    * {@link AethelAttribute#COUNTER_CHANCE}

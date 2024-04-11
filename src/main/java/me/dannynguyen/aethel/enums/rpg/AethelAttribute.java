@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.20.0
+ * @version 1.22.16
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -19,6 +19,16 @@ public enum AethelAttribute {
    * Critical hit damage multiplier.
    */
   CRITICAL_DAMAGE("Critical Damage", "critical_damage", "1.25x [Input / 100]"),
+
+  /**
+   * Reduces defender's counter chance.
+   */
+  FEINT_SKILL("Feint Skill", "feint_skill", "0"),
+
+  /**
+   * Reduces defender's dodge chance.
+   */
+  ACCURACY_SKILL("Accuracy Skill", "accuracy_skill", "0"),
 
   /**
    * Max health.

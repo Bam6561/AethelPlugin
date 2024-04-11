@@ -34,7 +34,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.22.13
+ * @version 1.22.16
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -207,24 +207,33 @@ public class SheetMenu implements Menu {
   private void addOffenseAttributes(PersistentDataContainer entityTags, Buffs buffs, DecimalFormat df2) {
     double criticalChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_CRITICAL_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double criticalDamageBase = entityTags.getOrDefault(Key.ATTRIBUTE_CRITICAL_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double feintSkillBase = entityTags.getOrDefault(Key.ATTRIBUTE_FEINT_SKILL.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double accuracySkillBase = entityTags.getOrDefault(Key.ATTRIBUTE_ACCURACY_SKILL.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+
 
     double damageBuff = 0.0;
     double attackSpeedBuff = 0.0;
     double criticalChanceBuff = 0.0;
     double criticalDamageBuff = 0.0;
+    double feintSkillBuff = 0.0;
+    double accuracySkillBuff = 0.0;
     if (buffs != null) {
       damageBuff = buffs.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
       attackSpeedBuff = buffs.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
       criticalChanceBuff = buffs.getAethelAttribute(AethelAttribute.CRITICAL_CHANCE);
       criticalDamageBuff = buffs.getAethelAttribute(AethelAttribute.CRITICAL_DAMAGE);
+      feintSkillBuff = buffs.getAethelAttribute(AethelAttribute.FEINT_SKILL);
+      accuracySkillBuff = buffs.getAethelAttribute(AethelAttribute.ACCURACY_SKILL);
     }
 
     String damage = ChatColor.RED + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG" + (damageBuff != 0.0 ? " [" + df2.format(damageBuff) + "]" : "");
     String attackSpeed = ChatColor.GOLD + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD" + (attackSpeedBuff != 0.0 ? " [" + df2.format(attackSpeedBuff) + "]" : "");
     String criticalChance = ChatColor.GREEN + df2.format(criticalChanceBase + criticalChanceBuff) + "% CRIT" + (criticalChanceBuff != 0.0 ? " [" + df2.format(criticalChanceBuff) + "]" : "");
     String criticalDamage = ChatColor.DARK_GREEN + df2.format(1.25 + (criticalDamageBase + criticalDamageBuff) / 100) + "x CRIT DMG" + (criticalDamageBuff != 0.0 ? " [" + df2.format(criticalDamageBuff) + "]" : "");
+    String feintSkill = ChatColor.DARK_AQUA + df2.format(feintSkillBase + feintSkillBuff) + " FEINT" + (feintSkillBuff != 0.0 ? " [" + df2.format(feintSkillBuff) + "]" : "");
+    String accuracySkill = ChatColor.DARK_PURPLE + df2.format(accuracySkillBase + accuracySkillBuff) + " ACC" + (accuracySkillBuff != 0.0 ? " [" + df2.format(accuracySkillBuff) + "]" : "");
 
-    menu.setItem(15, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense", List.of(damage, attackSpeed, criticalChance, criticalDamage), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(15, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense", List.of(damage, attackSpeed, criticalChance, criticalDamage, feintSkill, accuracySkill), ItemFlag.HIDE_ATTRIBUTES));
   }
 
   /**

@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.14
+ * @version 1.22.16
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -80,7 +80,7 @@ public class DamageListener implements Listener {
       }
 
       final double finalDamage = e.getDamage();
-      e.setDamage(0);
+      e.setDamage(0.01);
 
       switch (cause) {
         case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(defender, finalDamage);
@@ -210,16 +210,18 @@ public class DamageListener implements Listener {
     }
 
     Random random = new Random();
-    PersistentDataContainer entityTags = defender.getPersistentDataContainer();
-    Buffs buffs = rpgSystem.getBuffs().get(defender.getUniqueId());
+    PersistentDataContainer attackerEntityTags = attacker.getPersistentDataContainer();
+    PersistentDataContainer defenderEntityTags = defender.getPersistentDataContainer();
+    Buffs defenderBuffs = rpgSystem.getBuffs().get(defender.getUniqueId());
+    Buffs attackerBuffs = rpgSystem.getBuffs().get(attacker.getUniqueId());
 
-    if (ifCountered(e.getCause(), entityTags, buffs, random, attacker, defender)) {
+    if (ifCountered(e.getCause(), defenderEntityTags, attackerEntityTags, defenderBuffs, attackerBuffs, random, attacker, defender)) {
       e.setCancelled(true);
       return;
-    } else if (ifDodged(entityTags, buffs, random, defender)) {
+    } else if (ifDodged(defenderEntityTags, attackerEntityTags, defenderBuffs, attackerBuffs, random, defender)) {
       e.setCancelled(true);
       return;
-    } else if (ifTougher(e, entityTags, buffs, defender)) {
+    } else if (ifTougher(e, defenderEntityTags, defenderBuffs, defender)) {
       e.setCancelled(true);
       return;
     }
@@ -227,7 +229,7 @@ public class DamageListener implements Listener {
     e.setDamage(mitigation.mitigateArmorProtectionResistance(e.getDamage()));
 
     final double finalDamage = e.getDamage();
-    e.setDamage(0);
+    e.setDamage(0.01);
 
     damageArmorDurability(defender, finalDamage);
     if (defender instanceof Player) {
@@ -353,7 +355,7 @@ public class DamageListener implements Listener {
       case MAGIC -> {
         e.setDamage(mitigation.mitigateProtectionResistance(e.getDamage()));
         Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(e.getDamage());
-        e.setDamage(0);
+        e.setDamage(0.01);
         return true;
       }
       case PROJECTILE -> {
@@ -387,7 +389,7 @@ public class DamageListener implements Listener {
     if (attacker.getType() == EntityType.AREA_EFFECT_CLOUD) {
       e.setDamage(mitigation.mitigateProtectionResistance(e.getDamage()));
       Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(e.getDamage());
-      e.setDamage(0);
+      e.setDamage(0.01);
       return true;
     }
     return false;
@@ -400,29 +402,37 @@ public class DamageListener implements Listener {
    * <p>
    * Projectile attacks cannot trigger counterattacks.
    *
-   * @param cause      damage cause
-   * @param entityTags entity's persistent tags
-   * @param buffs      {@link Buffs}
-   * @param random     rng
-   * @param attacker   attacking entity
-   * @param defender   defending entity
+   * @param cause              damage cause
+   * @param defenderEntityTags defending entity's persistent tags
+   * @param attackerEntityTags attacking entity's persistent tags
+   * @param defenderBuffs      defending entity's {@link Buffs}
+   * @param attackerBuffs      attacking entity's {@link Buffs}
+   * @param random             rng
+   * @param attacker           attacking entity
+   * @param defender           defending entity
    * @return if the attacker died
    */
-  private boolean ifCountered(EntityDamageEvent.DamageCause cause, PersistentDataContainer entityTags, Buffs buffs, Random random, Entity attacker, LivingEntity defender) {
+  private boolean ifCountered(EntityDamageEvent.DamageCause cause, PersistentDataContainer defenderEntityTags, PersistentDataContainer attackerEntityTags, Buffs defenderBuffs, Buffs attackerBuffs, Random random, Entity attacker, LivingEntity defender) {
     if (cause == EntityDamageEvent.DamageCause.PROJECTILE || !(attacker instanceof LivingEntity livingAttacker)) {
       return false;
     }
 
-    double counterChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double counterChanceBase = defenderEntityTags.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double counterChanceBuff = 0.0;
-    if (buffs != null) {
-      counterChanceBuff = buffs.getAethelAttribute(AethelAttribute.COUNTER_CHANCE);
+    if (defenderBuffs != null) {
+      counterChanceBuff = defenderBuffs.getAethelAttribute(AethelAttribute.COUNTER_CHANCE);
     }
 
-    if (counterChanceBase + counterChanceBuff > random.nextDouble() * 100) {
-      World world = livingAttacker.getWorld();
-      world.spawnParticle(Particle.FIREWORKS_SPARK, livingAttacker.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
-      world.playSound(livingAttacker.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.65f, 0.75f);
+    double feintSkillBase = attackerEntityTags.getOrDefault(Key.ATTRIBUTE_FEINT_SKILL.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double feintSkillBuff = 0.0;
+    if (attackerBuffs != null) {
+      feintSkillBuff = attackerBuffs.getAethelAttribute(AethelAttribute.FEINT_SKILL);
+    }
+
+    if (counterChanceBase + counterChanceBuff - feintSkillBase - feintSkillBuff > random.nextDouble() * 100) {
+      World world = defender.getWorld();
+      world.spawnParticle(Particle.FIREWORKS_SPARK, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(defender.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.65f, 0.75f);
 
       int attackSpeed;
       if (defender.getAttribute(Attribute.GENERIC_ATTACK_SPEED) != null) {
@@ -434,7 +444,7 @@ public class DamageListener implements Listener {
       double counterDamage = attackSpeed * defender.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
 
       livingAttacker.damage(0.01);
-      if (livingAttacker instanceof Player) {
+      if (livingAttacker instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
         Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingAttacker.getUniqueId()).getHealth();
         health.damage(counterDamage);
         return health.getCurrentHealth() <= 0.0;
@@ -472,6 +482,39 @@ public class DamageListener implements Listener {
   }
 
   /**
+   * Ignore damage taken if the entity dodged.
+   *
+   * @param defenderEntityTags defending entity's persistent tags
+   * @param attackerEntityTags attacking entity's persistent tags
+   * @param defenderBuffs      defending entity's {@link Buffs}
+   * @param attackerBuffs      attacking entity's {@link Buffs}
+   * @param random             rng
+   * @param defender           defending entity
+   * @return if dodged
+   */
+  private boolean ifDodged(PersistentDataContainer defenderEntityTags, PersistentDataContainer attackerEntityTags, Buffs defenderBuffs, Buffs attackerBuffs, Random random, LivingEntity defender) {
+    double dodgeChanceBase = defenderEntityTags.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double dodgeChanceBuff = 0.0;
+    if (defenderBuffs != null) {
+      dodgeChanceBuff = defenderBuffs.getAethelAttribute(AethelAttribute.DODGE_CHANCE);
+    }
+
+    double accuracySkillBase = attackerEntityTags.getOrDefault(Key.ATTRIBUTE_ACCURACY_SKILL.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double accuracySkillBuff = 0.0;
+    if (attackerBuffs != null) {
+      accuracySkillBuff = attackerBuffs.getAethelAttribute(AethelAttribute.ACCURACY_SKILL);
+    }
+
+    if (dodgeChanceBase + dodgeChanceBuff - accuracySkillBase - accuracySkillBuff > random.nextDouble() * 100) {
+      World world = defender.getWorld();
+      world.spawnParticle(Particle.EXPLOSION_NORMAL, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+      world.playSound(defender.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Ignore damage taken if the defender's toughness is higher,
    * otherwise toughness mitigates damage by a flat amount.
    *
@@ -489,7 +532,7 @@ public class DamageListener implements Listener {
     }
     double toughness = defender.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + toughnessBase + toughnessBuff;
 
-    e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
+    e.setDamage(Math.max(0, e.getDamage() - (toughness / 2)));
     if (e.getDamage() == 0) {
       World world = defender.getWorld();
       world.spawnParticle(Particle.END_ROD, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
