@@ -1,8 +1,8 @@
 package me.dannynguyen.aethel.commands.character;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
-import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.rpg.*;
@@ -17,6 +17,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -29,7 +31,7 @@ import java.util.*;
  * {@link Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.21.8.1
+ * @version 1.22.7
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -149,22 +151,13 @@ public class SheetMenu implements Menu {
    * Adds the player's attributes.
    */
   protected void addAttributes() {
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
-    Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
-
+    PersistentDataContainer dataContainer = Bukkit.getPlayer(uuid).getPersistentDataContainer();
     DecimalFormat df2 = new DecimalFormat();
     df2.setMaximumFractionDigits(2);
 
-    Buffs buffs = rpgPlayer.getBuffs();
-    if (buffs == null) {
-      addOffenseAttributes(aethelAttributes, df2);
-      addDefenseAttributes(aethelAttributes, df2);
-      addOtherAttributes(aethelAttributes, df2);
-    } else {
-      addOffenseAttributes(aethelAttributes, buffs, df2);
-      addDefenseAttributes(aethelAttributes, buffs, df2);
-      addOtherAttributes(aethelAttributes, buffs, df2);
-    }
+    addOffenseAttributes(dataContainer, df2);
+    addDefenseAttributes(dataContainer, df2);
+    addOtherAttributes(dataContainer, df2);
   }
 
   /**
@@ -202,35 +195,21 @@ public class SheetMenu implements Menu {
   /**
    * Adds the player's offense attributes.
    *
-   * @param aethelAttributes owner's {@link AethelAttributes}
-   * @param df2              0.00 decimal format
+   * @param dataContainer owner's persistent tags
+   * @param df2           0.00 decimal format
    */
-  private void addOffenseAttributes(Map<AethelAttribute, Double> aethelAttributes, DecimalFormat df2) {
-    String damage = ChatColor.RED + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG";
-    String attackSpeed = ChatColor.GOLD + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD";
-    String criticalChance = ChatColor.GREEN + df2.format(aethelAttributes.get(AethelAttribute.CRITICAL_CHANCE)) + "% CRIT";
-    String criticalDamage = ChatColor.DARK_GREEN + df2.format(1.25 + (aethelAttributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)) + "x CRIT DMG";
-
-    menu.setItem(15, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense", List.of(damage, attackSpeed, criticalChance, criticalDamage), ItemFlag.HIDE_ATTRIBUTES));
-  }
-
-  /**
-   * Adds the player's offense attributes.
-   *
-   * @param aethelAttributes owner's {@link AethelAttributes}
-   * @param buffs            {@link Buffs}
-   * @param df2              0.00 decimal format
-   */
-  private void addOffenseAttributes(Map<AethelAttribute, Double> aethelAttributes, Buffs buffs, DecimalFormat df2) {
-    double damageBuff = buffs.getAttributeBuff(Attribute.GENERIC_ATTACK_DAMAGE);
-    double attackSpeedBuff = buffs.getAttributeBuff(Attribute.GENERIC_ATTACK_SPEED);
-    double criticalChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_CHANCE);
-    double criticalDamageBuff = buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_DAMAGE);
+  private void addOffenseAttributes(PersistentDataContainer dataContainer, DecimalFormat df2) {
+    double damageBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_ATTACK_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double attackSpeedBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_ATTACK_SPEED.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double criticalChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_CRITICAL_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double criticalChanceBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_CRITICAL_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double criticalDamageBase = dataContainer.getOrDefault(Key.ATTRIBUTE_CRITICAL_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double criticalDamageBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_CRITICAL_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
 
     String damage = ChatColor.RED + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()) + " ATK DMG" + (damageBuff != 0.0 ? " [" + df2.format(damageBuff) + "]" : "");
     String attackSpeed = ChatColor.GOLD + df2.format(owner.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue()) + " ATK SPD" + (attackSpeedBuff != 0.0 ? " [" + df2.format(attackSpeedBuff) + "]" : "");
-    String criticalChance = ChatColor.GREEN + df2.format(aethelAttributes.get(AethelAttribute.CRITICAL_CHANCE) + criticalChanceBuff) + "% CRIT" + (criticalChanceBuff != 0.0 ? " [" + df2.format(criticalChanceBuff) + "]" : "");
-    String criticalDamage = ChatColor.DARK_GREEN + df2.format(1.25 + (aethelAttributes.get(AethelAttribute.CRITICAL_DAMAGE) + criticalDamageBuff) / 100) + "x CRIT DMG" + (criticalDamageBuff != 0.0 ? " [" + df2.format(criticalDamageBuff) + "]" : "");
+    String criticalChance = ChatColor.GREEN + df2.format(criticalChanceBase + criticalChanceBuff) + "% CRIT" + (criticalChanceBuff != 0.0 ? " [" + df2.format(criticalChanceBuff) + "]" : "");
+    String criticalDamage = ChatColor.DARK_GREEN + df2.format(1.25 + (criticalDamageBase + criticalDamageBuff) / 100) + "x CRIT DMG" + (criticalDamageBuff != 0.0 ? " [" + df2.format(criticalDamageBuff) + "]" : "");
 
     menu.setItem(15, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Offense", List.of(damage, attackSpeed, criticalChance, criticalDamage), ItemFlag.HIDE_ATTRIBUTES));
   }
@@ -238,49 +217,29 @@ public class SheetMenu implements Menu {
   /**
    * Adds the player's defense attributes.
    *
-   * @param aethelAttributes owner's {@link AethelAttributes}
-   * @param df2              0.00 decimal format
+   * @param dataContainer owner's persistent tags
+   * @param df2           0.00 decimal format
    */
-  private void addDefenseAttributes(Map<AethelAttribute, Double> aethelAttributes, DecimalFormat df2) {
+  private void addDefenseAttributes(PersistentDataContainer dataContainer, DecimalFormat df2) {
+    double genericMaxHealthBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double maxHealthBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double counterChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double counterChanceBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double dodgeChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double dodgeChanceBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double genericArmorToughnessBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double armorToughnessBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double armorToughnessBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double armorBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
+    Health health = rpgPlayer.getHealth();
     Map<Enchantment, Integer> enchantments = rpgPlayer.getEnchantments().getTotalEnchantments();
 
-    String maxHealth = ChatColor.RED + df2.format(rpgPlayer.getHealth().getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + aethelAttributes.get(AethelAttribute.MAX_HEALTH)) + " HP";
-    String counterChance = ChatColor.YELLOW + df2.format(aethelAttributes.get(AethelAttribute.COUNTER_CHANCE)) + "% COUNTER";
-    String dodgeChance = ChatColor.BLUE + df2.format(aethelAttributes.get(AethelAttribute.DODGE_CHANCE)) + "% DODGE";
-    String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + aethelAttributes.get(AethelAttribute.ARMOR_TOUGHNESS)) + " TOUGH";
-    String armor = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR";
-
-    String featherFalling = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";
-    String protection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) + " PROT";
-    String blastProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_EXPLOSIONS) + " BLAST PROT";
-    String fireProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FIRE) + " FIRE PROT";
-    String projectileProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_PROJECTILE) + " PROJ PROT";
-
-    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, "", featherFalling, protection, blastProtection, fireProtection, projectileProtection), ItemFlag.HIDE_ATTRIBUTES));
-  }
-
-  /**
-   * Adds the player's defense attributes.
-   *
-   * @param aethelAttributes owner's {@link AethelAttributes}
-   * @param buffs            {@link Buffs}
-   * @param df2              0.00 decimal format
-   */
-  private void addDefenseAttributes(Map<AethelAttribute, Double> aethelAttributes, Buffs buffs, DecimalFormat df2) {
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
-    Map<Enchantment, Integer> enchantments = rpgPlayer.getEnchantments().getTotalEnchantments();
-
-    double maxHealthBuff = buffs.getAttributeBuff(Attribute.GENERIC_MAX_HEALTH) + buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);
-    double counterChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.COUNTER_CHANCE);
-    double dodgeChanceBuff = buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE);
-    double armorToughnessBuff = buffs.getAttributeBuff(Attribute.GENERIC_ARMOR_TOUGHNESS) + buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS);
-    double armorBuff = buffs.getAttributeBuff(Attribute.GENERIC_ARMOR);
-
-    String maxHealth = ChatColor.RED + df2.format(rpgPlayer.getHealth().getCurrentHealth()) + " / " + df2.format(owner.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH)) + " HP" + (maxHealthBuff != 0.0 ? " [" + df2.format(maxHealthBuff) + "]" : "");
-    String counterChance = ChatColor.YELLOW + df2.format(aethelAttributes.get(AethelAttribute.COUNTER_CHANCE) + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");
-    String dodgeChance = ChatColor.BLUE + df2.format(aethelAttributes.get(AethelAttribute.DODGE_CHANCE) + dodgeChanceBuff) + "% DODGE" + (dodgeChanceBuff != 0.0 ? " [" + df2.format(dodgeChanceBuff) + "]" : "");
-    String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + aethelAttributes.get(AethelAttribute.ARMOR_TOUGHNESS) + buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS)) + " TOUGH" + (armorToughnessBuff != 0.0 ? " [" + df2.format(armorToughnessBuff) + "]" : "");
+    String maxHealth = ChatColor.RED + df2.format(health.getCurrentHealth()) + " / " + df2.format(health.getMaxHealth()) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");
+    String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");
+    String dodgeChance = ChatColor.BLUE + df2.format(dodgeChanceBase + dodgeChanceBuff) + "% DODGE" + (dodgeChanceBuff != 0.0 ? " [" + df2.format(dodgeChanceBuff) + "]" : "");
+    String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + armorToughnessBase + armorToughnessBuff) + " TOUGH" + (genericArmorToughnessBuff + armorToughnessBuff != 0.0 ? " [" + df2.format(genericArmorToughnessBuff + armorToughnessBuff) + "]" : "");
     String armor = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR" + (armorBuff != 0.0 ? " [" + df2.format(armorBuff) + "]" : "");
 
     String featherFalling = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";
@@ -295,47 +254,29 @@ public class SheetMenu implements Menu {
   /**
    * Adds the player's other attributes.
    *
-   * @param aethelAttributes owner's {@link AethelAttributes}
-   * @param df2              0.00 decimal format
+   * @param dataContainer owner's persistent tags
+   * @param df2           0.00 decimal format
    */
-  private void addOtherAttributes(Map<AethelAttribute, Double> aethelAttributes, DecimalFormat df2) {
+  private void addOtherAttributes(PersistentDataContainer dataContainer, DecimalFormat df2) {
     DecimalFormat df3 = new DecimalFormat();
     df3.setMaximumFractionDigits(3);
 
-    String itemDamage = ChatColor.LIGHT_PURPLE + df2.format(1.0 + (aethelAttributes.get(AethelAttribute.ITEM_DAMAGE) / 100)) + "x ITEM DMG";
-    String itemCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN)) + "% ITEM CD";
-    String speed = ChatColor.DARK_AQUA + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()) + " SPEED";
-    String luck = ChatColor.GREEN + df2.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK";
-    String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK";
-    String tenacity = ChatColor.DARK_GREEN + df2.format(aethelAttributes.get(AethelAttribute.TENACITY)) + "% TENACITY";
+    double itemDamageBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double itemDamageBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_ITEM_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double itemCooldownBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double itemCooldownBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double speedBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_MOVEMENT_SPEED.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double luckBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_LUCK.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double knockbackResistanceBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_GENERIC_KNOCKBACK_RESISTANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double tenacityBase = dataContainer.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double tenacityBuff = dataContainer.getOrDefault(Key.ATTRIBUTE_BUFF_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
 
-    menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(itemDamage, itemCooldown, speed, luck, knockbackResistance, tenacity)));
-  }
-
-  /**
-   * Adds the player's other attributes.
-   *
-   * @param aethelAttributes owner's {@link AethelAttributes}
-   * @param buffs            {@link Buffs}
-   * @param df2              0.00 decimal format
-   */
-  private void addOtherAttributes(Map<AethelAttribute, Double> aethelAttributes, Buffs buffs, DecimalFormat df2) {
-    DecimalFormat df3 = new DecimalFormat();
-    df3.setMaximumFractionDigits(3);
-
-    double itemDamageBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_DAMAGE);
-    double itemCooldownBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
-    double speedBuff = buffs.getAttributeBuff(Attribute.GENERIC_MOVEMENT_SPEED);
-    double luckBuff = buffs.getAttributeBuff(Attribute.GENERIC_LUCK);
-    double knockbackResistanceBuff = buffs.getAttributeBuff(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
-    double tenacityBuff = buffs.getAethelAttributeBuff(AethelAttribute.TENACITY);
-
-    String itemDamage = ChatColor.LIGHT_PURPLE + df2.format(1.0 + (aethelAttributes.get(AethelAttribute.ITEM_DAMAGE) + itemDamageBuff) / 100) + "x ITEM DMG" + (itemDamageBuff != 0.0 ? " [" + df2.format(itemDamageBuff) + "]" : "");
-    String itemCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + itemCooldownBuff) + "% ITEM CD" + (itemCooldownBuff != 0.0 ? " [" + df2.format(itemCooldownBuff) + "]" : "");
+    String itemDamage = ChatColor.LIGHT_PURPLE + df2.format(1.0 + (itemDamageBase + itemDamageBuff) / 100) + "x ITEM DMG" + (itemDamageBuff != 0.0 ? " [" + df2.format(itemDamageBuff) + "]" : "");
+    String itemCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(itemCooldownBase + itemCooldownBuff) + "% ITEM CD" + (itemCooldownBuff != 0.0 ? " [" + df2.format(itemCooldownBuff) + "]" : "");
     String speed = ChatColor.DARK_AQUA + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()) + " SPEED" + (speedBuff != 0.0 ? " [" + df2.format(speedBuff) + "]" : "");
     String luck = ChatColor.GREEN + df2.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK" + (luckBuff != 0.0 ? " [" + df2.format(luckBuff) + "]" : "");
     String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK" + (knockbackResistanceBuff != 0.0 ? " [" + df2.format(knockbackResistanceBuff) + "]" : "");
-    String tenacity = ChatColor.DARK_GREEN + df2.format(aethelAttributes.get(AethelAttribute.TENACITY) + tenacityBuff) + "% TENACITY" + (tenacityBuff != 0.0 ? " [" + df2.format(tenacityBuff) + "]" : "");
+    String tenacity = ChatColor.DARK_GREEN + df2.format(tenacityBase + tenacityBuff) + "% TENACITY" + (tenacityBuff != 0.0 ? " [" + df2.format(tenacityBuff) + "]" : "");
 
     menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(itemDamage, itemCooldown, speed, luck, knockbackResistance, tenacity)));
   }

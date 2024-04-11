@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -11,6 +12,8 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -21,7 +24,7 @@ import java.util.UUID;
  * Represents an {@link RpgPlayer}'s health.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.22.7
  * @since 1.13.4
  */
 public class Health {
@@ -31,9 +34,9 @@ public class Health {
   private final UUID uuid;
 
   /**
-   * {@link AethelAttributes}
+   * Persistent data tags.
    */
-  private final AethelAttributes attributes;
+  private final PersistentDataContainer dataContainer;
 
   /**
    * {@link Settings}
@@ -58,17 +61,17 @@ public class Health {
   /**
    * Associates RPG health with a player.
    *
-   * @param player     interacting player
-   * @param attributes {@link AethelAttributes}
-   * @param settings   {@link Settings}
+   * @param player        interacting player
+   * @param dataContainer player's persistent tags
+   * @param settings      {@link Settings}
    */
-  public Health(@NotNull Player player, @NotNull AethelAttributes attributes, @NotNull Settings settings) {
+  public Health(@NotNull Player player, @NotNull PersistentDataContainer dataContainer, @NotNull Settings settings) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.attributes = Objects.requireNonNull(attributes, "Null Aethel attributes");
+    this.dataContainer = dataContainer;
     this.settings = Objects.requireNonNull(settings, "Null settings");
     healthBar.setVisible(settings.isHealthBarVisible());
     this.currentHealth = player.getHealth();
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH);
+    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + dataContainer.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     loadHealth(player);
   }
 
@@ -79,7 +82,8 @@ public class Health {
    */
   private void loadHealth(Player player) {
     double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double healthScale = (attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + minecraftMaxHealth) / minecraftMaxHealth;
+    double pluginMaxHealth = dataContainer.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double healthScale = (minecraftMaxHealth + pluginMaxHealth) / minecraftMaxHealth;
     setCurrentHealth(currentHealth * healthScale);
     updateDisplays();
     healthBar.addPlayer(player);
@@ -94,7 +98,9 @@ public class Health {
     if (buffs != null) {
       maxHealthBuff = buffs.getAethelAttributeBuff(AethelAttribute.MAX_HEALTH);
     }
-    double maxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + attributes.getAttributes().get(AethelAttribute.MAX_HEALTH) + maxHealthBuff;
+    double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    double pluginMaxHealth = dataContainer.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double maxHealth = minecraftMaxHealth + pluginMaxHealth + maxHealthBuff;
     setMaxHealth(maxHealth);
     updateDisplays();
   }

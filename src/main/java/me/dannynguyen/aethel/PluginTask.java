@@ -22,7 +22,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.6
+ * @version 1.22.7
  * @since 1.22.2
  */
 public class PluginTask {
@@ -134,8 +134,8 @@ public class PluginTask {
       Location here = player.getLocation().add(0, 1, 0);
       Location there = trackedLocations.get(uuid);
       if (here.getWorld().getName().equals(there.getWorld().getName())) {
-        if (there.getWorld().getNearbyEntities(there, 4, 4, 4).contains(player)) {
-          player.sendMessage(ChatColor.RED + "[Stopped Location Tracking]");
+        if (there.getWorld().getNearbyEntities(there, 3, 3, 3).contains(player)) {
+          player.sendMessage(ChatColor.GREEN + "[Tracking Location] Destination reached.");
           trackedLocations.remove(uuid);
         }
         Vector direction = there.toVector().subtract(here.toVector()).normalize();
@@ -144,7 +144,7 @@ public class PluginTask {
         player.spawnParticle(Particle.FLAME, here.add(direction.clone().multiply(4)), 1, 0, 0, 0, 0);
         player.spawnParticle(Particle.FLAME, here.add(direction.clone().multiply(8)), 1, 0, 0, 0, 0);
       } else {
-        player.sendMessage(ChatColor.RED + "[Stopped Location Tracking]");
+        player.sendMessage(ChatColor.RED + "[Tracking Location] Destination in different world.");
         trackedLocations.remove(uuid);
       }
     }

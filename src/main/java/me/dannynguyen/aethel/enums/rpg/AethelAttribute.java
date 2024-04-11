@@ -11,11 +11,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum AethelAttribute {
   /**
-   * Max health.
-   */
-  MAX_HEALTH("Max Health", "max_health", "20.0"),
-
-  /**
    * Critical hit chance.
    */
   CRITICAL_CHANCE("Critical Chance", "critical_chance", "0.0%"),
@@ -34,6 +29,11 @@ public enum AethelAttribute {
    * Dodge chance.
    */
   DODGE_CHANCE("Dodge Chance", "dodge_chance", "0.0%"),
+
+  /**
+   * Max health.
+   */
+  MAX_HEALTH("Max Health", "max_health", "20.0"),
 
   /**
    * Flat damage blocked.

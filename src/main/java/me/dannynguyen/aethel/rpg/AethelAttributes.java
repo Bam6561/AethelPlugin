@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,14 +20,14 @@ import java.util.Objects;
  * Represents an {@link RpgPlayer}'s total {@link AethelAttribute} values.
  *
  * @author Danny Nguyen
- * @version 1.17.14
+ * @version 1.22.7
  * @since 1.17.9
  */
 public class AethelAttributes {
   /**
-   * Total {@link AethelAttribute} values.
+   * Player's {@link AethelAttribute} values.
    */
-  private final Map<AethelAttribute, Double> attributes = createAethelAttributes();
+  private final PersistentDataContainer playerContainer;
 
   /**
    * {@link AethelAttribute} values on {@link RpgEquipmentSlot}.
@@ -34,22 +35,12 @@ public class AethelAttributes {
   private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = new HashMap<>();
 
   /**
-   * No parameter constructor.
-   */
-  public AethelAttributes() {
-  }
-
-  /**
-   * Creates a blank map of {@link AethelAttribute} values.
+   * Associates the player's persistent tags with Aethel attributes.
    *
-   * @return blank {@link AethelAttribute} values
+   * @param playerContainer player's persistent tags
    */
-  private Map<AethelAttribute, Double> createAethelAttributes() {
-    Map<AethelAttribute, Double> aethelAttributes = new HashMap<>();
-    for (AethelAttribute attribute : AethelAttribute.values()) {
-      aethelAttributes.put(attribute, 0.0);
-    }
-    return aethelAttributes;
+  public AethelAttributes(@NotNull PersistentDataContainer playerContainer) {
+    this.playerContainer = playerContainer;
   }
 
   /**
@@ -73,14 +64,17 @@ public class AethelAttributes {
    * Adds new {@link Equipment} {@link AethelAttribute} modifiers.
    *
    * @param eSlot         {@link RpgEquipmentSlot}
-   * @param dataContainer item's persistent tags
+   * @param itemContainer item's persistent tags
    * @param attribute     attribute modifier
    */
-  private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer dataContainer, String attribute) {
+  private void addAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer itemContainer, String attribute) {
     NamespacedKey attributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute);
     AethelAttribute attributeType = AethelAttribute.valueOf(TextFormatter.formatEnum(attribute.substring(attribute.indexOf(".") + 1)));
-    slotAttributes.get(eSlot).put(attributeType, dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
-    attributes.put(attributeType, attributes.get(attributeType) + dataContainer.get(attributeKey, PersistentDataType.DOUBLE));
+    slotAttributes.get(eSlot).put(attributeType, itemContainer.get(attributeKey, PersistentDataType.DOUBLE));
+
+    NamespacedKey setAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeType.getId());
+    double attributeValue = playerContainer.getOrDefault(setAttributeKey, PersistentDataType.DOUBLE, 0.0);
+    playerContainer.set(setAttributeKey, PersistentDataType.DOUBLE, attributeValue + itemContainer.get(attributeKey, PersistentDataType.DOUBLE));
   }
 
   /**
@@ -90,19 +84,11 @@ public class AethelAttributes {
    */
   public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
     for (AethelAttribute attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
-      attributes.put(attribute, attributes.get(attribute) - slotAttributes.get(eSlot).get(attribute));
+      NamespacedKey setAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute.getId());
+      double attributeValue = playerContainer.getOrDefault(setAttributeKey, PersistentDataType.DOUBLE, 0.0);
+      playerContainer.set(setAttributeKey, PersistentDataType.DOUBLE, attributeValue - slotAttributes.get(eSlot).get(attribute));
       slotAttributes.get(eSlot).put(attribute, 0.0);
     }
-  }
-
-  /**
-   * Gets total {@link AethelAttribute} values.
-   *
-   * @return total {@link AethelAttribute} values
-   */
-  @NotNull
-  public Map<AethelAttribute, Double> getAttributes() {
-    return this.attributes;
   }
 
   /**

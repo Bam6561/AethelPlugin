@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
@@ -21,6 +22,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionType;
 
 import java.util.Map;
@@ -32,7 +35,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.0
+ * @version 1.22.7
  * @since 1.9.4
  */
 public class HealthListener implements Listener {
@@ -177,14 +180,14 @@ public class HealthListener implements Listener {
       return;
     }
 
+    PersistentDataContainer dataContainer = damager.getPersistentDataContainer();
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damager.getUniqueId());
-    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
     Buffs buffs = rpgPlayer.getBuffs();
     Random random = new Random();
     if (buffs == null) {
-      ifCriticallyHit(e, attributes, random);
+      ifCriticallyHit(e, dataContainer, random);
     } else {
-      ifCriticallyHit(e, attributes, buffs, random);
+      ifCriticallyHit(e, dataContainer, buffs, random);
     }
 
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
@@ -217,27 +220,27 @@ public class HealthListener implements Listener {
     }
 
     Random random = new Random();
-    Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
+    PersistentDataContainer dataContainer = damagee.getPersistentDataContainer();
     Buffs buffs = rpgPlayer.getBuffs();
     if (buffs == null) {
-      if (ifCountered(e.getCause(), attributes, random, damager, damagee)) {
+      if (ifCountered(e.getCause(), dataContainer, random, damager, damagee)) {
         e.setCancelled(true);
         return;
-      } else if (ifDodged(attributes, random, damagee)) {
+      } else if (ifDodged(dataContainer, random, damagee)) {
         e.setCancelled(true);
         return;
-      } else if (ifTougher(e, attributes, damagee)) {
+      } else if (ifTougher(e, dataContainer, damagee)) {
         e.setCancelled(true);
         return;
       }
     } else {
-      if (ifCountered(e.getCause(), attributes, buffs, random, damager, damagee)) {
+      if (ifCountered(e.getCause(), dataContainer, buffs, random, damager, damagee)) {
         e.setCancelled(true);
         return;
-      } else if (ifDodged(attributes, buffs, random, damagee)) {
+      } else if (ifDodged(dataContainer, buffs, random, damagee)) {
         e.setCancelled(true);
         return;
-      } else if (ifTougher(e, attributes, buffs, damagee)) {
+      } else if (ifTougher(e, dataContainer, buffs, damagee)) {
         e.setCancelled(true);
         return;
       }
@@ -272,18 +275,18 @@ public class HealthListener implements Listener {
           return true;
         }
         RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(damagee.getUniqueId());
-        Map<AethelAttribute, Double> attributes = rpgPlayer.getAethelAttributes().getAttributes();
+        PersistentDataContainer dataContainer = damagee.getPersistentDataContainer();
         Buffs buffs = rpgPlayer.getBuffs();
         if (buffs == null) {
-          if (ifDodged(attributes, new Random(), damagee)) {
+          if (ifDodged(dataContainer, new Random(), damagee)) {
             return true;
-          } else if (ifTougher(e, attributes, damagee)) {
+          } else if (ifTougher(e, dataContainer, damagee)) {
             return true;
           }
         } else {
-          if (ifDodged(attributes, buffs, new Random(), damagee)) {
+          if (ifDodged(dataContainer, buffs, new Random(), damagee)) {
             return true;
-          } else if (ifTougher(e, attributes, buffs, damagee)) {
+          } else if (ifTougher(e, dataContainer, buffs, damagee)) {
             return true;
           }
         }
@@ -297,35 +300,39 @@ public class HealthListener implements Listener {
   /**
    * If the player dealt a critical hit, multiply the damage by its modifier.
    *
-   * @param e          entity damage by entity event
-   * @param attributes {@link AethelAttributes}
-   * @param random     rng
+   * @param e             entity damage by entity event
+   * @param dataContainer player's persistent tags
+   * @param random        rng
    */
-  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Random random) {
-    if (attributes.get(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
+  private void ifCriticallyHit(EntityDamageByEntityEvent e, PersistentDataContainer dataContainer, Random random) {
+    double criticalChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_CRITICAL_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    if (criticalChanceBase > random.nextDouble() * 100) {
       LivingEntity entity = (LivingEntity) e.getEntity();
       World world = entity.getWorld();
       world.spawnParticle(Particle.CRIT, entity.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5);
       world.playSound(entity.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.PLAYERS, 0.65f, 1);
-      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) / 100)));
+      double criticalDamageBase = dataContainer.getOrDefault(Key.ATTRIBUTE_CRITICAL_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+      e.setDamage(e.getDamage() * (1.25 + (criticalDamageBase / 100)));
     }
   }
 
   /**
    * If the player dealt a critical hit, multiply the damage by its modifier.
    *
-   * @param e          entity damage by entity event
-   * @param attributes {@link AethelAttributes}
-   * @param buffs      {@link Buffs}
-   * @param random     rng
+   * @param e             entity damage by entity event
+   * @param dataContainer player's persistent tags
+   * @param buffs         {@link Buffs}
+   * @param random        rng
    */
-  private void ifCriticallyHit(EntityDamageByEntityEvent e, Map<AethelAttribute, Double> attributes, Buffs buffs, Random random) {
-    if (attributes.get(AethelAttribute.CRITICAL_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
+  private void ifCriticallyHit(EntityDamageByEntityEvent e, PersistentDataContainer dataContainer, Buffs buffs, Random random) {
+    double criticalChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_CRITICAL_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    if (criticalChanceBase + buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_CHANCE) > random.nextDouble() * 100) {
       LivingEntity entity = (LivingEntity) e.getEntity();
       World world = entity.getWorld();
       world.spawnParticle(Particle.CRIT, entity.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5);
       world.playSound(entity.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, SoundCategory.PLAYERS, 0.65f, 1);
-      e.setDamage(e.getDamage() * (1.25 + (attributes.get(AethelAttribute.CRITICAL_DAMAGE) + buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_DAMAGE)) / 100));
+      double criticalDamageBase = dataContainer.getOrDefault(Key.ATTRIBUTE_CRITICAL_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+      e.setDamage(e.getDamage() * (1.25 + (criticalDamageBase + buffs.getAethelAttributeBuff(AethelAttribute.CRITICAL_DAMAGE)) / 100));
     }
   }
 
@@ -423,19 +430,20 @@ public class HealthListener implements Listener {
    * <p>
    * Projectile attacks cannot trigger counterattacks.
    *
-   * @param cause      damage cause
-   * @param attributes {@link AethelAttributes}
-   * @param random     rng
-   * @param damager    damager
-   * @param damagee    player taking damage
+   * @param cause         damage cause
+   * @param dataContainer player's persistent tags
+   * @param random        rng
+   * @param damager       damager
+   * @param damagee       player taking damage
    * @return if the damager died
    */
-  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Random random, Entity damager, Player damagee) {
+  private boolean ifCountered(EntityDamageEvent.DamageCause cause, PersistentDataContainer dataContainer, Random random, Entity damager, Player damagee) {
     if (cause == EntityDamageEvent.DamageCause.PROJECTILE || !(damager instanceof LivingEntity attacker)) {
       return false;
     }
 
-    if (attributes.get(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+    double counterChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    if (counterChanceBase > random.nextDouble() * 100) {
       World world = attacker.getWorld();
       world.spawnParticle(Particle.FIREWORKS_SPARK, attacker.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
       world.playSound(attacker.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.5f, 0.75f);
@@ -452,20 +460,21 @@ public class HealthListener implements Listener {
    * <p>
    * Projectile attacks cannot trigger counterattacks.
    *
-   * @param cause      damage cause
-   * @param attributes {@link AethelAttributes}
-   * @param buffs      {@link Buffs}
-   * @param random     rng
-   * @param damager    damager
-   * @param damagee    player taking damage
+   * @param cause         damage cause
+   * @param dataContainer player's persistent tags
+   * @param buffs         {@link Buffs}
+   * @param random        rng
+   * @param damager       damager
+   * @param damagee       player taking damage
    * @return if the damager died
    */
-  private boolean ifCountered(EntityDamageEvent.DamageCause cause, Map<AethelAttribute, Double> attributes, Buffs buffs, Random random, Entity damager, Player damagee) {
+  private boolean ifCountered(EntityDamageEvent.DamageCause cause, PersistentDataContainer dataContainer, Buffs buffs, Random random, Entity damager, Player damagee) {
     if (cause == EntityDamageEvent.DamageCause.PROJECTILE || !(damager instanceof LivingEntity attacker)) {
       return false;
     }
 
-    if (attributes.get(AethelAttribute.COUNTER_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
+    double counterChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    if (counterChanceBase + buffs.getAethelAttributeBuff(AethelAttribute.COUNTER_CHANCE) > random.nextDouble() * 100) {
       World world = attacker.getWorld();
       world.spawnParticle(Particle.FIREWORKS_SPARK, attacker.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
       world.playSound(attacker.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.65f, 0.75f);
@@ -478,13 +487,14 @@ public class HealthListener implements Listener {
   /**
    * Ignore damage taken if the player dodged.
    *
-   * @param attributes {@link AethelAttributes}
-   * @param random     rng
-   * @param damagee    player taking damage
+   * @param dataContainer player's persistent tags
+   * @param random        rng
+   * @param damagee       player taking damage
    * @return if dodged
    */
-  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Random random, Player damagee) {
-    if (attributes.get(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100) {
+  private boolean ifDodged(PersistentDataContainer dataContainer, Random random, Player damagee) {
+    double dodgeChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    if (dodgeChanceBase > random.nextDouble() * 100) {
       World world = damagee.getWorld();
       world.spawnParticle(Particle.EXPLOSION_NORMAL, damagee.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
       world.playSound(damagee.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
@@ -496,14 +506,15 @@ public class HealthListener implements Listener {
   /**
    * Ignore damage taken if the player dodged.
    *
-   * @param attributes {@link AethelAttributes}
-   * @param buffs      {@link Buffs}
-   * @param random     rng
-   * @param damagee    player taking damage
+   * @param dataContainer player's persistent tags
+   * @param buffs         {@link Buffs}
+   * @param random        rng
+   * @param damagee       player taking damage
    * @return if dodged
    */
-  private boolean ifDodged(Map<AethelAttribute, Double> attributes, Buffs buffs, Random random, Player damagee) {
-    if (attributes.get(AethelAttribute.DODGE_CHANCE) + buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100) {
+  private boolean ifDodged(PersistentDataContainer dataContainer, Buffs buffs, Random random, Player damagee) {
+    double dodgeChanceBase = dataContainer.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    if (dodgeChanceBase + buffs.getAethelAttributeBuff(AethelAttribute.DODGE_CHANCE) > random.nextDouble() * 100) {
       World world = damagee.getWorld();
       world.spawnParticle(Particle.EXPLOSION_NORMAL, damagee.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
       world.playSound(damagee.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
@@ -516,13 +527,14 @@ public class HealthListener implements Listener {
    * Ignore damage taken if the player's toughness is higher,
    * otherwise toughness mitigates damage by a flat amount.
    *
-   * @param e          entity damage event
-   * @param attributes {@link AethelAttributes}
-   * @param damagee    player taking damage
+   * @param e             entity damage event
+   * @param dataContainer player's persistent tags
+   * @param damagee       player taking damage
    * @return if tougher than damage
    */
-  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Player damagee) {
-    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS);
+  private boolean ifTougher(EntityDamageEvent e, PersistentDataContainer dataContainer, Player damagee) {
+    double toughnessBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + toughnessBase;
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
     if (e.getDamage() == 0) {
       World world = damagee.getWorld();
@@ -537,14 +549,15 @@ public class HealthListener implements Listener {
    * Ignore damage taken if the player's toughness is higher,
    * otherwise toughness mitigates damage by a flat amount.
    *
-   * @param e          entity damage event
-   * @param attributes {@link AethelAttributes}
-   * @param buffs      {@link Buffs}
-   * @param damagee    player taking damage
+   * @param e             entity damage event
+   * @param dataContainer player's persistent tags
+   * @param buffs         {@link Buffs}
+   * @param damagee       player taking damage
    * @return if tougher than damage
    */
-  private boolean ifTougher(EntityDamageEvent e, Map<AethelAttribute, Double> attributes, Buffs buffs, Player damagee) {
-    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + attributes.get(AethelAttribute.ARMOR_TOUGHNESS) + buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS);
+  private boolean ifTougher(EntityDamageEvent e, PersistentDataContainer dataContainer, Buffs buffs, Player damagee) {
+    double toughnessBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double toughness = damagee.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + toughnessBase + buffs.getAethelAttributeBuff(AethelAttribute.ARMOR_TOUGHNESS);
     e.setDamage(Math.max(e.getDamage() - (toughness / 2), 0));
     if (e.getDamage() == 0) {
       World world = damagee.getWorld();

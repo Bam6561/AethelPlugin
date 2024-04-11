@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
@@ -15,6 +16,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -26,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.0
+ * @version 1.22.7
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -109,13 +112,14 @@ public class ActiveAbility {
   public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull Player caster) {
     Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(caster, "Null caster");
-    Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
+    PersistentDataContainer dataContainer = Bukkit.getPlayer(caster.getUniqueId()).getPersistentDataContainer();
+    double itemCooldownBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = rpgPlayer.getBuffs();
     double cooldownModifierBuff = 0.0;
     if (buffs != null) {
       cooldownModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
     }
-    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + cooldownModifierBuff) / 100;
+    double cooldownModifier = (itemCooldownBase + cooldownModifierBuff) / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, caster);
       case CLEAR_STATUS -> clearStatus(cooldownModifier, caster);
@@ -227,13 +231,15 @@ public class ActiveAbility {
    */
   private void dealDistanceDamage(double cooldownModifier, Player caster) {
     World world = caster.getWorld();
+    PersistentDataContainer dataContainer = caster.getPersistentDataContainer();
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId());
+    double itemDamageBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_DAMAGE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = rpgPlayer.getBuffs();
     double damageModifierBuff = 0.0;
     if (buffs != null) {
       damageModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_DAMAGE);
     }
-    double damageModifier = 1 + (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.ITEM_DAMAGE) + damageModifierBuff) / 100;
+    double damageModifier = 1 + (itemDamageBase + damageModifierBuff) / 100;
     double damage = Double.parseDouble(effectData.get(0)) * damageModifier;
     int distance = Integer.parseInt(effectData.get(1));
     Set<LivingEntity> targets = new HashSet<>();

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.rpg.abilities;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
@@ -16,6 +17,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.21.10
+ * @version 1.22.7
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -123,13 +126,14 @@ public class PassiveAbility {
   public void doEffect(@NotNull RpgPlayer rpgPlayer, @NotNull UUID targetUUID) {
     Objects.requireNonNull(rpgPlayer, "Null RPG player");
     Objects.requireNonNull(targetUUID, "Null target UUID");
-    Map<AethelAttribute, Double> aethelAttributes = rpgPlayer.getAethelAttributes().getAttributes();
+    PersistentDataContainer dataContainer = Bukkit.getPlayer(rpgPlayer.getUUID()).getPersistentDataContainer();
+    double itemCooldownBase = dataContainer.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = rpgPlayer.getBuffs();
     double cooldownModifierBuff = 0.0;
     if (buffs != null) {
       cooldownModifierBuff = buffs.getAethelAttributeBuff(AethelAttribute.ITEM_COOLDOWN);
     }
-    double cooldownModifier = (aethelAttributes.get(AethelAttribute.ITEM_COOLDOWN) + cooldownModifierBuff) / 100;
+    double cooldownModifier = (itemCooldownBase + cooldownModifierBuff) / 100;
     switch (type.getEffect()) {
       case BUFF -> applyBuff(cooldownModifier, targetUUID);
       case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
@@ -196,13 +200,15 @@ public class PassiveAbility {
 
     Entity entity = Bukkit.getEntity(targetUUID);
     if (entity instanceof Player) {
+      PersistentDataContainer dataContainer = Bukkit.getPlayer(targetUUID).getPersistentDataContainer();
+      double tenacityBase = dataContainer.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(targetUUID);
       Buffs buffs = rpgPlayer.getBuffs();
       double tenacityBuff = 0.0;
       if (buffs != null) {
         tenacityBuff = buffs.getAethelAttributeBuff(AethelAttribute.TENACITY);
       }
-      ticks = (int) Math.max(1, ticks - (ticks * (rpgPlayer.getAethelAttributes().getAttributes().get(AethelAttribute.TENACITY) + tenacityBuff) / 100));
+      ticks = (int) Math.max(1, ticks - (ticks * (tenacityBase + tenacityBuff) / 100));
     }
 
     if (statuses.containsKey(statusType)) {

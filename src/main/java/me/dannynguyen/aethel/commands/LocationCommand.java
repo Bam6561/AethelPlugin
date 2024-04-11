@@ -216,7 +216,7 @@ public class LocationCommand implements CommandExecutor {
       switch (args.length) {
         case 1 -> {
           Plugin.getData().getPluginSystem().getTrackedLocations().remove(user.getUniqueId());
-          user.sendMessage(ChatColor.RED + "[Stopped Location Tracking]");
+          user.sendMessage(ChatColor.RED + "[Tracking Location] Stopped.");
         }
         case 2 -> {
           Location location = locations.get(args[1]);
