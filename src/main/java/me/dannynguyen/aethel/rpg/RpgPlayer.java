@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
-import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +14,7 @@ import java.util.UUID;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.7
+ * @version 1.22.10
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -28,21 +27,6 @@ public class RpgPlayer {
    * {@link Settings}
    */
   private final Settings settings;
-
-  /**
-   * {@link AethelAttributes}
-   */
-  private final AethelAttributes aethelAttributes;
-
-  /**
-   * {@link Enchantments}
-   */
-  private final Enchantments enchantments;
-
-  /**
-   * {@link Abilities}
-   */
-  private final Abilities abilities;
 
   /**
    * {@link Equipment}
@@ -62,10 +46,7 @@ public class RpgPlayer {
   public RpgPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.settings = new Settings(uuid);
-    this.aethelAttributes = new AethelAttributes(player.getPersistentDataContainer());
-    this.enchantments = new Enchantments(uuid);
-    this.abilities = new Abilities();
-    this.equipment = new Equipment(player, aethelAttributes, enchantments, abilities);
+    this.equipment = new Equipment(player);
     this.health = new Health(player, player.getPersistentDataContainer(), settings);
   }
 
@@ -109,34 +90,6 @@ public class RpgPlayer {
     return Plugin.getData().getRpgSystem().getStatuses().get(uuid);
   }
 
-  /**
-   * Gets the {@link AethelAttributes}.
-   *
-   * @return {@link AethelAttributes}
-   */
-  @NotNull
-  public AethelAttributes getAethelAttributes() {
-    return this.aethelAttributes;
-  }
-
-  /**
-   * Gets the {@link Enchantments}.
-   *
-   * @return {@link Enchantments}
-   */
-  public Enchantments getEnchantments() {
-    return this.enchantments;
-  }
-
-  /**
-   * Gets the {@link Abilities}.
-   *
-   * @return {@link Abilities}
-   */
-  @NotNull
-  public Abilities getAbilities() {
-    return this.abilities;
-  }
 
   /**
    * Gets the {@link Equipment}.

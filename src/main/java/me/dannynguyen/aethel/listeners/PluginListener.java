@@ -26,7 +26,7 @@ public class PluginListener implements Listener {
   }
 
   /**
-   * Associates a player with {@link PluginPlayer}.
+   * Associates a {@link PluginPlayer} to a player upon joining the server.
    *
    * @param e player join event
    */

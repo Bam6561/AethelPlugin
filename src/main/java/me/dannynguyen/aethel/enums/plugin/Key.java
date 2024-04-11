@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.enums.plugin;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
-import me.dannynguyen.aethel.rpg.AethelAttributes;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.NamespacedKey;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum Key {
   /**
-   * Item {@link AethelAttributes} list.
+   * Item {@link AethelAttribute} list.
    */
   ATTRIBUTE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + "list")),
 

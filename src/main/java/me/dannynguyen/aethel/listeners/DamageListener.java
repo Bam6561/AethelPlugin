@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.*;
-import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.item.ItemDurability;
 import org.bukkit.*;
@@ -35,10 +34,10 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.9
+ * @version 1.22.10
  * @since 1.9.4
  */
-public class HealthListener implements Listener {
+public class DamageListener implements Listener {
   /**
    * Ignored damage causes.
    */
@@ -47,7 +46,7 @@ public class HealthListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public HealthListener() {
+  public DamageListener() {
   }
 
   /**
@@ -110,7 +109,7 @@ public class HealthListener implements Listener {
     }
 
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(attacker.getUniqueId());
-    Map<Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_DEALT);
+    Map<Equipment.Abilities.SlotPassive, PassiveAbility> damageDealtTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_DEALT);
     if (damageDealtTriggers.isEmpty()) {
       return;
     }
@@ -146,7 +145,7 @@ public class HealthListener implements Listener {
     }
 
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId());
-    Map<Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
+    Map<Equipment.Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
     if (damageTakenTriggers.isEmpty()) {
       return;
     }
@@ -228,7 +227,7 @@ public class HealthListener implements Listener {
   }
 
   /**
-   * Mitigates environmental damage taken based on the player's {@link Enchantments}.
+   * Mitigates environmental damage taken based on the player's {@link Equipment.Enchantments}.
    *
    * @param e        entity damage event
    * @param cause    damage cause
@@ -347,7 +346,7 @@ public class HealthListener implements Listener {
         return true;
       }
       case PROJECTILE -> {
-        int projectileProtection = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getEnchantments().getTotalEnchantments().get(Enchantment.PROTECTION_PROJECTILE);
+        int projectileProtection = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getEquipment().getEnchantments().getTotalEnchantments().get(Enchantment.PROTECTION_PROJECTILE);
         if (projectileProtection >= 10) {
           PlayerInventory pInv = defender.getInventory();
           switch (attacker.getType()) {

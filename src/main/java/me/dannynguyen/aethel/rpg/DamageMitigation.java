@@ -17,7 +17,7 @@ import java.util.UUID;
  * Represents living entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.22.9
+ * @version 1.22.10
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -51,7 +51,7 @@ public class DamageMitigation {
     this.uuid = defender.getUniqueId();
     RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
     if (defender instanceof Player) {
-      this.enchantments = rpgSystem.getRpgPlayers().get(uuid).getEnchantments().getTotalEnchantments();
+      this.enchantments = rpgSystem.getRpgPlayers().get(uuid).getEquipment().getEnchantments().getTotalEnchantments();
     }
     this.statuses = rpgSystem.getStatuses().get(uuid);
   }

@@ -1,22 +1,16 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
-import me.dannynguyen.aethel.rpg.AethelAttributes;
-import me.dannynguyen.aethel.rpg.Enchantments;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
-import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -26,14 +20,11 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.19.6
+ * @version 1.22.10
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -132,41 +123,6 @@ public class EquipmentListener implements Listener {
   }
 
   /**
-   * Updates a player's {@link Equipment} when they die unless they have keep inventory on.
-   *
-   * @param e player death event
-   */
-  @EventHandler
-  private void onDeath(PlayerDeathEvent e) {
-    if (!e.getKeepInventory()) {
-      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getEntity().getUniqueId());
-
-      AethelAttributes attributes = rpgPlayer.getAethelAttributes();
-      Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = attributes.getSlotAttributes();
-      for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
-        attributes.removeAttributes(eSlot);
-      }
-
-      Enchantments enchantments = rpgPlayer.getEnchantments();
-      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
-      for (RpgEquipmentSlot eSlot : slotEnchantments.keySet()) {
-        enchantments.removeEnchantments(eSlot);
-      }
-
-      Abilities abilities = rpgPlayer.getAbilities();
-      Map<RpgEquipmentSlot, List<Abilities.TriggerPassive>> slotPassives = abilities.getSlotPassives();
-      for (RpgEquipmentSlot eSlot : slotPassives.keySet()) {
-        abilities.removePassives(eSlot);
-      }
-      for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-        abilities.removeActives(eSlot);
-      }
-
-      dropJewelry(e.getEntity(), rpgPlayer.getEquipment().getJewelry());
-    }
-  }
-
-  /**
    * Updates the player's {@link Equipment} if the item is a worn item.
    *
    * @param player interacting player
@@ -209,20 +165,5 @@ public class EquipmentListener implements Listener {
         case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND, true);
       }
     }, 1);
-  }
-
-  /**
-   * Drops the player's {@link Equipment jewelry} items.
-   *
-   * @param player       interacting player
-   * @param jewelrySlots player's jewelry slots
-   */
-  private void dropJewelry(Player player, ItemStack[] jewelrySlots) {
-    for (int i = 0; i < jewelrySlots.length; i++) {
-      if (jewelrySlots[i] != null) {
-        player.getWorld().dropItem(player.getLocation(), jewelrySlots[i]);
-        jewelrySlots[i] = null;
-      }
-    }
   }
 }

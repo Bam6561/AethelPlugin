@@ -1,23 +1,29 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
+import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.RpgSystem;
-import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -26,7 +32,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.20.11
+ * @version 1.22.10
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -78,13 +84,48 @@ public class RpgListener implements Listener {
   }
 
   /**
-   * Resets the player's {@link Health}.
+   * Updates a player's {@link Equipment} when they die unless they have keep inventory on.
    *
-   * @param e player respawn event
+   * @param e player death event
    */
   @EventHandler
-  private void onRespawn(PlayerRespawnEvent e) {
-    Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
+  private void onPlayerDeath(PlayerDeathEvent e) {
+    if (!e.getKeepInventory()) {
+      Player player = e.getEntity();
+      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
+      Equipment equipment = rpgPlayer.getEquipment();
+
+      Equipment.AethelAttributes attributes = equipment.getAttributes();
+      Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = attributes.getSlotAttributes();
+      for (RpgEquipmentSlot eSlot : slotAttributes.keySet()) {
+        attributes.removeAttributes(eSlot);
+      }
+
+      Equipment.Enchantments enchantments = equipment.getEnchantments();
+      Map<RpgEquipmentSlot, Map<Enchantment, Integer>> slotEnchantments = enchantments.getSlotEnchantments();
+      for (RpgEquipmentSlot eSlot : slotEnchantments.keySet()) {
+        enchantments.removeEnchantments(eSlot);
+      }
+
+      Equipment.Abilities abilities = equipment.getAbilities();
+      Map<RpgEquipmentSlot, List<Equipment.Abilities.TriggerPassive>> slotPassives = abilities.getSlotPassives();
+      for (RpgEquipmentSlot eSlot : slotPassives.keySet()) {
+        abilities.removePassives(eSlot);
+      }
+      for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+        abilities.removeActives(eSlot);
+      }
+
+      ItemStack[] jewelrySlots = rpgPlayer.getEquipment().getJewelry();
+      for (int i = 0; i < jewelrySlots.length; i++) {
+        if (jewelrySlots[i] != null) {
+          player.getWorld().dropItem(player.getLocation(), jewelrySlots[i]);
+          jewelrySlots[i] = null;
+        }
+      }
+    }
+
+    Plugin.getData().getRpgSystem().getStatuses().remove(e.getEntity().getUniqueId());
   }
 
   /**
@@ -100,6 +141,16 @@ public class RpgListener implements Listener {
   }
 
   /**
+   * Resets the player's {@link Health}.
+   *
+   * @param e player respawn event
+   */
+  @EventHandler
+  private void onRespawn(PlayerRespawnEvent e) {
+    Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
+  }
+
+  /**
    * Triggers {@link PassiveTriggerType#ON_KILL} {@link PassiveAbility passive abilities}.
    * <p>
    * {@link PassiveTriggerType#ON_KILL}
@@ -111,7 +162,7 @@ public class RpgListener implements Listener {
    */
   private void triggerOnKillPassives(UUID killedUUID, UUID selfUUID) {
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(selfUUID);
-    Map<Abilities.SlotPassive, PassiveAbility> killTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
+    Map<Equipment.Abilities.SlotPassive, PassiveAbility> killTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.ON_KILL);
     if (killTriggers.isEmpty()) {
       return;
     }

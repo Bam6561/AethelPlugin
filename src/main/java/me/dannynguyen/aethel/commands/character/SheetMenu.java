@@ -28,11 +28,11 @@ import java.util.*;
 /**
  * Represents a menu that shows the player's
  * {@link Equipment equipment},
- * Minecraft attributes, {@link AethelAttributes Aethel attributes},
- * {@link Enchantments enchantments}, and {@link Status statuses}.
+ * Minecraft attributes, {@link Equipment.AethelAttributes Aethel attributes},
+ * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.22.8
+ * @version 1.22.10
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -93,8 +93,8 @@ public class SheetMenu implements Menu {
 
   /**
    * Sets the menu to view {@link Equipment equipment},
-   * Minecraft attributes, {@link AethelAttributes Aethel attributes},
-   * {@link Enchantments enchantments}, and {@link Status statuses}.
+   * Minecraft attributes, {@link Equipment.AethelAttributes Aethel attributes},
+   * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
    *
    * @return Sheet menu
    */
@@ -256,7 +256,7 @@ public class SheetMenu implements Menu {
 
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
     Health health = rpgPlayer.getHealth();
-    Map<Enchantment, Integer> enchantments = rpgPlayer.getEnchantments().getTotalEnchantments();
+    Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getEnchantments().getTotalEnchantments();
 
     String maxHealth = ChatColor.RED + df2.format(health.getCurrentHealth()) + " / " + df2.format(health.getMaxHealth()) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");
     String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");

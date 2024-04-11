@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.22.6
+ * @version 1.22.10
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -107,10 +107,9 @@ public class Plugin extends JavaPlugin {
    *  <li>{@link MenuListener}
    *  <li>{@link MessageListener}
    *  <li>{@link PluginListener}
-   *  <li>{@link HealthListener}
+   *  <li>{@link DamageListener}
    *  <li>{@link EquipmentListener}
    *  <li>{@link RpgListener}
-   *  <li>{@link StatusListener}
    * </ul>
    */
   private void registerEventListeners() {
@@ -119,10 +118,9 @@ public class Plugin extends JavaPlugin {
     manager.registerEvents(new MenuListener(), this);
     manager.registerEvents(new MessageListener(), this);
     manager.registerEvents(new PluginListener(), this);
-    manager.registerEvents(new HealthListener(), this);
+    manager.registerEvents(new DamageListener(), this);
     manager.registerEvents(new EquipmentListener(), this);
     manager.registerEvents(new RpgListener(), this);
-    manager.registerEvents(new StatusListener(), this);
   }
 
   /**

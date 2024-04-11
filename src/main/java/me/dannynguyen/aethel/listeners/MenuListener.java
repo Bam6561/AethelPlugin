@@ -19,8 +19,7 @@ import org.bukkit.event.inventory.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Collection of {@link me.dannynguyen.aethel.interfaces.Menu menu}
- * click listeners.
+ * Collection of {@link me.dannynguyen.aethel.interfaces.Menu menu} click listeners.
  * <p>
  * By default, all clicks within plugin menus are cancelled due to the possibility of an
  * internal error occurring and the associated methods never reaching their end result.

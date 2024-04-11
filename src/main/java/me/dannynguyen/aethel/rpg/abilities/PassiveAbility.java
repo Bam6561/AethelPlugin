@@ -7,10 +7,7 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
-import me.dannynguyen.aethel.rpg.Buffs;
-import me.dannynguyen.aethel.rpg.DamageMitigation;
-import me.dannynguyen.aethel.rpg.RpgPlayer;
-import me.dannynguyen.aethel.rpg.Status;
+import me.dannynguyen.aethel.rpg.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
@@ -29,14 +26,14 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.7
+ * @version 1.22.10
  * @since 1.16.2
  */
 public class PassiveAbility {
   /**
    * {@link PassiveAbilityType Passive abilities} on cooldown.
    */
-  private final Map<PassiveTriggerType, Set<Abilities.SlotPassive>> onCooldownPassives;
+  private final Map<PassiveTriggerType, Set<Equipment.Abilities.SlotPassive>> onCooldownPassives;
 
   /**
    * {@link RpgEquipmentSlot}
@@ -72,7 +69,7 @@ public class PassiveAbility {
    * @param type               {@link PassiveAbilityType}
    * @param dataValues         ability data
    */
-  public PassiveAbility(@NotNull Map<PassiveTriggerType, Set<Abilities.SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType type, @NotNull String[] dataValues) {
+  public PassiveAbility(@NotNull Map<PassiveTriggerType, Set<Equipment.Abilities.SlotPassive>> onCooldownPassives, @NotNull RpgEquipmentSlot eSlot, @NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType type, @NotNull String[] dataValues) {
     this.onCooldownPassives = Objects.requireNonNull(onCooldownPassives, "Null on cooldown passives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
@@ -351,7 +348,7 @@ public class PassiveAbility {
    * @return if the {@link PassiveAbilityType} is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownPassives.get(trigger).contains(new Abilities.SlotPassive(eSlot, type));
+    return onCooldownPassives.get(trigger).contains(new Equipment.Abilities.SlotPassive(eSlot, type));
   }
 
   /**
@@ -360,7 +357,7 @@ public class PassiveAbility {
    * @param isOnCooldown is on cooldown
    */
   private void setOnCooldown(boolean isOnCooldown) {
-    Abilities.SlotPassive slotPassive = new Abilities.SlotPassive(eSlot, type);
+    Equipment.Abilities.SlotPassive slotPassive = new Equipment.Abilities.SlotPassive(eSlot, type);
     if (isOnCooldown) {
       onCooldownPassives.get(trigger).add(slotPassive);
     } else {

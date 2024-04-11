@@ -16,7 +16,7 @@ import java.util.Set;
  * Collection of player action listeners.
  *
  * @author Danny Nguyen
- * @version 1.21.8
+ * @version 1.22.10
  * @since 1.17.3
  */
 public class ActionListener implements Listener {
@@ -42,7 +42,7 @@ public class ActionListener implements Listener {
       Set<RpgEquipmentSlot> eSlots = rpgPlayer.getSettings().getAbilityBoundHotbar().get(player.getInventory().getHeldItemSlot());
       if (eSlots != null) {
         for (RpgEquipmentSlot eSlot : eSlots) {
-          for (ActiveAbility ability : rpgPlayer.getAbilities().getTriggerActives().get(eSlot)) {
+          for (ActiveAbility ability : rpgPlayer.getEquipment().getAbilities().getTriggerActives().get(eSlot)) {
             if (!ability.isOnCooldown()) {
               ability.doEffect(rpgPlayer, player);
             }

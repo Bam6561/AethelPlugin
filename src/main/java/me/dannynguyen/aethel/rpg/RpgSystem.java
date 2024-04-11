@@ -21,7 +21,7 @@ public class RpgSystem {
   private final Map<UUID, RpgPlayer> rpgPlayers = new HashMap<>();
 
   /**
-   * Players with sufficient {@link Enchantments} level requirements.
+   * Players with sufficient {@link Equipment.Enchantments} level requirements.
    */
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = new HashMap<>(Map.of(
       Enchantment.PROTECTION_FALL, new HashSet<>(),
@@ -63,9 +63,9 @@ public class RpgSystem {
   }
 
   /**
-   * Gets players with sufficient {@link Enchantments} level requirements.
+   * Gets players with sufficient {@link Equipment.Enchantments} level requirements.
    *
-   * @return players with sufficient {@link Enchantments} level requirements
+   * @return players with sufficient {@link Equipment.Enchantments} level requirements
    */
   @NotNull
   public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {

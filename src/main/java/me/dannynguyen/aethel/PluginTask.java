@@ -4,7 +4,6 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.*;
-import me.dannynguyen.aethel.rpg.abilities.Abilities;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -22,7 +21,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.7
+ * @version 1.22.10
  * @since 1.22.2
  */
 public class PluginTask {
@@ -78,7 +77,7 @@ public class PluginTask {
    */
   public void triggerBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : Plugin.getData().getRpgSystem().getRpgPlayers().values()) {
-      Map<Abilities.SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getAbilities().getTriggerPassives().get(PassiveTriggerType.BELOW_HEALTH);
+      Map<Equipment.Abilities.SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.BELOW_HEALTH);
       if (belowHealthTriggers.isEmpty()) {
         continue;
       }
