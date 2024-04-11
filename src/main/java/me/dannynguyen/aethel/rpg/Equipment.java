@@ -408,7 +408,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment enchantments.
    *
    * @author Danny Nguyen
-   * @version 1.22.13
+   * @version 1.22.14
    * @since 1.17.9
    */
   public class Enchantments {
@@ -438,10 +438,8 @@ public class Equipment {
      * @param alreadySet if the attribute has already been set to tags, true only on equipment initialization
      */
     private void addEnchantments(RpgEquipmentSlot eSlot, ItemStack item, boolean alreadySet) {
-      Map<Enchantment, Integer> itemEnchantments = item.getEnchantments();
-      
       for (Enchantment enchantment : trackedEnchantments) {
-        int itemEnchantmentValue = itemEnchantments.get(enchantment);
+        int itemEnchantmentValue = item.getEnchantmentLevel(enchantment);
         if (itemEnchantmentValue == 0) {
           continue;
         }

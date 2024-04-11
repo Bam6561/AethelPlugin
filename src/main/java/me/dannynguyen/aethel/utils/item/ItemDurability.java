@@ -7,10 +7,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.22.12
+ * @version 1.22.14
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -84,13 +85,16 @@ public class ItemDurability {
    * <p>
    * An item is broken when its damage exceeds its material type's durability.
    *
-   * @param player interacting player
-   * @param eSlot  equipment slot
-   * @param damage durability damage
+   * @param defender defending entity
+   * @param eSlot    equipment slot
+   * @param damage   durability damage
    */
-  public static void increaseDamage(@NotNull Player player, @NotNull EquipmentSlot eSlot, int damage) {
-    PlayerInventory pInv = Objects.requireNonNull(player, "Null player").getInventory();
-    ItemStack item = pInv.getItem(Objects.requireNonNull(eSlot, "Null slot"));
+  public static void increaseDamage(@NotNull LivingEntity defender, @NotNull EquipmentSlot eSlot, int damage) {
+    EntityEquipment equipment = Objects.requireNonNull(defender, "Null defender").getEquipment();
+    if (equipment == null) {
+      return;
+    }
+    ItemStack item = equipment.getItem(Objects.requireNonNull(eSlot, "Null slot"));
     if (ItemReader.isNullOrAir(item) || !(item.getItemMeta() instanceof Damageable durability)) {
       return;
     }
@@ -102,14 +106,19 @@ public class ItemDurability {
         return;
       }
     }
+
     durability.setDamage(durability.getDamage() + damage);
+
     if (durability.getDamage() > item.getType().getMaxDurability()) {
-      pInv.setItem(eSlot, new ItemStack(Material.AIR));
-      player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(eSlot.name())));
-    } else {
-      item.setItemMeta(durability);
+      equipment.setItem(eSlot, new ItemStack(Material.AIR));
+      defender.getWorld().playSound(defender.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
+      if (defender instanceof Player) {
+        Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(eSlot.name())));
+      }
+      return;
     }
+
+    item.setItemMeta(durability);
   }
 
   /**

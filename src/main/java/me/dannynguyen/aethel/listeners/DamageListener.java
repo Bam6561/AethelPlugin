@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.13
+ * @version 1.22.14
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -55,31 +55,42 @@ public class DamageListener implements Listener {
    */
   @EventHandler
   private void onEntityDamage(EntityDamageEvent e) {
-    if (e instanceof EntityDamageByEntityEvent event) {
-      if (!(e.getEntity() instanceof LivingEntity)) {
-        return;
-      }
+    if (!(e.getEntity() instanceof LivingEntity)) {
+      return;
+    }
 
+    if (e instanceof EntityDamageByEntityEvent event) {
       if (event.getDamager() instanceof Player attacker) {
         triggerDamageDealtPassives(event, attacker);
       }
       if (event.getEntity() instanceof Player defender) {
         triggerDamageTakenPassives(event, defender);
       }
-
       calculateDamageDealt(event);
-    } else if (e.getEntity() instanceof Player defender && !ignoredDamageCauses.contains(e.getCause())) {
+      return;
+    }
+
+    if (!ignoredDamageCauses.contains(e.getCause())) {
       EntityDamageEvent.DamageCause cause = e.getCause();
+      LivingEntity defender = (LivingEntity) e.getEntity();
+
       if (mitigateEnvironmentalDamage(e, cause, defender)) {
         e.setCancelled(true);
         return;
       }
+
       final double finalDamage = e.getDamage();
+      e.setDamage(0);
+
       switch (cause) {
         case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(defender, finalDamage);
       }
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
-      e.setDamage(0);
+
+      if (defender instanceof Player) {
+        Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
+      } else {
+        defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
+      }
     }
   }
 
@@ -193,7 +204,7 @@ public class DamageListener implements Listener {
       }
     }
 
-    if (defender instanceof Player defendingPlayer && mitigateSpecificCauseDamage(e, attacker, defendingPlayer, mitigation)) {
+    if (mitigateSpecificCauseDamage(e, attacker, defender, mitigation)) {
       e.setCancelled(true);
       return;
     }
@@ -216,24 +227,25 @@ public class DamageListener implements Listener {
     e.setDamage(mitigation.mitigateArmorProtectionResistance(e.getDamage()));
 
     final double finalDamage = e.getDamage();
-    if (defender instanceof Player defendingPlayer) {
-      damageArmorDurability(defendingPlayer, finalDamage);
+    e.setDamage(0);
+
+    damageArmorDurability(defender, finalDamage);
+    if (defender instanceof Player) {
       rpgSystem.getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
     } else {
       defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
     }
-    e.setDamage(0);
   }
 
   /**
-   * Mitigates environmental damage taken based on the player's {@link Equipment.Enchantments}.
+   * Mitigates environmental damage taken based on the entity's {@link Equipment.Enchantments}.
    *
    * @param e        entity damage event
    * @param cause    damage cause
-   * @param defender defending player
+   * @param defender defending entity
    * @return if no damage is taken
    */
-  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, Player defender) {
+  private boolean mitigateEnvironmentalDamage(EntityDamageEvent e, EntityDamageEvent.DamageCause cause, LivingEntity defender) {
     DamageMitigation mitigation = new DamageMitigation(defender);
     switch (cause) {
       case FALL -> e.setDamage(mitigation.mitigateFall(e.getDamage()));
@@ -253,6 +265,7 @@ public class DamageListener implements Listener {
         } else if (ifTougher(e, entityTags, buffs, defender)) {
           return true;
         }
+
         e.setDamage(mitigation.mitigateArmorProtection(e.getDamage()));
       }
     }
@@ -325,11 +338,11 @@ public class DamageListener implements Listener {
    *
    * @param e          entity damage by entity event
    * @param attacker   attacking entity
-   * @param defender   defending player
+   * @param defender   defending entity
    * @param mitigation {@link DamageMitigation}
    * @return if no damage taken or magic damage was taken/mitigated
    */
-  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity attacker, Player defender, DamageMitigation mitigation) {
+  private boolean mitigateSpecificCauseDamage(EntityDamageByEntityEvent e, Entity attacker, LivingEntity defender, DamageMitigation mitigation) {
     switch (e.getCause()) {
       case ENTITY_EXPLOSION -> {
         e.setDamage(mitigation.mitigateExplosion(e.getDamage()));
@@ -345,8 +358,12 @@ public class DamageListener implements Listener {
       }
       case PROJECTILE -> {
         int projectileProtection = defender.getPersistentDataContainer().getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
-        if (projectileProtection >= 10) {
-          PlayerInventory pInv = defender.getInventory();
+        if (projectileProtection > 0) {
+          e.setDamage(mitigation.mitigateProjectile(e.getDamage()));
+        }
+
+        if (defender instanceof Player defendingPlayer && projectileProtection >= 10) {
+          PlayerInventory pInv = defendingPlayer.getInventory();
           switch (attacker.getType()) {
             case ARROW -> {
               PotionType potionType = ((Arrow) attacker).getBasePotionType();
@@ -364,8 +381,6 @@ public class DamageListener implements Listener {
             case SNOWBALL -> pInv.addItem(new ItemStack(Material.SNOWBALL));
             case SPECTRAL_ARROW -> pInv.addItem(new ItemStack(Material.SPECTRAL_ARROW));
           }
-        } else if (projectileProtection > 0) {
-          e.setDamage(mitigation.mitigateProjectile(e.getDamage()));
         }
       }
     }
@@ -487,10 +502,10 @@ public class DamageListener implements Listener {
   /**
    * Damages the worn armors' durability based on the damage taken.
    *
-   * @param defender player taking damage
+   * @param defender defending entity
    * @param damage   damage taken
    */
-  private void damageArmorDurability(Player defender, double damage) {
+  private void damageArmorDurability(LivingEntity defender, double damage) {
     int durabilityDamage = (int) Math.max(damage / 4, 1);
     ItemDurability.increaseDamage(defender, EquipmentSlot.HEAD, durabilityDamage);
     ItemDurability.increaseDamage(defender, EquipmentSlot.CHEST, durabilityDamage);
