@@ -1,11 +1,13 @@
 package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +19,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.13
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -32,9 +34,9 @@ public class DamageMitigation {
   private final UUID uuid;
 
   /**
-   * Player's enchantments.
+   * Entity's persistent tags.
    */
-  private Map<Enchantment, Integer> enchantments = null;
+  private final PersistentDataContainer entityTags;
 
   /**
    * Entity's {@link Status statuses}.
@@ -49,11 +51,8 @@ public class DamageMitigation {
   public DamageMitigation(@NotNull LivingEntity defender) {
     this.defender = Objects.requireNonNull(defender, "Null damagee");
     this.uuid = defender.getUniqueId();
-    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
-    if (defender instanceof Player) {
-      this.enchantments = rpgSystem.getRpgPlayers().get(uuid).getEquipment().getEnchantments().getTotalEnchantments();
-    }
-    this.statuses = rpgSystem.getStatuses().get(uuid);
+    this.entityTags = defender.getPersistentDataContainer();
+    this.statuses = Plugin.getData().getRpgSystem().getStatuses().get(uuid);
   }
 
   /**
@@ -63,10 +62,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateFall(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
-    return damage - (damage * (enchantments.get(Enchantment.PROTECTION_FALL) * .2));
+    int featherFallingBase = entityTags.getOrDefault(Key.ENCHANTMENT_FEATHER_FALLING.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    return damage - (damage * (featherFallingBase * .2));
   }
 
   /**
@@ -76,10 +73,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateFire(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
-    return damage - (damage * (enchantments.get(Enchantment.PROTECTION_FIRE) * .1));
+    int fireProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_FIRE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    return damage - (damage * (fireProtectionBase * .1));
   }
 
   /**
@@ -89,10 +84,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateExplosion(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
-    damage = damage - (damage * (enchantments.get(Enchantment.PROTECTION_EXPLOSIONS) * .1));
+    int blastProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_BLAST_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    damage = damage - (damage * (blastProtectionBase * .1));
     if (damage <= 0) {
       Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().heal(damage * .2);
       Player player = (Player) defender;
@@ -108,10 +101,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateProjectile(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
-    return damage - (damage * (Math.min(enchantments.get(Enchantment.PROTECTION_PROJECTILE) * .05, .5)));
+    int projectileProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    return damage - (damage * (Math.min(projectileProtectionBase * .05, .5)));
   }
 
   /**
@@ -135,15 +126,12 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtection(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
+    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
-    int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
-    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protection * 0.01, .2);
+    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.01, .2);
     return damage - (damage * mitigationValue);
   }
 
@@ -155,14 +143,12 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtectionResistance(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
+    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
-    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) * 0.01, .2);
+    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.01, .2);
     damage = damage - (damage * mitigationValue);
     if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
       int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
@@ -178,10 +164,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateProtection(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
-    return damage - (damage * (Math.min(enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) * .04, .8)));
+    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    return damage - (damage * (Math.min(protectionBase * .04, .8)));
   }
 
   /**
@@ -192,11 +176,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateProtectionResistance(double damage) {
-    if (enchantments == null) {
-      return damage;
-    }
-    int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
-    damage = damage - (damage * (Math.min(protection * .04, .8)));
+    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    damage = damage - (damage * (Math.min(protectionBase * .04, .8)));
     if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
       int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));

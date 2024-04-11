@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin key headers.
  *
  * @author Danny Nguyen
- * @version 1.15.5
+ * @version 1.22.13
  * @since 1.15.3
  */
 public enum KeyHeader {
@@ -29,6 +29,11 @@ public enum KeyHeader {
    * {@link Key#ATTRIBUTE_LIST}
    */
   ATTRIBUTE(AETHEL.getHeader() + "attribute."),
+
+  /**
+   * Enchantment.
+   */
+  ENCHANTMENT(AETHEL.getHeader() + "enchantment."),
 
   /**
    * Item {@link Key#PASSIVE_LIST}

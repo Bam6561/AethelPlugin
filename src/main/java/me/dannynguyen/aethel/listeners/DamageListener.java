@@ -10,7 +10,6 @@ import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.item.ItemDurability;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +33,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.13
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -345,7 +344,7 @@ public class DamageListener implements Listener {
         return true;
       }
       case PROJECTILE -> {
-        int projectileProtection = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getEquipment().getEnchantments().getTotalEnchantments().get(Enchantment.PROTECTION_PROJECTILE);
+        int projectileProtection = defender.getPersistentDataContainer().getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
         if (projectileProtection >= 10) {
           PlayerInventory pInv = defender.getInventory();
           switch (attacker.getType()) {

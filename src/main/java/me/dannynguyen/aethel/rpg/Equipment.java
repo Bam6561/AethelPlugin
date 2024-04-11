@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.22.12
+ * @version 1.22.13
  * @since 1.13.4
  */
 public class Equipment {
@@ -44,6 +44,11 @@ public class Equipment {
    * Player's UUID.
    */
   private final UUID uuid;
+
+  /**
+   * Player's persistent tags.
+   */
+  private final PersistentDataContainer entityTags;
 
   /**
    * {@link AethelAttributes}
@@ -77,7 +82,8 @@ public class Equipment {
    */
   public Equipment(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.attributes = new AethelAttributes(player.getPersistentDataContainer());
+    this.entityTags = player.getPersistentDataContainer();
+    this.attributes = new AethelAttributes();
     this.enchantments = new Enchantments();
     this.abilities = new Abilities();
     this.heldItem = player.getInventory().getItemInMainHand();
@@ -128,7 +134,7 @@ public class Equipment {
    * @param item  interacting item
    * @param eSlot {@link RpgEquipmentSlot}
    */
-  private void loadSlot(@Nullable ItemStack item, @NotNull RpgEquipmentSlot eSlot) {
+  private void loadSlot(ItemStack item, RpgEquipmentSlot eSlot) {
     if (ItemReader.isNotNullOrAir(item)) {
       PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
       if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
@@ -137,7 +143,7 @@ public class Equipment {
       }
       if (item.getItemMeta().hasEnchants()) {
         enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
-        enchantments.addEnchantments(eSlot, item);
+        enchantments.addEnchantments(eSlot, item, true);
       }
       if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         abilities.getSlotPassives().put(eSlot, new ArrayList<>());
@@ -202,7 +208,7 @@ public class Equipment {
     }
     if (item.getItemMeta().hasEnchants()) {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
-      enchantments.addEnchantments(eSlot, item);
+      enchantments.addEnchantments(eSlot, item, false);
     }
     if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
@@ -318,27 +324,19 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment {@link AethelAttribute} values.
    *
    * @author Danny Nguyen
-   * @version 1.22.7
+   * @version 1.22.13
    * @since 1.17.9
    */
-  public static class AethelAttributes {
-    /**
-     * Player's persistent tags.
-     */
-    private final PersistentDataContainer playerTags;
-
+  public class AethelAttributes {
     /**
      * {@link AethelAttribute} values on {@link RpgEquipmentSlot}.
      */
     private final Map<RpgEquipmentSlot, Map<AethelAttribute, Double>> slotAttributes = new HashMap<>();
 
     /**
-     * Associates the player's persistent tags with Aethel attributes.
-     *
-     * @param playerTags player's persistent tags
+     * No parameter constructor.
      */
-    private AethelAttributes(@NotNull PersistentDataContainer playerTags) {
-      this.playerTags = playerTags;
+    private AethelAttributes() {
     }
 
     /**
@@ -349,11 +347,11 @@ public class Equipment {
      * @param itemTags   item's persistent tags
      * @param alreadySet if the attribute has already been set to tags, true only on equipment initialization
      */
-    private void readAttributes(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags, boolean alreadySet) {
-      String[] slotAttributes = Objects.requireNonNull(itemTags, "Null data container").get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    private void readAttributes(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags, boolean alreadySet) {
+      String[] slotAttributes = itemTags.get(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
       for (String slotAttribute : slotAttributes) {
         RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(slotAttribute.substring(0, slotAttribute.indexOf("."))));
-        if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
+        if (slot == eSlot) {
           addAttributes(eSlot, itemTags, slotAttribute, alreadySet);
         }
       }
@@ -376,8 +374,8 @@ public class Equipment {
 
       if (!alreadySet) {
         NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attributeId);
-        double entityAttributeValue = playerTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
-        playerTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue + itemAttributeValue);
+        double entityAttributeValue = entityTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
+        entityTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue + itemAttributeValue);
       }
     }
 
@@ -389,8 +387,8 @@ public class Equipment {
     public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
       for (AethelAttribute attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
         NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute.getId());
-        double entityAttributeValue = playerTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
-        playerTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue - slotAttributes.get(eSlot).get(attribute));
+        double entityAttributeValue = entityTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
+        entityTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue - slotAttributes.get(eSlot).get(attribute));
         slotAttributes.get(eSlot).put(attribute, 0.0);
       }
     }
@@ -410,7 +408,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment enchantments.
    *
    * @author Danny Nguyen
-   * @version 1.17.9
+   * @version 1.22.13
    * @since 1.17.9
    */
   public class Enchantments {
@@ -420,11 +418,6 @@ public class Equipment {
     private static final Set<Enchantment> trackedEnchantments = Set.of(
         Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS,
         Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
-
-    /**
-     * Total enchantments.
-     */
-    private final Map<Enchantment, Integer> totalEnchantments = createBlankTotalEnchantments();
 
     /**
      * Enchantments on {@link RpgEquipmentSlot}.
@@ -438,30 +431,28 @@ public class Equipment {
     }
 
     /**
-     * Creates a blank map of total enchantment levels.
-     *
-     * @return blank total enchantment levels
-     */
-    private Map<Enchantment, Integer> createBlankTotalEnchantments() {
-      Map<Enchantment, Integer> enchantments = new HashMap<>();
-      for (Enchantment enchantment : trackedEnchantments) {
-        enchantments.put(enchantment, 0);
-      }
-      return enchantments;
-    }
-
-    /**
      * Adds new {@link Equipment} enchantments.
      *
-     * @param eSlot {@link RpgEquipmentSlot}
-     * @param item  interacting item
+     * @param eSlot      {@link RpgEquipmentSlot}
+     * @param item       interacting item
+     * @param alreadySet if the attribute has already been set to tags, true only on equipment initialization
      */
-    private void addEnchantments(@NotNull RpgEquipmentSlot eSlot, @NotNull ItemStack item) {
-      Objects.requireNonNull(eSlot, "Null slot");
-      Objects.requireNonNull(item, "Null item");
+    private void addEnchantments(RpgEquipmentSlot eSlot, ItemStack item, boolean alreadySet) {
+      Map<Enchantment, Integer> itemEnchantments = item.getEnchantments();
+      
       for (Enchantment enchantment : trackedEnchantments) {
-        slotEnchantments.get(eSlot).put(enchantment, item.getEnchantmentLevel(enchantment));
-        totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) + item.getEnchantmentLevel(enchantment));
+        int itemEnchantmentValue = itemEnchantments.get(enchantment);
+        if (itemEnchantmentValue == 0) {
+          continue;
+        }
+
+        slotEnchantments.get(eSlot).put(enchantment, itemEnchantmentValue);
+
+        if (!alreadySet) {
+          NamespacedKey entityEnchantmentKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + TextFormatter.formatId(enchantment.getKey().getKey()));
+          int entityEnchantmentValue = entityTags.getOrDefault(entityEnchantmentKey, PersistentDataType.INTEGER, 0);
+          entityTags.set(entityEnchantmentKey, PersistentDataType.INTEGER, entityEnchantmentValue + itemEnchantmentValue);
+        }
       }
       readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
       readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
@@ -474,7 +465,9 @@ public class Equipment {
      */
     public void removeEnchantments(@NotNull RpgEquipmentSlot eSlot) {
       for (Enchantment enchantment : slotEnchantments.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
-        totalEnchantments.put(enchantment, totalEnchantments.get(enchantment) - slotEnchantments.get(eSlot).get(enchantment));
+        NamespacedKey entityEnchantmentKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + TextFormatter.formatId(enchantment.getKey().getKey()));
+        int entityEnchantmentValue = entityTags.getOrDefault(entityEnchantmentKey, PersistentDataType.INTEGER, 0);
+        entityTags.set(entityEnchantmentKey, PersistentDataType.INTEGER, entityEnchantmentValue - slotEnchantments.get(eSlot).get(enchantment));
         slotEnchantments.get(eSlot).put(enchantment, 0);
       }
       readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
@@ -488,21 +481,14 @@ public class Equipment {
      * @param requirement required level to be sufficient
      */
     private void readEnchantmentLevel(Enchantment enchantment, int requirement) {
-      if (totalEnchantments.get(enchantment) >= requirement) {
+      NamespacedKey entityEnchantmentKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + TextFormatter.formatEnum(enchantment.getKey().getKey()));
+      int entityEnchantmentValue = entityTags.getOrDefault(entityEnchantmentKey, PersistentDataType.INTEGER, 0);
+
+      if (entityEnchantmentValue >= requirement) {
         Plugin.getData().getRpgSystem().getSufficientEnchantments().get(enchantment).add(uuid);
       } else {
         Plugin.getData().getRpgSystem().getSufficientEnchantments().get(enchantment).remove(uuid);
       }
-    }
-
-    /**
-     * Gets the total enchantments.
-     *
-     * @return total enchantments
-     */
-    @NotNull
-    public Map<Enchantment, Integer> getTotalEnchantments() {
-      return this.totalEnchantments;
     }
 
     /**
@@ -618,11 +604,11 @@ public class Equipment {
      * @param eSlot    {@link RpgEquipmentSlot}
      * @param itemTags item's persistent tags
      */
-    private void readPassives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
-      String[] passives = Objects.requireNonNull(itemTags, "Null data container").get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    private void readPassives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags) {
+      String[] passives = itemTags.get(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
       for (String passive : passives) {
         RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(passive.substring(0, passive.indexOf("."))));
-        if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
+        if (slot == eSlot) {
           addPassives(eSlot, itemTags, passive);
         }
       }
@@ -635,11 +621,11 @@ public class Equipment {
      * @param eSlot    {@link RpgEquipmentSlot}
      * @param itemTags item's persistent tags
      */
-    private void readActives(@NotNull RpgEquipmentSlot eSlot, @NotNull PersistentDataContainer itemTags) {
-      String[] actives = Objects.requireNonNull(itemTags, "Null data container").get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+    private void readActives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags) {
+      String[] actives = itemTags.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
       for (String active : actives) {
         RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(active.substring(0, active.indexOf("."))));
-        if (slot == Objects.requireNonNull(eSlot, "Null slot")) {
+        if (slot == eSlot) {
           addActives(eSlot, itemTags, active);
         }
       }

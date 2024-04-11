@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.22.8
+ * @version 1.22.13
  * @since 1.11.9
  */
 public enum Key {
@@ -88,7 +88,32 @@ public enum Key {
   /**
    * {@link AethelAttribute#TENACITY}
    */
-  ATTRIBUTE_TENACITY(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.TENACITY.getId()));
+  ATTRIBUTE_TENACITY(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.TENACITY.getId())),
+
+  /**
+   * Protection.
+   */
+  ENCHANTMENT_PROTECTION(new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + "protection")),
+
+  /**
+   * Blast protection.
+   */
+  ENCHANTMENT_BLAST_PROTECTION(new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + "blast_protection")),
+
+  /**
+   * Fire protection.
+   */
+  ENCHANTMENT_FIRE_PROTECTION(new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + "fire_protection")),
+
+  /**
+   * Projectile protection.
+   */
+  ENCHANTMENT_PROJECTILE_PROTECTION(new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + "projectile_protection")),
+
+  /**
+   * Feather falling.
+   */
+  ENCHANTMENT_FEATHER_FALLING(new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + "feather_falling"));
 
   /**
    * Namespaced key.

@@ -6,13 +6,15 @@ import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.rpg.Buffs;
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.Health;
+import me.dannynguyen.aethel.rpg.Status;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -32,7 +34,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.22.10
+ * @version 1.22.13
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -254,9 +256,13 @@ public class SheetMenu implements Menu {
       armorBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR);
     }
 
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
-    Health health = rpgPlayer.getHealth();
-    Map<Enchantment, Integer> enchantments = rpgPlayer.getEquipment().getEnchantments().getTotalEnchantments();
+    double featherFallingBase = entityTags.getOrDefault(Key.ENCHANTMENT_FEATHER_FALLING.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    double protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    double blastProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_BLAST_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    double fireProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_FIRE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    double projectileProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+
+    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
 
     String maxHealth = ChatColor.RED + df2.format(health.getCurrentHealth()) + " / " + df2.format(health.getMaxHealth()) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");
     String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");
@@ -264,11 +270,11 @@ public class SheetMenu implements Menu {
     String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + armorToughnessBase + armorToughnessBuff) + " TOUGH" + (genericArmorToughnessBuff + armorToughnessBuff != 0.0 ? " [" + df2.format(genericArmorToughnessBuff + armorToughnessBuff) + "]" : "");
     String armor = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR" + (armorBuff != 0.0 ? " [" + df2.format(armorBuff) + "]" : "");
 
-    String featherFalling = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FALL) + " FEATHER FALL";
-    String protection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) + " PROT";
-    String blastProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_EXPLOSIONS) + " BLAST PROT";
-    String fireProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_FIRE) + " FIRE PROT";
-    String projectileProtection = ChatColor.GRAY + "" + enchantments.get(Enchantment.PROTECTION_PROJECTILE) + " PROJ PROT";
+    String featherFalling = ChatColor.GRAY + "" + featherFallingBase + " FEATHER FALL";
+    String protection = ChatColor.GRAY + "" + protectionBase + " PROT";
+    String blastProtection = ChatColor.GRAY + "" + blastProtectionBase + " BLAST PROT";
+    String fireProtection = ChatColor.GRAY + "" + fireProtectionBase + " FIRE PROT";
+    String projectileProtection = ChatColor.GRAY + "" + projectileProtectionBase + " PROJ PROT";
 
     menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, "", featherFalling, protection, blastProtection, fireProtection, projectileProtection), ItemFlag.HIDE_ATTRIBUTES));
   }
