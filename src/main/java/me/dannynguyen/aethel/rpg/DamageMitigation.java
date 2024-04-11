@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -13,44 +14,46 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents player damage mitigation.
+ * Represents living entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.21.2
+ * @version 1.22.9
  * @since 1.16.14
  */
 public class DamageMitigation {
   /**
-   * Player taking damage.
+   * Defending entity.
    */
-  private final Player damagee;
+  private final LivingEntity defender;
 
   /**
-   * Player's UUID.
+   * Entity's UUID.
    */
   private final UUID uuid;
 
   /**
    * Player's enchantments.
    */
-  private final Map<Enchantment, Integer> enchantments;
+  private Map<Enchantment, Integer> enchantments = null;
 
   /**
-   * Player's {@link Status statuses}.
+   * Entity's {@link Status statuses}.
    */
   private final Map<StatusType, Status> statuses;
 
   /**
-   * Associates the damage calculator with a player.
+   * Associates the damage calculator with an entity.
    *
-   * @param damagee damagee
+   * @param defender damagee
    */
-  public DamageMitigation(@NotNull Player damagee) {
-    this.damagee = Objects.requireNonNull(damagee, "Null damagee");
-    this.uuid = damagee.getUniqueId();
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
-    this.enchantments = rpgPlayer.getEnchantments().getTotalEnchantments();
-    this.statuses = rpgPlayer.getStatuses();
+  public DamageMitigation(@NotNull LivingEntity defender) {
+    this.defender = Objects.requireNonNull(defender, "Null damagee");
+    this.uuid = defender.getUniqueId();
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+    if (defender instanceof Player) {
+      this.enchantments = rpgSystem.getRpgPlayers().get(uuid).getEnchantments().getTotalEnchantments();
+    }
+    this.statuses = rpgSystem.getStatuses().get(uuid);
   }
 
   /**
@@ -60,6 +63,9 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateFall(double damage) {
+    if (enchantments == null) {
+      return damage;
+    }
     return damage - (damage * (enchantments.get(Enchantment.PROTECTION_FALL) * .2));
   }
 
@@ -70,6 +76,9 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateFire(double damage) {
+    if (enchantments == null) {
+      return damage;
+    }
     return damage - (damage * (enchantments.get(Enchantment.PROTECTION_FIRE) * .1));
   }
 
@@ -80,10 +89,14 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateExplosion(double damage) {
+    if (enchantments == null) {
+      return damage;
+    }
     damage = damage - (damage * (enchantments.get(Enchantment.PROTECTION_EXPLOSIONS) * .1));
     if (damage <= 0) {
       Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().heal(damage * .2);
-      damagee.setFoodLevel(20);
+      Player player = (Player) defender;
+      player.setFoodLevel(20);
     }
     return damage;
   }
@@ -95,18 +108,21 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateProjectile(double damage) {
+    if (enchantments == null) {
+      return damage;
+    }
     return damage - (damage * (Math.min(enchantments.get(Enchantment.PROTECTION_PROJECTILE) * .05, .5)));
   }
 
   /**
-   * Mitigates damage taken based on the player's resistance amplifier.
+   * Mitigates damage taken based on the entity's resistance amplifier.
    *
    * @param damage initial damage
    * @return damage taken
    */
   public double mitigateResistance(double damage) {
-    if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+      int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));
     }
     return damage;
@@ -119,7 +135,10 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtection(double damage) {
-    int armor = (int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+    if (enchantments == null) {
+      return damage;
+    }
+    int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
@@ -136,14 +155,17 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtectionResistance(double damage) {
-    int armor = (int) damagee.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+    if (enchantments == null) {
+      return damage;
+    }
+    int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) * 0.01, .2);
     damage = damage - (damage * mitigationValue);
-    if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+      int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));
     }
     return damage;
@@ -156,6 +178,9 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateProtection(double damage) {
+    if (enchantments == null) {
+      return damage;
+    }
     return damage - (damage * (Math.min(enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL) * .04, .8)));
   }
 
@@ -167,10 +192,13 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateProtectionResistance(double damage) {
+    if (enchantments == null) {
+      return damage;
+    }
     int protection = enchantments.get(Enchantment.PROTECTION_ENVIRONMENTAL);
     damage = damage - (damage * (Math.min(protection * .04, .8)));
-    if (damagee.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = damagee.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+      int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));
     }
     return damage;

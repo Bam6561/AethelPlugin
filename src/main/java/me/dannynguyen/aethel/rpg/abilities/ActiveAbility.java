@@ -465,20 +465,20 @@ public class ActiveAbility {
   }
 
   /**
-   * Checks if the target is unobstructed by solid blocks.
+   * Checks if the living entity is unobstructed by solid blocks.
    * <p>
    * A path is drawn starting from the entity in the direction of
    * the caster because for long-distance computations, the likelihood
    * a block exists closer to the entity and obstructs the path is greater.
    *
-   * @param caster       ability caster
-   * @param livingEntity living entity
+   * @param caster ability caster
+   * @param entity potential target entity
    * @return if the target is obstructed
    */
-  private boolean isTargetUnobstructed(Player caster, LivingEntity livingEntity) {
+  private boolean isTargetUnobstructed(Player caster, LivingEntity entity) {
     // Checks eye-to-eye, covers edge cases where caster is against a wall
     Location casterEyeLocation = caster.getEyeLocation();
-    Location entityEyeLocation = livingEntity.getEyeLocation();
+    Location entityEyeLocation = entity.getEyeLocation();
     Vector eyeDirection = casterEyeLocation.toVector().subtract(entityEyeLocation.toVector()).normalize();
     if (casterEyeLocation.add(eyeDirection.multiply(-0.5)).getBlock().getType().isSolid()) {
       return false;
@@ -486,7 +486,7 @@ public class ActiveAbility {
 
     // Checks feet-to-feet
     Location casterLocation = caster.getLocation();
-    Location entityLocation = livingEntity.getLocation();
+    Location entityLocation = entity.getLocation();
     Vector direction = casterLocation.toVector().subtract(entityLocation.toVector()).normalize();
     return isUnobstructed(entityLocation, direction, (int) casterLocation.distance(entityLocation));
   }
@@ -512,15 +512,15 @@ public class ActiveAbility {
   /**
    * Gets a living entity's direction angle from the location of the caster.
    *
-   * @param caster       ability caster
-   * @param livingEntity living entity
+   * @param caster ability caster
+   * @param entity potential target entity
    * @return living entity's direction angle
    */
-  private double getDirectionAngle(Player caster, LivingEntity livingEntity) {
+  private double getDirectionAngle(Player caster, LivingEntity entity) {
     Location casterLocation = caster.getLocation();
     Vector casterDirection = casterLocation.getDirection();
     Vector casterLocationVector = casterLocation.toVector();
-    Vector entityDirection = livingEntity.getLocation().toVector().subtract(casterLocationVector);
+    Vector entityDirection = entity.getLocation().toVector().subtract(casterLocationVector);
 
     double x1 = casterDirection.getX();
     double z1 = casterDirection.getZ();
