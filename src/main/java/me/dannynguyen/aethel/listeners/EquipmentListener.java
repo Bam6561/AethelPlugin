@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.12
+ * @version 1.22.17
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -70,8 +71,13 @@ public class EquipmentListener implements Listener {
   @EventHandler
   private void onItemHeld(PlayerItemHeldEvent e) {
     Player player = e.getPlayer();
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
-    rpgPlayer.getEquipment().readSlot(player.getInventory().getItem(e.getNewSlot()), RpgEquipmentSlot.HAND);
+    Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
+    ItemStack heldItem = player.getInventory().getItem(e.getNewSlot());
+    if (heldItem == null) {
+      heldItem = new ItemStack(Material.AIR);
+    }
+    equipment.setHeldItem(heldItem);
+    equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
   }
 
   /**

@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.22.13
+ * @version 1.22.17
  * @since 1.13.4
  */
 public class Equipment {
@@ -316,8 +316,8 @@ public class Equipment {
    *
    * @param item item to be set
    */
-  public void setHeldItem(@Nullable ItemStack item) {
-    this.heldItem = item;
+  public void setHeldItem(@NotNull ItemStack item) {
+    this.heldItem = Objects.requireNonNull(item, "Null held item");
   }
 
   /**

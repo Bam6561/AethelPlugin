@@ -126,11 +126,11 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtection(double damage) {
-    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
+    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.01, .2);
     return damage - (damage * mitigationValue);
   }
@@ -143,11 +143,11 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtectionResistance(double damage) {
-    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
+    int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.01, .2);
     damage = damage - (damage * mitigationValue);
     if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {

@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.16
+ * @version 1.22.17
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -60,12 +60,6 @@ public class DamageListener implements Listener {
     }
 
     if (e instanceof EntityDamageByEntityEvent event) {
-      if (event.getDamager() instanceof Player attacker) {
-        triggerDamageDealtPassives(event, attacker);
-      }
-      if (event.getEntity() instanceof Player defender) {
-        triggerDamageTakenPassives(event, defender);
-      }
       calculateDamageDealt(event);
       return;
     }
@@ -86,7 +80,8 @@ public class DamageListener implements Listener {
         case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(defender, finalDamage);
       }
 
-      if (defender instanceof Player) {
+      if (defender instanceof Player defenderPlayer) {
+        triggerDamageTakenPassives(defenderPlayer);
         Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
       } else {
         defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
@@ -180,6 +175,33 @@ public class DamageListener implements Listener {
   }
 
   /**
+   * Triggers {@link PassiveTriggerType#DAMAGE_TAKEN} {@link PassiveAbility passive abilities}.
+   *
+   * @param defender defending player
+   */
+  private void triggerDamageTakenPassives(Player defender) {
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId());
+    Map<Equipment.Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
+    if (damageTakenTriggers.isEmpty()) {
+      return;
+    }
+
+    Random random = new Random();
+    for (PassiveAbility ability : damageTakenTriggers.values()) {
+      if (ability.isOnCooldown()) {
+        continue;
+      }
+      double chance = Double.parseDouble(ability.getConditionData().get(0));
+      if (chance > random.nextDouble() * 100) {
+        boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+        if (self) {
+          ability.doEffect(rpgPlayer.getUUID(), defender.getUniqueId());
+        }
+      }
+    }
+  }
+
+  /**
    * Calculates damage dealt.
    *
    * @param e entity damage by entity event
@@ -226,13 +248,17 @@ public class DamageListener implements Listener {
       return;
     }
 
-    e.setDamage(mitigation.mitigateArmorProtectionResistance(e.getDamage()));
+    if (attacker instanceof Player attackerPlayer) {
+      triggerDamageDealtPassives(e, attackerPlayer);
+    }
 
+    e.setDamage(mitigation.mitigateArmorProtectionResistance(e.getDamage()));
     final double finalDamage = e.getDamage();
     e.setDamage(0.01);
 
     damageArmorDurability(defender, finalDamage);
-    if (defender instanceof Player) {
+    if (defender instanceof Player defenderPlayer) {
+      triggerDamageTakenPassives(e, defenderPlayer);
       rpgSystem.getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
     } else {
       defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
@@ -353,8 +379,13 @@ public class DamageListener implements Listener {
         }
       }
       case MAGIC -> {
-        e.setDamage(mitigation.mitigateProtectionResistance(e.getDamage()));
-        Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(e.getDamage());
+        final double finalDamage = mitigation.mitigateProtectionResistance(e.getDamage());
+        if (defender instanceof Player defenderPlayer) {
+          triggerDamageTakenPassives(e, defenderPlayer);
+          Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
+        } else {
+          defender.setHealth(Math.min(0, finalDamage));
+        }
         e.setDamage(0.01);
         return true;
       }
@@ -387,8 +418,13 @@ public class DamageListener implements Listener {
       }
     }
     if (attacker.getType() == EntityType.AREA_EFFECT_CLOUD) {
-      e.setDamage(mitigation.mitigateProtectionResistance(e.getDamage()));
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(e.getDamage());
+      final double finalDamage = mitigation.mitigateProtectionResistance(e.getDamage());
+      if (defender instanceof Player defenderPlayer) {
+        triggerDamageTakenPassives(e, defenderPlayer);
+        Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
+      } else {
+        defender.setHealth(Math.min(0, finalDamage));
+      }
       e.setDamage(0.01);
       return true;
     }
@@ -441,7 +477,7 @@ public class DamageListener implements Listener {
         attackSpeed = 1;
       }
 
-      double counterDamage = attackSpeed * defender.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
+      double counterDamage = new DamageMitigation(livingAttacker).mitigateArmorProtectionResistance(attackSpeed * defender.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
 
       livingAttacker.damage(0.01);
       if (livingAttacker instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
