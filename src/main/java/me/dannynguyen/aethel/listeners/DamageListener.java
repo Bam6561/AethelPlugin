@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -33,7 +34,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.18
+ * @version 1.22.19
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -595,10 +596,15 @@ public class DamageListener implements Listener {
    * @param damage   damage taken
    */
   private void damageArmorDurability(LivingEntity defender, double damage) {
+    EntityEquipment equipment = defender.getEquipment();
+    if (equipment == null) {
+      return;
+    }
+
     int durabilityDamage = (int) Math.max(damage / 4, 1);
-    ItemDurability.increaseDamage(defender, EquipmentSlot.HEAD, durabilityDamage);
-    ItemDurability.increaseDamage(defender, EquipmentSlot.CHEST, durabilityDamage);
-    ItemDurability.increaseDamage(defender, EquipmentSlot.LEGS, durabilityDamage);
-    ItemDurability.increaseDamage(defender, EquipmentSlot.FEET, durabilityDamage);
+    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.HEAD, durabilityDamage);
+    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.CHEST, durabilityDamage);
+    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.LEGS, durabilityDamage);
+    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.FEET, durabilityDamage);
   }
 }

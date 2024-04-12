@@ -22,7 +22,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.22.14
+ * @version 1.22.19
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -85,15 +85,14 @@ public class ItemDurability {
    * <p>
    * An item is broken when its damage exceeds its material type's durability.
    *
-   * @param defender defending entity
-   * @param eSlot    equipment slot
-   * @param damage   durability damage
+   * @param defender  defending entity
+   * @param equipment entity equipment
+   * @param eSlot     equipment slot
+   * @param damage    durability damage
    */
-  public static void increaseDamage(@NotNull LivingEntity defender, @NotNull EquipmentSlot eSlot, int damage) {
-    EntityEquipment equipment = Objects.requireNonNull(defender, "Null defender").getEquipment();
-    if (equipment == null) {
-      return;
-    }
+  public static void increaseDamage(@NotNull LivingEntity defender, @NotNull EntityEquipment equipment, @NotNull EquipmentSlot eSlot, int damage) {
+    Objects.requireNonNull(defender, "Null defender");
+    Objects.requireNonNull(equipment, "Null equipment");
     ItemStack item = equipment.getItem(Objects.requireNonNull(eSlot, "Null slot"));
     if (ItemReader.isNullOrAir(item) || !(item.getItemMeta() instanceof Damageable durability)) {
       return;
@@ -119,6 +118,10 @@ public class ItemDurability {
     }
 
     item.setItemMeta(durability);
+
+    if (!(defender instanceof Player)) {
+      equipment.setItem(eSlot, item);
+    }
   }
 
   /**

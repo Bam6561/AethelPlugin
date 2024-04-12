@@ -37,7 +37,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.15
+ * @version 1.22.19
  * @since 1.22.15
  */
 public class EntityTagCommand implements CommandExecutor {
@@ -113,7 +113,7 @@ public class EntityTagCommand implements CommandExecutor {
       }
       case 3 -> {
         switch (action) {
-          case "r", "remove" -> removeTag(user, args[1], entity);
+          case "r", "remove" -> removeTag(user, args[2], entity);
           default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
         }
       }

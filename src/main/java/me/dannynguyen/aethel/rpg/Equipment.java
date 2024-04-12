@@ -324,7 +324,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment {@link AethelAttribute} values.
    *
    * @author Danny Nguyen
-   * @version 1.22.13
+   * @version 1.22.19
    * @since 1.17.9
    */
   public class AethelAttributes {
@@ -385,12 +385,18 @@ public class Equipment {
      * @param eSlot {@link RpgEquipmentSlot}
      */
     public void removeAttributes(@NotNull RpgEquipmentSlot eSlot) {
-      for (AethelAttribute attribute : slotAttributes.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
+      Objects.requireNonNull(eSlot, "Null slot");
+      for (AethelAttribute attribute : slotAttributes.get(eSlot).keySet()) {
         NamespacedKey entityAttributeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + attribute.getId());
         double entityAttributeValue = entityTags.getOrDefault(entityAttributeKey, PersistentDataType.DOUBLE, 0.0);
-        entityTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue - slotAttributes.get(eSlot).get(attribute));
-        slotAttributes.get(eSlot).put(attribute, 0.0);
+
+        if (entityAttributeValue - slotAttributes.get(eSlot).get(attribute) != 0.0) {
+          entityTags.set(entityAttributeKey, PersistentDataType.DOUBLE, entityAttributeValue - slotAttributes.get(eSlot).get(attribute));
+        } else {
+          entityTags.remove(entityAttributeKey);
+        }
       }
+      slotAttributes.remove(eSlot);
     }
 
     /**
@@ -408,7 +414,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment enchantments.
    *
    * @author Danny Nguyen
-   * @version 1.22.14
+   * @version 1.22.19
    * @since 1.17.9
    */
   public class Enchantments {
@@ -462,12 +468,19 @@ public class Equipment {
      * @param eSlot {@link RpgEquipmentSlot}
      */
     public void removeEnchantments(@NotNull RpgEquipmentSlot eSlot) {
-      for (Enchantment enchantment : slotEnchantments.get(Objects.requireNonNull(eSlot, "Null slot")).keySet()) {
+      Objects.requireNonNull(eSlot, "Null slot");
+      for (Enchantment enchantment : slotEnchantments.get(eSlot).keySet()) {
         NamespacedKey entityEnchantmentKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ENCHANTMENT.getHeader() + TextFormatter.formatId(enchantment.getKey().getKey()));
         int entityEnchantmentValue = entityTags.getOrDefault(entityEnchantmentKey, PersistentDataType.INTEGER, 0);
-        entityTags.set(entityEnchantmentKey, PersistentDataType.INTEGER, entityEnchantmentValue - slotEnchantments.get(eSlot).get(enchantment));
-        slotEnchantments.get(eSlot).put(enchantment, 0);
+
+        if (entityEnchantmentValue - slotEnchantments.get(eSlot).get(enchantment) != 0.0) {
+          entityTags.set(entityEnchantmentKey, PersistentDataType.INTEGER, entityEnchantmentValue - slotEnchantments.get(eSlot).get(enchantment));
+        } else {
+          entityTags.remove(entityEnchantmentKey);
+        }
       }
+      slotEnchantments.remove(eSlot);
+
       readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
       readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
     }
@@ -505,7 +518,7 @@ public class Equipment {
    * {@link PassiveAbility passive} and {@link ActiveAbility active} abilities.
    *
    * @author Danny Nguyen
-   * @version 1.19.6
+   * @version 1.22.19
    * @since 1.17.9
    */
   public class Abilities {
@@ -613,6 +626,35 @@ public class Equipment {
     }
 
     /**
+     * Adds new {@link Equipment} {@link PassiveAbility passive abilities}.
+     *
+     * @param eSlot    {@link RpgEquipmentSlot}
+     * @param itemTags item's persistent tags
+     * @param passive  {@link PassiveAbility} data
+     */
+    private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags, String passive) {
+      NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
+      String[] abilityMeta = passive.split("\\.");
+      PassiveTriggerType passiveTriggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
+      PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
+      slotPassives.get(eSlot).add(new TriggerPassive(passiveTriggerType, abilityType));
+      triggerPassives.get(passiveTriggerType).put(new Abilities.SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, passiveTriggerType, abilityType, itemTags.get(passiveKey, PersistentDataType.STRING).split(" ")));
+    }
+
+    /**
+     * Removes existing {@link Equipment} {@link PassiveAbility passive abilities} at an {@link RpgEquipmentSlot}.
+     *
+     * @param eSlot {@link RpgEquipmentSlot}
+     */
+    public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
+      Objects.requireNonNull(eSlot, "Null slot");
+      for (TriggerPassive triggerPassive : slotPassives.get(eSlot)) {
+        triggerPassives.get(triggerPassive.trigger()).remove(new SlotPassive(eSlot, triggerPassive.ability()));
+      }
+      slotPassives.remove(eSlot);
+    }
+
+    /**
      * Checks if the item is in the correct {@link RpgEquipmentSlot}
      * before updating the player's {@link ActiveAbility active abilities}.
      *
@@ -630,22 +672,6 @@ public class Equipment {
     }
 
     /**
-     * Adds new {@link Equipment} {@link PassiveAbility passive abilities}.
-     *
-     * @param eSlot    {@link RpgEquipmentSlot}
-     * @param itemTags item's persistent tags
-     * @param passive  {@link PassiveAbility} data
-     */
-    private void addPassives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags, String passive) {
-      NamespacedKey passiveKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + passive);
-      String[] abilityMeta = passive.split("\\.");
-      PassiveTriggerType passiveTriggerType = PassiveTriggerType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
-      PassiveAbilityType abilityType = PassiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[2]));
-      slotPassives.get(eSlot).add(new TriggerPassive(passiveTriggerType, abilityType));
-      triggerPassives.get(passiveTriggerType).put(new Abilities.SlotPassive(eSlot, abilityType), new PassiveAbility(onCooldownPassives, eSlot, passiveTriggerType, abilityType, itemTags.get(passiveKey, PersistentDataType.STRING).split(" ")));
-    }
-
-    /**
      * Adds new {@link Equipment} {@link ActiveAbility active abilities}.
      *
      * @param eSlot    {@link RpgEquipmentSlot}
@@ -660,25 +686,12 @@ public class Equipment {
     }
 
     /**
-     * Removes existing {@link Equipment} {@link PassiveAbility passive abilities} at an {@link RpgEquipmentSlot}.
-     *
-     * @param eSlot {@link RpgEquipmentSlot}
-     */
-    public void removePassives(@NotNull RpgEquipmentSlot eSlot) {
-      List<TriggerPassive> abilitiesToRemove = new ArrayList<>();
-      for (TriggerPassive triggerPassive : slotPassives.get(Objects.requireNonNull(eSlot, "Null slot"))) {
-        triggerPassives.get(triggerPassive.trigger()).remove(new SlotPassive(eSlot, triggerPassive.ability()));
-        abilitiesToRemove.add(triggerPassive);
-      }
-      slotPassives.get(eSlot).removeAll(abilitiesToRemove);
-    }
-
-    /**
      * Removes existing {@link Equipment} {@link ActiveAbility active abilities} at an {@link RpgEquipmentSlot}.
      *
      * @param eSlot {@link RpgEquipmentSlot}
      */
     public void removeActives(@NotNull RpgEquipmentSlot eSlot) {
+      Objects.requireNonNull(eSlot, "Null slot");
       triggerActives.get(eSlot).clear();
     }
 
