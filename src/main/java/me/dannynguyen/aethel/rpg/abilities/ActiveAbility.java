@@ -8,7 +8,7 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.DamageMitigation;
-import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.18
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -288,14 +288,14 @@ public class ActiveAbility {
     targets.remove(caster);
 
     for (LivingEntity livingEntity : targets) {
-      if (livingEntity instanceof Player player) {
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-          player.damage(0.1);
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
-        }
+      final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
+      if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
+        Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth();
+        player.damage(0.1);
+        health.damage(finalDamage);
       } else {
         livingEntity.damage(0.1);
-        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - damage));
+        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - finalDamage));
       }
     }
 
@@ -419,19 +419,21 @@ public class ActiveAbility {
     for (Entity entity : caster.getNearbyEntities(meters, meters, meters)) {
       if (entity instanceof LivingEntity livingEntity) {
         UUID livingEntityUUID = livingEntity.getUniqueId();
+
         if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.BRITTLE)) {
           world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
+
           Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
-          if (livingEntity instanceof Player player) {
-            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-              RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
-              double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
-              player.damage(0.1);
-              rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateArmorProtectionResistance(damage));
-            }
+          double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
+          final double finalDamage = new DamageMitigation(livingEntity).mitigateArmorProtectionResistance(damage);
+
+          if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
+            Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId()).getHealth();
+            player.damage(0.1);
+            health.damage(finalDamage);
           } else {
             livingEntity.damage(0.1);
-            livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (0.5 * statuses.get(StatusType.BRITTLE).getStackAmount())));
+            livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - finalDamage));
           }
           statuses.remove(StatusType.BRITTLE);
         }

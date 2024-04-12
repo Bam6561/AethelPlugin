@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.17
+ * @version 1.22.18
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -60,32 +60,12 @@ public class DamageListener implements Listener {
     }
 
     if (e instanceof EntityDamageByEntityEvent event) {
-      calculateDamageDealt(event);
+      calculateDamageDealtByEntity(event);
       return;
     }
 
     if (!ignoredDamageCauses.contains(e.getCause())) {
-      EntityDamageEvent.DamageCause cause = e.getCause();
-      LivingEntity defender = (LivingEntity) e.getEntity();
-
-      if (mitigateEnvironmentalDamage(e, cause, defender)) {
-        e.setCancelled(true);
-        return;
-      }
-
-      final double finalDamage = e.getDamage();
-      e.setDamage(0.01);
-
-      switch (cause) {
-        case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(defender, finalDamage);
-      }
-
-      if (defender instanceof Player defenderPlayer) {
-        triggerDamageTakenPassives(defenderPlayer);
-        Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
-      } else {
-        defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
-      }
+      calculateDamageDealtByEnvironment(e);
     }
   }
 
@@ -202,11 +182,11 @@ public class DamageListener implements Listener {
   }
 
   /**
-   * Calculates damage dealt.
+   * Calculates damage dealt by entity.
    *
    * @param e entity damage by entity event
    */
-  private void calculateDamageDealt(EntityDamageByEntityEvent e) {
+  private void calculateDamageDealtByEntity(EntityDamageByEntityEvent e) {
     RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
     Entity attacker = e.getDamager();
     LivingEntity defender = (LivingEntity) e.getEntity();
@@ -260,6 +240,35 @@ public class DamageListener implements Listener {
     if (defender instanceof Player defenderPlayer) {
       triggerDamageTakenPassives(e, defenderPlayer);
       rpgSystem.getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
+    } else {
+      defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
+    }
+  }
+
+  /**
+   * Calculates damage dealt by environment.
+   *
+   * @param e entity damage event
+   */
+  private void calculateDamageDealtByEnvironment(EntityDamageEvent e) {
+    EntityDamageEvent.DamageCause cause = e.getCause();
+    LivingEntity defender = (LivingEntity) e.getEntity();
+
+    if (mitigateEnvironmentalDamage(e, cause, defender)) {
+      e.setCancelled(true);
+      return;
+    }
+
+    final double finalDamage = e.getDamage();
+    e.setDamage(0.01);
+
+    switch (cause) {
+      case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(defender, finalDamage);
+    }
+
+    if (defender instanceof Player defenderPlayer) {
+      triggerDamageTakenPassives(defenderPlayer);
+      Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
     } else {
       defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
     }
@@ -384,7 +393,7 @@ public class DamageListener implements Listener {
           triggerDamageTakenPassives(e, defenderPlayer);
           Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
         } else {
-          defender.setHealth(Math.min(0, finalDamage));
+          defender.setHealth(Math.min(0, defender.getHealth() - finalDamage));
         }
         e.setDamage(0.01);
         return true;
@@ -423,7 +432,7 @@ public class DamageListener implements Listener {
         triggerDamageTakenPassives(e, defenderPlayer);
         Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
       } else {
-        defender.setHealth(Math.min(0, finalDamage));
+        defender.setHealth(Math.min(0, defender.getHealth() - finalDamage));
       }
       e.setDamage(0.01);
       return true;
@@ -477,15 +486,16 @@ public class DamageListener implements Listener {
         attackSpeed = 1;
       }
 
-      double counterDamage = new DamageMitigation(livingAttacker).mitigateArmorProtectionResistance(attackSpeed * defender.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue());
+      double counterDamage = attackSpeed * defender.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
+      final double finalDamage = new DamageMitigation(livingAttacker).mitigateArmorProtectionResistance(counterDamage);
 
       livingAttacker.damage(0.01);
       if (livingAttacker instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
         Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingAttacker.getUniqueId()).getHealth();
-        health.damage(counterDamage);
+        health.damage(finalDamage);
         return health.getCurrentHealth() <= 0.0;
       } else {
-        livingAttacker.setHealth(Math.max(0, livingAttacker.getHealth() - counterDamage));
+        livingAttacker.setHealth(Math.max(0, livingAttacker.getHealth() - finalDamage));
         return livingAttacker.getHealth() == 0.0;
       }
     }

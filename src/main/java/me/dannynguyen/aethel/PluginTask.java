@@ -21,7 +21,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.17
+ * @version 1.22.18
  * @since 1.22.2
  */
 public class PluginTask {
@@ -56,14 +56,45 @@ public class PluginTask {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     for (UUID uuid : entityStatuses.keySet()) {
       Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED)) {
-        if (Bukkit.getEntity(uuid) instanceof LivingEntity entity) {
-          if (entity instanceof Player player) {
-            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-              processPlayerStatuses(uuid, statuses, player);
+      if (Bukkit.getEntity(uuid) instanceof LivingEntity entity && (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED))) {
+        World world = entity.getWorld();
+        Location bodyLocation = entity.getLocation().add(0, 1, 0);
+        DamageMitigation mitigation = new DamageMitigation(entity);
+
+        if (statuses.containsKey(StatusType.SOAKED)) {
+          world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
+        }
+        if (statuses.containsKey(StatusType.BLEED)) {
+          world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
+          double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
+          final double finalDamage = mitigation.mitigateProtectionResistance(damage);
+
+          entity.damage(0.01);
+          if (entity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
+            Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
+            health.damage(finalDamage);
+          } else {
+            entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - finalDamage));
+          }
+        }
+        if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+          world.spawnParticle(Particle.WAX_OFF, bodyLocation, 3, 0.25, 0.5, 0.25);
+          double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
+          final double finalDamage = mitigation.mitigateProtectionResistance(damage);
+
+          entity.damage(0.01);
+          if (entity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
+            Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
+            health.damage(finalDamage);
+            if (health.getCurrentHealth() < 0) {
+              propagateElectrocuteStacks(entity, health.getCurrentHealth());
             }
           } else {
-            processEntityStatuses(statuses, entity);
+            double remainingHealth = entity.getHealth() + 0.1 - finalDamage;
+            entity.setHealth(Math.max(0, remainingHealth));
+            if (entity.getHealth() == 0) {
+              propagateElectrocuteStacks(entity, remainingHealth);
+            }
           }
         }
       }
@@ -169,68 +200,6 @@ public class PluginTask {
       if (player != null) {
         player.setFireTicks(-20);
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
-      }
-    }
-  }
-
-  /**
-   * Deals damage from damage over time {@link Status statuses} to players.
-   *
-   * @param uuid     uuid
-   * @param statuses {@link Status statuses}
-   * @param damagee  player taking damage
-   */
-  private void processPlayerStatuses(UUID uuid, Map<StatusType, Status> statuses, Player damagee) {
-    World world = damagee.getWorld();
-    Location bodyLocation = damagee.getLocation().add(0, 1, 0);
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid);
-    DamageMitigation mitigation = new DamageMitigation(damagee);
-    if (statuses.containsKey(StatusType.SOAKED)) {
-      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
-    }
-    if (statuses.containsKey(StatusType.BLEED)) {
-      world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
-      double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
-      damagee.damage(0.1);
-      rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
-    }
-    if (statuses.containsKey(StatusType.ELECTROCUTE)) {
-      world.spawnParticle(Particle.WAX_OFF, bodyLocation, 3, 0.25, 0.5, 0.25);
-      double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
-      damagee.damage(0.1);
-      rpgPlayer.getHealth().damage(mitigation.mitigateProtectionResistance(damage));
-      if (rpgPlayer.getHealth().getCurrentHealth() < 0) {
-        propagateElectrocuteStacks(damagee, rpgPlayer.getHealth().getCurrentHealth());
-      }
-    }
-  }
-
-  /**
-   * Deals damage from damage over time {@link Status statuses} to entities.
-   *
-   * @param statuses {@link Status statuses}
-   * @param entity   entity taking damage
-   */
-  private void processEntityStatuses(Map<StatusType, Status> statuses, LivingEntity entity) {
-    World world = entity.getWorld();
-    Location bodyLocation = entity.getLocation().add(0, 1, 0);
-    if (statuses.containsKey(StatusType.SOAKED)) {
-      world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
-    }
-    if (statuses.containsKey(StatusType.BLEED)) {
-      world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
-      entity.damage(0.1);
-      entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - statuses.get(StatusType.BLEED).getStackAmount() * 0.2));
-    }
-    if (statuses.containsKey(StatusType.ELECTROCUTE)) {
-      world.spawnParticle(Particle.WAX_OFF, bodyLocation, 3, 0.25, 0.5, 0.25);
-      double remainingHealth = entity.getHealth() + 0.1 - statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
-      entity.damage(0.1);
-      if (remainingHealth > 0) {
-        entity.setHealth(remainingHealth);
-      } else {
-        entity.setHealth(0);
-        propagateElectrocuteStacks(entity, remainingHealth);
       }
     }
   }

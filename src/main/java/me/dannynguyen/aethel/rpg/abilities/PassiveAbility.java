@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.18
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -198,18 +198,16 @@ public class PassiveAbility {
     int ticks = Integer.parseInt(effectData.get(2));
 
     Entity entity = Bukkit.getEntity(targetUUID);
-    if (entity instanceof Player) {
-      PersistentDataContainer entityTags = Bukkit.getPlayer(targetUUID).getPersistentDataContainer();
-      Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(targetUUID);
+    PersistentDataContainer entityTags = entity.getPersistentDataContainer();
+    Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(targetUUID);
 
-      double tenacityBase = entityTags.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-      double tenacityBuff = 0.0;
-      if (buffs != null) {
-        tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
-      }
-
-      ticks = (int) Math.max(1, ticks - (ticks * (tenacityBase + tenacityBuff) / 100));
+    double tenacityBase = entityTags.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double tenacityBuff = 0.0;
+    if (buffs != null) {
+      tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
     }
+
+    ticks = (int) Math.max(1, ticks - (ticks * (tenacityBase + tenacityBuff) / 100));
 
     if (statuses.containsKey(statusType)) {
       statuses.get(statusType).addStacks(stacks, ticks);
@@ -242,16 +240,16 @@ public class PassiveAbility {
 
     for (LivingEntity livingEntity : soakedTargets.keySet()) {
       Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
-      if (livingEntity instanceof Player player) {
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-          RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId());
-          double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
-          player.damage(0.1);
-          rpgPlayer.getHealth().damage(new DamageMitigation(player).mitigateProtectionResistance(damage));
-        }
+      double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
+      final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
+
+      if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
+        Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId()).getHealth();
+        player.damage(0.1);
+        health.damage(finalDamage);
       } else {
         livingEntity.damage(0.1);
-        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0))));
+        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (finalDamage)));
       }
     }
 
