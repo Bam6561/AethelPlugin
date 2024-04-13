@@ -10,7 +10,7 @@ import java.util.UUID;
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.20
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -25,14 +25,14 @@ public class RpgPlayer {
   private final Settings settings;
 
   /**
+   * {@link Displays}
+   */
+  private final Displays displays;
+
+  /**
    * {@link Equipment}
    */
   private final Equipment equipment;
-
-  /**
-   * {@link Health}
-   */
-  private final Health health;
 
   /**
    * Associates a player with RPG metadata.
@@ -42,8 +42,8 @@ public class RpgPlayer {
   public RpgPlayer(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.settings = new Settings(uuid);
+    this.displays = new Displays(player, settings);
     this.equipment = new Equipment(player);
-    this.health = new Health(player, settings);
   }
 
   /**
@@ -67,6 +67,16 @@ public class RpgPlayer {
   }
 
   /**
+   * Gets the {@link Displays}.
+   *
+   * @return {@link Displays}
+   */
+  @NotNull
+  public Displays getDisplays() {
+    return this.displays;
+  }
+
+  /**
    * Gets the {@link Equipment}.
    *
    * @return {@link Equipment}
@@ -74,15 +84,5 @@ public class RpgPlayer {
   @NotNull
   public Equipment getEquipment() {
     return this.equipment;
-  }
-
-  /**
-   * Gets the {@link Health}.
-   *
-   * @return {@link Health}
-   */
-  @NotNull
-  public Health getHealth() {
-    return this.health;
   }
 }

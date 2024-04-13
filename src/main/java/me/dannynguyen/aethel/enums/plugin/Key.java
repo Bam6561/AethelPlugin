@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.22.16
+ * @version 1.22.20
  * @since 1.11.9
  */
 public enum Key {
@@ -44,6 +44,11 @@ public enum Key {
    * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Recipe} Forge ID.
    */
   RECIPE_FORGE_ID(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "id")),
+
+  /**
+   * RPG current health.
+   */
+  RPG_CURRENT_HEALTH(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + "rpg.current_health")),
 
   /**
    * {@link AethelAttribute#MAX_HEALTH}

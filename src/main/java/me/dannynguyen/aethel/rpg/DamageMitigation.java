@@ -19,7 +19,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.22.13
+ * @version 1.22.20
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -44,9 +44,9 @@ public class DamageMitigation {
   private final Map<StatusType, Status> statuses;
 
   /**
-   * Associates the damage calculator with an entity.
+   * Associates the damage mitigation with an entity.
    *
-   * @param defender damagee
+   * @param defender defending entity
    */
   public DamageMitigation(@NotNull LivingEntity defender) {
     this.defender = Objects.requireNonNull(defender, "Null damagee");
@@ -85,13 +85,14 @@ public class DamageMitigation {
    */
   public double mitigateExplosion(double damage) {
     int blastProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_BLAST_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
-    damage = damage - (damage * (blastProtectionBase * .1));
-    if (damage <= 0) {
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth().heal(damage * .2);
-      Player player = (Player) defender;
-      player.setFoodLevel(20);
+    final double finalDamage = damage - (damage * (blastProtectionBase * .1));
+    if (finalDamage <= 0) {
+      new HealthModification(defender).heal(damage * .2);
+      if (defender instanceof Player player) {
+        player.setFoodLevel(20);
+      }
     }
-    return damage;
+    return finalDamage;
   }
 
   /**

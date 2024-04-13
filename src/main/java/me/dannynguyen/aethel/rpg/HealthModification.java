@@ -9,8 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -21,126 +21,90 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents an {@link RpgPlayer}'s health.
+ * Represents entity health modification.
  *
  * @author Danny Nguyen
- * @version 1.22.11
- * @since 1.13.4
+ * @version 1.22.20
+ * @since 1.22.20
  */
-public class Health {
+public class HealthModification {
   /**
-   * Player's UUID.
+   * Defending entity.
+   */
+  private final LivingEntity defender;
+
+  /**
+   * Entity's UUID.
    */
   private final UUID uuid;
 
   /**
-   * Persistent data tags.
+   * Entity's persistent tags.
    */
   private final PersistentDataContainer entityTags;
 
   /**
-   * {@link Settings}
-   */
-  private final Settings settings;
-
-  /**
-   * Health bar display.
-   */
-  private final BossBar healthBar = Bukkit.createBossBar("Health", BarColor.RED, BarStyle.SEGMENTED_10);
-
-  /**
-   * Player's health.
+   * Current health.
    */
   private double currentHealth;
 
   /**
-   * Player's max health.
+   * Max health.
    */
-  private double maxHealth;
+  private final double maxHealth;
 
   /**
-   * Associates RPG health with a player.
+   * Associates the health modification with an entity.
    *
-   * @param player   interacting player
-   * @param settings {@link Settings}
+   * @param defender defending entity
    */
-  public Health(@NotNull Player player, @NotNull Settings settings) {
-    this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
-    this.settings = Objects.requireNonNull(settings, "Null settings");
-    this.entityTags = player.getPersistentDataContainer();
-    healthBar.setVisible(settings.isHealthBarVisible());
-    this.currentHealth = player.getHealth();
-    this.maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    loadHealth(player);
-  }
+  public HealthModification(@NotNull LivingEntity defender) {
+    this.defender = Objects.requireNonNull(defender, "Null UUID");
+    this.uuid = defender.getUniqueId();
+    this.entityTags = defender.getPersistentDataContainer();
+    this.currentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, defender.getHealth());
 
-  /**
-   * Loads the player's health.
-   *
-   * @param player interacting player
-   */
-  private void loadHealth(Player player) {
-    double minecraftMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double pluginMaxHealth = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    double healthScale = (minecraftMaxHealth + pluginMaxHealth) / minecraftMaxHealth;
-    setCurrentHealth(currentHealth * healthScale);
-    updateDisplays();
-    healthBar.addPlayer(player);
-  }
-
-  /**
-   * Updates the max health.
-   */
-  public void updateMaxHealth() {
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
+    double genericMaxHealthBuff = 0.0;
     double maxHealthBuff = 0.0;
     if (buffs != null) {
+      genericMaxHealthBuff = buffs.getAttribute(Attribute.GENERIC_MAX_HEALTH);
       maxHealthBuff = buffs.getAethelAttribute(AethelAttribute.MAX_HEALTH);
     }
-    double minecraftMaxHealth = Bukkit.getPlayer(uuid).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-    double pluginMaxHealth = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    double maxHealth = minecraftMaxHealth + pluginMaxHealth + maxHealthBuff;
-    setMaxHealth(maxHealth);
-    updateDisplays();
+
+    this.maxHealth = defender.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + genericMaxHealthBuff + maxHealthBuff;
   }
 
   /**
-   * Updates the current health from an absorption effect.
-   */
-  public void updateOvershield() {
-    Player player = Bukkit.getPlayer(uuid);
-    if (player != null) {
-      setCurrentHealth(currentHealth + player.getAbsorptionAmount());
-      player.setAbsorptionAmount(0);
-      updateDisplays();
-    }
-  }
-
-  /**
-   * Damages the player by an amount.
+   * Damages the entity by an amount.
    *
    * @param damage damage amount
    */
   public void damage(double damage) {
-    setCurrentHealth(currentHealth - damage);
-    if (currentHealth > 0) {
+    defender.damage(0.1);
+    double remainingHealth = currentHealth - damage;
+    setCurrentHealth(remainingHealth);
+
+    if (remainingHealth > 0) {
       updateDisplays();
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        setCurrentHealth(0.0);
-        Bukkit.getPlayer(uuid).setHealth(currentHealth);
-        if (healthBar.isVisible()) {
-          DecimalFormat df2 = new DecimalFormat();
-          df2.setMaximumFractionDigits(2);
-          healthBar.setProgress(0.0);
-          healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+        defender.setHealth(0.0);
+        if (defender instanceof Player) {
+          BossBar healthBar = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getDisplays().getBar();
+          if (healthBar.isVisible()) {
+            DecimalFormat df2 = new DecimalFormat();
+            df2.setMaximumFractionDigits(2);
+            healthBar.setProgress(0.0);
+            healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+          }
         }
       }, 1);
     }
   }
 
   /**
-   * Heals the player by an amount.
+   * Heals the entity by an amount.
    *
    * @param heal heal amount
    */
@@ -152,11 +116,19 @@ public class Health {
   }
 
   /**
-   * Resets the health.
+   * Adds the entity's absorption amount to their current health.
+   */
+  public void shield() {
+    setCurrentHealth(currentHealth + defender.getAbsorptionAmount());
+    defender.setAbsorptionAmount(0);
+    updateDisplays();
+  }
+
+  /**
+   * Resets the current health.
    */
   public void reset() {
-    setCurrentHealth(20.0);
-    setMaxHealth(20.0);
+    setCurrentHealth(maxHealth);
     updateDisplays();
   }
 
@@ -173,39 +145,31 @@ public class Health {
   }
 
   /**
-   * Updates health bar displays.
+   * Updates health displays.
    */
-  void updateDisplays() {
-    Player player = Bukkit.getPlayer(uuid);
-    double maxHealthScale = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+  public void updateDisplays() {
+    double maxHealthScale = defender.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
-      player.setHealth(lifeRatio * maxHealthScale);
-      updateActionDisplay(Condition.WOUNDED);
-      updateBarDisplay(Condition.WOUNDED, lifeRatio);
-    } else if (currentHealth == maxHealth) {
-      player.setHealth(maxHealthScale);
-      updateActionDisplay(Condition.NORMAL);
-      updateBarDisplay(Condition.NORMAL, 1.0);
-    } else if (currentHealth > maxHealth) {
-      player.setHealth(maxHealthScale);
-      updateActionDisplay(Condition.OVERSHIELD);
-      updateBarDisplay(Condition.OVERSHIELD, 1.0);
-    }
-  }
+      defender.setHealth(Math.max(0, lifeRatio * maxHealthScale));
 
-  /**
-   * Updates the action bar display.
-   *
-   * @param condition {@link Condition}
-   */
-  public void updateActionDisplay(@NotNull Health.Condition condition) {
-    if (settings.isHealthActionVisible()) {
-      DecimalFormat df2 = new DecimalFormat();
-      df2.setMaximumFractionDigits(2);
-      switch (Objects.requireNonNull(condition, "Null condition")) {
-        case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
-        case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+      if (defender instanceof Player) {
+        updateActionDisplay(Condition.WOUNDED);
+        updateBarDisplay(Condition.WOUNDED, lifeRatio);
+      }
+    } else if (currentHealth == maxHealth) {
+      defender.setHealth(maxHealthScale);
+
+      if (defender instanceof Player) {
+        updateActionDisplay(Condition.NORMAL);
+        updateBarDisplay(Condition.NORMAL, 1.0);
+      }
+    } else if (currentHealth > maxHealth) {
+      defender.setHealth(maxHealthScale);
+
+      if (defender instanceof Player) {
+        updateActionDisplay(Condition.OVERSHIELD);
+        updateBarDisplay(Condition.OVERSHIELD, 1.0);
       }
     }
   }
@@ -214,10 +178,28 @@ public class Health {
    * Updates the action bar display.
    */
   public void updateActionDisplay() {
+    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
     if (settings.isHealthActionVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
       switch (getCondition()) {
+        case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+        case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+      }
+    }
+  }
+
+  /**
+   * Updates the action bar display.
+   *
+   * @param condition {@link Condition}
+   */
+  private void updateActionDisplay(Condition condition) {
+    Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
+    if (settings.isHealthActionVisible()) {
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
+      switch (condition) {
         case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
         case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
       }
@@ -231,6 +213,7 @@ public class Health {
    * @param lifeRatio hearts displayed : true max health
    */
   private void updateBarDisplay(Condition condition, double lifeRatio) {
+    BossBar healthBar = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getDisplays().getBar();
     if (healthBar.isVisible()) {
       DecimalFormat df2 = new DecimalFormat();
       df2.setMaximumFractionDigits(2);
@@ -255,6 +238,16 @@ public class Health {
   }
 
   /**
+   * Sets the entity's current health.
+   *
+   * @param currentHealth current health
+   */
+  private void setCurrentHealth(double currentHealth) {
+    this.currentHealth = currentHealth;
+    entityTags.set(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, currentHealth);
+  }
+
+  /**
    * Gets the {@link Condition}.
    *
    * @return {@link Condition}
@@ -268,61 +261,6 @@ public class Health {
       return Condition.OVERSHIELD;
     }
     return null;
-  }
-
-  /**
-   * Gets remaining health out of a 100% scale.
-   *
-   * @return remaining health
-   */
-  public double getHealthPercent() {
-    return (currentHealth / maxHealth) * 100;
-  }
-
-  /**
-   * Gets the health bar.
-   *
-   * @return health bar
-   */
-  @NotNull
-  public BossBar getBar() {
-    return this.healthBar;
-  }
-
-  /**
-   * Gets the current health.
-   *
-   * @return current health
-   */
-  public double getCurrentHealth() {
-    return this.currentHealth;
-  }
-
-  /**
-   * Sets the current health.
-   *
-   * @param currentHealth new current health value
-   */
-  private void setCurrentHealth(double currentHealth) {
-    this.currentHealth = currentHealth;
-  }
-
-  /**
-   * Gets the max health.
-   *
-   * @return max health
-   */
-  public double getMaxHealth() {
-    return this.maxHealth;
-  }
-
-  /**
-   * Sets the max health.
-   *
-   * @param maxHealth new max health value
-   */
-  private void setMaxHealth(double maxHealth) {
-    this.maxHealth = maxHealth;
   }
 
   /**

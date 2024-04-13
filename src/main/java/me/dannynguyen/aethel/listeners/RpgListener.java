@@ -6,13 +6,14 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.rpg.Health;
+import me.dannynguyen.aethel.rpg.HealthModification;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.RpgSystem;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,7 +33,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.12
+ * @version 1.22.20
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -60,28 +61,28 @@ public class RpgListener implements Listener {
       rpgPlayer.getEquipment().setHeldItem(player.getInventory().getItemInMainHand());
       rpgPlayers.put(uuid, rpgPlayer);
     } else {
-      BossBar healthBar = rpgPlayer.getHealth().getBar();
+      BossBar healthBar = rpgPlayer.getDisplays().getBar();
       healthBar.removeAll();
       healthBar.addPlayer(player);
     }
   }
 
   /**
-   * Updates the player's {@link Health}
-   * to account for absorption and health boost status effects.
+   * Updates the player's Health to account for
+   * absorption and health boost status effects.
    *
    * @param e entity potion effect event
    */
   @EventHandler
   private void onPotionEffect(EntityPotionEffectEvent e) {
-    if (e.getEntity() instanceof Player player) {
+    if (e.getEntity() instanceof LivingEntity livingEntity) {
       switch (e.getModifiedType().getName()) {
         case "ABSORPTION" -> {
           if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().updateOvershield(), 1);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthModification(livingEntity).shield(), 1);
           }
         }
-        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().updateMaxHealth(), 1);
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthModification(livingEntity).updateDisplays(), 1);
       }
     }
   }
@@ -144,13 +145,13 @@ public class RpgListener implements Listener {
   }
 
   /**
-   * Resets the player's {@link Health}.
+   * Resets the player's health.
    *
    * @param e player respawn event
    */
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
-    Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getHealth().reset();
+    new HealthModification(e.getPlayer()).reset();
   }
 
   /**

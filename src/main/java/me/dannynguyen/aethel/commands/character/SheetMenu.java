@@ -8,7 +8,6 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.Status;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import net.md_5.bungee.api.ChatColor;
@@ -34,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.22.16
+ * @version 1.22.20
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -271,9 +270,11 @@ public class SheetMenu implements Menu {
     double fireProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_FIRE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double projectileProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
 
-    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
+    Player player = Bukkit.getPlayer(uuid);
+    double rpgCurrentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
+    double rpgMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + genericMaxHealthBuff + maxHealthBuff;
 
-    String maxHealth = ChatColor.RED + df2.format(health.getCurrentHealth()) + " / " + df2.format(health.getMaxHealth()) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");
+    String maxHealth = ChatColor.RED + df2.format(rpgCurrentHealth) + " / " + df2.format(rpgMaxHealth) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");
     String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");
     String dodgeChance = ChatColor.BLUE + df2.format(dodgeChanceBase + dodgeChanceBuff) + "% DODGE" + (dodgeChanceBuff != 0.0 ? " [" + df2.format(dodgeChanceBuff) + "]" : "");
     String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + armorToughnessBase + armorToughnessBuff) + " TOUGH" + (genericArmorToughnessBuff + armorToughnessBuff != 0.0 ? " [" + df2.format(genericArmorToughnessBuff + armorToughnessBuff) + "]" : "");

@@ -8,7 +8,6 @@ import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.listeners.MessageListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.Settings;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
@@ -370,7 +369,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Toggles the player's {@link Health health bar}.
+   * Toggles the player's {@link Settings#isHealthBarVisible() health bar}.
    */
   private void toggleHealthBar() {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
@@ -386,7 +385,7 @@ public class CharacterMenuClick implements MenuClick {
   }
 
   /**
-   * Toggles the player's {@link Health health in action bar}.
+   * Toggles the player's {@link Settings#isHealthActionVisible() health in action bar}.
    */
   private void toggleHealthAction() {
     Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();

@@ -4,7 +4,6 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.interfaces.Menu;
-import me.dannynguyen.aethel.rpg.Health;
 import me.dannynguyen.aethel.rpg.Settings;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import me.dannynguyen.aethel.utils.InventoryPages;
@@ -92,7 +91,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Toggles the visibility of the {@link Health health bar}.
+   * Toggles the visibility of the {@link Settings#isHealthBarVisible() health bar}.
    */
   private void addDisplayHealthBar() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthBarVisible()) {
@@ -103,7 +102,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Toggles the visibility of {@link Health health in the action bar}.
+   * Toggles the visibility of {@link Settings#isHealthActionVisible() health in the action bar}.
    */
   private void addDisplayHealthAction() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthActionVisible()) {

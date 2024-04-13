@@ -15,10 +15,16 @@ import java.util.Objects;
  * Reads entities with metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.15
- * @since 1.22.15
+ * @version 1.22.20
+ * @since 1.22.20
  */
 public class EntityReader {
+  /**
+   * Static methods only.
+   */
+  private EntityReader() {
+  }
+
   /**
    * Returns the entity's {@link Key Aethel tags}.
    *
@@ -33,7 +39,7 @@ public class EntityReader {
       String keyName = key.getKey();
       if (keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
         keyName = keyName.substring(7);
-        if (keyName.startsWith("attribute.")) {
+        if (keyName.startsWith("attribute.") || keyName.startsWith("rpg.current_health")) {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.DOUBLE)).append(" ");
         } else if (keyName.startsWith("enchantment.")) {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.INTEGER)).append(" ");

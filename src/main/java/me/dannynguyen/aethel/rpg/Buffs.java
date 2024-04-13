@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -15,7 +14,7 @@ import java.util.*;
  * Represents an entity's temporary attribute stat changes.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.22.20
  * @since 1.20.9
  */
 public class Buffs {
@@ -73,13 +72,12 @@ public class Buffs {
     attributes.put(attribute, attributes.getOrDefault(attribute, 0.0) + value);
 
     int taskID;
-    if (attribute == Attribute.GENERIC_MAX_HEALTH && Bukkit.getEntity(uuid) instanceof Player) {
-      Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
-      health.updateMaxHealth();
+    if (attribute == Attribute.GENERIC_MAX_HEALTH) {
+      new HealthModification(entity).updateDisplays();
       taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
         attributes.put(attribute, attributes.get(attribute) - value);
-        health.updateMaxHealth();
+        new HealthModification(entity).updateDisplays();
       }, duration).getTaskId();
     } else {
       taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -101,12 +99,12 @@ public class Buffs {
   public void addAethelAttribute(@NotNull AethelAttribute aethelAttribute, double value, int duration) {
     aethelAttributes.put(aethelAttribute, aethelAttributes.getOrDefault(aethelAttribute, 0.0) + value);
 
-    if (aethelAttribute == AethelAttribute.MAX_HEALTH && Bukkit.getEntity(uuid) instanceof Player) {
-      Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
-      health.updateMaxHealth();
+    if (aethelAttribute == AethelAttribute.MAX_HEALTH) {
+      LivingEntity entity = (LivingEntity) Bukkit.getEntity(uuid);
+      new HealthModification(entity).updateDisplays();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value);
-        health.updateMaxHealth();
+        new HealthModification(entity).updateDisplays();
       }, duration);
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value), duration);

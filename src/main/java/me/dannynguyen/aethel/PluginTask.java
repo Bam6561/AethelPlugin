@@ -1,16 +1,21 @@
 package me.dannynguyen.aethel;
 
+import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -21,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.18
+ * @version 1.22.20
  * @since 1.22.2
  */
 public class PluginTask {
@@ -64,35 +69,38 @@ public class PluginTask {
         if (statuses.containsKey(StatusType.SOAKED)) {
           world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
         }
+
         if (statuses.containsKey(StatusType.BLEED)) {
           world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
           double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
           final double finalDamage = mitigation.mitigateProtectionResistance(damage);
 
-          entity.damage(0.01);
-          if (entity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
-            Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
-            health.damage(finalDamage);
+          if (entity instanceof Player player) {
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+              new HealthModification(player).damage(finalDamage);
+            }
           } else {
-            entity.setHealth(Math.max(0, entity.getHealth() + 0.1 - finalDamage));
+            new HealthModification(entity).damage(finalDamage);
           }
         }
+
         if (statuses.containsKey(StatusType.ELECTROCUTE)) {
           world.spawnParticle(Particle.WAX_OFF, bodyLocation, 3, 0.25, 0.5, 0.25);
           double damage = statuses.get(StatusType.ELECTROCUTE).getStackAmount() * 0.2;
           final double finalDamage = mitigation.mitigateProtectionResistance(damage);
 
-          entity.damage(0.01);
-          if (entity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
-            Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
-            health.damage(finalDamage);
-            if (health.getCurrentHealth() < 0) {
-              propagateElectrocuteStacks(entity, health.getCurrentHealth());
+          if (entity instanceof Player player) {
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+              new HealthModification(player).damage(finalDamage);
+              double remainingHealth = player.getPersistentDataContainer().get(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
+              if (remainingHealth < 0) {
+                propagateElectrocuteStacks(player, remainingHealth);
+              }
             }
           } else {
-            double remainingHealth = entity.getHealth() + 0.1 - finalDamage;
-            entity.setHealth(Math.max(0, remainingHealth));
-            if (entity.getHealth() == 0) {
+            new HealthModification(entity).damage(finalDamage);
+            double remainingHealth = entity.getPersistentDataContainer().get(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
+            if (remainingHealth < 0) {
               propagateElectrocuteStacks(entity, remainingHealth);
             }
           }
@@ -112,12 +120,26 @@ public class PluginTask {
       if (belowHealthTriggers.isEmpty()) {
         continue;
       }
+
+      Player player = Bukkit.getPlayer(rpgPlayer.getUUID());
+      PersistentDataContainer entityTags = player.getPersistentDataContainer();
+      Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(rpgPlayer.getUUID());
+
+      double currentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
+      double genericMaxHealthBuff = 0.0;
+      double maxHealthBuff = 0.0;
+      if (buffs != null) {
+        genericMaxHealthBuff = buffs.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        maxHealthBuff = buffs.getAethelAttribute(AethelAttribute.MAX_HEALTH);
+      }
+      double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + genericMaxHealthBuff + maxHealthBuff;
+
       for (PassiveAbility ability : belowHealthTriggers.values()) {
         if (ability.isOnCooldown()) {
           continue;
         }
         double healthPercent = Double.parseDouble(ability.getConditionData().get(0));
-        if (rpgPlayer.getHealth().getHealthPercent() <= healthPercent) {
+        if ((currentHealth / maxHealth) * 100 <= healthPercent) {
           boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
           if (self) {
             ability.doEffect(rpgPlayer.getUUID(), rpgPlayer.getUUID());
@@ -128,7 +150,7 @@ public class PluginTask {
   }
 
   /**
-   * Decay players' overcapped {@link Health overshields}.
+   * Decay players' overcapped overshields.
    * <p>
    * An overshield begins to decay when current health
    * exceeds max health by a factor greater than x1.2.
@@ -136,20 +158,22 @@ public class PluginTask {
   public void updateOvershields() {
     Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
     for (UUID uuid : rpgPlayers.keySet()) {
-      if (Bukkit.getPlayer(uuid) != null) {
-        rpgPlayers.get(uuid).getHealth().decayOvershield();
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        new HealthModification(player).decayOvershield();
       }
     }
   }
 
   /**
-   * Update players' {@link Health health in action bar} display.
+   * Update players' {@link Settings#isHealthActionVisible() health in action bar display}.
    */
   public void updateActionDisplay() {
     Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
     for (UUID uuid : rpgPlayers.keySet()) {
-      if (Bukkit.getPlayer(uuid) != null) {
-        rpgPlayers.get(uuid).getHealth().updateActionDisplay();
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        new HealthModification(player).updateActionDisplay();
       }
     }
   }

@@ -34,7 +34,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.19
+ * @version 1.22.20
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -71,15 +71,15 @@ public class DamageListener implements Listener {
   }
 
   /**
-   * Processes damage healed by players.
+   * Processes damage healed by entities.
    *
    * @param e entity regain health event
    */
   @EventHandler
   private void onRegainHealth(EntityRegainHealthEvent e) {
-    if (e.getEntity() instanceof Player player) {
+    if (e.getEntity() instanceof LivingEntity livingEntity) {
+      new HealthModification(livingEntity).heal(e.getAmount());
       e.setCancelled(true);
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getHealth().heal(e.getAmount());
     }
   }
 
@@ -237,13 +237,12 @@ public class DamageListener implements Listener {
     final double finalDamage = e.getDamage();
     e.setDamage(0.01);
 
-    damageArmorDurability(defender, finalDamage);
     if (defender instanceof Player defenderPlayer) {
       triggerDamageTakenPassives(e, defenderPlayer);
-      rpgSystem.getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
-    } else {
-      defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
     }
+
+    damageArmorDurability(defender, finalDamage);
+    new HealthModification(defender).damage(finalDamage);
   }
 
   /**
@@ -269,10 +268,9 @@ public class DamageListener implements Listener {
 
     if (defender instanceof Player defenderPlayer) {
       triggerDamageTakenPassives(defenderPlayer);
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
-    } else {
-      defender.setHealth(Math.max(0, defender.getHealth() - finalDamage));
     }
+
+    new HealthModification(defender).damage(finalDamage);
   }
 
   /**
@@ -390,13 +388,13 @@ public class DamageListener implements Listener {
       }
       case MAGIC -> {
         final double finalDamage = mitigation.mitigateProtectionResistance(e.getDamage());
+        e.setDamage(0.01);
+
         if (defender instanceof Player defenderPlayer) {
           triggerDamageTakenPassives(e, defenderPlayer);
-          Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
-        } else {
-          defender.setHealth(Math.min(0, defender.getHealth() - finalDamage));
         }
-        e.setDamage(0.01);
+
+        new HealthModification(defender).damage(finalDamage);
         return true;
       }
       case PROJECTILE -> {
@@ -429,13 +427,13 @@ public class DamageListener implements Listener {
     }
     if (attacker.getType() == EntityType.AREA_EFFECT_CLOUD) {
       final double finalDamage = mitigation.mitigateProtectionResistance(e.getDamage());
+      e.setDamage(0.01);
+
       if (defender instanceof Player defenderPlayer) {
         triggerDamageTakenPassives(e, defenderPlayer);
-        Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getHealth().damage(finalDamage);
-      } else {
-        defender.setHealth(Math.min(0, defender.getHealth() - finalDamage));
       }
-      e.setDamage(0.01);
+
+      new HealthModification(defender).damage(finalDamage);
       return true;
     }
     return false;
@@ -490,15 +488,14 @@ public class DamageListener implements Listener {
       double counterDamage = attackSpeed * defender.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
       final double finalDamage = new DamageMitigation(livingAttacker).mitigateArmorProtectionResistance(counterDamage);
 
-      livingAttacker.damage(0.01);
-      if (livingAttacker instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
-        Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingAttacker.getUniqueId()).getHealth();
-        health.damage(finalDamage);
-        return health.getCurrentHealth() <= 0.0;
+      if (livingAttacker instanceof Player player) {
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+          new HealthModification(player).damage(finalDamage);
+        }
       } else {
-        livingAttacker.setHealth(Math.max(0, livingAttacker.getHealth() - finalDamage));
-        return livingAttacker.getHealth() == 0.0;
+        new HealthModification(livingAttacker).damage(finalDamage);
       }
+      return attackerEntityTags.get(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE) <= 0.0;
     }
     return false;
   }

@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.18
+ * @version 1.22.20
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -243,13 +243,12 @@ public class PassiveAbility {
       double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
       final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
 
-      if (livingEntity instanceof Player player && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
-        Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(livingEntity.getUniqueId()).getHealth();
-        player.damage(0.1);
-        health.damage(finalDamage);
+      if (livingEntity instanceof Player player) {
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+          new HealthModification(livingEntity).damage(finalDamage);
+        }
       } else {
-        livingEntity.damage(0.1);
-        livingEntity.setHealth(Math.max(0, livingEntity.getHealth() + 0.1 - (finalDamage)));
+        new HealthModification(livingEntity).damage(finalDamage);
       }
     }
 

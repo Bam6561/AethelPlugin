@@ -18,7 +18,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
- * @version 1.19.2
+ * @version 1.22.20
  * @since 1.16.4
  */
 public class Settings {
@@ -38,12 +38,12 @@ public class Settings {
   private final Map<Integer, Set<RpgEquipmentSlot>> abilityBoundHotbar = new HashMap<>();
 
   /**
-   * If {@link Health health bar} visible.
+   * If health bar visible.
    */
   private boolean healthBarVisible = false;
 
   /**
-   * If {@link Health health in action bar} visible.
+   * If health in action bar visible.
    */
   private boolean healthActionVisible = false;
 
@@ -154,23 +154,22 @@ public class Settings {
   }
 
   /**
-   * Toggles the visibility of the {@link Health health bar}.
+   * Toggles the visibility of the health bar.
    */
   public void toggleHealthBarVisibility() {
-    Health health = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getHealth();
-    BossBar healthBar = health.getBar();
+    BossBar healthBar = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getDisplays().getBar();
     if (isHealthBarVisible()) {
       healthBarVisible = false;
       healthBar.setVisible(false);
     } else {
       healthBarVisible = true;
       healthBar.setVisible(true);
-      health.updateDisplays();
+      new HealthModification(Bukkit.getPlayer(uuid)).updateDisplays();
     }
   }
 
   /**
-   * Toggles the visibility of {@link Health health in the action bar}.
+   * Toggles the visibility of health in the action bar.
    */
   public void toggleHealthActionVisibility() {
     healthActionVisible = !healthActionVisible;
@@ -197,18 +196,18 @@ public class Settings {
   }
 
   /**
-   * Gets if {@link Health health bar} is displayed.
+   * Gets if health bar is displayed.
    *
-   * @return if {@link Health health bar} displayed
+   * @return if health bar displayed
    */
   public boolean isHealthBarVisible() {
     return this.healthBarVisible;
   }
 
   /**
-   * Gets if {@link Health health in the action bar} is displayed.
+   * Gets if health in the action bar is displayed.
    *
-   * @return if {@link Health health in the action bar} displayed
+   * @return if health in the action bar displayed
    */
   public boolean isHealthActionVisible() {
     return this.healthActionVisible;
