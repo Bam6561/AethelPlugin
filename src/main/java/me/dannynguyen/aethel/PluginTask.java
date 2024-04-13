@@ -26,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.0
  * @since 1.22.2
  */
 public class PluginTask {
@@ -150,18 +150,13 @@ public class PluginTask {
   }
 
   /**
-   * Decay players' overcapped overshields.
-   * <p>
-   * An overshield begins to decay when current health
-   * exceeds max health by a factor greater than x1.2.
+   * Decay entities' overcapped overshields.
    */
-  public void updateOvershields() {
-    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
-    for (UUID uuid : rpgPlayers.keySet()) {
-      Player player = Bukkit.getPlayer(uuid);
-      if (player != null) {
-        new HealthModification(player).decayOvershield();
-      }
+  public void decayOvershields() {
+    Set<UUID> overshields = Plugin.getData().getRpgSystem().getOvershields();
+    for (UUID uuid : overshields) {
+      LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(uuid);
+      new HealthModification(livingEntity).overshield();
     }
   }
 

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.23.0
  * @since 1.22.1
  */
 public class WhatsThatCommand implements CommandExecutor {
@@ -89,6 +89,7 @@ public class WhatsThatCommand implements CommandExecutor {
     }
 
     switch (keyWord) {
+      case HELP -> sendKeyWordDescription(user, KeyWord.HELP);
       case COMMANDS -> sendKeyWordDescription(user, KeyWord.COMMANDS);
       case WORLD_TYPES -> sendKeyWordDescription(user, KeyWord.WORLD_TYPES);
       case ENCHANTMENTS -> sendKeyWordDescription(user, KeyWord.ENCHANTMENTS);
@@ -103,9 +104,11 @@ public class WhatsThatCommand implements CommandExecutor {
       case HIGHEST_INSTANCE -> sendKeyWordDescription(user, KeyWord.HIGHEST_INSTANCE);
       case CHARACTER -> sendKeyWordDescription(user, KeyWord.CHARACTER);
       case FORGE -> sendKeyWordDescription(user, KeyWord.FORGE);
+      case LOCATION -> sendKeyWordDescription(user, KeyWord.LOCATION);
       case PING -> sendKeyWordDescription(user, KeyWord.PING);
       case PLAYERSTAT -> sendKeyWordDescription(user, KeyWord.PLAYERSTAT);
       case SHOWITEM -> sendKeyWordDescription(user, KeyWord.SHOWITEM);
+      case WHATSTHATFEATURE -> sendKeyWordDescription(user, KeyWord.WHATSTHATFEATURE);
       case OVERWORLD -> sendKeyWordDescription(user, KeyWord.OVERWORLD);
       case NETHER -> sendKeyWordDescription(user, KeyWord.NETHER);
       case END -> sendKeyWordDescription(user, KeyWord.END);
@@ -119,9 +122,13 @@ public class WhatsThatCommand implements CommandExecutor {
       case FEATHER_FALLING -> sendKeyWordDescription(user, KeyWord.FEATHER_FALLING);
       case ABSORPTION -> sendKeyWordDescription(user, KeyWord.ABSORPTION);
       case RESISTANCE -> sendKeyWordDescription(user, KeyWord.RESISTANCE);
-      case MAX_HEALTH -> sendKeyWordDescription(user, KeyWord.MAX_HEALTH);
+      case CRITICAL_CHANCE -> sendKeyWordDescription(user, KeyWord.CRITICAL_CHANCE);
+      case CRITICAL_DAMAGE -> sendKeyWordDescription(user, KeyWord.CRITICAL_DAMAGE);
+      case FEINT_SKILL -> sendKeyWordDescription(user, KeyWord.FEINT_SKILL);
+      case ACCURACY_SKILL -> sendKeyWordDescription(user, KeyWord.ACCURACY_SKILL);
       case COUNTER_CHANCE -> sendKeyWordDescription(user, KeyWord.COUNTER_CHANCE);
       case DODGE_CHANCE -> sendKeyWordDescription(user, KeyWord.DODGE_CHANCE);
+      case MAX_HEALTH -> sendKeyWordDescription(user, KeyWord.MAX_HEALTH);
       case ARMOR_TOUGHNESS -> sendKeyWordDescription(user, KeyWord.ARMOR_TOUGHNESS);
       case ARMOR -> sendKeyWordDescription(user, KeyWord.ARMOR);
       case ITEM_DAMAGE -> sendKeyWordDescription(user, KeyWord.ITEM_DAMAGE);
@@ -456,11 +463,32 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GRAY + "Each level of resistance mitigates all forms of damage by 5%."}),
 
     /**
-     * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#MAX_HEALTH}
+     * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#CRITICAL_CHANCE}
      */
-    MAX_HEALTH(new String[]{
-        ChatColor.GREEN + "Max Health",
-        ChatColor.GRAY + "Adds max health without visually displaying additional heart containers."}),
+    CRITICAL_CHANCE(new String[]{
+        ChatColor.GREEN + "Critical Chance",
+        ChatColor.GRAY + "Chance to deal critical damage."}),
+
+    /**
+     * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#CRITICAL_DAMAGE}
+     */
+    CRITICAL_DAMAGE(new String[]{
+        ChatColor.GREEN + "Critical Damage",
+        ChatColor.GRAY + "Critical damage multiplier."}),
+
+    /**
+     * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#FEINT_SKILL}
+     */
+    FEINT_SKILL(new String[]{
+        ChatColor.GREEN + "Feint Skill",
+        ChatColor.GRAY + "Reduces the defender's counter chance."}),
+
+    /**
+     * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#ACCURACY_SKILL}
+     */
+    ACCURACY_SKILL(new String[]{
+        ChatColor.GREEN + "Critical Chance",
+        ChatColor.GRAY + "Reduces the defender's dodge chance."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#COUNTER_CHANCE}
@@ -478,6 +506,13 @@ public class WhatsThatCommand implements CommandExecutor {
     DODGE_CHANCE(new String[]{
         ChatColor.GREEN + "Dodge Chance",
         ChatColor.GRAY + "Chance to ignore damage from attacking entities or explosions."}),
+
+    /**
+     * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#MAX_HEALTH}
+     */
+    MAX_HEALTH(new String[]{
+        ChatColor.GREEN + "Max Health",
+        ChatColor.GRAY + "Adds max health without visually displaying additional heart containers."}),
 
     /**
      * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute#ARMOR_TOUGHNESS}

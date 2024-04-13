@@ -33,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.0
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -243,6 +243,7 @@ public class SheetMenu implements Menu {
    * @param df2        0.00 decimal format
    */
   private void addDefenseAttributes(PersistentDataContainer entityTags, Buffs buffs, DecimalFormat df2) {
+    double maxHealthBase = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double counterChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double dodgeChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double armorToughnessBase = entityTags.getOrDefault(Key.ATTRIBUTE_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
@@ -272,7 +273,7 @@ public class SheetMenu implements Menu {
 
     Player player = Bukkit.getPlayer(uuid);
     double rpgCurrentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
-    double rpgMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + genericMaxHealthBuff + maxHealthBuff;
+    double rpgMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + maxHealthBase + genericMaxHealthBuff + maxHealthBuff;
 
     String maxHealth = ChatColor.RED + df2.format(rpgCurrentHealth) + " / " + df2.format(rpgMaxHealth) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");
     String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");

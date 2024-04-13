@@ -56,7 +56,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates fall damage taken based on the player's fall protection levels.
+   * Mitigates fall damage taken based on the entity's fall protection levels.
    *
    * @param damage initial damage
    * @return damage taken
@@ -67,7 +67,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates fire damage based taken on the player's fire protection levels.
+   * Mitigates fire damage based taken on the entity's fire protection levels.
    *
    * @param damage initial damage
    * @return damage taken
@@ -78,7 +78,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates explosion damage taken based on the player's explosion protection levels.
+   * Mitigates explosion damage taken based on the entity's explosion protection levels.
    *
    * @param damage damage done
    * @return damage taken
@@ -96,7 +96,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates projectile damage based on the player's projectile protection levels.
+   * Mitigates projectile damage based on the entity's projectile protection levels.
    *
    * @param damage damage done
    * @return damage taken
@@ -121,7 +121,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates physical damage taken based on the player's armor and protection levels.
+   * Mitigates physical damage taken based on the entity's armor and protection levels.
    *
    * @param damage initial damage
    * @return damage taken
@@ -137,7 +137,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates physical damage taken based on the player's
+   * Mitigates physical damage taken based on the entity's
    * armor, protection levels, and resistance amplifier.
    *
    * @param damage initial damage
@@ -159,7 +159,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates magical damage taken on the player's protection levels.
+   * Mitigates magical damage taken on the entity's protection levels.
    *
    * @param damage initial damage
    * @return damage taken
@@ -170,7 +170,7 @@ public class DamageMitigation {
   }
 
   /**
-   * Mitigates magical damage taken based on the player's
+   * Mitigates magical damage taken based on the entity's
    * protection levels and resistance amplifier.
    *
    * @param damage initial damage

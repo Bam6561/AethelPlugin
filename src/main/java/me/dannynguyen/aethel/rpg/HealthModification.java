@@ -24,7 +24,7 @@ import java.util.UUID;
  * Represents entity health modification.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.0
  * @since 1.22.20
  */
 public class HealthModification {
@@ -64,6 +64,7 @@ public class HealthModification {
     this.entityTags = defender.getPersistentDataContainer();
     this.currentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, defender.getHealth());
 
+    double maxHealthBase = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
     double genericMaxHealthBuff = 0.0;
     double maxHealthBuff = 0.0;
@@ -72,7 +73,7 @@ public class HealthModification {
       maxHealthBuff = buffs.getAethelAttribute(AethelAttribute.MAX_HEALTH);
     }
 
-    this.maxHealth = defender.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + genericMaxHealthBuff + maxHealthBuff;
+    this.maxHealth = defender.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + maxHealthBase + genericMaxHealthBuff + maxHealthBuff;
   }
 
   /**
@@ -125,23 +126,25 @@ public class HealthModification {
   }
 
   /**
+   * Decays current health based on the overshield amount.
+   */
+  public void overshield() {
+    double overshield = maxHealth * 1.2;
+    if (currentHealth <= overshield) {
+      Plugin.getData().getRpgSystem().getOvershields().remove(uuid);
+      return;
+    }
+    double decayRate = Math.max((currentHealth - overshield) / 40, 0.25);
+    setCurrentHealth(Math.max(overshield, currentHealth - decayRate));
+    updateDisplays();
+  }
+
+  /**
    * Resets the current health.
    */
   public void reset() {
     setCurrentHealth(maxHealth);
     updateDisplays();
-  }
-
-  /**
-   * Decays current health based on the overshield amount.
-   */
-  public void decayOvershield() {
-    double overshieldCap = maxHealth * 1.2;
-    if (currentHealth > overshieldCap) {
-      double decayRate = Math.max((currentHealth - overshieldCap) / 40, 0.25);
-      setCurrentHealth(Math.max(overshieldCap, currentHealth - decayRate));
-      updateDisplays();
-    }
   }
 
   /**
@@ -167,9 +170,14 @@ public class HealthModification {
     } else if (currentHealth > maxHealth) {
       defender.setHealth(maxHealthScale);
 
+      double overshield = maxHealth * 1.2;
+      if (currentHealth > overshield) {
+        Plugin.getData().getRpgSystem().getOvershields().add(uuid);
+      }
+
       if (defender instanceof Player) {
-        updateActionDisplay(Condition.OVERSHIELD);
-        updateBarDisplay(Condition.OVERSHIELD, 1.0);
+        updateActionDisplay(Condition.SHIELD);
+        updateBarDisplay(Condition.SHIELD, 1.0);
       }
     }
   }
@@ -184,7 +192,7 @@ public class HealthModification {
       df2.setMaximumFractionDigits(2);
       switch (getCondition()) {
         case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
-        case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+        case SHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
       }
     }
   }
@@ -201,7 +209,7 @@ public class HealthModification {
       df2.setMaximumFractionDigits(2);
       switch (condition) {
         case WOUNDED, NORMAL -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
-        case OVERSHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
+        case SHIELD -> Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤"));
       }
     }
   }
@@ -228,7 +236,7 @@ public class HealthModification {
           healthBar.setColor(BarColor.RED);
           healthBar.setTitle(ChatColor.RED + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤");
         }
-        case OVERSHIELD -> {
+        case SHIELD -> {
           healthBar.setProgress(1.0);
           healthBar.setColor(BarColor.YELLOW);
           healthBar.setTitle(ChatColor.YELLOW + df2.format(currentHealth) + " / " + df2.format(maxHealth) + " ❤");
@@ -258,7 +266,7 @@ public class HealthModification {
     } else if (currentHealth == maxHealth) {
       return Condition.NORMAL;
     } else if (currentHealth > maxHealth) {
-      return Condition.OVERSHIELD;
+      return Condition.SHIELD;
     }
     return null;
   }
@@ -280,6 +288,6 @@ public class HealthModification {
     /**
      * Above max health.
      */
-    OVERSHIELD
+    SHIELD
   }
 }

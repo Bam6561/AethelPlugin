@@ -68,8 +68,7 @@ public class RpgListener implements Listener {
   }
 
   /**
-   * Updates the player's Health to account for
-   * absorption and health boost status effects.
+   * Updates the entity's health to account for absorption and health boost status effects.
    *
    * @param e entity potion effect event
    */

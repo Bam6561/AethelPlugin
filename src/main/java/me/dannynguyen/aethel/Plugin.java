@@ -131,7 +131,7 @@ public class Plugin extends JavaPlugin {
    *  <li>{@link PluginTask#updateMainHandEquipment()}
    *  <li>{@link PluginTask#triggerStatuses()}
    *  <li>{@link PluginTask#triggerBelowHealthPassives()}
-   *  <li>{@link PluginTask#updateOvershields()}
+   *  <li>{@link PluginTask#decayOvershields()}
    *  <li>{@link PluginTask#updateActionDisplay()}
    *  <li>{@link PluginTask#refreshEnchantmentEffects()}
    * </ul>
@@ -144,7 +144,7 @@ public class Plugin extends JavaPlugin {
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateMainHandEquipment, 0, 10);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerStatuses, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerBelowHealthPassives, 5, 20);
-    scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateOvershields, 10, 20);
+    scheduler.scheduleSyncRepeatingTask(this, pluginTask::decayOvershields, 10, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateActionDisplay, 0, 40);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::trackLocations, 0, 50);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::refreshEnchantmentEffects, 0, 100);

@@ -34,7 +34,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.0
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -229,10 +229,6 @@ public class DamageListener implements Listener {
       return;
     }
 
-    if (attacker instanceof Player attackerPlayer) {
-      triggerDamageDealtPassives(e, attackerPlayer);
-    }
-
     e.setDamage(mitigation.mitigateArmorProtectionResistance(e.getDamage()));
     final double finalDamage = e.getDamage();
     e.setDamage(0.01);
@@ -243,6 +239,12 @@ public class DamageListener implements Listener {
 
     damageArmorDurability(defender, finalDamage);
     new HealthModification(defender).damage(finalDamage);
+
+    if (defender.getHealth() != 0.0) {
+      if (attacker instanceof Player attackerPlayer) {
+        triggerDamageDealtPassives(e, attackerPlayer);
+      }
+    }
   }
 
   /**

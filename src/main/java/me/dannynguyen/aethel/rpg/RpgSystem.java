@@ -2,7 +2,6 @@ package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -11,7 +10,7 @@ import java.util.*;
  * Represents RPG metadata in memory.
  *
  * @author Danny Nguyen
- * @version 1.22.12
+ * @version 1.23.0
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -24,6 +23,14 @@ public class RpgSystem {
    * Entities affected by {@link Status statuses}.
    */
   private final Map<UUID, Map<StatusType, Status>> statuses = new HashMap<>();
+
+  /**
+   * Entities affected by Overshield.
+   * <p>
+   * Overshield is a condition when entities' current
+   * health exceeds max health by a factor of x1.2.
+   */
+  private final Set<UUID> overshields = new HashSet<>();
 
   /**
    * {@link RpgPlayer RPG players}.
@@ -64,6 +71,16 @@ public class RpgSystem {
   @NotNull
   public Map<UUID, Map<StatusType, Status>> getStatuses() {
     return this.statuses;
+  }
+
+  /**
+   * Gets entities affected by Overshield.
+   *
+   * @return entities affected by Overshield
+   */
+  @NotNull
+  public Set<UUID> getOvershields() {
+    return this.overshields;
   }
 
   /**
