@@ -29,7 +29,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.2
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -152,7 +152,7 @@ public class CosmeticMenu implements Menu {
     menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + ItemRepairCost.getRepairCost(item))));
 
     PersistentDataContainer itemTags = meta.getPersistentDataContainer();
-    if (itemTags.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
+    if (itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
       menu.setItem(19, ItemCreator.createItem(Material.AMETHYST_SHARD, ChatColor.AQUA + "Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))));
     }
     menu.setItem(20, ItemCreator.createItem(Material.ECHO_SHARD, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));

@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
+import me.dannynguyen.aethel.utils.item.ItemDurability;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,18 +15,17 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 /**
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.17
+ * @version 1.23.2
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -116,6 +116,30 @@ public class EquipmentListener implements Listener {
     if (e.getTargetEntity() instanceof Player player) {
       updateIfWornItem(player, e.getItem());
     }
+  }
+
+  /**
+   * Damages a player's item durability.
+   *
+   * @param e player item damage event
+   */
+  @EventHandler
+  private void onItemDamage(PlayerItemDamageEvent e) {
+    e.setCancelled(true);
+
+    Player player = e.getPlayer();
+    PlayerInventory pInv = player.getInventory();
+    ItemStack item = e.getItem();
+    EquipmentSlot eSlot = null;
+
+    for (EquipmentSlot slot : EquipmentSlot.values()) {
+      if (pInv.getItem(slot).equals(item)) {
+        eSlot = slot;
+        break;
+      }
+    }
+
+    ItemDurability.increaseDamage(player, player.getEquipment(), eSlot, e.getDamage());
   }
 
   /**

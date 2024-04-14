@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.2
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -289,7 +289,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * Sets an item's durability reinforcement.
    */
   private void setDurabilityReinforcement() {
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability reinforcement..");
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability reinforcement.");
     awaitMessageInput(MessageListener.Type.ITEMEDITOR_RPG_DURABILITY);
   }
 
@@ -744,22 +744,36 @@ public class ItemEditorMenuClick implements MenuClick {
         generatedLore = true;
         displayForgeId();
       }
+
       if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.attributeValues = totalAttributeValues();
         addAttributeHeaders();
         menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
       }
+
       if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.passiveAbilities = sortPassiveAbilities();
         addPassiveHeaders();
       }
+
       if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.activeAbilities = sortActiveAbilities();
         addActiveHeaders();
       }
+
+      boolean hasReinforcementTags = itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER) && itemTags.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
+      if (hasReinforcementTags) {
+        generatedLore = true;
+        int reinforcement = itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
+        int maxReinforcement = itemTags.get(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
+        lore.add(ChatColor.WHITE + "Reinforcement: " + reinforcement + " / " + maxReinforcement);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+      }
+
       if (generatedLore) {
         user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
       } else {

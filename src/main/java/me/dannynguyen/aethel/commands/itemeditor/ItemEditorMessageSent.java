@@ -44,7 +44,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.2
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -147,6 +147,7 @@ public class ItemEditorMessageSent {
       return;
     }
     meta.getPersistentDataContainer().set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
+    item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Durability Reinforcement] " + ChatColor.WHITE + e.getMessage());
     returnToCosmetic();
   }

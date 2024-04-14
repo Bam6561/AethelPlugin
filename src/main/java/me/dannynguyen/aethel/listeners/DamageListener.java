@@ -7,7 +7,6 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
-import me.dannynguyen.aethel.utils.item.ItemDurability;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
@@ -16,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -34,7 +31,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.0
+ * @version 1.23.2
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -237,7 +234,6 @@ public class DamageListener implements Listener {
       triggerDamageTakenPassives(e, defenderPlayer);
     }
 
-    damageArmorDurability(defender, finalDamage);
     new HealthModification(defender).damage(finalDamage);
 
     if (defender.getHealth() != 0.0) {
@@ -263,10 +259,6 @@ public class DamageListener implements Listener {
 
     final double finalDamage = e.getDamage();
     e.setDamage(0.01);
-
-    switch (cause) {
-      case BLOCK_EXPLOSION, CONTACT, FIRE, HOT_FLOOR, LAVA -> damageArmorDurability(defender, finalDamage);
-    }
 
     if (defender instanceof Player defenderPlayer) {
       triggerDamageTakenPassives(defenderPlayer);
@@ -586,24 +578,5 @@ public class DamageListener implements Listener {
       return true;
     }
     return false;
-  }
-
-  /**
-   * Damages the worn armors' durability based on the damage taken.
-   *
-   * @param defender defending entity
-   * @param damage   damage taken
-   */
-  private void damageArmorDurability(LivingEntity defender, double damage) {
-    EntityEquipment equipment = defender.getEquipment();
-    if (equipment == null) {
-      return;
-    }
-
-    int durabilityDamage = (int) Math.max(damage / 4, 1);
-    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.HEAD, durabilityDamage);
-    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.CHEST, durabilityDamage);
-    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.LEGS, durabilityDamage);
-    ItemDurability.increaseDamage(defender, equipment, EquipmentSlot.FEET, durabilityDamage);
   }
 }
