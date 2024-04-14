@@ -497,7 +497,7 @@ public class DamageListener implements Listener {
       } else {
         new HealthModification(livingAttacker).damage(finalDamage);
       }
-      return attackerEntityTags.get(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE) <= 0.0;
+      return attackerEntityTags.get(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE) <= 0.0;
     }
     return false;
   }

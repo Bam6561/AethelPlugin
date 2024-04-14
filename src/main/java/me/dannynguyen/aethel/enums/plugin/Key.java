@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.1
  * @since 1.11.9
  */
 public enum Key {
@@ -46,9 +46,19 @@ public enum Key {
   RECIPE_FORGE_ID(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "id")),
 
   /**
+   * Reinforced durability.
+   */
+  RPG_DURABILITY(new NamespacedKey(Plugin.getInstance(), KeyHeader.RPG.getHeader() + "durability")),
+
+  /**
+   * Max reinforced durability.
+   */
+  RPG_MAX_DURABILITY(new NamespacedKey(Plugin.getInstance(), KeyHeader.RPG.getHeader() + "durability_max")),
+
+  /**
    * RPG current health.
    */
-  RPG_CURRENT_HEALTH(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + "rpg.current_health")),
+  RPG_HEALTH(new NamespacedKey(Plugin.getInstance(), KeyHeader.RPG.getHeader() + "health")),
 
   /**
    * {@link AethelAttribute#MAX_HEALTH}

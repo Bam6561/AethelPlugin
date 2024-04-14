@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.1
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -111,7 +111,9 @@ public class ItemEditorMenuClick implements MenuClick {
       case 15 -> openAethelAttribute();
       case 16 -> openEnchantment();
       case 17 -> openPotion();
-      case 20 -> toggleUnbreakable();
+      case 19 -> setDurabilityReinforcement();
+      case 20 -> setMaxDurabilityReinforcement();
+      case 21 -> toggleUnbreakable();
       case 23 -> openPassive();
       case 24 -> openActive();
       case 25 -> openTag();
@@ -268,6 +270,38 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
+   * Sets an item's durability.
+   */
+  private void setDurability() {
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
+    awaitMessageInput(MessageListener.Type.ITEMEDITOR_DURABILITY);
+  }
+
+  /**
+   * Sets an item's repair cost.
+   */
+  private void setRepairCost() {
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
+    awaitMessageInput(MessageListener.Type.ITEMEDITOR_REPAIR_COST);
+  }
+
+  /**
+   * Sets an item's durability reinforcement.
+   */
+  private void setDurabilityReinforcement() {
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability reinforcement..");
+    awaitMessageInput(MessageListener.Type.ITEMEDITOR_RPG_DURABILITY);
+  }
+
+  /**
+   * Sets an item's max durability reinforcement.
+   */
+  private void setMaxDurabilityReinforcement() {
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input max durability reinforcement.");
+    awaitMessageInput(MessageListener.Type.ITEMEDITOR_MAX_RPG_DURABILITY);
+  }
+
+  /**
    * Toggles an item's ability to be broken.
    */
   private void toggleUnbreakable() {
@@ -345,22 +379,6 @@ public class ItemEditorMenuClick implements MenuClick {
   private void openTag() {
     user.openInventory(new TagMenu(user).getMainMenu());
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
-  }
-
-  /**
-   * Sets an item's durability.
-   */
-  private void setDurability() {
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability (+) or damage (-) value.");
-    awaitMessageInput(MessageListener.Type.ITEMEDITOR_DURABILITY);
-  }
-
-  /**
-   * Sets an item's repair cost.
-   */
-  private void setRepairCost() {
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input repair cost value.");
-    awaitMessageInput(MessageListener.Type.ITEMEDITOR_REPAIR_COST);
   }
 
   /**

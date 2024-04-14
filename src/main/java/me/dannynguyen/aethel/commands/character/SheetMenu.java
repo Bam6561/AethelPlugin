@@ -272,7 +272,7 @@ public class SheetMenu implements Menu {
     double projectileProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
 
     Player player = Bukkit.getPlayer(uuid);
-    double rpgCurrentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
+    double rpgCurrentHealth = entityTags.getOrDefault(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
     double rpgMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + maxHealthBase + genericMaxHealthBuff + maxHealthBuff;
 
     String maxHealth = ChatColor.RED + df2.format(rpgCurrentHealth) + " / " + df2.format(rpgMaxHealth) + " HP" + (genericMaxHealthBuff + maxHealthBuff != 0.0 ? " [" + df2.format(genericMaxHealthBuff + maxHealthBuff) + "]" : "");

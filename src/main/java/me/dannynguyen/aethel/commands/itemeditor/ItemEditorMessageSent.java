@@ -44,7 +44,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.1
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -131,6 +131,49 @@ public class ItemEditorMessageSent {
       ItemDurability.setDamage(item, Math.abs(value));
       user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
     }
+    returnToCosmetic();
+  }
+
+  /**
+   * Sets the item's durability reinforcement.
+   */
+  public void setDurabilityReinforcement() {
+    int value;
+    try {
+      value = Integer.parseInt(e.getMessage());
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_VALUE.getMessage());
+      returnToCosmetic();
+      return;
+    }
+    meta.getPersistentDataContainer().set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
+    user.sendMessage(ChatColor.GREEN + "[Set Durability Reinforcement] " + ChatColor.WHITE + e.getMessage());
+    returnToCosmetic();
+  }
+
+  /**
+   * Sets the item's max durability reinforcement.
+   */
+  public void setMaxDurabilityReinforcement() {
+    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+    if (!e.getMessage().equals("-")) {
+      int value;
+      try {
+        value = Integer.parseInt(e.getMessage());
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_VALUE.getMessage());
+        returnToCosmetic();
+        return;
+      }
+      itemTags.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
+      itemTags.set(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
+      user.sendMessage(ChatColor.GREEN + "[Set Max Durability Reinforcement] " + ChatColor.WHITE + e.getMessage());
+    } else {
+      itemTags.remove(Key.RPG_DURABILITY.getNamespacedKey());
+      itemTags.remove(Key.RPG_MAX_DURABILITY.getNamespacedKey());
+      user.sendMessage(ChatColor.RED + "[Removed Durability Reinforcement]");
+    }
+    item.setItemMeta(meta);
     returnToCosmetic();
   }
 

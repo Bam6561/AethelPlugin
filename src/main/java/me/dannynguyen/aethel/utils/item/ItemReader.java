@@ -22,7 +22,7 @@ import java.util.Objects;
  * Reads and decodes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.20.2
+ * @version 1.23.1
  * @since 1.1.4
  */
 public class ItemReader {
@@ -79,17 +79,21 @@ public class ItemReader {
     StringBuilder aethelTags = new StringBuilder();
     for (NamespacedKey key : itemTags.getKeys()) {
       String keyName = key.getKey();
-      if (keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
-        keyName = keyName.substring(7);
-        if (keyName.startsWith("attribute.")) {
-          if (keyName.matches("attribute.list")) {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
-          } else {
-            aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.DOUBLE)).append(" ");
-          }
-        } else {
+      if (!keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
+        continue;
+      }
+
+      keyName = keyName.substring(7);
+      if (keyName.startsWith("attribute.")) {
+        if (keyName.matches("attribute.list")) {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
+        } else {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.DOUBLE)).append(" ");
         }
+      } else if (keyName.startsWith("rpg.")) {
+        aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.INTEGER)).append(" ");
+      } else {
+        aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
       }
     }
     return aethelTags.toString();

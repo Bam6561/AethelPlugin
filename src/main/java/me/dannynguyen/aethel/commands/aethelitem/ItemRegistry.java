@@ -24,7 +24,7 @@ import java.util.*;
  * called in order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.20.2
+ * @version 1.23.1
  * @since 1.3.2
  */
 public class ItemRegistry implements DataRegistry {
@@ -39,11 +39,16 @@ public class ItemRegistry implements DataRegistry {
   private final Map<String, Item> items = new HashMap<>();
 
   /**
-   * Loaded {@link Item item} categories represented by groups of inventories.
+   * Loaded {@link Item} categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    */
   private final Map<String, List<Inventory>> itemCategories = new HashMap<>();
+
+  /**
+   * Sorted {@link Item} category names.
+   */
+  private final List<String> itemCategoryNames = new ArrayList<>();
 
   /**
    * Associates an ItemRegistry with the provided directory.
@@ -66,7 +71,7 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Loads data by reading {@link Item item} files from the provided directory.
+   * Loads data by reading {@link Item} files from the provided directory.
    */
   public void loadData() {
     File[] files = directory.listFiles();
@@ -76,6 +81,7 @@ public class ItemRegistry implements DataRegistry {
 
     items.clear();
     itemCategories.clear();
+    itemCategoryNames.clear();
 
     if (files.length > 0) {
       Arrays.sort(files);
@@ -89,14 +95,16 @@ public class ItemRegistry implements DataRegistry {
       if (!items.isEmpty()) {
         for (String category : categories.keySet()) {
           itemCategories.put(category, createPages(categories.get(category)));
+          itemCategoryNames.add(category);
         }
+        Collections.sort(itemCategoryNames);
       }
     }
   }
 
   /**
    * Deserializes bytes from designated item file into an
-   * {@link Item item} that is then sorted into a category.
+   * {@link Item} that is then sorted into a category.
    *
    * @param file       item file
    * @param categories item categories
@@ -121,10 +129,10 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Creates an {@link Item item} category's pages.
+   * Creates an {@link Item} category's pages.
    *
-   * @param items items from an {@link Item item} category
-   * @return {@link Item item} category's pages
+   * @param items items from an {@link Item} category
+   * @return {@link Item} category's pages
    */
   private List<Inventory> createPages(List<ItemStack> items) {
     int totalItems = items.size();
@@ -154,7 +162,7 @@ public class ItemRegistry implements DataRegistry {
   /**
    * Sorts an item into a category based on its {@link Key#ITEM_CATEGORY}.
    *
-   * @param categories {@link Item item} categories
+   * @param categories {@link Item} categories
    * @param item       interacting item
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
@@ -181,13 +189,24 @@ public class ItemRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded {@link Item item} categories.
+   * Gets loaded {@link Item} categories.
    *
-   * @return loaded {@link Item item} categories
+   * @return loaded {@link Item} categories
    */
   @NotNull
   protected Map<String, List<Inventory>> getItemCategories() {
     return this.itemCategories;
+  }
+
+
+  /**
+   * Gets sorted {@link Item} category names.
+   *
+   * @return sorted {@link Item} category names
+   */
+  @NotNull
+  protected List<String> getItemCategoryNames() {
+    return this.itemCategoryNames;
   }
 
   /**

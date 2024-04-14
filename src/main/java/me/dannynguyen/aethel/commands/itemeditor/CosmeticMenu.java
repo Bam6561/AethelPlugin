@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands.itemeditor;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
@@ -15,6 +16,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -26,7 +29,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.23.1
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -83,8 +86,7 @@ public class CosmeticMenu implements Menu {
     addContext();
     addDisplayName();
     addCustomModelData();
-    addDurability();
-    addRepairCost();
+    addDurabilityButtons();
     addLore();
     addGameplay();
     addItemFlags();
@@ -143,17 +145,17 @@ public class CosmeticMenu implements Menu {
   }
 
   /**
-   * Adds the durability button.
+   * Adds the durability, repair cost, and durability reinforcement buttons.
    */
-  private void addDurability() {
+  private void addDurabilityButtons() {
     menu.setItem(11, ItemCreator.createItem(Material.OBSIDIAN, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + ItemDurability.displayDurability(item))));
-  }
-
-  /**
-   * Adds the repair cost button.
-   */
-  private void addRepairCost() {
     menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + ItemRepairCost.getRepairCost(item))));
+
+    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+    if (itemTags.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
+      menu.setItem(19, ItemCreator.createItem(Material.AMETHYST_SHARD, ChatColor.AQUA + "Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))));
+    }
+    menu.setItem(20, ItemCreator.createItem(Material.ECHO_SHARD, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));
   }
 
   /**
@@ -217,7 +219,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.isUnbreakable();
     String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(20, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK, ChatColor.AQUA + "Unbreakable", List.of(unbreakable)));
+    Objects.requireNonNull(menu, "Null menu").setItem(21, ItemCreator.createItem(disabled ? Material.CLAY : Material.BEDROCK, ChatColor.AQUA + "Unbreakable", List.of(unbreakable)));
   }
 
   /**

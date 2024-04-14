@@ -62,7 +62,7 @@ public class HealthModification {
     this.defender = Objects.requireNonNull(defender, "Null UUID");
     this.uuid = defender.getUniqueId();
     this.entityTags = defender.getPersistentDataContainer();
-    this.currentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, defender.getHealth());
+    this.currentHealth = entityTags.getOrDefault(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, defender.getHealth());
 
     double maxHealthBase = entityTags.getOrDefault(Key.ATTRIBUTE_MAX_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
@@ -252,7 +252,7 @@ public class HealthModification {
    */
   private void setCurrentHealth(double currentHealth) {
     this.currentHealth = currentHealth;
-    entityTags.set(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, currentHealth);
+    entityTags.set(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, currentHealth);
   }
 
   /**

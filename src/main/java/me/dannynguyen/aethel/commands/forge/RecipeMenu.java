@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -22,7 +21,7 @@ import java.util.UUID;
  * crafting, editing, and removing {@link RecipeRegistry.Recipe recipes}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.1
  * @since 1.0.6
  */
 public class RecipeMenu implements CategoryMenu {
@@ -157,7 +156,7 @@ public class RecipeMenu implements CategoryMenu {
    * Adds {@link RecipeRegistry.Recipe recipe} categories.
    */
   private void addCategories() {
-    Set<String> categories = Plugin.getData().getRecipeRegistry().getRecipeCategories().keySet();
+    List<String> categories = Plugin.getData().getRecipeRegistry().getRecipeCategoryNames();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin key headers.
  *
  * @author Danny Nguyen
- * @version 1.22.13
+ * @version 1.23.1
  * @since 1.15.3
  */
 public enum KeyHeader {
@@ -24,6 +24,11 @@ public enum KeyHeader {
    * {@link me.dannynguyen.aethel.commands.forge.ForgeCommand}
    */
   FORGE(AETHEL.getHeader() + "forge."),
+
+  /**
+   * RPG values.
+   */
+  RPG(AETHEL.getHeader() + "rpg."),
 
   /**
    * {@link Key#ATTRIBUTE_LIST}

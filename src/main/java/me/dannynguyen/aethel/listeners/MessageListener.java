@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.1
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -67,6 +67,8 @@ public class MessageListener implements Listener {
       case ITEMEDITOR_CUSTOM_MODEL_DATA -> msg.setCustomModelData();
       case ITEMEDITOR_DURABILITY -> msg.setDurability();
       case ITEMEDITOR_REPAIR_COST -> msg.setRepairCost();
+      case ITEMEDITOR_RPG_DURABILITY -> msg.setDurabilityReinforcement();
+      case ITEMEDITOR_MAX_RPG_DURABILITY -> msg.setMaxDurabilityReinforcement();
       case ITEMEDITOR_LORE_SET -> msg.setLore();
       case ITEMEDITOR_LORE_ADD -> msg.addLore();
       case ITEMEDITOR_LORE_EDIT -> msg.editLore();
@@ -119,6 +121,16 @@ public class MessageListener implements Listener {
      * Repair cost.
      */
     ITEMEDITOR_REPAIR_COST("itemeditor"),
+
+    /**
+     * Durability reinforcement.
+     */
+    ITEMEDITOR_RPG_DURABILITY("itemeditor"),
+
+    /**
+     * Max durability reinforcement.
+     */
+    ITEMEDITOR_MAX_RPG_DURABILITY("itemeditor"),
 
     /**
      * Set lore.

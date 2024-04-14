@@ -92,14 +92,14 @@ public class PluginTask {
           if (entity instanceof Player player) {
             if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
               new HealthModification(player).damage(finalDamage);
-              double remainingHealth = player.getPersistentDataContainer().get(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
+              double remainingHealth = player.getPersistentDataContainer().get(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
               if (remainingHealth < 0) {
                 propagateElectrocuteStacks(player, remainingHealth);
               }
             }
           } else {
             new HealthModification(entity).damage(finalDamage);
-            double remainingHealth = entity.getPersistentDataContainer().get(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
+            double remainingHealth = entity.getPersistentDataContainer().get(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
             if (remainingHealth < 0) {
               propagateElectrocuteStacks(entity, remainingHealth);
             }
@@ -125,7 +125,7 @@ public class PluginTask {
       PersistentDataContainer entityTags = player.getPersistentDataContainer();
       Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(rpgPlayer.getUUID());
 
-      double currentHealth = entityTags.getOrDefault(Key.RPG_CURRENT_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
+      double currentHealth = entityTags.getOrDefault(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
       double genericMaxHealthBuff = 0.0;
       double maxHealthBuff = 0.0;
       if (buffs != null) {

@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -22,7 +21,7 @@ import java.util.UUID;
  * creating, editing, and removing {@link ItemRegistry.Item items}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.1
  * @since 1.4.0
  */
 public class ItemMenu implements CategoryMenu {
@@ -159,7 +158,7 @@ public class ItemMenu implements CategoryMenu {
    * Adds {@link ItemRegistry.Item item} categories.
    */
   private void addCategories() {
-    Set<String> categories = Plugin.getData().getItemRegistry().getItemCategories().keySet();
+    List<String> categories = Plugin.getData().getItemRegistry().getItemCategoryNames();
     if (!categories.isEmpty()) {
       int i = 9;
       for (String category : categories) {

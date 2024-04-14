@@ -25,7 +25,7 @@ import java.util.*;
  * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.20.2
+ * @version 1.23.1
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -40,11 +40,16 @@ public class RecipeRegistry implements DataRegistry {
   private final Map<String, Recipe> recipes = new HashMap<>();
 
   /**
-   * Loaded {@link Recipe recipe} categories represented by groups of inventories.
+   * Loaded {@link Recipe} categories represented by groups of inventories.
    * <p>
    * An inventory from any of the groups is also referred to as a page.
    */
   private final Map<String, List<Inventory>> recipeCategories = new HashMap<>();
+
+  /**
+   * Sorted {@link Recipe} category names.
+   */
+  private final List<String> recipeCategoryNames = new ArrayList();
 
   /**
    * Associates a RecipeRegistry with the provided directory.
@@ -77,6 +82,7 @@ public class RecipeRegistry implements DataRegistry {
 
     recipes.clear();
     recipeCategories.clear();
+    recipeCategoryNames.clear();
 
     if (files.length > 0) {
       Arrays.sort(files);
@@ -90,14 +96,16 @@ public class RecipeRegistry implements DataRegistry {
       if (!recipes.isEmpty()) {
         for (String category : categories.keySet()) {
           recipeCategories.put(category, createPages(categories.get(category)));
+          recipeCategoryNames.add(category);
         }
+        Collections.sort(recipeCategoryNames);
       }
     }
   }
 
   /**
    * Deserializes bytes from designated recipe file into a
-   * {@link Recipe recipe} that is then sorted into a category.
+   * {@link Recipe} that is then sorted into a category.
    * <p>
    * Data is stored in two lines of text, represented by the variable dataType.
    * <ul>
@@ -106,7 +114,7 @@ public class RecipeRegistry implements DataRegistry {
    * </ul>
    *
    * @param file       recipe file
-   * @param categories {@link Recipe recipe} categories
+   * @param categories {@link Recipe} categories
    */
   private void readFile(File file, Map<String, List<List<ItemStack>>> categories) {
     List<ItemStack> results = new ArrayList<>();
@@ -134,10 +142,10 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Creates a {@link Recipe recipe} category's pages.
+   * Creates a {@link Recipe} category's pages.
    *
-   * @param recipes {@link Recipe recipes} from a {@link Recipe recipe} category
-   * @return {@link Recipe recipe} category's pages
+   * @param recipes {@link Recipe recipes} from a {@link Recipe} category
+   * @return {@link Recipe} category's pages
    */
   private List<Inventory> createPages(List<List<ItemStack>> recipes) {
     int totalRecipes = recipes.size();
@@ -165,7 +173,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Reads lines of text from the file and adds decoded items to the {@link Recipe recipe}.
+   * Reads lines of text from the file and adds decoded items to the {@link Recipe}.
    * <p>
    * Individual encoded ItemStacks are separated by spaces.
    *
@@ -196,7 +204,7 @@ public class RecipeRegistry implements DataRegistry {
   /**
    * Sorts a recipe into a category based on its {@link Key#RECIPE_CATEGORY}.
    *
-   * @param categories {@link Recipe recipe} categories
+   * @param categories {@link Recipe} categories
    * @param results    interacting recipe
    */
   private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
@@ -242,7 +250,7 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded {@link Recipe recipe}.
+   * Gets loaded {@link Recipe}.
    *
    * @return loaded {@link Recipe recipes}
    */
@@ -252,13 +260,23 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Gets loaded {@link Recipe recipe} categories.
+   * Gets loaded {@link Recipe} categories.
    *
-   * @return loaded {@link Recipe recipe} categories
+   * @return loaded {@link Recipe} categories
    */
   @NotNull
   protected Map<String, List<Inventory>> getRecipeCategories() {
     return this.recipeCategories;
+  }
+
+  /**
+   * Gets sorted {@link Recipe} category names.
+   *
+   * @return sorted {@link Recipe} category names
+   */
+  @NotNull
+  protected List<String> getRecipeCategoryNames() {
+    return this.recipeCategoryNames;
   }
 
   /**
