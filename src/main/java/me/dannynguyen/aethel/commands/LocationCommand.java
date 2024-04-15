@@ -2,8 +2,10 @@ package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.utils.EntityReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +30,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.6
+ * @version 1.23.6
  * @since 1.22.5
  */
 public class LocationCommand implements CommandExecutor {
@@ -213,6 +215,10 @@ public class LocationCommand implements CommandExecutor {
      * Tracks a location.
      */
     private void trackLocation() {
+      if (!canTrackOrCompare()) {
+        return;
+      }
+
       switch (args.length) {
         case 1 -> {
           Plugin.getData().getPluginSystem().getTrackedLocations().remove(user.getUniqueId());
@@ -264,8 +270,13 @@ public class LocationCommand implements CommandExecutor {
      * Compares two locations.
      */
     private void compareLocations() {
+      if (!canTrackOrCompare()) {
+        return;
+      }
+
       switch (args.length) {
         case 2, 3 -> {
+
           DecimalFormat df2 = new DecimalFormat();
           df2.setMaximumFractionDigits(2);
 
@@ -305,6 +316,21 @@ public class LocationCommand implements CommandExecutor {
           user.sendMessage(ChatColor.GOLD + "Volume: " + ChatColor.WHITE + df2.format((xLength * yLength * zLength)));
         }
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
+    }
+
+    /**
+     * The user must have a compass in their hand,
+     * off-hand, or trinket slot to track or compare locations.
+     *
+     * @return if the user can track or compare locations
+     */
+    private boolean canTrackOrCompare() {
+      if (EntityReader.hasTrinket(user, Material.COMPASS)) {
+        return true;
+      } else {
+        user.sendMessage(ChatColor.RED + "No compass in hand, off-hand, or trinket slot.");
+        return false;
       }
     }
   }

@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
+import me.dannynguyen.aethel.utils.EntityReader;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
@@ -31,7 +32,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.6
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -120,7 +121,12 @@ public class ForgeMenuClick implements MenuClick {
    */
   public void interpretCraftDetailsClick() {
     switch (e.getSlot()) {
-      case 25 -> new RecipeCraft(e.getClickedInventory().getItem(0)).readRecipeMaterials();
+      case 25 -> {
+        if (!canForge()) {
+          return;
+        }
+        new RecipeCraft(e.getClickedInventory().getItem(0)).readRecipeMaterials();
+      }
       case 26 -> openForgeCraft();
     }
   }
@@ -339,6 +345,21 @@ public class ForgeMenuClick implements MenuClick {
       }
     }
     return results.append("\n").append(materials).toString();
+  }
+
+  /**
+   * The user must have a crafting table in their
+   * hand, off-hand, or trinket slot to forge recipes.
+   *
+   * @return if the user can forge recipes
+   */
+  private boolean canForge() {
+    if (EntityReader.hasTrinket(user, Material.CRAFTING_TABLE)) {
+      return true;
+    } else {
+      user.sendMessage(ChatColor.RED + "[Forge] No crafting table in hand, off-hand, or trinket slot.");
+      return false;
+    }
   }
 
   /**

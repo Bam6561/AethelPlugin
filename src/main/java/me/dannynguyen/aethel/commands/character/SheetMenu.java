@@ -33,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.23.0
+ * @version 1.23.6
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -118,7 +118,7 @@ public class SheetMenu implements Menu {
         ChatColor.GRAY + "Head" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Main Hand" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Off Hand",
         ChatColor.GRAY + "Chest" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Necklace",
         ChatColor.GRAY + "Legs" + ChatColor.WHITE + "  | " + ChatColor.GRAY + "Ring",
-        ChatColor.GRAY + "Boots");
+        ChatColor.GRAY + "Boots" + ChatColor.WHITE + " | " + ChatColor.GRAY + "Trinket");
     menu.setItem(9, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.WHITE + "Equipment", context));
   }
 
@@ -147,6 +147,7 @@ public class SheetMenu implements Menu {
     menu.setItem(12, pInv.getItemInOffHand());
     menu.setItem(20, jewelry[0]);
     menu.setItem(29, jewelry[1]);
+    menu.setItem(38, jewelry[2]);
   }
 
   /**

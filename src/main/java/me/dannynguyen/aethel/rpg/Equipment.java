@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.23.4
+ * @version 1.23.6
  * @since 1.13.4
  */
 public class Equipment {
@@ -67,8 +67,13 @@ public class Equipment {
 
   /**
    * Jewelry slots.
+   * <ul>
+   *   <li>Necklace
+   *   <li>Ring
+   *   <li>Trinket
+   * </ul>
    */
-  private final ItemStack[] jewelry = new ItemStack[2];
+  private final ItemStack[] jewelry = new ItemStack[3];
 
   /**
    * Held item.
@@ -104,6 +109,7 @@ public class Equipment {
       Scanner scanner = new Scanner(file);
       jewelry[0] = ItemReader.decodeItem(scanner.nextLine());
       jewelry[1] = ItemReader.decodeItem(scanner.nextLine());
+      jewelry[2] = ItemReader.decodeItem(scanner.nextLine());
       scanner.close();
     } catch (IOException ex) {
       Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());

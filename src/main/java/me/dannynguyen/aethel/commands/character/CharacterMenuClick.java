@@ -36,7 +36,7 @@ import java.util.UUID;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.12
+ * @version 1.23.6
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
@@ -114,6 +114,14 @@ public class CharacterMenuClick implements MenuClick {
             user.sendMessage(ChatColor.RED + "Ring-only slot.");
           }
         }
+        case 38 -> { // Trinket
+          e.setCancelled(false);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+            ItemStack[] jewelry = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().getJewelry();
+            Inventory menu = e.getClickedInventory();
+            jewelry[2] = menu.getItem(38);
+          }, 1);
+        }
       }
     } else {
       switch (slot) {
@@ -144,6 +152,14 @@ public class CharacterMenuClick implements MenuClick {
           }
           e.setCancelled(false);
           interpretEquipItem();
+        }
+        case 38 -> { // Trinket
+          e.setCancelled(false);
+          Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+            ItemStack[] jewelry = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().getJewelry();
+            Inventory menu = e.getClickedInventory();
+            jewelry[2] = menu.getItem(38);
+          }, 1);
         }
       }
     }

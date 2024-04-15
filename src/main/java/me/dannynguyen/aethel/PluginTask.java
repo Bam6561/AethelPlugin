@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
+import me.dannynguyen.aethel.utils.EntityReader;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +27,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.23.4
+ * @version 1.23.6
  * @since 1.22.2
  */
 public class PluginTask {
@@ -186,6 +187,12 @@ public class PluginTask {
     Map<UUID, Location> trackedLocations = Plugin.getData().getPluginSystem().getTrackedLocations();
     for (UUID uuid : trackedLocations.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
+      if (!EntityReader.hasTrinket(player, Material.COMPASS)) {
+        player.sendMessage(ChatColor.RED + "[Tracking Location] No compass in hand, off-hand, or trinket slot.");
+        trackedLocations.remove(uuid);
+        return;
+      }
+
       Location here = player.getLocation().add(0, 1, 0);
       Location there = trackedLocations.get(uuid);
       if (here.getWorld().getName().equals(there.getWorld().getName())) {

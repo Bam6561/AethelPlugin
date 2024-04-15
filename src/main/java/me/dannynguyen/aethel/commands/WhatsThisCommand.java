@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.23.3
+ * @version 1.23.6
  * @since 1.22.1
  */
 public class WhatsThisCommand implements CommandExecutor {
@@ -305,6 +305,7 @@ public class WhatsThisCommand implements CommandExecutor {
         ChatColor.GREEN + "Forge",
         ChatColor.GRAY + "/forge, /f",
         ChatColor.GRAY + "Craft Forge recipes.",
+        ChatColor.GRAY + "Must have a crafting table in your hand, off-hand, or trinket slot to forge an item.",
         ChatColor.GRAY + ": Opens the Forge crafting menu."}),
 
     /**
@@ -316,6 +317,7 @@ public class WhatsThisCommand implements CommandExecutor {
         ChatColor.GRAY + "Saves, tracks, and compares locations.",
         ChatColor.GRAY + "You can reference a location by either name or coordinates.",
         ChatColor.GRAY + "If no second location is provided, it will default to your current location.",
+        ChatColor.GRAY + "Must have a compass in your hand, off-hand, or trinket slot to track or compare locations.",
         ChatColor.GRAY + "get, g: gets saved locations",
         ChatColor.GRAY + "add, a: saves a new location - provide a name",
         ChatColor.GRAY + "remove, r: removes a saved location",
