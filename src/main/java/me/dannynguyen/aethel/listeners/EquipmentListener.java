@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -28,7 +29,7 @@ import java.util.Objects;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.3
+ * @version 1.23.5
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -51,15 +52,24 @@ public class EquipmentListener implements Listener {
       Player player = (Player) e.getWhoClicked();
       if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem())) {
         new EquipmentUpdate(player, e.getCurrentItem(), true).updateIfWornItem();
-      } else {
-        int slot = e.getSlot();
-        switch (slot) {
-          case 36, 37, 38, 39, 40 -> {
-            if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-              new EquipmentUpdate(player).updateEquipmentSlot(slot);
-              Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-              }, 1);
-            }
+        return;
+      }
+
+      if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
+        ItemStack item = player.getInventory().getItem(e.getHotbarButton());
+        if (ItemReader.isNotNullOrAir(item)) {
+          new EquipmentUpdate(player, item, true).updateIfWornItem();
+        }
+        return;
+      }
+
+      int slot = e.getSlot();
+      switch (slot) {
+        case 36, 37, 38, 39, 40 -> {
+          if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+            new EquipmentUpdate(player).updateEquipmentSlot(slot);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+            }, 1);
           }
         }
       }
