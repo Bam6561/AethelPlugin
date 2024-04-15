@@ -18,7 +18,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s settings.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.4
  * @since 1.16.4
  */
 public class Settings {
@@ -75,30 +75,32 @@ public class Settings {
    */
   private void loadSettings() {
     File file = new File(Directory.SETTINGS.getFile().getPath() + "/" + uuid.toString() + "_set.txt");
-    if (file.exists()) {
-      try {
-        Scanner scanner = new Scanner(file);
+    if (!file.exists()) {
+      return;
+    }
 
-        String[] settings = scanner.nextLine().split(", ");
-        int slotOrder = 0;
-        for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
-          for (String hotbarString : settings[slotOrder].split(" ")) {
-            if (!hotbarString.isBlank()) {
-              int hotbarSlot = Integer.parseInt(hotbarString);
-              abilityBoundEquipmentSlots.get(eSlot).add(hotbarSlot);
-              abilityBoundHotbar.get(hotbarSlot).add(eSlot);
-            }
+    try {
+      Scanner scanner = new Scanner(file);
+
+      String[] settings = scanner.nextLine().split(", ");
+      int slotOrder = 0;
+      for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
+        for (String hotbarString : settings[slotOrder].split(" ")) {
+          if (!hotbarString.isBlank()) {
+            int hotbarSlot = Integer.parseInt(hotbarString);
+            abilityBoundEquipmentSlots.get(eSlot).add(hotbarSlot);
+            abilityBoundHotbar.get(hotbarSlot).add(eSlot);
           }
-          slotOrder++;
         }
-
-        settings = scanner.nextLine().split(" ");
-        healthBarVisible = Boolean.parseBoolean(settings[0]);
-        healthActionVisible = Boolean.parseBoolean(settings[1]);
-        scanner.close();
-      } catch (IOException ex) {
-        Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
+        slotOrder++;
       }
+
+      settings = scanner.nextLine().split(" ");
+      healthBarVisible = Boolean.parseBoolean(settings[0]);
+      healthActionVisible = Boolean.parseBoolean(settings[1]);
+      scanner.close();
+    } catch (IOException ex) {
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
     }
   }
 

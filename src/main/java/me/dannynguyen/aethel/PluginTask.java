@@ -26,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.23.0
+ * @version 1.23.4
  * @since 1.22.2
  */
 public class PluginTask {
@@ -43,13 +43,15 @@ public class PluginTask {
     Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
     for (UUID uuid : rpgPlayers.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
-      if (player != null) {
-        Equipment equipment = rpgPlayers.get(uuid).getEquipment();
-        ItemStack heldItem = player.getInventory().getItemInMainHand();
-        if (heldItem.getType() != (equipment.getHeldItem()).getType()) {
-          equipment.setHeldItem(heldItem);
-          equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
-        }
+      if (player == null) {
+        continue;
+      }
+
+      Equipment equipment = rpgPlayers.get(uuid).getEquipment();
+      ItemStack heldItem = player.getInventory().getItemInMainHand();
+      if (heldItem.getType() != (equipment.getHeldItem()).getType()) {
+        equipment.setHeldItem(heldItem);
+        equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
       }
     }
   }
@@ -61,7 +63,11 @@ public class PluginTask {
     Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
     for (UUID uuid : entityStatuses.keySet()) {
       Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-      if (Bukkit.getEntity(uuid) instanceof LivingEntity entity && (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED))) {
+      if (!(Bukkit.getEntity(uuid) instanceof LivingEntity entity)) {
+        continue;
+      }
+
+      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED)) {
         World world = entity.getWorld();
         Location bodyLocation = entity.getLocation().add(0, 1, 0);
         DamageMitigation mitigation = new DamageMitigation(entity);
@@ -237,21 +243,23 @@ public class PluginTask {
       }
     }
 
-    if (!nearbyLivingEntities.isEmpty()) {
-      double remainingStacks = Math.abs(remainingHealth / 0.2);
-      int appliedStacks = (int) Math.max(1, remainingStacks / nearbyLivingEntities.size());
-      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-      for (LivingEntity livingEntity : nearbyLivingEntities) {
-        UUID uuid = livingEntity.getUniqueId();
-        if (!entityStatuses.containsKey(uuid)) {
-          entityStatuses.put(uuid, new HashMap<>());
-        }
-        Map<StatusType, Status> statuses = entityStatuses.get(uuid);
-        if (statuses.containsKey(StatusType.ELECTROCUTE)) {
-          statuses.get(StatusType.ELECTROCUTE).addStacks(appliedStacks, 60);
-        } else {
-          statuses.put(StatusType.ELECTROCUTE, new Status(uuid, StatusType.ELECTROCUTE, appliedStacks, 60));
-        }
+    if (nearbyLivingEntities.isEmpty()) {
+      return;
+    }
+
+    double remainingStacks = Math.abs(remainingHealth / 0.2);
+    int appliedStacks = (int) Math.max(1, remainingStacks / nearbyLivingEntities.size());
+    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+    for (LivingEntity livingEntity : nearbyLivingEntities) {
+      UUID uuid = livingEntity.getUniqueId();
+      if (!entityStatuses.containsKey(uuid)) {
+        entityStatuses.put(uuid, new HashMap<>());
+      }
+      Map<StatusType, Status> statuses = entityStatuses.get(uuid);
+      if (statuses.containsKey(StatusType.ELECTROCUTE)) {
+        statuses.get(StatusType.ELECTROCUTE).addStacks(appliedStacks, 60);
+      } else {
+        statuses.put(StatusType.ELECTROCUTE, new Status(uuid, StatusType.ELECTROCUTE, appliedStacks, 60));
       }
     }
   }

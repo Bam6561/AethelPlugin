@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.4
  * @since 1.13.4
  */
 public class Equipment {
@@ -96,15 +96,17 @@ public class Equipment {
    */
   private void loadJewelrySlots() {
     File file = new File(Directory.JEWELRY.getFile().getPath() + "/" + uuid.toString() + "_jwl.txt");
-    if (file.exists()) {
-      try {
-        Scanner scanner = new Scanner(file);
-        jewelry[0] = ItemReader.decodeItem(scanner.nextLine());
-        jewelry[1] = ItemReader.decodeItem(scanner.nextLine());
-        scanner.close();
-      } catch (IOException ex) {
-        Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
-      }
+    if (!file.exists()) {
+      return;
+    }
+
+    try {
+      Scanner scanner = new Scanner(file);
+      jewelry[0] = ItemReader.decodeItem(scanner.nextLine());
+      jewelry[1] = ItemReader.decodeItem(scanner.nextLine());
+      scanner.close();
+    } catch (IOException ex) {
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
     }
   }
 
@@ -135,24 +137,26 @@ public class Equipment {
    * @param eSlot {@link RpgEquipmentSlot}
    */
   private void loadSlot(ItemStack item, RpgEquipmentSlot eSlot) {
-    if (ItemReader.isNotNullOrAir(item)) {
-      PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
-      if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-        attributes.getSlotAttributes().put(eSlot, new HashMap<>());
-        attributes.readAttributes(eSlot, itemTags, true);
-      }
-      if (item.getItemMeta().hasEnchants()) {
-        enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
-        enchantments.addEnchantments(eSlot, item, true);
-      }
-      if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-        abilities.getSlotPassives().put(eSlot, new ArrayList<>());
-        abilities.readPassives(eSlot, itemTags);
-      }
-      if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
-        abilities.getTriggerActives().put(eSlot, new ArrayList<>());
-        abilities.readActives(eSlot, itemTags);
-      }
+    if (ItemReader.isNullOrAir(item)) {
+      return;
+    }
+
+    PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+    if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      attributes.getSlotAttributes().put(eSlot, new HashMap<>());
+      attributes.readAttributes(eSlot, itemTags, true);
+    }
+    if (item.getItemMeta().hasEnchants()) {
+      enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
+      enchantments.addEnchantments(eSlot, item, true);
+    }
+    if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      abilities.getSlotPassives().put(eSlot, new ArrayList<>());
+      abilities.readPassives(eSlot, itemTags);
+    }
+    if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      abilities.getTriggerActives().put(eSlot, new ArrayList<>());
+      abilities.readActives(eSlot, itemTags);
     }
   }
 

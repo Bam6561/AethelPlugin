@@ -10,7 +10,7 @@ import java.util.Objects;
  * Gets or modifies existing items' repair costs.
  *
  * @author Danny Nguyen
- * @version 1.13.8
+ * @version 1.23.4
  * @since 1.13.7
  */
 public class ItemRepairCost {
@@ -28,7 +28,8 @@ public class ItemRepairCost {
    */
   @NotNull
   public static String getRepairCost(@NotNull ItemStack item) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Repairable repair) {
+    Objects.requireNonNull(item, "Null item");
+    if (item.getItemMeta() instanceof Repairable repair) {
       return String.valueOf(repair.getRepairCost());
     } else {
       return "";
@@ -42,9 +43,12 @@ public class ItemRepairCost {
    * @param cost repair cost to be set
    */
   public static void setRepairCost(@NotNull ItemStack item, int cost) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Repairable repair) {
-      repair.setRepairCost(cost);
-      item.setItemMeta(repair);
+    Objects.requireNonNull(item, "Null item");
+    if (!(item.getItemMeta() instanceof Repairable repair)) {
+      return;
     }
+
+    repair.setRepairCost(cost);
+    item.setItemMeta(repair);
   }
 }

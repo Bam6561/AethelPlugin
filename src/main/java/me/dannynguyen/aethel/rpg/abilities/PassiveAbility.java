@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.4
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -294,13 +294,15 @@ public class PassiveAbility {
   private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, double meters) {
     Set<LivingEntity> newSoakedTargets = new HashSet<>();
     for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
-      if (entity instanceof LivingEntity livingEntity) {
-        UUID livingEntityUUID = livingEntity.getUniqueId();
-        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
-          if (!soakedTargets.containsKey(livingEntity)) {
-            newSoakedTargets.add(livingEntity);
-            soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
-          }
+      if (!(entity instanceof LivingEntity livingEntity)) {
+        continue;
+      }
+
+      UUID livingEntityUUID = livingEntity.getUniqueId();
+      if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
+        if (!soakedTargets.containsKey(livingEntity)) {
+          newSoakedTargets.add(livingEntity);
+          soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
         }
       }
     }

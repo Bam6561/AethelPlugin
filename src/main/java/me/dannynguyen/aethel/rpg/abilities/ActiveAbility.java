@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.4
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -249,10 +249,11 @@ public class ActiveAbility {
         world.playSound(caster.getEyeLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
         world.spawnParticle(Particle.EXPLOSION_LARGE, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
         for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
-          if (entity instanceof LivingEntity livingEntity) {
-            if (isTargetUnobstructed(caster, livingEntity)) {
-              targets.add(livingEntity);
-            }
+          if (!(entity instanceof LivingEntity livingEntity)) {
+            continue;
+          }
+          if (isTargetUnobstructed(caster, livingEntity)) {
+            targets.add(livingEntity);
           }
         }
       }
@@ -261,10 +262,11 @@ public class ActiveAbility {
         Vector casterDirection = caster.getLocation().getDirection();
         world.spawnParticle(Particle.SWEEP_ATTACK, caster.getLocation().add(0, 1, 0).add(casterDirection.setY(0).multiply(1.5)), 3, 0.125, 0.125, 0.125);
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
-          if (entity instanceof LivingEntity livingEntity) {
-            if (getDirectionAngle(caster, livingEntity) <= 45 && isTargetUnobstructed(caster, livingEntity)) {
-              targets.add(livingEntity);
-            }
+          if (!(entity instanceof LivingEntity livingEntity)) {
+            continue;
+          }
+          if (getDirectionAngle(caster, livingEntity) <= 45 && isTargetUnobstructed(caster, livingEntity)) {
+            targets.add(livingEntity);
           }
         }
       }
@@ -277,10 +279,11 @@ public class ActiveAbility {
         world.playSound(caster.getEyeLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.25f, 2);
         world.spawnParticle(Particle.BLOCK_DUST, caster.getLocation(), 20, 1.5, 0.25, 1.5, Bukkit.createBlockData(Material.DIRT));
         for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
-          if (entity instanceof LivingEntity livingEntity) {
-            if (isTargetUnobstructed(caster, livingEntity)) {
-              targets.add(livingEntity);
-            }
+          if (!(entity instanceof LivingEntity livingEntity)) {
+            continue;
+          }
+          if (isTargetUnobstructed(caster, livingEntity)) {
+            targets.add(livingEntity);
           }
         }
       }
@@ -416,25 +419,26 @@ public class ActiveAbility {
 
     world.playSound(caster.getEyeLocation(), Sound.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS, 0.5f, 0.25f);
     for (Entity entity : caster.getNearbyEntities(meters, meters, meters)) {
-      if (entity instanceof LivingEntity livingEntity) {
-        UUID livingEntityUUID = livingEntity.getUniqueId();
+      if (!(entity instanceof LivingEntity livingEntity)) {
+        continue;
+      }
 
-        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.BRITTLE)) {
-          world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
+      UUID livingEntityUUID = livingEntity.getUniqueId();
+      if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.BRITTLE)) {
+        world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
 
-          Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
-          double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
-          final double finalDamage = new DamageMitigation(livingEntity).mitigateArmorProtectionResistance(damage);
+        Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
+        double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
+        final double finalDamage = new DamageMitigation(livingEntity).mitigateArmorProtectionResistance(damage);
 
-          if (livingEntity instanceof Player player) {
-            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-              new HealthModification(livingEntity).damage(finalDamage);
-            }
-          } else {
+        if (livingEntity instanceof Player player) {
+          if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
             new HealthModification(livingEntity).damage(finalDamage);
           }
-          statuses.remove(StatusType.BRITTLE);
+        } else {
+          new HealthModification(livingEntity).damage(finalDamage);
         }
+        statuses.remove(StatusType.BRITTLE);
       }
     }
     if (baseCooldown > 0) {

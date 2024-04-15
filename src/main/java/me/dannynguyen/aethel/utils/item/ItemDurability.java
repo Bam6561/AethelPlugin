@@ -27,7 +27,7 @@ import java.util.Random;
  * Gets or modifies existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.23.2
+ * @version 1.23.4
  * @since 1.13.0
  */
 public class ItemDurability {
@@ -179,14 +179,17 @@ public class ItemDurability {
    * @param requestedDurability requested durability
    */
   public static void setDurability(@NotNull ItemStack item, int requestedDurability) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
-      if (requestedDurability > item.getType().getMaxDurability()) {
-        durability.setDamage(0);
-      } else {
-        durability.setDamage(Math.abs(requestedDurability - item.getType().getMaxDurability()));
-      }
-      item.setItemMeta(durability);
+    Objects.requireNonNull(item, "Null item");
+    if (!(item.getItemMeta() instanceof Damageable durability)) {
+      return;
     }
+
+    if (requestedDurability > item.getType().getMaxDurability()) {
+      durability.setDamage(0);
+    } else {
+      durability.setDamage(Math.abs(requestedDurability - item.getType().getMaxDurability()));
+    }
+    item.setItemMeta(durability);
   }
 
   /**
@@ -199,9 +202,12 @@ public class ItemDurability {
    * @param damage durability damage
    */
   public static void setDamage(@NotNull ItemStack item, int damage) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
-      durability.setDamage(Math.min(damage, item.getType().getMaxDurability()));
-      item.setItemMeta(durability);
+    Objects.requireNonNull(item, "Null item");
+    if (!(item.getItemMeta() instanceof Damageable durability)) {
+      return;
     }
+
+    durability.setDamage(Math.min(damage, item.getType().getMaxDurability()));
+    item.setItemMeta(durability);
   }
 }

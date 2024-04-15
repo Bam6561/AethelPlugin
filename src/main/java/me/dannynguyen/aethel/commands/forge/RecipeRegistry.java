@@ -25,7 +25,7 @@ import java.util.*;
  * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.4
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -84,23 +84,27 @@ public class RecipeRegistry implements DataRegistry {
     recipeCategories.clear();
     recipeCategoryNames.clear();
 
-    if (files.length > 0) {
-      Arrays.sort(files);
+    if (files.length == 0) {
+      return;
+    }
 
-      Map<String, List<List<ItemStack>>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
-      for (File file : files) {
-        if (file.getName().endsWith("_rcp.txt")) {
-          readFile(file, categories);
-        }
-      }
-      if (!recipes.isEmpty()) {
-        for (String category : categories.keySet()) {
-          recipeCategories.put(category, createPages(categories.get(category)));
-          recipeCategoryNames.add(category);
-        }
-        Collections.sort(recipeCategoryNames);
+    Arrays.sort(files);
+    Map<String, List<List<ItemStack>>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
+    for (File file : files) {
+      if (file.getName().endsWith("_rcp.txt")) {
+        readFile(file, categories);
       }
     }
+
+    if (recipes.isEmpty()) {
+      return;
+    }
+
+    for (String category : categories.keySet()) {
+      recipeCategories.put(category, createPages(categories.get(category)));
+      recipeCategoryNames.add(category);
+    }
+    Collections.sort(recipeCategoryNames);
   }
 
   /**
@@ -209,13 +213,15 @@ public class RecipeRegistry implements DataRegistry {
    */
   private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
     PersistentDataContainer data = results.get(0).getItemMeta().getPersistentDataContainer();
-    if (data.has(Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
-      String category = data.get(Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
-      if (categories.containsKey(category)) {
-        categories.get(category).add(results);
-      } else {
-        categories.put(category, new ArrayList<>(List.of(results)));
-      }
+    if (!data.has(Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
+      return;
+    }
+
+    String category = data.get(Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
+    if (categories.containsKey(category)) {
+      categories.get(category).add(results);
+    } else {
+      categories.put(category, new ArrayList<>(List.of(results)));
     }
   }
 

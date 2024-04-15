@@ -16,7 +16,7 @@ import java.util.*;
  * Represents saved locations.
  *
  * @author Danny Nguyen
- * @version 1.22.6
+ * @version 1.23.4
  * @since 1.22.5
  */
 public class LocationRegistry {
@@ -45,26 +45,28 @@ public class LocationRegistry {
    */
   private void loadLocations() {
     File file = new File(Directory.LOCATION.getFile().getPath() + "/" + uuid.toString() + "_loc.txt");
-    if (file.exists()) {
-      try {
-        Scanner scanner = new Scanner(file);
-        while (scanner.hasNextLine()) {
-          String line = scanner.nextLine();
-          if (line.isEmpty()) {
-            continue;
-          }
-          String[] locationString = line.split(" ");
-          String name = locationString[0];
-          World world = Bukkit.getServer().getWorld(locationString[1]);
-          double x = Double.parseDouble(locationString[2]);
-          double y = Double.parseDouble(locationString[3]);
-          double z = Double.parseDouble(locationString[4]);
-          locations.put(name, new Location(world, x, y, z));
+    if (!file.exists()) {
+      return;
+    }
+
+    try {
+      Scanner scanner = new Scanner(file);
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        if (line.isEmpty()) {
+          continue;
         }
-        scanner.close();
-      } catch (IOException ex) {
-        Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
+        String[] locationString = line.split(" ");
+        String name = locationString[0];
+        World world = Bukkit.getServer().getWorld(locationString[1]);
+        double x = Double.parseDouble(locationString[2]);
+        double y = Double.parseDouble(locationString[3]);
+        double z = Double.parseDouble(locationString[4]);
+        locations.put(name, new Location(world, x, y, z));
       }
+      scanner.close();
+    } catch (IOException ex) {
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
     }
   }
 

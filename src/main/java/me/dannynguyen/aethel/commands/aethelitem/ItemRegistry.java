@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.interfaces.DataRegistry;
 import me.dannynguyen.aethel.utils.InventoryPages;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -24,7 +23,7 @@ import java.util.*;
  * called in order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.4
  * @since 1.3.2
  */
 public class ItemRegistry implements DataRegistry {
@@ -83,23 +82,27 @@ public class ItemRegistry implements DataRegistry {
     itemCategories.clear();
     itemCategoryNames.clear();
 
-    if (files.length > 0) {
-      Arrays.sort(files);
+    if (files.length == 0) {
+      return;
+    }
 
-      Map<String, List<ItemStack>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
-      for (File file : files) {
-        if (file.getName().endsWith("_itm.txt")) {
-          readFile(file, categories);
-        }
-      }
-      if (!items.isEmpty()) {
-        for (String category : categories.keySet()) {
-          itemCategories.put(category, createPages(categories.get(category)));
-          itemCategoryNames.add(category);
-        }
-        Collections.sort(itemCategoryNames);
+    Arrays.sort(files);
+    Map<String, List<ItemStack>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
+    for (File file : files) {
+      if (file.getName().endsWith("_itm.txt")) {
+        readFile(file, categories);
       }
     }
+
+    if (items.isEmpty()) {
+      return;
+    }
+
+    for (String category : categories.keySet()) {
+      itemCategories.put(category, createPages(categories.get(category)));
+      itemCategoryNames.add(category);
+    }
+    Collections.sort(itemCategoryNames);
   }
 
   /**
@@ -167,14 +170,15 @@ public class ItemRegistry implements DataRegistry {
    */
   private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
     PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    NamespacedKey itemCategory = Key.ITEM_CATEGORY.getNamespacedKey();
-    if (data.has(itemCategory, PersistentDataType.STRING)) {
-      String category = data.get(itemCategory, PersistentDataType.STRING);
-      if (categories.containsKey(category)) {
-        categories.get(category).add(item);
-      } else {
-        categories.put(category, new ArrayList<>(List.of(item)));
-      }
+    if (!data.has(Key.ITEM_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
+      return;
+    }
+
+    String category = data.get(Key.ITEM_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
+    if (categories.containsKey(category)) {
+      categories.get(category).add(item);
+    } else {
+      categories.put(category, new ArrayList<>(List.of(item)));
     }
   }
 
