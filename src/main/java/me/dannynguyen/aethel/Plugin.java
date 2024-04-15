@@ -82,7 +82,7 @@ public class Plugin extends JavaPlugin {
    *  <li>{@link ShowItemCommand}
    *  <li>{@link StatusCommand}
    *  <li>{@link StatCommand}
-   *  <li>{@link WhatsThatCommand}
+   *  <li>{@link WhatsThisCommand}
    * </ul>
    */
   private void registerCommands() {
@@ -99,7 +99,7 @@ public class Plugin extends JavaPlugin {
     this.getCommand("showitem").setExecutor(new ShowItemCommand());
     this.getCommand("status").setExecutor(new StatusCommand());
     this.getCommand("playerstat").setExecutor(new StatCommand());
-    this.getCommand("whatsthisfeature").setExecutor(new WhatsThatCommand());
+    this.getCommand("whatsthisfeature").setExecutor(new WhatsThisCommand());
   }
 
   /**

@@ -15,7 +15,7 @@ import java.util.Objects;
  * Reads entities with metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.3
  * @since 1.22.20
  */
 public class EntityReader {
@@ -39,7 +39,7 @@ public class EntityReader {
       String keyName = key.getKey();
       if (keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
         keyName = keyName.substring(7);
-        if (keyName.startsWith("attribute.") || keyName.startsWith("rpg.current_health")) {
+        if (keyName.startsWith("attribute.") || keyName.startsWith("rpg.health")) {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.DOUBLE)).append(" ");
         } else if (keyName.startsWith("enchantment.")) {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.INTEGER)).append(" ");

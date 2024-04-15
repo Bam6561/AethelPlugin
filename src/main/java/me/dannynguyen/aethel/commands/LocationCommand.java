@@ -89,10 +89,10 @@ public class LocationCommand implements CommandExecutor {
    * Represents a location query.
    *
    * @author Danny Nguyen
-   * @version 1.22.5
+   * @version 1.23.3
    * @since 1.22.5
    */
-  static class LocationRequest {
+  private static class LocationRequest {
     /**
      * Interacting user.
      */

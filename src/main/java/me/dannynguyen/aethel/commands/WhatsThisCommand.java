@@ -22,18 +22,18 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.23.0
+ * @version 1.23.3
  * @since 1.22.1
  */
-public class WhatsThatCommand implements CommandExecutor {
+public class WhatsThisCommand implements CommandExecutor {
   /**
    * No parameter constructor.
    */
-  public WhatsThatCommand() {
+  public WhatsThisCommand() {
   }
 
   /**
-   * Executes the WhatsThatFeature command.
+   * Executes the WhatsThisFeature command.
    *
    * @param sender  command source
    * @param command executed command
@@ -44,7 +44,7 @@ public class WhatsThatCommand implements CommandExecutor {
   @Override
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
-      if (user.hasPermission("aethel.whatsthatfeature")) {
+      if (user.hasPermission("aethel.whatsthisfeature")) {
         readRequest(user, args);
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
@@ -108,7 +108,7 @@ public class WhatsThatCommand implements CommandExecutor {
       case PING -> sendKeyWordDescription(user, KeyWord.PING);
       case PLAYERSTAT -> sendKeyWordDescription(user, KeyWord.PLAYERSTAT);
       case SHOWITEM -> sendKeyWordDescription(user, KeyWord.SHOWITEM);
-      case WHATSTHATFEATURE -> sendKeyWordDescription(user, KeyWord.WHATSTHATFEATURE);
+      case WHATSTHISFEATURE -> sendKeyWordDescription(user, KeyWord.WHATSTHISFEATURE);
       case OVERWORLD -> sendKeyWordDescription(user, KeyWord.OVERWORLD);
       case NETHER -> sendKeyWordDescription(user, KeyWord.NETHER);
       case END -> sendKeyWordDescription(user, KeyWord.END);
@@ -199,7 +199,7 @@ public class WhatsThatCommand implements CommandExecutor {
     COMMANDS(new String[]{
         ChatColor.GREEN + "Commands",
         ChatColor.GRAY + "These are commands you are able to use by default.",
-        "Related: " + ChatColor.AQUA + "character, forge, location, ping, playerstat, showitem, whatsthatfeature"}),
+        "Related: " + ChatColor.AQUA + "character, forge, location, ping, playerstat, showitem, whatsthisfeature"}),
 
     /**
      * World types.
@@ -352,11 +352,11 @@ public class WhatsThatCommand implements CommandExecutor {
         ChatColor.GRAY + "past: Opens a past shared items menu."}),
 
     /**
-     * {@link WhatsThatCommand}
+     * {@link WhatsThisCommand}
      */
-    WHATSTHATFEATURE(new String[]{
-        ChatColor.GREEN + "WhatsThatFeature",
-        ChatColor.GRAY + "/whatsthatfeature, /wtf",
+    WHATSTHISFEATURE(new String[]{
+        ChatColor.GREEN + "WhatsThisFeature",
+        ChatColor.GRAY + "/whatsthisfeature, /wtf",
         ChatColor.GRAY + "Looks up a keyword.",
         ChatColor.GRAY + "<keyWord>: Gets keyword's description.",}),
 

@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.2
+ * @version 1.23.3
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -595,8 +595,7 @@ public class ItemEditorMenuClick implements MenuClick {
     PassiveTriggerType passiveTriggerType = menuInput.getTrigger();
     String passive = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
     user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + passiveTriggerType.getProperName() + " " + passive + ChatColor.WHITE + " ability values:");
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + passiveTriggerType.getCondition().getData());
-    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + PassiveAbilityType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
+    user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + passiveTriggerType.getCondition().getData() + " " + PassiveAbilityType.valueOf(TextFormatter.formatEnum(passive)).getEffect().getData());
     menuInput.setObjectType(TextFormatter.formatId(passive));
     awaitMessageInput(MessageListener.Type.ITEMEDITOR_PASSIVE_ABILITY);
   }
