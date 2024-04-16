@@ -26,7 +26,7 @@ import java.util.UUID;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.7
  * @since 1.4.0
  */
 public class ItemMenuClick implements MenuClick {
@@ -239,7 +239,7 @@ public class ItemMenuClick implements MenuClick {
   private String nameItemFile(ItemStack item) {
     ItemMeta meta = item.getItemMeta();
     if (meta.hasDisplayName()) {
-      return TextFormatter.formatId(meta.getDisplayName());
+      return TextFormatter.formatId(ChatColor.stripColor(meta.getDisplayName()));
     } else {
       return TextFormatter.formatId(item.getType().name());
     }

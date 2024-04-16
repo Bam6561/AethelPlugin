@@ -678,7 +678,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.20.11
+   * @version 1.23.7
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -739,11 +739,6 @@ public class ItemEditorMenuClick implements MenuClick {
      * Generates an item's lore based on its {@link Key plugin-related data}.
      */
     private void generateLore() {
-      if (itemTags.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
-        generatedLore = true;
-        displayForgeId();
-      }
-
       if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.attributeValues = totalAttributeValues();
@@ -763,30 +758,32 @@ public class ItemEditorMenuClick implements MenuClick {
         addActiveHeaders();
       }
 
+      if (itemTags.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
+        if (generatedLore) {
+          lore.add("");
+        }
+        generatedLore = true;
+        lore.add(ChatColor.DARK_GRAY + "aethel:" + itemTags.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
+      }
+
       boolean hasReinforcementTags = itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER) && itemTags.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
       if (hasReinforcementTags) {
+        if (generatedLore) {
+          lore.add("");
+        }
         generatedLore = true;
         int reinforcement = itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
         int maxReinforcement = itemTags.get(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
         lore.add(ChatColor.WHITE + "Reinforcement: " + reinforcement + " / " + maxReinforcement);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
       }
 
       if (generatedLore) {
+        meta.setLore(lore);
+        item.setItemMeta(meta);
         user.sendMessage(ChatColor.GREEN + "[Generated Lore]");
       } else {
         user.sendMessage(ChatColor.RED + "Not modified by plugin.");
       }
-    }
-
-    /**
-     * Adds the Forge ID to the item's lore.
-     */
-    private void displayForgeId() {
-      lore.add(ChatColor.DARK_GRAY + "Forge ID: " + itemTags.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
-      meta.setLore(lore);
-      item.setItemMeta(meta);
     }
 
     /**
@@ -831,9 +828,7 @@ public class ItemEditorMenuClick implements MenuClick {
           lore.addAll(header);
         }
       }
-      meta.setLore(lore);
       meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-      item.setItemMeta(meta);
     }
 
     /**
@@ -940,8 +935,6 @@ public class ItemEditorMenuClick implements MenuClick {
           lore.addAll(header);
         }
       }
-      meta.setLore(lore);
-      item.setItemMeta(meta);
     }
 
     /**
@@ -975,8 +968,8 @@ public class ItemEditorMenuClick implements MenuClick {
           case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
           case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
           case POTION_EFFECT -> {
-            int amplifier = Integer.parseInt(abilityData[2] + 1);
-            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect ").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
+            int amplifier = Integer.parseInt(abilityData[2]) + 1;
+            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
           }
           case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
           case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
@@ -1012,8 +1005,6 @@ public class ItemEditorMenuClick implements MenuClick {
           lore.addAll(header);
         }
       }
-      meta.setLore(lore);
-      item.setItemMeta(meta);
     }
 
     /**

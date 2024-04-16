@@ -32,7 +32,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.6
+ * @version 1.23.7
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -307,7 +307,7 @@ public class ForgeMenuClick implements MenuClick {
 
       ItemMeta meta = item.getItemMeta();
       if (meta.hasDisplayName()) {
-        return TextFormatter.formatId(meta.getDisplayName());
+        return TextFormatter.formatId(ChatColor.stripColor(meta.getDisplayName()));
       } else {
         return TextFormatter.formatId(item.getType().name());
       }
