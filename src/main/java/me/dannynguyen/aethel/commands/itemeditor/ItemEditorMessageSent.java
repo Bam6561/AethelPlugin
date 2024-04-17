@@ -44,7 +44,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.9
+ * @version 1.23.11
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -94,7 +94,7 @@ public class ItemEditorMessageSent {
     meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Named Item] " + ChatColor.WHITE + e.getMessage());
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -108,7 +108,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -120,7 +120,7 @@ public class ItemEditorMessageSent {
       value = Integer.parseInt(e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
-      returnToCosmetic();
+      new MenuChange().returnToCosmetic();
       return;
     }
 
@@ -137,7 +137,7 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
     }
     item.setItemMeta(durability);
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -149,13 +149,13 @@ public class ItemEditorMessageSent {
       value = Integer.parseInt(e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
-      returnToCosmetic();
+      new MenuChange().returnToCosmetic();
       return;
     }
     meta.getPersistentDataContainer().set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Durability Reinforcement] " + ChatColor.WHITE + e.getMessage());
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -169,7 +169,7 @@ public class ItemEditorMessageSent {
         value = Integer.parseInt(e.getMessage());
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_VALUE.getMessage());
-        returnToCosmetic();
+        new MenuChange().returnToCosmetic();
         return;
       }
       itemTags.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
@@ -181,7 +181,7 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed Durability Reinforcement]");
     }
     item.setItemMeta(meta);
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -196,7 +196,7 @@ public class ItemEditorMessageSent {
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());
     }
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -206,7 +206,7 @@ public class ItemEditorMessageSent {
     meta.setLore(List.of(ChatColor.translateAlternateColorCodes('&', e.getMessage()).split(",, ")));
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Set Lore]");
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -222,7 +222,7 @@ public class ItemEditorMessageSent {
     }
     item.setItemMeta(meta);
     user.sendMessage(ChatColor.GREEN + "[Added Lore]");
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -232,7 +232,7 @@ public class ItemEditorMessageSent {
     String[] input = e.getMessage().split(" ", 2);
     if (input.length != 2) {
       user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-      returnToCosmetic();
+      new MenuChange().returnToCosmetic();
       return;
     }
     int line;
@@ -240,7 +240,7 @@ public class ItemEditorMessageSent {
       line = Integer.parseInt(input[0]) - 1;
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_LINE.getMessage());
-      returnToCosmetic();
+      new MenuChange().returnToCosmetic();
       return;
     }
 
@@ -253,7 +253,7 @@ public class ItemEditorMessageSent {
     } catch (IndexOutOfBoundsException ex) {
       user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
     }
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -265,7 +265,7 @@ public class ItemEditorMessageSent {
       line = Integer.parseInt(e.getMessage()) - 1;
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_LINE.getMessage());
-      returnToCosmetic();
+      new MenuChange().returnToCosmetic();
       return;
     }
 
@@ -278,7 +278,7 @@ public class ItemEditorMessageSent {
     } catch (IndexOutOfBoundsException ex) {
       user.sendMessage(Message.LINE_DOES_NOT_EXIST.getMessage());
     }
-    returnToCosmetic();
+    new MenuChange().returnToCosmetic();
   }
 
   /**
@@ -297,7 +297,7 @@ public class ItemEditorMessageSent {
       red = Integer.parseInt(input[0]);
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid Red.");
-      returnToPotion();
+      new MenuChange().returnToPotion();
       return;
     }
     int green;
@@ -305,7 +305,7 @@ public class ItemEditorMessageSent {
       green = Integer.parseInt(input[1]);
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid Green.");
-      returnToPotion();
+      new MenuChange().returnToPotion();
       return;
     }
     int blue;
@@ -313,14 +313,14 @@ public class ItemEditorMessageSent {
       blue = Integer.parseInt(input[2]);
     } catch (NumberFormatException ex) {
       user.sendMessage(ChatColor.RED + "Invalid Blue.");
-      returnToPotion();
+      new MenuChange().returnToPotion();
       return;
     }
 
     potion.setColor(org.bukkit.Color.fromRGB(red, green, blue));
     item.setItemMeta(potion);
     user.sendMessage(ChatColor.GREEN + "[Set Potion Color]");
-    returnToPotion();
+    new MenuChange().returnToPotion();
   }
 
   /**
@@ -339,18 +339,18 @@ public class ItemEditorMessageSent {
         attributeValue = Double.parseDouble(e.getMessage());
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_VALUE.getMessage());
-        returnToAttribute();
+        new MenuChange().returnToAttribute();
         return;
       }
-      removeExistingAttributeModifiers(attribute, equipmentSlot);
+      new AttributeRemove().removeExistingAttributeModifiers(attribute, equipmentSlot);
       meta.addAttributeModifier(attribute, new AttributeModifier(UUID.randomUUID(), "attribute", attributeValue, AttributeModifier.Operation.ADD_NUMBER, equipmentSlot));
       user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
     } else {
-      removeExistingAttributeModifiers(attribute, equipmentSlot);
+      new AttributeRemove().removeExistingAttributeModifiers(attribute, equipmentSlot);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
     }
     item.setItemMeta(meta);
-    returnToAttribute();
+    new MenuChange().returnToAttribute();
   }
 
   /**
@@ -363,14 +363,14 @@ public class ItemEditorMessageSent {
         attributeValue = Double.parseDouble(e.getMessage());
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_VALUE.getMessage());
-        returnToAethelAttribute();
+        new MenuChange().returnToAethelAttribute();
         return;
       }
-      setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), attributeValue, Key.ATTRIBUTE_LIST.getNamespacedKey());
+      new KeyChange().setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), attributeValue, Key.ATTRIBUTE_LIST.getNamespacedKey());
     } else {
-      removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
+      new KeyChange().removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
     }
-    returnToAethelAttribute();
+    new MenuChange().returnToAethelAttribute();
   }
 
   /**
@@ -385,7 +385,7 @@ public class ItemEditorMessageSent {
         level = Integer.parseInt(e.getMessage());
       } catch (NumberFormatException ex) {
         user.sendMessage(ChatColor.RED + "Invalid level.");
-        returnToEnchantment();
+        new MenuChange().returnToEnchantment();
         return;
       }
 
@@ -399,7 +399,7 @@ public class ItemEditorMessageSent {
       item.removeEnchantment(Enchantment.getByKey(enchantment));
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
     }
-    returnToEnchantment();
+    new MenuChange().returnToEnchantment();
   }
 
   /**
@@ -414,7 +414,7 @@ public class ItemEditorMessageSent {
       String[] input = e.getMessage().split(" ", 3);
       if (input.length != 3) {
         user.sendMessage("Invalid effect.");
-        returnToPotion();
+        new MenuChange().returnToPotion();
         return;
       }
       int duration;
@@ -422,7 +422,7 @@ public class ItemEditorMessageSent {
         duration = Integer.parseInt(input[0]);
       } catch (NumberFormatException ex) {
         user.sendMessage(ChatColor.RED + "Invalid duration");
-        returnToPotion();
+        new MenuChange().returnToPotion();
         return;
       }
       int amplifier;
@@ -430,7 +430,7 @@ public class ItemEditorMessageSent {
         amplifier = Integer.parseInt(input[1]);
       } catch (NumberFormatException ex) {
         user.sendMessage(ChatColor.RED + "Invalid amplifier.");
-        returnToPotion();
+        new MenuChange().returnToPotion();
         return;
       }
 
@@ -443,7 +443,7 @@ public class ItemEditorMessageSent {
         }
         default -> {
           user.sendMessage("Invalid true/false.");
-          returnToPotion();
+          new MenuChange().returnToPotion();
           return;
         }
       }
@@ -452,7 +452,7 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
     }
     item.setItemMeta(potion);
-    returnToPotion();
+    new MenuChange().returnToPotion();
   }
 
   /**
@@ -460,11 +460,11 @@ public class ItemEditorMessageSent {
    */
   public void setPassive() {
     if (!e.getMessage().equals("-")) {
-      new PassiveTagModification().interpretKeyToBeSet();
+      new PassiveChange().interpretKeyToBeSet();
     } else {
-      new PassiveTagModification().removeKeyFromList();
+      new PassiveChange().removeKeyFromList();
     }
-    returnToPassive();
+    new MenuChange().returnToPassive();
   }
 
   /**
@@ -472,11 +472,11 @@ public class ItemEditorMessageSent {
    */
   public void setActive() {
     if (!e.getMessage().equals("-")) {
-      new ActiveTagSetter().interpretKeyToBeSet();
+      new ActiveChange().interpretKeyToBeSet();
     } else {
-      removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
+      new KeyChange().removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
     }
-    returnToActive();
+    new MenuChange().returnToActive();
   }
 
   /**
@@ -495,178 +495,217 @@ public class ItemEditorMessageSent {
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
     }
     item.setItemMeta(meta);
-    returnToTag();
+    new MenuChange().returnToTag();
   }
 
   /**
-   * Removes existing attribute modifiers in the same slot.
+   * Represents a menu change operation.
    *
-   * @param attribute     attribute
-   * @param equipmentSlot equipment slot
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
    */
-  private void removeExistingAttributeModifiers(Attribute attribute, EquipmentSlot equipmentSlot) {
-    if (meta.getAttributeModifiers() != null) {
-      for (AttributeModifier attributeModifier : meta.getAttributeModifiers().get(attribute)) {
-        if (attributeModifier.getSlot() == equipmentSlot) {
-          meta.removeAttributeModifier(attribute, attributeModifier);
+  private class MenuChange {
+    /**
+     * No parameter constructor.
+     */
+    MenuChange() {
+    }
+
+    /**
+     * Returns to the {@link CosmeticMenu}.
+     */
+    private void returnToCosmetic() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new CosmeticMenu(user).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
+      });
+    }
+
+    /**
+     * Returns to the {@link AttributeMenu}.
+     */
+    private void returnToAttribute() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(menuInput.getSlot().name())).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+      });
+    }
+
+    /**
+     * Returns to the {@link AethelAttributeMenu}.
+     */
+    private void returnToAethelAttribute() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new AethelAttributeMenu(user, menuInput.getSlot()).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+      });
+    }
+
+    /**
+     * Returns to the {@link EnchantmentMenu}.
+     */
+    private void returnToEnchantment() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new EnchantmentMenu(user).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
+      });
+    }
+
+    /**
+     * Returns to the {@link PotionMenu}.
+     */
+    private void returnToPotion() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new PotionMenu(user).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
+      });
+    }
+
+    /**
+     * Returns to the {@link PassiveMenu}.
+     */
+    private void returnToPassive() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new PassiveMenu(user, menuInput.getSlot(), menuInput.getTrigger()).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
+      });
+    }
+
+    /**
+     * Returns to the {@link ActiveMenu}.
+     */
+    private void returnToActive() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new ActiveMenu(user, menuInput.getSlot()).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
+      });
+    }
+
+    /**
+     * Returns to the {@link TagMenu}.
+     */
+    private void returnToTag() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new TagMenu(user).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
+      });
+    }
+  }
+
+  /**
+   * Represents an item's attribute removal operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
+   */
+  private class AttributeRemove {
+    /**
+     * No parameter constructor.
+     */
+    AttributeRemove() {
+    }
+
+    /**
+     * Removes existing attribute modifiers in the same slot.
+     *
+     * @param attribute     attribute
+     * @param equipmentSlot equipment slot
+     */
+    private void removeExistingAttributeModifiers(Attribute attribute, EquipmentSlot equipmentSlot) {
+      if (meta.getAttributeModifiers() != null) {
+        for (AttributeModifier attributeModifier : meta.getAttributeModifiers().get(attribute)) {
+          if (attributeModifier.getSlot() == equipmentSlot) {
+            meta.removeAttributeModifier(attribute, attributeModifier);
+          }
         }
       }
     }
   }
 
   /**
-   * Sets a key with a double value to a {@link KeyHeader key header's} list of keys.
+   * Represents an item key change operation.
    *
-   * @param keyHeader {@link KeyHeader}
-   * @param keyValue  key value
-   * @param listKey   {@link Key list key}
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
    */
-  private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String slot = menuInput.getSlot().getId();
-    String type = menuInput.getObjectType();
-    String stringKeyToSet = slot + "." + type;
-    NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
-    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+  private class KeyChange {
+    /**
+     * Sets a key with a double value to a {@link KeyHeader key header's} list of keys.
+     *
+     * @param keyHeader {@link KeyHeader}
+     * @param keyValue  key value
+     * @param listKey   {@link Key list key}
+     */
+    private void setKeyDoubleToList(String keyHeader, double keyValue, NamespacedKey listKey) {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String slot = menuInput.getSlot().getId();
+      String type = menuInput.getObjectType();
+      String stringKeyToSet = slot + "." + type;
+      NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToSet);
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
-    if (itemTags.has(listKey, PersistentDataType.STRING)) {
-      List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
-      StringBuilder newKeys = new StringBuilder();
-      for (String key : keys) {
-        if (!key.equals(stringKeyToSet)) {
-          newKeys.append(key).append(" ");
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
+        StringBuilder newKeys = new StringBuilder();
+        for (String key : keys) {
+          if (!key.equals(stringKeyToSet)) {
+            newKeys.append(key).append(" ");
+          }
         }
-      }
-      itemTags.set(listKey, PersistentDataType.STRING, newKeys + stringKeyToSet);
-    } else {
-      itemTags.set(listKey, PersistentDataType.STRING, stringKeyToSet);
-    }
-    itemTags.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
-    item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
-  }
-
-  /**
-   * Removes a key from a {@link KeyHeader key header's} list of keys.
-   * <p>
-   * If the list is empty after the operation, the list is also removed.
-   *
-   * @param keyHeader {@link KeyHeader}
-   * @param listKey   {@link Key list key}
-   */
-  private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String slot = menuInput.getSlot().getId();
-    String type = menuInput.getObjectType();
-    String stringKeyToRemove = slot + "." + type;
-    NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
-    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
-
-    if (itemTags.has(listKey, PersistentDataType.STRING)) {
-      List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
-      StringBuilder newKeys = new StringBuilder();
-      for (String key : keys) {
-        if (!key.equals(stringKeyToRemove)) {
-          newKeys.append(key).append(" ");
-        }
-      }
-      if (!newKeys.isEmpty()) {
-        itemTags.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys + stringKeyToSet);
       } else {
-        itemTags.remove(listKey);
+        itemTags.set(listKey, PersistentDataType.STRING, stringKeyToSet);
       }
-      itemTags.remove(namespacedKeyToRemove);
+      itemTags.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
     }
-    item.setItemMeta(meta);
-    user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
-  }
 
-  /**
-   * Returns to the {@link CosmeticMenu}.
-   */
-  private void returnToCosmetic() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new CosmeticMenu(user).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
-    });
-  }
+    /**
+     * Removes a key from a {@link KeyHeader key header's} list of keys.
+     * <p>
+     * If the list is empty after the operation, the list is also removed.
+     *
+     * @param keyHeader {@link KeyHeader}
+     * @param listKey   {@link Key list key}
+     */
+    private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String slot = menuInput.getSlot().getId();
+      String type = menuInput.getObjectType();
+      String stringKeyToRemove = slot + "." + type;
+      NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + stringKeyToRemove);
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
 
-  /**
-   * Returns to the {@link AttributeMenu}.
-   */
-  private void returnToAttribute() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AttributeMenu(user, EquipmentSlot.valueOf(menuInput.getSlot().name())).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
-    });
-  }
-
-  /**
-   * Returns to the {@link AethelAttributeMenu}.
-   */
-  private void returnToAethelAttribute() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new AethelAttributeMenu(user, menuInput.getSlot()).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
-    });
-  }
-
-  /**
-   * Returns to the {@link EnchantmentMenu}.
-   */
-  private void returnToEnchantment() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new EnchantmentMenu(user).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
-    });
-  }
-
-  /**
-   * Returns to the {@link PotionMenu}.
-   */
-  private void returnToPotion() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PotionMenu(user).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
-    });
-  }
-
-  /**
-   * Returns to the {@link PassiveMenu}.
-   */
-  private void returnToPassive() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new PassiveMenu(user, menuInput.getSlot(), menuInput.getTrigger()).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
-    });
-  }
-
-  /**
-   * Returns to the {@link ActiveMenu}.
-   */
-  private void returnToActive() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new ActiveMenu(user, menuInput.getSlot()).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
-    });
-  }
-
-  /**
-   * Returns to the {@link TagMenu}.
-   */
-  private void returnToTag() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      user.openInventory(new TagMenu(user).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
-    });
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
+        StringBuilder newKeys = new StringBuilder();
+        for (String key : keys) {
+          if (!key.equals(stringKeyToRemove)) {
+            newKeys.append(key).append(" ");
+          }
+        }
+        if (!newKeys.isEmpty()) {
+          itemTags.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
+        } else {
+          itemTags.remove(listKey);
+        }
+        itemTags.remove(namespacedKeyToRemove);
+      }
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+    }
   }
 
   /**
@@ -676,7 +715,7 @@ public class ItemEditorMessageSent {
    * @version 1.20.11
    * @since 1.15.13
    */
-  private class PassiveTagModification {
+  private class PassiveChange {
     /**
      * {@link Key#PASSIVE_LIST}
      */
@@ -720,7 +759,7 @@ public class ItemEditorMessageSent {
     /**
      * No parameter constructor.
      */
-    private PassiveTagModification() {
+    private PassiveChange() {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
       this.slot = menuInput.getSlot().getId();
       this.trigger = menuInput.getTrigger().getId();
@@ -854,7 +893,7 @@ public class ItemEditorMessageSent {
    * @version 1.20.10
    * @since 1.19.4
    */
-  private class ActiveTagSetter {
+  private class ActiveChange {
     /**
      * {@link Key#ACTIVE_LIST}
      */
@@ -888,7 +927,7 @@ public class ItemEditorMessageSent {
     /**
      * No parameter constructor.
      */
-    private ActiveTagSetter() {
+    private ActiveChange() {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
       this.slot = menuInput.getSlot().getId();
       this.type = menuInput.getObjectType();

@@ -32,7 +32,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.8
+ * @version 1.23.11
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -77,7 +77,7 @@ public class ForgeMenuClick implements MenuClick {
       case 2, 4 -> { // Context
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
-      default -> viewRecipeCategory();
+      default -> new MenuChange().viewRecipeCategory();
     }
   }
 
@@ -95,18 +95,18 @@ public class ForgeMenuClick implements MenuClick {
   public void interpretCategoryClick(@NotNull RecipeMenu.Action action) {
     Objects.requireNonNull(action, "Null action");
     switch (slot) {
-      case 0 -> previousRecipePage(action);
+      case 0 -> new MenuChange().previousRecipePage(action);
       case 2 -> { // Context
       }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
       case 4 -> {
         if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getMode() == MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT) {
-          openForgeEdit();
+          new MenuChange().openForgeEdit();
         }
       }
-      case 5 -> openForgeRemove();
-      case 6 -> returnToMainMenu();
-      case 8 -> nextRecipePage(action);
+      case 5 -> new MenuChange().openForgeRemove();
+      case 6 -> new MenuChange().returnToMainMenu();
+      case 8 -> new MenuChange().nextRecipePage(action);
       default -> {
         if (e.getSlot() > 8) {
           interpretContextualClick(action);
@@ -121,13 +121,8 @@ public class ForgeMenuClick implements MenuClick {
    */
   public void interpretCraftDetailsClick() {
     switch (e.getSlot()) {
-      case 25 -> {
-        if (!canForge()) {
-          return;
-        }
-        new RecipeCraft(e.getClickedInventory().getItem(0)).readRecipeMaterials();
-      }
-      case 26 -> openForgeCraft();
+      case 25 -> new RecipeCraft(e.getClickedInventory().getItem(0)).readRecipeMaterials();
+      case 26 -> new MenuChange().openForgeCraft();
     }
   }
 
@@ -140,107 +135,9 @@ public class ForgeMenuClick implements MenuClick {
       case 8 -> { // Context
       }
       case 25 -> new RecipeSave().readSaveClick();
-      case 26 -> openForgeEdit();
+      case 26 -> new MenuChange().openForgeEdit();
       default -> e.setCancelled(false);
     }
-  }
-
-  /**
-   * Views a {@link RecipeRegistry.Recipe recipe} category.
-   */
-  private void viewRecipeCategory() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(menuInput.getMode().getEnumString());
-    String category = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
-    int requestedPage = menuInput.getPage();
-
-    menuInput.setCategory(category);
-    user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage));
-    menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
-  }
-
-  /**
-   * Opens the previous {@link RecipeRegistry.Recipe recipe} category page.
-   *
-   * @param action type of interaction
-   */
-  private void previousRecipePage(RecipeMenu.Action action) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String category = menuInput.getCategory();
-    int requestedPage = menuInput.getPage();
-
-    user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage - 1));
-    menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
-  }
-
-  /**
-   * Opens the {@link RecipeMenu} with the intent to edit {@link RecipeRegistry.Recipe recipe}.
-   * <p>
-   * The player can return to either the {@link RecipeMenu}
-   * or a {@link RecipeRegistry.Recipe recipe} category.
-   */
-  private void openForgeEdit() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String category = menuInput.getCategory();
-    if (category.equals("")) {
-      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    } else {
-      int requestedPage = menuInput.getPage();
-      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getCategoryPage(category, requestedPage));
-      menuInput.setMenu(MenuListener.Menu.FORGE_EDIT);
-    }
-  }
-
-  /**
-   * Opens the {@link RecipeMenu} with the intent to remove {@link RecipeRegistry.Recipe recipe}.
-   */
-  private void openForgeRemove() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String category = menuInput.getCategory();
-    int requestedPage = menuInput.getPage();
-
-    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.REMOVE).getCategoryPage(category, requestedPage));
-    menuInput.setMenu(MenuListener.Menu.FORGE_REMOVE);
-  }
-
-  /**
-   * Opens the {@link RecipeMenu} with the {@link MenuListener.Mode} in mind.
-   */
-  private void returnToMainMenu() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    RecipeMenu.Action action = RecipeMenu.Action.valueOf(menuInput.getMode().getEnumString());
-
-    menuInput.setCategory("");
-    user.openInventory(new RecipeMenu(user, action).getMainMenu());
-    menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    menuInput.setPage(0);
-  }
-
-  /**
-   * Opens the {@link RecipeMenu} with the intent to craft {@link RecipeRegistry.Recipe recipes}.
-   */
-  private void openForgeCraft() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String category = menuInput.getCategory();
-    int requestedPage = menuInput.getPage();
-
-    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getCategoryPage(category, requestedPage));
-    menuInput.setMenu(MenuListener.Menu.FORGE_CRAFT);
-  }
-
-  /**
-   * Opens the next {@link RecipeRegistry.Recipe recipe} category page.
-   *
-   * @param action type of interaction
-   */
-  private void nextRecipePage(RecipeMenu.Action action) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-    String category = menuInput.getCategory();
-    int requestedPage = menuInput.getPage();
-
-    user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage + 1));
-    menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
   }
 
   /**
@@ -252,35 +149,120 @@ public class ForgeMenuClick implements MenuClick {
     switch (action) {
       case CRAFT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.CRAFT, e.getCurrentItem()).getRecipeDetails();
       case EDIT -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.EDIT, e.getCurrentItem()).getRecipeDetails();
-      case REMOVE -> removeRecipe();
+      case REMOVE -> new RecipeRemove().removeRecipe();
     }
   }
 
   /**
-   * Removes an existing {@link RecipeRegistry.Recipe recipe}.
-   */
-  private void removeRecipe() {
-    RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(e.getCurrentItem()));
-    File recipeFile = recipe.getFile();
-    String directoryName = recipeFile.getParentFile().getName();
-    String fileName = recipeFile.getName();
-
-    recipe.delete();
-    user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + directoryName + "/" + fileName.substring(0, fileName.length() - 8));
-  }
-
-  /**
-   * The user must have a crafting table in their
-   * hand, off-hand, or trinket slot to forge recipes.
+   * Represents a menu change operation.
    *
-   * @return if the user can forge recipes
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
    */
-  private boolean canForge() {
-    if (EntityReader.hasTrinket(user, Material.CRAFTING_TABLE)) {
-      return true;
-    } else {
-      user.sendMessage(ChatColor.RED + "[Forge] No crafting table in hand, off-hand, or trinket slot.");
-      return false;
+  private class MenuChange {
+    /**
+     * No parameter constructor.
+     */
+    MenuChange() {
+    }
+
+    /**
+     * Views a {@link RecipeRegistry.Recipe recipe} category.
+     */
+    private void viewRecipeCategory() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      RecipeMenu.Action action = RecipeMenu.Action.valueOf(menuInput.getMode().getEnumString());
+      String category = ChatColor.stripColor(ItemReader.readName(e.getCurrentItem()));
+      int requestedPage = menuInput.getPage();
+
+      menuInput.setCategory(category);
+      user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage));
+      menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
+    }
+
+    /**
+     * Opens the previous {@link RecipeRegistry.Recipe recipe} category page.
+     *
+     * @param action type of interaction
+     */
+    private void previousRecipePage(RecipeMenu.Action action) {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String category = menuInput.getCategory();
+      int requestedPage = menuInput.getPage();
+
+      user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage - 1));
+      menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
+    }
+
+    /**
+     * Opens the {@link RecipeMenu} with the intent to edit {@link RecipeRegistry.Recipe recipe}.
+     * <p>
+     * The player can return to either the {@link RecipeMenu}
+     * or a {@link RecipeRegistry.Recipe recipe} category.
+     */
+    private void openForgeEdit() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String category = menuInput.getCategory();
+      if (category.equals("")) {
+        user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+      } else {
+        int requestedPage = menuInput.getPage();
+        user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getCategoryPage(category, requestedPage));
+        menuInput.setMenu(MenuListener.Menu.FORGE_EDIT);
+      }
+    }
+
+    /**
+     * Opens the {@link RecipeMenu} with the intent to remove {@link RecipeRegistry.Recipe recipe}.
+     */
+    private void openForgeRemove() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String category = menuInput.getCategory();
+      int requestedPage = menuInput.getPage();
+
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.REMOVE).getCategoryPage(category, requestedPage));
+      menuInput.setMenu(MenuListener.Menu.FORGE_REMOVE);
+    }
+
+    /**
+     * Opens the {@link RecipeMenu} with the {@link MenuListener.Mode} in mind.
+     */
+    private void returnToMainMenu() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      RecipeMenu.Action action = RecipeMenu.Action.valueOf(menuInput.getMode().getEnumString());
+
+      menuInput.setCategory("");
+      user.openInventory(new RecipeMenu(user, action).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+      menuInput.setPage(0);
+    }
+
+    /**
+     * Opens the {@link RecipeMenu} with the intent to craft {@link RecipeRegistry.Recipe recipes}.
+     */
+    private void openForgeCraft() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String category = menuInput.getCategory();
+      int requestedPage = menuInput.getPage();
+
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getCategoryPage(category, requestedPage));
+      menuInput.setMenu(MenuListener.Menu.FORGE_CRAFT);
+    }
+
+    /**
+     * Opens the next {@link RecipeRegistry.Recipe recipe} category page.
+     *
+     * @param action type of interaction
+     */
+    private void nextRecipePage(RecipeMenu.Action action) {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String category = menuInput.getCategory();
+      int requestedPage = menuInput.getPage();
+
+      user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage + 1));
+      menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
     }
   }
 
@@ -360,7 +342,11 @@ public class ForgeMenuClick implements MenuClick {
     /**
      * Crafts a {@link RecipeRegistry.Recipe recipe} if the user has enough materials.
      */
-    protected void readRecipeMaterials() {
+    private void readRecipeMaterials() {
+      if (!canForge()) {
+        return;
+      }
+
       if (Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().isDeveloper()) {
         giveResults();
         return;
@@ -495,6 +481,21 @@ public class ForgeMenuClick implements MenuClick {
         invSlot.setAmount(difference);
         postCraft.add(new SlotItem(invSlot.getSlot(), invSlot.getItem(), difference));
         return true;
+      }
+    }
+
+    /**
+     * The user must have a crafting table in their
+     * hand, off-hand, or trinket slot to forge recipes.
+     *
+     * @return if the user can forge recipes
+     */
+    private boolean canForge() {
+      if (EntityReader.hasTrinket(user, Material.CRAFTING_TABLE)) {
+        return true;
+      } else {
+        user.sendMessage(ChatColor.RED + "[Forge] No crafting table in hand, off-hand, or trinket slot.");
+        return false;
       }
     }
 
@@ -681,6 +682,34 @@ public class ForgeMenuClick implements MenuClick {
       }
       encodedRecipe = results.append("\n").append(materials).toString();
       return true;
+    }
+  }
+
+  /**
+   * Represents a recipe removal operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
+   */
+  private class RecipeRemove {
+    /**
+     * No parameter constructor.
+     */
+    RecipeRemove() {
+    }
+
+    /**
+     * Removes an existing {@link RecipeRegistry.Recipe recipe}.
+     */
+    private void removeRecipe() {
+      RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(e.getCurrentItem()));
+      File recipeFile = recipe.getFile();
+      String directoryName = recipeFile.getParentFile().getName();
+      String fileName = recipeFile.getName();
+
+      recipe.delete();
+      user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + directoryName + "/" + fileName.substring(0, fileName.length() - 8));
     }
   }
 }

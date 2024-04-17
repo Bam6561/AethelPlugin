@@ -23,7 +23,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.8
+ * @version 1.23.11
  * @since 1.23.8
  */
 public class ForgeMessageSent {
@@ -63,12 +63,12 @@ public class ForgeMessageSent {
     String fileName = menuInput.getFileName();
     String encodedRecipe = menuInput.getEncodedData();
 
-    try {
-      File filePath = new File(Directory.FORGE.getFile().getPath() + "/" + folder);
-      if (!filePath.exists()) {
-        filePath.mkdirs();
-      }
+    File filePath = new File(Directory.FORGE.getFile().getPath() + "/" + folder);
+    if (!filePath.exists()) {
+      filePath.mkdirs();
+    }
 
+    try {
       FileWriter fw = new FileWriter(filePath.getPath() + "/" + fileName + "_rcp.txt");
       fw.write(encodedRecipe);
       fw.close();

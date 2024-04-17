@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.11
  * @since 1.0.2
  */
 public class ForgeCommand implements CommandExecutor {
@@ -47,7 +47,7 @@ public class ForgeCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.forge")) {
-        readRequest(user, args);
+        new Request(user, args).readRequest();
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
@@ -58,72 +58,73 @@ public class ForgeCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before
-   * opening a {@link RecipeMenu} or interpreting its usage.
+   * Represents a Forge command request.
    *
-   * @param user user
+   * @param user command user
    * @param args user provided parameters
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
    */
-  private void readRequest(Player user, String[] args) {
-    switch (args.length) {
-      case 0 -> openCrafting(user);
-      case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Either edits {@link RecipeRegistry.Recipe recipes} or reloads them into {@link RecipeRegistry}.
-   *
-   * @param user   user
-   * @param action type of interaction
-   */
-  private void interpretParameter(Player user, String action) {
-    switch (action) {
-      case "edit", "e" -> {
-        if (user.hasPermission("aethel.forge.editor")) {
-          openEditor(user);
-        } else {
-          user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
-        }
+  private record Request(Player user, String[] args) {
+    /**
+     * Checks if the command request was formatted correctly before
+     * opening a {@link RecipeMenu} or interpreting its usage.
+     */
+    private void readRequest() {
+      switch (args.length) {
+        case 0 -> openCrafting();
+        case 1 -> interpretParameter();
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
-      case "reload", "r" -> {
-        if (user.hasPermission("aethel.forge.editor")) {
-          Plugin.getData().getRecipeRegistry().loadData();
-          user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
-        } else {
-          user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
-        }
-      }
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
     }
-  }
 
-  /**
-   * Opens the {@link RecipeMenu} with the intent to craft {@link RecipeRegistry.Recipe recipes}.
-   *
-   * @param user user
-   */
-  private void openCrafting(Player user) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-    menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_CRAFT);
-    menuInput.setCategory("");
-    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
-    menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    menuInput.setPage(0);
-  }
+    /**
+     * Either edits {@link RecipeRegistry.Recipe recipes} or reloads them into {@link RecipeRegistry}.
+     */
+    private void interpretParameter() {
+      switch (args[0].toLowerCase()) {
+        case "edit", "e" -> {
+          if (user.hasPermission("aethel.forge.editor")) {
+            openEditor();
+          } else {
+            user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
+          }
+        }
+        case "reload", "r" -> {
+          if (user.hasPermission("aethel.forge.editor")) {
+            Plugin.getData().getRecipeRegistry().loadData();
+            user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");
+          } else {
+            user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
+          }
+        }
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
+      }
+    }
 
-  /**
-   * Opens the {@link RecipeMenu} with the intent to edit {@link RecipeRegistry.Recipe recipes}.
-   *
-   * @param user user
-   */
-  private void openEditor(Player user) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-    menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT);
-    menuInput.setCategory("");
-    user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-    menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
-    menuInput.setPage(0);
+    /**
+     * Opens the {@link RecipeMenu} with the intent to craft {@link RecipeRegistry.Recipe recipes}.
+     */
+    private void openCrafting() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_CRAFT);
+      menuInput.setCategory("");
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+      menuInput.setPage(0);
+    }
+
+    /**
+     * Opens the {@link RecipeMenu} with the intent to edit {@link RecipeRegistry.Recipe recipes}.
+     */
+    private void openEditor() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT);
+      menuInput.setCategory("");
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+      menuInput.setPage(0);
+    }
   }
 }

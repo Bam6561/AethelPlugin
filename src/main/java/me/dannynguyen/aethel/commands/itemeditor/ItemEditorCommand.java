@@ -19,7 +19,7 @@ import java.util.UUID;
  * Registered through {@link Plugin}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.11
  * @since 1.6.7
  */
 public class ItemEditorCommand implements CommandExecutor {
@@ -44,7 +44,7 @@ public class ItemEditorCommand implements CommandExecutor {
       if (user.hasPermission("aethel.itemeditor")) {
         ItemStack item = user.getInventory().getItemInMainHand();
         if (ItemReader.isNotNullOrAir(item)) {
-          readRequest(user, args, item);
+          new Request(user, args, item).readRequest();
         } else {
           user.sendMessage(Message.NO_MAIN_HAND_ITEM.getMessage());
         }
@@ -58,30 +58,35 @@ public class ItemEditorCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a {@link CosmeticMenu}.
+   * Represents a Character command request.
    *
-   * @param user user
+   * @param user command user
    * @param args user provided parameters
    * @param item interacting item
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
    */
-  private void readRequest(Player user, String[] args, ItemStack item) {
-    if (args.length == 0) {
-      openMenu(user, item);
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  private record Request(Player user, String[] args, ItemStack item) {
+    /**
+     * Checks if the command request was formatted correctly before opening a {@link CosmeticMenu}.
+     */
+    private void readRequest() {
+      if (args.length == 0) {
+        openMenu();
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
     }
-  }
 
-  /**
-   * Opens the {@link CosmeticMenu}.
-   *
-   * @param user user
-   * @param item interacting item
-   */
-  private void openMenu(Player user, ItemStack item) {
-    UUID uuid = user.getUniqueId();
-    Plugin.getData().getEditedItemCache().getEditedItems().put(uuid, item);
-    user.openInventory(new CosmeticMenu(user).getMainMenu());
-    Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
+    /**
+     * Opens the {@link CosmeticMenu}.
+     */
+    private void openMenu() {
+      UUID uuid = user.getUniqueId();
+      Plugin.getData().getEditedItemCache().getEditedItems().put(uuid, item);
+      user.openInventory(new CosmeticMenu(user).getMainMenu());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
+    }
   }
 }
