@@ -14,7 +14,7 @@ import java.util.UUID;
  * Represents {@link StatusType statuses} that affect entities.
  *
  * @author Danny Nguyen
- * @version 1.16.7
+ * @version 1.23.10
  * @since 1.14.7
  */
 public class Status {
@@ -73,10 +73,10 @@ public class Status {
     int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> removeStacks(stacks), ticks).getTaskId();
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> stackInstances.remove(taskId), ticks);
     if (isCumulative) {
-      setStackAmount(stackAmount + stacks);
+      stackAmount = stackAmount + stacks;
     } else {
       if (stacks > stackAmount) {
-        setStackAmount(stacks);
+        stackAmount = stacks;
       }
     }
     stackInstances.put(taskId, stacks);
@@ -87,9 +87,9 @@ public class Status {
    *
    * @param stacks number of stacks to remove
    */
-  public void removeStacks(int stacks) {
+  private void removeStacks(int stacks) {
     if (isCumulative) {
-      setStackAmount(stackAmount - stacks);
+      stackAmount = stackAmount - stacks;
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         int highest = Integer.MIN_VALUE;
@@ -98,7 +98,7 @@ public class Status {
             highest = stackInstance;
           }
         }
-        setStackAmount(highest);
+        stackAmount = highest;
       }, 1);
     }
     removeStatusTypeIfEmpty();
@@ -139,14 +139,5 @@ public class Status {
    */
   public int getStackAmount() {
     return this.stackAmount;
-  }
-
-  /**
-   * Sets the {@link StatusType}'s amount of stacks
-   *
-   * @param stackAmount amount of stacks
-   */
-  public void setStackAmount(int stackAmount) {
-    this.stackAmount = stackAmount;
   }
 }

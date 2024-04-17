@@ -210,7 +210,6 @@ public class SheetMenu implements Menu {
     double feintSkillBase = entityTags.getOrDefault(Key.ATTRIBUTE_FEINT_SKILL.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double accuracySkillBase = entityTags.getOrDefault(Key.ATTRIBUTE_ACCURACY_SKILL.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
 
-
     double damageBuff = 0.0;
     double attackSpeedBuff = 0.0;
     double criticalChanceBuff = 0.0;

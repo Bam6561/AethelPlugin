@@ -28,7 +28,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.10
  * @since 1.6.3
  */
 public class CharacterCommand implements CommandExecutor {
@@ -51,7 +51,7 @@ public class CharacterCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.character")) {
-        readRequest(user, args);
+        new Request(user, args).readRequest();
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
@@ -62,49 +62,53 @@ public class CharacterCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before opening a {@link SheetMenu}.
+   * Represents a Character command request.
    *
-   * @param user user
+   * @param user command user
    * @param args user provided parameters
+   * @author Danny Nguyen
+   * @version 1.23.10
+   * @since 1.23.10
    */
-  private void readRequest(Player user, String[] args) {
-    switch (args.length) {
-      case 0 -> openSheetSelf(user);
-      case 1 -> openSheetOther(user, args[0]);
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Opens a {@link SheetMenu} belonging to the user.
-   *
-   * @param user user
-   */
-  private void openSheetSelf(Player user) {
-    UUID target = user.getUniqueId();
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(target).getMenuInput();
-    menuInput.setTarget(target);
-    user.openInventory(new SheetMenu(user, user).getMainMenu());
-    menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
-  }
-
-  /**
-   * Opens a {@link SheetMenu} belonging to another player.
-   *
-   * @param user            user
-   * @param requestedPlayer requested player's name
-   */
-  private void openSheetOther(Player user, String requestedPlayer) {
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      if (player.getName().equals(requestedPlayer)) {
-        UUID target = player.getUniqueId();
-        MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-        menuInput.setTarget(target);
-        user.openInventory(new SheetMenu(user, player).getMainMenu());
-        menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
-        return;
+  private record Request(Player user, String[] args) {
+    /**
+     * Checks if the command request was formatted correctly before opening a {@link SheetMenu}.
+     */
+    private void readRequest() {
+      switch (args.length) {
+        case 0 -> openSheetSelf();
+        case 1 -> openSheetOther();
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
     }
-    user.sendMessage(ChatColor.RED + requestedPlayer + " not online.");
+
+    /**
+     * Opens a {@link SheetMenu} belonging to the user.
+     */
+    private void openSheetSelf() {
+      UUID target = user.getUniqueId();
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(target).getMenuInput();
+      menuInput.setTarget(target);
+      user.openInventory(new SheetMenu(user, user).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
+    }
+
+    /**
+     * Opens a {@link SheetMenu} belonging to another player.
+     */
+    private void openSheetOther() {
+      String requestedPlayer = args[0];
+      for (Player player : Bukkit.getOnlinePlayers()) {
+        if (player.getName().equals(requestedPlayer)) {
+          UUID target = player.getUniqueId();
+          MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+          menuInput.setTarget(target);
+          user.openInventory(new SheetMenu(user, player).getMainMenu());
+          menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
+          return;
+        }
+      }
+      user.sendMessage(ChatColor.RED + requestedPlayer + " not online.");
+    }
   }
 }

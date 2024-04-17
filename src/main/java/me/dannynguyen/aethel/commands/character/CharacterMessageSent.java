@@ -79,6 +79,7 @@ public class CharacterMessageSent {
         hotbarSet.add(hotbarSlot - 1);
       }
     }
+
     settings.setActiveAbilityBind(slot, hotbarSet);
     user.sendMessage(ChatColor.GREEN + "[Set " + ChatColor.AQUA + slot.getProperName() + " Active Ability " + ChatColor.GREEN + "Binds] " + ChatColor.WHITE + hotbarBuilder.toString().trim());
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {

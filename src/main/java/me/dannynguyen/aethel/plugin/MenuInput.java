@@ -275,6 +275,8 @@ public class MenuInput {
 
   /**
    * Gets file name.
+   *
+   * @return file name
    */
   @NotNull
   public String getFileName() {
@@ -292,6 +294,8 @@ public class MenuInput {
 
   /**
    * Gets encoded data.
+   *
+   * @return encoded data
    */
   @NotNull
   public String getEncodedData() {
