@@ -14,7 +14,7 @@ import java.util.UUID;
  * Represents a {@link PluginPlayer}'s menu inputs.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.8
  * @since 1.22.4
  */
 public class MenuInput {
@@ -67,6 +67,16 @@ public class MenuInput {
    * Interacting object type.
    */
   private String objectType;
+
+  /**
+   * Interacting file name.
+   */
+  private String fileName;
+
+  /**
+   * Interacting encoded data.
+   */
+  private String encodedData;
 
   /**
    * No parameter constructor.
@@ -261,5 +271,39 @@ public class MenuInput {
    */
   public void setObjectType(@NotNull String objectType) {
     this.objectType = Objects.requireNonNull(objectType, "Null object type");
+  }
+
+  /**
+   * Gets file name.
+   */
+  @NotNull
+  public String getFileName() {
+    return this.fileName;
+  }
+
+  /**
+   * Sets the file name.
+   *
+   * @param fileName file name
+   */
+  public void setFileName(@NotNull String fileName) {
+    this.fileName = Objects.requireNonNull(fileName, "Null file name");
+  }
+
+  /**
+   * Gets encoded data.
+   */
+  @NotNull
+  public String getEncodedData() {
+    return this.encodedData;
+  }
+
+  /**
+   * Sets the encoded data.
+   *
+   * @param encodedData encoded data
+   */
+  public void setEncodedData(@NotNull String encodedData) {
+    this.encodedData = Objects.requireNonNull(encodedData, "Null encoded data");
   }
 }

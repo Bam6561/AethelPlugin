@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.commands.forge;
 
-import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.DataRegistry;
 import me.dannynguyen.aethel.utils.InventoryPages;
@@ -10,8 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -25,7 +22,7 @@ import java.util.*;
  * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.23.4
+ * @version 1.23.8
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -89,12 +86,8 @@ public class RecipeRegistry implements DataRegistry {
     }
 
     Arrays.sort(files);
-    Map<String, List<List<ItemStack>>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
-    for (File file : files) {
-      if (file.getName().endsWith("_rcp.txt")) {
-        readFile(file, categories);
-      }
-    }
+    Map<String, List<List<ItemStack>>> categories = new HashMap<>();
+    parseDirectory(files, categories);
 
     if (recipes.isEmpty()) {
       return;
@@ -105,6 +98,30 @@ public class RecipeRegistry implements DataRegistry {
       recipeCategoryNames.add(category);
     }
     Collections.sort(recipeCategoryNames);
+  }
+
+  /**
+   * Recursively parses the directory and reads recipe files.
+   *
+   * @param directory  recipe directory
+   * @param categories recipe categories
+   */
+  private void parseDirectory(File[] directory, Map<String, List<List<ItemStack>>> categories) {
+    for (File file : directory) {
+      if (file.isFile()) {
+        if (file.getName().endsWith("_rcp.txt")) {
+          readFile(file, categories);
+        }
+      } else {
+        File[] subdirectory = file.listFiles();
+        if (subdirectory.length == 0) {
+          file.delete();
+        } else {
+          Arrays.sort(subdirectory);
+          parseDirectory(subdirectory, categories);
+        }
+      }
+    }
   }
 
   /**
@@ -135,8 +152,13 @@ public class RecipeRegistry implements DataRegistry {
       if (!results.isEmpty()) {
         Recipe pRecipe = new Recipe(file, results, materials);
         recipes.put(pRecipe.getName(), pRecipe);
-        categories.get("All").add(results);
-        sortRecipe(categories, results);
+
+        String category = file.getParentFile().getName();
+        if (categories.containsKey(category)) {
+          categories.get(category).add(results);
+        } else {
+          categories.put(category, new ArrayList<>(List.of(results)));
+        }
       } else {
         Bukkit.getLogger().warning(Message.INVALID_FILE.getMessage() + file.getName());
       }
@@ -206,26 +228,6 @@ public class RecipeRegistry implements DataRegistry {
   }
 
   /**
-   * Sorts a recipe into a category based on its {@link Key#RECIPE_CATEGORY}.
-   *
-   * @param categories {@link Recipe} categories
-   * @param results    interacting recipe
-   */
-  private void sortRecipe(Map<String, List<List<ItemStack>>> categories, List<ItemStack> results) {
-    PersistentDataContainer data = results.get(0).getItemMeta().getPersistentDataContainer();
-    if (!data.has(Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
-      return;
-    }
-
-    String category = data.get(Key.RECIPE_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
-    if (categories.containsKey(category)) {
-      categories.get(category).add(results);
-    } else {
-      categories.put(category, new ArrayList<>(List.of(results)));
-    }
-  }
-
-  /**
    * Creates an item display for {@link Recipe recipes} with multiple results.
    * <p>
    * Format:
@@ -291,7 +293,7 @@ public class RecipeRegistry implements DataRegistry {
    * Loaded into memory when {@link #loadData()} is called.
    *
    * @author Danny Nguyen
-   * @version 1.17.12
+   * @version 1.23.8
    * @since 1.0.3
    */
   static class Recipe {
@@ -332,6 +334,15 @@ public class RecipeRegistry implements DataRegistry {
       this.results = results;
       this.materials = materials;
       this.name = ItemReader.readName(results.get(0));
+    }
+
+    /**
+     * Gets the recipe's file.
+     *
+     * @return recipe's file
+     */
+    protected File getFile() {
+      return this.file;
     }
 
     /**

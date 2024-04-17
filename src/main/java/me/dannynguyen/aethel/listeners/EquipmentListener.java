@@ -240,6 +240,8 @@ public class EquipmentListener implements Listener {
      * <p>
      * A 1 tick delay is used for because only the item that exists in the
      * corresponding slot after the interaction happens should be read.
+     *
+     * @param slot slot number to be updated
      */
     private void updateEquipmentSlot(int slot) {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {

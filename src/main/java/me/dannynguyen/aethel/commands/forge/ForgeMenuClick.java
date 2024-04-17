@@ -1,10 +1,11 @@
 package me.dannynguyen.aethel.commands.forge;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.listeners.MessageListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.EntityReader;
 import me.dannynguyen.aethel.utils.TextFormatter;
@@ -22,8 +23,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -32,7 +32,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.7
+ * @version 1.23.8
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -139,7 +139,7 @@ public class ForgeMenuClick implements MenuClick {
     switch (slot) {
       case 8 -> { // Context
       }
-      case 25 -> readSaveClick();
+      case 25 -> new RecipeSave().readSaveClick();
       case 26 -> openForgeEdit();
       default -> e.setCancelled(false);
     }
@@ -257,94 +257,16 @@ public class ForgeMenuClick implements MenuClick {
   }
 
   /**
-   * Checks if the {@link RecipeRegistry.Recipe recipe's} details were
-   * formatted correctly before saving the {@link RecipeRegistry.Recipe recipe}.
-   */
-  private void readSaveClick() {
-    ItemStack[] contents = e.getInventory().getContents();
-    String file = nameFile(contents);
-    if (file == null) {
-      user.sendMessage(ChatColor.RED + "No recipe results.");
-      return;
-    }
-    String encodedRecipe = encodeRecipe(contents);
-    if (encodedRecipe == null) {
-      user.sendMessage(ChatColor.RED + "No recipe materials.");
-      return;
-    }
-
-    try {
-      FileWriter fw = new FileWriter(Directory.FORGE.getFile().getPath() + "/" + file + "_rcp.txt");
-      fw.write(encodedRecipe);
-      fw.close();
-      user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + TextFormatter.capitalizePhrase(file));
-    } catch (IOException ex) {
-      user.sendMessage(ChatColor.RED + "Failed to write recipe to file.");
-    }
-  }
-
-  /**
    * Removes an existing {@link RecipeRegistry.Recipe recipe}.
    */
   private void removeRecipe() {
     RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(e.getCurrentItem()));
+    File recipeFile = recipe.getFile();
+    String directoryName = recipeFile.getParentFile().getName();
+    String fileName = recipeFile.getName();
+
     recipe.delete();
-    user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + recipe.getName());
-  }
-
-  /**
-   * Names a {@link RecipeRegistry.Recipe recipe} by the first item in the results row.
-   *
-   * @param menuContents items in menu
-   * @return file name
-   */
-  private String nameFile(ItemStack[] menuContents) {
-    for (int i = 0; i < 8; i++) {
-      ItemStack item = menuContents[i];
-      if (ItemReader.isNullOrAir(item)) {
-        continue;
-      }
-
-      ItemMeta meta = item.getItemMeta();
-      if (meta.hasDisplayName()) {
-        return TextFormatter.formatId(ChatColor.stripColor(meta.getDisplayName()));
-      } else {
-        return TextFormatter.formatId(item.getType().name());
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Encodes the {@link RecipeRegistry.Recipe recipe} by its results and materials.
-   * <p>
-   * At this stage, the results are non-null, so the
-   * method checks if the materials are non-null first.
-   *
-   * @param menuContents items in the menu
-   * @return encoded recipe string
-   */
-  private String encodeRecipe(ItemStack[] menuContents) {
-    StringBuilder materials = new StringBuilder();
-    for (int i = 9; i < 24; i++) {
-      ItemStack item = menuContents[i];
-      if (ItemReader.isNotNullOrAir(item)) {
-        materials.append(ItemCreator.encodeItem(item)).append(" ");
-      }
-    }
-
-    if (materials.isEmpty()) {
-      return null;
-    }
-
-    StringBuilder results = new StringBuilder();
-    for (int i = 0; i < 8; i++) {
-      ItemStack item = menuContents[i];
-      if (ItemReader.isNotNullOrAir(item)) {
-        results.append(ItemCreator.encodeItem(item)).append(" ");
-      }
-    }
-    return results.append("\n").append(materials).toString();
+    user.sendMessage(ChatColor.RED + "[Removed Recipe] " + ChatColor.WHITE + directoryName + "/" + fileName.substring(0, fileName.length() - 8));
   }
 
   /**
@@ -372,7 +294,7 @@ public class ForgeMenuClick implements MenuClick {
    * @version 1.20.2
    * @since 1.4.15
    */
-  class RecipeCraft {
+  private class RecipeCraft {
     /**
      * {@link RecipeRegistry.Recipe Recipe's} results.
      */
@@ -651,6 +573,114 @@ public class ForgeMenuClick implements MenuClick {
       private void setAmount(int amount) {
         this.amount = amount;
       }
+    }
+  }
+
+  /**
+   * Represents a recipe save operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.23.8
+   * @since 1.23.8
+   */
+  private class RecipeSave {
+    /**
+     * Recipe contents.
+     */
+    private final ItemStack[] contents = e.getInventory().getContents();
+
+    /**
+     * Recipe file name.
+     */
+    private String fileName;
+
+    /**
+     * Encoded recipe.
+     */
+    private String encodedRecipe;
+
+    /**
+     * No parameter constructor.
+     */
+    RecipeSave() {
+    }
+
+    /**
+     * Checks if the {@link RecipeRegistry.Recipe recipe's} details
+     * were formatted correctly before asking the user for a folder
+     * name to save the {@link RecipeRegistry.Recipe recipe} under.
+     */
+    private void readSaveClick() {
+      if (!nameFile()) {
+        user.sendMessage(ChatColor.RED + "No recipe results.");
+        return;
+      }
+      if (!encodeRecipe()) {
+        user.sendMessage(ChatColor.RED + "No recipe materials.");
+        return;
+      }
+
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setFileName(fileName);
+      menuInput.setEncodedData(encodedRecipe);
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input recipe folder name to be saved under.");
+      user.closeInventory();
+      menuInput.setMessageInput(MessageListener.Type.FORGE_RECIPE_FOLDER);
+    }
+
+    /**
+     * Names a {@link RecipeRegistry.Recipe recipe} by the first item in the results row.
+     *
+     * @return if the file could be named
+     */
+    private boolean nameFile() {
+      for (int i = 0; i < 8; i++) {
+        ItemStack item = contents[i];
+        if (ItemReader.isNullOrAir(item)) {
+          continue;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta.hasDisplayName()) {
+          fileName = TextFormatter.formatId(ChatColor.stripColor(meta.getDisplayName()));
+        } else {
+          fileName = TextFormatter.formatId(item.getType().name());
+        }
+        return true;
+      }
+      return false;
+    }
+
+    /**
+     * Encodes the {@link RecipeRegistry.Recipe recipe} by its results and materials.
+     * <p>
+     * At this stage, the results are non-null, so the
+     * method checks if the materials are non-null first.
+     *
+     * @return if the recipe could be encoded
+     */
+    private boolean encodeRecipe() {
+      StringBuilder materials = new StringBuilder();
+      for (int i = 9; i < 24; i++) {
+        ItemStack item = contents[i];
+        if (ItemReader.isNotNullOrAir(item)) {
+          materials.append(ItemCreator.encodeItem(item)).append(" ");
+        }
+      }
+
+      if (materials.isEmpty()) {
+        return false;
+      }
+
+      StringBuilder results = new StringBuilder();
+      for (int i = 0; i < 8; i++) {
+        ItemStack item = contents[i];
+        if (ItemReader.isNotNullOrAir(item)) {
+          results.append(ItemCreator.encodeItem(item)).append(" ");
+        }
+      }
+      encodedRecipe = results.append("\n").append(materials).toString();
+      return true;
     }
   }
 }

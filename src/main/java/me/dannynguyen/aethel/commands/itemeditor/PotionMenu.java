@@ -90,6 +90,8 @@ public class PotionMenu implements Menu {
 
   /**
    * Adds potion effects.
+   *
+   * @param potion potion meta
    */
   private void addPotionEffects(PotionMeta potion) {
     Map<PotionEffectType, PotionEffect> potionEffects = getPotionEffects(potion);
