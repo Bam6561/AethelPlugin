@@ -45,7 +45,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.15
+ * @version 1.23.9
  * @since 1.2.6
  */
 public class ItemTagCommand implements CommandExecutor {
@@ -127,9 +127,30 @@ public class ItemTagCommand implements CommandExecutor {
    * @param item main hand item
    */
   private void getTags(Player user, ItemStack item) {
-    String response = ItemReader.readTags(item);
-    if (!response.isEmpty()) {
-      user.sendMessage(ChatColor.GREEN + "[Get Tags] " + response);
+    PersistentDataContainer itemTags = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
+    StringBuilder aethelTags = new StringBuilder();
+    for (NamespacedKey key : itemTags.getKeys()) {
+      String keyName = key.getKey();
+      if (!keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
+        continue;
+      }
+
+      keyName = keyName.substring(7);
+      if (keyName.startsWith("attribute.")) {
+        if (keyName.matches("attribute.list")) {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
+        } else {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.DOUBLE)).append(" ");
+        }
+      } else if (keyName.startsWith("rpg.")) {
+        aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.INTEGER)).append(" ");
+      } else {
+        aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
+      }
+    }
+
+    if (!aethelTags.isEmpty()) {
+      user.sendMessage(ChatColor.GREEN + "[Get Tags] " + aethelTags);
     } else {
       user.sendMessage(ChatColor.RED + "No tags found.");
     }

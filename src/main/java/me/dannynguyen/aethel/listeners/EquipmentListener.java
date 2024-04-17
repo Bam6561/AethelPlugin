@@ -4,7 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
-import me.dannynguyen.aethel.utils.item.ItemDurability;
+import me.dannynguyen.aethel.utils.item.DurabilityDamage;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -152,7 +152,7 @@ public class EquipmentListener implements Listener {
       }
     }
 
-    ItemDurability.increaseDamage(player, player.getEquipment(), eSlot, e.getDamage());
+    DurabilityDamage.increaseDamage(player, player.getEquipment(), eSlot, e.getDamage());
   }
 
   /**

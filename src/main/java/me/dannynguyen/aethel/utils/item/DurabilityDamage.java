@@ -24,69 +24,23 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * Gets or modifies existing items' durabilities.
+ * Increases damage on existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.23.4
+ * @version 1.23.9
  * @since 1.13.0
  */
-public class ItemDurability {
+public class DurabilityDamage {
   /**
    * Utility methods only.
    */
-  private ItemDurability() {
-  }
-
-  /**
-   * Gets the item's durability.
-   * <p>
-   * Returns -1 if the item's meta cannot be type cast to a Damageable item meta.
-   *
-   * @param item interacting item
-   * @return item durability
-   */
-  public static int getDurability(@NotNull ItemStack item) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
-      return item.getType().getMaxDurability() - durability.getDamage();
-    } else {
-      return -1;
-    }
-  }
-
-  /**
-   * Gets the item's damage.
-   * <p>
-   * Returns -1 if the item's meta cannot be type cast to a Damageable item meta.
-   *
-   * @param item interacting item
-   * @return item damage
-   */
-  public static int getDamage(@NotNull ItemStack item) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
-      return durability.getDamage();
-    } else {
-      return -1;
-    }
-  }
-
-  /**
-   * Displays the item's remaining to maximum durability.
-   *
-   * @param item interacting item
-   * @return remaining : maximum durability
-   */
-  @NotNull
-  public static String displayDurability(@NotNull ItemStack item) {
-    if (Objects.requireNonNull(item, "Null item").getItemMeta() instanceof Damageable durability) {
-      short maxDurability = item.getType().getMaxDurability();
-      int durabilityValue = maxDurability - durability.getDamage();
-      return durabilityValue + " / " + maxDurability;
-    }
-    return "";
+  private DurabilityDamage() {
   }
 
   /**
    * Damages an item's durability.
+   * <p>
+   * If the item has {@link Key#RPG_DURABILITY}, the reinforcement value is damaged first.
    * <p>
    * An item is broken when its damage exceeds its material type's durability.
    *
@@ -167,47 +121,5 @@ public class ItemDurability {
     if (!(defender instanceof Player)) {
       equipment.setItem(eSlot, item);
     }
-  }
-
-  /**
-   * Sets an item's durability.
-   * <p>
-   * If the durability to be set exceeds the material type's max durability,
-   * the durability is set to match the material type's max durability instead.
-   *
-   * @param item                interacting item
-   * @param requestedDurability requested durability
-   */
-  public static void setDurability(@NotNull ItemStack item, int requestedDurability) {
-    Objects.requireNonNull(item, "Null item");
-    if (!(item.getItemMeta() instanceof Damageable durability)) {
-      return;
-    }
-
-    if (requestedDurability > item.getType().getMaxDurability()) {
-      durability.setDamage(0);
-    } else {
-      durability.setDamage(Math.abs(requestedDurability - item.getType().getMaxDurability()));
-    }
-    item.setItemMeta(durability);
-  }
-
-  /**
-   * Sets an item's damage.
-   * <p>
-   * If the damage to be set exceeds the material type's max durability,
-   * the damage is set to match the material type's max durability instead.
-   *
-   * @param item   interacting item
-   * @param damage durability damage
-   */
-  public static void setDamage(@NotNull ItemStack item, int damage) {
-    Objects.requireNonNull(item, "Null item");
-    if (!(item.getItemMeta() instanceof Damageable durability)) {
-      return;
-    }
-
-    durability.setDamage(Math.min(damage, item.getType().getMaxDurability()));
-    item.setItemMeta(durability);
   }
 }

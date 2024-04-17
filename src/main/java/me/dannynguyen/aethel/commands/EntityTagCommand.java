@@ -5,7 +5,6 @@ import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
-import me.dannynguyen.aethel.utils.EntityReader;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,7 +36,7 @@ import java.util.UUID;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.19
+ * @version 1.23.9
  * @since 1.22.15
  */
 public class EntityTagCommand implements CommandExecutor {
@@ -133,9 +132,24 @@ public class EntityTagCommand implements CommandExecutor {
    * @param entity interacting entity
    */
   private void getTags(Player user, Entity entity) {
-    String response = EntityReader.readTags(entity);
-    if (!response.isEmpty()) {
-      user.sendMessage(ChatColor.GREEN + "[Get Tags] " + response);
+    PersistentDataContainer entityTags = Objects.requireNonNull(entity, "Null entity").getPersistentDataContainer();
+    StringBuilder aethelTags = new StringBuilder();
+    for (NamespacedKey key : entityTags.getKeys()) {
+      String keyName = key.getKey();
+      if (keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
+        keyName = keyName.substring(7);
+        if (keyName.startsWith("attribute.") || keyName.startsWith("rpg.health")) {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.DOUBLE)).append(" ");
+        } else if (keyName.startsWith("enchantment.")) {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.INTEGER)).append(" ");
+        } else {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(entityTags.get(key, PersistentDataType.STRING)).append(" ");
+        }
+      }
+    }
+
+    if (!aethelTags.isEmpty()) {
+      user.sendMessage(ChatColor.GREEN + "[Get Tags] " + aethelTags);
     } else {
       user.sendMessage(ChatColor.RED + "No tags found.");
     }

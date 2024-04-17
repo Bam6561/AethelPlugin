@@ -5,9 +5,7 @@ import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.interfaces.Menu;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
-import me.dannynguyen.aethel.utils.item.ItemDurability;
 import me.dannynguyen.aethel.utils.item.ItemReader;
-import me.dannynguyen.aethel.utils.item.ItemRepairCost;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.23.2
+ * @version 1.23.9
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -148,14 +148,20 @@ public class CosmeticMenu implements Menu {
    * Adds the durability, repair cost, and durability reinforcement buttons.
    */
   private void addDurabilityButtons() {
-    menu.setItem(11, ItemCreator.createItem(Material.OBSIDIAN, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + ItemDurability.displayDurability(item))));
-    menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + ItemRepairCost.getRepairCost(item))));
+    if (meta instanceof Damageable durability) {
+      short maxDurability = item.getType().getMaxDurability();
+      int durabilityValue = maxDurability - durability.getDamage();
+      menu.setItem(11, ItemCreator.createItem(Material.OBSIDIAN, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + durabilityValue + " / " + maxDurability)));
 
-    PersistentDataContainer itemTags = meta.getPersistentDataContainer();
-    if (itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
-      menu.setItem(19, ItemCreator.createItem(Material.AMETHYST_SHARD, ChatColor.AQUA + "Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))));
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+      if (itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
+        menu.setItem(19, ItemCreator.createItem(Material.AMETHYST_SHARD, ChatColor.AQUA + "Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))));
+      }
+      menu.setItem(20, ItemCreator.createItem(Material.ECHO_SHARD, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));
     }
-    menu.setItem(20, ItemCreator.createItem(Material.ECHO_SHARD, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));
+    if (meta instanceof Repairable repair) {
+      menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + repair.getRepairCost())));
+    }
   }
 
   /**

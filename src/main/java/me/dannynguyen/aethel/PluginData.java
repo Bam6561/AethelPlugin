@@ -192,6 +192,7 @@ public class PluginData {
    *
    * @return plugin's {@link EditedItemCache}
    */
+  @NotNull
   public EditedItemCache getEditedItemCache() {
     return this.editedItemCache;
   }

@@ -13,8 +13,6 @@ import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.abilities.ActiveAbilityInput;
 import me.dannynguyen.aethel.utils.abilities.PassiveAbilityInput;
-import me.dannynguyen.aethel.utils.item.ItemDurability;
-import me.dannynguyen.aethel.utils.item.ItemRepairCost;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -25,8 +23,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -44,7 +44,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.2
+ * @version 1.23.9
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -124,13 +124,19 @@ public class ItemEditorMessageSent {
       return;
     }
 
+    Damageable durability = (Damageable) meta;
     if (value >= 0) {
-      ItemDurability.setDurability(item, value);
+      if (value > item.getType().getMaxDurability()) {
+        durability.setDamage(0);
+      } else {
+        durability.setDamage(Math.abs(value - item.getType().getMaxDurability()));
+      }
       user.sendMessage(ChatColor.GREEN + "[Set Durability] " + ChatColor.WHITE + e.getMessage());
     } else {
-      ItemDurability.setDamage(item, Math.abs(value));
+      durability.setDamage(Math.min(Math.abs(value), item.getType().getMaxDurability()));
       user.sendMessage(ChatColor.GREEN + "[Set Damage] " + ChatColor.WHITE + e.getMessage());
     }
+    item.setItemMeta(durability);
     returnToCosmetic();
   }
 
@@ -183,7 +189,9 @@ public class ItemEditorMessageSent {
    */
   public void setRepairCost() {
     try {
-      ItemRepairCost.setRepairCost(item, Integer.parseInt(e.getMessage()));
+      Repairable repair = (Repairable) meta;
+      repair.setRepairCost(Integer.parseInt(e.getMessage()));
+      item.setItemMeta(repair);
       user.sendMessage(ChatColor.GREEN + "[Set Repair Cost] " + ChatColor.WHITE + e.getMessage());
     } catch (NumberFormatException ex) {
       user.sendMessage(Message.INVALID_VALUE.getMessage());

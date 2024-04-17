@@ -1,14 +1,8 @@
 package me.dannynguyen.aethel.utils.item;
 
-import me.dannynguyen.aethel.enums.plugin.Key;
-import me.dannynguyen.aethel.enums.plugin.KeyHeader;
 import me.dannynguyen.aethel.utils.TextFormatter;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +16,7 @@ import java.util.Objects;
  * Reads and decodes ItemStacks with metadata.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.9
  * @since 1.1.4
  */
 public class ItemReader {
@@ -65,38 +59,6 @@ public class ItemReader {
     } else {
       return TextFormatter.capitalizePhrase(item.getType().name());
     }
-  }
-
-  /**
-   * Returns the item's {@link Key Aethel tags}.
-   *
-   * @param item interacting item
-   * @return item's {@link Key Aethel tags}
-   */
-  @NotNull
-  public static String readTags(@NotNull ItemStack item) {
-    PersistentDataContainer itemTags = Objects.requireNonNull(item, "Null item").getItemMeta().getPersistentDataContainer();
-    StringBuilder aethelTags = new StringBuilder();
-    for (NamespacedKey key : itemTags.getKeys()) {
-      String keyName = key.getKey();
-      if (!keyName.startsWith(KeyHeader.AETHEL.getHeader())) {
-        continue;
-      }
-
-      keyName = keyName.substring(7);
-      if (keyName.startsWith("attribute.")) {
-        if (keyName.matches("attribute.list")) {
-          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
-        } else {
-          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.DOUBLE)).append(" ");
-        }
-      } else if (keyName.startsWith("rpg.")) {
-        aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.INTEGER)).append(" ");
-      } else {
-        aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
-      }
-    }
-    return aethelTags.toString();
   }
 
   /**
