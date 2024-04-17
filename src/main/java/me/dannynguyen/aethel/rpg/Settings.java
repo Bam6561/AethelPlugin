@@ -166,7 +166,7 @@ public class Settings {
     } else {
       healthBarVisible = true;
       healthBar.setVisible(true);
-      new HealthModification(Bukkit.getPlayer(uuid)).updateDisplays();
+      new HealthChange(Bukkit.getPlayer(uuid)).updateDisplays();
     }
   }
 

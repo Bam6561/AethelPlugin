@@ -245,10 +245,10 @@ public class PassiveAbility {
 
       if (livingEntity instanceof Player player) {
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-          new HealthModification(livingEntity).damage(finalDamage);
+          new HealthChange(livingEntity).damage(finalDamage);
         }
       } else {
-        new HealthModification(livingEntity).damage(finalDamage);
+        new HealthChange(livingEntity).damage(finalDamage);
       }
     }
 

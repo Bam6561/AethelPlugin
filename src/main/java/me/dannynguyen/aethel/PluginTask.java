@@ -84,10 +84,10 @@ public class PluginTask {
 
           if (entity instanceof Player player) {
             if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-              new HealthModification(player).damage(finalDamage);
+              new HealthChange(player).damage(finalDamage);
             }
           } else {
-            new HealthModification(entity).damage(finalDamage);
+            new HealthChange(entity).damage(finalDamage);
           }
         }
 
@@ -98,14 +98,14 @@ public class PluginTask {
 
           if (entity instanceof Player player) {
             if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-              new HealthModification(player).damage(finalDamage);
+              new HealthChange(player).damage(finalDamage);
               double remainingHealth = player.getPersistentDataContainer().get(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
               if (remainingHealth < 0) {
                 propagateElectrocuteStacks(player, remainingHealth);
               }
             }
           } else {
-            new HealthModification(entity).damage(finalDamage);
+            new HealthChange(entity).damage(finalDamage);
             double remainingHealth = entity.getPersistentDataContainer().get(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE);
             if (remainingHealth < 0) {
               propagateElectrocuteStacks(entity, remainingHealth);
@@ -163,7 +163,7 @@ public class PluginTask {
     Set<UUID> overshields = Plugin.getData().getRpgSystem().getOvershields();
     for (UUID uuid : overshields) {
       LivingEntity livingEntity = (LivingEntity) Bukkit.getEntity(uuid);
-      new HealthModification(livingEntity).overshield();
+      new HealthChange(livingEntity).overshield();
     }
   }
 
@@ -175,7 +175,7 @@ public class PluginTask {
     for (UUID uuid : rpgPlayers.keySet()) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
-        new HealthModification(player).updateActionDisplay();
+        new HealthChange(player).updateActionDisplay();
       }
     }
   }

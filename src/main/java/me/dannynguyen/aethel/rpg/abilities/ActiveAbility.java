@@ -8,7 +8,7 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.DamageMitigation;
-import me.dannynguyen.aethel.rpg.HealthModification;
+import me.dannynguyen.aethel.rpg.HealthChange;
 import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -294,10 +294,10 @@ public class ActiveAbility {
       final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
       if (livingEntity instanceof Player player) {
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-          new HealthModification(livingEntity).damage(finalDamage);
+          new HealthChange(livingEntity).damage(finalDamage);
         }
       } else {
-        new HealthModification(livingEntity).damage(finalDamage);
+        new HealthChange(livingEntity).damage(finalDamage);
       }
     }
 
@@ -433,10 +433,10 @@ public class ActiveAbility {
 
         if (livingEntity instanceof Player player) {
           if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-            new HealthModification(livingEntity).damage(finalDamage);
+            new HealthChange(livingEntity).damage(finalDamage);
           }
         } else {
-          new HealthModification(livingEntity).damage(finalDamage);
+          new HealthChange(livingEntity).damage(finalDamage);
         }
         statuses.remove(StatusType.BRITTLE);
       }

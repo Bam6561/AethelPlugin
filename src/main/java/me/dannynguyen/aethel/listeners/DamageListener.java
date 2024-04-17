@@ -75,7 +75,7 @@ public class DamageListener implements Listener {
   @EventHandler
   private void onRegainHealth(EntityRegainHealthEvent e) {
     if (e.getEntity() instanceof LivingEntity livingEntity) {
-      new HealthModification(livingEntity).heal(e.getAmount());
+      new HealthChange(livingEntity).heal(e.getAmount());
       e.setCancelled(true);
     }
   }
@@ -234,7 +234,7 @@ public class DamageListener implements Listener {
       triggerDamageTakenPassives(e, defenderPlayer);
     }
 
-    new HealthModification(defender).damage(finalDamage);
+    new HealthChange(defender).damage(finalDamage);
 
     if (defender.getHealth() != 0.0) {
       if (attacker instanceof Player attackerPlayer) {
@@ -264,7 +264,7 @@ public class DamageListener implements Listener {
       triggerDamageTakenPassives(defenderPlayer);
     }
 
-    new HealthModification(defender).damage(finalDamage);
+    new HealthChange(defender).damage(finalDamage);
   }
 
   /**
@@ -388,7 +388,7 @@ public class DamageListener implements Listener {
           triggerDamageTakenPassives(e, defenderPlayer);
         }
 
-        new HealthModification(defender).damage(finalDamage);
+        new HealthChange(defender).damage(finalDamage);
         return true;
       }
       case PROJECTILE -> {
@@ -427,7 +427,7 @@ public class DamageListener implements Listener {
         triggerDamageTakenPassives(e, defenderPlayer);
       }
 
-      new HealthModification(defender).damage(finalDamage);
+      new HealthChange(defender).damage(finalDamage);
       return true;
     }
     return false;
@@ -484,10 +484,10 @@ public class DamageListener implements Listener {
 
       if (livingAttacker instanceof Player player) {
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-          new HealthModification(player).damage(finalDamage);
+          new HealthChange(player).damage(finalDamage);
         }
       } else {
-        new HealthModification(livingAttacker).damage(finalDamage);
+        new HealthChange(livingAttacker).damage(finalDamage);
       }
       return attackerEntityTags.get(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE) <= 0.0;
     }

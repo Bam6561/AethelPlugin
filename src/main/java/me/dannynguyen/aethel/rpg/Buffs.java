@@ -73,11 +73,11 @@ public class Buffs {
 
     int taskID;
     if (attribute == Attribute.GENERIC_MAX_HEALTH) {
-      new HealthModification(entity).updateDisplays();
+      new HealthChange(entity).updateDisplays();
       taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         entityAttribute.setBaseValue(entityAttribute.getBaseValue() - value);
         attributes.put(attribute, attributes.get(attribute) - value);
-        new HealthModification(entity).updateDisplays();
+        new HealthChange(entity).updateDisplays();
       }, duration).getTaskId();
     } else {
       taskID = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -101,10 +101,10 @@ public class Buffs {
 
     if (aethelAttribute == AethelAttribute.MAX_HEALTH) {
       LivingEntity entity = (LivingEntity) Bukkit.getEntity(uuid);
-      new HealthModification(entity).updateDisplays();
+      new HealthChange(entity).updateDisplays();
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value);
-        new HealthModification(entity).updateDisplays();
+        new HealthChange(entity).updateDisplays();
       }, duration);
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> aethelAttributes.put(aethelAttribute, aethelAttributes.get(aethelAttribute) - value), duration);

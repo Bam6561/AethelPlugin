@@ -21,13 +21,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents entity health modification.
+ * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.23.0
+ * @version 1.23.11
  * @since 1.22.20
  */
-public class HealthModification {
+public class HealthChange {
   /**
    * Defending entity.
    */
@@ -54,11 +54,11 @@ public class HealthModification {
   private final double maxHealth;
 
   /**
-   * Associates the health modification with an entity.
+   * Associates the health change with an entity.
    *
    * @param defender defending entity
    */
-  public HealthModification(@NotNull LivingEntity defender) {
+  public HealthChange(@NotNull LivingEntity defender) {
     this.defender = Objects.requireNonNull(defender, "Null UUID");
     this.uuid = defender.getUniqueId();
     this.entityTags = defender.getPersistentDataContainer();

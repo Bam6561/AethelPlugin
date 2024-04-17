@@ -6,7 +6,7 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.rpg.HealthModification;
+import me.dannynguyen.aethel.rpg.HealthChange;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.RpgSystem;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
@@ -78,10 +78,10 @@ public class RpgListener implements Listener {
       switch (e.getModifiedType().getName()) {
         case "ABSORPTION" -> {
           if (e.getAction() == EntityPotionEffectEvent.Action.ADDED || e.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthModification(livingEntity).shield(), 1);
+            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthChange(livingEntity).shield(), 1);
           }
         }
-        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthModification(livingEntity).updateDisplays(), 1);
+        case "HEALTH_BOOST" -> Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthChange(livingEntity).updateDisplays(), 1);
       }
     }
   }
@@ -150,7 +150,7 @@ public class RpgListener implements Listener {
    */
   @EventHandler
   private void onRespawn(PlayerRespawnEvent e) {
-    new HealthModification(e.getPlayer()).reset();
+    new HealthChange(e.getPlayer()).reset();
   }
 
   /**

@@ -87,7 +87,7 @@ public class DamageMitigation {
     int blastProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_BLAST_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     final double finalDamage = damage - (damage * (blastProtectionBase * .1));
     if (finalDamage <= 0) {
-      new HealthModification(defender).heal(damage * .2);
+      new HealthChange(defender).heal(damage * .2);
       if (defender instanceof Player player) {
         player.setFoodLevel(20);
       }

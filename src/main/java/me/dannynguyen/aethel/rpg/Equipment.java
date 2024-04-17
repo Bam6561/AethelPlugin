@@ -186,7 +186,7 @@ public class Equipment {
     } else {
       removeSlotData(eSlot);
     }
-    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthModification(Bukkit.getPlayer(uuid)).updateDisplays(), 2);
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> new HealthChange(Bukkit.getPlayer(uuid)).updateDisplays(), 2);
   }
 
   /**
