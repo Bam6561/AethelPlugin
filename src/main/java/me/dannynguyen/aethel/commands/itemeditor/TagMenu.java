@@ -24,7 +24,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's {@link Key Aethel tags}.
  *
  * @author Danny Nguyen
- * @version 1.17.6
+ * @version 1.23.13
  * @since 1.6.15
  */
 public class TagMenu implements Menu {
@@ -32,8 +32,6 @@ public class TagMenu implements Menu {
    * {@link Key Aethel tags} managed by the GUI.
    */
   private static final NamespacedKey[] aethelTags = {
-      Key.ITEM_CATEGORY.getNamespacedKey(),
-      Key.RECIPE_CATEGORY.getNamespacedKey(),
       Key.RECIPE_FORGE_ID.getNamespacedKey()};
 
   /**

@@ -89,7 +89,6 @@ public class EntityTagCommand implements CommandExecutor {
         return;
       }
 
-      String action = args[0].toLowerCase();
       Entity entity;
 
       UUID uuid;
@@ -110,6 +109,7 @@ public class EntityTagCommand implements CommandExecutor {
         }
       }
 
+      String action = args[0].toLowerCase();
       switch (numberOfParameters) {
         case 2 -> {
           switch (action) {

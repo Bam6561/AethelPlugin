@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * It'll do something. We just don't know what yet.
  *
  * @author Danny Nguyen
- * @version 1.9.21
+ * @version 1.23.13
  * @since 1.2.3
  */
 public class Template implements CommandExecutor {
@@ -35,7 +35,7 @@ public class Template implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.template")) {
-        readRequest(user, args);
+        new Request(user, args).readRequest();
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
@@ -46,24 +46,29 @@ public class Template implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before doing something.
+   * Represents an unknown command request.
    *
-   * @param user user
+   * @param user command user
    * @param args user provided parameters
+   * @author Danny Nguyen
+   * @version 1.23.13
+   * @since 1.23.13
    */
-  private void readRequest(Player user, String[] args) {
-    switch (args.length) {
-      default -> interpretParameters(user, args);
+  private record Request(Player user, String[] args) {
+    /**
+     * Checks if the command request was formatted correctly before doing something.
+     */
+    private void readRequest() {
+      switch (args.length) {
+        default -> interpretParameters();
+      }
     }
-  }
 
-  /**
-   * Either does something or another thing.
-   *
-   * @param user user
-   * @param args user provided parameters
-   */
-  private void interpretParameters(Player user, String[] args) {
+    /**
+     * Either does something or another thing.
+     */
+    private void interpretParameters() {
 
+    }
   }
 }

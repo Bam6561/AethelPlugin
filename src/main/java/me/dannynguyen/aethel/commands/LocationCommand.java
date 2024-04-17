@@ -108,8 +108,7 @@ public class LocationCommand implements CommandExecutor {
         return;
       }
 
-      String action = args[0].toLowerCase();
-      switch (action) {
+      switch (args[0].toLowerCase()) {
         case "g", "get" -> getLocations();
         case "a", "add" -> saveLocation();
         case "r", "remove" -> removeLocation();

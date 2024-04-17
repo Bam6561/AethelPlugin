@@ -57,7 +57,7 @@ public class WhatsThisCommand implements CommandExecutor {
   }
 
   /**
-   * Represents a WhatsThis command request.
+   * Represents a WhatsThisFeature command request.
    *
    * @param user command user
    * @param args user provided parameters

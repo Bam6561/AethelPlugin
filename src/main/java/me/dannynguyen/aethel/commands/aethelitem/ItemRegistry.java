@@ -1,6 +1,5 @@
 package me.dannynguyen.aethel.commands.aethelitem;
 
-import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.DataRegistry;
 import me.dannynguyen.aethel.utils.InventoryPages;
@@ -8,8 +7,6 @@ import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -23,7 +20,7 @@ import java.util.*;
  * called in order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.23.4
+ * @version 1.23.13
  * @since 1.3.2
  */
 public class ItemRegistry implements DataRegistry {
@@ -87,12 +84,8 @@ public class ItemRegistry implements DataRegistry {
     }
 
     Arrays.sort(files);
-    Map<String, List<ItemStack>> categories = new HashMap<>(Map.of("All", new ArrayList<>()));
-    for (File file : files) {
-      if (file.getName().endsWith("_itm.txt")) {
-        readFile(file, categories);
-      }
-    }
+    Map<String, List<ItemStack>> categories = new HashMap<>();
+    parseDirectory(files, categories);
 
     if (items.isEmpty()) {
       return;
@@ -103,6 +96,30 @@ public class ItemRegistry implements DataRegistry {
       itemCategoryNames.add(category);
     }
     Collections.sort(itemCategoryNames);
+  }
+
+  /**
+   * Recursively parses the directory and reads item files.
+   *
+   * @param directory  item directory
+   * @param categories item categories
+   */
+  private void parseDirectory(File[] directory, Map<String, List<ItemStack>> categories) {
+    for (File file : directory) {
+      if (file.isFile()) {
+        if (file.getName().endsWith("_itm.txt")) {
+          readFile(file, categories);
+        }
+      } else {
+        File[] subdirectory = file.listFiles();
+        if (subdirectory.length == 0) {
+          file.delete();
+        } else {
+          Arrays.sort(subdirectory);
+          parseDirectory(subdirectory, categories);
+        }
+      }
+    }
   }
 
   /**
@@ -121,8 +138,13 @@ public class ItemRegistry implements DataRegistry {
       if (ItemReader.isNotNullOrAir(item)) {
         Item pItem = new Item(file, item);
         items.put(pItem.getName(), pItem);
-        categories.get("All").add(item);
-        sortItem(categories, item);
+
+        String category = file.getParentFile().getName();
+        if (categories.containsKey(category)) {
+          categories.get(category).add(item);
+        } else {
+          categories.put(category, new ArrayList<>(List.of(item)));
+        }
       } else {
         Bukkit.getLogger().warning(Message.INVALID_FILE.getMessage() + file.getName());
       }
@@ -160,26 +182,6 @@ public class ItemRegistry implements DataRegistry {
       pageEnd = Math.min(totalItems, pageEnd + 45);
     }
     return pages;
-  }
-
-  /**
-   * Sorts an item into a category based on its {@link Key#ITEM_CATEGORY}.
-   *
-   * @param categories {@link Item} categories
-   * @param item       interacting item
-   */
-  private void sortItem(Map<String, List<ItemStack>> categories, ItemStack item) {
-    PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-    if (!data.has(Key.ITEM_CATEGORY.getNamespacedKey(), PersistentDataType.STRING)) {
-      return;
-    }
-
-    String category = data.get(Key.ITEM_CATEGORY.getNamespacedKey(), PersistentDataType.STRING);
-    if (categories.containsKey(category)) {
-      categories.get(category).add(item);
-    } else {
-      categories.put(category, new ArrayList<>(List.of(item)));
-    }
   }
 
   /**

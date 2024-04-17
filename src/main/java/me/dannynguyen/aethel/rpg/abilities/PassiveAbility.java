@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.23.4
+ * @version 1.23.13
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -134,183 +134,10 @@ public class PassiveAbility {
     double cooldownModifier = (itemCooldownBase + cooldownModifierBuff) / 100;
 
     switch (type.getEffect()) {
-      case BUFF -> applyBuff(cooldownModifier, targetUUID);
-      case STACK_INSTANCE -> applyStackInstance(cooldownModifier, targetUUID);
-      case CHAIN_DAMAGE -> chainDamage(cooldownModifier, targetUUID);
-      case POTION_EFFECT -> applyPotionEffect(cooldownModifier, targetUUID);
-    }
-  }
-
-  /**
-   * Applies {@link PassiveAbilityType.Effect#BUFF}.
-   *
-   * @param cooldownModifier cooldown modifier
-   * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#BUFF}
-   */
-  private void applyBuff(double cooldownModifier, UUID targetUUID) {
-    if (!(Bukkit.getEntity(targetUUID) instanceof LivingEntity)) {
-      return;
-    }
-
-    Map<UUID, Buffs> entityBuffs = Plugin.getData().getRpgSystem().getBuffs();
-    if (entityBuffs.get(targetUUID) == null) {
-      entityBuffs.put(targetUUID, new Buffs(targetUUID));
-    }
-    Buffs buffs = entityBuffs.get(targetUUID);
-    double value = Double.parseDouble(effectData.get(2));
-    int duration = Integer.parseInt(effectData.get(3));
-
-    try {
-      Attribute attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
-      buffs.addAttribute(attribute, value, duration);
-    } catch (IllegalArgumentException ex) {
-      try {
-        AethelAttribute aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
-        buffs.addAethelAttribute(aethelAttribute, value, duration);
-      } catch (IllegalArgumentException ignored) {
-      }
-    }
-
-    int cooldown = Integer.parseInt(conditionData.get(1));
-    if (cooldown > 0) {
-      setOnCooldown(true);
-      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-    }
-  }
-
-  /**
-   * Applies {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
-   *
-   * @param cooldownModifier cooldown modifier
-   * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#STACK_INSTANCE}
-   */
-  private void applyStackInstance(double cooldownModifier, UUID targetUUID) {
-    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-    Map<StatusType, Status> statuses;
-    if (!entityStatuses.containsKey(targetUUID)) {
-      entityStatuses.put(targetUUID, new HashMap<>());
-    }
-    statuses = entityStatuses.get(targetUUID);
-
-    StatusType statusType = StatusType.valueOf(type.toString());
-    int stacks = Integer.parseInt(effectData.get(1));
-    int ticks = Integer.parseInt(effectData.get(2));
-
-    Entity entity = Bukkit.getEntity(targetUUID);
-    PersistentDataContainer entityTags = entity.getPersistentDataContainer();
-    Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(targetUUID);
-
-    double tenacityBase = entityTags.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-    double tenacityBuff = 0.0;
-    if (buffs != null) {
-      tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
-    }
-
-    ticks = (int) Math.max(1, ticks - (ticks * (tenacityBase + tenacityBuff) / 100));
-
-    if (statuses.containsKey(statusType)) {
-      statuses.get(statusType).addStacks(stacks, ticks);
-    } else {
-      statuses.put(statusType, new Status(targetUUID, statusType, stacks, ticks));
-    }
-
-    int cooldown = Integer.parseInt(conditionData.get(1));
-    if (cooldown > 0) {
-      setOnCooldown(true);
-      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-    }
-  }
-
-  /**
-   * {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} between entities.
-   *
-   * @param cooldownModifier cooldown modifier
-   * @param targetUUID       {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} source
-   */
-  private void chainDamage(double cooldownModifier, UUID targetUUID) {
-    Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
-
-    double chainDamage = Double.parseDouble(effectData.get(1));
-    double meters = Double.parseDouble(effectData.get(2));
-
-    Map<LivingEntity, Integer> soakedTargets = new HashMap<>();
-    getSoakedTargets(entityStatuses, soakedTargets, targetUUID, meters);
-
-    for (LivingEntity livingEntity : soakedTargets.keySet()) {
-      Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
-      double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
-      final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
-
-      if (livingEntity instanceof Player player) {
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-          new HealthChange(livingEntity).damage(finalDamage);
-        }
-      } else {
-        new HealthChange(livingEntity).damage(finalDamage);
-      }
-    }
-
-    int cooldown = Integer.parseInt(conditionData.get(1));
-    if (cooldown > 0) {
-      setOnCooldown(true);
-      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-    }
-  }
-
-  /**
-   * Applies a potion effect.
-   *
-   * @param cooldownModifier cooldown modifier
-   * @param targetUUID       entity to receive potion effects
-   */
-  private void applyPotionEffect(double cooldownModifier, UUID targetUUID) {
-    PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(1));
-    int amplifier = Integer.parseInt(effectData.get(2));
-    int duration = Integer.parseInt(effectData.get(3));
-    boolean ambient = Boolean.parseBoolean(effectData.get(4));
-    LivingEntity target = (LivingEntity) Bukkit.getEntity(targetUUID);
-
-    target.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient));
-
-    int cooldown = Integer.parseInt(conditionData.get(1));
-    if (cooldown > 0) {
-      setOnCooldown(true);
-      cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-    }
-  }
-
-  /**
-   * Recursively finds new {@link StatusType#SOAKED} targets around the source entity.
-   *
-   * @param entityStatuses entity {@link Status statuses}
-   * @param soakedTargets  {@link StatusType#SOAKED} targets
-   * @param targetUUID     source entity
-   * @param meters         distance
-   */
-  private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, double meters) {
-    Set<LivingEntity> newSoakedTargets = new HashSet<>();
-    for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
-      if (!(entity instanceof LivingEntity livingEntity)) {
-        continue;
-      }
-
-      UUID livingEntityUUID = livingEntity.getUniqueId();
-      if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
-        if (!soakedTargets.containsKey(livingEntity)) {
-          newSoakedTargets.add(livingEntity);
-          soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
-        }
-      }
-    }
-    if (newSoakedTargets.isEmpty()) {
-      return;
-    }
-    for (LivingEntity livingEntity : newSoakedTargets) {
-      getSoakedTargets(entityStatuses, soakedTargets, livingEntity.getUniqueId(), meters);
+      case BUFF -> new Effect().applyBuff(cooldownModifier, targetUUID);
+      case STACK_INSTANCE -> new Effect().applyStackInstance(cooldownModifier, targetUUID);
+      case CHAIN_DAMAGE -> new Effect().chainDamage(cooldownModifier, targetUUID);
+      case POTION_EFFECT -> new Effect().applyPotionEffect(cooldownModifier, targetUUID);
     }
   }
 
@@ -354,16 +181,204 @@ public class PassiveAbility {
   }
 
   /**
-   * Sets if the {@link PassiveAbilityType} is on cooldown.
+   * Represents an ability's effect.
    *
-   * @param isOnCooldown is on cooldown
+   * @author Danny Nguyen
+   * @version 1.23.13
+   * @since 1.23.13
    */
-  private void setOnCooldown(boolean isOnCooldown) {
-    Equipment.Abilities.SlotPassive slotPassive = new Equipment.Abilities.SlotPassive(eSlot, type);
-    if (isOnCooldown) {
-      onCooldownPassives.get(trigger).add(slotPassive);
-    } else {
-      onCooldownPassives.get(trigger).remove(slotPassive);
+  private class Effect {
+    /**
+     * No parameter constructor.
+     */
+    Effect() {
+    }
+
+    /**
+     * Applies {@link PassiveAbilityType.Effect#BUFF}.
+     *
+     * @param cooldownModifier cooldown modifier
+     * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#BUFF}
+     */
+    private void applyBuff(double cooldownModifier, UUID targetUUID) {
+      if (!(Bukkit.getEntity(targetUUID) instanceof LivingEntity)) {
+        return;
+      }
+
+      Map<UUID, Buffs> entityBuffs = Plugin.getData().getRpgSystem().getBuffs();
+      if (entityBuffs.get(targetUUID) == null) {
+        entityBuffs.put(targetUUID, new Buffs(targetUUID));
+      }
+      Buffs buffs = entityBuffs.get(targetUUID);
+      double value = Double.parseDouble(effectData.get(2));
+      int duration = Integer.parseInt(effectData.get(3));
+
+      try {
+        Attribute attribute = Attribute.valueOf(effectData.get(1).toUpperCase());
+        buffs.addAttribute(attribute, value, duration);
+      } catch (IllegalArgumentException ex) {
+        try {
+          AethelAttribute aethelAttribute = AethelAttribute.valueOf(effectData.get(1).toUpperCase());
+          buffs.addAethelAttribute(aethelAttribute, value, duration);
+        } catch (IllegalArgumentException ignored) {
+        }
+      }
+
+      int cooldown = Integer.parseInt(conditionData.get(1));
+      if (cooldown > 0) {
+        setOnCooldown(true);
+        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+      }
+    }
+
+    /**
+     * Applies {@link PassiveAbilityType.Effect#STACK_INSTANCE}.
+     *
+     * @param cooldownModifier cooldown modifier
+     * @param targetUUID       entity to receive {@link PassiveAbilityType.Effect#STACK_INSTANCE}
+     */
+    private void applyStackInstance(double cooldownModifier, UUID targetUUID) {
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+      Map<StatusType, Status> statuses;
+      if (!entityStatuses.containsKey(targetUUID)) {
+        entityStatuses.put(targetUUID, new HashMap<>());
+      }
+      statuses = entityStatuses.get(targetUUID);
+
+      StatusType statusType = StatusType.valueOf(type.toString());
+      int stacks = Integer.parseInt(effectData.get(1));
+      int ticks = Integer.parseInt(effectData.get(2));
+
+      Entity entity = Bukkit.getEntity(targetUUID);
+      PersistentDataContainer entityTags = entity.getPersistentDataContainer();
+      Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(targetUUID);
+
+      double tenacityBase = entityTags.getOrDefault(Key.ATTRIBUTE_TENACITY.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+      double tenacityBuff = 0.0;
+      if (buffs != null) {
+        tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
+      }
+
+      ticks = (int) Math.max(1, ticks - (ticks * (tenacityBase + tenacityBuff) / 100));
+
+      if (statuses.containsKey(statusType)) {
+        statuses.get(statusType).addStacks(stacks, ticks);
+      } else {
+        statuses.put(statusType, new Status(targetUUID, statusType, stacks, ticks));
+      }
+
+      int cooldown = Integer.parseInt(conditionData.get(1));
+      if (cooldown > 0) {
+        setOnCooldown(true);
+        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+      }
+    }
+
+    /**
+     * {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} between entities.
+     *
+     * @param cooldownModifier cooldown modifier
+     * @param targetUUID       {@link PassiveAbilityType.Effect#CHAIN_DAMAGE} source
+     */
+    private void chainDamage(double cooldownModifier, UUID targetUUID) {
+      Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
+
+      double chainDamage = Double.parseDouble(effectData.get(1));
+      double meters = Double.parseDouble(effectData.get(2));
+
+      Map<LivingEntity, Integer> soakedTargets = new HashMap<>();
+      getSoakedTargets(entityStatuses, soakedTargets, targetUUID, meters);
+
+      for (LivingEntity livingEntity : soakedTargets.keySet()) {
+        Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
+        double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
+        final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
+
+        if (livingEntity instanceof Player player) {
+          if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+            new HealthChange(livingEntity).damage(finalDamage);
+          }
+        } else {
+          new HealthChange(livingEntity).damage(finalDamage);
+        }
+      }
+
+      int cooldown = Integer.parseInt(conditionData.get(1));
+      if (cooldown > 0) {
+        setOnCooldown(true);
+        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+      }
+    }
+
+    /**
+     * Applies a potion effect.
+     *
+     * @param cooldownModifier cooldown modifier
+     * @param targetUUID       entity to receive potion effects
+     */
+    private void applyPotionEffect(double cooldownModifier, UUID targetUUID) {
+      PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(1));
+      int amplifier = Integer.parseInt(effectData.get(2));
+      int duration = Integer.parseInt(effectData.get(3));
+      boolean ambient = Boolean.parseBoolean(effectData.get(4));
+      LivingEntity target = (LivingEntity) Bukkit.getEntity(targetUUID);
+
+      target.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient));
+
+      int cooldown = Integer.parseInt(conditionData.get(1));
+      if (cooldown > 0) {
+        setOnCooldown(true);
+        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+      }
+    }
+
+    /**
+     * Recursively finds new {@link StatusType#SOAKED} targets around the source entity.
+     *
+     * @param entityStatuses entity {@link Status statuses}
+     * @param soakedTargets  {@link StatusType#SOAKED} targets
+     * @param targetUUID     source entity
+     * @param meters         distance
+     */
+    private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, double meters) {
+      Set<LivingEntity> newSoakedTargets = new HashSet<>();
+      for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
+        if (!(entity instanceof LivingEntity livingEntity)) {
+          continue;
+        }
+
+        UUID livingEntityUUID = livingEntity.getUniqueId();
+        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
+          if (!soakedTargets.containsKey(livingEntity)) {
+            newSoakedTargets.add(livingEntity);
+            soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
+          }
+        }
+      }
+      if (newSoakedTargets.isEmpty()) {
+        return;
+      }
+      for (LivingEntity livingEntity : newSoakedTargets) {
+        getSoakedTargets(entityStatuses, soakedTargets, livingEntity.getUniqueId(), meters);
+      }
+    }
+
+    /**
+     * Sets if the {@link PassiveAbilityType} is on cooldown.
+     *
+     * @param isOnCooldown is on cooldown
+     */
+    private void setOnCooldown(boolean isOnCooldown) {
+      Equipment.Abilities.SlotPassive slotPassive = new Equipment.Abilities.SlotPassive(eSlot, type);
+      if (isOnCooldown) {
+        onCooldownPassives.get(trigger).add(slotPassive);
+      } else {
+        onCooldownPassives.get(trigger).remove(slotPassive);
+      }
     }
   }
 }

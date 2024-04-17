@@ -1,9 +1,8 @@
-package me.dannynguyen.aethel.commands.forge;
+package me.dannynguyen.aethel.commands.aethelitem;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.listeners.MenuListener;
-import me.dannynguyen.aethel.listeners.MessageListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,15 +17,15 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Message sent listener for {@link ForgeCommand} text inputs.
+ * Message sent listener for {@link ItemCommand} text inputs.
  * <p>
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.11
- * @since 1.23.8
+ * @version 1.23.13
+ * @since 1.23.13
  */
-public class ForgeMessageSent {
+public class ItemMessageSent {
   /**
    * Message sent event.
    */
@@ -43,49 +42,48 @@ public class ForgeMessageSent {
   private final UUID uuid;
 
   /**
-   * Associates a message sent event with its user and encoded data in the context of
-   * saving a recipe in an {@link RecipeDetailsMenu} through {@link ForgeMenuClick}.
+   * Associates a message sent event with its user and encoded data in the
+   * context of saving am item in a {@link ItemMenu} through {@link ItemMenuClick}.
    *
    * @param e message sent event
    */
-  public ForgeMessageSent(@NotNull AsyncPlayerChatEvent e) {
+  public ItemMessageSent(@NotNull AsyncPlayerChatEvent e) {
     this.e = Objects.requireNonNull(e, "Null message sent event");
     this.user = e.getPlayer();
     this.uuid = user.getUniqueId();
   }
 
   /**
-   * Saves the {@link RecipeRegistry.Recipe recipe} under a user input folder name.
+   * Saves the {@link ItemRegistry.Item item} under a user input folder name.
    */
-  public void saveRecipe() {
+  public void saveItem() {
     MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     String folder = e.getMessage();
     String fileName = menuInput.getFileName();
-    String encodedRecipe = menuInput.getEncodedData();
-
-    File filePath = new File(Directory.FORGE.getFile().getPath() + "/" + folder);
-    if (!filePath.exists()) {
-      filePath.mkdirs();
-    }
+    String encodedItem = menuInput.getEncodedData();
 
     try {
-      FileWriter fw = new FileWriter(filePath.getPath() + "/" + fileName + "_rcp.txt");
-      fw.write(encodedRecipe);
+      File filePath = new File(Directory.AETHELITEM.getFile().getPath() + "/" + folder);
+      if (!filePath.exists()) {
+        filePath.mkdirs();
+      }
+
+      FileWriter fw = new FileWriter(filePath.getPath() + "/" + fileName + "_itm.txt");
+      fw.write(encodedItem);
       fw.close();
 
       menuInput.setFileName("");
       menuInput.setEncodedData("");
 
-      user.sendMessage(ChatColor.GREEN + "[Saved Recipe] " + ChatColor.WHITE + folder + "/" + fileName);
+      user.sendMessage(ChatColor.GREEN + "[Saved Item] " + ChatColor.WHITE + folder + "/" + fileName);
     } catch (IOException ex) {
-      user.sendMessage(ChatColor.RED + "Failed to write recipe to file.");
+      user.sendMessage(ChatColor.RED + "Failed to write item to file.");
     }
 
     Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
-      menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_EDIT);
       menuInput.setCategory("");
-      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.EDIT).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.FORGE_CATEGORY);
+      user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
       menuInput.setPage(0);
     });
   }

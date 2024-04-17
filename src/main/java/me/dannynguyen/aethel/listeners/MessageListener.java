@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.commands.aethelitem.ItemMessageSent;
 import me.dannynguyen.aethel.commands.character.CharacterMessageSent;
 import me.dannynguyen.aethel.commands.forge.ForgeMessageSent;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.23.8
+ * @version 1.23.13
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -38,6 +39,7 @@ public class MessageListener implements Listener {
       e.setCancelled(true);
       String inputType = type.getId();
       switch (inputType) {
+        case "aethelitem" -> interpretAethelItem(e, type);
         case "forge" -> interpretForge(e, type);
         case "itemeditor" -> interpretItemEditor(e, type);
         case "character" -> interpretCharacter(e, type);
@@ -53,6 +55,20 @@ public class MessageListener implements Listener {
   @EventHandler
   private void onOpenInventory(InventoryOpenEvent e) {
     Plugin.getData().getPluginSystem().getPluginPlayers().get(e.getPlayer().getUniqueId()).getMenuInput().setMessageInput(null);
+  }
+
+  /**
+   * Determines which {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand}
+   * input is being interacted with.
+   *
+   * @param e    message event
+   * @param type {@link Type}
+   */
+  private void interpretAethelItem(AsyncPlayerChatEvent e, Type type) {
+    ItemMessageSent msg = new ItemMessageSent(e);
+    switch (type) {
+      case AETHELITEM_FOLDER -> msg.saveItem();
+    }
   }
 
   /**
@@ -118,6 +134,11 @@ public class MessageListener implements Listener {
    * Message input types.
    */
   public enum Type {
+    /**
+     * Aethel item folder.
+     */
+    AETHELITEM_FOLDER("aethelitem"),
+
     /**
      * Forge recipe folder.
      */

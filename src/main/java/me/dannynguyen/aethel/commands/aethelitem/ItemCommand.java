@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.13
  * @since 1.3.2
  */
 public class ItemCommand implements CommandExecutor {
@@ -47,7 +47,7 @@ public class ItemCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.aethelitem")) {
-        readRequest(user, args);
+        new Request(user, args).readRequest();
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
@@ -58,46 +58,49 @@ public class ItemCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before interpreting its usage.
+   * Represents an AethelItem command request.
    *
-   * @param user user
+   * @param user command user
    * @param args user provided parameters
+   * @author Danny Nguyen
+   * @version 1.23.13
+   * @since 1.23.13
    */
-  private void readRequest(Player user, String[] args) {
-    switch (args.length) {
-      case 0 -> openMenu(user);
-      case 1 -> readParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Opens the {@link ItemMenu}.
-   *
-   * @param user user
-   */
-  private void openMenu(Player user) {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-    menuInput.setCategory("");
-    user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
-    menuInput.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
-    menuInput.setPage(0);
-  }
-
-  /**
-   * Checks if the action is "reload" before reloading
-   * {@link ItemRegistry.Item items} into {@link ItemRegistry}.
-   *
-   * @param user   user
-   * @param action type of interaction
-   */
-  private void readParameter(Player user, String action) {
-    switch (action) {
-      case "reload", "r" -> {
-        Plugin.getData().getItemRegistry().loadData();
-        user.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
+  private record Request(Player user, String[] args) {
+    /**
+     * Checks if the command request was formatted correctly before interpreting its usage.
+     */
+    private void readRequest() {
+      switch (args.length) {
+        case 0 -> openMenu();
+        case 1 -> readParameter();
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
+    }
+
+    /**
+     * Opens the {@link ItemMenu}.
+     */
+    private void openMenu() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      menuInput.setCategory("");
+      user.openInventory(new ItemMenu(user, ItemMenu.Action.VIEW).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.AETHELITEM_CATEGORY);
+      menuInput.setPage(0);
+    }
+
+    /**
+     * Checks if the action is "reload" before reloading
+     * {@link ItemRegistry.Item items} into {@link ItemRegistry}.
+     */
+    private void readParameter() {
+      switch (args[0].toLowerCase()) {
+        case "reload", "r" -> {
+          Plugin.getData().getItemRegistry().loadData();
+          user.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
+        }
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
+      }
     }
   }
 }

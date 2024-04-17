@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.23.13
  * @since 1.11.9
  */
 public enum Key {
@@ -29,16 +29,6 @@ public enum Key {
    * Item {@link ActiveAbility} list.
    */
   ACTIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + "list")),
-
-  /**
-   * {@link me.dannynguyen.aethel.commands.aethelitem.ItemRegistry Item} category.
-   */
-  ITEM_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHELITEM.getHeader() + "category")),
-
-  /**
-   * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Recipe} category.
-   */
-  RECIPE_CATEGORY(new NamespacedKey(Plugin.getInstance(), KeyHeader.FORGE.getHeader() + "category")),
 
   /**
    * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Recipe} Forge ID.
