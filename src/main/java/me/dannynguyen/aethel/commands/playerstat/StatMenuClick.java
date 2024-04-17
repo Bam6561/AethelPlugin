@@ -24,7 +24,7 @@ import java.util.UUID;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.12
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClick {
@@ -83,11 +83,11 @@ public class StatMenuClick implements MenuClick {
    */
   public void interpretStatClick() {
     switch (slot) {
-      case 0 -> previousPage();
+      case 0 -> new MenuChange().previousPage();
       case 3, 4 -> { // Player Heads
       }
-      case 5 -> returnToMenu();
-      case 8 -> nextPage();
+      case 5 -> new MenuChange().returnToMenu();
+      case 8 -> new MenuChange().nextPage();
       default -> new StatBroadcast().sendStat();
     }
   }
@@ -102,51 +102,66 @@ public class StatMenuClick implements MenuClick {
    */
   public void interpretSubstatClick() {
     switch (slot) {
-      case 0 -> previousPage();
+      case 0 -> new MenuChange().previousPage();
       case 3, 4 -> { // Player Heads
       }
-      case 5 -> returnToMenu();
-      case 8 -> nextPage();
+      case 5 -> new MenuChange().returnToMenu();
+      case 8 -> new MenuChange().nextPage();
       default -> new StatBroadcast().sendSubstat();
     }
   }
 
   /**
-   * Opens the previous stat category page.
+   * Represents a menu change operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.23.12
+   * @since 1.23.12
    */
-  private void previousPage() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-    String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
-    String category = menuInput.getCategory();
-    int pageRequest = menuInput.getPage();
+  private class MenuChange {
+    /**
+     * No parameter constructor.
+     */
+    MenuChange() {
+    }
 
-    user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest - 1));
-    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
-  }
+    /**
+     * Opens the previous stat category page.
+     */
+    private void previousPage() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
+      String category = menuInput.getCategory();
+      int pageRequest = menuInput.getPage();
 
-  /**
-   * Opens a {@link StatMenu}.
-   */
-  private void returnToMenu() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-    String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
+      user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest - 1));
+      menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+    }
 
-    user.openInventory(new StatMenu(user, owner).getMainMenu());
-    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
-    menuInput.setPage(0);
-  }
+    /**
+     * Opens a {@link StatMenu}.
+     */
+    private void returnToMenu() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
 
-  /**
-   * Opens the next stat category page.
-   */
-  private void nextPage() {
-    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
-    String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
-    String category = menuInput.getCategory();
-    int pageRequest = menuInput.getPage();
+      user.openInventory(new StatMenu(user, owner).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
+      menuInput.setPage(0);
+    }
 
-    user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest + 1));
-    menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+    /**
+     * Opens the next stat category page.
+     */
+    private void nextPage() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      String owner = Bukkit.getOfflinePlayer(menuInput.getTarget()).getName();
+      String category = menuInput.getCategory();
+      int pageRequest = menuInput.getPage();
+
+      user.openInventory(new StatMenu(user, owner).getCategoryPage(category, pageRequest + 1));
+      menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_SUBSTAT);
+    }
   }
 
   /**

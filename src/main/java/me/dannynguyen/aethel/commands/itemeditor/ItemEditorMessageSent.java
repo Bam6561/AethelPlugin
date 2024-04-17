@@ -641,6 +641,12 @@ public class ItemEditorMessageSent {
    */
   private class KeyChange {
     /**
+     * No parameter constructor.
+     */
+    KeyChange() {
+    }
+
+    /**
      * Sets a key with a double value to a {@link KeyHeader key header's} list of keys.
      *
      * @param keyHeader {@link KeyHeader}

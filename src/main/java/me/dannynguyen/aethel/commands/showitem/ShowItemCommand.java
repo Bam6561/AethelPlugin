@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.23.12
  * @since 1.4.5
  */
 public class ShowItemCommand implements CommandExecutor {
@@ -52,7 +52,7 @@ public class ShowItemCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.showitem")) {
-        readRequest(user, args);
+        new Request(user, args).readRequest();
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
@@ -63,68 +63,71 @@ public class ShowItemCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before interpreting its usage.
+   * Represents a ShowItem command request.
    *
-   * @param user user
+   * @param user command user
    * @param args user provided parameters
+   * @author Danny Nguyen
+   * @version 1.23.12
+   * @since 1.23.12
    */
-  private void readRequest(Player user, String[] args) {
-    switch (args.length) {
-      case 0 -> showItem(user);
-      case 1 -> interpretParameter(user, args[0].toLowerCase());
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Sends a message to global chat that shows the item as a hover action.
-   *
-   * @param user user
-   */
-  private void showItem(Player user) {
-    ItemStack item = user.getInventory().getItemInMainHand();
-    if (ItemReader.isNotNullOrAir(item)) {
-      TextComponent message = createShowItemTextComponent(user, item);
-      for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-        onlinePlayer.spigot().sendMessage(message);
+  private record Request(Player user, String[] args) {
+    /**
+     * Checks if the command request was formatted correctly before interpreting its usage.
+     */
+    private void readRequest() {
+      switch (args.length) {
+        case 0 -> showItem();
+        case 1 -> interpretParameter();
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
-      Plugin.getData().getPastItemHistory().addPastItem(user, item);
-    } else {
-      user.sendMessage(Message.NO_MAIN_HAND_ITEM.getMessage());
     }
-  }
 
-  /**
-   * Checks if the parameter is "past" before opening a {@link PastItemMenu}.
-   *
-   * @param user   user
-   * @param action type of interaction
-   */
-  private void interpretParameter(Player user, String action) {
-    if (action.equals("p") || action.equals("past")) {
-      user.openInventory(new PastItemMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMenu(MenuListener.Menu.SHOWITEM_PAST);
-    } else {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
+    /**
+     * Sends a message to global chat that shows the item as a hover action.
+     */
+    private void showItem() {
+      ItemStack item = user.getInventory().getItemInMainHand();
+      if (ItemReader.isNotNullOrAir(item)) {
+        TextComponent message = createShowItemTextComponent(item);
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+          onlinePlayer.spigot().sendMessage(message);
+        }
+        Plugin.getData().getPastItemHistory().addPastItem(user, item);
+      } else {
+        user.sendMessage(Message.NO_MAIN_HAND_ITEM.getMessage());
+      }
     }
-  }
 
-  /**
-   * Creates a text component with a show item hover action.
-   *
-   * @param user user
-   * @param item interacting item
-   * @return text component with hover action (show item)
-   */
-  private TextComponent createShowItemTextComponent(Player user, ItemStack item) {
-    // [!] <ItemName> [PlayerName]
-    TextComponent message = new TextComponent(Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + " ");
+    /**
+     * Checks if the parameter is "past" before opening a {@link PastItemMenu}.
+     */
+    private void interpretParameter() {
+      String action = args[0].toLowerCase();
+      if (action.equals("p") || action.equals("past")) {
+        user.openInventory(new PastItemMenu(user).getMainMenu());
+        Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMenu(MenuListener.Menu.SHOWITEM_PAST);
+      } else {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETER.getMessage());
+      }
+    }
 
-    TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readName(item) + " ");
-    ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
-    itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
+    /**
+     * Creates a text component with a show item hover action.
+     *
+     * @param item interacting item
+     * @return text component with hover action (show item)
+     */
+    private TextComponent createShowItemTextComponent(ItemStack item) {
+      // [!] <ItemName> [PlayerName]
+      TextComponent message = new TextComponent(Message.NOTIFICATION_GLOBAL.getMessage() + ChatColor.DARK_PURPLE + user.getName() + " ");
 
-    message.addExtra(itemName);
-    return message;
+      TextComponent itemName = new TextComponent(ChatColor.AQUA + ItemReader.readName(item) + " ");
+      ItemTag itemTag = ItemTag.ofNbt(item.getItemMeta().getAsString());
+      itemName.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new Item(item.getType().getKey().toString(), item.getAmount(), itemTag)));
+
+      message.addExtra(itemName);
+      return message;
+    }
   }
 }

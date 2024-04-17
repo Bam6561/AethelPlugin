@@ -30,7 +30,7 @@ import java.util.Map;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.23.6
+ * @version 1.23.12
  * @since 1.22.5
  */
 public class LocationCommand implements CommandExecutor {
@@ -53,7 +53,7 @@ public class LocationCommand implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
     if (sender instanceof Player user) {
       if (user.hasPermission("aethel.location")) {
-        readRequest(user, args);
+        new Request(user, args).readRequest();
       } else {
         user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
       }
@@ -64,37 +64,13 @@ public class LocationCommand implements CommandExecutor {
   }
 
   /**
-   * Checks if the command request was formatted correctly before interpreting its usage.
-   *
-   * @param user user
-   * @param args user provided parameters
-   */
-  private void readRequest(Player user, String[] args) {
-    int numberOfParameters = args.length;
-    if (numberOfParameters == 0) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-      return;
-    }
-
-    String action = args[0].toLowerCase();
-    switch (action) {
-      case "g", "get" -> new LocationRequest(user, args).getLocations();
-      case "a", "add" -> new LocationRequest(user, args).saveLocation();
-      case "r", "remove" -> new LocationRequest(user, args).removeLocation();
-      case "t", "track" -> new LocationRequest(user, args).trackLocation();
-      case "c", "comp", "compare" -> new LocationRequest(user, args).compareLocations();
-      default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-    }
-  }
-
-  /**
-   * Represents a location query.
+   * Represents a Location command request.
    *
    * @author Danny Nguyen
-   * @version 1.23.3
-   * @since 1.22.5
+   * @version 1.23.12
+   * @since 1.23.12
    */
-  private static class LocationRequest {
+  private static class Request {
     /**
      * Interacting user.
      */
@@ -116,10 +92,31 @@ public class LocationCommand implements CommandExecutor {
      * @param user user
      * @param args user provided parameters
      */
-    LocationRequest(Player user, String[] args) {
+    Request(Player user, String[] args) {
       this.user = user;
       this.args = args;
       this.locations = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getLocationRegistry().getLocations();
+    }
+
+    /**
+     * Checks if the command request was formatted correctly before interpreting its usage.
+     */
+    private void readRequest() {
+      int numberOfParameters = args.length;
+      if (numberOfParameters == 0) {
+        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        return;
+      }
+
+      String action = args[0].toLowerCase();
+      switch (action) {
+        case "g", "get" -> getLocations();
+        case "a", "add" -> saveLocation();
+        case "r", "remove" -> removeLocation();
+        case "t", "track" -> trackLocation();
+        case "c", "comp", "compare" -> compareLocations();
+        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      }
     }
 
     /**
@@ -276,7 +273,6 @@ public class LocationCommand implements CommandExecutor {
 
       switch (args.length) {
         case 2, 3 -> {
-
           DecimalFormat df2 = new DecimalFormat();
           df2.setMaximumFractionDigits(2);
 
