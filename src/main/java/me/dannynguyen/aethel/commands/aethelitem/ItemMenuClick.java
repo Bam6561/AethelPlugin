@@ -233,8 +233,9 @@ public class ItemMenuClick implements MenuClick {
     }
 
     /**
-     * Checks if there is an item in the designated save slot
-     * before saving the {@link ItemRegistry.Item item}.
+     * Checks if there is an item in the designated save
+     * slot before asking the user for a folder to
+     * save the {@link ItemRegistry.Item item} under.
      */
     private void saveItem() {
       ItemStack item = e.getClickedInventory().getItem(3);

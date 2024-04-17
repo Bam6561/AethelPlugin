@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
+import me.dannynguyen.aethel.plugin.PluginSystem;
 import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.EntityReader;
@@ -27,7 +28,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.23.9
+ * @version 1.23.13.1
  * @since 1.22.2
  */
 public class PluginTask {
@@ -119,7 +120,7 @@ public class PluginTask {
   /**
    * Triggers {@link PassiveTriggerType#BELOW_HEALTH} {@link PassiveAbility passive abilities}.
    * <p>
-   * {@link PassiveTriggerType#BELOW_HEALTH}{@link PassiveAbility} can only be triggered on self.
+   * {@link PassiveTriggerType#BELOW_HEALTH} {@link PassiveAbility} can only be triggered on self.
    */
   public void triggerBelowHealthPassives() {
     for (RpgPlayer rpgPlayer : Plugin.getData().getRpgSystem().getRpgPlayers().values()) {
@@ -157,7 +158,7 @@ public class PluginTask {
   }
 
   /**
-   * Decay entities' overcapped overshields.
+   * Decay entities' {@link RpgSystem#getOvershields() overcapped shields}.
    */
   public void decayOvershields() {
     Set<UUID> overshields = Plugin.getData().getRpgSystem().getOvershields();
@@ -181,7 +182,7 @@ public class PluginTask {
   }
 
   /**
-   * Spawns particle trails for currently tracked locations.
+   * Spawns particle trails for {@link PluginSystem#getTrackedLocations() currently tracked locations}.
    */
   public void trackLocations() {
     Map<UUID, Location> trackedLocations = Plugin.getData().getPluginSystem().getTrackedLocations();
@@ -214,7 +215,8 @@ public class PluginTask {
   }
 
   /**
-   * Refreshes potion effects to players who've met enchantment level requirements.
+   * Refreshes potion effects to
+   * {@link RpgSystem#getSufficientEnchantments() entities who've met enchantment level requirements}.
    * <ul>
    *  <li>Feather Falling >= 5: Slow Falling
    *  <li>Fire Protection >= 10: Fire Resistance

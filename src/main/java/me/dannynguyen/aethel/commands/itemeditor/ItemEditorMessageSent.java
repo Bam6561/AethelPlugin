@@ -633,7 +633,7 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Represents an item key change operation.
+   * Represents an item {@link Key} change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11

@@ -13,13 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.13.1
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -27,11 +26,6 @@ public class DamageMitigation {
    * Defending entity.
    */
   private final LivingEntity defender;
-
-  /**
-   * Entity's UUID.
-   */
-  private final UUID uuid;
 
   /**
    * Entity's persistent tags.
@@ -50,9 +44,8 @@ public class DamageMitigation {
    */
   public DamageMitigation(@NotNull LivingEntity defender) {
     this.defender = Objects.requireNonNull(defender, "Null damagee");
-    this.uuid = defender.getUniqueId();
     this.entityTags = defender.getPersistentDataContainer();
-    this.statuses = Plugin.getData().getRpgSystem().getStatuses().get(uuid);
+    this.statuses = Plugin.getData().getRpgSystem().getStatuses().get(defender.getUniqueId());
   }
 
   /**

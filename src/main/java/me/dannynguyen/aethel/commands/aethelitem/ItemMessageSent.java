@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * Message sent listener for {@link ItemCommand} text inputs.
  * <p>
- * Called with {@link MessageListener}.
+ * Called with {@link me.dannynguyen.aethel.listeners.MessageListener}.
  *
  * @author Danny Nguyen
  * @version 1.23.13

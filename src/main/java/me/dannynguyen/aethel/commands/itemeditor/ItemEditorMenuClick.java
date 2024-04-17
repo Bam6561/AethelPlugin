@@ -191,9 +191,9 @@ public class ItemEditorMenuClick implements MenuClick {
     switch (e.getSlot()) {
       case 2, 4 -> { // Context, Item
       }
-      case 5 -> new PotionMetaChange().setColor();
+      case 5 -> new PotionChange().setColor();
       case 6 -> new MenuChange().returnToCosmetic();
-      default -> new PotionMetaChange().readEffect();
+      default -> new PotionChange().readEffect();
     }
   }
 
@@ -264,7 +264,95 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's cosmetic menu metadata change operation.
+   * Represents a menu change operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.23.11
+   * @since 1.23.11
+   */
+  private class MenuChange {
+    /**
+     * No parameter constructor.
+     */
+    MenuChange() {
+    }
+
+    /**
+     * Opens an {@link AttributeMenu}.
+     */
+    private void openAttribute() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setSlot(RpgEquipmentSlot.HAND);
+      user.openInventory(new AttributeMenu(user, EquipmentSlot.HAND).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
+    }
+
+    /**
+     * Opens an {@link AethelAttributeMenu}.
+     */
+    private void openAethelAttribute() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setSlot(RpgEquipmentSlot.HAND);
+      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
+    }
+
+    /**
+     * Opens an {@link EnchantmentMenu}.
+     */
+    private void openEnchantment() {
+      user.openInventory(new EnchantmentMenu(user).getMainMenu());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
+    }
+
+    /**
+     * Opens a {@link PotionMenu}.
+     */
+    private void openPotion() {
+      user.openInventory(new PotionMenu(user).getMainMenu());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
+    }
+
+    /**
+     * Opens a {@link PassiveMenu}.
+     */
+    private void openPassive() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setSlot(RpgEquipmentSlot.HAND);
+      menuInput.setTrigger(PassiveTriggerType.DAMAGE_DEALT);
+      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
+    }
+
+    /**
+     * Opens an {@link ActiveMenu}.
+     */
+    private void openActive() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setSlot(RpgEquipmentSlot.HAND);
+      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
+    }
+
+    /**
+     * Opens a {@link TagMenu}.
+     */
+    private void openTag() {
+      user.openInventory(new TagMenu(user).getMainMenu());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
+    }
+
+    /**
+     * Returns to the {@link CosmeticMenu}.
+     */
+    private void returnToCosmetic() {
+      user.openInventory(new CosmeticMenu(user).getMainMenu());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
+    }
+  }
+
+  /**
+   * Represents an item's {@link CosmeticMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -421,7 +509,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's attribute menu metadata change operation.
+   * Represents an item's {@link AttributeMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -500,7 +588,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's Aethel attribute menu metadata change operation.
+   * Represents an item's {@link AethelAttributeMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -541,7 +629,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's enchantment menu metadata change operation.
+   * Represents an item's {@link EnchantmentMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -566,17 +654,17 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's potion menu metadata change operation.
+   * Represents an item's {@link PotionMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
    * @since 1.23.11
    */
-  private class PotionMetaChange {
+  private class PotionChange {
     /**
      * No parameter constructor.
      */
-    PotionMetaChange() {
+    PotionChange() {
     }
 
     /**
@@ -599,7 +687,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's passive menu metadata change operation.
+   * Represents an item's {@link PassiveMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -654,7 +742,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's active menu metadata change operation.
+   * Represents an item's {@link ActiveMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -695,7 +783,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Represents an item's tag menu metadata change operation.
+   * Represents an item's {@link TagMenu} metadata change operation.
    *
    * @author Danny Nguyen
    * @version 1.23.11
@@ -716,90 +804,6 @@ public class ItemEditorMenuClick implements MenuClick {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + tag + ChatColor.WHITE + " value.");
       Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setObjectType(tag);
       awaitMessageInput(MessageListener.Type.ITEMEDITOR_AETHEL_TAG);
-    }
-  }
-
-  /**
-   * Represents a menu change operation.
-   */
-  private class MenuChange {
-    /**
-     * No parameter constructor.
-     */
-    MenuChange() {
-    }
-
-    /**
-     * Opens an {@link AttributeMenu}.
-     */
-    private void openAttribute() {
-      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-      menuInput.setSlot(RpgEquipmentSlot.HAND);
-      user.openInventory(new AttributeMenu(user, EquipmentSlot.HAND).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_MINECRAFT_ATTRIBUTE);
-    }
-
-    /**
-     * Opens an {@link AethelAttributeMenu}.
-     */
-    private void openAethelAttribute() {
-      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-      menuInput.setSlot(RpgEquipmentSlot.HAND);
-      user.openInventory(new AethelAttributeMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_AETHEL_ATTRIBUTE);
-    }
-
-    /**
-     * Opens an {@link EnchantmentMenu}.
-     */
-    private void openEnchantment() {
-      user.openInventory(new EnchantmentMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_ENCHANTMENT);
-    }
-
-    /**
-     * Opens a {@link PotionMenu}.
-     */
-    private void openPotion() {
-      user.openInventory(new PotionMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_POTION);
-    }
-
-    /**
-     * Opens a {@link PassiveMenu}.
-     */
-    private void openPassive() {
-      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-      menuInput.setSlot(RpgEquipmentSlot.HAND);
-      menuInput.setTrigger(PassiveTriggerType.DAMAGE_DEALT);
-      user.openInventory(new PassiveMenu(user, RpgEquipmentSlot.HAND, PassiveTriggerType.DAMAGE_DEALT).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_PASSIVE);
-    }
-
-    /**
-     * Opens an {@link ActiveMenu}.
-     */
-    private void openActive() {
-      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-      menuInput.setSlot(RpgEquipmentSlot.HAND);
-      user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
-    }
-
-    /**
-     * Opens a {@link TagMenu}.
-     */
-    private void openTag() {
-      user.openInventory(new TagMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
-    }
-
-    /**
-     * Returns to the {@link CosmeticMenu}.
-     */
-    private void returnToCosmetic() {
-      user.openInventory(new CosmeticMenu(user).getMainMenu());
-      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_COSMETIC);
     }
   }
 

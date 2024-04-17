@@ -3,7 +3,6 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.listeners.MenuListener;
-import me.dannynguyen.aethel.listeners.MessageListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,7 +19,7 @@ import java.util.UUID;
 /**
  * Message sent listener for {@link ForgeCommand} text inputs.
  * <p>
- * Called with {@link MessageListener}.
+ * Called with {@link me.dannynguyen.aethel.listeners.MessageListener}.
  *
  * @author Danny Nguyen
  * @version 1.23.11
