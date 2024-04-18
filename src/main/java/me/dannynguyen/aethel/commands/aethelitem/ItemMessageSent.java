@@ -22,7 +22,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.listeners.MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.23.16
  * @since 1.23.13
  */
 public class ItemMessageSent {
@@ -59,6 +59,7 @@ public class ItemMessageSent {
   public void saveItem() {
     MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
     String folder = e.getMessage();
+    String itemName = menuInput.getObjectType();
     String fileName = menuInput.getFileName();
     String encodedItem = menuInput.getEncodedData();
 
@@ -71,6 +72,11 @@ public class ItemMessageSent {
       FileWriter fw = new FileWriter(filePath.getPath() + "/" + fileName + "_itm.txt");
       fw.write(encodedItem);
       fw.close();
+
+      ItemRegistry.Item item = Plugin.getData().getItemRegistry().getItems().get(itemName);
+      if (item != null) {
+        item.delete();
+      }
 
       menuInput.setFileName("");
       menuInput.setEncodedData("");

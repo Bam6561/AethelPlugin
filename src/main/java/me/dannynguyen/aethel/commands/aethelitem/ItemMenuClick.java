@@ -222,7 +222,7 @@ public class ItemMenuClick implements MenuClick {
    * Represents an item save operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.13
+   * @version 1.23.16
    * @since 1.23.13
    */
   private class ItemSave {
@@ -250,6 +250,7 @@ public class ItemMenuClick implements MenuClick {
       }
 
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setObjectType(ItemReader.readName(item));
       menuInput.setFileName(nameItemFile(item));
       menuInput.setEncodedData(encodedItem);
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item folder name to be saved under.");

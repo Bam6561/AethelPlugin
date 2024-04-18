@@ -581,7 +581,7 @@ public class ForgeMenuClick implements MenuClick {
    * Represents a recipe save operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.8
+   * @version 1.23.16
    * @since 1.23.8
    */
   private class RecipeSave {
@@ -589,6 +589,11 @@ public class ForgeMenuClick implements MenuClick {
      * Recipe contents.
      */
     private final ItemStack[] contents = e.getInventory().getContents();
+
+    /**
+     * Recipe name.
+     */
+    private String recipeName;
 
     /**
      * Recipe file name.
@@ -622,6 +627,7 @@ public class ForgeMenuClick implements MenuClick {
       }
 
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setObjectType(recipeName);
       menuInput.setFileName(fileName);
       menuInput.setEncodedData(encodedRecipe);
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input recipe folder name to be saved under.");
@@ -641,6 +647,7 @@ public class ForgeMenuClick implements MenuClick {
           continue;
         }
 
+        recipeName = ItemReader.readName(item);
         ItemMeta meta = item.getItemMeta();
         if (meta.hasDisplayName()) {
           fileName = TextFormatter.formatId(ChatColor.stripColor(meta.getDisplayName()));

@@ -84,7 +84,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.23.13
+   * @version 1.23.16
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -458,15 +458,13 @@ public class DamageListener implements Listener {
      * @param defender defending player
      */
     private void triggerDamageTakenPassives(Player defender) {
-      if (!(attacker instanceof LivingEntity)) {
-        return;
-      }
-
       RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId());
       Map<Equipment.Abilities.SlotPassive, PassiveAbility> damageTakenTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.DAMAGE_TAKEN);
       if (damageTakenTriggers.isEmpty()) {
         return;
       }
+
+      boolean livingAttacker = attacker instanceof LivingEntity;
 
       Random random = new Random();
       for (PassiveAbility ability : damageTakenTriggers.values()) {
@@ -476,13 +474,19 @@ public class DamageListener implements Listener {
         double chance = Double.parseDouble(ability.getConditionData().get(0));
         if (chance > random.nextDouble() * 100) {
           boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
-          UUID targetUUID;
-          if (self) {
-            targetUUID = defender.getUniqueId();
+          if (livingAttacker) {
+            UUID targetUUID;
+            if (self) {
+              targetUUID = defender.getUniqueId();
+            } else {
+              targetUUID = attacker.getUniqueId();
+            }
+            ability.doEffect(rpgPlayer.getUUID(), targetUUID);
           } else {
-            targetUUID = attacker.getUniqueId();
+            if (self) {
+              ability.doEffect(rpgPlayer.getUUID(), defender.getUniqueId());
+            }
           }
-          ability.doEffect(rpgPlayer.getUUID(), targetUUID);
         }
       }
     }
