@@ -232,7 +232,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag removal operation.
        *
        * @author Danny Nguyen
-       * @version 1.23.12
+       * @version 1.23.15
        * @since 1.13.9
        */
       private class TagRemove {
@@ -249,7 +249,7 @@ public class ItemTagCommand implements CommandExecutor {
          */
         private boolean removeTag() {
           NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag);
-          if (itemTags.has(tagKey, PersistentDataType.STRING) || itemTags.has(tagKey, PersistentDataType.DOUBLE)) {
+          if (itemTags.has(tagKey, PersistentDataType.STRING) || itemTags.has(tagKey, PersistentDataType.DOUBLE) || itemTags.has(tagKey, PersistentDataType.INTEGER)) {
             itemTags.remove(tagKey);
             if (tag.startsWith("attribute.")) {
               removeAttributeTag();
@@ -257,6 +257,17 @@ public class ItemTagCommand implements CommandExecutor {
               removePassiveTag();
             } else if (tag.startsWith("active.")) {
               removeActiveTag();
+            } else if (tag.startsWith("rpg.")) {
+              switch (tag) {
+                case "rpg.durability", "rpg.durability_max" -> {
+                  itemTags.remove(Key.RPG_DURABILITY.getNamespacedKey());
+                  itemTags.remove(Key.RPG_MAX_DURABILITY.getNamespacedKey());
+                }
+                default -> {
+                  user.sendMessage(Message.CANNOT_MODIFY_RESERVED_NAMESPACE.getMessage());
+                  return false;
+                }
+              }
             }
             item.setItemMeta(meta);
             return true;
@@ -346,7 +357,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag set operation.
        *
        * @author Danny Nguyen
-       * @version 1.23.12
+       * @version 1.23.15
        * @since 1.23.12
        */
       private class TagSet {
@@ -380,6 +391,12 @@ public class ItemTagCommand implements CommandExecutor {
               readActive(value);
             } else {
               user.sendMessage(ChatColor.RED + "Cannot set active.list directly.");
+            }
+          } else if (tag.startsWith("rpg.")) {
+            switch (tag) {
+              case "rpg.durability" -> readReinforcement(value);
+              case "rpg.durability_max" -> readMaxReinforcement(value);
+              default -> user.sendMessage(Message.CANNOT_MODIFY_RESERVED_NAMESPACE.getMessage());
             }
           } else {
             itemTags.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.STRING, value);
@@ -501,6 +518,60 @@ public class ItemTagCommand implements CommandExecutor {
             case SHATTER -> setActiveTag(ActiveAbilityInput.shatter(user, args));
             case TELEPORT -> setActiveTag(ActiveAbilityInput.teleport(user, args));
           }
+        }
+
+        /**
+         * Checks whether the {@link Key#RPG_DURABILITY}
+         * tag was formatted correctly before setting its tag and value.
+         *
+         * @param value tag value
+         */
+        private void readReinforcement(String value) {
+          int durabilityValue;
+          try {
+            durabilityValue = Integer.parseInt(value);
+            if (durabilityValue < 0) {
+              user.sendMessage(Message.INVALID_VALUE.getMessage());
+              return;
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_VALUE.getMessage());
+            return;
+          }
+
+          if (!itemTags.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
+            itemTags.set(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, durabilityValue);
+          }
+          itemTags.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, durabilityValue);
+          item.setItemMeta(meta);
+          user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
+        }
+
+        /**
+         * Checks whether the {@link Key#RPG_MAX_DURABILITY}
+         * tag was formatted correctly before setting its tag and value.
+         *
+         * @param value tag value
+         */
+        private void readMaxReinforcement(String value) {
+          int durabilityValue;
+          try {
+            durabilityValue = Integer.parseInt(value);
+            if (durabilityValue < 0) {
+              user.sendMessage(Message.INVALID_VALUE.getMessage());
+              return;
+            }
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_VALUE.getMessage());
+            return;
+          }
+
+          if (!itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
+            itemTags.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, durabilityValue);
+          }
+          itemTags.set(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, durabilityValue);
+          item.setItemMeta(meta);
+          user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
         }
 
         /**

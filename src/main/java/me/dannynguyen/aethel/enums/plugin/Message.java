@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin messages.
  *
  * @author Danny Nguyen
- * @version 1.21.5
+ * @version 1.23.15
  * @since 1.11.9
  */
 public enum Message {
@@ -65,6 +65,11 @@ public enum Message {
    * No main hand item.
    */
   NO_MAIN_HAND_ITEM(Message.ERROR.getMessage() + "No main hand item."),
+
+  /**
+   * Cannot modify reserved namespace.
+   */
+  CANNOT_MODIFY_RESERVED_NAMESPACE(Message.ERROR.getMessage() + "Cannot modify reserved namespace."),
 
   /**
    * Unrecognized equipment slot.

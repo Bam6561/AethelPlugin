@@ -197,7 +197,7 @@ public class EntityTagCommand implements CommandExecutor {
      * Represents an entity's {@link Key Aethel tag} set or remove operation.
      *
      * @author Danny Nguyen
-     * @version 1.23.12
+     * @version 1.23.15
      * @since 1.22.15
      */
     private class TagModifier {
@@ -275,6 +275,23 @@ public class EntityTagCommand implements CommandExecutor {
             return;
           }
           entityTags.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.INTEGER, enchantmentValue);
+        } else if (tag.startsWith("rpg.")) {
+          switch (tag.substring(4)) {
+            case "health" -> {
+              double healthValue;
+              try {
+                healthValue = Double.parseDouble(value);
+              } catch (NumberFormatException ex) {
+                user.sendMessage(Message.INVALID_VALUE.getMessage());
+                return;
+              }
+              entityTags.set(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, healthValue);
+            }
+            default -> {
+              user.sendMessage(Message.CANNOT_MODIFY_RESERVED_NAMESPACE.getMessage());
+              return;
+            }
+          }
         } else {
           entityTags.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.STRING, value);
         }

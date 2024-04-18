@@ -273,7 +273,7 @@ public class ForgeMenuClick implements MenuClick {
    * enough materials to craft the {@link RecipeRegistry.Recipe recipe}.
    *
    * @author Danny Nguyen
-   * @version 1.20.2
+   * @version 1.23.15
    * @since 1.4.15
    */
   private class RecipeCraft {
@@ -322,7 +322,7 @@ public class ForgeMenuClick implements MenuClick {
      */
     private Map<Material, List<SlotItem>> mapMaterialIndices() {
       Map<Material, List<SlotItem>> materialSlots = new HashMap<>();
-      for (int i = 0; i < 36; i++) {
+      for (int i = 9; i < 36; i++) {
         ItemStack item = pInv.getItem(i);
         if (ItemReader.isNullOrAir(pInv.getItem(i))) {
           continue;

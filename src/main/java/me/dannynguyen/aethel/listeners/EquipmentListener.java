@@ -24,7 +24,7 @@ import org.bukkit.inventory.PlayerInventory;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.23.15
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -97,16 +97,6 @@ public class EquipmentListener implements Listener {
   }
 
   /**
-   * Updates a player's {@link Equipment} when items are dropped.
-   *
-   * @param e player drop item event
-   */
-  @EventHandler
-  private void onItemDrop(PlayerDropItemEvent e) {
-    readHandSlot(e.getPlayer());
-  }
-
-  /**
    * Updates a player's {@link Equipment} when items are swapped.
    *
    * @param e player swap hand items event
@@ -150,6 +140,16 @@ public class EquipmentListener implements Listener {
     if (e.getTargetEntity() instanceof Player player) {
       readEquipmentSlot(player, getEquipmentSlot(e.getItem()));
     }
+  }
+
+  /**
+   * Updates a player's {@link Equipment} when they interact with an armor stand.
+   *
+   * @param e manipulate armor stand event
+   */
+  @EventHandler
+  private void onManipulateArmorStand(PlayerArmorStandManipulateEvent e) {
+    readHandSlot(e.getPlayer());
   }
 
   /**
