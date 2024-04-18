@@ -3,11 +3,9 @@ package me.dannynguyen.aethel.listeners;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.utils.item.DurabilityDamage;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,24 +19,15 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 /**
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.5
+ * @version 1.23.14
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
-  /**
-   * No parameter constructor.
-   */
-  public EquipmentListener() {
-  }
-
   /**
    * Checks clicks within player inventories to determine
    * whether to update a player's {@link Equipment}.
@@ -48,31 +37,49 @@ public class EquipmentListener implements Listener {
   @EventHandler
   private void onInventoryClick(InventoryClickEvent e) {
     Inventory inv = e.getClickedInventory();
-    if (inv != null && inv.getType() == InventoryType.PLAYER) {
-      Player player = (Player) e.getWhoClicked();
-      if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-        new EquipmentUpdate(player, e.getCurrentItem(), true).updateIfWornItem();
-        return;
-      }
+    if (inv == null || inv.getType() != InventoryType.PLAYER) {
+      return;
+    }
 
-      if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
-        ItemStack item = player.getInventory().getItem(e.getHotbarButton());
-        if (ItemReader.isNotNullOrAir(item)) {
-          new EquipmentUpdate(player, item, true).updateIfWornItem();
-        }
-        return;
-      }
+    Player player = (Player) e.getWhoClicked();
 
-      int slot = e.getSlot();
-      switch (slot) {
-        case 36, 37, 38, 39, 40 -> {
-          if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem())) {
-            new EquipmentUpdate(player).updateEquipmentSlot(slot);
-            Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-            }, 1);
+    int slot = e.getSlot();
+    switch (slot) {
+      case 36, 37, 38, 39, 40 -> {
+        if (ItemReader.isNotNullOrAir(e.getCursor()) || ItemReader.isNotNullOrAir(e.getCurrentItem()) || e.getAction() == InventoryAction.HOTBAR_SWAP) {
+          switch (slot) {
+            case 36 -> readEquipmentSlot(player, RpgEquipmentSlot.FEET);
+            case 37 -> readEquipmentSlot(player, RpgEquipmentSlot.LEGS);
+            case 38 -> readEquipmentSlot(player, RpgEquipmentSlot.CHEST);
+            case 39 -> readEquipmentSlot(player, RpgEquipmentSlot.HEAD);
+            case 40 -> readEquipmentSlot(player, RpgEquipmentSlot.OFF_HAND);
           }
         }
+        return;
       }
+    }
+
+    ItemStack item = e.getCurrentItem();
+    if (e.getClick().isShiftClick() && ItemReader.isNotNullOrAir(item)) {
+      RpgEquipmentSlot eSlot = getEquipmentSlot(item);
+      if (eSlot != null) {
+        readEquipmentSlot(player, eSlot);
+      }
+      PlayerInventory pInv = player.getInventory();
+      int heldItemSlot = pInv.getHeldItemSlot();
+      if (e.getSlot() == heldItemSlot || pInv.firstEmpty() == heldItemSlot) {
+        readHandSlot(player);
+      }
+      return;
+    }
+
+    if (e.getSlot() == player.getInventory().getHeldItemSlot()) {
+      readHandSlot(player);
+      return;
+    }
+
+    if (e.getAction() == InventoryAction.HOTBAR_SWAP && e.getHotbarButton() == player.getInventory().getHeldItemSlot()) {
+      readHandSlot(player);
     }
   }
 
@@ -86,11 +93,17 @@ public class EquipmentListener implements Listener {
     Player player = e.getPlayer();
     Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
     ItemStack heldItem = player.getInventory().getItem(e.getNewSlot());
-    if (heldItem == null) {
-      heldItem = new ItemStack(Material.AIR);
-    }
-    equipment.setHeldItem(heldItem);
     equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
+  }
+
+  /**
+   * Updates a player's {@link Equipment} when items are dropped.
+   *
+   * @param e player drop item event
+   */
+  @EventHandler
+  private void onItemDrop(PlayerDropItemEvent e) {
+    readHandSlot(e.getPlayer());
   }
 
   /**
@@ -99,9 +112,10 @@ public class EquipmentListener implements Listener {
    * @param e player swap hand items event
    */
   @EventHandler
-  private void onSwapHandItem(PlayerSwapHandItemsEvent e) {
-    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId());
-    rpgPlayer.getEquipment().readSlot(e.getOffHandItem(), RpgEquipmentSlot.OFF_HAND);
+  private void onSwapHandItems(PlayerSwapHandItemsEvent e) {
+    Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getEquipment();
+    equipment.readSlot(e.getMainHandItem(), RpgEquipmentSlot.HAND);
+    equipment.readSlot(e.getOffHandItem(), RpgEquipmentSlot.OFF_HAND);
   }
 
   /**
@@ -113,8 +127,15 @@ public class EquipmentListener implements Listener {
   private void onInteract(PlayerInteractEvent e) {
     Action action = e.getAction();
     if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-      if (ItemReader.isNotNullOrAir(e.getItem())) {
-        new EquipmentUpdate(e.getPlayer(), e.getItem(), true).updateIfWornItem();
+      ItemStack item = e.getItem();
+      if (ItemReader.isNullOrAir(item)) {
+        return;
+      }
+      RpgEquipmentSlot eSlot = getEquipmentSlot(item);
+      if (eSlot != null && eSlot != RpgEquipmentSlot.OFF_HAND) {
+        Player player = e.getPlayer();
+        readEquipmentSlot(player, eSlot);
+        readHandSlot(player);
       }
     }
   }
@@ -125,9 +146,9 @@ public class EquipmentListener implements Listener {
    * @param e block dispense armor event
    */
   @EventHandler
-  private void onDispense(BlockDispenseArmorEvent e) {
+  private void onDispenseArmor(BlockDispenseArmorEvent e) {
     if (e.getTargetEntity() instanceof Player player) {
-      new EquipmentUpdate(player, e.getItem(), false).updateIfWornItem();
+      readEquipmentSlot(player, getEquipmentSlot(e.getItem()));
     }
   }
 
@@ -161,106 +182,90 @@ public class EquipmentListener implements Listener {
    * @param e player item break event
    */
   @EventHandler
-  private void onBreak(PlayerItemBreakEvent e) {
-    new EquipmentUpdate(e.getPlayer(), e.getBrokenItem(), false).updateIfWornItem();
+  private void onItemBreak(PlayerItemBreakEvent e) {
+    ItemStack item = e.getBrokenItem();
+    RpgEquipmentSlot eSlot = getEquipmentSlot(item);
+    if (eSlot != null) {
+      readEquipmentSlot(e.getPlayer(), eSlot);
+    } else {
+      readHandSlot(e.getPlayer());
+    }
   }
 
   /**
-   * Updates the player's equipment when wearable items are involved.
+   * Gets the worn item {@link RpgEquipmentSlot}.
    *
-   * @author Danny Nguyen
-   * @version 1.23.3
-   * @since 1.23.3
+   * @param item interacting item
+   * @return slot the equipment is worn on
    */
-  private static class EquipmentUpdate {
-    /**
-     * Interacting player.
-     */
-    private final Player player;
-
-    /**
-     * Interacting item.
-     */
-    private final ItemStack item;
-
-    /**
-     * If to update the main hand slot after the interaction.
-     */
-    private final boolean updateMainHandSlot;
-
-    /**
-     * Associates the equipment update with its player if the item slot is already known.
-     * <p>
-     * Only used in {@link #onInteract(PlayerInteractEvent)}.
-     *
-     * @param player interacting player
-     */
-    EquipmentUpdate(@NotNull Player player) {
-      this.player = Objects.requireNonNull(player, "Null player");
-      this.item = null;
-      this.updateMainHandSlot = false;
-    }
-
-    /**
-     * Associates the equipment update with its player, item, and if to update the main hand slot.
-     * <p>
-     * Used when the item slot is not already known.
-     *
-     * @param player             interacting player
-     * @param item               interacting item
-     * @param updateMainHandSlot if to update the main hand slot
-     */
-    EquipmentUpdate(@NotNull Player player, @NotNull ItemStack item, boolean updateMainHandSlot) {
-      this.player = Objects.requireNonNull(player, "Null player");
-      this.item = Objects.requireNonNull(item, "Null item");
-      this.updateMainHandSlot = updateMainHandSlot;
-    }
-
-    /**
-     * Updates the player's {@link Equipment} if the item is a worn item.
-     */
-    private void updateIfWornItem() {
-      switch (item.getType()) {
-        case LEATHER_HELMET, CHAINMAIL_HELMET, IRON_HELMET, GOLDEN_HELMET, DIAMOND_HELMET, NETHERITE_HELMET,
-            CREEPER_HEAD, ZOMBIE_HEAD, SKELETON_SKULL, WITHER_SKELETON_SKULL, PLAYER_HEAD, DRAGON_HEAD,
-            TURTLE_HELMET, PUMPKIN -> updateEquipmentSlot(39);
-        case LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, IRON_CHESTPLATE,
-            GOLDEN_CHESTPLATE, DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE,
-            ELYTRA -> updateEquipmentSlot(38);
-        case LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, IRON_LEGGINGS,
-            GOLDEN_LEGGINGS, DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> updateEquipmentSlot(37);
-        case LEATHER_BOOTS, CHAINMAIL_BOOTS, IRON_BOOTS,
-            GOLDEN_BOOTS, DIAMOND_BOOTS, NETHERITE_BOOTS -> updateEquipmentSlot(36);
-        case SHIELD -> updateEquipmentSlot(40);
+  private RpgEquipmentSlot getEquipmentSlot(ItemStack item) {
+    switch (item.getType()) {
+      case LEATHER_HELMET, CHAINMAIL_HELMET, IRON_HELMET, GOLDEN_HELMET, DIAMOND_HELMET, NETHERITE_HELMET,
+          CREEPER_HEAD, ZOMBIE_HEAD, SKELETON_SKULL, WITHER_SKELETON_SKULL, PLAYER_HEAD, DRAGON_HEAD,
+          TURTLE_HELMET, PUMPKIN -> {
+        return RpgEquipmentSlot.HEAD;
+      }
+      case LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, IRON_CHESTPLATE,
+          GOLDEN_CHESTPLATE, DIAMOND_CHESTPLATE, NETHERITE_CHESTPLATE,
+          ELYTRA -> {
+        return RpgEquipmentSlot.CHEST;
+      }
+      case LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, IRON_LEGGINGS,
+          GOLDEN_LEGGINGS, DIAMOND_LEGGINGS, NETHERITE_LEGGINGS -> {
+        return RpgEquipmentSlot.LEGS;
+      }
+      case LEATHER_BOOTS, CHAINMAIL_BOOTS, IRON_BOOTS,
+          GOLDEN_BOOTS, DIAMOND_BOOTS, NETHERITE_BOOTS -> {
+        return RpgEquipmentSlot.FEET;
+      }
+      case SHIELD -> {
+        return RpgEquipmentSlot.OFF_HAND;
+      }
+      default -> {
+        return null;
       }
     }
+  }
 
-    /**
-     * Updates the player's {@link Equipment} at the slot they interacted with.
-     * <p>
-     * A 1 tick delay is used for because only the item that exists in the
-     * corresponding slot after the interaction happens should be read.
-     *
-     * @param slot slot number to be updated
-     */
-    private void updateEquipmentSlot(int slot) {
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
-        Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
-        PlayerInventory pInv = player.getInventory();
-        ItemStack wornItem = pInv.getItem(slot);
-
-        switch (slot) {
-          case 36 -> equipment.readSlot(wornItem, RpgEquipmentSlot.FEET);
-          case 37 -> equipment.readSlot(wornItem, RpgEquipmentSlot.LEGS);
-          case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST);
-          case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD);
-          case 40 -> equipment.readSlot(wornItem, RpgEquipmentSlot.OFF_HAND);
-        }
-
-        if (updateMainHandSlot) {
-          equipment.readSlot(pInv.getItem(EquipmentSlot.HAND), RpgEquipmentSlot.HAND);
-        }
-      }, 1);
+  /**
+   * Reads the item at the slot they interacted with.
+   * <p>
+   * A 1 tick delay is used for because only the item that exists in the
+   * corresponding slot after the interaction happens should be read.
+   *
+   * @param player interacting player
+   * @param eSlot  {@link RpgEquipmentSlot}
+   */
+  private void readEquipmentSlot(Player player, RpgEquipmentSlot eSlot) {
+    int slot;
+    switch (eSlot) {
+      case HEAD -> slot = 39;
+      case CHEST -> slot = 38;
+      case LEGS -> slot = 37;
+      case FEET -> slot = 36;
+      case OFF_HAND -> slot = 40;
+      default -> slot = -1;
     }
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
+      ItemStack wornItem = player.getInventory().getItem(slot);
+      equipment.readSlot(wornItem, eSlot);
+    }, 1);
+  }
+
+  /**
+   * Reads the item in the hand slot.
+   * <p>
+   * A 1 tick delay is used for because only the item that exists in the
+   * corresponding slot after the interaction happens should be read.
+   *
+   * @param player interacting player
+   */
+  private void readHandSlot(Player player) {
+    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+      Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
+      PlayerInventory pInv = player.getInventory();
+      equipment.readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND);
+    }, 1);
   }
 }

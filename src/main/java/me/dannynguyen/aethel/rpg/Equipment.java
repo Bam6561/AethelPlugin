@@ -36,7 +36,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.23.6
+ * @version 1.23.14
  * @since 1.13.4
  */
 public class Equipment {
@@ -76,11 +76,6 @@ public class Equipment {
   private final ItemStack[] jewelry = new ItemStack[3];
 
   /**
-   * Held item.
-   */
-  private ItemStack heldItem;
-
-  /**
    * Associates RPG equipment with a player.
    *
    * @param player interacting player
@@ -91,7 +86,6 @@ public class Equipment {
     this.attributes = new AethelAttributes();
     this.enchantments = new Enchantments();
     this.abilities = new Abilities();
-    this.heldItem = player.getInventory().getItemInMainHand();
     loadJewelrySlots();
     loadEquipment(player);
   }
@@ -306,28 +300,6 @@ public class Equipment {
   @Nullable
   public ItemStack[] getJewelry() {
     return this.jewelry;
-  }
-
-  /**
-   * Gets the player's held item tracked by the {@link RpgSystem}.
-   * <p>
-   * Held item is not synchronous with in-game events,
-   * as it is only updated every 10 tick interval.
-   *
-   * @return held item tracked by the {@link RpgSystem}
-   */
-  @NotNull
-  public ItemStack getHeldItem() {
-    return this.heldItem;
-  }
-
-  /**
-   * Sets the player's held item tracked by {@link RpgSystem}.
-   *
-   * @param item item to be set
-   */
-  public void setHeldItem(@NotNull ItemStack item) {
-    this.heldItem = Objects.requireNonNull(item, "Null held item");
   }
 
   /**

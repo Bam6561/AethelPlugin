@@ -24,7 +24,7 @@ import java.util.UUID;
  * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.23.11
+ * @version 1.23.14
  * @since 1.22.20
  */
 public class HealthChange {
@@ -157,6 +157,8 @@ public class HealthChange {
       defender.setHealth(Math.max(0, lifeRatio * maxHealthScale));
 
       if (defender instanceof Player) {
+        Plugin.getData().getRpgSystem().getWounded().add(uuid);
+
         updateActionDisplay(Condition.WOUNDED);
         updateBarDisplay(Condition.WOUNDED, lifeRatio);
       }
@@ -164,6 +166,8 @@ public class HealthChange {
       defender.setHealth(maxHealthScale);
 
       if (defender instanceof Player) {
+        Plugin.getData().getRpgSystem().getWounded().remove(uuid);
+
         updateActionDisplay(Condition.NORMAL);
         updateBarDisplay(Condition.NORMAL, 1.0);
       }
@@ -176,6 +180,8 @@ public class HealthChange {
       }
 
       if (defender instanceof Player) {
+        Plugin.getData().getRpgSystem().getWounded().remove(uuid);
+
         updateActionDisplay(Condition.SHIELD);
         updateBarDisplay(Condition.SHIELD, 1.0);
       }

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.22.15
+ * @version 1.23.14
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -128,7 +128,6 @@ public class Plugin extends JavaPlugin {
   /**
    * Schedules the plugin's repeating tasks.
    * <ul>
-   *  <li>{@link PluginTask#updateMainHandEquipment()}
    *  <li>{@link PluginTask#triggerStatuses()}
    *  <li>{@link PluginTask#triggerBelowHealthPassives()}
    *  <li>{@link PluginTask#decayOvershields()}
@@ -141,7 +140,6 @@ public class Plugin extends JavaPlugin {
   private void scheduleRepeatingTasks() {
     BukkitScheduler scheduler = Bukkit.getScheduler();
     PluginTask pluginTask = new PluginTask();
-    scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateMainHandEquipment, 0, 10);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerStatuses, 0, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerBelowHealthPassives, 5, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::decayOvershields, 10, 20);

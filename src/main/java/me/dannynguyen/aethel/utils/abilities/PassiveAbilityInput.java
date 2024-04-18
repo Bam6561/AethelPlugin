@@ -16,7 +16,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.22.11
+ * @version 1.23.14
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -117,7 +117,7 @@ public class PassiveAbilityInput {
     double percentHealth;
     try {
       percentHealth = Double.parseDouble(args[0]);
-      if (percentHealth < 0) {
+      if (0 < percentHealth && percentHealth < 100) {
         user.sendMessage(Message.INVALID_HEALTH.getMessage());
         return null;
       }

@@ -10,7 +10,7 @@ import java.util.*;
  * Represents RPG metadata in memory.
  *
  * @author Danny Nguyen
- * @version 1.23.0
+ * @version 1.23.14
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -42,6 +42,11 @@ public class RpgSystem {
    */
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = Map.of(
       Enchantment.PROTECTION_FALL, new HashSet<>(), Enchantment.PROTECTION_FIRE, new HashSet<>());
+
+  /**
+   * Players under max health.
+   */
+  private final Set<UUID> wounded = new HashSet<>();
 
   /**
    * No parameter constructor.
@@ -101,5 +106,15 @@ public class RpgSystem {
   @NotNull
   public Map<Enchantment, Set<UUID>> getSufficientEnchantments() {
     return this.sufficientEnchantments;
+  }
+
+  /**
+   * Gets players under max health.
+   *
+   * @return players under max health
+   */
+  @NotNull
+  public Set<UUID> getWounded() {
+    return this.wounded;
   }
 }

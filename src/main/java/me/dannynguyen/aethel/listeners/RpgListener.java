@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.23.14
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -58,7 +58,6 @@ public class RpgListener implements Listener {
 
     if (rpgPlayer == null) {
       rpgPlayer = new RpgPlayer(player);
-      rpgPlayer.getEquipment().setHeldItem(player.getInventory().getItemInMainHand());
       rpgPlayers.put(uuid, rpgPlayer);
     } else {
       BossBar healthBar = rpgPlayer.getDisplays().getBar();

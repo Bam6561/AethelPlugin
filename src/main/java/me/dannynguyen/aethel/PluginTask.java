@@ -2,7 +2,6 @@ package me.dannynguyen.aethel;
 
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
-import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.plugin.PluginSystem;
@@ -15,7 +14,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -28,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.23.13.1
+ * @version 1.23.14
  * @since 1.22.2
  */
 public class PluginTask {
@@ -36,26 +34,6 @@ public class PluginTask {
    * No parameter constructor.
    */
   public PluginTask() {
-  }
-
-  /**
-   * Compares the player's main hand item for updating {@link Equipment}.
-   */
-  public void updateMainHandEquipment() {
-    Map<UUID, RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers();
-    for (UUID uuid : rpgPlayers.keySet()) {
-      Player player = Bukkit.getPlayer(uuid);
-      if (player == null) {
-        continue;
-      }
-
-      Equipment equipment = rpgPlayers.get(uuid).getEquipment();
-      ItemStack heldItem = player.getInventory().getItemInMainHand();
-      if (heldItem.getType() != (equipment.getHeldItem()).getType()) {
-        equipment.setHeldItem(heldItem);
-        equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
-      }
-    }
   }
 
   /**
@@ -123,7 +101,12 @@ public class PluginTask {
    * {@link PassiveTriggerType#BELOW_HEALTH} {@link PassiveAbility} can only be triggered on self.
    */
   public void triggerBelowHealthPassives() {
-    for (RpgPlayer rpgPlayer : Plugin.getData().getRpgSystem().getRpgPlayers().values()) {
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+    Map<UUID, RpgPlayer> rpgPlayers = rpgSystem.getRpgPlayers();
+    Set<UUID> wounded = rpgSystem.getWounded();
+
+    for (UUID uuid : wounded) {
+      RpgPlayer rpgPlayer = rpgPlayers.get(uuid);
       Map<Equipment.Abilities.SlotPassive, PassiveAbility> belowHealthTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.BELOW_HEALTH);
       if (belowHealthTriggers.isEmpty()) {
         continue;
@@ -215,8 +198,8 @@ public class PluginTask {
   }
 
   /**
-   * Refreshes potion effects to
-   * {@link RpgSystem#getSufficientEnchantments() entities who've met enchantment level requirements}.
+   * Refreshes potion effects to players who've met
+   * {@link RpgSystem#getSufficientEnchantments() enchantment level requirements}.
    * <ul>
    *  <li>Feather Falling >= 5: Slow Falling
    *  <li>Fire Protection >= 10: Fire Resistance
