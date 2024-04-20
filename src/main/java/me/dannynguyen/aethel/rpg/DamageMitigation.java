@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
+import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -13,12 +14,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.23.13.1
+ * @version 1.23.17
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -33,6 +35,11 @@ public class DamageMitigation {
   private final PersistentDataContainer entityTags;
 
   /**
+   * Entity's {@link Buffs}.
+   */
+  private final Buffs buffs;
+
+  /**
    * Entity's {@link Status statuses}.
    */
   private final Map<StatusType, Status> statuses;
@@ -45,7 +52,10 @@ public class DamageMitigation {
   public DamageMitigation(@NotNull LivingEntity defender) {
     this.defender = Objects.requireNonNull(defender, "Null damagee");
     this.entityTags = defender.getPersistentDataContainer();
-    this.statuses = Plugin.getData().getRpgSystem().getStatuses().get(defender.getUniqueId());
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+    UUID uuid = defender.getUniqueId();
+    this.buffs = rpgSystem.getBuffs().get(uuid);
+    this.statuses = rpgSystem.getStatuses().get(uuid);
   }
 
   /**
@@ -120,7 +130,12 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtection(double damage) {
-    int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+    double armorBase = entityTags.getOrDefault(Key.ATTRIBUTE_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double armorBuff = 0.0;
+    if (buffs != null) {
+      armorBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR);
+    }
+    int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
@@ -137,7 +152,12 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateArmorProtectionResistance(double damage) {
-    int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+    double armorBase = entityTags.getOrDefault(Key.ATTRIBUTE_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double armorBuff = 0.0;
+    if (buffs != null) {
+      armorBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR);
+    }
+    int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
     if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }

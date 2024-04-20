@@ -813,7 +813,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.23.7
+   * @version 1.23.17
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -1153,8 +1153,9 @@ public class ItemEditorMenuClick implements MenuClick {
           String slot = attributeModifier.getSlot().name().toLowerCase();
           String name;
           switch (attribute) {
-            case GENERIC_MAX_HEALTH -> name = "max_hp";
-            case GENERIC_ARMOR_TOUGHNESS -> name = "toughness";
+            case GENERIC_ARMOR -> name = "armor";
+            case GENERIC_MAX_HEALTH -> name = "max_health";
+            case GENERIC_ARMOR_TOUGHNESS -> name = "armor_toughness";
             default -> name = attribute.name().substring(8).toLowerCase();
           }
           if (attributeValues.containsKey(slot)) {

@@ -33,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.23.6
+ * @version 1.23.17
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -247,6 +247,7 @@ public class SheetMenu implements Menu {
     double counterChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_COUNTER_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double dodgeChanceBase = entityTags.getOrDefault(Key.ATTRIBUTE_DODGE_CHANCE.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
     double armorToughnessBase = entityTags.getOrDefault(Key.ATTRIBUTE_ARMOR_TOUGHNESS.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+    double armorBase = entityTags.getOrDefault(Key.ATTRIBUTE_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
 
     double genericMaxHealthBuff = 0.0;
     double maxHealthBuff = 0.0;
@@ -254,6 +255,7 @@ public class SheetMenu implements Menu {
     double dodgeChanceBuff = 0.0;
     double genericArmorToughnessBuff = 0.0;
     double armorToughnessBuff = 0.0;
+    double genericArmorBuff = 0.0;
     double armorBuff = 0.0;
     if (buffs != null) {
       genericMaxHealthBuff = buffs.getAttribute(Attribute.GENERIC_MAX_HEALTH);
@@ -262,7 +264,8 @@ public class SheetMenu implements Menu {
       dodgeChanceBuff = buffs.getAethelAttribute(AethelAttribute.DODGE_CHANCE);
       genericArmorToughnessBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
       armorToughnessBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR_TOUGHNESS);
-      armorBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR);
+      genericArmorBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR);
+      armorBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR);
     }
 
     double featherFallingBase = entityTags.getOrDefault(Key.ENCHANTMENT_FEATHER_FALLING.getNamespacedKey(), PersistentDataType.INTEGER, 0);
@@ -279,7 +282,7 @@ public class SheetMenu implements Menu {
     String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");
     String dodgeChance = ChatColor.BLUE + df2.format(dodgeChanceBase + dodgeChanceBuff) + "% DODGE" + (dodgeChanceBuff != 0.0 ? " [" + df2.format(dodgeChanceBuff) + "]" : "");
     String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + armorToughnessBase + armorToughnessBuff) + " TOUGH" + (genericArmorToughnessBuff + armorToughnessBuff != 0.0 ? " [" + df2.format(genericArmorToughnessBuff + armorToughnessBuff) + "]" : "");
-    String armor = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue()) + " ARMOR" + (armorBuff != 0.0 ? " [" + df2.format(armorBuff) + "]" : "");
+    String armor = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue() + armorBase + armorBuff) + " ARMOR" + (genericArmorBuff + armorBuff != 0.0 ? " [" + df2.format(genericArmorBuff + armorBuff) + "]" : "");
 
     String featherFalling = ChatColor.GRAY + "" + featherFallingBase + " FEATHER FALL";
     String protection = ChatColor.GRAY + "" + protectionBase + " PROT";

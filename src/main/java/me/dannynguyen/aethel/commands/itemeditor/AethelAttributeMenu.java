@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that edits an item's {@link Key#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
- * @version 1.22.16
+ * @version 1.23.17
  * @since 1.14.1
  */
 public class AethelAttributeMenu implements Menu {
@@ -37,7 +37,7 @@ public class AethelAttributeMenu implements Menu {
    */
   private static final Map<Category, AethelAttribute[]> attributeCategories = Map.of(
       Category.OFFENSE, new AethelAttribute[]{AethelAttribute.CRITICAL_CHANCE, AethelAttribute.CRITICAL_DAMAGE, AethelAttribute.FEINT_SKILL, AethelAttribute.ACCURACY_SKILL},
-      Category.DEFENSE, new AethelAttribute[]{AethelAttribute.MAX_HEALTH, AethelAttribute.COUNTER_CHANCE, AethelAttribute.DODGE_CHANCE, AethelAttribute.ARMOR_TOUGHNESS},
+      Category.DEFENSE, new AethelAttribute[]{AethelAttribute.MAX_HEALTH, AethelAttribute.COUNTER_CHANCE, AethelAttribute.DODGE_CHANCE, AethelAttribute.ARMOR_TOUGHNESS, AethelAttribute.ARMOR},
       Category.MISCELLANEOUS, new AethelAttribute[]{AethelAttribute.ITEM_DAMAGE, AethelAttribute.ITEM_COOLDOWN, AethelAttribute.TENACITY});
 
   /**

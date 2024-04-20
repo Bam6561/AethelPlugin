@@ -31,7 +31,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.23.17
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -230,7 +230,12 @@ public class DamageListener implements Listener {
      */
     private void ifFracture() {
       if (defenderStatuses.containsKey(StatusType.FRACTURE)) {
-        int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+        double armorBase = defenderEntityTags.getOrDefault(Key.ATTRIBUTE_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
+        double armorBuff = 0.0;
+        if (defenderBuffs != null) {
+          armorBuff = defenderBuffs.getAethelAttribute(AethelAttribute.ARMOR);
+        }
+        int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
         armor = armor - defenderStatuses.get(StatusType.FRACTURE).getStackAmount();
         double damage = e.getDamage();
         e.setDamage(damage - (damage * Math.min(armor * 0.2, .4)));

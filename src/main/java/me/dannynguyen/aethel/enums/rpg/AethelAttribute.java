@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of Aethel attributes.
  *
  * @author Danny Nguyen
- * @version 1.22.16
+ * @version 1.23.17
  * @since 1.9.10
  */
 public enum AethelAttribute {
@@ -44,6 +44,11 @@ public enum AethelAttribute {
    * Dodge chance.
    */
   DODGE_CHANCE("Dodge Chance", "dodge_chance", "0.0%"),
+
+  /**
+   * Armor.
+   */
+  ARMOR("Armor", "armor", "0.0"),
 
   /**
    * Flat damage blocked.

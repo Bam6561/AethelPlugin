@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.23.17
  * @since 1.11.9
  */
 public enum Key {
@@ -89,6 +89,11 @@ public enum Key {
    * {@link AethelAttribute#ARMOR_TOUGHNESS}
    */
   ATTRIBUTE_ARMOR_TOUGHNESS(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.ARMOR_TOUGHNESS.getId())),
+
+  /**
+   * {@link AethelAttribute#ARMOR}
+   */
+  ATTRIBUTE_ARMOR(new NamespacedKey(Plugin.getInstance(), KeyHeader.ATTRIBUTE.getHeader() + AethelAttribute.ARMOR.getId())),
 
   /**
    * {@link AethelAttribute#ITEM_DAMAGE}
