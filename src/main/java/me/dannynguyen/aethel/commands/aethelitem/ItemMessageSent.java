@@ -22,7 +22,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.listeners.MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.16
+ * @version 1.23.18
  * @since 1.23.13
  */
 public class ItemMessageSent {
@@ -63,6 +63,11 @@ public class ItemMessageSent {
     String fileName = menuInput.getFileName();
     String encodedItem = menuInput.getEncodedData();
 
+    ItemRegistry.Item item = Plugin.getData().getItemRegistry().getItems().get(itemName);
+    if (item != null) {
+      item.delete();
+    }
+
     try {
       File filePath = new File(Directory.AETHELITEM.getFile().getPath() + "/" + folder);
       if (!filePath.exists()) {
@@ -72,11 +77,6 @@ public class ItemMessageSent {
       FileWriter fw = new FileWriter(filePath.getPath() + "/" + fileName + "_itm.txt");
       fw.write(encodedItem);
       fw.close();
-
-      ItemRegistry.Item item = Plugin.getData().getItemRegistry().getItems().get(itemName);
-      if (item != null) {
-        item.delete();
-      }
 
       menuInput.setFileName("");
       menuInput.setEncodedData("");

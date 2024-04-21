@@ -24,7 +24,7 @@ import java.util.UUID;
  * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.23.18
  * @since 1.22.20
  */
 public class HealthChange {
@@ -134,7 +134,7 @@ public class HealthChange {
       Plugin.getData().getRpgSystem().getOvershields().remove(uuid);
       return;
     }
-    double decayRate = Math.max((currentHealth - overshield) / 40, 0.25);
+    double decayRate = Math.max((currentHealth - overshield) / 10, 0.25);
     setCurrentHealth(Math.max(overshield, currentHealth - decayRate));
     updateDisplays();
   }

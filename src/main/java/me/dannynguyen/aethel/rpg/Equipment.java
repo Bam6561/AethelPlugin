@@ -17,6 +17,7 @@ import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.23.18
  * @since 1.13.4
  */
 public class Equipment {
@@ -76,6 +77,14 @@ public class Equipment {
   private final ItemStack[] jewelry = new ItemStack[3];
 
   /**
+   * Held item material.
+   * <p>
+   * Updated when items are held to determine
+   * if to update equipment when items are dropped.
+   */
+  private Material heldMaterial;
+
+  /**
    * Associates RPG equipment with a player.
    *
    * @param player interacting player
@@ -86,6 +95,7 @@ public class Equipment {
     this.attributes = new AethelAttributes();
     this.enchantments = new Enchantments();
     this.abilities = new Abilities();
+    this.heldMaterial = player.getInventory().getItemInMainHand().getType();
     loadJewelrySlots();
     loadEquipment(player);
   }
@@ -300,6 +310,27 @@ public class Equipment {
   @Nullable
   public ItemStack[] getJewelry() {
     return this.jewelry;
+  }
+
+  /**
+   * Gets the held item material.
+   *
+   * @return held item material
+   */
+  @Nullable
+  public Material getHeldMaterial() {
+    return this.heldMaterial;
+  }
+
+  /**
+   * Sets the held item material.
+   */
+  public void setHeldMaterial(@Nullable ItemStack item) {
+    if (item == null) {
+      this.heldMaterial = Material.AIR;
+    } else {
+      this.heldMaterial = item.getType();
+    }
   }
 
   /**

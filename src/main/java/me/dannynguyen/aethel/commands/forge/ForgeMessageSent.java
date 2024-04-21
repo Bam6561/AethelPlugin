@@ -22,7 +22,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.listeners.MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.16
+ * @version 1.23.18
  * @since 1.23.8
  */
 public class ForgeMessageSent {
@@ -63,6 +63,11 @@ public class ForgeMessageSent {
     String fileName = menuInput.getFileName();
     String encodedRecipe = menuInput.getEncodedData();
 
+    RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(recipeName);
+    if (recipe != null) {
+      recipe.delete();
+    }
+
     File filePath = new File(Directory.FORGE.getFile().getPath() + "/" + folder);
     if (!filePath.exists()) {
       filePath.mkdirs();
@@ -72,11 +77,6 @@ public class ForgeMessageSent {
       FileWriter fw = new FileWriter(filePath.getPath() + "/" + fileName + "_rcp.txt");
       fw.write(encodedRecipe);
       fw.close();
-
-      RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(recipeName);
-      if (recipe != null) {
-        recipe.delete();
-      }
 
       menuInput.setFileName("");
       menuInput.setEncodedData("");

@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.utils.item.DurabilityDamage;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ import org.bukkit.inventory.PlayerInventory;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.15
+ * @version 1.23.18
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -93,7 +94,30 @@ public class EquipmentListener implements Listener {
     Player player = e.getPlayer();
     Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
     ItemStack heldItem = player.getInventory().getItem(e.getNewSlot());
+    equipment.setHeldMaterial(heldItem);
     equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
+  }
+
+  /**
+   * Updates a player's {@link Equipment} when items are dropped.
+   *
+   * @param e player dropped item event
+   */
+  @EventHandler
+  private void onItemDrop(PlayerDropItemEvent e) {
+    Player player = e.getPlayer();
+    if (ItemReader.isNotNullOrAir(player.getInventory().getItemInMainHand())) {
+      return;
+    }
+
+    Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
+    Material material = e.getItemDrop().getItemStack().getType();
+
+    if (material == equipment.getHeldMaterial()) {
+      ItemStack heldItem = player.getInventory().getItemInMainHand();
+      equipment.setHeldMaterial(heldItem);
+      equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
+    }
   }
 
   /**

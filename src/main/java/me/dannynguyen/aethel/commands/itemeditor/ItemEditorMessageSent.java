@@ -15,6 +15,7 @@ import me.dannynguyen.aethel.utils.abilities.ActiveAbilityInput;
 import me.dannynguyen.aethel.utils.abilities.PassiveAbilityInput;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -44,7 +45,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.11
+ * @version 1.23.18
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -317,9 +318,9 @@ public class ItemEditorMessageSent {
       return;
     }
 
-    potion.setColor(org.bukkit.Color.fromRGB(red, green, blue));
+    potion.setColor(Color.fromRGB(red, green, blue));
     item.setItemMeta(potion);
-    user.sendMessage(ChatColor.GREEN + "[Set Potion Color]");
+    user.sendMessage(ChatColor.GREEN + "[Set Potion Color]" + e.getMessage());
     new MenuChange().returnToPotion();
   }
 
@@ -344,7 +345,7 @@ public class ItemEditorMessageSent {
       }
       new AttributeRemove().removeExistingAttributeModifiers(attribute, equipmentSlot);
       meta.addAttributeModifier(attribute, new AttributeModifier(UUID.randomUUID(), "attribute", attributeValue, AttributeModifier.Operation.ADD_NUMBER, equipmentSlot));
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]" + e.getMessage());
     } else {
       new AttributeRemove().removeExistingAttributeModifiers(attribute, equipmentSlot);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
@@ -391,7 +392,7 @@ public class ItemEditorMessageSent {
 
       if (level > 0 && level < 32768) {
         item.addUnsafeEnchantment(Enchantment.getByKey(enchantment), level);
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
+        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]" + e.getMessage());
       } else {
         user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
       }
@@ -439,7 +440,7 @@ public class ItemEditorMessageSent {
           boolean ambient = Boolean.parseBoolean(input[2]);
           PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, ambient);
           potion.addCustomEffect(potionEffect, true);
-          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]");
+          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]" + e.getMessage());
         }
         default -> {
           user.sendMessage("Invalid true/false.");
@@ -489,7 +490,7 @@ public class ItemEditorMessageSent {
 
     if (!e.getMessage().equals("-")) {
       itemTags.set(tagKey, PersistentDataType.STRING, e.getMessage());
-      user.sendMessage(ChatColor.GREEN + "[Set " + tagType + "]");
+      user.sendMessage(ChatColor.GREEN + "[Set " + tagType + "]" + e.getMessage());
     } else {
       itemTags.remove(tagKey);
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
@@ -675,7 +676,7 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]");
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]" + e.getMessage());
     }
 
     /**
@@ -863,7 +864,7 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey), PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(type, ".") + "]" + e.getMessage());
     }
 
     /**
@@ -984,7 +985,7 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]" + e.getMessage());
     }
   }
 }

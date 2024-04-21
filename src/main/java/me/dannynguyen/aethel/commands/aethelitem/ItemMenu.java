@@ -64,7 +64,7 @@ public class ItemMenu implements CategoryMenu {
    * @return AethelItem menu
    */
   private Inventory createMenu() {
-    StringBuilder title = new StringBuilder(ChatColor.DARK_GRAY + "Aethel Item");
+    StringBuilder title = new StringBuilder(ChatColor.DARK_GRAY + "Item");
     String category = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getCategory();
     switch (action) {
       case GET -> title.append(ChatColor.GREEN).append(" Get ").append(ChatColor.WHITE).append(category);
