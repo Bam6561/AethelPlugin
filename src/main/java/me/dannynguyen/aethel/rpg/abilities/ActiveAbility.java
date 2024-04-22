@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.24.0
+ * @version 1.24.1
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -478,7 +478,7 @@ public class ActiveAbility {
       final Location abilityLocation = caster.getLocation().clone();
       Location casterLocation = caster.getLocation();
       world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
-      caster.teleport(new TargetValidation().ifValidTeleportThroughBlock(casterLocation, casterLocation, casterLocation.getDirection(), Integer.parseInt(effectData.get(0))));
+      caster.teleport(new TargetTeleport(caster).ifValidTeleportThroughBlock(casterLocation, casterLocation, Integer.parseInt(effectData.get(0))));
       world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
       world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -544,12 +544,59 @@ public class ActiveAbility {
      * @param caster           ability caster
      */
     private void teleportDistance(double cooldownModifier, Player caster) {
+      int distance = Integer.parseInt(effectData.get(0));
       World world = caster.getWorld();
       Location casterLocation = caster.getLocation();
-      world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
-      caster.teleport(new TargetValidation().ifValidTeleportThroughBlock(casterLocation, casterLocation, casterLocation.getDirection(), Integer.parseInt(effectData.get(0))));
-      world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
-      world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+
+      switch (type) {
+        case BLINK -> {
+          world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+          caster.teleport(new TargetTeleport(caster).ifValidTeleportThroughBlock(casterLocation, casterLocation, distance));
+          world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
+          world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+        }
+        case EMERGE -> {
+          LivingEntity entity = new TargetTeleport(caster).getTeleportTarget(world, caster.getEyeLocation(), distance);
+          if (entity != null) {
+            world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+
+            Location entityLocation = entity.getLocation();
+            Location behindEntity = entityLocation.clone().subtract(entityLocation.getDirection());
+            Location frontEntity = entityLocation.clone().add(entityLocation.getDirection());
+
+            if (!behindEntity.add(0, 1, 0).getBlock().getType().isSolid()) {
+              caster.teleport(behindEntity);
+            } else if (!frontEntity.add(0, 1, 0).getBlock().getType().isSolid()) {
+              frontEntity.setYaw(frontEntity.getYaw() - 180);
+              caster.teleport(frontEntity);
+            }
+
+            world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
+            world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+          }
+        }
+        case HOOK -> {
+          LivingEntity entity = new TargetTeleport(caster).getTeleportTarget(world, caster.getEyeLocation(), distance);
+          if (entity != null) {
+            Location hookLocation = casterLocation.add(casterLocation.getDirection());
+            hookLocation.setYaw(hookLocation.getYaw() - 180);
+            entity.teleport(hookLocation);
+            world.spawnParticle(Particle.PORTAL, entity.getLocation(), 15, 0.5, 0.5, 0.5);
+            world.playSound(entity.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
+          }
+        }
+        case SWITCH -> {
+          LivingEntity entity = new TargetTeleport(caster).getTeleportTarget(world, caster.getEyeLocation(), distance);
+          if (entity != null) {
+            world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
+            caster.teleport(entity.getLocation());
+            entity.teleport(casterLocation);
+            world.spawnParticle(Particle.PORTAL, caster.getLocation(), 15, 0.5, 0.5, 0.5);
+            world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
+          }
+        }
+      }
+
       if (baseCooldown > 0) {
         setOnCooldown(true);
         int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -674,26 +721,6 @@ public class ActiveAbility {
         }
         return getForceWaveTargets(world, targets, location.add(direction).clone(), direction, distance - 1);
       }
-
-      /**
-       * Gets if the teleport action can proceed through the next block.
-       *
-       * @param validTeleportLocation valid teleport location
-       * @param location              current location
-       * @param direction             caster's direction
-       * @param distance              number of meters to check
-       * @return the furthest valid teleport location
-       */
-      private Location ifValidTeleportThroughBlock(Location validTeleportLocation, Location location, Vector direction, int distance) {
-        Material blockType = location.getBlock().getType();
-        if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
-          return validTeleportLocation;
-        }
-        if (!blockType.isSolid()) {
-          validTeleportLocation = location.clone();
-        }
-        return ifValidTeleportThroughBlock(validTeleportLocation, location.add(direction), direction, distance - 1);
-      }
     }
   }
 
@@ -735,6 +762,13 @@ public class ActiveAbility {
      */
     private final Vector direction;
 
+    /**
+     * Associates the target displacement operation with its caster and ability parameters.
+     *
+     * @param caster   ability caster
+     * @param modifier effect modifier
+     * @param distance maximum range
+     */
     TargetDisplacement(Player caster, double modifier, double distance) {
       this.caster = caster;
       this.modifier = modifier;
@@ -790,6 +824,76 @@ public class ActiveAbility {
         livingEntity.setVelocity(velocity);
       }
       getThrustTargets(location.add(direction).clone(), remainingDistance - 1);
+    }
+  }
+
+  /**
+   * Represents a {@link ActiveAbilityType.Effect#TELEPORT}
+   * effect's target location or entity validation.
+   *
+   * @author Danny Nguyen
+   * @version 1.24.1
+   * @since 1.24.1
+   */
+  private static class TargetTeleport {
+    /**
+     * Ability caster.
+     */
+    private final Player caster;
+
+    /**
+     * Caster's direction.
+     */
+    private final Vector direction;
+
+    /**
+     * Associates the target teleport operation with a caster.
+     *
+     * @param caster ability caster
+     */
+    TargetTeleport(Player caster) {
+      this.caster = caster;
+      this.direction = caster.getLocation().getDirection();
+    }
+
+    /**
+     * Gets if the teleport action can proceed through the next block.
+     *
+     * @param validTeleportLocation valid teleport location
+     * @param location              current location
+     * @param distance              number of meters to check
+     * @return the furthest valid teleport location
+     */
+    private Location ifValidTeleportThroughBlock(Location validTeleportLocation, Location location, int distance) {
+      Material blockType = location.getBlock().getType();
+      if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
+        return validTeleportLocation;
+      }
+      if (!blockType.isSolid()) {
+        validTeleportLocation = location.clone();
+      }
+      return ifValidTeleportThroughBlock(validTeleportLocation, location.add(direction), distance - 1);
+    }
+
+    /**
+     * Recursively finds the teleport affected target.
+     *
+     * @param world    world
+     * @param location current location
+     * @param distance distance in meters to check
+     * @return teleport target
+     */
+    private LivingEntity getTeleportTarget(World world, Location location, int distance) {
+      if (distance <= 0 || location.getBlock().getType().isSolid()) {
+        return null;
+      }
+      for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+        if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
+          continue;
+        }
+        return livingEntity;
+      }
+      return getTeleportTarget(world, location.add(direction).clone(), distance - 1);
     }
   }
 }

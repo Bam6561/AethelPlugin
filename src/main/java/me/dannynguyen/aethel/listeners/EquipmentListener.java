@@ -30,6 +30,12 @@ import org.bukkit.inventory.PlayerInventory;
  */
 public class EquipmentListener implements Listener {
   /**
+   * No parameter constructor.
+   */
+  public EquipmentListener(){
+  }
+
+  /**
    * Checks clicks within player inventories to determine
    * whether to update a player's {@link Equipment}.
    *

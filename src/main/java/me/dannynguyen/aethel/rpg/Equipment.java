@@ -324,6 +324,8 @@ public class Equipment {
 
   /**
    * Sets the held item material.
+   *
+   * @param item held item
    */
   public void setHeldMaterial(@Nullable ItemStack item) {
     if (item == null) {

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.24.0
+ * @version 1.24.1
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -66,6 +66,13 @@ public enum ActiveAbilityType {
   DRAG("Drag", "drag", Effect.DISPLACEMENT),
 
   /**
+   * Forward facing caster teleport to an entity.
+   * <p>
+   * Omnidirectional.
+   */
+  EMERGE("Emerge", "emerge", Effect.TELEPORT),
+
+  /**
    * Spherical shaped attack.
    */
   EXPLODE("Explode", "explode", Effect.DISTANCE_DAMAGE),
@@ -81,6 +88,13 @@ public enum ActiveAbilityType {
    * Omnidirectional.
    */
   FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
+
+  /**
+   * Forward facing entity teleport to the caster.
+   * <p>
+   * Omnidirectional.
+   */
+  HOOK("Hook", "hook", Effect.TELEPORT),
 
   /**
    * Forward facing angular movement.
@@ -111,6 +125,13 @@ public enum ActiveAbilityType {
    * Spherical shaped push of entities away from the caster.
    */
   REPEL("Repel", "repel", Effect.DISPLACEMENT),
+
+  /**
+   * Forward facing location switch with an entity.
+   * <p>
+   * Omnidirectional.
+   */
+  SWITCH("Switch", "switch", Effect.TELEPORT),
 
   /**
    * Circular shaped attack.

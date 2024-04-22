@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.24.0
+ * @version 1.24.1
  * @since 1.22.1
  */
 public class WhatsThisCommand implements CommandExecutor {
@@ -872,7 +872,7 @@ public class WhatsThisCommand implements CommandExecutor {
       TELEPORT(new String[]{
           ChatColor.GREEN + "Teleport",
           "Causes instant movement.",
-          "Section: " + ChatColor.AQUA + "blink, projection"
+          "Section: " + ChatColor.AQUA + "blink, emerge, hook, projection, switch"
       }),
 
       /**
@@ -884,11 +884,35 @@ public class WhatsThisCommand implements CommandExecutor {
       }),
 
       /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#EMERGE}
+       */
+      EMERGE(new String[]{
+          ChatColor.GREEN + "Emerge",
+          ChatColor.GRAY + "Omnidirectional forward-facing teleport to an entity."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#HOOK}
+       */
+      HOOK(new String[]{
+          ChatColor.GREEN + "Hook",
+          ChatColor.GRAY + "Omnidirectional forward-facing caster teleport to an entity."
+      }),
+
+      /**
        * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#PROJECTION}
        */
       PROJECTION(new String[]{
           ChatColor.GREEN + "Projection",
           ChatColor.GRAY + "Omnidirectional forward-facing teleport that after a delay, teleports the user back to their original location."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#SWITCH}
+       */
+      SWITCH(new String[]{
+          ChatColor.GREEN + "Switch",
+          ChatColor.GRAY + "Omnidirectional forward-facing location switch with an entity."
       }),
 
       /**
