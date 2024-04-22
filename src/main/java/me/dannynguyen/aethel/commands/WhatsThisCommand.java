@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.23.12
+ * @version 1.24.0
  * @since 1.22.1
  */
 public class WhatsThisCommand implements CommandExecutor {
@@ -155,6 +155,11 @@ public class WhatsThisCommand implements CommandExecutor {
         case CLEAR_STATUS -> sendKeyWordDescription(user, KeyWord.CLEAR_STATUS);
         case DISMISS -> sendKeyWordDescription(user, KeyWord.DISMISS);
         case DISREGARD -> sendKeyWordDescription(user, KeyWord.DISREGARD);
+        case DISPLACEMENT -> sendKeyWordDescription(user, KeyWord.DISPLACEMENT);
+        case ATTRACT -> sendKeyWordDescription(user, KeyWord.ATTRACT);
+        case DRAG -> sendKeyWordDescription(user, KeyWord.DRAG);
+        case REPEL -> sendKeyWordDescription(user, KeyWord.REPEL);
+        case THRUST -> sendKeyWordDescription(user, KeyWord.THRUST);
         case DISTANCE_DAMAGE -> sendKeyWordDescription(user, KeyWord.DISTANCE_DAMAGE);
         case EXPLODE -> sendKeyWordDescription(user, KeyWord.EXPLODE);
         case FORCE_SWEEP -> sendKeyWordDescription(user, KeyWord.FORCE_SWEEP);
@@ -271,7 +276,7 @@ public class WhatsThisCommand implements CommandExecutor {
           ChatColor.GREEN + "Active Abilities",
           ChatColor.GRAY + "Must be bound through the character sheet menu settings first before being able to be used.",
           ChatColor.GRAY + "To activate an active ability, select the hotbar slot the ability slot is bound to and crouch.",
-          "Related: " + ChatColor.AQUA + "buff, clear status, distance damage, movement, potion effect, shatter, teleport"}),
+          "Related: " + ChatColor.AQUA + "buff, clear status, displacement, distance damage, movement, potion effect, shatter, teleport"}),
 
       /**
        * {@link me.dannynguyen.aethel.rpg.Status}
@@ -731,6 +736,47 @@ public class WhatsThisCommand implements CommandExecutor {
       }),
 
       /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DISPLACEMENT}
+       */
+      DISPLACEMENT(new String[]{
+          ChatColor.GREEN + "Displacement",
+          ChatColor.GRAY + "Causes entity movement with velocity.",
+          "Related: " + ChatColor.AQUA + "attract, drag, repel, thrust"
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#ATTRACT}
+       */
+      ATTRACT(new String[]{
+          ChatColor.GREEN + "Attract",
+          ChatColor.GRAY + "Spherical shaped pull of entities towards the caster."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DRAG}
+       */
+      DRAG(new String[]{
+          ChatColor.GREEN + "Drag",
+          ChatColor.GRAY + "Omnidirectional forward-facing pull of entities towards the caster."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#REPEL}
+       */
+      REPEL(new String[]{
+          ChatColor.GREEN + "Repel",
+          ChatColor.GRAY + "Spherical shaped push of entities away from the caster."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#THRUST}
+       */
+      THRUST(new String[]{
+          ChatColor.GREEN + "Thrust",
+          ChatColor.GRAY + "Omnidirectional forward-facing push of entities away from the caster."
+      }),
+
+      /**
        * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DISTANCE_DAMAGE}
        */
       DISTANCE_DAMAGE(new String[]{
@@ -776,7 +822,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       MOVEMENT(new String[]{
           ChatColor.GREEN + "Movement",
-          ChatColor.GRAY + "Causes movement with velocity.",
+          ChatColor.GRAY + "Causes caster movement with velocity.",
           "Related: " + ChatColor.AQUA + "dash, leap, spring, withdraw"
       }),
 

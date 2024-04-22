@@ -813,7 +813,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.23.17
+   * @version 1.24.0
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -1100,6 +1100,7 @@ public class ItemEditorMenuClick implements MenuClick {
             activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[2]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
           }
           case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
+          case DISPLACEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
           case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
           case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
           case POTION_EFFECT -> {

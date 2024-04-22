@@ -320,7 +320,7 @@ public class ItemEditorMessageSent {
 
     potion.setColor(Color.fromRGB(red, green, blue));
     item.setItemMeta(potion);
-    user.sendMessage(ChatColor.GREEN + "[Set Potion Color]" + e.getMessage());
+    user.sendMessage(ChatColor.GREEN + "[Set Potion Color] " + ChatColor.WHITE + e.getMessage());
     new MenuChange().returnToPotion();
   }
 
@@ -345,7 +345,7 @@ public class ItemEditorMessageSent {
       }
       new AttributeRemove().removeExistingAttributeModifiers(attribute, equipmentSlot);
       meta.addAttributeModifier(attribute, new AttributeModifier(UUID.randomUUID(), "attribute", attributeValue, AttributeModifier.Operation.ADD_NUMBER, equipmentSlot));
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "]" + e.getMessage());
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + type + "] " + ChatColor.WHITE + e.getMessage());
     } else {
       new AttributeRemove().removeExistingAttributeModifiers(attribute, equipmentSlot);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + type + "]");
@@ -392,7 +392,7 @@ public class ItemEditorMessageSent {
 
       if (level > 0 && level < 32768) {
         item.addUnsafeEnchantment(Enchantment.getByKey(enchantment), level);
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]" + e.getMessage());
+        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "] " + ChatColor.WHITE + e.getMessage());
       } else {
         user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
       }
@@ -440,7 +440,7 @@ public class ItemEditorMessageSent {
           boolean ambient = Boolean.parseBoolean(input[2]);
           PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, ambient);
           potion.addCustomEffect(potionEffect, true);
-          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "]" + e.getMessage());
+          user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "] " + ChatColor.WHITE + e.getMessage());
         }
         default -> {
           user.sendMessage("Invalid true/false.");
@@ -490,7 +490,7 @@ public class ItemEditorMessageSent {
 
     if (!e.getMessage().equals("-")) {
       itemTags.set(tagKey, PersistentDataType.STRING, e.getMessage());
-      user.sendMessage(ChatColor.GREEN + "[Set " + tagType + "]" + e.getMessage());
+      user.sendMessage(ChatColor.GREEN + "[Set " + tagType + "] " + ChatColor.WHITE + e.getMessage());
     } else {
       itemTags.remove(tagKey);
       user.sendMessage(ChatColor.RED + "[Removed " + tagType + "]");
@@ -676,7 +676,7 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(namespacedKeyToSet, PersistentDataType.DOUBLE, keyValue);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "]" + e.getMessage());
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type) + "] " + ChatColor.WHITE + e.getMessage());
     }
 
     /**
@@ -864,7 +864,7 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(new NamespacedKey(Plugin.getInstance(), passiveHeader + interactingKey), PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(type, ".") + "]" + e.getMessage());
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(trigger) + " " + TextFormatter.capitalizePhrase(type, ".") + "] " + ChatColor.WHITE + e.getMessage());
     }
 
     /**
@@ -897,7 +897,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
    *
    * @author Danny Nguyen
-   * @version 1.20.10
+   * @version 1.24.0
    * @since 1.19.4
    */
   private class ActiveChange {
@@ -949,6 +949,7 @@ public class ItemEditorMessageSent {
       switch (effect) {
         case BUFF -> setKeyStringToList(ActiveAbilityInput.buff(user, args));
         case CLEAR_STATUS -> setKeyStringToList(ActiveAbilityInput.clearStatus(user, args));
+        case DISPLACEMENT -> setKeyStringToList(ActiveAbilityInput.displacement(user, args));
         case DISTANCE_DAMAGE -> setKeyStringToList(ActiveAbilityInput.distanceDamage(user, args));
         case MOVEMENT -> setKeyStringToList(ActiveAbilityInput.movement(user, args));
         case POTION_EFFECT -> setKeyStringToList(ActiveAbilityInput.potionEffect(user, args));
@@ -985,7 +986,7 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
-      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]" + e.getMessage());
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "] " + ChatColor.WHITE + e.getMessage());
     }
   }
 }

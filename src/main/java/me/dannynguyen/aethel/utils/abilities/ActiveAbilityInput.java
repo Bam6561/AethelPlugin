@@ -15,7 +15,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.21.10
+ * @version 1.24.0
  * @since 1.20.5
  */
 public class ActiveAbilityInput {
@@ -104,6 +104,56 @@ public class ActiveAbilityInput {
       return null;
     }
     return String.valueOf(cooldown);
+  }
+
+  /**
+   * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DISPLACEMENT}.
+   *
+   * @param user interacting user
+   * @param args user provided parameters
+   * @return ability data if set correctly, otherwise null
+   */
+  @Nullable
+  public static String displacement(@NotNull Player user, @NotNull String[] args) {
+    Objects.requireNonNull(user, "Null user");
+    if (Objects.requireNonNull(args, "Null arguments").length != 3) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return null;
+    }
+    int cooldown;
+    try {
+      cooldown = Integer.parseInt(args[0]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return null;
+    }
+    double modifier;
+    try {
+      modifier = Double.parseDouble(args[1]);
+      if (modifier < 0 || 1000 < modifier) {
+        user.sendMessage(Message.INVALID_MODIFIER.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_MODIFIER.getMessage());
+      return null;
+    }
+    int distance;
+    try {
+      distance = Integer.parseInt(args[2]);
+      if (distance < 0 || 64 < distance) {
+        user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+        return null;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_DISTANCE.getMessage());
+      return null;
+    }
+    return cooldown + " " + modifier + " " + distance;
   }
 
   /**

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.21.8
+ * @version 1.24.0
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -20,6 +20,11 @@ public enum ActiveAbilityType {
    * {@link me.dannynguyen.aethel.enums.rpg.AethelAttribute} {@link me.dannynguyen.aethel.rpg.Buffs}.
    */
   AETHEL_ATTRIBUTE_2("Aethel Attribute 2", "aethel_attribute_2", Effect.BUFF),
+
+  /**
+   * Spherical shaped pull of entities towards the caster.
+   */
+  ATTRACT("Attract", "attract", Effect.DISPLACEMENT),
 
   /**
    * Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
@@ -52,6 +57,13 @@ public enum ActiveAbilityType {
    * Clears all damaging potion effects and statuses.
    */
   DISREGARD("Disregard", "disregard", Effect.CLEAR_STATUS),
+
+  /**
+   * Forward-facing pull of entities towards the caster.
+   * <p>
+   * Omnidirectional.
+   */
+  DRAG("Drag", "drag", Effect.DISPLACEMENT),
 
   /**
    * Spherical shaped attack.
@@ -96,6 +108,11 @@ public enum ActiveAbilityType {
   PROJECTION("Projection", "projection", Effect.PROJECTION),
 
   /**
+   * Spherical shaped push of entities away from the caster.
+   */
+  REPEL("Repel", "repel", Effect.DISPLACEMENT),
+
+  /**
    * Circular shaped attack.
    */
   QUAKE("Quake", "quake", Effect.DISTANCE_DAMAGE),
@@ -110,6 +127,13 @@ public enum ActiveAbilityType {
    * Upwards facing movement.
    */
   SPRING("Spring", "spring", Effect.MOVEMENT),
+
+  /**
+   * Forward facing push of entities away from the caster.
+   * <p>
+   * Omnidirectional.
+   */
+  THRUST("Thrust", "thrust", Effect.DISPLACEMENT),
 
   /**
    * Backwards facing movement.
@@ -178,7 +202,7 @@ public enum ActiveAbilityType {
    * Effects of {@link ActiveAbilityType active abilities}.
    *
    * @author Danny Nguyen
-   * @version 1.20.10
+   * @version 1.24.0
    * @since 1.15.9
    */
   public enum Effect {
@@ -193,12 +217,17 @@ public enum ActiveAbilityType {
     CLEAR_STATUS("Cooldown(t)"),
 
     /**
+     * Causes entity movement with velocity.
+     */
+    DISPLACEMENT("Cooldown(t), Modifier(%), Distance(m)"),
+
+    /**
      * Causes damage at a distance.
      */
     DISTANCE_DAMAGE("Cooldown(t), Damage, Distance(m)"),
 
     /**
-     * Causes movement with velocity.
+     * Causes caster movement with velocity.
      */
     MOVEMENT("Cooldown(t), Modifier(%)"),
 

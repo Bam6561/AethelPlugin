@@ -29,7 +29,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.24.0
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -85,7 +85,7 @@ public class ActiveAbility {
       case CLEAR_STATUS -> { // No data to load.
       }
       case MOVEMENT, SHATTER, TELEPORT -> effectData.add(dataValues[1]);
-      case DISTANCE_DAMAGE, PROJECTION -> {
+      case DISPLACEMENT, DISTANCE_DAMAGE, PROJECTION -> {
         effectData.add(dataValues[1]);
         effectData.add(dataValues[2]);
       }
@@ -123,6 +123,7 @@ public class ActiveAbility {
     switch (type.getEffect()) {
       case BUFF -> new Effect().applyBuff(cooldownModifier, caster);
       case CLEAR_STATUS -> new Effect().clearStatus(cooldownModifier, caster);
+      case DISPLACEMENT -> new Effect().displaceEntities(cooldownModifier, caster);
       case DISTANCE_DAMAGE -> new Effect().dealDistanceDamage(cooldownModifier, caster);
       case MOVEMENT -> new Effect().moveDistance(cooldownModifier, caster);
       case POTION_EFFECT -> new Effect().applyPotionEffect(cooldownModifier, caster);
@@ -206,7 +207,7 @@ public class ActiveAbility {
 
       switch (type) {
         case DISMISS -> {
-          world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 1.5f);
+          world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 1, 1.5f);
           world.spawnParticle(Particle.SCRAPE, caster.getLocation().add(0, 1, 0), 10, 0.75, 0.75, 0.75);
           for (PotionEffect potionEffect : activePotionEffects) {
             switch (potionEffect.getType().getName()) {
@@ -221,7 +222,7 @@ public class ActiveAbility {
           }
         }
         case DISREGARD -> {
-          world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1, 2);
+          world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 1, 2);
           world.spawnParticle(Particle.EGG_CRACK, caster.getLocation().add(0, 1, 0), 10, 0.75, 0.75, 0.75);
           for (PotionEffect potionEffect : activePotionEffects) {
             switch (potionEffect.getType().getName()) {
@@ -237,6 +238,65 @@ public class ActiveAbility {
       }
       for (PotionEffectType potionEffectType : potionEffectsToRemove) {
         caster.removePotionEffect(potionEffectType);
+      }
+
+      if (baseCooldown > 0) {
+        setOnCooldown(true);
+        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
+      }
+    }
+
+    /**
+     * {@link ActiveAbilityType.Effect#DISPLACEMENT Displaces} entities across a distance.
+     *
+     * @param cooldownModifier cooldown modifier
+     * @param caster           ability caster
+     */
+    private void displaceEntities(double cooldownModifier, Player caster) {
+      double modifier = 0.65 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100));
+      int distance = Integer.parseInt(effectData.get(1));
+      Location casterLocation = caster.getLocation().add(0, 1, 0);
+
+      switch (type) {
+        case DRAG -> {
+          caster.getWorld().playSound(caster.getEyeLocation(), Sound.ITEM_TRIDENT_RIPTIDE_1, SoundCategory.PLAYERS, 1, 2);
+          new TargetDisplacement(caster, modifier, distance).getDragTargets(caster.getEyeLocation(), distance);
+        }
+        case THRUST -> {
+          caster.getWorld().playSound(caster.getEyeLocation(), Sound.ITEM_TRIDENT_RIPTIDE_1, SoundCategory.PLAYERS, 1, 0);
+          new TargetDisplacement(caster, modifier, distance).getThrustTargets(caster.getEyeLocation(), distance);
+        }
+        case ATTRACT -> {
+          caster.getWorld().playSound(caster.getEyeLocation(), Sound.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 0.8f, 0.5f);
+          TargetValidation targetValidation = new TargetValidation();
+          for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
+            if (!(entity instanceof LivingEntity livingEntity)) {
+              continue;
+            }
+            if (targetValidation.isTargetUnobstructed(caster, livingEntity)) {
+              Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
+              double distanceModifier = casterLocation.distance(entityLocation) / distance * modifier;
+              Vector velocity = casterLocation.toVector().subtract(entityLocation.toVector()).normalize().multiply(distanceModifier);
+              livingEntity.setVelocity(velocity);
+            }
+          }
+        }
+        case REPEL -> {
+          caster.getWorld().playSound(caster.getEyeLocation(), Sound.ENTITY_IRON_GOLEM_REPAIR, SoundCategory.PLAYERS, 0.55f, 0.5f);
+          TargetValidation targetValidation = new TargetValidation();
+          for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
+            if (!(entity instanceof LivingEntity livingEntity)) {
+              continue;
+            }
+            if (targetValidation.isTargetUnobstructed(caster, livingEntity)) {
+              Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
+              double distanceModifier = (distance - casterLocation.distance(entityLocation)) / distance * modifier;
+              Vector velocity = entityLocation.toVector().subtract(casterLocation.toVector()).normalize().multiply(distanceModifier);
+              livingEntity.setVelocity(velocity);
+            }
+          }
+        }
       }
 
       if (baseCooldown > 0) {
@@ -346,11 +406,11 @@ public class ActiveAbility {
     private void moveDistance(double cooldownModifier, Player caster) {
       World world = caster.getWorld();
       Vector vector = new Vector();
-      double multiplier = 0.325 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 3.25;
+      double modifier = 0.325 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 3.25;
       switch (type) {
         case DASH -> {
           world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITHER_SHOOT, SoundCategory.PLAYERS, 0.25f, 0.5f);
-          vector = caster.getLocation().getDirection().multiply(multiplier);
+          vector = caster.getLocation().getDirection().multiply(modifier);
           vector.setY(0.2);
           world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 5, 0.125, 0.125, 0.125, 0.025);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
@@ -361,7 +421,7 @@ public class ActiveAbility {
         case LEAP -> {
           world.playSound(caster.getLocation(), Sound.ENTITY_SLIME_JUMP, SoundCategory.PLAYERS, 1, 0);
           world.spawnParticle(Particle.SLIME, caster.getLocation(), 15, 0.75, 0.25, 0.75);
-          vector = caster.getLocation().getDirection().multiply(multiplier);
+          vector = caster.getLocation().getDirection().multiply(modifier);
         }
         case SPRING -> {
           world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEEHIVE_ENTER, SoundCategory.PLAYERS, 1, 2);
@@ -369,13 +429,13 @@ public class ActiveAbility {
           vector.setX(0);
           vector.setY(1);
           vector.setZ(0);
-          vector = vector.multiply(multiplier);
+          vector = vector.multiply(modifier);
         }
         case WITHDRAW -> {
           world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITCH_THROW, SoundCategory.PLAYERS, 0.65f, 0.5f);
           world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, caster.getLocation(), 10, 0.125, 0.125, 0.125, 0.025);
-          vector = caster.getLocation().getDirection().multiply(-multiplier);
-          caster.setVelocity(vector.setY(0.2));
+          vector = caster.getLocation().getDirection().multiply(-modifier);
+          vector.setY(0.2);
         }
       }
       caster.setVelocity(vector);
@@ -593,7 +653,7 @@ public class ActiveAbility {
       }
 
       /**
-       * Recursively finds forcewave-affected targets.
+       * Recursively finds {@link ActiveAbilityType#FORCE_WAVE} targets.
        *
        * @param world     world
        * @param targets   set of affected targets
@@ -634,6 +694,102 @@ public class ActiveAbility {
         }
         return ifValidTeleportThroughBlock(validTeleportLocation, location.add(direction), direction, distance - 1);
       }
+    }
+  }
+
+  /**
+   * Represents a {@link ActiveAbilityType.Effect#DISPLACEMENT} effect's entity validation.
+   *
+   * @author Danny Nguyen
+   * @version 1.24.0
+   * @since 1.24.0
+   */
+  private static class TargetDisplacement {
+    /**
+     * Ability caster.
+     */
+    private final Player caster;
+
+    /**
+     * Effect modifier.
+     */
+    private final double modifier;
+
+    /**
+     * Maximum range.
+     */
+    private final double distance;
+
+    /**
+     * Ability cast world.
+     */
+    private final World world;
+
+    /**
+     * Caster's body location.
+     */
+    private final Location casterLocation;
+
+    /**
+     * Caster's facing direction.
+     */
+    private final Vector direction;
+
+    TargetDisplacement(Player caster, double modifier, double distance) {
+      this.caster = caster;
+      this.modifier = modifier;
+      this.distance = distance;
+      this.world = caster.getWorld();
+      this.casterLocation = caster.getLocation().add(0, 1, 0);
+      this.direction = caster.getLocation().getDirection();
+    }
+
+    /**
+     * Recursively finds {@link ActiveAbilityType#DRAG} affected targets.
+     *
+     * @param location          current location
+     * @param remainingDistance distance in meters to check
+     */
+    private void getDragTargets(Location location, int remainingDistance) {
+      if (remainingDistance <= 0 || location.getBlock().getType().isSolid()) {
+        return;
+      }
+      world.spawnParticle(Particle.SOUL, location, 1, 0.125, 0.125, 0.125, 0.025);
+      for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+        if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
+          continue;
+        }
+
+        Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
+        double distanceModifier = (distance - remainingDistance) / distance * modifier;
+        Vector velocity = casterLocation.toVector().subtract(entityLocation.toVector()).normalize().multiply(distanceModifier);
+        livingEntity.setVelocity(velocity);
+      }
+      getDragTargets(location.add(direction).clone(), remainingDistance - 1);
+    }
+
+    /**
+     * Recursively finds {@link ActiveAbilityType#THRUST} affected targets.
+     *
+     * @param location          current location
+     * @param remainingDistance distance in meters to check
+     */
+    private void getThrustTargets(Location location, int remainingDistance) {
+      if (remainingDistance <= 0 || location.getBlock().getType().isSolid()) {
+        return;
+      }
+      world.spawnParticle(Particle.SCULK_SOUL, location, 1, 0.125, 0.125, 0.125, 0.025);
+      for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+        if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
+          continue;
+        }
+
+        Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
+        double distanceModifier = remainingDistance / distance * modifier;
+        Vector velocity = entityLocation.toVector().subtract(casterLocation.toVector()).normalize().multiply(distanceModifier);
+        livingEntity.setVelocity(velocity);
+      }
+      getThrustTargets(location.add(direction).clone(), remainingDistance - 1);
     }
   }
 }
