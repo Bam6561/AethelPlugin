@@ -146,7 +146,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.23.13
+   * @version 1.24.2
    * @since 1.23.13
    */
   private class Effect {
@@ -256,7 +256,6 @@ public class ActiveAbility {
     private void displaceEntities(double cooldownModifier, Player caster) {
       double modifier = 0.65 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100));
       int distance = Integer.parseInt(effectData.get(1));
-      Location casterLocation = caster.getLocation().add(0, 1, 0);
 
       switch (type) {
         case DRAG -> {
@@ -268,6 +267,7 @@ public class ActiveAbility {
           new TargetDisplacement(caster, modifier, distance).getThrustTargets(caster.getEyeLocation(), distance);
         }
         case ATTRACT -> {
+          Location casterLocation = caster.getLocation().add(0, 1, 0);
           caster.getWorld().playSound(caster.getEyeLocation(), Sound.ENTITY_IRON_GOLEM_HURT, SoundCategory.PLAYERS, 0.8f, 0.5f);
           TargetValidation targetValidation = new TargetValidation();
           for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
@@ -283,6 +283,7 @@ public class ActiveAbility {
           }
         }
         case REPEL -> {
+          Location casterLocation = caster.getLocation().add(0, 1, 0);
           caster.getWorld().playSound(caster.getEyeLocation(), Sound.ENTITY_IRON_GOLEM_REPAIR, SoundCategory.PLAYERS, 0.55f, 0.5f);
           TargetValidation targetValidation = new TargetValidation();
           for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
@@ -407,6 +408,7 @@ public class ActiveAbility {
       World world = caster.getWorld();
       Vector vector = new Vector();
       double modifier = 0.325 + (0.65 * (Double.parseDouble(effectData.get(0)) / 100)) + caster.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue() * 3.25;
+
       switch (type) {
         case DASH -> {
           world.playSound(caster.getEyeLocation(), Sound.ENTITY_WITHER_SHOOT, SoundCategory.PLAYERS, 0.25f, 0.5f);
@@ -439,6 +441,7 @@ public class ActiveAbility {
         }
       }
       caster.setVelocity(vector);
+
       if (baseCooldown > 0) {
         setOnCooldown(true);
         int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -477,16 +480,24 @@ public class ActiveAbility {
       World world = caster.getWorld();
       final Location abilityLocation = caster.getLocation().clone();
       Location casterLocation = caster.getLocation();
+
       world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
       caster.teleport(new TargetTeleport(caster).ifValidTeleportThroughBlock(casterLocation, casterLocation, Integer.parseInt(effectData.get(0))));
       world.playSound(caster.getEyeLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0.75f);
       world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
-      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+
+      int delay = Integer.parseInt(effectData.get(1));
+      int taskId = Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
         caster.teleport(abilityLocation);
         world.playSound(caster.getEyeLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, SoundCategory.PLAYERS, 0.5f, 0.75f);
         world.spawnParticle(Particle.PORTAL, casterLocation, 15, 0.5, 0.5, 0.5);
-      }, Integer.parseInt(effectData.get(1)));
+      }, delay).getTaskId();
+
+      Set<Integer> projections = Plugin.getData().getRpgSystem().getRpgPlayers().get(caster.getUniqueId()).getProjections();
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> projections.remove(taskId), delay);
+      projections.add(taskId);
+
       if (baseCooldown > 0) {
         setOnCooldown(true);
         int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -530,6 +541,7 @@ public class ActiveAbility {
           statuses.remove(StatusType.BRITTLE);
         }
       }
+
       if (baseCooldown > 0) {
         setOnCooldown(true);
         int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));

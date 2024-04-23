@@ -20,9 +20,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerItemMendEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.24.2
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -92,9 +94,18 @@ public class RpgListener implements Listener {
    */
   @EventHandler
   private void onPlayerDeath(PlayerDeathEvent e) {
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+    Player player = e.getEntity();
+    UUID uuid = player.getUniqueId();
+    RpgPlayer rpgPlayer = rpgSystem.getRpgPlayers().get(uuid);
+    BukkitScheduler scheduler = Bukkit.getScheduler();
+
+    rpgSystem.getStatuses().remove(uuid);
+    for (int taskId : rpgPlayer.getProjections()) {
+      scheduler.cancelTask(taskId);
+    }
+
     if (!e.getKeepInventory()) {
-      Player player = e.getEntity();
-      RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
       Equipment equipment = rpgPlayer.getEquipment();
 
       Equipment.AethelAttributes attributes = equipment.getAttributes();
@@ -118,7 +129,7 @@ public class RpgListener implements Listener {
         abilities.removeActives(eSlot);
       }
 
-      ItemStack[] jewelrySlots = rpgPlayer.getEquipment().getJewelry();
+      ItemStack[] jewelrySlots = equipment.getJewelry();
       for (int i = 0; i < jewelrySlots.length; i++) {
         if (jewelrySlots[i] != null) {
           player.getWorld().dropItem(player.getLocation(), jewelrySlots[i]);
@@ -126,8 +137,16 @@ public class RpgListener implements Listener {
         }
       }
     }
+  }
 
-    Plugin.getData().getRpgSystem().getStatuses().remove(e.getEntity().getUniqueId());
+  /**
+   * Resets the player's health.
+   *
+   * @param e player respawn event
+   */
+  @EventHandler
+  private void onRespawn(PlayerRespawnEvent e) {
+    new HealthChange(e.getPlayer()).reset();
   }
 
   /**
@@ -140,16 +159,6 @@ public class RpgListener implements Listener {
     if (e.getEntity().getKiller() != null) {
       triggerOnKillPassives(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
     }
-  }
-
-  /**
-   * Resets the player's health.
-   *
-   * @param e player respawn event
-   */
-  @EventHandler
-  private void onRespawn(PlayerRespawnEvent e) {
-    new HealthChange(e.getPlayer()).reset();
   }
 
   /**

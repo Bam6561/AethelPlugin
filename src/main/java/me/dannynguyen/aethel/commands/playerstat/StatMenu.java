@@ -22,7 +22,7 @@ import java.util.*;
  * See {@link StatCategory.StatisticType} and {@link StatCategory.SubstatisticType}.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.24.2
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -96,7 +96,8 @@ public class StatMenu implements CategoryMenu {
     }
     addContext(category);
     addOwner();
-    InventoryPages.addBackButton(menu, 5);
+    addShareToggle();
+    InventoryPages.addBackButton(menu, 6);
     return menu;
   }
 
@@ -156,6 +157,13 @@ public class StatMenu implements CategoryMenu {
     meta.setDisplayName(ChatColor.DARK_PURPLE + statOwner);
     item.setItemMeta(meta);
     menu.setItem(4, item);
+  }
+
+  /**
+   * Adds stat sharing mode toggle button.
+   */
+  private void addShareToggle() {
+    menu.setItem(5, ItemCreator.createItem(Material.BOOK, ChatColor.AQUA + "View Stat"));
   }
 
   /**

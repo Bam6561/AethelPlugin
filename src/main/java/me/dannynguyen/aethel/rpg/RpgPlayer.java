@@ -3,14 +3,13 @@ package me.dannynguyen.aethel.rpg;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.22.20
+ * @version 1.24.2
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -33,6 +32,11 @@ public class RpgPlayer {
    * {@link Equipment}
    */
   private final Equipment equipment;
+
+  /**
+   * Active projections.
+   */
+  private final Set<Integer> projections = new HashSet<>();
 
   /**
    * Associates a player with RPG metadata.
@@ -84,5 +88,15 @@ public class RpgPlayer {
   @NotNull
   public Equipment getEquipment() {
     return this.equipment;
+  }
+
+  /**
+   * Gets the player's active projections.
+   *
+   * @return player's active projections
+   */
+  @NotNull
+  public Set<Integer> getProjections() {
+    return this.projections;
   }
 }

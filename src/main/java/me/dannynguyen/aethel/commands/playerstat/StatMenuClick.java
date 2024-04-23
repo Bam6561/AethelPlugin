@@ -6,11 +6,13 @@ import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import java.util.UUID;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.12
+ * @version 1.24.2
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClick {
@@ -86,7 +88,8 @@ public class StatMenuClick implements MenuClick {
       case 0 -> new MenuChange().previousPage();
       case 3, 4 -> { // Player Heads
       }
-      case 5 -> new MenuChange().returnToMenu();
+      case 5 -> new MenuToggle().toggleShareMode();
+      case 6 -> new MenuChange().returnToMenu();
       case 8 -> new MenuChange().nextPage();
       default -> new StatBroadcast().sendStat();
     }
@@ -105,7 +108,8 @@ public class StatMenuClick implements MenuClick {
       case 0 -> new MenuChange().previousPage();
       case 3, 4 -> { // Player Heads
       }
-      case 5 -> new MenuChange().returnToMenu();
+      case 5 -> new MenuToggle().toggleShareMode();
+      case 6 -> new MenuChange().returnToMenu();
       case 8 -> new MenuChange().nextPage();
       default -> new StatBroadcast().sendSubstat();
     }
@@ -165,10 +169,37 @@ public class StatMenuClick implements MenuClick {
   }
 
   /**
+   * Represents a menu toggle operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.24.2
+   * @since 1.24.2
+   */
+  private class MenuToggle {
+    /**
+     * No parameter constructor.
+     */
+    MenuToggle() {
+    }
+
+    /**
+     * Toggles stat share mode.
+     */
+    private void toggleShareMode() {
+      Inventory menu = e.getInventory();
+      Material mode = menu.getItem(5).getType();
+      switch (mode) {
+        case BOOK -> menu.setItem(5, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Share Stat"));
+        case WRITABLE_BOOK -> menu.setItem(5, ItemCreator.createItem(Material.BOOK, ChatColor.AQUA + "View Stat"));
+      }
+    }
+  }
+
+  /**
    * Represents the retrieval and broadcast of a player statistic.
    *
    * @author Danny Nguyen
-   * @version 1.20.2
+   * @version 1.24.2
    * @since 1.4.10
    */
   private class StatBroadcast {
@@ -195,7 +226,7 @@ public class StatMenuClick implements MenuClick {
     /**
      * Whether to broadcast the value to all online players.
      */
-    private final boolean isGlobalBroadcast = e.isShiftClick();
+    private final boolean isGlobalBroadcast = e.getInventory().getItem(5).getType() == Material.WRITABLE_BOOK;
 
     /**
      * No parameter constructor.

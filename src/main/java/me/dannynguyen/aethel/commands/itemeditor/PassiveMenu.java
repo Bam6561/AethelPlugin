@@ -30,7 +30,7 @@ import java.util.*;
  * an item's {@link Key#PASSIVE_LIST passive abilities}.
  *
  * @author Danny Nguyen
- * @version 1.19.10
+ * @version 1.24.2
  * @since 1.15.1
  */
 public class PassiveMenu implements Menu {
@@ -108,7 +108,7 @@ public class PassiveMenu implements Menu {
     addContext();
     addSlots();
     addTriggers();
-    InventoryPages.addBackButton(menu, 5);
+    InventoryPages.addBackButton(menu, 6);
     return menu;
   }
 
@@ -147,7 +147,7 @@ public class PassiveMenu implements Menu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a passive ability, input \"-\".")));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a passive ability, input \"-\".")));
   }
 
   /**
