@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Parameters:
  * <ul>
+ *  <li>"": gets key word categories
  *  <li>keyWord: gets the key word's description
  * </ul>
  *

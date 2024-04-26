@@ -22,7 +22,7 @@ import java.util.*;
  * See {@link StatCategory.StatisticType} and {@link StatCategory.SubstatisticType}.
  *
  * @author Danny Nguyen
- * @version 1.24.2
+ * @version 1.24.3
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -76,7 +76,7 @@ public class StatMenu implements CategoryMenu {
   @NotNull
   public Inventory getMainMenu() {
     addCategories();
-    addContext(null);
+    addContext();
     addOwner();
     return menu;
   }
@@ -94,7 +94,6 @@ public class StatMenu implements CategoryMenu {
       case "Entity Types", "Materials" -> getSubstatPage(category, requestedPage);
       default -> getStatsPage(category);
     }
-    addContext(category);
     addOwner();
     addShareToggle();
     InventoryPages.addBackButton(menu, 6);
@@ -128,19 +127,9 @@ public class StatMenu implements CategoryMenu {
 
   /**
    * Adds contextual help.
-   *
-   * @param category category name
    */
-  private void addContext(String category) {
-    List<String> lore;
-    if (category == null) {
-      lore = List.of(ChatColor.WHITE + "Stat Categories");
-    } else {
-      lore = List.of(
-          ChatColor.WHITE + "Shift-click any",
-          ChatColor.WHITE + "stat to share it.");
-    }
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));
+  private void addContext() {
+    menu.setItem(3, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "Stat Categories")));
   }
 
   /**

@@ -67,7 +67,7 @@ public class LocationCommand implements CommandExecutor {
    * Represents a Location command request.
    *
    * @author Danny Nguyen
-   * @version 1.23.12
+   * @version 1.24.3
    * @since 1.23.12
    */
   private static class Request {
@@ -187,7 +187,7 @@ public class LocationCommand implements CommandExecutor {
           DecimalFormat df2 = new DecimalFormat();
           df2.setMaximumFractionDigits(2);
 
-          Location location = new Location(user.getLocation().getWorld(), Double.parseDouble(df2.format(x)), Double.parseDouble(df2.format(y)), Double.parseDouble(df2.format(z)));
+          Location location = new Location(user.getLocation().getWorld(), Double.parseDouble(df2.format(x).replace(",", "")), Double.parseDouble(df2.format(y).replace(",", "")), Double.parseDouble(df2.format(z).replace(",", "")));
           locations.put(args[1], location);
           user.sendMessage(ChatColor.GREEN + "[Saved Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
@@ -254,7 +254,7 @@ public class LocationCommand implements CommandExecutor {
           DecimalFormat df2 = new DecimalFormat();
           df2.setMaximumFractionDigits(2);
 
-          Location location = new Location(user.getLocation().getWorld(), Double.parseDouble(df2.format(x)), Double.parseDouble(df2.format(y)), Double.parseDouble(df2.format(z)));
+          Location location = new Location(user.getLocation().getWorld(), Double.parseDouble(df2.format(x).replace(",", "")), Double.parseDouble(df2.format(y).replace(",", "")), Double.parseDouble(df2.format(z).replace(",", "")));
           Plugin.getData().getPluginSystem().getTrackedLocations().put(user.getUniqueId(), location);
           user.sendMessage(ChatColor.GREEN + "[Tracking Location] " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }

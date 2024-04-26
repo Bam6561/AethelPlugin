@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.11
+ * @version 1.24.3
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -202,9 +202,9 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   public void interpretPassiveClick() {
     switch (e.getSlot()) {
-      case 3, 4 -> { // Context, Item
+      case 2, 4 -> { // Context, Item
       }
-      case 5 -> new MenuChange().returnToCosmetic();
+      case 6 -> new MenuChange().returnToCosmetic();
       case 9 -> new PassiveChange().setSlot(RpgEquipmentSlot.HEAD);
       case 10 -> new PassiveChange().setSlot(RpgEquipmentSlot.CHEST);
       case 11 -> new PassiveChange().setSlot(RpgEquipmentSlot.LEGS);

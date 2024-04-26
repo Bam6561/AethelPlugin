@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -16,7 +17,7 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.24.3
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
@@ -117,7 +118,7 @@ public class PassiveAbilityInput {
     double percentHealth;
     try {
       percentHealth = Double.parseDouble(args[0]);
-      if (0 < percentHealth && percentHealth < 100) {
+      if (percentHealth < 0 || 100 < percentHealth) {
         user.sendMessage(Message.INVALID_HEALTH.getMessage());
         return null;
       }
