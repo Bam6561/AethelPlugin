@@ -103,8 +103,8 @@ public class RecipeMenu implements CategoryMenu {
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
-    addContext();
     addActions();
+    addContext();
     InventoryPages.addBackButton(menu, 6);
     InventoryPages.addPagination(menu, numberOfPages, pageViewed);
     return menu;

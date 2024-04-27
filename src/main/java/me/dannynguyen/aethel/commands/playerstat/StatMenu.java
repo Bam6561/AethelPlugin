@@ -76,8 +76,8 @@ public class StatMenu implements CategoryMenu {
   @NotNull
   public Inventory getMainMenu() {
     addCategories();
-    addContext();
     addOwner();
+    addContext();
     return menu;
   }
 

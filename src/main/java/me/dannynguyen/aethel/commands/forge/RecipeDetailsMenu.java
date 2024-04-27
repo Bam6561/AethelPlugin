@@ -101,8 +101,8 @@ class RecipeDetailsMenu {
    * Sets the menu to display interactions with the {@link RecipeRegistry.Recipe recipe's} details.
    */
   protected void getRecipeDetails() {
-    addContext();
     addActions();
+    addContext();
     switch (mode) {
       case CRAFT -> {
         addRecipeContents();

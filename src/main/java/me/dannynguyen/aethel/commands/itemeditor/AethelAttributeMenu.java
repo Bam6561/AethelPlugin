@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that edits an item's {@link Key#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
- * @version 1.24.5
+ * @version 1.24.6
  * @since 1.14.1
  */
 public class AethelAttributeMenu implements Menu {
@@ -92,7 +92,7 @@ public class AethelAttributeMenu implements Menu {
    */
   private Inventory createMenu() {
     Inventory inv = Bukkit.createInventory(user, 54, ChatColor.DARK_GRAY + "Aethel Attributes " + ChatColor.DARK_AQUA + eSlot.getProperName());
-    inv.setItem(1, item);
+    inv.setItem(4, item);
     return inv;
   }
 
@@ -104,9 +104,9 @@ public class AethelAttributeMenu implements Menu {
   @NotNull
   public Inventory getMainMenu() {
     addAttributes();
-    addContext();
     addActions();
-    InventoryPages.addBackButton(menu, 2);
+    addContext();
+    InventoryPages.addBackButton(menu, 6);
     return menu;
   }
 
@@ -123,7 +123,7 @@ public class AethelAttributeMenu implements Menu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(0, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
+    menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(36, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));
@@ -133,10 +133,10 @@ public class AethelAttributeMenu implements Menu {
    * Adds {@link RpgEquipmentSlot} buttons.
    */
   private void addActions() {
-    menu.setItem(5, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(6, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(7, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(8, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(9, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(10, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(11, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(12, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(14, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Hand", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(15, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(16, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace"));

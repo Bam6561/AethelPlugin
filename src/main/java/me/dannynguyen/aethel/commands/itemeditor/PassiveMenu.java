@@ -105,9 +105,9 @@ public class PassiveMenu implements Menu {
   @NotNull
   public Inventory getMainMenu() {
     addAbilities();
-    addContext();
     addSlots();
     addTriggers();
+    addContext();
     InventoryPages.addBackButton(menu, 6);
     return menu;
   }

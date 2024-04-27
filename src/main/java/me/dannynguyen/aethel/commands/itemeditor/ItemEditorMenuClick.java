@@ -28,7 +28,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.24.3
+ * @version 1.24.6
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -135,13 +134,13 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   public void interpretAttributeClick() {
     switch (e.getSlot()) {
-      case 0, 1 -> { // Context, Item
+      case 2, 4 -> { // Context, Item
       }
-      case 2 -> new MenuChange().returnToCosmetic();
-      case 5 -> new AttributeChange().setSlot(EquipmentSlot.HEAD);
-      case 6 -> new AttributeChange().setSlot(EquipmentSlot.CHEST);
-      case 7 -> new AttributeChange().setSlot(EquipmentSlot.LEGS);
-      case 8 -> new AttributeChange().setSlot(EquipmentSlot.FEET);
+      case 6 -> new MenuChange().returnToCosmetic();
+      case 9 -> new AttributeChange().setSlot(EquipmentSlot.HEAD);
+      case 10 -> new AttributeChange().setSlot(EquipmentSlot.CHEST);
+      case 11 -> new AttributeChange().setSlot(EquipmentSlot.LEGS);
+      case 12 -> new AttributeChange().setSlot(EquipmentSlot.FEET);
       case 14 -> new AttributeChange().setSlot(EquipmentSlot.HAND);
       case 15 -> new AttributeChange().setSlot(EquipmentSlot.OFF_HAND);
       case 18, 27, 36 -> { // Context
@@ -156,13 +155,13 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   public void interpretAethelAttributeClick() {
     switch (e.getSlot()) {
-      case 0, 1 -> { // Context, Item
+      case 2, 4 -> { // Context, Item
       }
-      case 2 -> new MenuChange().returnToCosmetic();
-      case 5 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.HEAD);
-      case 6 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.CHEST);
-      case 7 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.LEGS);
-      case 8 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.FEET);
+      case 6 -> new MenuChange().returnToCosmetic();
+      case 9 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.HEAD);
+      case 10 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.CHEST);
+      case 11 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.LEGS);
+      case 12 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.FEET);
       case 14 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.HAND);
       case 15 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.OFF_HAND);
       case 16 -> new AethelAttributeChange().setSlot(RpgEquipmentSlot.NECKLACE);
@@ -227,13 +226,13 @@ public class ItemEditorMenuClick implements MenuClick {
    */
   public void interpretActiveClick() {
     switch (e.getSlot()) {
-      case 0, 1 -> { // Context, Item
+      case 2, 4 -> { // Context, Item
       }
-      case 2 -> new MenuChange().returnToCosmetic();
-      case 5 -> new ActiveChange().setSlot(RpgEquipmentSlot.HEAD);
-      case 6 -> new ActiveChange().setSlot(RpgEquipmentSlot.CHEST);
-      case 7 -> new ActiveChange().setSlot(RpgEquipmentSlot.LEGS);
-      case 8 -> new ActiveChange().setSlot(RpgEquipmentSlot.FEET);
+      case 6 -> new MenuChange().returnToCosmetic();
+      case 9 -> new ActiveChange().setSlot(RpgEquipmentSlot.HEAD);
+      case 10 -> new ActiveChange().setSlot(RpgEquipmentSlot.CHEST);
+      case 11 -> new ActiveChange().setSlot(RpgEquipmentSlot.LEGS);
+      case 12 -> new ActiveChange().setSlot(RpgEquipmentSlot.FEET);
       case 14 -> new ActiveChange().setSlot(RpgEquipmentSlot.HAND);
       case 15 -> new ActiveChange().setSlot(RpgEquipmentSlot.OFF_HAND);
       case 16 -> new ActiveChange().setSlot(RpgEquipmentSlot.NECKLACE);

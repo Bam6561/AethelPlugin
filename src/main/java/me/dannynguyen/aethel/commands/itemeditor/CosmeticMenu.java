@@ -84,7 +84,6 @@ public class CosmeticMenu implements Menu {
    */
   @NotNull
   public Inventory getMainMenu() {
-    addContext();
     addDisplayName();
     addCustomModelData();
     addDurability();
@@ -93,6 +92,7 @@ public class CosmeticMenu implements Menu {
     addGameplay();
     addItemFlags();
     addUnbreakable(menu, meta);
+    addContext();
     return menu;
   }
 

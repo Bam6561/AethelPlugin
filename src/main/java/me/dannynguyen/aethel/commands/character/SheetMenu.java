@@ -101,12 +101,12 @@ public class SheetMenu implements Menu {
    */
   @NotNull
   public Inventory getMainMenu() {
-    addContext();
     addActions();
     addEquipment();
     addAttributes();
     addStatuses();
     addExtras();
+    addContext();
     return menu;
   }
 
