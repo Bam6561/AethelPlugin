@@ -45,7 +45,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.18
+ * @version 1.24.5
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -142,9 +142,9 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets the item's durability reinforcement.
+   * Sets the item's reinforcement.
    */
-  public void setDurabilityReinforcement() {
+  public void setReinforcement() {
     int value;
     try {
       value = Integer.parseInt(e.getMessage());
@@ -155,14 +155,14 @@ public class ItemEditorMessageSent {
     }
     meta.getPersistentDataContainer().set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
     item.setItemMeta(meta);
-    user.sendMessage(ChatColor.GREEN + "[Set Durability Reinforcement] " + ChatColor.WHITE + e.getMessage());
+    user.sendMessage(ChatColor.GREEN + "[Set Reinforcement] " + ChatColor.WHITE + e.getMessage());
     new MenuChange().returnToCosmetic();
   }
 
   /**
-   * Sets the item's max durability reinforcement.
+   * Sets the item's max reinforcement.
    */
-  public void setMaxDurabilityReinforcement() {
+  public void setMaxReinforcement() {
     PersistentDataContainer itemTags = meta.getPersistentDataContainer();
     if (!e.getMessage().equals("-")) {
       int value;
@@ -175,11 +175,11 @@ public class ItemEditorMessageSent {
       }
       itemTags.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
       itemTags.set(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, value);
-      user.sendMessage(ChatColor.GREEN + "[Set Max Durability Reinforcement] " + ChatColor.WHITE + e.getMessage());
+      user.sendMessage(ChatColor.GREEN + "[Set Max Reinforcement] " + ChatColor.WHITE + e.getMessage());
     } else {
       itemTags.remove(Key.RPG_DURABILITY.getNamespacedKey());
       itemTags.remove(Key.RPG_MAX_DURABILITY.getNamespacedKey());
-      user.sendMessage(ChatColor.RED + "[Removed Durability Reinforcement]");
+      user.sendMessage(ChatColor.RED + "[Removed Reinforcement]");
     }
     item.setItemMeta(meta);
     new MenuChange().returnToCosmetic();
@@ -378,7 +378,8 @@ public class ItemEditorMessageSent {
    * Sets or removes an item's enchantment.
    */
   public void setEnchantment() {
-    NamespacedKey enchantment = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getObjectType());
+    NamespacedKey enchantmentkey = NamespacedKey.minecraft(Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().getObjectType());
+    Enchantment enchantment = Enchantment.getByKey(enchantmentkey);
 
     if (!e.getMessage().equals("-")) {
       int level;
@@ -391,14 +392,14 @@ public class ItemEditorMessageSent {
       }
 
       if (level > 0 && level < 32768) {
-        item.addUnsafeEnchantment(Enchantment.getByKey(enchantment), level);
-        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "] " + ChatColor.WHITE + e.getMessage());
+        item.addUnsafeEnchantment(enchantment, level);
+        user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(enchantmentkey.getKey()) + "] " + ChatColor.WHITE + e.getMessage());
       } else {
         user.sendMessage(ChatColor.RED + "Specify a level between 1 - 32767.");
       }
     } else {
-      item.removeEnchantment(Enchantment.getByKey(enchantment));
-      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantment.getKey()) + "]");
+      item.removeEnchantment(enchantment);
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(enchantmentkey.getKey()) + "]");
     }
     new MenuChange().returnToEnchantment();
   }

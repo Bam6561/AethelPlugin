@@ -113,7 +113,7 @@ public class StatMenu implements CategoryMenu {
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
-    InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
+    InventoryPages.addPagination(menu, numberOfPages, pageViewed);
   }
 
   /**

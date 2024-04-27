@@ -324,7 +324,7 @@ public class LocationCommand implements CommandExecutor {
       if (EntityReader.hasTrinket(user, Material.COMPASS)) {
         return true;
       } else {
-        user.sendMessage(ChatColor.RED + "No compass in hand, off-hand, or trinket slot.");
+        user.sendMessage(ChatColor.RED + "[Location] No compass in hand, off-hand, or trinket slot.");
         return false;
       }
     }

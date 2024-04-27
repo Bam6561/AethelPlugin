@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -29,7 +30,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.23.9
+ * @version 1.24.5
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -86,7 +87,8 @@ public class CosmeticMenu implements Menu {
     addContext();
     addDisplayName();
     addCustomModelData();
-    addDurabilityButtons();
+    addDurability();
+    addRepairCost();
     addLore();
     addGameplay();
     addItemFlags();
@@ -145,12 +147,13 @@ public class CosmeticMenu implements Menu {
   }
 
   /**
-   * Adds the durability, repair cost, and durability reinforcement buttons.
+   * Adds the durability and reinforcement buttons.
    */
-  private void addDurabilityButtons() {
-    if (meta instanceof Damageable durability) {
+  private void addDurability() {
+    if (item.getType().getMaxDurability() != 0) {
+      Damageable damageable = (Damageable) meta;
       short maxDurability = item.getType().getMaxDurability();
-      int durabilityValue = maxDurability - durability.getDamage();
+      int durabilityValue = maxDurability - damageable.getDamage();
       menu.setItem(11, ItemCreator.createItem(Material.OBSIDIAN, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + durabilityValue + " / " + maxDurability)));
 
       PersistentDataContainer itemTags = meta.getPersistentDataContainer();
@@ -159,9 +162,14 @@ public class CosmeticMenu implements Menu {
       }
       menu.setItem(20, ItemCreator.createItem(Material.ECHO_SHARD, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));
     }
-    if (meta instanceof Repairable repair) {
-      menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + repair.getRepairCost())));
-    }
+  }
+
+  /**
+   * Adds the repair cost button.
+   */
+  private void addRepairCost() {
+    Repairable repairable = (Repairable) meta;
+    menu.setItem(12, ItemCreator.createItem(Material.ANVIL, ChatColor.AQUA + "Repair Cost", List.of(ChatColor.WHITE + "" + repairable.getRepairCost())));
   }
 
   /**
@@ -195,7 +203,9 @@ public class CosmeticMenu implements Menu {
     menu.setItem(14, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Minecraft Attributes", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(15, ItemCreator.createItem(Material.DIAMOND_HELMET, ChatColor.AQUA + "Aethel Attributes", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(16, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchantments"));
-    menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
+    if (meta instanceof PotionMeta) {
+      menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
+    }
     menu.setItem(23, ItemCreator.createItem(Material.SUGAR, ChatColor.AQUA + "Passive Abilities"));
     menu.setItem(24, ItemCreator.createItem(Material.BLAZE_POWDER, ChatColor.AQUA + "Active Abilities"));
     menu.setItem(25, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));

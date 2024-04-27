@@ -28,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -398,18 +399,18 @@ public class ItemEditorMenuClick implements MenuClick {
     }
 
     /**
-     * Sets an item's durability reinforcement.
+     * Sets an item's reinforcement.
      */
     private void setReinforcement() {
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input durability reinforcement.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input reinforcement.");
       awaitMessageInput(MessageListener.Type.ITEMEDITOR_RPG_DURABILITY);
     }
 
     /**
-     * Sets an item's max durability reinforcement.
+     * Sets an item's max reinforcement.
      */
     private void setMaxReinforcement() {
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input max durability reinforcement.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input max reinforcement.");
       awaitMessageInput(MessageListener.Type.ITEMEDITOR_MAX_RPG_DURABILITY);
     }
 
@@ -813,7 +814,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.24.0
+   * @version 1.24.5
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -956,8 +957,8 @@ public class ItemEditorMenuClick implements MenuClick {
           df3.setMaximumFractionDigits(3);
           for (String attribute : attributeValues.get(eSlot).keySet()) {
             switch (attribute) {
-              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
-              default -> header.add(ChatColor.DARK_GREEN + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
+              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> header.add(ChatColor.BLUE + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
+              default -> header.add(ChatColor.BLUE + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
             }
           }
           lore.addAll(header);
@@ -1055,7 +1056,7 @@ public class ItemEditorMenuClick implements MenuClick {
       for (String eSlot : headerOrder) {
         if (passiveAbilities.containsKey(eSlot)) {
           List<String> header = new ArrayList<>(List.of(""));
-          String tag = ChatColor.BLUE + "Passives";
+          String tag = ChatColor.GREEN + "Passives";
           switch (eSlot) {
             case "head" -> header.add(ChatColor.GRAY + "Head " + tag);
             case "chest" -> header.add(ChatColor.GRAY + "Chest " + tag);

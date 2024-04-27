@@ -4,8 +4,10 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
+import me.dannynguyen.aethel.utils.EntityReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -67,7 +69,7 @@ public class CharacterCommand implements CommandExecutor {
    * @param user command user
    * @param args user provided parameters
    * @author Danny Nguyen
-   * @version 1.23.10
+   * @version 1.24.5
    * @since 1.23.10
    */
   private record Request(Player user, String[] args) {
@@ -97,6 +99,10 @@ public class CharacterCommand implements CommandExecutor {
      * Opens a {@link SheetMenu} belonging to another player.
      */
     private void openSheetOther() {
+      if (!canViewOtherSheets()) {
+        return;
+      }
+
       String requestedPlayer = args[0];
       for (Player player : Bukkit.getOnlinePlayers()) {
         if (player.getName().equals(requestedPlayer)) {
@@ -109,6 +115,21 @@ public class CharacterCommand implements CommandExecutor {
         }
       }
       user.sendMessage(ChatColor.RED + requestedPlayer + " not online.");
+    }
+
+    /**
+     * The user must have a spyglass in their hand,
+     * off-hand, or trinket slot to view other players' character sheets.
+     *
+     * @return if the user can view other players' character sheets
+     */
+    private boolean canViewOtherSheets() {
+      if (user.getName().equals(args[0]) || EntityReader.hasTrinket(user, Material.SPYGLASS)) {
+        return true;
+      } else {
+        user.sendMessage(ChatColor.RED + "[Character] No spyglass in hand, off-hand, or trinket slot.");
+        return false;
+      }
     }
   }
 }

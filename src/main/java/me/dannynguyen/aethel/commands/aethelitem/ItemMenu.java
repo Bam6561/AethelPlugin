@@ -104,7 +104,7 @@ public class ItemMenu implements CategoryMenu {
     addContext(requestedCategory);
     addActions();
     InventoryPages.addBackButton(menu, 6);
-    InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
+    InventoryPages.addPagination(menu, numberOfPages, pageViewed);
     return menu;
   }
 

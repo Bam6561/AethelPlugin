@@ -99,8 +99,8 @@ public class MessageListener implements Listener {
       case ITEMEDITOR_CUSTOM_MODEL_DATA -> msg.setCustomModelData();
       case ITEMEDITOR_DURABILITY -> msg.setDurability();
       case ITEMEDITOR_REPAIR_COST -> msg.setRepairCost();
-      case ITEMEDITOR_RPG_DURABILITY -> msg.setDurabilityReinforcement();
-      case ITEMEDITOR_MAX_RPG_DURABILITY -> msg.setMaxDurabilityReinforcement();
+      case ITEMEDITOR_RPG_DURABILITY -> msg.setReinforcement();
+      case ITEMEDITOR_MAX_RPG_DURABILITY -> msg.setMaxReinforcement();
       case ITEMEDITOR_LORE_SET -> msg.setLore();
       case ITEMEDITOR_LORE_ADD -> msg.addLore();
       case ITEMEDITOR_LORE_EDIT -> msg.editLore();

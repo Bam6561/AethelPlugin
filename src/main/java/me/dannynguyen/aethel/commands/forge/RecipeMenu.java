@@ -106,7 +106,7 @@ public class RecipeMenu implements CategoryMenu {
     addContext();
     addActions();
     InventoryPages.addBackButton(menu, 6);
-    InventoryPages.addPageButtons(menu, numberOfPages, pageViewed);
+    InventoryPages.addPagination(menu, numberOfPages, pageViewed);
     return menu;
   }
 

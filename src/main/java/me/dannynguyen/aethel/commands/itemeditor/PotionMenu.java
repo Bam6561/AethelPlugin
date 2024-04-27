@@ -24,10 +24,15 @@ import java.util.*;
  * Represents a menu that edits an item's potion effects.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.24.5
  * @since 1.14.0
  */
 public class PotionMenu implements Menu {
+  /**
+   * List of sorted potion effects by name.
+   */
+  private static final List<PotionEffectType> potionEffectTypes = sortPotionEffectTypes();
+
   /**
    * GUI.
    */
@@ -55,6 +60,18 @@ public class PotionMenu implements Menu {
   }
 
   /**
+   * Sorts potion effect types by name.
+   *
+   * @return sorted potion effect types
+   */
+  private static List<PotionEffectType> sortPotionEffectTypes() {
+    List<PotionEffectType> potionEffectTypes = new ArrayList<>(List.of(PotionEffectType.values()));
+    Comparator<PotionEffectType> potionEffectTypeComparator = Comparator.comparing(e -> e.getKey().getKey());
+    potionEffectTypes.sort(potionEffectTypeComparator);
+    return potionEffectTypes;
+  }
+
+  /**
    * Creates and names a Potion menu.
    *
    * @return Potion menu
@@ -72,10 +89,8 @@ public class PotionMenu implements Menu {
    */
   @NotNull
   public Inventory getMainMenu() {
-    if (item.getItemMeta() instanceof PotionMeta potion) {
-      addColor();
-      addPotionEffects(potion);
-    }
+    addColor();
+    addPotionEffects();
     addContext();
     InventoryPages.addBackButton(menu, 6);
     return menu;
@@ -90,20 +105,20 @@ public class PotionMenu implements Menu {
 
   /**
    * Adds potion effects.
-   *
-   * @param potion potion meta
    */
-  private void addPotionEffects(PotionMeta potion) {
-    Map<PotionEffectType, PotionEffect> potionEffects = getPotionEffects(potion);
+  private void addPotionEffects() {
+    Map<PotionEffectType, PotionEffect> metaPotionEffects = getPotionEffects((PotionMeta) item.getItemMeta());
     int invSlot = 9;
-    for (PotionEffectType potionEffectType : PotionEffectType.values()) {
-      if (potionEffects.containsKey(potionEffectType)) {
-        PotionEffect potionEffect = potionEffects.get(potionEffectType);
+    for (PotionEffectType potionEffectType : potionEffectTypes) {
+      String potionEffectTypeName = ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffectType.getKey().getKey());
+      boolean disabled = metaPotionEffects.get(potionEffectType) == null;
+      if (disabled) {
+        menu.setItem(invSlot, ItemCreator.createItem(Material.GLASS_BOTTLE, potionEffectTypeName));
+      } else {
+        PotionEffect potionEffect = metaPotionEffects.get(potionEffectType);
         String duration = ChatColor.WHITE + String.valueOf(potionEffect.getDuration());
         String amplifier = ChatColor.YELLOW + (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
-        menu.setItem(invSlot, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffectType.getName()), List.of(duration + " " + amplifier), ItemFlag.HIDE_POTION_EFFECTS));
-      } else {
-        menu.setItem(invSlot, ItemCreator.createItem(Material.GLASS_BOTTLE, ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffectType.getName())));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.POTION, potionEffectTypeName, List.of(duration + " " + amplifier), ItemFlag.HIDE_POTION_EFFECTS));
       }
       invSlot++;
     }

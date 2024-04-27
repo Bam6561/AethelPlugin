@@ -73,7 +73,7 @@ public class InventoryPages {
    * @param numberOfPages number of pages
    * @param pageViewed    page viewed
    */
-  public static void addPageButtons(@NotNull Inventory inv, int numberOfPages, int pageViewed) {
+  public static void addPagination(@NotNull Inventory inv, int numberOfPages, int pageViewed) {
     Objects.requireNonNull(inv, "Null inventory");
     if (pageViewed > 0) {
       inv.setItem(0, ItemCreator.createPluginPlayerHead(PlayerHead.BACKWARD_RED.getHead(), ChatColor.AQUA + "Previous Page"));
