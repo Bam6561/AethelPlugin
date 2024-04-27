@@ -146,7 +146,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.24.2
+   * @version 1.24.4
    * @since 1.23.13
    */
   private class Effect {
@@ -362,6 +362,7 @@ public class ActiveAbility {
           world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.65f, 0);
           Vector casterDirection = caster.getLocation().getDirection();
           new TargetValidation().getForceWaveTargets(world, targets, caster.getEyeLocation(), casterDirection, distance);
+          targets.remove(caster);
         }
         case QUAKE -> {
           world.playSound(caster.getEyeLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.25f, 2);
@@ -378,7 +379,6 @@ public class ActiveAbility {
           }
         }
       }
-      targets.remove(caster);
 
       for (LivingEntity livingEntity : targets) {
         final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
@@ -844,7 +844,7 @@ public class ActiveAbility {
    * effect's target location or entity validation.
    *
    * @author Danny Nguyen
-   * @version 1.24.1
+   * @version 1.24.4
    * @since 1.24.1
    */
   private static class TargetTeleport {
@@ -896,7 +896,8 @@ public class ActiveAbility {
      * @return teleport target
      */
     private LivingEntity getTeleportTarget(World world, Location location, int distance) {
-      if (distance <= 0 || location.getBlock().getType().isSolid()) {
+      Material blockType = location.getBlock().getType();
+      if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
         return null;
       }
       for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {

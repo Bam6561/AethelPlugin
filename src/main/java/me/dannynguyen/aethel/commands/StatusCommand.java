@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.rpg.Status;
 import me.dannynguyen.aethel.utils.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -73,7 +74,7 @@ public class StatusCommand implements CommandExecutor {
    * @param user command user
    * @param args user provided parameters
    * @author Danny Nguyen
-   * @version 1.23.12
+   * @version 1.24.4
    * @since 1.23.12
    */
   private record Request(Player user, String[] args) {
@@ -171,15 +172,41 @@ public class StatusCommand implements CommandExecutor {
           user.sendMessage(Message.INVALID_Z.getMessage());
           return;
         }
-        Set<UUID> targets = new HashSet<>();
-        if (!radiusParameters[0].equals("r:!s")) {
-          targets.add(user.getUniqueId());
-        }
-        for (Entity entity : user.getNearbyEntities(x, y, z)) {
+
+        Location location = user.getLocation();
+        Set<LivingEntity> livingEntities = new HashSet<>();
+        for (Entity entity : location.getWorld().getNearbyEntities(location, x, y, z)) {
           if (entity instanceof LivingEntity livingEntity) {
-            targets.add(livingEntity.getUniqueId());
+            livingEntities.add(livingEntity);
           }
         }
+
+        String selector = radiusParameters[0];
+        if (selector.contains("!s")) {
+          livingEntities.remove(user);
+        }
+        if (selector.contains("p")) {
+          Set<LivingEntity> players = new HashSet<>();
+          for (LivingEntity livingEntity : livingEntities) {
+            if (livingEntity instanceof Player player){
+              players.add(player);
+            }
+          }
+
+          if (selector.contains("!p")) {
+            for (LivingEntity player : players) {
+              livingEntities.remove(player);
+            }
+          } else {
+            livingEntities = players;
+          }
+        }
+
+        Set<UUID> targets = new HashSet<>();
+        for (LivingEntity livingEntity : livingEntities) {
+          targets.add(livingEntity.getUniqueId());
+        }
+
         switch (action) {
           case GET -> {
             for (UUID uuid : targets) {

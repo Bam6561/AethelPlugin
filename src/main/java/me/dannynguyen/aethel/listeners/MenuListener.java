@@ -13,9 +13,11 @@ import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.rpg.Settings;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.24.4
  * @since 1.0.2
  */
 public class MenuListener implements Listener {
@@ -97,6 +99,12 @@ public class MenuListener implements Listener {
         }
       }
     } else {
+      if (e.isShiftClick() && ItemReader.isNotNullOrAir(e.getCurrentItem()) && ItemReader.isNullOrAir(e.getInventory().getItem(3))) {
+        e.getInventory().setItem(3, e.getCurrentItem());
+        e.getClickedInventory().setItem(e.getSlot(), new ItemStack(Material.AIR));
+        return;
+      }
+
       if (!e.isShiftClick()) {
         e.setCancelled(false);
       }
