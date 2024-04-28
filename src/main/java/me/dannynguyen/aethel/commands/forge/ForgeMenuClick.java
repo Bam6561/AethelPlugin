@@ -630,7 +630,7 @@ public class ForgeMenuClick implements MenuClick {
       menuInput.setObjectType(recipeName);
       menuInput.setFileName(fileName);
       menuInput.setEncodedData(encodedRecipe);
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input recipe folder name to be saved under.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input recipe folder name.");
       user.closeInventory();
       menuInput.setMessageInput(MessageListener.Type.FORGE_RECIPE_FOLDER);
     }

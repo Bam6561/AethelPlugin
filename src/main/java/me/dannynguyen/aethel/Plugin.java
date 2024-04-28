@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemCommand;
 import me.dannynguyen.aethel.commands.character.CharacterCommand;
 import me.dannynguyen.aethel.commands.forge.ForgeCommand;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand;
+import me.dannynguyen.aethel.commands.location.LocationCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.showitem.ShowItemCommand;
 import me.dannynguyen.aethel.listeners.*;

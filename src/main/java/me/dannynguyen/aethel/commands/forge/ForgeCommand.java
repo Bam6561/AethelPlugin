@@ -84,14 +84,14 @@ public class ForgeCommand implements CommandExecutor {
      */
     private void interpretParameter() {
       switch (args[0].toLowerCase()) {
-        case "edit", "e" -> {
+        case "e", "edit" -> {
           if (user.hasPermission("aethel.forge.editor")) {
             openEditor();
           } else {
             user.sendMessage(Message.INSUFFICIENT_PERMISSION.getMessage());
           }
         }
-        case "reload", "r" -> {
+        case "r", "reload" -> {
           if (user.hasPermission("aethel.forge.editor")) {
             Plugin.getData().getRecipeRegistry().loadData();
             user.sendMessage(ChatColor.GREEN + "[Reloaded Forge Recipes]");

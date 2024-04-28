@@ -7,6 +7,9 @@ import me.dannynguyen.aethel.commands.character.CharacterMenuClick;
 import me.dannynguyen.aethel.commands.forge.ForgeMenuClick;
 import me.dannynguyen.aethel.commands.forge.RecipeMenu;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMenuClick;
+import me.dannynguyen.aethel.commands.location.LocationMenu;
+import me.dannynguyen.aethel.commands.location.LocationMenuClick;
+import me.dannynguyen.aethel.commands.location.LocationRegistry;
 import me.dannynguyen.aethel.commands.playerstat.StatCommand;
 import me.dannynguyen.aethel.commands.playerstat.StatMenuClick;
 import me.dannynguyen.aethel.enums.plugin.Key;
@@ -27,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.24.4
+ * @version 1.24.7
  * @since 1.0.2
  */
 public class MenuListener implements Listener {
@@ -54,6 +57,7 @@ public class MenuListener implements Listener {
           case "character" -> interpretCharacter(e, menu);
           case "forge" -> interpretForge(e, menu);
           case "itemeditor" -> interpretItemEditor(e, menu);
+          case "location" -> interpretLocation(e, menu);
           case "playerstat" -> interpretPlayerStat(e, menu);
           case "showitem" -> interpretShowItem(e, menu);
         }
@@ -79,7 +83,7 @@ public class MenuListener implements Listener {
 
   /**
    * Determines which {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand}
-   * menu is being interacting with.
+   * menu is being interacted with.
    *
    * @param e    inventory click event
    * @param menu {@link Menu}
@@ -113,7 +117,7 @@ public class MenuListener implements Listener {
 
   /**
    * Determines which {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
-   * menu is being interacting with.
+   * menu is being interacted with.
    *
    * @param e    inventory click event
    * @param menu {@link Menu}
@@ -140,7 +144,7 @@ public class MenuListener implements Listener {
 
   /**
    * Determines which {@link me.dannynguyen.aethel.commands.forge.ForgeCommand}
-   * menu is being interacting with.
+   * menu is being interacted with.
    *
    * @param e    inventory click event
    * @param menu {@link Menu}
@@ -169,7 +173,7 @@ public class MenuListener implements Listener {
 
   /**
    * Determines which {@link me.dannynguyen.aethel.commands.itemeditor.ItemEditorCommand}
-   * menu is being interacting with.
+   * menu is being interacted with.
    *
    * @param e    inventory click event
    * @param menu {@link Menu}
@@ -197,8 +201,33 @@ public class MenuListener implements Listener {
   }
 
   /**
+   * Determines which {@link me.dannynguyen.aethel.commands.location.LocationCommand}
+   * menu is being interacted with.
+   *
+   * @param e    inventory click event
+   * @param menu {@link Menu}
+   */
+  private void interpretLocation(InventoryClickEvent e, Menu menu) {
+    if (e.getClickedInventory().getType() == InventoryType.CHEST) {
+      if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
+        LocationMenuClick click = new LocationMenuClick(e);
+        switch (menu) {
+          case LOCATION_CATEGORY -> click.interpretMenuClick();
+          case LOCATION_REMOVE -> click.interpretCategoryClick(LocationMenu.Action.REMOVE);
+          case LOCATION_TRACK -> click.interpretCategoryClick(LocationMenu.Action.TRACK);
+          case LOCATION_COMPARE -> click.interpretCategoryClick(LocationMenu.Action.COMPARE);
+        }
+      }
+    } else {
+      if (!e.isShiftClick()) {
+        e.setCancelled(false);
+      }
+    }
+  }
+
+  /**
    * Determines which {@link StatCommand}
-   * menu is being interacting with.
+   * menu is being interacted with.
    *
    * @param e    inventory click event
    * @param menu {@link Menu}
@@ -223,7 +252,7 @@ public class MenuListener implements Listener {
 
   /**
    * Determines which {@link me.dannynguyen.aethel.commands.showitem.ShowItemCommand}
-   * menu is being interacting with.
+   * menu is being interacted with.
    *
    * @param e    inventory click event
    * @param menu {@link Menu}
@@ -372,6 +401,26 @@ public class MenuListener implements Listener {
      * Edit item {@link Key Aethel tags}.
      */
     ITEMEDITOR_TAG("itemeditor"),
+
+    /**
+     * View {@link LocationRegistry.SavedLocation} categories.
+     */
+    LOCATION_CATEGORY("location"),
+
+    /**
+     * Remove {@link LocationRegistry.SavedLocation saved locations}.
+     */
+    LOCATION_REMOVE("location"),
+
+    /**
+     * Track {@link LocationRegistry.SavedLocation saved locations}.
+     */
+    LOCATION_TRACK("location"),
+
+    /**
+     * Compare {@link LocationRegistry.SavedLocation saved locations}.
+     */
+    LOCATION_COMPARE("location"),
 
     /**
      * View stat categories.

@@ -1,6 +1,7 @@
 package me.dannynguyen.aethel.commands;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.commands.location.LocationCommand;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.rpg.Equipment;
@@ -368,9 +369,11 @@ public class WhatsThisCommand implements CommandExecutor {
           ChatColor.GRAY + "You can reference a location by either name or coordinates.",
           ChatColor.GRAY + "If no second location is provided, it will default to your current location.",
           ChatColor.GRAY + "Must have a compass in your hand, off-hand, or trinket slot to track or compare locations.",
+          ChatColor.GRAY + ": Opens the Location menu.",
+          ChatColor.GRAY + "reload, r: reloads saved locations",
           ChatColor.GRAY + "get, g: gets saved locations",
-          ChatColor.GRAY + "add, a: saves a new location - provide a name",
-          ChatColor.GRAY + "remove, r: removes a saved location",
+          ChatColor.GRAY + "save, s: saves a new location - provide a folder and name",
+          ChatColor.GRAY + "remove, rm: removes a saved location",
           ChatColor.GRAY + "track, t: tracks a location",
           ChatColor.GRAY + "compare, c: compares two locations"
       }),

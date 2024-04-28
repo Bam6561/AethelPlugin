@@ -1,7 +1,9 @@
-package me.dannynguyen.aethel.commands;
+package me.dannynguyen.aethel.commands.location;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
+import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.EntityReader;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,21 +18,24 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 /**
- * Command invocation that saves, tracks, and compares locations.
+ * Command invocation that allows the user to get, save, remove, track, and compare
+ * {@link LocationRegistry.SavedLocation saved locations} through text or clicking.
  * <p>
  * Registered through {@link Plugin}.
  * <p>
  * Parameters:
  * <ul>
- *  <li>"get", "g": gets saved locations
- *  <li>"add", "a": saves a new location
- *  <li>"remove", "r": removes a saved location
- *  <li>"track", "t": tracks a location
- *  <li>"compare", "c": compares two locations
+ *  <li>"": opens {@link LocationMenu}
+ *  <li>"reload", "r": reloads {@link LocationRegistry.SavedLocation saved locations} into {@link LocationRegistry}
+ *  <li>"get", "g": gets {@link LocationRegistry.SavedLocation saved locations}
+ *  <li>"save", "s": saves a new {@link LocationRegistry.SavedLocation}
+ *  <li>"remove", "rm": removes a {@link LocationRegistry.SavedLocation}
+ *  <li>"track", "t": tracks a {@link LocationRegistry.SavedLocation} or coordinate
+ *  <li>"compare", "c": compares two {@link LocationRegistry.SavedLocation saved locations} or coordinates
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.23.12
+ * @version 1.24.7
  * @since 1.22.5
  */
 public class LocationCommand implements CommandExecutor {
@@ -67,7 +72,7 @@ public class LocationCommand implements CommandExecutor {
    * Represents a Location command request.
    *
    * @author Danny Nguyen
-   * @version 1.24.3
+   * @version 1.24.7
    * @since 1.23.12
    */
   private static class Request {
@@ -82,9 +87,14 @@ public class LocationCommand implements CommandExecutor {
     private final String[] args;
 
     /**
-     * User's saved locations.
+     * User's {@link LocationRegistry}.
      */
-    private final Map<String, Location> locations;
+    private final LocationRegistry locationRegistry;
+
+    /**
+     * User's {@link LocationRegistry.SavedLocation saved locations}.
+     */
+    private final Map<String, LocationRegistry.SavedLocation> locations;
 
     /**
      * Associates a location request with its user and parameters.
@@ -95,7 +105,8 @@ public class LocationCommand implements CommandExecutor {
     Request(Player user, String[] args) {
       this.user = user;
       this.args = args;
-      this.locations = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getLocationRegistry().getLocations();
+      this.locationRegistry = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getLocationRegistry();
+      this.locations = locationRegistry.getLocations();
     }
 
     /**
@@ -104,14 +115,15 @@ public class LocationCommand implements CommandExecutor {
     private void readRequest() {
       int numberOfParameters = args.length;
       if (numberOfParameters == 0) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        openMenu();
         return;
       }
 
       switch (args[0].toLowerCase()) {
+        case "r", "reload" -> reloadLocations();
         case "g", "get" -> getLocations();
-        case "a", "add" -> saveLocation();
-        case "r", "remove" -> removeLocation();
+        case "s", "save" -> saveLocation();
+        case "rm", "remove" -> removeLocation();
         case "t", "track" -> trackLocation();
         case "c", "comp", "compare" -> compareLocations();
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -119,11 +131,30 @@ public class LocationCommand implements CommandExecutor {
     }
 
     /**
-     * Gets the user's saved locations.
+     * Opens the {@link LocationMenu}.
+     */
+    private void openMenu() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      menuInput.setCategory("");
+      user.openInventory(new LocationMenu(user, LocationMenu.Action.VIEW).getMainMenu());
+      menuInput.setMenu(MenuListener.Menu.LOCATION_CATEGORY);
+      menuInput.setPage(0);
+    }
+
+    /**
+     * Reloads {@link LocationRegistry.SavedLocation saved locations} into {@link LocationRegistry}.
+     */
+    private void reloadLocations() {
+      locationRegistry.loadData();
+      user.sendMessage(ChatColor.GREEN + "[Reloaded Locations]");
+    }
+
+    /**
+     * Gets the user's {@link LocationRegistry.SavedLocation saved locations}.
      */
     private void getLocations() {
       if (locations.isEmpty()) {
-        user.sendMessage(ChatColor.RED + "No locations saved.");
+        user.sendMessage(ChatColor.RED + "No saved locations.");
         return;
       }
 
@@ -137,11 +168,12 @@ public class LocationCommand implements CommandExecutor {
           user.sendMessage(locationsBuilder.substring(0, locationsBuilder.length() - 2));
         }
         case 2 -> {
-          Location location = locations.get(args[1]);
-          if (location == null) {
+          LocationRegistry.SavedLocation savedLocation = locations.get(args[1]);
+          if (savedLocation == null) {
             user.sendMessage(ChatColor.RED + "Location does not exist.");
             return;
           }
+          Location location = savedLocation.getLocation();
           user.sendMessage(ChatColor.GREEN + "[Get Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getWorld().getName() + " " + location.getX() + ", " + location.getY() + ", " + location.getBlockZ());
         }
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -153,33 +185,33 @@ public class LocationCommand implements CommandExecutor {
      */
     private void saveLocation() {
       switch (args.length) {
-        case 2 -> {
+        case 3 -> {
           DecimalFormat df2 = new DecimalFormat();
           df2.setMaximumFractionDigits(2);
 
           Location here = user.getLocation();
           Location location = new Location(here.getWorld(), Double.parseDouble(df2.format(here.getX())), Double.parseDouble(df2.format(here.getY())), Double.parseDouble(df2.format(here.getZ())));
-          locations.put(args[1], location);
-          user.sendMessage(ChatColor.GREEN + "[Saved Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
+          locations.put(args[2], new LocationRegistry.SavedLocation(locationRegistry, args[1], args[2], location));
+          user.sendMessage(ChatColor.GREEN + "[Saved Location] " + ChatColor.WHITE + args[1] + "/" + ChatColor.AQUA + args[2] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
-        case 5 -> {
+        case 6 -> {
           double x;
           try {
-            x = Double.parseDouble(args[2]);
+            x = Double.parseDouble(args[3]);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_X.getMessage());
             return;
           }
           double y;
           try {
-            y = Double.parseDouble(args[3]);
+            y = Double.parseDouble(args[4]);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_Y.getMessage());
             return;
           }
           double z;
           try {
-            z = Double.parseDouble(args[4]);
+            z = Double.parseDouble(args[5]);
           } catch (NumberFormatException ex) {
             user.sendMessage(Message.INVALID_Z.getMessage());
             return;
@@ -188,19 +220,22 @@ public class LocationCommand implements CommandExecutor {
           df2.setMaximumFractionDigits(2);
 
           Location location = new Location(user.getLocation().getWorld(), Double.parseDouble(df2.format(x).replace(",", "")), Double.parseDouble(df2.format(y).replace(",", "")), Double.parseDouble(df2.format(z).replace(",", "")));
-          locations.put(args[1], location);
-          user.sendMessage(ChatColor.GREEN + "[Saved Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
+          locations.put(args[2], new LocationRegistry.SavedLocation(locationRegistry, args[1], args[2], location));
+          user.sendMessage(ChatColor.GREEN + "[Saved Location] " + ChatColor.WHITE + args[1] + "/" + ChatColor.AQUA + args[2] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
         default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
       }
     }
 
     /**
-     * Removes a location.
+     * Removes a {@link LocationRegistry.SavedLocation}
      */
     private void removeLocation() {
       if (args.length == 2) {
-        locations.remove(args[1]);
+        LocationRegistry.SavedLocation savedLocation = locations.get(args[1]);
+        if (savedLocation != null) {
+          savedLocation.delete();
+        }
         user.sendMessage(ChatColor.RED + "[Removed Location] " + ChatColor.WHITE + args[1]);
       } else {
         user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
@@ -208,7 +243,7 @@ public class LocationCommand implements CommandExecutor {
     }
 
     /**
-     * Tracks a location.
+     * Tracks a {@link LocationRegistry.SavedLocation} or coordinates.
      */
     private void trackLocation() {
       if (!canTrackOrCompare()) {
@@ -221,11 +256,12 @@ public class LocationCommand implements CommandExecutor {
           user.sendMessage(ChatColor.RED + "[Tracking Location] Stopped.");
         }
         case 2 -> {
-          Location location = locations.get(args[1]);
-          if (location == null) {
+          LocationRegistry.SavedLocation savedLocation = locations.get(args[1]);
+          if (savedLocation == null) {
             user.sendMessage(ChatColor.RED + "Location does not exist.");
             return;
           }
+          Location location = savedLocation.getLocation();
           Plugin.getData().getPluginSystem().getTrackedLocations().put(user.getUniqueId(), location);
           user.sendMessage(ChatColor.GREEN + "[Tracking Location] " + ChatColor.AQUA + args[1] + " " + ChatColor.WHITE + location.getX() + ", " + location.getY() + ", " + location.getZ());
         }
@@ -270,48 +306,104 @@ public class LocationCommand implements CommandExecutor {
         return;
       }
 
+      DecimalFormat df2 = new DecimalFormat();
+      df2.setMaximumFractionDigits(2);
+
+      Location here;
+      Location there;
+
       switch (args.length) {
-        case 2, 3 -> {
-          DecimalFormat df2 = new DecimalFormat();
-          df2.setMaximumFractionDigits(2);
-
-          Location here;
-          Location there;
-          if (args.length == 2) {
-            Location userLocation = user.getLocation();
-            here = new Location(userLocation.getWorld(), Double.parseDouble(df2.format(userLocation.getX())), Double.parseDouble(df2.format(userLocation.getY())), Double.parseDouble(df2.format(userLocation.getZ())));
-            there = locations.get(args[1]);
-          } else {
-            here = locations.get(args[1]);
-            there = locations.get(args[2]);
-          }
-
-          if (here == null) {
-            user.sendMessage(ChatColor.RED + "Starting location does not exist.");
-            return;
-          }
-          if (there == null) {
+        case 2 -> {
+          LocationRegistry.SavedLocation savedLocation = locations.get(args[1]);
+          if (savedLocation == null) {
             user.sendMessage(ChatColor.RED + "Destination location does not exist.");
             return;
           }
-          if (!here.getWorld().getName().equals(there.getWorld().getName())) {
-            user.sendMessage(ChatColor.RED + "Locations not in the same world.");
+          Location userLocation = user.getLocation();
+          here = new Location(userLocation.getWorld(), Double.parseDouble(df2.format(userLocation.getX())), Double.parseDouble(df2.format(userLocation.getY())), Double.parseDouble(df2.format(userLocation.getZ())));
+          there = savedLocation.getLocation();
+        }
+        case 3 -> {
+          LocationRegistry.SavedLocation savedHere = locations.get(args[1]);
+          if (savedHere == null) {
+            user.sendMessage(ChatColor.RED + "Starting location does not exist.");
             return;
           }
-
-          double xLength = Math.abs(here.getX() - there.getX());
-          double yLength = Math.abs(here.getY() - there.getY());
-          double zLength = Math.abs(here.getZ() - there.getZ());
-
-          user.sendMessage(ChatColor.GREEN + "[Compare Locations] " + ChatColor.AQUA + here.getX() + ", " + here.getY() + ", " + here.getZ() + ChatColor.WHITE + " -> " + ChatColor.AQUA + there.getX() + ", " + there.getY() + ", " + there.getZ());
-          user.sendMessage(ChatColor.GOLD + "Lengths: " + ChatColor.WHITE + df2.format(xLength) + ", " + df2.format(yLength) + ", " + df2.format(zLength));
-          user.sendMessage(ChatColor.GOLD + "Midpoint: " + ChatColor.WHITE + df2.format((here.getX() + there.getX() / 2)) + ", " + df2.format((here.getY() + there.getY() / 2)) + ", " + df2.format((here.getZ() + there.getZ() / 2)));
-          user.sendMessage(ChatColor.GOLD + "Distance: " + ChatColor.WHITE + df2.format(here.distance(there)));
-          user.sendMessage(ChatColor.GOLD + "Area: " + ChatColor.WHITE + df2.format((xLength * zLength)));
-          user.sendMessage(ChatColor.GOLD + "Volume: " + ChatColor.WHITE + df2.format((xLength * yLength * zLength)));
+          LocationRegistry.SavedLocation savedThere = locations.get(args[2]);
+          if (savedThere == null) {
+            user.sendMessage(ChatColor.RED + "Destination location does not exist.");
+            return;
+          }
+          here = savedHere.getLocation();
+          there = savedThere.getLocation();
         }
-        default -> user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+        case 7 -> {
+          double x1;
+          try {
+            x1 = Double.parseDouble(args[1]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_X.getMessage());
+            return;
+          }
+          double y1;
+          try {
+            y1 = Double.parseDouble(args[2]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_Y.getMessage());
+            return;
+          }
+          double z1;
+          try {
+            z1 = Double.parseDouble(args[3]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_Z.getMessage());
+            return;
+          }
+          double x2;
+          try {
+            x2 = Double.parseDouble(args[4]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_X.getMessage());
+            return;
+          }
+          double y2;
+          try {
+            y2 = Double.parseDouble(args[5]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_Y.getMessage());
+            return;
+          }
+          double z2;
+          try {
+            z2 = Double.parseDouble(args[6]);
+          } catch (NumberFormatException ex) {
+            user.sendMessage(Message.INVALID_Z.getMessage());
+            return;
+          }
+          here = new Location(user.getWorld(), Double.parseDouble(df2.format(x1)), Double.parseDouble(df2.format(y1)), Double.parseDouble(df2.format(z1)));
+          there = new Location(user.getWorld(), Double.parseDouble(df2.format(x2)), Double.parseDouble(df2.format(y2)), Double.parseDouble(df2.format(z2)));
+        }
+        default -> {
+          user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+          return;
+        }
       }
+
+      if (!here.getWorld().getName().equals(there.getWorld().getName())) {
+        user.sendMessage(ChatColor.RED + "Locations not in the same world.");
+        return;
+      }
+
+      double xLength = Math.abs(here.getX() - there.getX());
+      double yLength = Math.abs(here.getY() - there.getY());
+      double zLength = Math.abs(here.getZ() - there.getZ());
+
+      user.sendMessage(ChatColor.GREEN + "[Compare Locations] " + ChatColor.AQUA + here.getX() + ", " + here.getY() + ", " + here.getZ() + ChatColor.WHITE + " -> " + ChatColor.AQUA + there.getX() + ", " + there.getY() + ", " + there.getZ());
+      user.sendMessage(ChatColor.GOLD + "Lengths: " + ChatColor.WHITE + df2.format(xLength) + ", " + df2.format(yLength) + ", " + df2.format(zLength));
+      user.sendMessage(ChatColor.GOLD + "Midpoint: " + ChatColor.WHITE + df2.format((here.getX() + there.getX() / 2)) + ", " + df2.format((here.getY() + there.getY() / 2)) + ", " + df2.format((here.getZ() + there.getZ() / 2)));
+      user.sendMessage(ChatColor.GOLD + "Distance: " + ChatColor.WHITE + df2.format(here.distance(there)));
+      user.sendMessage(ChatColor.GOLD + "Area: " + ChatColor.WHITE + df2.format((xLength * zLength)));
+      user.sendMessage(ChatColor.GOLD + "Volume: " + ChatColor.WHITE + df2.format((xLength * yLength * zLength)));
     }
 
     /**

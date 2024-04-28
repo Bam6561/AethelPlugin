@@ -293,10 +293,10 @@ public class RecipeRegistry implements DataRegistry {
    * Loaded into memory when {@link #loadData()} is called.
    *
    * @author Danny Nguyen
-   * @version 1.23.8
+   * @version 1.24.7
    * @since 1.0.3
    */
-  static class Recipe {
+  protected static class Recipe {
     /**
      * Recipe file.
      * <ul>
@@ -329,7 +329,7 @@ public class RecipeRegistry implements DataRegistry {
      * @param materials recipe materials
      * @throws IllegalArgumentException if provided file is not a file
      */
-    Recipe(File file, List<ItemStack> results, List<ItemStack> materials) {
+    private Recipe(File file, List<ItemStack> results, List<ItemStack> materials) {
       this.file = file;
       this.results = results;
       this.materials = materials;

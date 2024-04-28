@@ -6,7 +6,6 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.plugin.Directory;
-import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.plugin.PluginSystem;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
@@ -24,7 +23,7 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.22.6
+ * @version 1.24.7
  * @since 1.1.7
  */
 public class PluginData {
@@ -128,15 +127,6 @@ public class PluginData {
     df2.setMaximumFractionDigits(2);
 
     log.info("[Aethel] Saving Resources");
-
-    Collection<PluginPlayer> pluginPlayers = Plugin.getData().getPluginSystem().getPluginPlayers().values();
-
-    start = System.nanoTime();
-    for (PluginPlayer pluginPlayer : pluginPlayers) {
-      pluginPlayer.getLocationRegistry().saveLocations();
-    }
-    finish = System.nanoTime();
-    log.info("[Aethel] Saved Plugin Locations: " + longToMs(df2, start, finish));
 
     Collection<RpgPlayer> rpgPlayers = Plugin.getData().getRpgSystem().getRpgPlayers().values();
 

@@ -30,7 +30,7 @@ public class InventoryPages {
    */
   public static int getTotalPages(int numberOfItems) {
     int numberOfPages = numberOfItems / 45;
-    if ((numberOfItems % 45) > 0) {
+    if (numberOfItems % 45 > 0) {
       numberOfPages += 1;
     }
     return numberOfPages;

@@ -95,7 +95,7 @@ public class ItemCommand implements CommandExecutor {
      */
     private void readParameter() {
       switch (args[0].toLowerCase()) {
-        case "reload", "r" -> {
+        case "r", "reload" -> {
           Plugin.getData().getItemRegistry().loadData();
           user.sendMessage(ChatColor.GREEN + "[Reloaded Aethel Items]");
         }

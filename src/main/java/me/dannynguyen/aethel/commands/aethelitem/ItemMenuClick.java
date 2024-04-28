@@ -253,7 +253,7 @@ public class ItemMenuClick implements MenuClick {
       menuInput.setObjectType(ItemReader.readName(item));
       menuInput.setFileName(nameItemFile(item));
       menuInput.setEncodedData(encodedItem);
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item folder name to be saved under.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input item folder name.");
       user.closeInventory();
       menuInput.setMessageInput(MessageListener.Type.AETHELITEM_FOLDER);
     }

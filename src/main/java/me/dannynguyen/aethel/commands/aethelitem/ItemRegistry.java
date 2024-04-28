@@ -221,10 +221,10 @@ public class ItemRegistry implements DataRegistry {
    * Loaded into memory when {@link #loadData()} is called.
    *
    * @author Danny Nguyen
-   * @version 1.17.12
+   * @version 1.24.7
    * @since 1.3.2
    */
-  static class Item {
+  protected static class Item {
     /**
      * Item file.
      * <ul>
@@ -250,7 +250,7 @@ public class ItemRegistry implements DataRegistry {
      * @param file item file
      * @param item ItemStack
      */
-    Item(File file, ItemStack item) {
+    private Item(File file, ItemStack item) {
       this.file = file;
       this.item = item;
       this.name = ItemReader.readName(item);

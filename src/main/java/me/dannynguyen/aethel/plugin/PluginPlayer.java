@@ -1,5 +1,6 @@
 package me.dannynguyen.aethel.plugin;
 
+import me.dannynguyen.aethel.commands.location.LocationRegistry;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

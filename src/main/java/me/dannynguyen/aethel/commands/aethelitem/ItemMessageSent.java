@@ -43,7 +43,7 @@ public class ItemMessageSent {
 
   /**
    * Associates a message sent event with its user and encoded data in the
-   * context of saving am item in a {@link ItemMenu} through {@link ItemMenuClick}.
+   * context of saving an item in a {@link ItemMenu} through {@link ItemMenuClick}.
    *
    * @param e message sent event
    */

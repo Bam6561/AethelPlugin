@@ -751,7 +751,7 @@ public class Equipment {
      * @param eSlot {@link RpgEquipmentSlot}
      * @param type  {@link PassiveAbilityType}
      * @author Danny Nguyen
-     * @version 1.18.1
+     * @version 1.24.7
      * @since 1.16.3
      */
     public record SlotPassive(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
@@ -764,27 +764,6 @@ public class Equipment {
       public SlotPassive(@NotNull RpgEquipmentSlot eSlot, @NotNull PassiveAbilityType type) {
         this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
         this.type = Objects.requireNonNull(type, "Null ability");
-      }
-
-      /**
-       * Gets the {@link RpgEquipmentSlot}.
-       *
-       * @return {@link RpgEquipmentSlot}
-       */
-      @Override
-      @NotNull
-      public RpgEquipmentSlot eSlot() {
-        return this.eSlot;
-      }
-
-      /**
-       * Gets the {@link PassiveAbilityType}.
-       *
-       * @return {@link PassiveAbilityType}
-       */
-      @NotNull
-      public PassiveAbilityType type() {
-        return this.type;
       }
 
       /**
@@ -820,7 +799,7 @@ public class Equipment {
      * @param trigger {@link PassiveTriggerType}
      * @param ability {@link PassiveAbilityType}
      * @author Danny Nguyen
-     * @version 1.18.1
+     * @version 1.24.7
      * @since 1.16.1
      */
     public record TriggerPassive(@NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType ability) {
@@ -833,26 +812,6 @@ public class Equipment {
       public TriggerPassive(@NotNull PassiveTriggerType trigger, @NotNull PassiveAbilityType ability) {
         this.trigger = Objects.requireNonNull(trigger, "Null trigger");
         this.ability = Objects.requireNonNull(ability, "Null ability");
-      }
-
-      /**
-       * Gets the {@link PassiveTriggerType}.
-       *
-       * @return {@link PassiveTriggerType}
-       */
-      @NotNull
-      public PassiveTriggerType trigger() {
-        return this.trigger;
-      }
-
-      /**
-       * Gets the {@link PassiveAbilityType}.
-       *
-       * @return {@link PassiveAbilityType}
-       */
-      @NotNull
-      public PassiveAbilityType ability() {
-        return this.ability;
       }
     }
   }

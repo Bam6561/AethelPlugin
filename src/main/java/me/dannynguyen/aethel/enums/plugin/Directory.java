@@ -1,6 +1,6 @@
 package me.dannynguyen.aethel.enums.plugin;
 
-import me.dannynguyen.aethel.commands.LocationCommand;
+import me.dannynguyen.aethel.commands.location.LocationCommand;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.Settings;
 import org.jetbrains.annotations.NotNull;

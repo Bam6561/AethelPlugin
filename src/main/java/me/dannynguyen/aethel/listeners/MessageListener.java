@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.commands.aethelitem.ItemMessageSent;
 import me.dannynguyen.aethel.commands.character.CharacterMessageSent;
 import me.dannynguyen.aethel.commands.forge.ForgeMessageSent;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
+import me.dannynguyen.aethel.commands.location.LocationMessageSent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.24.7
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -40,9 +41,10 @@ public class MessageListener implements Listener {
       String inputType = type.getId();
       switch (inputType) {
         case "aethelitem" -> interpretAethelItem(e, type);
+        case "character" -> interpretCharacter(e, type);
         case "forge" -> interpretForge(e, type);
         case "itemeditor" -> interpretItemEditor(e, type);
-        case "character" -> interpretCharacter(e, type);
+        case "location" -> interpretLocation(e, type);
       }
     }
   }
@@ -68,6 +70,20 @@ public class MessageListener implements Listener {
     ItemMessageSent msg = new ItemMessageSent(e);
     switch (type) {
       case AETHELITEM_FOLDER -> msg.saveItem();
+    }
+  }
+
+  /**
+   * Determines which {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
+   * input is being interacted with.
+   *
+   * @param e    message event
+   * @param type {@link Type}
+   */
+  private void interpretCharacter(AsyncPlayerChatEvent e, Type type) {
+    CharacterMessageSent msg = new CharacterMessageSent(e);
+    switch (type) {
+      case CHARACTER_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityBind();
     }
   }
 
@@ -117,16 +133,16 @@ public class MessageListener implements Listener {
   }
 
   /**
-   * Determines which {@link me.dannynguyen.aethel.commands.character.CharacterCommand}
+   * Determines which {@link me.dannynguyen.aethel.commands.location.LocationCommand}
    * input is being interacted with.
    *
    * @param e    message event
    * @param type {@link Type}
    */
-  private void interpretCharacter(AsyncPlayerChatEvent e, Type type) {
-    CharacterMessageSent msg = new CharacterMessageSent(e);
+  private void interpretLocation(AsyncPlayerChatEvent e, Type type) {
+    LocationMessageSent msg = new LocationMessageSent(e);
     switch (type) {
-      case CHARACTER_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityBind();
+      case LOCATION_FOLDER -> msg.saveLocation();
     }
   }
 
@@ -138,6 +154,11 @@ public class MessageListener implements Listener {
      * Aethel item folder.
      */
     AETHELITEM_FOLDER("aethelitem"),
+
+    /**
+     * Bind active ability.
+     */
+    CHARACTER_BIND_ACTIVE_ABILITY("character"),
 
     /**
      * Forge recipe folder.
@@ -235,9 +256,9 @@ public class MessageListener implements Listener {
     ITEMEDITOR_AETHEL_TAG("itemeditor"),
 
     /**
-     * Bind active ability.
+     * Saved location folder.
      */
-    CHARACTER_BIND_ACTIVE_ABILITY("character");
+    LOCATION_FOLDER("location");
 
     /**
      * Input ID.
