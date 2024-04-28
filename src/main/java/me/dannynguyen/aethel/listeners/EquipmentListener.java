@@ -3,7 +3,7 @@ package me.dannynguyen.aethel.listeners;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.utils.item.DurabilityDamage;
+import me.dannynguyen.aethel.utils.item.DurabilityChange;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,14 +25,14 @@ import org.bukkit.inventory.PlayerInventory;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.18
+ * @version 1.24.8
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
   /**
    * No parameter constructor.
    */
-  public EquipmentListener(){
+  public EquipmentListener() {
   }
 
   /**
@@ -203,7 +203,7 @@ public class EquipmentListener implements Listener {
       }
     }
 
-    DurabilityDamage.increaseDamage(player, player.getEquipment(), eSlot, e.getDamage());
+    DurabilityChange.increaseDamage(player, player.getEquipment(), eSlot, e.getDamage());
   }
 
   /**
@@ -220,6 +220,18 @@ public class EquipmentListener implements Listener {
     } else {
       readHandSlot(e.getPlayer());
     }
+  }
+
+  /**
+   * Mends a player's item durability.
+   *
+   * @param e player item mend event
+   */
+  @EventHandler
+  private void onItemMend(PlayerItemMendEvent e) {
+    e.setCancelled(true);
+    Player player = e.getPlayer();
+    DurabilityChange.decreaseDamage(player, player.getEquipment(), e.getSlot(), e.getRepairAmount());
   }
 
   /**

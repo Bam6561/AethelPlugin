@@ -761,7 +761,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       DRAG(new String[]{
           ChatColor.GREEN + "Drag",
-          ChatColor.GRAY + "Omnidirectional forward-facing pull of entities towards the caster."
+          ChatColor.GRAY + "Unidirectional forward-facing pull of entities towards the caster."
       }),
 
       /**
@@ -777,7 +777,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       THRUST(new String[]{
           ChatColor.GREEN + "Thrust",
-          ChatColor.GRAY + "Omnidirectional forward-facing push of entities away from the caster."
+          ChatColor.GRAY + "Unidirectional forward-facing push of entities away from the caster."
       }),
 
       /**
@@ -810,7 +810,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       FORCE_WAVE(new String[]{
           ChatColor.GREEN + "Force Wave",
-          ChatColor.GRAY + "Omnidirectional forward-facing line-shaped attack."
+          ChatColor.GRAY + "Unidirectional forward-facing line-shaped attack."
       }),
 
       /**
@@ -843,7 +843,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       LEAP(new String[]{
           ChatColor.GREEN + "Leap",
-          ChatColor.GRAY + "Omnidirectional forward-facing angular movement."
+          ChatColor.GRAY + "Unidirectional forward-facing angular movement."
       }),
 
       /**
@@ -884,7 +884,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       BLINK(new String[]{
           ChatColor.GREEN + "Blink",
-          ChatColor.GRAY + "Omnidirectional forward-facing teleport."
+          ChatColor.GRAY + "Unidirectional forward-facing teleport."
       }),
 
       /**
@@ -892,7 +892,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       EMERGE(new String[]{
           ChatColor.GREEN + "Emerge",
-          ChatColor.GRAY + "Omnidirectional forward-facing teleport to an entity."
+          ChatColor.GRAY + "Unidirectional forward-facing teleport to an entity."
       }),
 
       /**
@@ -900,7 +900,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       HOOK(new String[]{
           ChatColor.GREEN + "Hook",
-          ChatColor.GRAY + "Omnidirectional forward-facing caster teleport to an entity."
+          ChatColor.GRAY + "Unidirectional forward-facing caster teleport to an entity."
       }),
 
       /**
@@ -908,7 +908,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       PROJECTION(new String[]{
           ChatColor.GREEN + "Projection",
-          ChatColor.GRAY + "Omnidirectional forward-facing teleport that after a delay, teleports the user back to their original location."
+          ChatColor.GRAY + "Unidirectional forward-facing teleport that after a delay, teleports the user back to their original location."
       }),
 
       /**
@@ -916,7 +916,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       SWITCH(new String[]{
           ChatColor.GREEN + "Switch",
-          ChatColor.GRAY + "Omnidirectional forward-facing location switch with an entity."
+          ChatColor.GRAY + "Unidirectional forward-facing location switch with an entity."
       }),
 
       /**

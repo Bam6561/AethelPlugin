@@ -139,7 +139,7 @@ public class LocationMenuClick implements MenuClick {
         if (!canTrackOrCompare()) {
           return;
         }
-        
+
         DecimalFormat df2 = new DecimalFormat();
         df2.setMaximumFractionDigits(2);
 

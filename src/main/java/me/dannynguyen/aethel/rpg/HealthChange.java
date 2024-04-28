@@ -7,16 +7,24 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,10 +32,19 @@ import java.util.UUID;
  * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.23.18
+ * @version 1.24.8
  * @since 1.22.20
  */
 public class HealthChange {
+  /**
+   * Totem of undying resurrection effects.
+   */
+  private static final Collection<PotionEffect> totemOfUndyingEffects = List.of(
+      new PotionEffect(PotionEffectType.ABSORPTION, 100, 1, true),
+      new PotionEffect(PotionEffectType.REGENERATION, 900, 1, true),
+      new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 800, 0, true)
+  );
+
   /**
    * Defending entity.
    */
@@ -90,6 +107,24 @@ public class HealthChange {
       updateDisplays();
     } else {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        EntityEquipment equipment = defender.getEquipment();
+        if (equipment.getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING) {
+          defender.playEffect(EntityEffect.TOTEM_RESURRECT);
+          equipment.setItemInMainHand(new ItemStack(Material.AIR), true);
+          defender.addPotionEffects(totemOfUndyingEffects);
+          setCurrentHealth(1);
+          updateDisplays();
+          return;
+        }
+        if (equipment.getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING) {
+          defender.playEffect(EntityEffect.TOTEM_RESURRECT);
+          equipment.setItemInOffHand(new ItemStack(Material.AIR), true);
+          defender.addPotionEffects(totemOfUndyingEffects);
+          setCurrentHealth(1);
+          updateDisplays();
+          return;
+        }
+
         defender.setHealth(0.0);
         if (defender instanceof Player) {
           BossBar healthBar = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getDisplays().getBar();
@@ -97,7 +132,7 @@ public class HealthChange {
             DecimalFormat df2 = new DecimalFormat();
             df2.setMaximumFractionDigits(2);
             healthBar.setProgress(0.0);
-            healthBar.setTitle(0 + " / " + df2.format(maxHealth) + " HP");
+            healthBar.setTitle(currentHealth + " / " + df2.format(maxHealth) + " HP");
           }
         }
       }, 1);
@@ -154,7 +189,7 @@ public class HealthChange {
     double maxHealthScale = defender.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
     if (currentHealth < maxHealth) {
       double lifeRatio = currentHealth / maxHealth;
-      defender.setHealth(Math.max(0, lifeRatio * maxHealthScale));
+      defender.setHealth(Math.max(1, lifeRatio * maxHealthScale));
 
       if (defender instanceof Player) {
         Plugin.getData().getRpgSystem().getWounded().add(uuid);

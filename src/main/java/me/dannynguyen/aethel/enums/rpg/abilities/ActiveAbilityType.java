@@ -39,7 +39,7 @@ public enum ActiveAbilityType {
   /**
    * Forward facing teleport.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   BLINK("Blink", "blink", Effect.TELEPORT),
 
@@ -61,14 +61,14 @@ public enum ActiveAbilityType {
   /**
    * Forward-facing pull of entities towards the caster.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   DRAG("Drag", "drag", Effect.DISPLACEMENT),
 
   /**
    * Forward facing caster teleport to an entity.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   EMERGE("Emerge", "emerge", Effect.TELEPORT),
 
@@ -85,21 +85,21 @@ public enum ActiveAbilityType {
   /**
    * Forward facing line shaped attack.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
 
   /**
    * Forward facing entity teleport to the caster.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   HOOK("Hook", "hook", Effect.TELEPORT),
 
   /**
    * Forward facing angular movement.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   LEAP("Leap", "leap", Effect.MOVEMENT),
 
@@ -117,7 +117,7 @@ public enum ActiveAbilityType {
    * Forward facing teleport that after a delay,
    * teleports the user back to their original location.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   PROJECTION("Projection", "projection", Effect.PROJECTION),
 
@@ -129,7 +129,7 @@ public enum ActiveAbilityType {
   /**
    * Forward facing location switch with an entity.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   SWITCH("Switch", "switch", Effect.TELEPORT),
 
@@ -152,7 +152,7 @@ public enum ActiveAbilityType {
   /**
    * Forward facing push of entities away from the caster.
    * <p>
-   * Omnidirectional.
+   * Unidirectional.
    */
   THRUST("Thrust", "thrust", Effect.DISPLACEMENT),
 
