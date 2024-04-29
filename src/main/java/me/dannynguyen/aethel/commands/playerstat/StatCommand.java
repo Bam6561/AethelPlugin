@@ -4,8 +4,10 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
+import me.dannynguyen.aethel.utils.EntityReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -67,7 +69,7 @@ public class StatCommand implements CommandExecutor {
    * @param user command user
    * @param args user provided parameters
    * @author Danny Nguyen
-   * @version 1.23.12
+   * @version 1.24.10
    * @since 1.23.12
    */
   private record Request(Player user, String[] args) {
@@ -93,6 +95,10 @@ public class StatCommand implements CommandExecutor {
         user.openInventory(new PastStatMenu(user).getMainMenu());
         Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMenu(MenuListener.Menu.PLAYERSTAT_PAST);
       } else {
+        if (!canViewOtherStats()) {
+          return;
+        }
+
         openPlayerStatOther(parameter);
       }
     }
@@ -125,6 +131,21 @@ public class StatCommand implements CommandExecutor {
         menuInput.setMenu(MenuListener.Menu.PLAYERSTAT_CATEGORY);
       } else {
         user.sendMessage(ChatColor.RED + owner + " has never played on this server.");
+      }
+    }
+
+    /**
+     * The user must have a spyglass in their hand, off-hand,
+     * or trinket slot to view other players' statistics.
+     *
+     * @return if the user can view other players' statistics
+     */
+    private boolean canViewOtherStats() {
+      if (EntityReader.hasTrinket(user, Material.SPYGLASS)) {
+        return true;
+      } else {
+        user.sendMessage(ChatColor.RED + "[PlayerStats] No spyglass in hand, off-hand, or trinket slot.");
+        return false;
       }
     }
   }

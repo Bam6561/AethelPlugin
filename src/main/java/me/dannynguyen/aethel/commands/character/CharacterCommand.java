@@ -118,8 +118,8 @@ public class CharacterCommand implements CommandExecutor {
     }
 
     /**
-     * The user must have a spyglass in their hand,
-     * off-hand, or trinket slot to view other players' character sheets.
+     * The user must have a spyglass in their hand, off-hand,
+     * or trinket slot to view other players' character sheets.
      *
      * @return if the user can view other players' character sheets
      */
