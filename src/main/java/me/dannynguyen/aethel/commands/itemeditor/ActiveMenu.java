@@ -29,7 +29,7 @@ import java.util.*;
  * {@link Key#ACTIVE_LIST active abilities}.
  *
  * @author Danny Nguyen
- * @version 1.24.6
+ * @version 1.24.9
  * @since 1.15.1
  */
 public class ActiveMenu implements Menu {
@@ -120,15 +120,15 @@ public class ActiveMenu implements Menu {
             String activeValue = itemTags.get(activeKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + activeValue));
           }
-          menu.setItem(invSlot, ItemCreator.createItem(Material.GOLD_INGOT, ChatColor.AQUA + activeName, lore));
+          menu.setItem(invSlot, ItemCreator.createItem(Material.TORCH, ChatColor.AQUA + activeName, lore));
         } else {
-          menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + activeName));
+          menu.setItem(invSlot, ItemCreator.createItem(Material.GLOWSTONE_DUST, ChatColor.AQUA + activeName));
         }
         invSlot++;
       }
     } else {
       for (ActiveAbilityType activeAbilityType : ActiveAbilityType.values()) {
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_GOLD, ChatColor.AQUA + activeAbilityType.getProperName()));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.GLOWSTONE_DUST, ChatColor.AQUA + activeAbilityType.getProperName()));
         invSlot++;
       }
     }

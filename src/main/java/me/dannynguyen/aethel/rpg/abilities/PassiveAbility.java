@@ -26,7 +26,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.24.9
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -87,6 +87,32 @@ public class PassiveAbility {
    */
   private void loadAbilityData(PassiveTriggerType.Condition condition, PassiveAbilityType.Effect effect, String[] dataValues) {
     switch (condition) {
+      case COOLDOWN -> {
+        // Don't remove - positions the ability data's cooldown to the
+        // correct index position without the need for additional code
+        conditionData.add("");
+        conditionData.add(dataValues[0]);
+        switch (effect) {
+          case STACK_INSTANCE, CHAIN_DAMAGE -> {
+            effectData.add(dataValues[1]);
+            effectData.add(dataValues[2]);
+            effectData.add(dataValues[3]);
+          }
+          case BUFF -> {
+            effectData.add(dataValues[1]);
+            effectData.add(dataValues[2]);
+            effectData.add(dataValues[3]);
+            effectData.add(dataValues[4]);
+          }
+          case POTION_EFFECT -> {
+            effectData.add(dataValues[1]);
+            effectData.add(dataValues[2]);
+            effectData.add(dataValues[3]);
+            effectData.add(dataValues[4]);
+            effectData.add(dataValues[5]);
+          }
+        }
+      }
       case CHANCE_COOLDOWN, HEALTH_COOLDOWN -> {
         conditionData.add(dataValues[0]);
         conditionData.add(dataValues[1]);

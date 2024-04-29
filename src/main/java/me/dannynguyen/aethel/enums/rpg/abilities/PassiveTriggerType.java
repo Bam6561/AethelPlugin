@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of {@link PassiveAbilityType} triggers.
  *
  * @author Danny Nguyen
- * @version 1.17.13
+ * @version 1.24.9
  * @since 1.15.11
  */
 public enum PassiveTriggerType {
@@ -24,6 +24,11 @@ public enum PassiveTriggerType {
    * Damage taken.
    */
   DAMAGE_TAKEN("Damage Taken", "damage_taken", Condition.CHANCE_COOLDOWN),
+
+  /**
+   * On an interval.
+   */
+  INTERVAL("Interval", "interval", Condition.COOLDOWN),
 
   /**
    * Killed an entity.
@@ -92,10 +97,15 @@ public enum PassiveTriggerType {
    * {@link PassiveAbilityType} {@link PassiveTriggerType} conditions.
    *
    * @author Danny Nguyen
-   * @version 1.17.7
+   * @version 1.24.9
    * @since 1.15.13
    */
   public enum Condition {
+    /**
+     * Cooldown.
+     */
+    COOLDOWN("Cooldown(t)"),
+
     /**
      * Chance and cooldown.
      */

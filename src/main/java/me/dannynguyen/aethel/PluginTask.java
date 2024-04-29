@@ -26,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.24.9
  * @since 1.22.2
  */
 public class PluginTask {
@@ -90,6 +90,32 @@ public class PluginTask {
               propagateElectrocuteStacks(entity, remainingHealth);
             }
           }
+        }
+      }
+    }
+  }
+
+  /**
+   * Triggers {@link PassiveTriggerType#INTERVAL} {@link PassiveAbility passive abilities}.
+   * <p>
+   * {@link PassiveTriggerType#INTERVAL} {@link PassiveAbility} can only be triggered on self.
+   */
+  public void triggerIntervalPassives() {
+    RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+    Map<UUID, RpgPlayer> rpgPlayers = rpgSystem.getRpgPlayers();
+
+    for (RpgPlayer rpgPlayer : rpgPlayers.values()) {
+      Map<Equipment.Abilities.SlotPassive, PassiveAbility> intervalTriggers = rpgPlayer.getEquipment().getAbilities().getTriggerPassives().get(PassiveTriggerType.INTERVAL);
+      if (intervalTriggers.isEmpty()) {
+        continue;
+      }
+      for (PassiveAbility ability : intervalTriggers.values()) {
+        if (ability.isOnCooldown()) {
+          continue;
+        }
+        boolean self = Boolean.parseBoolean(ability.getEffectData().get(0));
+        if (self) {
+          ability.doEffect(rpgPlayer.getUUID(), rpgPlayer.getUUID());
         }
       }
     }

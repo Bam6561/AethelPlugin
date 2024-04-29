@@ -18,9 +18,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -273,10 +276,15 @@ public class ForgeMenuClick implements MenuClick {
    * enough materials to craft the {@link RecipeRegistry.Recipe recipe}.
    *
    * @author Danny Nguyen
-   * @version 1.23.15
+   * @version 1.24.9
    * @since 1.4.15
    */
   private class RecipeCraft {
+    /**
+     * {@link Key#RECIPE_FORGE_ID}.
+     */
+    private final NamespacedKey forgeId = Key.RECIPE_FORGE_ID.getNamespacedKey();
+
     /**
      * {@link RecipeRegistry.Recipe Recipe's} results.
      */
@@ -365,7 +373,6 @@ public class ForgeMenuClick implements MenuClick {
      * @return has enough materials
      */
     private boolean hasEnoughOfAllMaterials() {
-      NamespacedKey forgeId = Key.RECIPE_FORGE_ID.getNamespacedKey();
       for (ItemStack item : materials) {
         Material requiredMaterial = item.getType();
         if (!materialSlots.containsKey(requiredMaterial)) {
@@ -377,12 +384,36 @@ public class ForgeMenuClick implements MenuClick {
         boolean hasForgeId = itemTags.has(forgeId, PersistentDataType.STRING);
 
         if (!hasForgeId) {
-          if (!hasEnoughMaterials(forgeId, requiredMaterial, requiredAmount)) {
-            return false;
+          switch (requiredMaterial) {
+            case ENCHANTED_BOOK -> {
+              if (!hasEnoughEnchantedBooks((EnchantmentStorageMeta) item.getItemMeta(), requiredAmount)) {
+                return false;
+              }
+            }
+            case POTION -> {
+              if (!hasEnoughPotions(Material.POTION, (PotionMeta) item.getItemMeta(), requiredAmount)) {
+                return false;
+              }
+            }
+            case SPLASH_POTION -> {
+              if (!hasEnoughPotions(Material.SPLASH_POTION, (PotionMeta) item.getItemMeta(), requiredAmount)) {
+                return false;
+              }
+            }
+            case LINGERING_POTION -> {
+              if (!hasEnoughPotions(Material.LINGERING_POTION, (PotionMeta) item.getItemMeta(), requiredAmount)) {
+                return false;
+              }
+            }
+            default -> {
+              if (!hasEnoughMaterials(requiredMaterial, requiredAmount)) {
+                return false;
+              }
+            }
           }
         } else {
           String requiredId = itemTags.get(forgeId, PersistentDataType.STRING);
-          if (!hasEnoughIds(forgeId, requiredMaterial, requiredAmount, requiredId)) {
+          if (!hasEnoughIds(requiredMaterial, requiredAmount, requiredId)) {
             return false;
           }
         }
@@ -418,14 +449,70 @@ public class ForgeMenuClick implements MenuClick {
     }
 
     /**
+     * Determines if the user has enough of the required enchanted books by matching enchantments.
+     *
+     * @param enchantmentMeta enchantment meta
+     * @param requiredAmount  required amount
+     * @return has enough enchanted books
+     */
+    private boolean hasEnoughEnchantedBooks(EnchantmentStorageMeta enchantmentMeta, int requiredAmount) {
+      for (SlotItem invSlot : materialSlots.get(Material.ENCHANTED_BOOK)) {
+        ItemMeta meta = invSlot.getItem().getItemMeta();
+        PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+        if (!itemTags.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
+          EnchantmentStorageMeta enchantmentMeta2 = (EnchantmentStorageMeta) meta;
+          if (invSlot.getAmount() > 0 && enchantmentMeta.getStoredEnchants().equals(enchantmentMeta2.getStoredEnchants())) {
+            requiredAmount -= invSlot.getAmount();
+            if (hasRequiredAmount(invSlot, requiredAmount)) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Determines if the user has enough of the required potions by matching potion effects.
+     *
+     * @param material       material
+     * @param potionMeta     potion meta
+     * @param requiredAmount required amount
+     * @return has enough enchantments
+     */
+    private boolean hasEnoughPotions(Material material, PotionMeta potionMeta, int requiredAmount) {
+      for (SlotItem invSlot : materialSlots.get(material)) {
+        ItemMeta meta = invSlot.getItem().getItemMeta();
+        PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+        if (!itemTags.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
+          if (invSlot.getAmount() > 0) {
+            List<PotionEffect> basePotionEffects = potionMeta.getBasePotionType().getPotionEffects();
+            List<PotionEffect> customPotionEffects = potionMeta.getCustomEffects();
+
+            PotionMeta potionMeta2 = (PotionMeta) meta;
+            List<PotionEffect> basePotionEffects2 = potionMeta2.getBasePotionType().getPotionEffects();
+            List<PotionEffect> customPotionEffects2 = potionMeta2.getCustomEffects();
+
+            if (basePotionEffects.equals(basePotionEffects2) && customPotionEffects.equals(customPotionEffects2)) {
+              requiredAmount -= invSlot.getAmount();
+              if (hasRequiredAmount(invSlot, requiredAmount)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
      * Determines if the user has enough of the required material by matching type.
      *
-     * @param forgeId          forge ID
      * @param requiredMaterial required material
      * @param requiredAmount   required amount
      * @return has enough materials
      */
-    private boolean hasEnoughMaterials(NamespacedKey forgeId, Material requiredMaterial, int requiredAmount) {
+    private boolean hasEnoughMaterials(Material requiredMaterial, int requiredAmount) {
       for (SlotItem invSlot : materialSlots.get(requiredMaterial)) {
         PersistentDataContainer itemTags = invSlot.getItem().getItemMeta().getPersistentDataContainer();
         if (!itemTags.has(forgeId, PersistentDataType.STRING)) { // Don't use unique items for crafting
@@ -443,13 +530,12 @@ public class ForgeMenuClick implements MenuClick {
     /**
      * Determines if the user has enough of the required material by matching type and forge ID.
      *
-     * @param forgeId     forge ID
      * @param reqMaterial required material
      * @param reqAmount   required amount
      * @param reqForgeId  required forge ID
      * @return has enough materials
      */
-    private boolean hasEnoughIds(NamespacedKey forgeId, Material reqMaterial, int reqAmount, String reqForgeId) {
+    private boolean hasEnoughIds(Material reqMaterial, int reqAmount, String reqForgeId) {
       for (SlotItem invSlot : materialSlots.get(reqMaterial)) {
         PersistentDataContainer itemTags = invSlot.getItem().getItemMeta().getPersistentDataContainer();
         if (itemTags.has(forgeId, PersistentDataType.STRING) && itemTags.get(forgeId, PersistentDataType.STRING).equals(reqForgeId)) {

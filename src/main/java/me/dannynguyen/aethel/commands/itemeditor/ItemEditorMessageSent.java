@@ -720,7 +720,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#PASSIVE_LIST passive tag} set or remove operation.
    *
    * @author Danny Nguyen
-   * @version 1.20.11
+   * @version 1.24.9
    * @since 1.15.13
    */
   private class PassiveChange {
@@ -797,8 +797,9 @@ public class ItemEditorMessageSent {
      */
     private void readBuff(PassiveTriggerType trigger) {
       switch (trigger.getCondition()) {
-        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownBuff(user, args));
-        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownBuff(user, args));
+        case COOLDOWN -> setKeyStringToList(PassiveAbilityInput.Buff.cooldownBuff(user, args));
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.Buff.chanceCooldownBuff(user, args));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.Buff.healthCooldownBuff(user, args));
       }
     }
 
@@ -810,8 +811,9 @@ public class ItemEditorMessageSent {
      */
     private void readChainDamage(PassiveTriggerType trigger) {
       switch (trigger.getCondition()) {
-        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownChainDamage(user, args));
-        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownChainDamage(user, args));
+        case COOLDOWN -> setKeyStringToList(PassiveAbilityInput.ChainDamage.cooldownChainDamage(user, args));
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.ChainDamage.chanceCooldownChainDamage(user, args));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.ChainDamage.healthCooldownChainDamage(user, args));
       }
     }
 
@@ -823,8 +825,9 @@ public class ItemEditorMessageSent {
      */
     private void readPotionEffect(PassiveTriggerType trigger) {
       switch (trigger.getCondition()) {
-        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownPotionEffect(user, args, trigger));
-        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownPotionEffect(user, args));
+        case COOLDOWN -> setKeyStringToList(PassiveAbilityInput.PotionEffect.cooldownPotionEffect(user, args));
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.PotionEffect.chanceCooldownPotionEffect(user, args, trigger));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.PotionEffect.healthCooldownPotionEffect(user, args));
       }
     }
 
@@ -836,8 +839,9 @@ public class ItemEditorMessageSent {
      */
     private void readStackInstance(PassiveTriggerType trigger) {
       switch (trigger.getCondition()) {
-        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.chanceCooldownStackInstance(user, args, trigger));
-        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.healthCooldownStackInstance(user, args));
+        case COOLDOWN -> setKeyStringToList(PassiveAbilityInput.StackInstance.cooldownStackInstance(user, args));
+        case CHANCE_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.StackInstance.chanceCooldownStackInstance(user, args, trigger));
+        case HEALTH_COOLDOWN -> setKeyStringToList(PassiveAbilityInput.StackInstance.healthCooldownStackInstance(user, args));
       }
     }
 

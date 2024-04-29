@@ -33,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.23.17
+ * @version 1.24.9
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -257,6 +257,7 @@ public class SheetMenu implements Menu {
     double armorToughnessBuff = 0.0;
     double genericArmorBuff = 0.0;
     double armorBuff = 0.0;
+    double knockbackResistanceBuff = 0.0;
     if (buffs != null) {
       genericMaxHealthBuff = buffs.getAttribute(Attribute.GENERIC_MAX_HEALTH);
       maxHealthBuff = buffs.getAethelAttribute(AethelAttribute.MAX_HEALTH);
@@ -266,13 +267,14 @@ public class SheetMenu implements Menu {
       armorToughnessBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR_TOUGHNESS);
       genericArmorBuff = buffs.getAttribute(Attribute.GENERIC_ARMOR);
       armorBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR);
+      knockbackResistanceBuff = buffs.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
     }
 
-    double featherFallingBase = entityTags.getOrDefault(Key.ENCHANTMENT_FEATHER_FALLING.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double blastProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_BLAST_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double fireProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_FIRE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double projectileProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
+    double featherFallingBase = entityTags.getOrDefault(Key.ENCHANTMENT_FEATHER_FALLING.getNamespacedKey(), PersistentDataType.INTEGER, 0);
 
     Player player = Bukkit.getPlayer(uuid);
     double rpgCurrentHealth = entityTags.getOrDefault(Key.RPG_HEALTH.getNamespacedKey(), PersistentDataType.DOUBLE, player.getHealth());
@@ -282,15 +284,16 @@ public class SheetMenu implements Menu {
     String counterChance = ChatColor.YELLOW + df2.format(counterChanceBase + counterChanceBuff) + "% COUNTER" + (counterChanceBuff != 0.0 ? " [" + df2.format(counterChanceBuff) + "]" : "");
     String dodgeChance = ChatColor.BLUE + df2.format(dodgeChanceBase + dodgeChanceBuff) + "% DODGE" + (dodgeChanceBuff != 0.0 ? " [" + df2.format(dodgeChanceBuff) + "]" : "");
     String armorToughness = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + armorToughnessBase + armorToughnessBuff) + " TOUGH" + (genericArmorToughnessBuff + armorToughnessBuff != 0.0 ? " [" + df2.format(genericArmorToughnessBuff + armorToughnessBuff) + "]" : "");
-    String armor = ChatColor.GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue() + armorBase + armorBuff) + " ARMOR" + (genericArmorBuff + armorBuff != 0.0 ? " [" + df2.format(genericArmorBuff + armorBuff) + "]" : "");
+    String armor = ChatColor.WHITE + df2.format(owner.getAttribute(Attribute.GENERIC_ARMOR).getValue() + armorBase + armorBuff) + " ARMOR" + (genericArmorBuff + armorBuff != 0.0 ? " [" + df2.format(genericArmorBuff + armorBuff) + "]" : "");
+    String knockbackResistance = ChatColor.DARK_GRAY + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KB RESIST" + (knockbackResistanceBuff != 0.0 ? " [" + df2.format(knockbackResistanceBuff) + "]" : "");
 
-    String featherFalling = ChatColor.GRAY + "" + featherFallingBase + " FEATHER FALL";
     String protection = ChatColor.GRAY + "" + protectionBase + " PROT";
-    String blastProtection = ChatColor.GRAY + "" + blastProtectionBase + " BLAST PROT";
-    String fireProtection = ChatColor.GRAY + "" + fireProtectionBase + " FIRE PROT";
-    String projectileProtection = ChatColor.GRAY + "" + projectileProtectionBase + " PROJ PROT";
+    String blastProtection = ChatColor.GRAY + "" + blastProtectionBase + " BLAST";
+    String fireProtection = ChatColor.GRAY + "" + fireProtectionBase + " FIRE";
+    String projectileProtection = ChatColor.GRAY + "" + projectileProtectionBase + " PROJ";
+    String featherFalling = ChatColor.GRAY + "" + featherFallingBase + " FALL";
 
-    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, "", featherFalling, protection, blastProtection, fireProtection, projectileProtection), ItemFlag.HIDE_ATTRIBUTES));
+    menu.setItem(24, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Defense", List.of(maxHealth, counterChance, dodgeChance, armorToughness, armor, knockbackResistance, "", protection, blastProtection, fireProtection, projectileProtection, featherFalling), ItemFlag.HIDE_ATTRIBUTES));
   }
 
   /**
@@ -310,26 +313,23 @@ public class SheetMenu implements Menu {
 
     double itemDamageBuff = 0.0;
     double itemCooldownBuff = 0.0;
+    double tenacityBuff = 0.0;
     double speedBuff = 0.0;
     double luckBuff = 0.0;
-    double knockbackResistanceBuff = 0.0;
-    double tenacityBuff = 0.0;
     if (buffs != null) {
       itemDamageBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_DAMAGE);
       itemCooldownBuff = buffs.getAethelAttribute(AethelAttribute.ITEM_COOLDOWN);
       speedBuff = buffs.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-      luckBuff = buffs.getAttribute(Attribute.GENERIC_LUCK);
-      knockbackResistanceBuff = buffs.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
       tenacityBuff = buffs.getAethelAttribute(AethelAttribute.TENACITY);
+      luckBuff = buffs.getAttribute(Attribute.GENERIC_LUCK);
     }
 
     String itemDamage = ChatColor.LIGHT_PURPLE + df2.format(1.0 + (itemDamageBase + itemDamageBuff) / 100) + "x ITEM DMG" + (itemDamageBuff != 0.0 ? " [" + df2.format(itemDamageBuff) + "]" : "");
     String itemCooldown = ChatColor.DARK_PURPLE + "-" + df2.format(itemCooldownBase + itemCooldownBuff) + "% ITEM CD" + (itemCooldownBuff != 0.0 ? " [" + df2.format(itemCooldownBuff) + "]" : "");
-    String speed = ChatColor.DARK_AQUA + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()) + " SPEED" + (speedBuff != 0.0 ? " [" + df2.format(speedBuff) + "]" : "");
+    String speed = ChatColor.AQUA + df3.format(owner.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()) + " SPD" + (speedBuff != 0.0 ? " [" + df2.format(speedBuff) + "]" : "");
+    String tenacity = ChatColor.DARK_BLUE + df2.format(tenacityBase + tenacityBuff) + "% TENACITY" + (tenacityBuff != 0.0 ? " [" + df2.format(tenacityBuff) + "]" : "");
     String luck = ChatColor.GREEN + df2.format(owner.getAttribute(Attribute.GENERIC_LUCK).getValue()) + " LUCK" + (luckBuff != 0.0 ? " [" + df2.format(luckBuff) + "]" : "");
-    String knockbackResistance = ChatColor.GRAY + "-" + df2.format(owner.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getValue() * 100) + "% KNOCKBACK" + (knockbackResistanceBuff != 0.0 ? " [" + df2.format(knockbackResistanceBuff) + "]" : "");
-    String tenacity = ChatColor.DARK_GREEN + df2.format(tenacityBase + tenacityBuff) + "% TENACITY" + (tenacityBuff != 0.0 ? " [" + df2.format(tenacityBuff) + "]" : "");
 
-    menu.setItem(33, ItemCreator.createItem(Material.SPYGLASS, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(itemDamage, itemCooldown, speed, luck, knockbackResistance, tenacity)));
+    menu.setItem(33, ItemCreator.createItem(Material.TOTEM_OF_UNDYING, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Other", List.of(itemDamage, itemCooldown, speed, tenacity, luck)));
   }
 }

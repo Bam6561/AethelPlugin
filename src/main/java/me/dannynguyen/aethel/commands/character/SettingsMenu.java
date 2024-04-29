@@ -22,7 +22,7 @@ import java.util.*;
  * Represents a menu that shows the player's {@link Settings}.
  *
  * @author Danny Nguyen
- * @version 1.19.1
+ * @version 1.24.9
  * @since 1.11.5
  */
 public class SettingsMenu implements Menu {
@@ -95,9 +95,9 @@ public class SettingsMenu implements Menu {
    */
   private void addDisplayHealthBar() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthBarVisible()) {
-      menu.setItem(18, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
+      menu.setItem(18, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Boss Bar"));
     } else {
-      menu.setItem(18, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Boss Bar"));
+      menu.setItem(18, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Boss Bar"));
     }
   }
 
@@ -106,9 +106,9 @@ public class SettingsMenu implements Menu {
    */
   private void addDisplayHealthAction() {
     if (Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().isHealthActionVisible()) {
-      menu.setItem(19, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+      menu.setItem(19, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
     } else {
-      menu.setItem(19, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+      menu.setItem(19, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
     }
   }
 

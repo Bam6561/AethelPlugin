@@ -30,7 +30,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.24.5
+ * @version 1.24.9
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -154,13 +154,13 @@ public class CosmeticMenu implements Menu {
       Damageable damageable = (Damageable) meta;
       short maxDurability = item.getType().getMaxDurability();
       int durabilityValue = maxDurability - damageable.getDamage();
-      menu.setItem(11, ItemCreator.createItem(Material.OBSIDIAN, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + durabilityValue + " / " + maxDurability)));
+      menu.setItem(11, ItemCreator.createItem(Material.CRACKED_STONE_BRICKS, ChatColor.AQUA + "Durability", List.of(ChatColor.WHITE + "" + durabilityValue + " / " + maxDurability)));
 
       PersistentDataContainer itemTags = meta.getPersistentDataContainer();
       if (itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER)) {
-        menu.setItem(19, ItemCreator.createItem(Material.AMETHYST_SHARD, ChatColor.AQUA + "Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))));
+        menu.setItem(19, ItemCreator.createItem(Material.NETHERITE_SCRAP, ChatColor.AQUA + "Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.get(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))));
       }
-      menu.setItem(20, ItemCreator.createItem(Material.ECHO_SHARD, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));
+      menu.setItem(20, ItemCreator.createItem(Material.NETHERITE_INGOT, ChatColor.AQUA + "Max Reinforcement", List.of(ChatColor.WHITE + "" + itemTags.getOrDefault(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, 0))));
     }
   }
 
@@ -206,9 +206,9 @@ public class CosmeticMenu implements Menu {
     if (meta instanceof PotionMeta) {
       menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
     }
-    menu.setItem(23, ItemCreator.createItem(Material.SUGAR, ChatColor.AQUA + "Passive Abilities"));
-    menu.setItem(24, ItemCreator.createItem(Material.BLAZE_POWDER, ChatColor.AQUA + "Active Abilities"));
-    menu.setItem(25, ItemCreator.createItem(Material.RABBIT_FOOT, ChatColor.AQUA + "Aethel Tags"));
+    menu.setItem(23, ItemCreator.createItem(Material.REDSTONE, ChatColor.AQUA + "Passive Abilities"));
+    menu.setItem(24, ItemCreator.createItem(Material.GLOWSTONE_DUST, ChatColor.AQUA + "Active Abilities"));
+    menu.setItem(25, ItemCreator.createItem(Material.NETHER_STAR, ChatColor.AQUA + "Plugin Tags"));
   }
 
   /**
@@ -248,7 +248,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ARMOR_TRIM);
     String armorTrim = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(41, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Armor Trim", List.of(armorTrim)));
+    Objects.requireNonNull(menu, "Null menu").setItem(41, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Armor Trim", List.of(armorTrim)));
   }
 
   /**
@@ -261,7 +261,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES);
     String attributes = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(42, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(attributes)));
+    Objects.requireNonNull(menu, "Null menu").setItem(42, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Attributes", List.of(attributes)));
   }
 
   /**
@@ -274,7 +274,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DESTROYS);
     String destroys = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(43, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Destroys", List.of(destroys)));
+    Objects.requireNonNull(menu, "Null menu").setItem(43, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Destroys", List.of(destroys)));
   }
 
   /**
@@ -287,7 +287,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_DYE);
     String dye = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(44, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Dye", List.of(dye)));
+    Objects.requireNonNull(menu, "Null menu").setItem(44, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Dye", List.of(dye)));
   }
 
   /**
@@ -300,7 +300,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
     String enchants = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(50, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Enchants", List.of(enchants)));
+    Objects.requireNonNull(menu, "Null menu").setItem(50, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Enchants", List.of(enchants)));
   }
 
   /**
@@ -313,7 +313,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON);
     String placedOn = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(51, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Placed On", List.of(placedOn)));
+    Objects.requireNonNull(menu, "Null menu").setItem(51, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Placed On", List.of(placedOn)));
   }
 
   /**
@@ -326,7 +326,7 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS);
     String potionEffects = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(52, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
+    Objects.requireNonNull(menu, "Null menu").setItem(52, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
   }
 
   /**
@@ -339,6 +339,6 @@ public class CosmeticMenu implements Menu {
     Objects.requireNonNull(meta, "Null meta");
     boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE);
     String unbreakable = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
-    Objects.requireNonNull(menu, "Null menu").setItem(53, ItemCreator.createItem(disabled ? Material.RED_DYE : Material.GREEN_DYE, ChatColor.AQUA + "Hide Unbreakable", List.of(unbreakable)));
+    Objects.requireNonNull(menu, "Null menu").setItem(53, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Unbreakable", List.of(unbreakable)));
   }
 }

@@ -357,7 +357,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag set operation.
        *
        * @author Danny Nguyen
-       * @version 1.23.15
+       * @version 1.24.9
        * @since 1.23.12
        */
       private class TagSet {
@@ -584,8 +584,9 @@ public class ItemTagCommand implements CommandExecutor {
         private void readPassiveChainDamage(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
           switch (trigger.getCondition()) {
-            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownChainDamage(user, args));
-            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownChainDamage(user, args));
+            case COOLDOWN -> setPassiveTag(PassiveAbilityInput.ChainDamage.cooldownChainDamage(user, args));
+            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.ChainDamage.chanceCooldownChainDamage(user, args));
+            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.ChainDamage.healthCooldownChainDamage(user, args));
           }
         }
 
@@ -599,8 +600,9 @@ public class ItemTagCommand implements CommandExecutor {
         private void readPassivePotionEffect(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
           switch (trigger.getCondition()) {
-            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownPotionEffect(user, args, trigger));
-            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownPotionEffect(user, args));
+            case COOLDOWN ->  setPassiveTag(PassiveAbilityInput.PotionEffect.cooldownPotionEffect(user, args));
+            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.chanceCooldownPotionEffect(user, args, trigger));
+            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.healthCooldownPotionEffect(user, args));
           }
         }
 
@@ -614,8 +616,9 @@ public class ItemTagCommand implements CommandExecutor {
         private void readPassiveStackInstance(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
           switch (trigger.getCondition()) {
-            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.chanceCooldownStackInstance(user, args, trigger));
-            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.healthCooldownStackInstance(user, args));
+            case COOLDOWN -> setPassiveTag(PassiveAbilityInput.StackInstance.cooldownStackInstance(user, args));
+            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.StackInstance.chanceCooldownStackInstance(user, args, trigger));
+            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.StackInstance.healthCooldownStackInstance(user, args));
           }
         }
 

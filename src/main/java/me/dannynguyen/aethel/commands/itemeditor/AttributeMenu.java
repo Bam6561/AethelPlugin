@@ -28,7 +28,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.24.6
+ * @version 1.24.9
  * @since 1.7.0
  */
 public class AttributeMenu implements Menu {
@@ -37,7 +37,7 @@ public class AttributeMenu implements Menu {
    */
   private static final Map<Category, Attribute[]> attributeCategories = Map.of(
       Category.OFFENSE, new Attribute[]{Attribute.GENERIC_ATTACK_DAMAGE, Attribute.GENERIC_ATTACK_SPEED},
-      Category.DEFENSE, new Attribute[]{Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ARMOR, Attribute.GENERIC_ARMOR_TOUGHNESS, Attribute.GENERIC_KNOCKBACK_RESISTANCE},
+      Category.DEFENSE, new Attribute[]{Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ARMOR_TOUGHNESS, Attribute.GENERIC_ARMOR, Attribute.GENERIC_KNOCKBACK_RESISTANCE},
       Category.MISCELLANEOUS, new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK});
 
   /**
@@ -125,7 +125,7 @@ public class AttributeMenu implements Menu {
     menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(36, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));
+    menu.setItem(36, ItemCreator.createItem(Material.TOTEM_OF_UNDYING, ChatColor.GREEN + "Other"));
   }
 
   /**

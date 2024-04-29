@@ -24,7 +24,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's {@link Key Aethel tags}.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.24.9
  * @since 1.6.15
  */
 public class TagMenu implements Menu {
@@ -93,8 +93,8 @@ public class TagMenu implements Menu {
     for (NamespacedKey tag : aethelTags) {
       boolean disabled = !itemTags.has(tag, PersistentDataType.STRING);
       menu.setItem(invSlot, disabled ?
-          ItemCreator.createItem(Material.ENDER_PEARL, ChatColor.AQUA + tag.getKey().substring(7)) :
-          ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + tag.getKey().substring(7), List.of(ChatColor.WHITE + itemTags.get(tag, PersistentDataType.STRING))));
+          ItemCreator.createItem(Material.SMALL_AMETHYST_BUD, ChatColor.AQUA + tag.getKey().substring(7)) :
+          ItemCreator.createItem(Material.AMETHYST_CLUSTER, ChatColor.AQUA + tag.getKey().substring(7), List.of(ChatColor.WHITE + itemTags.get(tag, PersistentDataType.STRING))));
       invSlot++;
     }
   }

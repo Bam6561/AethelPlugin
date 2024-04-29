@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.24.6
+ * @version 1.24.9
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -216,7 +216,8 @@ public class ItemEditorMenuClick implements MenuClick {
       case 18 -> new PassiveChange().setTrigger(PassiveTriggerType.BELOW_HEALTH);
       case 19 -> new PassiveChange().setTrigger(PassiveTriggerType.DAMAGE_DEALT);
       case 20 -> new PassiveChange().setTrigger(PassiveTriggerType.DAMAGE_TAKEN);
-      case 21 -> new PassiveChange().setTrigger(PassiveTriggerType.ON_KILL);
+      case 21 -> new PassiveChange().setTrigger(PassiveTriggerType.INTERVAL);
+      case 22 -> new PassiveChange().setTrigger(PassiveTriggerType.ON_KILL);
       default -> new PassiveChange().readPassive();
     }
   }
@@ -813,7 +814,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.24.5
+   * @version 1.24.9
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -989,6 +990,28 @@ public class ItemEditorMenuClick implements MenuClick {
 
         abilityLore.append(ChatColor.DARK_AQUA);
         switch (triggerType.getCondition()) {
+          case COOLDOWN -> {
+            addTriggerLore(abilityLore, triggerType);
+            // Cooldown
+            if (!abilityData[0].equals("0")) {
+              abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+            }
+            switch (effect) {
+              case BUFF -> {
+                String attributeName = abilityData[2];
+                if (attributeName.startsWith("generic_")) {
+                  attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
+                }
+                abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[3]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[4])).append("s) [").append(abilityData[1].equals("true") ? "Self]" : "Target]");
+              }
+              case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[3])).append("s)");
+              case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(abilityData[3]).append("m)");
+              case POTION_EFFECT -> {
+                int amplifier = Integer.parseInt(abilityData[3]) + 1;
+                abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[2]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[4])).append("s) [").append(abilityData[1].equals("true") ? "Self]" : "Target]");
+              }
+            }
+          }
           case CHANCE_COOLDOWN -> {
             addTriggerLore(abilityLore, triggerType);
             // Chance
@@ -1206,6 +1229,7 @@ public class ItemEditorMenuClick implements MenuClick {
       switch (passiveTriggerType) {
         case DAMAGE_DEALT -> abilityLore.append("Damage Dealt: ");
         case DAMAGE_TAKEN -> abilityLore.append("Damage Taken: ");
+        case INTERVAL -> abilityLore.append("Interval: ");
         case ON_KILL -> abilityLore.append("On Kill: ");
       }
     }

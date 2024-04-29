@@ -444,7 +444,7 @@ public class CharacterMenuClick implements MenuClick {
    * Represents a settings change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.10
+   * @version 1.24.9
    * @since 1.23.10
    */
   private class SettingsChange {
@@ -461,10 +461,10 @@ public class CharacterMenuClick implements MenuClick {
       Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
       Inventory menu = e.getInventory();
       if (settings.isHealthBarVisible()) {
-        menu.setItem(18, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Bar"));
+        menu.setItem(18, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Bar"));
         user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
       } else {
-        menu.setItem(18, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Bar"));
+        menu.setItem(18, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Bar"));
         user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
       }
       settings.toggleHealthBarVisibility();
@@ -477,10 +477,10 @@ public class CharacterMenuClick implements MenuClick {
       Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
       Inventory menu = e.getInventory();
       if (settings.isHealthActionVisible()) {
-        menu.setItem(19, ItemCreator.createItem(Material.RED_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+        menu.setItem(19, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
         user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
       } else {
-        menu.setItem(19, ItemCreator.createItem(Material.LIME_WOOL, ChatColor.AQUA + "Display Health Action Bar"));
+        menu.setItem(19, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
         user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
       }
       settings.toggleHealthActionVisibility();

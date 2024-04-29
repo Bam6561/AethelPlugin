@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
  * handle various requests given to it by its users and the server.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.24.9
  * @since 1.0.0
  */
 public class Plugin extends JavaPlugin {
@@ -142,7 +142,8 @@ public class Plugin extends JavaPlugin {
     BukkitScheduler scheduler = Bukkit.getScheduler();
     PluginTask pluginTask = new PluginTask();
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerStatuses, 0, 20);
-    scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerBelowHealthPassives, 5, 20);
+    scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerIntervalPassives, 5, 20);
+    scheduler.scheduleSyncRepeatingTask(this, pluginTask::triggerBelowHealthPassives, 10, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::decayOvershields, 10, 20);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::updateActionDisplay, 0, 40);
     scheduler.scheduleSyncRepeatingTask(this, pluginTask::trackLocations, 0, 50);

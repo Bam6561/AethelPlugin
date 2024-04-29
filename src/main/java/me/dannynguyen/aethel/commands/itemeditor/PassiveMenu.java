@@ -30,7 +30,7 @@ import java.util.*;
  * an item's {@link Key#PASSIVE_LIST passive abilities}.
  *
  * @author Danny Nguyen
- * @version 1.24.2
+ * @version 1.24.9
  * @since 1.15.1
  */
 public class PassiveMenu implements Menu {
@@ -129,15 +129,15 @@ public class PassiveMenu implements Menu {
             String passiveValue = itemTags.get(passiveKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slotCondition.getSlot() + " " + slotCondition.getCondition() + ": " + passiveValue));
           }
-          menu.setItem(invSlot, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + passiveName, lore));
+          menu.setItem(invSlot, ItemCreator.createItem(Material.REDSTONE_TORCH, ChatColor.AQUA + passiveName, lore));
         } else {
-          menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passiveName));
+          menu.setItem(invSlot, ItemCreator.createItem(Material.REDSTONE, ChatColor.AQUA + passiveName));
         }
         invSlot++;
       }
     } else {
       for (PassiveAbilityType passiveAbilityType : PassiveAbilityType.values()) {
-        menu.setItem(invSlot, ItemCreator.createItem(Material.RAW_IRON, ChatColor.AQUA + passiveAbilityType.getProperName()));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.REDSTONE, ChatColor.AQUA + passiveAbilityType.getProperName()));
         invSlot++;
       }
     }
@@ -168,10 +168,11 @@ public class PassiveMenu implements Menu {
    * Adds {@link PassiveTriggerType} buttons.
    */
   private void addTriggers() {
-    menu.setItem(18, ItemCreator.createItem(Material.BEETROOT_SOUP, ChatColor.AQUA + "Below % HP"));
-    menu.setItem(19, ItemCreator.createItem(Material.RED_DYE, ChatColor.AQUA + "Damage Dealt"));
-    menu.setItem(20, ItemCreator.createItem(Material.GRAY_DYE, ChatColor.AQUA + "Damage Taken"));
-    menu.setItem(21, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "Kill"));
+    menu.setItem(18, ItemCreator.createItem(Material.BEETROOT, ChatColor.AQUA + "Below % HP"));
+    menu.setItem(19, ItemCreator.createItem(Material.BLAZE_POWDER, ChatColor.AQUA + "Damage Dealt"));
+    menu.setItem(20, ItemCreator.createItem(Material.PUFFERFISH, ChatColor.AQUA + "Damage Taken"));
+    menu.setItem(21, ItemCreator.createItem(Material.EGG, ChatColor.AQUA + "Interval"));
+    menu.setItem(22, ItemCreator.createItem(Material.BONE, ChatColor.AQUA + "On Kill"));
   }
 
   /**

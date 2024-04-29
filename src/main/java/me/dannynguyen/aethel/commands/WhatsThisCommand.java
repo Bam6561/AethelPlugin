@@ -64,7 +64,7 @@ public class WhatsThisCommand implements CommandExecutor {
    * @param user command user
    * @param args user provided parameters
    * @author Danny Nguyen
-   * @version 1.23.12
+   * @version 1.24.9
    * @since 1.23.12
    */
   private record Request(Player user, String[] args) {
@@ -148,6 +148,7 @@ public class WhatsThisCommand implements CommandExecutor {
         case BELOW_HEALTH -> sendKeyWordDescription(user, KeyWord.BELOW_HEALTH);
         case DAMAGE_DEALT -> sendKeyWordDescription(user, KeyWord.DAMAGE_DEALT);
         case DAMAGE_TAKEN -> sendKeyWordDescription(user, KeyWord.DAMAGE_TAKEN);
+        case INTERVAL -> sendKeyWordDescription(user, KeyWord.INTERVAL);
         case ON_KILL -> sendKeyWordDescription(user, KeyWord.ON_KILL);
         case BUFF -> sendKeyWordDescription(user, KeyWord.BUFF);
         case CHAIN_DAMAGE -> sendKeyWordDescription(user, KeyWord.CHAIN_DAMAGE);
@@ -262,7 +263,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       PASSIVE_TRIGGERS(new String[]{
           ChatColor.GREEN + "Passive Triggers",
-          "Related: " + ChatColor.AQUA + "below health, damage dealt, damage taken, on kill"}),
+          "Related: " + ChatColor.AQUA + "below health, damage dealt, damage taken, interval, on kill"}),
 
       /**
        * {@link me.dannynguyen.aethel.rpg.abilities.PassiveAbility}
@@ -344,6 +345,7 @@ public class WhatsThisCommand implements CommandExecutor {
           ChatColor.GREEN + "Character",
           ChatColor.GRAY + "/character, /char, /c",
           ChatColor.GRAY + "RPG character sheet.",
+          ChatColor.GRAY + "Must have a spyglass in your hand, off-hand, or trinket slot to view others' character sheets.",
           ChatColor.GRAY + ": Opens a character sheet belonging to the user.",
           ChatColor.GRAY + "<playerName>: Opens a character sheet belonging to the player."
       }),
@@ -658,6 +660,14 @@ public class WhatsThisCommand implements CommandExecutor {
       DAMAGE_TAKEN(new String[]{
           ChatColor.GREEN + "Damage Taken",
           ChatColor.GRAY + "Activated when taking damage."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType#INTERVAL}
+       */
+      INTERVAL(new String[]{
+          ChatColor.GREEN + "Interval",
+          ChatColor.GRAY + "Activated on an interval."
       }),
 
       /**

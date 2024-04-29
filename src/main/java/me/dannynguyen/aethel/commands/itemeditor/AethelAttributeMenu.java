@@ -28,7 +28,7 @@ import java.util.*;
  * Represents a menu that edits an item's {@link Key#ATTRIBUTE_LIST Aethel attributes}.
  *
  * @author Danny Nguyen
- * @version 1.24.6
+ * @version 1.24.9
  * @since 1.14.1
  */
 public class AethelAttributeMenu implements Menu {
@@ -37,7 +37,7 @@ public class AethelAttributeMenu implements Menu {
    */
   private static final Map<Category, AethelAttribute[]> attributeCategories = Map.of(
       Category.OFFENSE, new AethelAttribute[]{AethelAttribute.CRITICAL_CHANCE, AethelAttribute.CRITICAL_DAMAGE, AethelAttribute.FEINT_SKILL, AethelAttribute.ACCURACY_SKILL},
-      Category.DEFENSE, new AethelAttribute[]{AethelAttribute.MAX_HEALTH, AethelAttribute.COUNTER_CHANCE, AethelAttribute.DODGE_CHANCE, AethelAttribute.ARMOR, AethelAttribute.ARMOR_TOUGHNESS},
+      Category.DEFENSE, new AethelAttribute[]{AethelAttribute.MAX_HEALTH, AethelAttribute.COUNTER_CHANCE, AethelAttribute.DODGE_CHANCE, AethelAttribute.ARMOR_TOUGHNESS, AethelAttribute.ARMOR},
       Category.MISCELLANEOUS, new AethelAttribute[]{AethelAttribute.ITEM_DAMAGE, AethelAttribute.ITEM_COOLDOWN, AethelAttribute.TENACITY});
 
   /**
@@ -126,7 +126,7 @@ public class AethelAttributeMenu implements Menu {
     menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "To remove a attribute, input \"-\".")));
     menu.setItem(18, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.GREEN + "Offense", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(27, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.GREEN + "Defense", ItemFlag.HIDE_ATTRIBUTES));
-    menu.setItem(36, ItemCreator.createItem(Material.SPYGLASS, ChatColor.GREEN + "Other"));
+    menu.setItem(36, ItemCreator.createItem(Material.TOTEM_OF_UNDYING, ChatColor.GREEN + "Other"));
   }
 
   /**
