@@ -34,7 +34,7 @@ public class PassiveAbilityInput {
    * @version 1.24.9
    * @since 1.24.9
    */
-  public class Buff {
+  public static class Buff {
     /**
      * Static methods only.
      */
@@ -249,7 +249,7 @@ public class PassiveAbilityInput {
    * @version 1.24.9
    * @since 1.24.9
    */
-  public class ChainDamage {
+  public static class ChainDamage {
     /**
      * Static methods only.
      */
@@ -443,7 +443,7 @@ public class PassiveAbilityInput {
    * @version 1.24.9
    * @since 1.24.9
    */
-  public class StackInstance {
+  public static class StackInstance {
     /**
      * Static methods only.
      */
@@ -453,8 +453,8 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}.
      *
-     * @param user    interacting user
-     * @param args    user provided parameters
+     * @param user interacting user
+     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
@@ -645,10 +645,10 @@ public class PassiveAbilityInput {
    * ability input.
    *
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.24.11
    * @since 1.24.9
    */
-  public class PotionEffect {
+  public static class PotionEffect {
     /**
      * Static methods only.
      */
@@ -658,8 +658,8 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}
      *
-     * @param user    interacting user
-     * @param args    user provided parameters
+     * @param user interacting user
+     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
@@ -697,7 +697,7 @@ public class PassiveAbilityInput {
           user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
           return null;
         }
-      } catch (NullPointerException ex) {
+      } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
         return null;
       }
@@ -712,15 +712,15 @@ public class PassiveAbilityInput {
         user.sendMessage(Message.INVALID_DURATION.getMessage());
         return null;
       }
-      boolean ambient;
+      boolean particles;
       switch (args[5]) {
-        case "true", "false" -> ambient = Boolean.parseBoolean(args[5]);
+        case "true", "false" -> particles = Boolean.parseBoolean(args[5]);
         default -> {
           user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
           return null;
         }
       }
-      return cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
+      return cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
     }
 
     /**
@@ -790,7 +790,7 @@ public class PassiveAbilityInput {
           user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
           return null;
         }
-      } catch (NullPointerException ex) {
+      } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
         return null;
       }
@@ -805,15 +805,15 @@ public class PassiveAbilityInput {
         user.sendMessage(Message.INVALID_DURATION.getMessage());
         return null;
       }
-      boolean ambient;
+      boolean particles;
       switch (args[6]) {
-        case "true", "false" -> ambient = Boolean.parseBoolean(args[6]);
+        case "true", "false" -> particles = Boolean.parseBoolean(args[6]);
         default -> {
           user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
           return null;
         }
       }
-      return chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
+      return chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
     }
 
     /**
@@ -869,7 +869,7 @@ public class PassiveAbilityInput {
           user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
           return null;
         }
-      } catch (NullPointerException ex) {
+      } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
         return null;
       }
@@ -884,15 +884,15 @@ public class PassiveAbilityInput {
         user.sendMessage(Message.INVALID_DURATION.getMessage());
         return null;
       }
-      boolean ambient;
+      boolean particles;
       switch (args[6]) {
-        case "true", "false" -> ambient = Boolean.parseBoolean(args[6]);
+        case "true", "false" -> particles = Boolean.parseBoolean(args[6]);
         default -> {
           user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
           return null;
         }
       }
-      return percentHealth + " " + cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
+      return percentHealth + " " + cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
     }
   }
 }

@@ -146,7 +146,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.24.4
+   * @version 1.24.11
    * @since 1.23.13
    */
   private class Effect {
@@ -459,9 +459,9 @@ public class ActiveAbility {
       PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(0));
       int amplifier = Integer.parseInt(effectData.get(1));
       int duration = Integer.parseInt(effectData.get(2));
-      boolean ambient = Boolean.parseBoolean(effectData.get(3));
+      boolean particles = Boolean.parseBoolean(effectData.get(3));
 
-      caster.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient));
+      caster.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, particles, particles));
 
       if (baseCooldown > 0) {
         setOnCooldown(true);

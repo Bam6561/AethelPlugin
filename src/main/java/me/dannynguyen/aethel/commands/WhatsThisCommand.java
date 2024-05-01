@@ -397,6 +397,7 @@ public class WhatsThisCommand implements CommandExecutor {
           ChatColor.GREEN + "PlayerStat",
           ChatColor.GRAY + "/playerstat, /stat, /ps",
           ChatColor.GRAY + "Gets player statistics.",
+          ChatColor.GRAY + "Must have a spyglass in your hand, off-hand, or trinket slot to view others' stats.",
           ChatColor.GRAY + ": Opens a player statistics menu belonging to the user.",
           ChatColor.GRAY + "<playerName>: Opens a player statistics menu belonging to the player."
       }),

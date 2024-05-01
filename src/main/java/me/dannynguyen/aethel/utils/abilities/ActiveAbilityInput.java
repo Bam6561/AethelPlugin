@@ -293,15 +293,15 @@ public class ActiveAbilityInput {
       user.sendMessage(Message.INVALID_DURATION.getMessage());
       return null;
     }
-    boolean ambient;
+    boolean particles;
     switch (args[4]) {
-      case "true", "false" -> ambient = Boolean.parseBoolean(args[4]);
+      case "true", "false" -> particles = Boolean.parseBoolean(args[4]);
       default -> {
         user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
         return null;
       }
     }
-    return cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + ambient;
+    return cooldown + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
   }
 
   /**

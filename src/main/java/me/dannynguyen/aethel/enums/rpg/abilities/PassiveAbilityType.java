@@ -160,7 +160,7 @@ public enum PassiveAbilityType {
     /**
      * Causes a potion effect to be applied.
      */
-    POTION_EFFECT("Self, PotionEffect, Amplifier, Duration(t), Ambient");
+    POTION_EFFECT("Self, PotionEffect, Amplifier, Duration(t), Particles");
 
     /**
      * Passive ability effect's data.

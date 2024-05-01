@@ -210,7 +210,7 @@ public class PassiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.23.13
+   * @version 1.24.11
    * @since 1.23.13
    */
   private class Effect {
@@ -349,10 +349,10 @@ public class PassiveAbility {
       PotionEffectType potionEffectType = PotionEffectType.getByName(effectData.get(1));
       int amplifier = Integer.parseInt(effectData.get(2));
       int duration = Integer.parseInt(effectData.get(3));
-      boolean ambient = Boolean.parseBoolean(effectData.get(4));
+      boolean particles = Boolean.parseBoolean(effectData.get(4));
       LivingEntity target = (LivingEntity) Bukkit.getEntity(targetUUID);
 
-      target.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, ambient));
+      target.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, particles, particles));
 
       int cooldown = Integer.parseInt(conditionData.get(1));
       if (cooldown > 0) {

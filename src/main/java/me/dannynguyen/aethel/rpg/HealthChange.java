@@ -32,7 +32,7 @@ import java.util.UUID;
  * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.24.8
+ * @version 1.24.11
  * @since 1.22.20
  */
 public class HealthChange {
@@ -40,9 +40,9 @@ public class HealthChange {
    * Totem of undying resurrection effects.
    */
   private static final Collection<PotionEffect> totemOfUndyingEffects = List.of(
-      new PotionEffect(PotionEffectType.ABSORPTION, 100, 1, true),
-      new PotionEffect(PotionEffectType.REGENERATION, 900, 1, true),
-      new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 800, 0, true)
+      new PotionEffect(PotionEffectType.ABSORPTION, 100, 1, true, true),
+      new PotionEffect(PotionEffectType.REGENERATION, 900, 1, true, true),
+      new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 800, 0, true, true)
   );
 
   /**

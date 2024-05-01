@@ -681,7 +681,7 @@ public class ItemEditorMenuClick implements MenuClick {
      */
     private void readEffect() {
       String potionEffect = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and ambient.");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and particle visibility");
       Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setObjectType(TextFormatter.formatId(potionEffect));
       awaitMessageInput(MessageListener.Type.ITEMEDITOR_POTION_EFFECT);
     }

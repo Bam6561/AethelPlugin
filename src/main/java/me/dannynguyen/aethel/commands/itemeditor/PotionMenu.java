@@ -8,6 +8,7 @@ import me.dannynguyen.aethel.utils.TextFormatter;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -24,7 +25,7 @@ import java.util.*;
  * Represents a menu that edits an item's potion effects.
  *
  * @author Danny Nguyen
- * @version 1.24.5
+ * @version 1.24.11
  * @since 1.14.0
  */
 public class PotionMenu implements Menu {
@@ -100,7 +101,13 @@ public class PotionMenu implements Menu {
    * Adds potion color.
    */
   private void addColor() {
-    menu.setItem(5, ItemCreator.createItem(Material.NETHER_WART, ChatColor.AQUA + "Set Color"));
+    PotionMeta potion = (PotionMeta) item.getItemMeta();
+    if (potion.hasColor()) {
+      Color color = potion.getColor();
+      menu.setItem(5, ItemCreator.createItem(Material.NETHER_WART, ChatColor.AQUA + "Set Color", List.of("" + ChatColor.RED + color.getRed() + " " + ChatColor.GREEN + color.getGreen() + " " + ChatColor.BLUE + color.getBlue())));
+    } else {
+      menu.setItem(5, ItemCreator.createItem(Material.NETHER_WART, ChatColor.AQUA + "Set Color", List.of()));
+    }
   }
 
   /**
@@ -131,7 +138,7 @@ public class PotionMenu implements Menu {
     List<String> lore = new ArrayList<>(List.of(
         ChatColor.WHITE + "Base potion effects cannot be modified.",
         ChatColor.WHITE + "To add an effect, input the duration in",
-        ChatColor.WHITE + "ticks, amplifier, and ambient (true/false).",
+        ChatColor.WHITE + "ticks, amplifier, and particles (true/false).",
         ChatColor.WHITE + "To remove an effect, input \"-\"."
     ));
     menu.setItem(2, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", lore));

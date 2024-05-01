@@ -45,7 +45,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.24.5
+ * @version 1.24.11
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -435,11 +435,10 @@ public class ItemEditorMessageSent {
         new MenuChange().returnToPotion();
         return;
       }
-
       switch (input[2]) {
         case "true", "false" -> {
-          boolean ambient = Boolean.parseBoolean(input[2]);
-          PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, ambient);
+          boolean particles = Boolean.parseBoolean(input[2]);
+          PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier, particles, particles);
           potion.addCustomEffect(potionEffect, true);
           user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(potionEffectKey.getKey()) + "] " + ChatColor.WHITE + e.getMessage());
         }

@@ -26,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.24.9
+ * @version 1.24.11
  * @since 1.22.2
  */
 public class PluginTask {
@@ -236,14 +236,14 @@ public class PluginTask {
     for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FALL)) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, true, false));
       }
     }
     for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FIRE)) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
         player.setFireTicks(-20);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 101, 0, true, false));
       }
     }
   }

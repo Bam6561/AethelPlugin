@@ -255,7 +255,7 @@ public enum ActiveAbilityType {
     /**
      * Applies a potion effect.
      */
-    POTION_EFFECT("Cooldown(t), PotionEffect, Amplifier, Duration(t), Ambient"),
+    POTION_EFFECT("Cooldown(t), PotionEffect, Amplifier, Duration(t), Particles"),
 
     /**
      * Causes instant movement that returns to the original location after a delay.
