@@ -11,10 +11,20 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.23.17
+ * @version 1.24.12
  * @since 1.11.9
  */
 public enum Key {
+  /**
+   * Non-placeable item.
+   */
+  NON_PLACEABLE(new NamespacedKey(Plugin.getInstance(), KeyHeader.ITEM.getHeader() + "non_placeable")),
+
+  /**
+   * Non-consumable item.
+   */
+  NON_EDIBLE(new NamespacedKey(Plugin.getInstance(), KeyHeader.ITEM.getHeader() + "non_edible")),
+
   /**
    * Item {@link AethelAttribute} list.
    */

@@ -228,7 +228,7 @@ public class CharacterMenuClick implements MenuClick {
    * Represents an equipment change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.10
+   * @version 1.24.12
    * @since 1.23.10
    */
   private class EquipmentChange {
@@ -311,7 +311,10 @@ public class CharacterMenuClick implements MenuClick {
      * Equips the armor onto the user.
      */
     private void equipArmor() {
-      if (e.getCursor() != null && shulkerBoxes.contains(e.getCursor().getType())) {
+      if (e.getCursor() == null) {
+        return;
+      }
+      if (shulkerBoxes.contains(e.getCursor().getType())) {
         user.sendMessage(ChatColor.RED + "Cannot equip shulker boxes.");
         return;
       }
@@ -322,7 +325,10 @@ public class CharacterMenuClick implements MenuClick {
      * Equips a necklace onto the user.
      */
     private void equipNecklace() {
-      if (e.getCursor() != null && e.getCursor().getType() != Material.IRON_NUGGET) {
+      if (e.getCursor() == null) {
+        return;
+      }
+      if (e.getCursor().getType() != Material.IRON_NUGGET) {
         user.sendMessage(ChatColor.RED + "Necklace-only slot.");
         return;
       }
@@ -333,7 +339,10 @@ public class CharacterMenuClick implements MenuClick {
      * Equips a ring onto the user.
      */
     private void equipRing() {
-      if (e.getCursor() != null && e.getCursor().getType() != Material.GOLD_NUGGET) {
+      if (e.getCursor() == null) {
+        return;
+      }
+      if (e.getCursor().getType() != Material.GOLD_NUGGET) {
         user.sendMessage(ChatColor.RED + "Ring-only slot.");
         return;
       }

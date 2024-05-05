@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin key headers.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.24.12
  * @since 1.15.3
  */
 public enum KeyHeader {
@@ -14,6 +14,11 @@ public enum KeyHeader {
    * Plugin.
    */
   AETHEL("aethel."),
+
+  /**
+   * Tags describing an item's meta.
+   */
+  ITEM(AETHEL.getHeader() + "item."),
 
   /**
    * {@link me.dannynguyen.aethel.commands.aethelitem.ItemCommand}

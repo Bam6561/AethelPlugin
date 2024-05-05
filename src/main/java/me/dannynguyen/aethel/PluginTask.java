@@ -26,7 +26,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.24.11
+ * @version 1.24.12
  * @since 1.22.2
  */
 public class PluginTask {
@@ -256,7 +256,7 @@ public class PluginTask {
    */
   private void propagateElectrocuteStacks(LivingEntity sourceEntity, double remainingHealth) {
     Set<LivingEntity> nearbyLivingEntities = new HashSet<>();
-    for (Entity entity : sourceEntity.getNearbyEntities(4, 4, 4)) {
+    for (Entity entity : sourceEntity.getNearbyEntities(3, 3, 3)) {
       if (entity instanceof LivingEntity livingEntity) {
         nearbyLivingEntities.add(livingEntity);
       }

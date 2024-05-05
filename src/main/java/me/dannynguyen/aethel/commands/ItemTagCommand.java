@@ -90,7 +90,7 @@ public class ItemTagCommand implements CommandExecutor {
    * @param args user provided parameters
    * @param item interacting item
    * @author Danny Nguyen
-   * @version 1.23.12
+   * @version 1.24.12
    * @since 1.23.12
    */
   private record Request(Player user, String[] args, ItemStack item) {
@@ -148,6 +148,8 @@ public class ItemTagCommand implements CommandExecutor {
           }
         } else if (keyName.startsWith("rpg.")) {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.INTEGER)).append(" ");
+        } else if (keyName.startsWith("item.")) {
+          aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.BOOLEAN)).append(" ");
         } else {
           aethelTags.append(ChatColor.AQUA).append(keyName).append(" ").append(ChatColor.WHITE).append(itemTags.get(key, PersistentDataType.STRING)).append(" ");
         }
@@ -600,7 +602,7 @@ public class ItemTagCommand implements CommandExecutor {
         private void readPassivePotionEffect(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
           switch (trigger.getCondition()) {
-            case COOLDOWN ->  setPassiveTag(PassiveAbilityInput.PotionEffect.cooldownPotionEffect(user, args));
+            case COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.cooldownPotionEffect(user, args));
             case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.chanceCooldownPotionEffect(user, args, trigger));
             case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.healthCooldownPotionEffect(user, args));
           }

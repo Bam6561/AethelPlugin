@@ -104,17 +104,17 @@ public enum PassiveTriggerType {
     /**
      * Cooldown.
      */
-    COOLDOWN("Cooldown(t)"),
+    COOLDOWN("Cooldown(t),"),
 
     /**
      * Chance and cooldown.
      */
-    CHANCE_COOLDOWN("% Chance, Cooldown(t)"),
+    CHANCE_COOLDOWN("% Chance, Cooldown(t),"),
 
     /**
      * % of max HP and cooldown.
      */
-    HEALTH_COOLDOWN("% HP, Cooldown(t)");
+    HEALTH_COOLDOWN("% HP, Cooldown(t),");
 
     /**
      * Trigger condition's data.

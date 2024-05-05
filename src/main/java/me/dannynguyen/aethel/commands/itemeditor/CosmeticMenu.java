@@ -30,7 +30,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.24.9
+ * @version 1.24.12
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -91,6 +91,8 @@ public class CosmeticMenu implements Menu {
     addLore();
     addGameplay();
     addItemFlags();
+    addNonPlaceable(menu, item);
+    addNonEdible(menu, item);
     addUnbreakable(menu, meta);
     addContext();
     return menu;
@@ -223,6 +225,44 @@ public class CosmeticMenu implements Menu {
     addHidePlacedOn(menu, meta);
     addHidePotionEffects(menu, meta);
     addHideUnbreakable(menu, meta);
+  }
+
+  /**
+   * Adds the non-placeable toggle button.
+   *
+   * @param menu Cosmetic menu
+   * @param item interacting item
+   */
+  protected static void addNonPlaceable(@NotNull Inventory menu, @NotNull ItemStack item) {
+    Objects.requireNonNull(menu, "Null menu");
+    Objects.requireNonNull(item, "Null item");
+    if (item.getType().isBlock()) {
+      PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+      if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+        menu.setItem(6, ItemCreator.createItem(Material.BARRIER, ChatColor.AQUA + "Placeable", List.of(ChatColor.RED + "False")));
+      } else {
+        menu.setItem(6, ItemCreator.createItem(Material.GRASS_BLOCK, ChatColor.AQUA + "Placeable", List.of(ChatColor.GREEN + "True")));
+      }
+    }
+  }
+
+  /**
+   * Adds the non-edible toggle button.
+   *
+   * @param menu Cosmetic menu
+   * @param item interacting item
+   */
+  protected static void addNonEdible(@NotNull Inventory menu, @NotNull ItemStack item) {
+    Objects.requireNonNull(menu, "Null menu");
+    Objects.requireNonNull(item, "Null item");
+    if (item.getType().isEdible()) {
+      PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+      if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+        menu.setItem(7, ItemCreator.createItem(Material.PUFFERFISH, ChatColor.AQUA + "Edible", List.of(ChatColor.RED + "False")));
+      } else {
+        menu.setItem(7, ItemCreator.createItem(Material.TROPICAL_FISH, ChatColor.AQUA + "Edible", List.of(ChatColor.GREEN + "True")));
+      }
+    }
   }
 
   /**

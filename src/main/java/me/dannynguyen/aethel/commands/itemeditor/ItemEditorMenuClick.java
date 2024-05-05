@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.24.9
+ * @version 1.24.12
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -103,6 +103,10 @@ public class ItemEditorMenuClick implements MenuClick {
     switch (slot) {
       case 0, 1 -> { // Color Code Context
       }
+      case 4 -> { // Item
+      }
+      case 6 -> new CosmeticChange().togglePlaceable();
+      case 7 -> new CosmeticChange().toggleEdible();
       case 9 -> new CosmeticChange().setDisplayName();
       case 10 -> new CosmeticChange().setCustomModelData();
       case 11 -> new CosmeticChange().setDurability();
@@ -356,7 +360,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * Represents an item's {@link CosmeticMenu} metadata change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.11
+   * @version 1.24.12
    * @since 1.23.11
    */
   private class CosmeticChange {
@@ -364,6 +368,38 @@ public class ItemEditorMenuClick implements MenuClick {
      * No parameter constructor.
      */
     CosmeticChange() {
+    }
+
+    /**
+     * Toggles an item's ability to be placed.
+     */
+    private void togglePlaceable() {
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+      if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+        itemTags.remove(Key.NON_PLACEABLE.getNamespacedKey());
+        user.sendMessage(ChatColor.GREEN + "[Set Placeable]");
+      } else {
+        itemTags.set(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
+        user.sendMessage(ChatColor.RED + "[Set Placeable]");
+      }
+      item.setItemMeta(meta);
+      CosmeticMenu.addNonPlaceable(menu, item);
+    }
+
+    /**
+     * Toggles an item's ability to be eaten.
+     */
+    private void toggleEdible() {
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+      if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+        itemTags.remove(Key.NON_EDIBLE.getNamespacedKey());
+        user.sendMessage(ChatColor.GREEN + "[Set Edible]");
+      } else {
+        itemTags.set(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN, true);
+        user.sendMessage(ChatColor.RED + "[Set Edible]");
+      }
+      item.setItemMeta(meta);
+      CosmeticMenu.addNonEdible(menu, item);
     }
 
     /**
@@ -418,12 +454,12 @@ public class ItemEditorMenuClick implements MenuClick {
      * Toggles an item's ability to be broken.
      */
     private void toggleUnbreakable() {
-      if (!meta.isUnbreakable()) {
-        meta.setUnbreakable(true);
-        user.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
-      } else {
+      if (meta.isUnbreakable()) {
         meta.setUnbreakable(false);
         user.sendMessage(ChatColor.RED + "[Set Unbreakable]");
+      } else {
+        meta.setUnbreakable(true);
+        user.sendMessage(ChatColor.GREEN + "[Set Unbreakable]");
       }
       item.setItemMeta(meta);
       CosmeticMenu.addUnbreakable(menu, meta);
@@ -490,10 +526,10 @@ public class ItemEditorMenuClick implements MenuClick {
       ItemFlag itemFlag = ItemFlag.valueOf(TextFormatter.formatEnum(itemFlagName));
       if (!meta.hasItemFlag(itemFlag)) {
         meta.addItemFlags(itemFlag);
-        user.sendMessage(ChatColor.GREEN + "[Hide " + itemFlagName + "]");
+        user.sendMessage(ChatColor.GREEN + "[" + itemFlagName + "]");
       } else {
         meta.removeItemFlags(itemFlag);
-        user.sendMessage(ChatColor.RED + "[Hide " + itemFlagName + "]");
+        user.sendMessage(ChatColor.RED + "[" + itemFlagName + "]");
       }
       item.setItemMeta(meta);
       switch (itemFlag) {
@@ -681,7 +717,7 @@ public class ItemEditorMenuClick implements MenuClick {
      */
     private void readEffect() {
       String potionEffect = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and particle visibility");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + TextFormatter.capitalizePhrase(potionEffect) + ChatColor.WHITE + " duration, amplifier, and particle visibility.");
       Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setObjectType(TextFormatter.formatId(potionEffect));
       awaitMessageInput(MessageListener.Type.ITEMEDITOR_POTION_EFFECT);
     }
@@ -814,7 +850,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.24.12
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -875,11 +911,14 @@ public class ItemEditorMenuClick implements MenuClick {
      * Generates an item's lore based on its {@link Key plugin-related data}.
      */
     private void generateLore() {
-      if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      if (meta.hasAttributeModifiers() || itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
         this.attributeValues = totalAttributeValues();
         addAttributeHeaders();
-        menu.setItem(42, ItemCreator.createItem(Material.GREEN_DYE, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
+        if (meta.hasAttributeModifiers()) {
+          meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+          menu.setItem(42, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Attributes", List.of(ChatColor.GREEN + "True")));
+        }
       }
 
       if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
@@ -892,6 +931,22 @@ public class ItemEditorMenuClick implements MenuClick {
         generatedLore = true;
         this.activeAbilities = sortActiveAbilities();
         addActiveHeaders();
+      }
+
+      if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+        if (generatedLore) {
+          lore.add("");
+        }
+        generatedLore = true;
+        lore.add(ChatColor.DARK_GRAY + "Non-Placeable");
+      }
+
+      if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+        if (generatedLore) {
+          lore.add("");
+        }
+        generatedLore = true;
+        lore.add(ChatColor.DARK_GRAY + "Non-Edible");
       }
 
       if (itemTags.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
@@ -932,7 +987,9 @@ public class ItemEditorMenuClick implements MenuClick {
       if (meta.hasAttributeModifiers()) {
         sortMinecraftAttributes(attributeValues);
       }
-      sortAethelAttributes(attributeValues);
+      if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        sortAethelAttributes(attributeValues);
+      }
       return attributeValues;
     }
 
@@ -945,7 +1002,7 @@ public class ItemEditorMenuClick implements MenuClick {
           List<String> header = new ArrayList<>(List.of(""));
           switch (eSlot) {
             case "head" -> header.add(ChatColor.GRAY + "When on Head:");
-            case "chest" -> header.add(ChatColor.GRAY + "When on Chest:");
+            case "chest" -> header.add(ChatColor.GRAY + "When on Body:");
             case "legs" -> header.add(ChatColor.GRAY + "When on Legs:");
             case "feet" -> header.add(ChatColor.GRAY + "When on Feet:");
             case "necklace" -> header.add(ChatColor.GRAY + "When on Necklace:");
@@ -956,15 +1013,22 @@ public class ItemEditorMenuClick implements MenuClick {
           DecimalFormat df3 = new DecimalFormat();
           df3.setMaximumFractionDigits(3);
           for (String attribute : attributeValues.get(eSlot).keySet()) {
-            switch (attribute) {
-              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> header.add(ChatColor.BLUE + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + "% " + TextFormatter.capitalizePhrase(attribute));
-              default -> header.add(ChatColor.BLUE + "+" + df3.format(attributeValues.get(eSlot).get(attribute)) + " " + TextFormatter.capitalizePhrase(attribute));
+            StringBuilder line = new StringBuilder();
+            double attributeValue = attributeValues.get(eSlot).get(attribute);
+            if (attributeValue < 0) {
+              line.append(ChatColor.BLUE);
+            } else {
+              line.append(ChatColor.BLUE).append("+");
             }
+            switch (attribute) {
+              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> line.append(df3.format(attributeValue)).append("% ").append(TextFormatter.capitalizePhrase(attribute));
+              default -> line.append(df3.format(attributeValue)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
+            }
+            header.add(line.toString());
           }
           lore.addAll(header);
         }
       }
-      meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
     }
 
     /**
