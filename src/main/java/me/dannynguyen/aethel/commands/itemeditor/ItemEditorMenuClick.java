@@ -850,7 +850,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * {@link Key#ACTIVE_LIST active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.24.12
+   * @version 1.24.13
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -933,28 +933,33 @@ public class ItemEditorMenuClick implements MenuClick {
         addActiveHeaders();
       }
 
-      if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
-        if (generatedLore) {
-          lore.add("");
-        }
-        generatedLore = true;
-        lore.add(ChatColor.DARK_GRAY + "Non-Placeable");
-      }
-
-      if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
-        if (generatedLore) {
-          lore.add("");
-        }
-        generatedLore = true;
-        lore.add(ChatColor.DARK_GRAY + "Non-Edible");
-      }
-
       if (itemTags.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
         if (generatedLore) {
           lore.add("");
         }
+        if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+          lore.add(ChatColor.DARK_GRAY + "Non-Placeable");
+        }
+        if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+          lore.add(ChatColor.DARK_GRAY + "Non-Edible");
+        }
         generatedLore = true;
         lore.add(ChatColor.DARK_GRAY + "aethel:" + itemTags.get(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING));
+      } else {
+        if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+          if (generatedLore) {
+            lore.add("");
+          }
+          generatedLore = true;
+          lore.add(ChatColor.DARK_GRAY + "Non-Placeable");
+        }
+        if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+          if (generatedLore) {
+            lore.add("");
+          }
+          generatedLore = true;
+          lore.add(ChatColor.DARK_GRAY + "Non-Edible");
+        }
       }
 
       boolean hasReinforcementTags = itemTags.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER) && itemTags.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);

@@ -16,14 +16,154 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.24.9
+ * @version 1.24.13
  * @since 1.20.5
  */
 public class PassiveAbilityInput {
   /**
-   * Static methods only.
+   * Interacting user.
    */
-  private PassiveAbilityInput() {
+  private final Player user;
+
+  /**
+   * User provided parameters.
+   */
+  private final String[] args;
+
+  /**
+   * Ability cooldown.
+   */
+  private int cooldown;
+
+  /**
+   * Ability chance.
+   */
+  private double chance;
+
+  /**
+   * Ability health percent.
+   */
+  private double healthPercent;
+
+  /**
+   * Ability target.
+   */
+  private boolean self;
+
+  /**
+   * Associates the passive ability input with its user and parameters.
+   *
+   * @param user interacting user
+   * @param args user provided parameters
+   */
+  public PassiveAbilityInput(@NotNull Player user, @NotNull String[] args) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    this.args = Objects.requireNonNull(args, "Null args");
+  }
+
+  /**
+   * Returns if the number of parameters is invalid.
+   *
+   * @param validLength correct number of parameters
+   * @return if the number of parameters is invalid
+   */
+  private boolean invalidParameters(int validLength) {
+    if (args.length != validLength) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets the ability cooldown and returns if the ability cooldown is invalid.
+   *
+   * @param i parameter index
+   * @return if the ability cooldown is invalid
+   */
+  private boolean invalidCooldown(int i) {
+    try {
+      cooldown = Integer.parseInt(args[i]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return true;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets the ability chance and returns if the ability chance is invalid.
+   *
+   * @param i parameter index
+   * @return if the ability chance is invalid
+   */
+  private boolean invalidChance(int i) {
+    try {
+      chance = Double.parseDouble(args[i]);
+      if (chance < 0 || 100 < chance) {
+        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+        return true;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_CHANCE.getMessage());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets the ability health percent and returns if the ability health percent is invalid.
+   *
+   * @param i parameter index
+   * @return if the health percent is invalid
+   */
+  private boolean invalidHealthPercent(int i) {
+    try {
+      healthPercent = Double.parseDouble(args[i]);
+      if (healthPercent < 0) {
+        user.sendMessage(Message.INVALID_HEALTH.getMessage());
+        return true;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_HEALTH.getMessage());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Returns if the target is not true.
+   *
+   * @param i parameter index
+   * @return if the target is not true
+   */
+  private boolean invalidSelf(int i) {
+    if (!args[i].equals("true")) {
+      user.sendMessage(Message.TRUE_ONLY.getMessage());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets the target and returns if the target is not boolean.
+   *
+   * @param i parameter index
+   * @return if the target is not true
+   */
+  private boolean invalidBoolean(int i) {
+    switch (args[i]) {
+      case "true", "false" -> self = Boolean.parseBoolean(args[i]);
+      default -> {
+        user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -31,69 +171,54 @@ public class PassiveAbilityInput {
    * ability inputs.
    *
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.24.13
    * @since 1.24.9
    */
-  public static class Buff {
+  public class Buff {
     /**
-     * Static methods only.
+     * Buff attribute.
      */
-    private Buff() {
+    private String attribute;
+
+    /**
+     * Buff value.
+     */
+    private double value;
+
+    /**
+     * Buff duration.
+     */
+    private int duration;
+
+    /**
+     * No parameter constructor.
+     */
+    public Buff() {
     }
 
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String cooldownBuff(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 5) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String cooldown() {
+      if (invalidParameters(5)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[0]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(0)) {
         return null;
       }
-      // Self
-      if (!args[1].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
+      if (invalidSelf(1)) {
         return null;
       }
-      String attribute = args[2];
-      try {
-        Attribute.valueOf(args[2].toUpperCase());
-      } catch (IllegalArgumentException ex1) {
-        try {
-          AethelAttribute.valueOf(args[3].toUpperCase());
-        } catch (IllegalArgumentException ex2) {
-          user.sendMessage(Message.INVALID_ATTRIBUTE.getMessage());
-          return null;
-        }
-      }
-      double value;
-      try {
-        value = Double.parseDouble(args[3]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_VALUE.getMessage());
+      if (invalidAttribute(2)) {
         return null;
       }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[4]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
+      if (invalidValue(3)) {
+        return null;
+      }
+      if (invalidDuration(4)) {
         return null;
       }
       return cooldown + " " + true + " " + attribute + " " + value + " " + duration;
@@ -102,70 +227,29 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String chanceCooldownBuff(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 6) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String chanceCooldown() {
+      if (invalidParameters(6)) {
         return null;
       }
-      double chance;
-      try {
-        chance = Double.parseDouble(args[0]);
-        if (chance < 0 || 100 < chance) {
-          user.sendMessage(Message.INVALID_CHANCE.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+      if (invalidChance(0)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(1)) {
         return null;
       }
-      boolean self;
-      switch (args[2]) {
-        case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-        default -> {
-          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-          return null;
-        }
-      }
-      String attribute = args[3];
-      try {
-        Attribute.valueOf(args[3].toUpperCase());
-      } catch (IllegalArgumentException ex1) {
-        try {
-          AethelAttribute.valueOf(args[3].toUpperCase());
-        } catch (IllegalArgumentException ex2) {
-          user.sendMessage(Message.INVALID_ATTRIBUTE.getMessage());
-          return null;
-        }
-      }
-      double value;
-      try {
-        value = Double.parseDouble(args[4]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_VALUE.getMessage());
+      if (invalidBoolean(2)) {
         return null;
       }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[5]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
+      if (invalidAttribute(3)) {
+        return null;
+      }
+      if (invalidValue(4)) {
+        return null;
+      }
+      if (invalidDuration(5)) {
         return null;
       }
       return chance + " " + cooldown + " " + self + " " + attribute + " " + value + " " + duration;
@@ -174,70 +258,85 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String healthCooldownBuff(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 6) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String healthCooldown() {
+      if (invalidParameters(6)) {
         return null;
       }
-      double percentHealth;
+      if (invalidHealthPercent(0)) {
+        return null;
+      }
+      if (invalidCooldown(1)) {
+        return null;
+      }
+      if (invalidSelf(2)) {
+        return null;
+      }
+      if (invalidAttribute(3)) {
+        return null;
+      }
+      if (invalidValue(4)) {
+        return null;
+      }
+      if (invalidDuration(5)) {
+        return null;
+      }
+      return healthPercent + " " + cooldown + " " + true + " " + attribute + " " + value + " " + duration;
+    }
+
+    /**
+     * Returns if the attribute is invalid.
+     *
+     * @param i parameter index
+     * @return if the attribute is invalid
+     */
+    private boolean invalidAttribute(int i) {
+      attribute = args[i];
       try {
-        percentHealth = Double.parseDouble(args[0]);
-        if (percentHealth < 0 || 100 < percentHealth) {
-          user.sendMessage(Message.INVALID_HEALTH.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_HEALTH.getMessage());
-        return null;
-      }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-      // Self
-      if (!args[2].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
-        return null;
-      }
-      String attribute = args[3];
-      try {
-        Attribute.valueOf(args[3].toUpperCase());
+        Attribute.valueOf(args[i].toUpperCase());
       } catch (IllegalArgumentException ex1) {
         try {
-          AethelAttribute.valueOf(args[3].toUpperCase());
+          AethelAttribute.valueOf(args[i].toUpperCase());
         } catch (IllegalArgumentException ex2) {
           user.sendMessage(Message.INVALID_ATTRIBUTE.getMessage());
-          return null;
+          return true;
         }
       }
-      double value;
+      return false;
+    }
+
+    /**
+     * Returns if the buff value is invalid.
+     *
+     * @param i parameter index
+     * @return if the buff value is invalid
+     */
+    private boolean invalidValue(int i) {
       try {
-        value = Double.parseDouble(args[4]);
+        value = Double.parseDouble(args[i]);
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_VALUE.getMessage());
-        return null;
+        return true;
       }
-      int duration;
+      return false;
+    }
+
+    /**
+     * Returns if the buff duration is invalid.
+     *
+     * @param i parameter index
+     * @return if the buff duration is invalid
+     */
+    private boolean invalidDuration(int i) {
       try {
-        duration = Integer.parseInt(args[5]);
+        duration = Integer.parseInt(args[i]);
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_DURATION.getMessage());
-        return null;
+        return true;
       }
-      return percentHealth + " " + cooldown + " " + true + " " + attribute + " " + value + " " + duration;
+      return false;
     }
   }
 
@@ -246,62 +345,46 @@ public class PassiveAbilityInput {
    * ability input.
    *
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.24.13
    * @since 1.24.9
    */
-  public static class ChainDamage {
+  public class ChainDamage {
     /**
-     * Static methods only.
+     * Chain damage.
      */
-    private ChainDamage() {
+    private double damage;
+
+    /**
+     * Chain radius.
+     */
+    private double radius;
+
+    /**
+     * No parameter constructor.
+     */
+    public ChainDamage() {
     }
 
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String cooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 4) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String cooldown() {
+      if (invalidParameters(4)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[0]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(0)) {
         return null;
       }
-      // Self
-      if (!args[1].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
+      if (invalidSelf(1)) {
         return null;
       }
-      double damage;
-      try {
-        damage = Integer.parseInt(args[2]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+      if (invalidDamage(2)) {
         return null;
       }
-      double radius;
-      try {
-        radius = Double.parseDouble(args[3]);
-        if (radius < 0 || 64 < radius) {
-          user.sendMessage(Message.INVALID_RADIUS.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_RADIUS.getMessage());
+      if (invalidRadius(3)) {
         return null;
       }
       return cooldown + " " + true + " " + damage + " " + radius;
@@ -310,63 +393,26 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String chanceCooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 5) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String chanceCooldown() {
+      if (invalidParameters(5)) {
         return null;
       }
-      double chance;
-      try {
-        chance = Double.parseDouble(args[0]);
-        if (chance < 0 || 100 < chance) {
-          user.sendMessage(Message.INVALID_CHANCE.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+      if (invalidChance(0)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(1)) {
         return null;
       }
-      boolean self;
-      switch (args[2]) {
-        case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-        default -> {
-          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-          return null;
-        }
-      }
-      double damage;
-      try {
-        damage = Integer.parseInt(args[3]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DAMAGE.getMessage());
+      if (invalidBoolean(2)) {
         return null;
       }
-      double radius;
-      try {
-        radius = Double.parseDouble(args[4]);
-        if (radius < 0 || 64 < radius) {
-          user.sendMessage(Message.INVALID_RADIUS.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_RADIUS.getMessage());
+      if (invalidDamage(3)) {
+        return null;
+      }
+      if (invalidRadius(4)) {
         return null;
       }
       return chance + " " + cooldown + " " + self + " " + damage + " " + radius;
@@ -375,268 +421,65 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String healthCooldownChainDamage(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 5) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String healthCooldown() {
+      if (invalidParameters(5)) {
         return null;
       }
-      double percentHealth;
+      if (invalidHealthPercent(0)) {
+        return null;
+      }
+      if (invalidCooldown(1)) {
+        return null;
+      }
+      if (invalidSelf(2)) {
+        return null;
+      }
+      if (invalidDamage(3)) {
+        return null;
+      }
+      if (invalidRadius(4)) {
+        return null;
+      }
+      return healthPercent + " " + cooldown + " " + true + " " + damage + " " + radius;
+    }
+
+    /**
+     * Returns if the damage is invalid.
+     *
+     * @param i parameter index
+     * @return if the damage is invalid
+     */
+    private boolean invalidDamage(int i) {
       try {
-        percentHealth = Double.parseDouble(args[0]);
-        if (percentHealth < 0) {
-          user.sendMessage(Message.INVALID_HEALTH.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_HEALTH.getMessage());
-        return null;
-      }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-      // Self
-      if (!args[2].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
-        return null;
-      }
-      double damage;
-      try {
-        damage = Integer.parseInt(args[3]);
+        damage = Integer.parseInt(args[i]);
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_DAMAGE.getMessage());
-        return null;
+        return true;
       }
-      double radius;
+      return false;
+    }
+
+    /**
+     * Returns if the radius invalid.
+     *
+     * @param i parameter index
+     * @return if the radius is invalid
+     */
+    private boolean invalidRadius(int i) {
       try {
-        radius = Double.parseDouble(args[4]);
+        radius = Double.parseDouble(args[i]);
         if (radius < 0 || 64 < radius) {
           user.sendMessage(Message.INVALID_RADIUS.getMessage());
-          return null;
+          return true;
         }
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_RADIUS.getMessage());
-        return null;
+        return true;
       }
-      return percentHealth + " " + cooldown + " " + true + " " + damage + " " + radius;
-    }
-  }
-
-  /**
-   * Represents {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#STACK_INSTANCE}
-   * ability input.
-   *
-   * @author Danny Nguyen
-   * @version 1.24.9
-   * @since 1.24.9
-   */
-  public static class StackInstance {
-    /**
-     * Static methods only.
-     */
-    private StackInstance() {
-    }
-
-    /**
-     * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}.
-     *
-     * @param user interacting user
-     * @param args user provided parameters
-     * @return ability data if set correctly, otherwise null
-     */
-    @Nullable
-    public static String cooldownStackInstance(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 4) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-        return null;
-      }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[0]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-      // Self
-      if (!args[1].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
-        return null;
-      }
-      int stacks;
-      try {
-        stacks = Integer.parseInt(args[2]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_STACKS.getMessage());
-        return null;
-      }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[3]);
-        if (duration < 0) {
-          user.sendMessage(Message.INVALID_DURATION.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
-        return null;
-      }
-      return cooldown + " " + true + " " + stacks + " " + duration;
-    }
-
-    /**
-     * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}.
-     *
-     * @param user    interacting user
-     * @param args    user provided parameters
-     * @param trigger {@link PassiveTriggerType}
-     * @return ability data if set correctly, otherwise null
-     */
-    @Nullable
-    public static String chanceCooldownStackInstance(@NotNull Player user, @NotNull String[] args, @NotNull PassiveTriggerType trigger) {
-      Objects.requireNonNull(user, "Null user");
-      Objects.requireNonNull(trigger, "Null trigger");
-      if (Objects.requireNonNull(args, "Null arguments").length != 5) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-        return null;
-      }
-      double chance;
-      try {
-        chance = Double.parseDouble(args[0]);
-        if (chance < 0 || 100 < chance) {
-          user.sendMessage(Message.INVALID_CHANCE.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_CHANCE.getMessage());
-        return null;
-      }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-      boolean self;
-      if (trigger == PassiveTriggerType.ON_KILL) {
-        if (args[2].equals("true")) {
-          self = true;
-        } else {
-          user.sendMessage(Message.TRUE_ONLY.getMessage());
-          return null;
-        }
-      } else {
-        switch (args[2]) {
-          case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-          default -> {
-            user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-            return null;
-          }
-        }
-      }
-      int stacks;
-      try {
-        stacks = Integer.parseInt(args[3]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_STACKS.getMessage());
-        return null;
-      }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[4]);
-        if (duration < 0) {
-          user.sendMessage(Message.INVALID_DURATION.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
-        return null;
-      }
-      return chance + " " + cooldown + " " + self + " " + stacks + " " + duration;
-    }
-
-    /**
-     * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}.
-     *
-     * @param user interacting user
-     * @param args user provided parameters
-     * @return ability data if set correctly, otherwise null
-     */
-    @Nullable
-    public static String healthCooldownStackInstance(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 5) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
-        return null;
-      }
-      double percentHealth;
-      try {
-        percentHealth = Double.parseDouble(args[0]);
-        if (percentHealth < 0) {
-          user.sendMessage(Message.INVALID_HEALTH.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_HEALTH.getMessage());
-        return null;
-      }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-      // Self
-      if (!args[2].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
-        return null;
-      }
-      int stacks;
-      try {
-        stacks = Integer.parseInt(args[3]);
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_STACKS.getMessage());
-        return null;
-      }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[4]);
-        if (duration < 0) {
-          user.sendMessage(Message.INVALID_DURATION.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
-        return null;
-      }
-      return percentHealth + " " + cooldown + " " + true + " " + stacks + " " + duration;
+      return false;
     }
   }
 
@@ -645,80 +488,63 @@ public class PassiveAbilityInput {
    * ability input.
    *
    * @author Danny Nguyen
-   * @version 1.24.11
+   * @version 1.24.13
    * @since 1.24.9
    */
-  public static class PotionEffect {
+  public class PotionEffect {
     /**
-     * Static methods only.
+     * Potion effect type.
      */
-    private PotionEffect() {
+    private PotionEffectType potionEffectType;
+
+    /**
+     * Potion effect amplifier.
+     */
+    private int amplifier;
+
+    /**
+     * Potion effect duration.
+     */
+    private int duration;
+
+    /**
+     * Potion effect particle visibility.
+     */
+    private boolean particles;
+
+    /**
+     * No parameter constructor.
+     */
+    public PotionEffect() {
     }
 
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String cooldownPotionEffect(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 6) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String cooldown() {
+      if (invalidParameters(6)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[0]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(0)) {
         return null;
       }
-      // Self
-      if (!args[1].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
+      if (invalidSelf(1)) {
         return null;
       }
-      PotionEffectType potionEffectType = PotionEffectType.getByName(args[2]);
-      if (potionEffectType == null) {
-        user.sendMessage(Message.INVALID_TYPE.getMessage());
+      if (invalidPotionEffectType(2)) {
         return null;
       }
-      int amplifier;
-      try {
-        amplifier = Integer.parseInt(args[3]);
-        if (amplifier < 0 || 255 < amplifier) {
-          user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+      if (invalidAmplifier(3)) {
         return null;
       }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[4]);
-        if (duration < 0) {
-          user.sendMessage(Message.INVALID_DURATION.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
+      if (invalidDuration(4)) {
         return null;
       }
-      boolean particles;
-      switch (args[5]) {
-        case "true", "false" -> particles = Boolean.parseBoolean(args[5]);
-        default -> {
-          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-          return null;
-        }
+      if (invalidParticles(5)) {
+        return null;
       }
       return cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
     }
@@ -726,92 +552,43 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}.
      *
-     * @param user    interacting user
-     * @param args    user provided parameters
      * @param trigger {@link PassiveTriggerType}
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String chanceCooldownPotionEffect(@NotNull Player user, @NotNull String[] args, @NotNull PassiveTriggerType trigger) {
-      Objects.requireNonNull(user, "Null user");
+    public String chanceCooldown(@NotNull PassiveTriggerType trigger) {
       Objects.requireNonNull(trigger, "Null trigger");
-      if (Objects.requireNonNull(args, "Null arguments").length != 7) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      if (invalidParameters(7)) {
         return null;
       }
-      double chance;
-      try {
-        chance = Double.parseDouble(args[0]);
-        if (chance < 0 || 100 < chance) {
-          user.sendMessage(Message.INVALID_CHANCE.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_CHANCE.getMessage());
+      if (invalidChance(0)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(1)) {
         return null;
       }
-      boolean self;
       if (trigger == PassiveTriggerType.ON_KILL) {
-        if (args[2].equals("true")) {
-          self = true;
-        } else {
-          user.sendMessage(Message.TRUE_ONLY.getMessage());
+        if (invalidSelf(2)) {
           return null;
+        } else {
+          self = true;
         }
       } else {
-        switch (args[2]) {
-          case "true", "false" -> self = Boolean.parseBoolean(args[2]);
-          default -> {
-            user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-            return null;
-          }
-        }
-      }
-      PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
-      if (potionEffectType == null) {
-        user.sendMessage(Message.INVALID_TYPE.getMessage());
-        return null;
-      }
-      int amplifier;
-      try {
-        amplifier = Integer.parseInt(args[4]);
-        if (amplifier < 0 || 255 < amplifier) {
-          user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+        if (invalidBoolean(2)) {
           return null;
         }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
+      }
+      if (invalidPotionEffectType(3)) {
         return null;
       }
-      int duration;
-      try {
-        duration = Integer.parseInt(args[5]);
-        if (duration < 0) {
-          user.sendMessage(Message.INVALID_DURATION.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_DURATION.getMessage());
+      if (invalidAmplifier(4)) {
         return null;
       }
-      boolean particles;
-      switch (args[6]) {
-        case "true", "false" -> particles = Boolean.parseBoolean(args[6]);
-        default -> {
-          user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
-          return null;
-        }
+      if (invalidDuration(5)) {
+        return null;
+      }
+      if (invalidParticles(6)) {
+        return null;
       }
       return chance + " " + cooldown + " " + self + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
     }
@@ -819,80 +596,260 @@ public class PassiveAbilityInput {
     /**
      * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}.
      *
-     * @param user interacting user
-     * @param args user provided parameters
      * @return ability data if set correctly, otherwise null
      */
     @Nullable
-    public static String healthCooldownPotionEffect(@NotNull Player user, @NotNull String[] args) {
-      Objects.requireNonNull(user, "Null user");
-      if (Objects.requireNonNull(args, "Null arguments").length != 7) {
-        user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+    public String healthCooldown() {
+      if (invalidParameters(7)) {
         return null;
       }
-      double percentHealth;
-      try {
-        percentHealth = Double.parseDouble(args[0]);
-        if (percentHealth < 0) {
-          user.sendMessage(Message.INVALID_HEALTH.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_HEALTH.getMessage());
+      if (invalidHealthPercent(0)) {
         return null;
       }
-      int cooldown;
-      try {
-        cooldown = Integer.parseInt(args[1]);
-        if (cooldown < 0) {
-          user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-          return null;
-        }
-      } catch (NumberFormatException ex) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      if (invalidCooldown(1)) {
         return null;
       }
-      // Self
-      if (!args[2].equals("true")) {
-        user.sendMessage(Message.TRUE_ONLY.getMessage());
+      if (invalidSelf(2)) {
         return null;
       }
-      PotionEffectType potionEffectType = PotionEffectType.getByName(args[3]);
+      if (invalidPotionEffectType(3)) {
+        return null;
+      }
+      if (invalidAmplifier(4)) {
+        return null;
+      }
+      if (invalidDuration(5)) {
+        return null;
+      }
+      if (invalidParticles(6)) {
+        return null;
+      }
+      return healthPercent + " " + cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
+    }
+
+    /**
+     * Returns if invalid potion effect type.
+     *
+     * @param i parameter index
+     * @return if invalid potion effect type
+     */
+    private boolean invalidPotionEffectType(int i) {
+      potionEffectType = PotionEffectType.getByName(args[i]);
       if (potionEffectType == null) {
         user.sendMessage(Message.INVALID_TYPE.getMessage());
-        return null;
+        return true;
       }
-      int amplifier;
+      return false;
+    }
+
+    /**
+     * Returns if invalid potion effect amplifier.
+     *
+     * @param i parameter index
+     * @return if invalid potion effect amplifier
+     */
+    private boolean invalidAmplifier(int i) {
       try {
-        amplifier = Integer.parseInt(args[4]);
+        amplifier = Integer.parseInt(args[i]);
         if (amplifier < 0 || 255 < amplifier) {
           user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
-          return null;
+          return true;
         }
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_AMPLIFIER.getMessage());
-        return null;
+        return true;
       }
-      int duration;
+      return false;
+    }
+
+    /**
+     * Returns if invalid potion effect duration.
+     *
+     * @param i parameter index
+     * @return if invalid potion effect duration
+     */
+    private boolean invalidDuration(int i) {
       try {
-        duration = Integer.parseInt(args[5]);
+        duration = Integer.parseInt(args[i]);
         if (duration < 0) {
           user.sendMessage(Message.INVALID_DURATION.getMessage());
-          return null;
+          return true;
         }
       } catch (NumberFormatException ex) {
         user.sendMessage(Message.INVALID_DURATION.getMessage());
-        return null;
+        return true;
       }
-      boolean particles;
-      switch (args[6]) {
-        case "true", "false" -> particles = Boolean.parseBoolean(args[6]);
+      return false;
+    }
+
+    /**
+     * Returns if invalid potion effect particle visibility.
+     *
+     * @param i parameter index
+     * @return if invalid potion effect particle visibility
+     */
+    private boolean invalidParticles(int i) {
+      switch (args[i]) {
+        case "true", "false" -> particles = Boolean.parseBoolean(args[i]);
         default -> {
           user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Represents {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType.Effect#STACK_INSTANCE}
+   * ability input.
+   *
+   * @author Danny Nguyen
+   * @version 1.24.13
+   * @since 1.24.9
+   */
+  public class StackInstance {
+    /**
+     * Amount of stacks.
+     */
+    private int stacks;
+
+    /**
+     * Stack instance duration.
+     */
+    private int duration;
+
+    /**
+     * No parameter constructor.
+     */
+    public StackInstance() {
+    }
+
+    /**
+     * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#COOLDOWN}.
+     *
+     * @return ability data if set correctly, otherwise null
+     */
+    @Nullable
+    public String cooldown() {
+      if (invalidParameters(4)) {
+        return null;
+      }
+      if (invalidCooldown(0)) {
+        return null;
+      }
+      if (invalidSelf(1)) {
+        return null;
+      }
+      if (invalidStacks(2)) {
+        return null;
+      }
+      if (invalidDuration(3)) {
+        return null;
+      }
+      return cooldown + " " + true + " " + stacks + " " + duration;
+    }
+
+    /**
+     * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#CHANCE_COOLDOWN}.
+     *
+     * @param trigger {@link PassiveTriggerType}
+     * @return ability data if set correctly, otherwise null
+     */
+    @Nullable
+    public String chanceCooldown(@NotNull PassiveTriggerType trigger) {
+      Objects.requireNonNull(trigger, "Null trigger");
+      if (invalidParameters(5)) {
+        return null;
+      }
+      if (invalidChance(0)) {
+        return null;
+      }
+      if (invalidCooldown(1)) {
+        return null;
+      }
+      if (trigger == PassiveTriggerType.ON_KILL) {
+        if (invalidSelf(2)) {
+          return null;
+        } else {
+          self = true;
+        }
+      } else {
+        if (invalidBoolean(2)) {
           return null;
         }
       }
-      return percentHealth + " " + cooldown + " " + true + " " + TextFormatter.formatId(potionEffectType.getName()) + " " + amplifier + " " + duration + " " + particles;
+      if (invalidStacks(3)) {
+        return null;
+      }
+      if (invalidDuration(4)) {
+        return null;
+      }
+      return chance + " " + cooldown + " " + self + " " + stacks + " " + duration;
+    }
+
+    /**
+     * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType.Condition#HEALTH_COOLDOWN}.
+     *
+     * @return ability data if set correctly, otherwise null
+     */
+    @Nullable
+    public String healthCooldown() {
+      if (invalidParameters(5)) {
+        return null;
+      }
+      if (invalidHealthPercent(0)) {
+        return null;
+      }
+      if (invalidCooldown(1)) {
+        return null;
+      }
+      if (invalidSelf(2)) {
+        return null;
+      }
+      if (invalidStacks(3)) {
+        return null;
+      }
+      if (invalidDuration(4)) {
+        return null;
+      }
+      return healthPercent + " " + cooldown + " " + true + " " + stacks + " " + duration;
+    }
+
+    /**
+     * Returns if the number of stacks is invalid.
+     *
+     * @param i parameter index
+     * @return if the number of stacks is invalid
+     */
+    private boolean invalidStacks(int i) {
+      try {
+        stacks = Integer.parseInt(args[i]);
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_STACKS.getMessage());
+        return true;
+      }
+      return false;
+    }
+
+    /**
+     * Returns if the stack instance duration is invalid.
+     *
+     * @param i parameter index
+     * @return if the stack instance duration is invalid
+     */
+    private boolean invalidDuration(int i) {
+      try {
+        duration = Integer.parseInt(args[i]);
+        if (duration < 0) {
+          user.sendMessage(Message.INVALID_DURATION.getMessage());
+          return true;
+        }
+      } catch (NumberFormatException ex) {
+        user.sendMessage(Message.INVALID_DURATION.getMessage());
+        return true;
+      }
+      return false;
     }
   }
 }

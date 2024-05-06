@@ -153,14 +153,14 @@ public enum PassiveAbilityType {
     CHAIN_DAMAGE("Self, Damage, Radius(m)"),
 
     /**
-     * Causes {@link StatusType stack instances}.
-     */
-    STACK_INSTANCE("Self, Stacks, Duration(t)"),
-
-    /**
      * Causes a potion effect to be applied.
      */
-    POTION_EFFECT("Self, PotionEffect, Amplifier, Duration(t), Particles");
+    POTION_EFFECT("Self, PotionEffect, Amplifier, Duration(t), Particles"),
+
+    /**
+     * Causes {@link StatusType stack instances}.
+     */
+    STACK_INSTANCE("Self, Stacks, Duration(t)");
 
     /**
      * Passive ability effect's data.
@@ -185,5 +185,5 @@ public enum PassiveAbilityType {
     public String getData() {
       return this.data;
     }
-  }
+    }
 }

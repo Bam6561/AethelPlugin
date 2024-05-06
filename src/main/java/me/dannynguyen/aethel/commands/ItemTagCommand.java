@@ -359,7 +359,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag set operation.
        *
        * @author Danny Nguyen
-       * @version 1.24.9
+       * @version 1.24.13
        * @since 1.23.12
        */
       private class TagSet {
@@ -477,9 +477,10 @@ public class ItemTagCommand implements CommandExecutor {
           }
 
           switch (passiveAbilityType.getEffect()) {
-            case STACK_INSTANCE -> readPassiveStackInstance(value, trigger);
+            case BUFF -> readPassiveBuff(value, trigger);
             case CHAIN_DAMAGE -> readPassiveChainDamage(value, trigger);
             case POTION_EFFECT -> readPassivePotionEffect(value, trigger);
+            case STACK_INSTANCE -> readPassiveStackInstance(value, trigger);
           }
         }
 
@@ -578,6 +579,23 @@ public class ItemTagCommand implements CommandExecutor {
 
         /**
          * Checks if the input was formatted correctly before
+         * setting the {@link PassiveAbilityType.Effect#BUFF}.
+         *
+         * @param value   tag value
+         * @param trigger {@link PassiveTriggerType}
+         */
+        private void readPassiveBuff(String value, PassiveTriggerType trigger) {
+          String[] args = value.split(" ");
+          PassiveAbilityInput.Buff input = new PassiveAbilityInput(user, args).new Buff();
+          switch (trigger.getCondition()) {
+            case COOLDOWN -> setPassiveTag(input.cooldown());
+            case CHANCE_COOLDOWN -> setPassiveTag(input.chanceCooldown());
+            case HEALTH_COOLDOWN -> setPassiveTag(input.healthCooldown());
+          }
+        }
+
+        /**
+         * Checks if the input was formatted correctly before
          * setting the {@link PassiveAbilityType.Effect#CHAIN_DAMAGE}.
          *
          * @param value   tag value
@@ -585,10 +603,11 @@ public class ItemTagCommand implements CommandExecutor {
          */
         private void readPassiveChainDamage(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
+          PassiveAbilityInput.ChainDamage input = new PassiveAbilityInput(user, args).new ChainDamage();
           switch (trigger.getCondition()) {
-            case COOLDOWN -> setPassiveTag(PassiveAbilityInput.ChainDamage.cooldownChainDamage(user, args));
-            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.ChainDamage.chanceCooldownChainDamage(user, args));
-            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.ChainDamage.healthCooldownChainDamage(user, args));
+            case COOLDOWN -> setPassiveTag(input.cooldown());
+            case CHANCE_COOLDOWN -> setPassiveTag(input.chanceCooldown());
+            case HEALTH_COOLDOWN -> setPassiveTag(input.healthCooldown());
           }
         }
 
@@ -601,10 +620,11 @@ public class ItemTagCommand implements CommandExecutor {
          */
         private void readPassivePotionEffect(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
+          PassiveAbilityInput.PotionEffect input = new PassiveAbilityInput(user, args).new PotionEffect();
           switch (trigger.getCondition()) {
-            case COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.cooldownPotionEffect(user, args));
-            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.chanceCooldownPotionEffect(user, args, trigger));
-            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.PotionEffect.healthCooldownPotionEffect(user, args));
+            case COOLDOWN -> setPassiveTag(input.cooldown());
+            case CHANCE_COOLDOWN -> setPassiveTag(input.chanceCooldown(trigger));
+            case HEALTH_COOLDOWN -> setPassiveTag(input.healthCooldown());
           }
         }
 
@@ -617,10 +637,11 @@ public class ItemTagCommand implements CommandExecutor {
          */
         private void readPassiveStackInstance(String value, PassiveTriggerType trigger) {
           String[] args = value.split(" ");
+          PassiveAbilityInput.StackInstance input = new PassiveAbilityInput(user, args).new StackInstance();
           switch (trigger.getCondition()) {
-            case COOLDOWN -> setPassiveTag(PassiveAbilityInput.StackInstance.cooldownStackInstance(user, args));
-            case CHANCE_COOLDOWN -> setPassiveTag(PassiveAbilityInput.StackInstance.chanceCooldownStackInstance(user, args, trigger));
-            case HEALTH_COOLDOWN -> setPassiveTag(PassiveAbilityInput.StackInstance.healthCooldownStackInstance(user, args));
+            case COOLDOWN -> setPassiveTag(input.cooldown());
+            case CHANCE_COOLDOWN -> setPassiveTag(input.chanceCooldown(trigger));
+            case HEALTH_COOLDOWN -> setPassiveTag(input.healthCooldown());
           }
         }
 

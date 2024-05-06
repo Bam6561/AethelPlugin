@@ -480,7 +480,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       PROTECTION(new String[]{
           ChatColor.GREEN + "Protection",
-          ChatColor.GRAY + "Each level of Protection mitigates non-environmental damage by 1%, up to a maximum of 20%."
+          ChatColor.GRAY + "Each level of Protection mitigates non-environmental damage by 2%, up to a maximum of 40%."
       }),
 
       /**

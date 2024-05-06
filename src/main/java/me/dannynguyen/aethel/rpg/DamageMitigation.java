@@ -20,7 +20,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.23.17
+ * @version 1.24.13
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -140,7 +140,7 @@ public class DamageMitigation {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
-    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.01, .2);
+    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);
     return damage - (damage * mitigationValue);
   }
 
@@ -162,7 +162,7 @@ public class DamageMitigation {
       armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
     }
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
-    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.01, .2);
+    double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);
     damage = damage - (damage * mitigationValue);
     if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
       int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
