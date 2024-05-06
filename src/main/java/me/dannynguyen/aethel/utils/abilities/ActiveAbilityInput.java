@@ -15,39 +15,78 @@ import java.util.Objects;
  * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
  *
  * @author Danny Nguyen
- * @version 1.24.0
+ * @version 1.24.14
  * @since 1.20.5
  */
 public class ActiveAbilityInput {
   /**
-   * Static methods only.
+   * Interacting user.
    */
-  private ActiveAbilityInput() {
+  private final Player user;
+
+  /**
+   * User provided parameters.
+   */
+  private final String[] args;
+
+  /**
+   * Ability cooldown.
+   */
+  private int cooldown;
+
+  /**
+   * Associates the active ability input with its user and parameters.
+   */
+  public ActiveAbilityInput(@NotNull Player user, @NotNull String[] args) {
+    this.user = Objects.requireNonNull(user, "Null user");
+    this.args = Objects.requireNonNull(args, "Null args");
+  }
+
+  /**
+   * Returns if the number of parameters is invalid.
+   *
+   * @param validLength correct number of parameters
+   * @return if the number of parameters is invalid
+   */
+  private boolean invalidParameters(int validLength) {
+    if (args.length != validLength) {
+      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets the ability cooldown and returns if the ability cooldown is invalid.
+   *
+   * @param i parameter index
+   * @return if the ability cooldown is invalid
+   */
+  private boolean invalidCooldown(int i) {
+    try {
+      cooldown = Integer.parseInt(args[i]);
+      if (cooldown < 0) {
+        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+        return true;
+      }
+    } catch (NumberFormatException ex) {
+      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+      return true;
+    }
+    return false;
   }
 
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#BUFF}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String buff(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 4) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String buff() {
+    if (invalidParameters(4)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     String attribute = args[1];
@@ -81,26 +120,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#CLEAR_STATUS}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String clearStatus(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 1) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String clearStatus() {
+    if (invalidParameters(1)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     return String.valueOf(cooldown);
@@ -109,26 +136,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DISPLACEMENT}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String displacement(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 3) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String displacement() {
+    if (invalidParameters(3)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     double modifier;
@@ -159,26 +174,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#DISTANCE_DAMAGE}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String distanceDamage(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 3) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String distanceDamage() {
+    if (invalidParameters(3)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     double damage;
@@ -205,26 +208,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#MOVEMENT}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String movement(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 2) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String movement() {
+    if (invalidParameters(2)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     double modifier;
@@ -244,26 +235,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#POTION_EFFECT}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String potionEffect(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 5) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String potionEffect() {
+    if (invalidParameters(5)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     PotionEffectType potionEffectType = PotionEffectType.getByName(args[1]);
@@ -307,26 +286,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#PROJECTION}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String projection(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 3) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String projection() {
+    if (invalidParameters(3)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     int distance;
@@ -357,26 +324,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#SHATTER}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String shatter(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 2) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String shatter() {
+    if (invalidParameters(2)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     double radius;
@@ -396,26 +351,14 @@ public class ActiveAbilityInput {
   /**
    * Sets {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType.Effect#TELEPORT}.
    *
-   * @param user interacting user
-   * @param args user provided parameters
    * @return ability data if set correctly, otherwise null
    */
   @Nullable
-  public static String teleport(@NotNull Player user, @NotNull String[] args) {
-    Objects.requireNonNull(user, "Null user");
-    if (Objects.requireNonNull(args, "Null arguments").length != 2) {
-      user.sendMessage(Message.UNRECOGNIZED_PARAMETERS.getMessage());
+  public String teleport() {
+    if (invalidParameters(2)) {
       return null;
     }
-    int cooldown;
-    try {
-      cooldown = Integer.parseInt(args[0]);
-      if (cooldown < 0) {
-        user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
-        return null;
-      }
-    } catch (NumberFormatException ex) {
-      user.sendMessage(Message.INVALID_COOLDOWN.getMessage());
+    if (invalidCooldown(0)) {
       return null;
     }
     int distance;

@@ -905,7 +905,7 @@ public class ItemEditorMessageSent {
    * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
    *
    * @author Danny Nguyen
-   * @version 1.24.0
+   * @version 1.24.14
    * @since 1.19.4
    */
   private class ActiveChange {
@@ -954,16 +954,17 @@ public class ItemEditorMessageSent {
      */
     private void interpretKeyToBeSet() {
       ActiveAbilityType.Effect effect = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+      ActiveAbilityInput input = new ActiveAbilityInput(user, args);
       switch (effect) {
-        case BUFF -> setKeyStringToList(ActiveAbilityInput.buff(user, args));
-        case CLEAR_STATUS -> setKeyStringToList(ActiveAbilityInput.clearStatus(user, args));
-        case DISPLACEMENT -> setKeyStringToList(ActiveAbilityInput.displacement(user, args));
-        case DISTANCE_DAMAGE -> setKeyStringToList(ActiveAbilityInput.distanceDamage(user, args));
-        case MOVEMENT -> setKeyStringToList(ActiveAbilityInput.movement(user, args));
-        case POTION_EFFECT -> setKeyStringToList(ActiveAbilityInput.potionEffect(user, args));
-        case PROJECTION -> setKeyStringToList(ActiveAbilityInput.projection(user, args));
-        case SHATTER -> setKeyStringToList(ActiveAbilityInput.shatter(user, args));
-        case TELEPORT -> setKeyStringToList(ActiveAbilityInput.teleport(user, args));
+        case BUFF -> setKeyStringToList(input.buff());
+        case CLEAR_STATUS -> setKeyStringToList(input.clearStatus());
+        case DISPLACEMENT -> setKeyStringToList(input.displacement());
+        case DISTANCE_DAMAGE -> setKeyStringToList(input.distanceDamage());
+        case MOVEMENT -> setKeyStringToList(input.movement());
+        case POTION_EFFECT -> setKeyStringToList(input.potionEffect());
+        case PROJECTION -> setKeyStringToList(input.projection());
+        case SHATTER -> setKeyStringToList(input.shatter());
+        case TELEPORT -> setKeyStringToList(input.teleport());
       }
     }
 

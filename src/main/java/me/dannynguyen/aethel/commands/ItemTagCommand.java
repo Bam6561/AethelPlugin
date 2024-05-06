@@ -359,7 +359,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag set operation.
        *
        * @author Danny Nguyen
-       * @version 1.24.13
+       * @version 1.24.14
        * @since 1.23.12
        */
       private class TagSet {
@@ -512,14 +512,17 @@ public class ItemTagCommand implements CommandExecutor {
           }
 
           String[] args = value.split(" ");
+          ActiveAbilityInput input = new ActiveAbilityInput(user, args);
           switch (activeAbilityType.getEffect()) {
-            case CLEAR_STATUS -> setActiveTag(ActiveAbilityInput.clearStatus(user, args));
-            case DISTANCE_DAMAGE -> setActiveTag(ActiveAbilityInput.distanceDamage(user, args));
-            case MOVEMENT -> setActiveTag(ActiveAbilityInput.movement(user, args));
-            case POTION_EFFECT -> setActiveTag(ActiveAbilityInput.potionEffect(user, args));
-            case PROJECTION -> setActiveTag(ActiveAbilityInput.projection(user, args));
-            case SHATTER -> setActiveTag(ActiveAbilityInput.shatter(user, args));
-            case TELEPORT -> setActiveTag(ActiveAbilityInput.teleport(user, args));
+            case BUFF -> setActiveTag(input.buff());
+            case CLEAR_STATUS -> setActiveTag(input.clearStatus());
+            case DISTANCE_DAMAGE -> setActiveTag(input.distanceDamage());
+            case DISPLACEMENT -> setActiveTag(input.displacement());
+            case MOVEMENT -> setActiveTag(input.movement());
+            case POTION_EFFECT -> setActiveTag(input.potionEffect());
+            case PROJECTION -> setActiveTag(input.projection());
+            case SHATTER -> setActiveTag(input.shatter());
+            case TELEPORT -> setActiveTag(input.teleport());
           }
         }
 
