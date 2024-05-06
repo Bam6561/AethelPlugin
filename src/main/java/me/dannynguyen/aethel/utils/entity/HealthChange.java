@@ -1,8 +1,10 @@
-package me.dannynguyen.aethel.rpg;
+package me.dannynguyen.aethel.utils.entity;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.rpg.Buffs;
+import me.dannynguyen.aethel.rpg.Settings;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;

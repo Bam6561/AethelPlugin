@@ -8,6 +8,8 @@ import me.dannynguyen.aethel.plugin.PluginSystem;
 import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.EntityReader;
+import me.dannynguyen.aethel.utils.entity.DamageMitigation;
+import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;

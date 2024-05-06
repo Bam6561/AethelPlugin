@@ -5,6 +5,7 @@ import me.dannynguyen.aethel.enums.plugin.Directory;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
+import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BossBar;
 import org.jetbrains.annotations.NotNull;

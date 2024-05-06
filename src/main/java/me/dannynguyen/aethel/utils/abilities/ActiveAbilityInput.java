@@ -12,7 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 /**
- * Validates inputs for {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability} tags.
+ * Represents {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability}
+ * tags input validation.
  *
  * @author Danny Nguyen
  * @version 1.24.14

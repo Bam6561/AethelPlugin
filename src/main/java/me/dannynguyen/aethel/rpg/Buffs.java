@@ -2,6 +2,7 @@ package me.dannynguyen.aethel.rpg;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
+import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;

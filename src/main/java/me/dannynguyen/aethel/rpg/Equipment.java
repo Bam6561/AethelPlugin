@@ -14,6 +14,7 @@ import me.dannynguyen.aethel.listeners.EquipmentListener;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.TextFormatter;
+import me.dannynguyen.aethel.utils.entity.HealthChange;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;

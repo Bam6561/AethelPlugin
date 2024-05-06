@@ -1,9 +1,13 @@
-package me.dannynguyen.aethel.rpg;
+package me.dannynguyen.aethel.utils.entity;
 
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.AethelAttribute;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
+import me.dannynguyen.aethel.rpg.Buffs;
+import me.dannynguyen.aethel.rpg.RpgSystem;
+import me.dannynguyen.aethel.rpg.Status;
+import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
