@@ -898,7 +898,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * and {@link Key#ACTIVE_EDIBLE_LIST edible active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.25.0
+   * @version 1.25.1
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -1079,10 +1079,16 @@ public class ItemEditorMenuClick implements MenuClick {
           for (String attribute : attributeValues.get(eSlot).keySet()) {
             StringBuilder line = new StringBuilder();
             double attributeValue = attributeValues.get(eSlot).get(attribute);
-            if (attributeValue < 0) {
-              line.append(ChatColor.BLUE);
-            } else {
-              line.append(ChatColor.BLUE).append("+");
+
+            line.append(ChatColor.BLUE);
+            if (attribute.equals("item_cooldown")) {
+              if (attributeValue >= 0) {
+                line.append("-");
+              } else {
+                line.append("+");
+              }
+            } else if (attributeValue > 0) {
+              line.append("+");
             }
             switch (attribute) {
               case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> line.append(df3.format(attributeValue)).append("% ").append(TextFormatter.capitalizePhrase(attribute));
@@ -1124,13 +1130,23 @@ public class ItemEditorMenuClick implements MenuClick {
             if (!abilityData[0].equals("0")) {
               abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
             }
+            abilityLore.append(ChatColor.WHITE);
             switch (effect) {
               case BUFF -> {
                 String attributeName = abilityData[2];
                 if (attributeName.startsWith("generic_")) {
                   attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
                 }
-                abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[3]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[4])).append("s) [").append(abilityData[1].equals("true") ? "Self]" : "Target]");
+                abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
+                if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[3]) >= 0) {
+                  abilityLore.append("-");
+                }
+                abilityLore.append(abilityData[4]);
+                switch (attributeName) {
+                  case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+                  default -> abilityLore.append(") ");
+                }
+                abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[4])).append("s) [").append(abilityData[1].equals("true") ? "Self]" : "Target]");
               }
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[3])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(abilityData[3]).append("m)");
@@ -1156,7 +1172,16 @@ public class ItemEditorMenuClick implements MenuClick {
                 if (attributeName.startsWith("generic_")) {
                   attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
                 }
-                abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[4]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
+                abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
+                if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[4]) >= 0) {
+                  abilityLore.append("-");
+                }
+                abilityLore.append(abilityData[4]);
+                switch (attributeName) {
+                  case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+                  default -> abilityLore.append(") ");
+                }
+                abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
               }
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
@@ -1179,7 +1204,16 @@ public class ItemEditorMenuClick implements MenuClick {
                 if (attributeName.startsWith("generic_")) {
                   attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
                 }
-                abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[4]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
+                abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
+                if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[4]) >= 0) {
+                  abilityLore.append("-");
+                }
+                abilityLore.append(abilityData[4]);
+                switch (attributeName) {
+                  case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+                  default -> abilityLore.append(") ");
+                }
+                abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
               }
               case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
               case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
@@ -1239,32 +1273,44 @@ public class ItemEditorMenuClick implements MenuClick {
         ActiveAbilityType.Effect abilityEffect = abilityType.getEffect();
 
         String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
-        StringBuilder activeLore = new StringBuilder();
+        StringBuilder abilityLore = new StringBuilder();
 
-        activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+        if (!abilityData[0].equals("0")) {
+          abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+        }
+        abilityLore.append(ChatColor.WHITE);
         switch (abilityEffect) {
           case BUFF -> {
             String attributeName = abilityData[1];
             if (attributeName.startsWith("generic_")) {
               attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
             }
-            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[2]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
+            abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
+            if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[2]) >= 0) {
+              abilityLore.append("-");
+            }
+            abilityLore.append(abilityData[2]);
+            switch (attributeName) {
+              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+              default -> abilityLore.append(") ");
+            }
+            abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
           }
-          case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
-          case DISPLACEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
-          case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
-          case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+          case CLEAR_STATUS -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName());
+          case DISPLACEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
+          case DISTANCE_DAMAGE -> abilityLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
+          case MOVEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
           case POTION_EFFECT -> {
             int amplifier = Integer.parseInt(abilityData[2]) + 1;
-            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
+            abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
           }
-          case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
-          case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
+          case PROJECTION -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+          case SHATTER, TELEPORT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
         }
         if (activeAbilities.containsKey(slot)) {
-          activeAbilities.get(slot).add(activeLore.toString());
+          activeAbilities.get(slot).add(abilityLore.toString());
         } else {
-          activeAbilities.put(slot, new ArrayList<>(List.of(activeLore.toString())));
+          activeAbilities.put(slot, new ArrayList<>(List.of(abilityLore.toString())));
         }
       }
       return activeAbilities;
@@ -1307,29 +1353,41 @@ public class ItemEditorMenuClick implements MenuClick {
         ActiveAbilityType.Effect abilityEffect = abilityType.getEffect();
 
         String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EDIBLE.getHeader() + active), PersistentDataType.STRING).split(" ");
-        StringBuilder activeLore = new StringBuilder();
+        StringBuilder abilityLore = new StringBuilder();
 
-        activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+        if (!abilityData[0].equals("0")) {
+          abilityLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+        }
+        abilityLore.append(ChatColor.WHITE);
         switch (abilityEffect) {
           case BUFF -> {
             String attributeName = abilityData[1];
             if (attributeName.startsWith("generic_")) {
               attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
             }
-            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[2]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
+            abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
+            if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[2]) >= 0) {
+              abilityLore.append("-");
+            }
+            abilityLore.append(abilityData[2]);
+            switch (attributeName) {
+              case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+              default -> abilityLore.append(") ");
+            }
+            abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
           }
-          case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
-          case DISPLACEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
-          case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
-          case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+          case CLEAR_STATUS -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName());
+          case DISPLACEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
+          case DISTANCE_DAMAGE -> abilityLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
+          case MOVEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
           case POTION_EFFECT -> {
             int amplifier = Integer.parseInt(abilityData[2]) + 1;
-            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
+            abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
           }
-          case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
-          case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
+          case PROJECTION -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+          case SHATTER, TELEPORT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
         }
-        activeAbilities.add(activeLore.toString());
+        activeAbilities.add(abilityLore.toString());
       }
       return activeAbilities;
     }
