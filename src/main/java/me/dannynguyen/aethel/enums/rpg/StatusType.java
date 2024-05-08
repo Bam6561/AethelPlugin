@@ -8,40 +8,52 @@ import java.util.Set;
  * Types of statuses.
  *
  * @author Danny Nguyen
- * @version 1.19.4
+ * @version 1.25.2
  * @since 1.14.7
  */
 public enum StatusType {
   /**
-   * Cumulative stacking damage over time.
+   * Stacking damage over time.
+   * <p>
+   * Cumulative.
    */
   BLEED("Bleed", true),
+
+  /**
+   * Reduces the entity's effective armor value.
+   * <p>
+   * Highest instance.
+   */
+  BRITTLE("brittle", false),
 
   /**
    * Cumulative stacks that can be triggered by
    * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#SHATTER}
    * to deal an instance of damage.
+   * <p>
+   * Cumulative.
    */
-  BRITTLE("Brittle", true),
+  CHILL("Chill", true),
 
   /**
    * Cumulative stacking damage over time that spreads
    * its remaining stacks to nearby entities upon death.
+   * <p>
+   * Cumulative.
    */
   ELECTROCUTE("Electrocute", true),
 
   /**
-   * Highest instance stack that reduces the entity's effective armor value.
-   */
-  FRACTURE("Fracture", false),
-
-  /**
    * Cumulative stacks that allow and increase chain damage between entities.
+   * <p>
+   * Cumulative.
    */
-  SOAKED("Soaked", true),
+  SOAK("Soak", true),
 
   /**
    * Highest instance stack that increases the damage taken by the entity.
+   * <p>
+   * Highest instance.
    */
   VULNERABLE("Vulnerable", false);
 
@@ -101,7 +113,7 @@ public enum StatusType {
     /**
      * Non-damaging status types.
      */
-    NON_DAMAGE(Set.of(BRITTLE, FRACTURE, SOAKED, VULNERABLE));
+    NON_DAMAGE(Set.of(CHILL, BRITTLE, SOAK, VULNERABLE));
 
     /**
      * Associated status types.

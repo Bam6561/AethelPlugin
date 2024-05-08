@@ -49,12 +49,12 @@ public class PluginTask {
         continue;
       }
 
-      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAKED)) {
+      if (statuses.containsKey(StatusType.BLEED) || statuses.containsKey(StatusType.ELECTROCUTE) || statuses.containsKey(StatusType.SOAK)) {
         World world = entity.getWorld();
         Location bodyLocation = entity.getLocation().add(0, 1, 0);
         DamageMitigation mitigation = new DamageMitigation(entity);
 
-        if (statuses.containsKey(StatusType.SOAKED)) {
+        if (statuses.containsKey(StatusType.SOAK)) {
           world.spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, bodyLocation, 3, 0.25, 0.5, 0.25);
         }
 

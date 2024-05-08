@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.24.1
+ * @version 1.25.2
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -35,6 +35,13 @@ public enum ActiveAbilityType {
    * Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
    */
   ATTRIBUTE_2("Attribute 2", "attribute_2", Effect.BUFF),
+
+  /**
+   * Forward facing line shaped attack.
+   * <p>
+   * Unidirectional.
+   */
+  BEAM("Beam", "beam", Effect.DISTANCE_DAMAGE),
 
   /**
    * Forward facing teleport.
@@ -80,14 +87,7 @@ public enum ActiveAbilityType {
   /**
    * Forward facing triangular arc shaped attack.
    */
-  FORCE_SWEEP("Force Sweep", "force_sweep", Effect.DISTANCE_DAMAGE),
-
-  /**
-   * Forward facing line shaped attack.
-   * <p>
-   * Unidirectional.
-   */
-  FORCE_WAVE("Force Wave", "force_wave", Effect.DISTANCE_DAMAGE),
+  SWEEP("Sweep", "sweep", Effect.DISTANCE_DAMAGE),
 
   /**
    * Forward facing entity teleport to the caster.
@@ -139,7 +139,7 @@ public enum ActiveAbilityType {
   QUAKE("Quake", "quake", Effect.DISTANCE_DAMAGE),
 
   /**
-   * Immediately consumes all stacks of {@link StatusType#BRITTLE}
+   * Immediately consumes all stacks of {@link StatusType#CHILL}
    * from nearby enemies to deal an instance of damage.
    */
   SHATTER("Shatter", "shatter", Effect.SHATTER),

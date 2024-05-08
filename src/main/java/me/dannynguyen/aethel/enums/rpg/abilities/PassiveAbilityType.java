@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.21.3
+ * @version 1.25.2
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
@@ -42,14 +42,14 @@ public enum PassiveAbilityType {
   BRITTLE("Brittle", "brittle", Effect.STACK_INSTANCE),
 
   /**
+   * Applies stacks of {@link StatusType#CHILL}.
+   */
+  CHILL("Chill", "chill", Effect.STACK_INSTANCE),
+
+  /**
    * Applies stacks of {@link StatusType#ELECTROCUTE}.
    */
   ELECTROCUTE("Electrocute", "electrocute", Effect.STACK_INSTANCE),
-
-  /**
-   * Applies stacks of {@link StatusType#FRACTURE}.
-   */
-  FRACTURE("Fracture", "fracture", Effect.STACK_INSTANCE),
 
   /**
    * Applies a potion effect.
@@ -62,12 +62,12 @@ public enum PassiveAbilityType {
   POTION_EFFECT_2("Potion Effect 2", "potion_effect_2", Effect.POTION_EFFECT),
 
   /**
-   * Apply stacks of {@link StatusType#SOAKED}.
+   * Apply stacks of {@link StatusType#SOAK}.
    */
-  SOAKED("Soaked", "soaked", Effect.STACK_INSTANCE),
+  SOAK("Soak", "soak", Effect.STACK_INSTANCE),
 
   /**
-   * Attacks chain to entities with stacks of {@link StatusType#SOAKED}.
+   * Attacks chain to entities with stacks of {@link StatusType#SOAK}.
    */
   SPARK("Spark", "spark", Effect.CHAIN_DAMAGE),
 
@@ -185,5 +185,5 @@ public enum PassiveAbilityType {
     public String getData() {
       return this.data;
     }
-    }
+  }
 }

@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.24.1
+ * @version 1.25.2
  * @since 1.22.1
  */
 public class WhatsThisCommand implements CommandExecutor {
@@ -165,8 +165,8 @@ public class WhatsThisCommand implements CommandExecutor {
         case THRUST -> sendKeyWordDescription(user, KeyWord.THRUST);
         case DISTANCE_DAMAGE -> sendKeyWordDescription(user, KeyWord.DISTANCE_DAMAGE);
         case EXPLODE -> sendKeyWordDescription(user, KeyWord.EXPLODE);
-        case FORCE_SWEEP -> sendKeyWordDescription(user, KeyWord.FORCE_SWEEP);
-        case FORCE_WAVE -> sendKeyWordDescription(user, KeyWord.FORCE_WAVE);
+        case SWEEP -> sendKeyWordDescription(user, KeyWord.SWEEP);
+        case BEAM -> sendKeyWordDescription(user, KeyWord.BEAM);
         case QUAKE -> sendKeyWordDescription(user, KeyWord.QUAKE);
         case MOVEMENT -> sendKeyWordDescription(user, KeyWord.MOVEMENT);
         case DASH -> sendKeyWordDescription(user, KeyWord.DASH);
@@ -179,9 +179,9 @@ public class WhatsThisCommand implements CommandExecutor {
         case PROJECTION -> sendKeyWordDescription(user, KeyWord.PROJECTION);
         case BLEED -> sendKeyWordDescription(user, KeyWord.BLEED);
         case BRITTLE -> sendKeyWordDescription(user, KeyWord.BRITTLE);
+        case CHILL -> sendKeyWordDescription(user, KeyWord.CHILL);
         case ELECTROCUTE -> sendKeyWordDescription(user, KeyWord.ELECTROCUTE);
-        case SOAKED -> sendKeyWordDescription(user, KeyWord.SOAKED);
-        case FRACTURE -> sendKeyWordDescription(user, KeyWord.FRACTURE);
+        case SOAK -> sendKeyWordDescription(user, KeyWord.SOAK);
         case VULNERABLE -> sendKeyWordDescription(user, KeyWord.VULNERABLE);
       }
     }
@@ -295,7 +295,7 @@ public class WhatsThisCommand implements CommandExecutor {
       CUMULATIVE(new String[]{
           ChatColor.GREEN + "Cumulative",
           ChatColor.GRAY + "Stacks are represented together.",
-          "Related: " + ChatColor.AQUA + "bleed, brittle, electrocute, soaked"}),
+          "Related: " + ChatColor.AQUA + "bleed, chill, electrocute, soak"}),
 
       /**
        * {@link me.dannynguyen.aethel.rpg.Status}
@@ -303,7 +303,7 @@ public class WhatsThisCommand implements CommandExecutor {
       HIGHEST_INSTANCE(new String[]{
           ChatColor.GREEN + "Highest Instance",
           ChatColor.GRAY + "Stacks are represented by their highest stack application.",
-          "Related: " + ChatColor.AQUA + "fracture, vulnerable"}),
+          "Related: " + ChatColor.AQUA + "brittle, vulnerable"}),
 
       /**
        * {@link Equipment}
@@ -704,7 +704,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       SPARK(new String[]{
           ChatColor.GREEN + "Spark",
-          ChatColor.GRAY + "Attacks chain to entities with soaked status."
+          ChatColor.GRAY + "Attacks chain to entities with Soak status."
       }),
 
       /**
@@ -722,7 +722,7 @@ public class WhatsThisCommand implements CommandExecutor {
       STACK_INSTANCE(new String[]{
           ChatColor.GREEN + "Stack Instance",
           ChatColor.GRAY + "Applies stacks of Statuses.",
-          "Related: " + ChatColor.AQUA + "bleed, brittle, electrocute, fracture, soaked, vulnerable"
+          "Related: " + ChatColor.AQUA + "bleed, brittle, chill, electrocute, soak, vulnerable"
       }),
 
       /**
@@ -797,7 +797,15 @@ public class WhatsThisCommand implements CommandExecutor {
       DISTANCE_DAMAGE(new String[]{
           ChatColor.GREEN + "Distance Damage",
           ChatColor.GRAY + "Causes damage at a distance",
-          "Related: " + ChatColor.AQUA + "explode, force sweep, force wave, quake"
+          "Related: " + ChatColor.AQUA + "beam, explode, sweep, quake"
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#BEAM}
+       */
+      BEAM(new String[]{
+          ChatColor.GREEN + "Beam",
+          ChatColor.GRAY + "Unidirectional forward-facing line-shaped attack."
       }),
 
       /**
@@ -809,19 +817,11 @@ public class WhatsThisCommand implements CommandExecutor {
       }),
 
       /**
-       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#FORCE_SWEEP}
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#SWEEP}
        */
-      FORCE_SWEEP(new String[]{
-          ChatColor.GREEN + "Force Sweep",
+      SWEEP(new String[]{
+          ChatColor.GREEN + "Beam",
           ChatColor.GRAY + "Forward facing triangular arc shaped attack."
-      }),
-
-      /**
-       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#FORCE_WAVE}
-       */
-      FORCE_WAVE(new String[]{
-          ChatColor.GREEN + "Force Wave",
-          ChatColor.GRAY + "Unidirectional forward-facing line-shaped attack."
       }),
 
       /**
@@ -878,7 +878,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       SHATTER(new String[]{
           ChatColor.GREEN + "Shatter",
-          ChatColor.GRAY + "Immediately consumes all stacks of Brittle from nearby enemies to deal an instance of damage."
+          ChatColor.GRAY + "Immediately consumes all stacks of Chill from nearby enemies to deal an instance of damage."
       }),
 
       /**
@@ -943,6 +943,14 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       BRITTLE(new String[]{
           ChatColor.GREEN + "Brittle",
+          ChatColor.GRAY + "Reduces an entity's effective armor value in damage calculations by 1 per stack."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#CHILL}
+       */
+      CHILL(new String[]{
+          ChatColor.GREEN + "Chill",
           ChatColor.GRAY + "Can be triggered by Shatter to deal an instance of damage."
       }),
 
@@ -955,19 +963,11 @@ public class WhatsThisCommand implements CommandExecutor {
       }),
 
       /**
-       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#SOAKED}
+       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#SOAK}
        */
-      SOAKED(new String[]{
-          ChatColor.GREEN + "Soaked",
+      SOAK(new String[]{
+          ChatColor.GREEN + "Soak",
           ChatColor.GRAY + "Allows and increases chain damage between entities."
-      }),
-
-      /**
-       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#FRACTURE}
-       */
-      FRACTURE(new String[]{
-          ChatColor.GREEN + "Fracture",
-          ChatColor.GRAY + "Reduces an entity's effective armor value in damage calculations by 1 per stack."
       }),
 
       /**

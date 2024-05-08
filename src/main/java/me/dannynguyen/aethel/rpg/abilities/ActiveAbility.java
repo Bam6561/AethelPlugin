@@ -164,7 +164,7 @@ public class ActiveAbility {
       case MOVEMENT -> new Effect().moveDistance(cooldownModifier, caster);
       case POTION_EFFECT -> new Effect().applyPotionEffect(cooldownModifier, caster);
       case PROJECTION -> new Effect().projectDistance(cooldownModifier, caster);
-      case SHATTER -> new Effect().shatterBrittle(cooldownModifier, caster);
+      case SHATTER -> new Effect().shatterChill(cooldownModifier, caster);
       case TELEPORT -> new Effect().teleportDistance(cooldownModifier, caster);
     }
   }
@@ -375,7 +375,7 @@ public class ActiveAbility {
             }
           }
         }
-        case FORCE_SWEEP -> {
+        case SWEEP -> {
           world.playSound(caster.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 0.65f, 0);
           Vector casterDirection = caster.getLocation().getDirection();
           world.spawnParticle(Particle.SWEEP_ATTACK, caster.getLocation().add(0, 1, 0).add(casterDirection.setY(0).multiply(1.5)), 3, 0.125, 0.125, 0.125);
@@ -390,7 +390,7 @@ public class ActiveAbility {
             }
           }
         }
-        case FORCE_WAVE -> {
+        case BEAM -> {
           world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.65f, 0);
           Vector casterDirection = caster.getLocation().getDirection();
           new TargetValidation().getForceWaveTargets(world, targets, caster.getEyeLocation(), casterDirection, distance);
@@ -522,13 +522,13 @@ public class ActiveAbility {
     }
 
     /**
-     * Consumes {@link me.dannynguyen.aethel.enums.rpg.StatusType#BRITTLE}
+     * Consumes {@link me.dannynguyen.aethel.enums.rpg.StatusType#CHILL}
      * stacks on entities.
      *
      * @param cooldownModifier cooldown modifier
      * @param caster           ability caster
      */
-    private void shatterBrittle(double cooldownModifier, Player caster) {
+    private void shatterChill(double cooldownModifier, Player caster) {
       World world = caster.getWorld();
       Map<UUID, Map<StatusType, Status>> entityStatuses = Plugin.getData().getRpgSystem().getStatuses();
       double meters = Double.parseDouble(effectData.get(0));
@@ -540,11 +540,11 @@ public class ActiveAbility {
         }
 
         UUID livingEntityUUID = livingEntity.getUniqueId();
-        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.BRITTLE)) {
+        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.CHILL)) {
           world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
 
           Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
-          double damage = 0.5 * statuses.get(StatusType.BRITTLE).getStackAmount();
+          double damage = 0.5 * statuses.get(StatusType.CHILL).getStackAmount();
           final double finalDamage = new DamageMitigation(livingEntity).mitigateArmorProtectionResistance(damage);
 
           if (livingEntity instanceof Player player) {
@@ -554,7 +554,7 @@ public class ActiveAbility {
           } else {
             new HealthChange(livingEntity).damage(finalDamage);
           }
-          statuses.remove(StatusType.BRITTLE);
+          statuses.remove(StatusType.CHILL);
         }
       }
       cooldownAbility(cooldownModifier);
@@ -740,7 +740,7 @@ public class ActiveAbility {
       }
 
       /**
-       * Recursively finds {@link ActiveAbilityType#FORCE_WAVE} targets.
+       * Recursively finds {@link ActiveAbilityType#BEAM} targets.
        *
        * @param world     world
        * @param targets   set of affected targets

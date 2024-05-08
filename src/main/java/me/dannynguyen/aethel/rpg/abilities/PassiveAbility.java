@@ -311,12 +311,12 @@ public class PassiveAbility {
       double chainDamage = Double.parseDouble(effectData.get(1));
       double meters = Double.parseDouble(effectData.get(2));
 
-      Map<LivingEntity, Integer> soakedTargets = new HashMap<>();
-      getSoakedTargets(entityStatuses, soakedTargets, targetUUID, meters);
+      Map<LivingEntity, Integer> soakTargets = new HashMap<>();
+      getSoakTargets(entityStatuses, soakTargets, targetUUID, meters);
 
-      for (LivingEntity livingEntity : soakedTargets.keySet()) {
+      for (LivingEntity livingEntity : soakTargets.keySet()) {
         Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
-        double damage = chainDamage * (1 + statuses.get(StatusType.SOAKED).getStackAmount() / 50.0);
+        double damage = chainDamage * (1 + statuses.get(StatusType.SOAK).getStackAmount() / 50.0);
         final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
 
         if (livingEntity instanceof Player player) {
@@ -352,33 +352,33 @@ public class PassiveAbility {
     }
 
     /**
-     * Recursively finds new {@link StatusType#SOAKED} targets around the source entity.
+     * Recursively finds new {@link StatusType#SOAK} targets around the source entity.
      *
      * @param entityStatuses entity {@link Status statuses}
-     * @param soakedTargets  {@link StatusType#SOAKED} targets
+     * @param soakTargets  {@link StatusType#SOAK} targets
      * @param targetUUID     source entity
      * @param meters         distance
      */
-    private void getSoakedTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakedTargets, UUID targetUUID, double meters) {
-      Set<LivingEntity> newSoakedTargets = new HashSet<>();
+    private void getSoakTargets(Map<UUID, Map<StatusType, Status>> entityStatuses, Map<LivingEntity, Integer> soakTargets, UUID targetUUID, double meters) {
+      Set<LivingEntity> newSoakTargets = new HashSet<>();
       for (Entity entity : Bukkit.getEntity(targetUUID).getNearbyEntities(meters, meters, meters)) {
         if (!(entity instanceof LivingEntity livingEntity)) {
           continue;
         }
 
         UUID livingEntityUUID = livingEntity.getUniqueId();
-        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAKED)) {
-          if (!soakedTargets.containsKey(livingEntity)) {
-            newSoakedTargets.add(livingEntity);
-            soakedTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAKED).getStackAmount());
+        if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.SOAK)) {
+          if (!soakTargets.containsKey(livingEntity)) {
+            newSoakTargets.add(livingEntity);
+            soakTargets.put(livingEntity, entityStatuses.get(livingEntityUUID).get(StatusType.SOAK).getStackAmount());
           }
         }
       }
-      if (newSoakedTargets.isEmpty()) {
+      if (newSoakTargets.isEmpty()) {
         return;
       }
-      for (LivingEntity livingEntity : newSoakedTargets) {
-        getSoakedTargets(entityStatuses, soakedTargets, livingEntity.getUniqueId(), meters);
+      for (LivingEntity livingEntity : newSoakTargets) {
+        getSoakTargets(entityStatuses, soakTargets, livingEntity.getUniqueId(), meters);
       }
     }
 

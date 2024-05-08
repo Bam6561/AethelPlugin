@@ -86,7 +86,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.23.16
+   * @version 1.25.2
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -166,7 +166,7 @@ public class DamageListener implements Listener {
       if (attacker instanceof LivingEntity) {
         ifCriticallyHit();
         if (defenderStatuses != null) {
-          ifFracture();
+          ifBrittle();
           ifVulnerable();
         }
       }
@@ -228,17 +228,17 @@ public class DamageListener implements Listener {
     }
 
     /**
-     * If the target has {@link StatusType#FRACTURE}, multiply the damage by its number of stacks.
+     * If the target has {@link StatusType#BRITTLE}, multiply the damage by its number of stacks.
      */
-    private void ifFracture() {
-      if (defenderStatuses.containsKey(StatusType.FRACTURE)) {
+    private void ifBrittle() {
+      if (defenderStatuses.containsKey(StatusType.BRITTLE)) {
         double armorBase = defenderEntityTags.getOrDefault(Key.ATTRIBUTE_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
         double armorBuff = 0.0;
         if (defenderBuffs != null) {
           armorBuff = defenderBuffs.getAethelAttribute(AethelAttribute.ARMOR);
         }
         int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
-        armor = armor - defenderStatuses.get(StatusType.FRACTURE).getStackAmount();
+        armor = Math.min(0, armor - defenderStatuses.get(StatusType.BRITTLE).getStackAmount());
         double damage = e.getDamage();
         e.setDamage(damage - (damage * Math.min(armor * 0.2, .4)));
       }

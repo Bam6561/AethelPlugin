@@ -7,7 +7,6 @@ import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.rpg.Buffs;
 import me.dannynguyen.aethel.rpg.RpgSystem;
 import me.dannynguyen.aethel.rpg.Status;
-import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +23,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.24.13
+ * @version 1.25.2
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -140,8 +139,8 @@ public class DamageMitigation {
       armorBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR);
     }
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
-    if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
-      armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
+    if (statuses != null && statuses.containsKey(StatusType.BRITTLE)) {
+      armor = Math.min(0, armor - statuses.get(StatusType.BRITTLE).getStackAmount());
     }
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);
@@ -162,8 +161,8 @@ public class DamageMitigation {
       armorBuff = buffs.getAethelAttribute(AethelAttribute.ARMOR);
     }
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
-    if (statuses != null && statuses.containsKey(StatusType.FRACTURE)) {
-      armor = armor - statuses.get(StatusType.FRACTURE).getStackAmount();
+    if (statuses != null && statuses.containsKey(StatusType.BRITTLE)) {
+      armor = Math.min(0, armor - statuses.get(StatusType.BRITTLE).getStackAmount());
     }
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);
