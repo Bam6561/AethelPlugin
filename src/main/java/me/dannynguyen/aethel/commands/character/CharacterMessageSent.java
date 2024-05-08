@@ -53,7 +53,8 @@ public class CharacterMessageSent {
   }
 
   /**
-   * Sets the player's active ability bind.
+   * Sets the player's {@link me.dannynguyen.aethel.rpg.Equipment}
+   * {@link me.dannynguyen.aethel.rpg.abilities.ActiveAbility} bind.
    */
   public void setActiveAbilityBind() {
     MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();

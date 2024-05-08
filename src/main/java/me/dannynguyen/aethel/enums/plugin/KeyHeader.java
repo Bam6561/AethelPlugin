@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin key headers.
  *
  * @author Danny Nguyen
- * @version 1.24.12
+ * @version 1.25.0
  * @since 1.15.3
  */
 public enum KeyHeader {
@@ -51,9 +51,14 @@ public enum KeyHeader {
   PASSIVE(AETHEL.getHeader() + "passive."),
 
   /**
-   * Item {@link Key#ACTIVE_LIST}
+   * Item {@link Key#ACTIVE_EQUIPMENT_LIST}
    */
-  ACTIVE(AETHEL.getHeader() + "active.");
+  ACTIVE_EQUIPMENT(AETHEL.getHeader() + "active."),
+
+  /**
+   * Item {@link Key#ACTIVE_EDIBLE_LIST}
+   */
+  ACTIVE_EDIBLE(AETHEL.getHeader() + "edible.");
 
   /**
    * Key header.

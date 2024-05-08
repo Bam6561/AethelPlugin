@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.24.7
+ * @version 1.25.0
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -127,7 +127,8 @@ public class MessageListener implements Listener {
       case ITEMEDITOR_ENCHANTMENT -> msg.setEnchantment();
       case ITEMEDITOR_POTION_EFFECT -> msg.setPotionEffect();
       case ITEMEDITOR_PASSIVE_ABILITY -> msg.setPassive();
-      case ITEMEDITOR_ACTIVE_ABILITY -> msg.setActive();
+      case ITEMEDITOR_ACTIVE_ABILITY_EQUIPMENT -> msg.setActiveEquipment();
+      case ITEMEDITOR_ACTIVE_ABILITY_EDIBLE -> msg.setActiveEdible();
       case ITEMEDITOR_AETHEL_TAG -> msg.setTag();
     }
   }
@@ -156,7 +157,8 @@ public class MessageListener implements Listener {
     AETHELITEM_FOLDER("aethelitem"),
 
     /**
-     * Bind active ability.
+     * Bind {@link me.dannynguyen.aethel.rpg.Equipment}
+     * {@link me.dannynguyen.aethel.rpg.abilities.ActiveAbility}.
      */
     CHARACTER_BIND_ACTIVE_ABILITY("character"),
 
@@ -246,9 +248,14 @@ public class MessageListener implements Listener {
     ITEMEDITOR_PASSIVE_ABILITY("itemeditor"),
 
     /**
-     * Active ability.
+     * Active ability for {@link me.dannynguyen.aethel.rpg.Equipment}.
      */
-    ITEMEDITOR_ACTIVE_ABILITY("itemeditor"),
+    ITEMEDITOR_ACTIVE_ABILITY_EQUIPMENT("itemeditor"),
+
+    /**
+     * Active ability for edibles.
+     */
+    ITEMEDITOR_ACTIVE_ABILITY_EDIBLE("itemeditor"),
 
     /**
      * Aethel tag.

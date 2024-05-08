@@ -7,9 +7,10 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.rpg.Buffs;
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.Status;
 import me.dannynguyen.aethel.utils.entity.DamageMitigation;
 import me.dannynguyen.aethel.utils.entity.HealthChange;
-import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -29,19 +30,34 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.24.1
+ * @version 1.25.0
  * @since 1.17.4
  */
 public class ActiveAbility {
   /**
+   * {@link Source}
+   */
+  private final Source source;
+
+  /**
    * {@link ActiveAbilityType Active abilities} on cooldown.
    */
-  private final Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives;
+  private Map<RpgEquipmentSlot, Set<ActiveAbilityType>> onCooldownActives;
 
   /**
    * {@link RpgEquipmentSlot}
    */
-  private final RpgEquipmentSlot eSlot;
+  private RpgEquipmentSlot eSlot;
+
+  /**
+   * {@link ActiveAbilityType Edible active abilities} on cooldown.
+   */
+  private Set<String> onCooldownEdibles;
+
+  /**
+   * Edible item id.
+   */
+  private String id;
 
   /**
    * {@link ActiveAbilityType}
@@ -59,7 +75,7 @@ public class ActiveAbility {
   private final List<String> effectData = new ArrayList<>();
 
   /**
-   * Associates an {@link ActiveAbilityType active ability} with its data.
+   * Associates an {@link Equipment} {@link ActiveAbilityType active ability} with its data.
    *
    * @param onCooldownActives {@link ActiveAbilityType} on cooldown
    * @param eSlot             {@link RpgEquipmentSlot}
@@ -70,7 +86,27 @@ public class ActiveAbility {
     this.onCooldownActives = Objects.requireNonNull(onCooldownActives, "Null on cooldown actives");
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.type = Objects.requireNonNull(type, "Null ability");
+    Objects.requireNonNull(dataValues, "Null data values");
     this.baseCooldown = Integer.parseInt(dataValues[0]);
+    this.source = Source.EQUIPMENT;
+    loadAbilityData(type.getEffect(), dataValues);
+  }
+
+  /**
+   * Associates an edible {@link ActiveAbilityType active ability} with its data.
+   *
+   * @param onCooldownEdibles {@link ActiveAbilityType} on cooldown
+   * @param id                edible item id
+   * @param type              {@link ActiveAbilityType}
+   * @param dataValues        ability data
+   */
+  public ActiveAbility(@NotNull Set<String> onCooldownEdibles, @NotNull String id, @NotNull ActiveAbilityType type, @NotNull String[] dataValues) {
+    this.onCooldownEdibles = Objects.requireNonNull(onCooldownEdibles, "Null on cooldown edibles");
+    this.id = Objects.requireNonNull(id, "Null item id");
+    this.type = Objects.requireNonNull(type, "Null ability");
+    Objects.requireNonNull(dataValues, "Null data values");
+    this.baseCooldown = Integer.parseInt(dataValues[0]);
+    this.source = Source.EDIBLE;
     loadAbilityData(type.getEffect(), dataValues);
   }
 
@@ -139,14 +175,22 @@ public class ActiveAbility {
    * @return if the {@link ActiveAbilityType} is on cooldown
    */
   public boolean isOnCooldown() {
-    return onCooldownActives.get(eSlot).contains(type);
+    switch (source) {
+      case EQUIPMENT -> {
+        return onCooldownActives.get(eSlot).contains(type);
+      }
+      case EDIBLE -> {
+        return onCooldownEdibles.contains(id);
+      }
+    }
+    return false;
   }
 
   /**
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.24.11
+   * @version 1.25.0
    * @since 1.23.13
    */
   private class Effect {
@@ -183,11 +227,7 @@ public class ActiveAbility {
         }
       }
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -240,11 +280,7 @@ public class ActiveAbility {
         caster.removePotionEffect(potionEffectType);
       }
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -300,11 +336,7 @@ public class ActiveAbility {
         }
       }
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -391,11 +423,7 @@ public class ActiveAbility {
         }
       }
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -442,11 +470,7 @@ public class ActiveAbility {
       }
       caster.setVelocity(vector);
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -463,11 +487,7 @@ public class ActiveAbility {
 
       caster.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, particles, particles));
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -498,11 +518,7 @@ public class ActiveAbility {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> projections.remove(taskId), delay);
       projections.add(taskId);
 
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -541,12 +557,7 @@ public class ActiveAbility {
           statuses.remove(StatusType.BRITTLE);
         }
       }
-
-      if (baseCooldown > 0) {
-        setOnCooldown(true);
-        int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldownModifier);
     }
 
     /**
@@ -608,7 +619,13 @@ public class ActiveAbility {
           }
         }
       }
+      cooldownAbility(cooldownModifier);
+    }
 
+    /**
+     * Puts the ability on cooldown, if any.
+     */
+    private void cooldownAbility(double cooldownModifier) {
       if (baseCooldown > 0) {
         setOnCooldown(true);
         int cooldown = (int) Math.max(1, baseCooldown - (baseCooldown * cooldownModifier));
@@ -622,10 +639,21 @@ public class ActiveAbility {
      * @param isOnCooldown is on cooldown
      */
     private void setOnCooldown(boolean isOnCooldown) {
-      if (isOnCooldown) {
-        onCooldownActives.get(eSlot).add(type);
-      } else {
-        onCooldownActives.get(eSlot).remove(type);
+      switch (source) {
+        case EQUIPMENT -> {
+          if (isOnCooldown) {
+            onCooldownActives.get(eSlot).add(type);
+          } else {
+            onCooldownActives.get(eSlot).remove(type);
+          }
+        }
+        case EDIBLE -> {
+          if (isOnCooldown) {
+            onCooldownEdibles.add(id);
+          } else {
+            onCooldownEdibles.remove(id);
+          }
+        }
       }
     }
 
@@ -908,5 +936,20 @@ public class ActiveAbility {
       }
       return getTeleportTarget(world, location.add(direction).clone(), distance - 1);
     }
+  }
+
+  /**
+   * Represents an ability's source.
+   */
+  public enum Source {
+    /**
+     * {@link me.dannynguyen.aethel.rpg.Equipment}
+     */
+    EQUIPMENT,
+
+    /**
+     * Edible.
+     */
+    EDIBLE
   }
 }

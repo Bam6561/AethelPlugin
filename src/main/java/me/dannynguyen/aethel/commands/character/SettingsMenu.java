@@ -113,7 +113,7 @@ public class SettingsMenu implements Menu {
   }
 
   /**
-   * Adds {@link ActiveAbility} binds.
+   * Adds {@link me.dannynguyen.aethel.rpg.Equipment} {@link ActiveAbility} binds.
    */
   private void addActiveAbilityBinds() {
     Map<RpgEquipmentSlot, Set<Integer>> boundEquipmentSlots = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().getAbilityBoundEquipmentSlots();

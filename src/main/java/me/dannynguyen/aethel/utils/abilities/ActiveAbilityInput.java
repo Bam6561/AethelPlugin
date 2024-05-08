@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 /**
- * Represents {@link me.dannynguyen.aethel.enums.plugin.Key#ACTIVE_LIST active ability}
+ * Represents {@link me.dannynguyen.aethel.rpg.abilities.ActiveAbility}
  * tags input validation.
  *
  * @author Danny Nguyen

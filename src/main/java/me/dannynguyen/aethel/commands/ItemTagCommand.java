@@ -316,18 +316,18 @@ public class ItemTagCommand implements CommandExecutor {
         }
 
         /**
-         * Removes an item's {@link Key#ACTIVE_LIST active} tag.
+         * Removes an item's {@link Key#ACTIVE_EQUIPMENT_LIST active} tag.
          */
         private void removeActiveTag() {
           if (!tag.equals("active.list")) {
-            NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
+            NamespacedKey listKey = Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey();
             if (itemTags.has(listKey, PersistentDataType.STRING)) {
               tag = tag.substring(7);
               removeKeyFromList(listKey);
             }
           } else {
             for (NamespacedKey key : itemTags.getKeys()) {
-              if (key.getKey().startsWith(KeyHeader.ACTIVE.getHeader())) {
+              if (key.getKey().startsWith(KeyHeader.ACTIVE_EQUIPMENT.getHeader())) {
                 itemTags.remove(key);
               }
             }
@@ -485,7 +485,7 @@ public class ItemTagCommand implements CommandExecutor {
         }
 
         /**
-         * Checks whether the {@link ActiveAbility active}
+         * Checks whether the {@link me.dannynguyen.aethel.rpg.Equipment} {@link ActiveAbility active}
          * tag was formatted correctly before setting its tag and value.
          *
          * @param value tag value
@@ -679,7 +679,7 @@ public class ItemTagCommand implements CommandExecutor {
         }
 
         /**
-         * Sets an item's {@link ActiveAbility active} tag.
+         * Sets an item's {@link me.dannynguyen.aethel.rpg.Equipment} {@link ActiveAbility active} tag.
          *
          * @param value tag value
          */
@@ -688,9 +688,9 @@ public class ItemTagCommand implements CommandExecutor {
             return;
           }
 
-          NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + tag);
+          NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + tag);
           itemTags.set(tagKey, PersistentDataType.STRING, value);
-          setKeyToList(Key.ACTIVE_LIST.getNamespacedKey());
+          setKeyToList(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey());
           item.setItemMeta(meta);
           user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
         }

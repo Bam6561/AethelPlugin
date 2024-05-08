@@ -46,7 +46,7 @@ public class RecipeRegistry implements DataRegistry {
   /**
    * Sorted {@link Recipe} category names.
    */
-  private final List<String> recipeCategoryNames = new ArrayList();
+  private final List<String> recipeCategoryNames = new ArrayList<>();
 
   /**
    * Associates a RecipeRegistry with the provided directory.

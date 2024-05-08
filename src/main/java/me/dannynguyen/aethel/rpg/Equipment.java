@@ -141,7 +141,7 @@ public class Equipment {
   /**
    * Checks if the item has {@link Key#ATTRIBUTE_LIST Aethel attributes},
    * enchantments, {@link Key#PASSIVE_LIST passive abilities},
-   * and {@link Key#ACTIVE_LIST active abilities} before checking
+   * and {@link Key#ACTIVE_EQUIPMENT_LIST active abilities} before checking
    * whether the item is in the correct equipment slot.
    *
    * @param item  interacting item
@@ -165,7 +165,7 @@ public class Equipment {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
       abilities.readPassives(eSlot, itemTags);
     }
-    if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (itemTags.has(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getTriggerActives().put(eSlot, new ArrayList<>());
       abilities.readActives(eSlot, itemTags);
     }
@@ -174,7 +174,7 @@ public class Equipment {
   /**
    * Checks if the item has {@link Key#ATTRIBUTE_LIST Aethel attributes},
    * enchantments, {@link Key#PASSIVE_LIST passive abilities},
-   * and {@link Key#ACTIVE_LIST active abilities} before checking
+   * and {@link Key#ACTIVE_EQUIPMENT_LIST active abilities} before checking
    * whether the item is in the correct equipment slot.
    * <p>
    * A 2 tick delay is added to max health updates due to items containing
@@ -229,7 +229,7 @@ public class Equipment {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
       abilities.readPassives(eSlot, itemTags);
     }
-    if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+    if (itemTags.has(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getTriggerActives().put(eSlot, new ArrayList<>());
       abilities.readActives(eSlot, itemTags);
     }
@@ -337,7 +337,7 @@ public class Equipment {
   }
 
   /**
-   * Represents an {@link RpgPlayer}'s equipment {@link AethelAttribute} values.
+   * Represents an {@link RpgPlayer}'s {@link Equipment} {@link AethelAttribute} values.
    *
    * @author Danny Nguyen
    * @version 1.22.19
@@ -678,7 +678,7 @@ public class Equipment {
      * @param itemTags item's persistent tags
      */
     private void readActives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags) {
-      String[] actives = itemTags.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
+      String[] actives = itemTags.get(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ");
       for (String active : actives) {
         RpgEquipmentSlot slot = RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(active.substring(0, active.indexOf("."))));
         if (slot == eSlot) {
@@ -695,7 +695,7 @@ public class Equipment {
      * @param active   {@link ActiveAbility} data
      */
     private void addActives(RpgEquipmentSlot eSlot, PersistentDataContainer itemTags, String active) {
-      NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + active);
+      NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + active);
       String[] abilityMeta = active.split("\\.");
       ActiveAbilityType activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(abilityMeta[1]));
       triggerActives.get(eSlot).add(new ActiveAbility(onCooldownActives, eSlot, activeAbilityType, itemTags.get(activeKey, PersistentDataType.STRING).split(" ")));

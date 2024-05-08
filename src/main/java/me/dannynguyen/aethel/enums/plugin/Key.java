@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.24.12
+ * @version 1.25.0
  * @since 1.11.9
  */
 public enum Key {
@@ -36,9 +36,14 @@ public enum Key {
   PASSIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.PASSIVE.getHeader() + "list")),
 
   /**
-   * Item {@link ActiveAbility} list.
+   * Item {@link me.dannynguyen.aethel.rpg.Equipment} {@link ActiveAbility} list.
    */
-  ACTIVE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + "list")),
+  ACTIVE_EQUIPMENT_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + "list")),
+
+  /**
+   * Item edible {@link ActiveAbility} list.
+   */
+  ACTIVE_EDIBLE_LIST(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EDIBLE.getHeader() + "list")),
 
   /**
    * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Recipe} Forge ID.

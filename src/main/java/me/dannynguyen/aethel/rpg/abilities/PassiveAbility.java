@@ -7,7 +7,9 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.StatusType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
-import me.dannynguyen.aethel.rpg.*;
+import me.dannynguyen.aethel.rpg.Buffs;
+import me.dannynguyen.aethel.rpg.Equipment;
+import me.dannynguyen.aethel.rpg.Status;
 import me.dannynguyen.aethel.utils.entity.DamageMitigation;
 import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.Bukkit;
@@ -28,7 +30,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.24.9
+ * @version 1.25.0
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -76,6 +78,7 @@ public class PassiveAbility {
     this.eSlot = Objects.requireNonNull(eSlot, "Null slot");
     this.trigger = Objects.requireNonNull(trigger, "Null trigger");
     this.type = Objects.requireNonNull(type, "Null ability");
+    Objects.requireNonNull(dataValues, "Null data values");
     loadAbilityData(trigger.getCondition(), type.getEffect(), dataValues);
   }
 
@@ -212,7 +215,7 @@ public class PassiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.24.11
+   * @version 1.25.0
    * @since 1.23.13
    */
   private class Effect {
@@ -253,11 +256,7 @@ public class PassiveAbility {
       }
 
       int cooldown = Integer.parseInt(conditionData.get(1));
-      if (cooldown > 0) {
-        setOnCooldown(true);
-        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldown, cooldownModifier);
     }
 
     /**
@@ -297,11 +296,7 @@ public class PassiveAbility {
       }
 
       int cooldown = Integer.parseInt(conditionData.get(1));
-      if (cooldown > 0) {
-        setOnCooldown(true);
-        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldown, cooldownModifier);
     }
 
     /**
@@ -334,11 +329,7 @@ public class PassiveAbility {
       }
 
       int cooldown = Integer.parseInt(conditionData.get(1));
-      if (cooldown > 0) {
-        setOnCooldown(true);
-        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldown, cooldownModifier);
     }
 
     /**
@@ -357,11 +348,7 @@ public class PassiveAbility {
       target.addPotionEffect(new PotionEffect(potionEffectType, duration, amplifier, particles, particles));
 
       int cooldown = Integer.parseInt(conditionData.get(1));
-      if (cooldown > 0) {
-        setOnCooldown(true);
-        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
-        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
-      }
+      cooldownAbility(cooldown, cooldownModifier);
     }
 
     /**
@@ -392,6 +379,17 @@ public class PassiveAbility {
       }
       for (LivingEntity livingEntity : newSoakedTargets) {
         getSoakedTargets(entityStatuses, soakedTargets, livingEntity.getUniqueId(), meters);
+      }
+    }
+
+    /**
+     * Puts the ability on cooldown, if any.
+     */
+    private void cooldownAbility(int cooldown, double cooldownModifier) {
+      if (cooldown > 0) {
+        setOnCooldown(true);
+        cooldown = (int) Math.max(1, cooldown - (cooldown * cooldownModifier));
+        Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> setOnCooldown(false), cooldown);
       }
     }
 

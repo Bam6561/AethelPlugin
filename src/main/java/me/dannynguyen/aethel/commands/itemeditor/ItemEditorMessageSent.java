@@ -45,7 +45,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.24.11
+ * @version 1.25.0
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -369,7 +369,7 @@ public class ItemEditorMessageSent {
       }
       new KeyChange().setKeyDoubleToList(KeyHeader.ATTRIBUTE.getHeader(), attributeValue, Key.ATTRIBUTE_LIST.getNamespacedKey());
     } else {
-      new KeyChange().removeKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
+      new KeyChange().removeSlotKeyFromList(KeyHeader.ATTRIBUTE.getHeader(), Key.ATTRIBUTE_LIST.getNamespacedKey());
     }
     new MenuChange().returnToAethelAttribute();
   }
@@ -469,15 +469,27 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Sets or removes an item's {@link Key#ACTIVE_LIST active ability}.
+   * Sets or removes an item's {@link Key#ACTIVE_EQUIPMENT_LIST equipment active ability}.
    */
-  public void setActive() {
+  public void setActiveEquipment() {
     if (!e.getMessage().equals("-")) {
-      new ActiveChange().interpretKeyToBeSet();
+      new ActiveEquipmentChange().interpretKeyToBeSet();
     } else {
-      new KeyChange().removeKeyFromList(KeyHeader.ACTIVE.getHeader(), Key.ACTIVE_LIST.getNamespacedKey());
+      new KeyChange().removeSlotKeyFromList(KeyHeader.ACTIVE_EQUIPMENT.getHeader(), Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey());
     }
     new MenuChange().returnToActive();
+  }
+
+  /**
+   * Sets or removes an item's {@link Key#ACTIVE_EDIBLE_LIST edible active ability}.
+   */
+  public void setActiveEdible() {
+    if (!e.getMessage().equals("-")) {
+      new ActiveEdibleChange().interpretKeyToBeSet();
+    } else {
+      new KeyChange().removeSlotKeyFromList(KeyHeader.ACTIVE_EDIBLE.getHeader(), Key.ACTIVE_EDIBLE_LIST.getNamespacedKey());
+    }
+    new MenuChange().returnToEdible();
   }
 
   /**
@@ -503,7 +515,7 @@ public class ItemEditorMessageSent {
    * Represents a menu change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.11
+   * @version 1.25.0
    * @since 1.23.11
    */
   private class MenuChange {
@@ -586,7 +598,7 @@ public class ItemEditorMessageSent {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
       Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
         user.openInventory(new ActiveMenu(user, menuInput.getSlot()).getMainMenu());
-        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE_EQUIPMENT);
       });
     }
 
@@ -598,6 +610,17 @@ public class ItemEditorMessageSent {
       Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
         user.openInventory(new TagMenu(user).getMainMenu());
         menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_TAG);
+      });
+    }
+
+    /**
+     * Returns to the {@link EdibleMenu}.
+     */
+    private void returnToEdible() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+        user.openInventory(new EdibleMenu(user).getMainMenu());
+        menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE_EDIBLE);
       });
     }
   }
@@ -680,14 +703,15 @@ public class ItemEditorMessageSent {
     }
 
     /**
-     * Removes a key from a {@link KeyHeader key header's} list of keys.
+     * Removes a key that has a {@link me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot}
+     * from a {@link KeyHeader key header's} list of keys.
      * <p>
      * If the list is empty after the operation, the list is also removed.
      *
      * @param keyHeader {@link KeyHeader}
      * @param listKey   {@link Key list key}
      */
-    private void removeKeyFromList(String keyHeader, NamespacedKey listKey) {
+    private void removeSlotKeyFromList(String keyHeader, NamespacedKey listKey) {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
       String slot = menuInput.getSlot().getId();
       String type = menuInput.getObjectType();
@@ -712,6 +736,40 @@ public class ItemEditorMessageSent {
       }
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "]");
+    }
+
+    /**
+     * Removes a key that doesn't have a {@link me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot}
+     * from a {@link KeyHeader key header's} list of keys.
+     * <p>
+     * If the list is empty after the operation, the list is also removed.
+     *
+     * @param keyHeader {@link KeyHeader}
+     * @param listKey   {@link Key list key}
+     */
+    private void removeNonSlotKeyFromList(String keyHeader, NamespacedKey listKey) {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String type = menuInput.getObjectType();
+      NamespacedKey namespacedKeyToRemove = new NamespacedKey(Plugin.getInstance(), keyHeader + type);
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
+        StringBuilder newKeys = new StringBuilder();
+        for (String key : keys) {
+          if (!key.equals(type)) {
+            newKeys.append(key).append(" ");
+          }
+        }
+        if (!newKeys.isEmpty()) {
+          itemTags.set(listKey, PersistentDataType.STRING, newKeys.toString().trim());
+        } else {
+          itemTags.remove(listKey);
+        }
+        itemTags.remove(namespacedKeyToRemove);
+      }
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.RED + "[Removed " + TextFormatter.capitalizePhrase(type, ".") + "]");
     }
   }
 
@@ -902,22 +960,22 @@ public class ItemEditorMessageSent {
   }
 
   /**
-   * Represents a {@link Key#ACTIVE_LIST active tag} set operation.
+   * Represents a {@link Key#ACTIVE_EQUIPMENT_LIST equipment active tag} set operation.
    *
    * @author Danny Nguyen
    * @version 1.24.14
    * @since 1.19.4
    */
-  private class ActiveChange {
+  private class ActiveEquipmentChange {
     /**
-     * {@link Key#ACTIVE_LIST}
+     * {@link Key#ACTIVE_EQUIPMENT_LIST}
      */
-    private static final NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
+    private static final NamespacedKey listKey = Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey();
 
     /**
-     * {@link KeyHeader#ACTIVE}
+     * {@link KeyHeader#ACTIVE_EQUIPMENT}
      */
-    private static final String activeHeader = KeyHeader.ACTIVE.getHeader();
+    private static final String activeHeader = KeyHeader.ACTIVE_EQUIPMENT.getHeader();
 
     /**
      * User input.
@@ -942,7 +1000,7 @@ public class ItemEditorMessageSent {
     /**
      * No parameter constructor.
      */
-    private ActiveChange() {
+    private ActiveEquipmentChange() {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
       this.slot = menuInput.getSlot().getId();
       this.type = menuInput.getObjectType();
@@ -950,7 +1008,7 @@ public class ItemEditorMessageSent {
     }
 
     /**
-     * Determines the type of {@link Key#ACTIVE_LIST ability tag} to be set.
+     * Determines the type of {@link Key#ACTIVE_EQUIPMENT_LIST ability tag} to be set.
      */
     private void interpretKeyToBeSet() {
       ActiveAbilityType.Effect effect = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
@@ -996,6 +1054,92 @@ public class ItemEditorMessageSent {
       itemTags.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
       item.setItemMeta(meta);
       user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(slot) + " " + TextFormatter.capitalizePhrase(type, ".") + "] " + ChatColor.WHITE + e.getMessage());
+    }
+  }
+
+  /**
+   * Represents a {@link Key#ACTIVE_EDIBLE_LIST edible active tag} set operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.25.0
+   * @since 1.25.0
+   */
+  private class ActiveEdibleChange {
+    /**
+     * {@link Key#ACTIVE_EDIBLE_LIST}
+     */
+    private static final NamespacedKey listKey = Key.ACTIVE_EDIBLE_LIST.getNamespacedKey();
+
+    /**
+     * {@link KeyHeader#ACTIVE_EDIBLE}
+     */
+    private static final String activeHeader = KeyHeader.ACTIVE_EDIBLE.getHeader();
+
+    /**
+     * User input.
+     */
+    private final String[] args = e.getMessage().split(" ");
+
+    /**
+     * {@link MenuInput#getObjectType()}
+     */
+    private final String type;
+
+    /**
+     * No parameter constructor.
+     */
+    private ActiveEdibleChange() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput();
+      this.type = menuInput.getObjectType();
+    }
+
+    /**
+     * Determines the type of {@link Key#ACTIVE_EDIBLE_LIST ability tag} to be set.
+     */
+    private void interpretKeyToBeSet() {
+      ActiveAbilityType.Effect effect = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type)).getEffect();
+      ActiveAbilityInput input = new ActiveAbilityInput(user, args);
+      switch (effect) {
+        case BUFF -> setKeyStringToList(input.buff());
+        case CLEAR_STATUS -> setKeyStringToList(input.clearStatus());
+        case DISPLACEMENT -> setKeyStringToList(input.displacement());
+        case DISTANCE_DAMAGE -> setKeyStringToList(input.distanceDamage());
+        case MOVEMENT -> setKeyStringToList(input.movement());
+        case POTION_EFFECT -> setKeyStringToList(input.potionEffect());
+        case PROJECTION -> setKeyStringToList(input.projection());
+        case SHATTER -> setKeyStringToList(input.shatter());
+        case TELEPORT -> setKeyStringToList(input.teleport());
+      }
+    }
+
+    /**
+     * Sets a key with a String value to a {@link KeyHeader key header's} list of keys.
+     *
+     * @param keyValue key value
+     */
+    private void setKeyStringToList(String keyValue) {
+      if (keyValue == null) {
+        return;
+      }
+
+      NamespacedKey namespacedKeyToSet = new NamespacedKey(Plugin.getInstance(), activeHeader + type);
+      PersistentDataContainer itemTags = meta.getPersistentDataContainer();
+
+      if (itemTags.has(listKey, PersistentDataType.STRING)) {
+        List<String> keys = new ArrayList<>(List.of(itemTags.get(listKey, PersistentDataType.STRING).split(" ")));
+        StringBuilder newKeys = new StringBuilder();
+        for (String key : keys) {
+          if (!key.equals(type)) {
+            newKeys.append(key).append(" ");
+          }
+        }
+        itemTags.set(listKey, PersistentDataType.STRING, newKeys + type);
+      } else {
+        itemTags.set(listKey, PersistentDataType.STRING, type);
+      }
+      itemTags.set(namespacedKeyToSet, PersistentDataType.STRING, keyValue);
+      item.setItemMeta(meta);
+      user.sendMessage(ChatColor.GREEN + "[Set " + TextFormatter.capitalizePhrase(type, ".") + "] " + ChatColor.WHITE + e.getMessage());
     }
   }
 }

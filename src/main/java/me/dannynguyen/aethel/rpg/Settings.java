@@ -29,12 +29,12 @@ public class Settings {
   private final UUID uuid;
 
   /**
-   * {@link ActiveAbility} binds by {@link RpgEquipmentSlot}.
+   * {@link Equipment} {@link ActiveAbility} binds by {@link RpgEquipmentSlot}.
    */
   private final Map<RpgEquipmentSlot, Set<Integer>> abilityBoundEquipmentSlots = new HashMap<>();
 
   /**
-   * {@link ActiveAbility} binds by hotbar slot.
+   * {@link Equipment} {@link ActiveAbility} binds by hotbar slot.
    */
   private final Map<Integer, Set<RpgEquipmentSlot>> abilityBoundHotbar = new HashMap<>();
 
@@ -60,7 +60,7 @@ public class Settings {
   }
 
   /**
-   * Creates a blank sets of {@link ActiveAbility} binds.
+   * Creates a blank sets of {@link Equipment} {@link ActiveAbility} binds.
    */
   private void createActiveAbilityBinds() {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
@@ -132,7 +132,7 @@ public class Settings {
   }
 
   /**
-   * Resets {@link ActiveAbility} binds.
+   * Resets {@link Equipment}  {@link ActiveAbility} binds.
    */
   public void resetActiveAbilityBinds() {
     for (RpgEquipmentSlot eSlot : RpgEquipmentSlot.values()) {
@@ -144,7 +144,7 @@ public class Settings {
   }
 
   /**
-   * Sets the {@link ActiveAbility} bind.
+   * Sets the {@link Equipment} {@link ActiveAbility} bind.
    *
    * @param eSlot       {@link RpgEquipmentSlot}
    * @param hotbarSlots hotbar slots
@@ -179,9 +179,9 @@ public class Settings {
   }
 
   /**
-   * Gets {@link ActiveAbility} binds by {@link RpgEquipmentSlot}.
+   * Gets {@link Equipment}  {@link ActiveAbility} binds by {@link RpgEquipmentSlot}.
    *
-   * @return {@link ActiveAbility} binds by {@link RpgEquipmentSlot}
+   * @return {@link Equipment} {@link ActiveAbility} binds by {@link RpgEquipmentSlot}
    */
   @NotNull
   public Map<RpgEquipmentSlot, Set<Integer>> getAbilityBoundEquipmentSlots() {
@@ -189,9 +189,9 @@ public class Settings {
   }
 
   /**
-   * Gets {@link ActiveAbility} binds by hotbar slot.
+   * Gets {@link Equipment} {@link ActiveAbility} binds by hotbar slot.
    *
-   * @return {@link ActiveAbility} binds by hotbar slot.
+   * @return {@link Equipment} {@link ActiveAbility} binds by hotbar slot.
    */
   @NotNull
   public Map<Integer, Set<RpgEquipmentSlot>> getAbilityBoundHotbar() {

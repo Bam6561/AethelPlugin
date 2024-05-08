@@ -496,7 +496,7 @@ public class CharacterMenuClick implements MenuClick {
     }
 
     /**
-     * Resets all {@link ActiveAbility} binds.
+     * Resets all {@link Equipment} {@link ActiveAbility} binds.
      */
     private void resetActiveAbilityBinds() {
       user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Binds]");

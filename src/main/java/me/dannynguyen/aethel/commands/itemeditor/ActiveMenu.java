@@ -26,7 +26,7 @@ import java.util.*;
 
 /**
  * Represents a menu that allows the user to edit an item's
- * {@link Key#ACTIVE_LIST active abilities}.
+ * {@link Key#ACTIVE_EQUIPMENT_LIST active abilities}.
  *
  * @author Danny Nguyen
  * @version 1.24.9
@@ -59,7 +59,7 @@ public class ActiveMenu implements Menu {
   private final PersistentDataContainer itemTags;
 
   /**
-   * ItemStack {@link Key#ACTIVE_LIST active abilities}.
+   * ItemStack {@link Key#ACTIVE_EQUIPMENT_LIST active abilities}.
    */
   private final Map<String, List<String>> existingActives;
 
@@ -116,7 +116,7 @@ public class ActiveMenu implements Menu {
         if (enabled) {
           List<String> lore = new ArrayList<>();
           for (String slot : existingActives.get(activeId)) {
-            NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + activeId);
+            NamespacedKey activeKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + slot + "." + activeId);
             String activeValue = itemTags.get(activeKey, PersistentDataType.STRING);
             lore.add(ChatColor.WHITE + TextFormatter.capitalizePhrase(slot + ": " + activeValue));
           }
@@ -156,12 +156,12 @@ public class ActiveMenu implements Menu {
   }
 
   /**
-   * Maps an item's {@link Key#ACTIVE_LIST active abilities}.
+   * Maps an item's {@link Key#ACTIVE_EQUIPMENT_LIST active abilities}.
    *
-   * @return item's {@link Key#ACTIVE_LIST actives} map
+   * @return item's {@link Key#ACTIVE_EQUIPMENT_LIST actives} map
    */
   private Map<String, List<String>> mapActives() {
-    NamespacedKey listKey = Key.ACTIVE_LIST.getNamespacedKey();
+    NamespacedKey listKey = Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey();
     boolean hasActives = itemTags.has(listKey, PersistentDataType.STRING);
     if (hasActives) {
       Map<String, List<String>> existingActives = new HashMap<>();

@@ -30,7 +30,7 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.24.12
+ * @version 1.25.0
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -210,7 +210,10 @@ public class CosmeticMenu implements Menu {
     }
     menu.setItem(23, ItemCreator.createItem(Material.REDSTONE, ChatColor.AQUA + "Passive Abilities"));
     menu.setItem(24, ItemCreator.createItem(Material.GLOWSTONE_DUST, ChatColor.AQUA + "Active Abilities"));
-    menu.setItem(25, ItemCreator.createItem(Material.NETHER_STAR, ChatColor.AQUA + "Plugin Tags"));
+    if (item.getType().isEdible()) {
+      menu.setItem(26, ItemCreator.createItem(Material.APPLE, ChatColor.AQUA + "Edible Active Abilities"));
+    }
+    menu.setItem(35, ItemCreator.createItem(Material.NETHER_STAR, ChatColor.AQUA + "Plugin Tags"));
   }
 
   /**

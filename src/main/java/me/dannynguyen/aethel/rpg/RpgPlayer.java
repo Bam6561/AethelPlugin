@@ -3,13 +3,16 @@ package me.dannynguyen.aethel.rpg;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Represents a player's RPG metadata.
  *
  * @author Danny Nguyen
- * @version 1.24.2
+ * @version 1.25.0
  * @since 1.8.9
  */
 public class RpgPlayer {
@@ -32,6 +35,11 @@ public class RpgPlayer {
    * {@link Equipment}
    */
   private final Equipment equipment;
+
+  /**
+   * Edibles on cooldown.
+   */
+  private final Set<String> onCooldownEdibles = new HashSet<>();
 
   /**
    * Active projections.
@@ -88,6 +96,16 @@ public class RpgPlayer {
   @NotNull
   public Equipment getEquipment() {
     return this.equipment;
+  }
+
+  /**
+   * Gets the edibles on cooldown.
+   *
+   * @return edibles on cooldown
+   */
+  @NotNull
+  public Set<String> getOnCooldownEdibles() {
+    return this.onCooldownEdibles;
   }
 
   /**

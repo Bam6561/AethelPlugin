@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 /**
- * Represents {@link me.dannynguyen.aethel.enums.plugin.Key#PASSIVE_LIST passive ability}
+ * Represents {@link me.dannynguyen.aethel.rpg.abilities.PassiveAbility passive ability}
  * tags input validation.
  *
  * @author Danny Nguyen

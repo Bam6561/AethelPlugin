@@ -41,7 +41,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.24.12
+ * @version 1.25.0
  * @since 1.6.7
  */
 public class ItemEditorMenuClick implements MenuClick {
@@ -120,7 +120,8 @@ public class ItemEditorMenuClick implements MenuClick {
       case 21 -> new CosmeticChange().toggleUnbreakable();
       case 23 -> new MenuChange().openPassive();
       case 24 -> new MenuChange().openActive();
-      case 25 -> new MenuChange().openTag();
+      case 26 -> new MenuChange().openEdible();
+      case 35 -> new MenuChange().openTag();
       case 36 -> { // Lore Context
       }
       case 37 -> new CosmeticChange().setLore();
@@ -227,7 +228,7 @@ public class ItemEditorMenuClick implements MenuClick {
   }
 
   /**
-   * Sets an item's {@link Key#ACTIVE_LIST active ability}.
+   * Sets an item's {@link Key#ACTIVE_EQUIPMENT_LIST equipment active ability}.
    */
   public void interpretActiveClick() {
     switch (e.getSlot()) {
@@ -243,6 +244,18 @@ public class ItemEditorMenuClick implements MenuClick {
       case 16 -> new ActiveChange().setSlot(RpgEquipmentSlot.NECKLACE);
       case 17 -> new ActiveChange().setSlot(RpgEquipmentSlot.RING);
       default -> new ActiveChange().readActive();
+    }
+  }
+
+  /**
+   * Sets an item's {@link Key#ACTIVE_EDIBLE_LIST edible active ability}.
+   */
+  public void interpretEdibleClick() {
+    switch (e.getSlot()) {
+      case 2, 4 -> { // Context, Item
+      }
+      case 6 -> new MenuChange().returnToCosmetic();
+      default -> new EdibleChange().readActive();
     }
   }
 
@@ -272,7 +285,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * Represents a menu change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.11
+   * @version 1.25.0
    * @since 1.23.11
    */
   private class MenuChange {
@@ -336,7 +349,15 @@ public class ItemEditorMenuClick implements MenuClick {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
       menuInput.setSlot(RpgEquipmentSlot.HAND);
       user.openInventory(new ActiveMenu(user, RpgEquipmentSlot.HAND).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE_EQUIPMENT);
+    }
+
+    /**
+     * Opens a {@link EdibleMenu}.
+     */
+    private void openEdible() {
+      user.openInventory(new EdibleMenu(user).getMainMenu());
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE_EDIBLE);
     }
 
     /**
@@ -794,7 +815,7 @@ public class ItemEditorMenuClick implements MenuClick {
 
     /**
      * Sets the user's interacting {@link RpgEquipmentSlot}
-     * for {@link Key#ACTIVE_LIST active abilities}.
+     * for {@link Key#ACTIVE_EQUIPMENT_LIST active abilities}.
      *
      * @param eSlot {@link RpgEquipmentSlot}
      */
@@ -802,7 +823,7 @@ public class ItemEditorMenuClick implements MenuClick {
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
       menuInput.setSlot(eSlot);
       user.openInventory(new ActiveMenu(user, eSlot).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE);
+      menuInput.setMenu(MenuListener.Menu.ITEMEDITOR_ACTIVE_EQUIPMENT);
     }
 
     /**
@@ -815,7 +836,34 @@ public class ItemEditorMenuClick implements MenuClick {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " " + active + ChatColor.WHITE + " ability values:");
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbilityType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
       menuInput.setObjectType(TextFormatter.formatId(active));
-      awaitMessageInput(MessageListener.Type.ITEMEDITOR_ACTIVE_ABILITY);
+      awaitMessageInput(MessageListener.Type.ITEMEDITOR_ACTIVE_ABILITY_EQUIPMENT);
+    }
+  }
+
+  /**
+   * Represents an item's {@link EdibleMenu} metadata change operation.
+   *
+   * @author Danny Nguyen
+   * @version 1.25.0
+   * @since 1.25.0
+   */
+  private class EdibleChange {
+    /**
+     * No parameter constructor.
+     */
+    EdibleChange() {
+    }
+
+    /**
+     * Determines the {@link ActiveAbilityType} to be set and prompts the user for an input.
+     */
+    private void readActive() {
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      String active = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + active + ChatColor.WHITE + " ability values:");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + ActiveAbilityType.valueOf(TextFormatter.formatEnum(active)).getEffect().getData());
+      menuInput.setObjectType(TextFormatter.formatId(active));
+      awaitMessageInput(MessageListener.Type.ITEMEDITOR_ACTIVE_ABILITY_EDIBLE);
     }
   }
 
@@ -846,11 +894,11 @@ public class ItemEditorMenuClick implements MenuClick {
 
   /**
    * Represents an item's Minecraft and {@link Key#ATTRIBUTE_LIST Aethel attribute},
-   * {@link Key#PASSIVE_LIST passive ability}, and
-   * {@link Key#ACTIVE_LIST active ability} lore generation.
+   * {@link Key#PASSIVE_LIST passive ability}, {@link Key#ACTIVE_EQUIPMENT_LIST equipment active ability},
+   * and {@link Key#ACTIVE_EDIBLE_LIST edible active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.24.13
+   * @version 1.25.0
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -886,10 +934,15 @@ public class ItemEditorMenuClick implements MenuClick {
     private Map<String, List<String>> passiveAbilities;
 
     /**
-     * ItemStack's {@link Key#ACTIVE_LIST active abilities}
-     * categorized by {@link RpgEquipmentSlot}.
+     * ItemStack's {@link me.dannynguyen.aethel.rpg.Equipment}
+     * {@link Key#ACTIVE_EQUIPMENT_LIST active abilities} categorized by {@link RpgEquipmentSlot}.
      */
-    private Map<String, List<String>> activeAbilities;
+    private Map<String, List<String>> activeEquipmentAbilities;
+
+    /**
+     * ItemStack's edible {@link Key#ACTIVE_EDIBLE_LIST active abilities}.
+     */
+    private List<String> activeEdibleAbilities;
 
     /**
      * If the item's lore was generated.
@@ -927,10 +980,16 @@ public class ItemEditorMenuClick implements MenuClick {
         addPassiveHeaders();
       }
 
-      if (itemTags.has(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+      if (itemTags.has(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
         generatedLore = true;
-        this.activeAbilities = sortActiveAbilities();
-        addActiveHeaders();
+        this.activeEquipmentAbilities = sortActiveEquipmentAbilities();
+        addActiveEquipmentHeaders();
+      }
+
+      if (itemTags.has(Key.ACTIVE_EDIBLE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
+        generatedLore = true;
+        this.activeEdibleAbilities = sortActiveEdibleAbilities();
+        addActiveEdibleHeader();
       }
 
       if (itemTags.has(Key.RECIPE_FORGE_ID.getNamespacedKey(), PersistentDataType.STRING)) {
@@ -1165,21 +1224,21 @@ public class ItemEditorMenuClick implements MenuClick {
     }
 
     /**
-     * Sorts {@link Key#ACTIVE_LIST active abilities}
-     * by their {@link RpgEquipmentSlot}.
+     * Sorts {@link me.dannynguyen.aethel.rpg.Equipment}
+     * {@link Key#ACTIVE_EQUIPMENT_LIST active abilities} by their {@link RpgEquipmentSlot}.
      *
-     * @return {@link RpgEquipmentSlot} : {@link Key#ACTIVE_LIST}
+     * @return {@link RpgEquipmentSlot} : {@link Key#ACTIVE_EQUIPMENT_LIST}
      */
-    private Map<String, List<String>> sortActiveAbilities() {
+    private Map<String, List<String>> sortActiveEquipmentAbilities() {
       Map<String, List<String>> activeAbilities = new HashMap<>();
-      for (String active : itemTags.get(Key.ACTIVE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+      for (String active : itemTags.get(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
         String slot = active.substring(0, active.indexOf("."));
         String type = active.substring(active.indexOf(".") + 1);
 
         ActiveAbilityType abilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(type));
         ActiveAbilityType.Effect abilityEffect = abilityType.getEffect();
 
-        String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
+        String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + slot + "." + type), PersistentDataType.STRING).split(" ");
         StringBuilder activeLore = new StringBuilder();
 
         activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
@@ -1214,9 +1273,9 @@ public class ItemEditorMenuClick implements MenuClick {
     /**
      * Adds active ability {@link RpgEquipmentSlot} headers to the item's lore.
      */
-    private void addActiveHeaders() {
+    private void addActiveEquipmentHeaders() {
       for (String eSlot : headerOrder) {
-        if (activeAbilities.containsKey(eSlot)) {
+        if (activeEquipmentAbilities.containsKey(eSlot)) {
           List<String> header = new ArrayList<>(List.of(""));
           String tag = ChatColor.YELLOW + "Actives";
           switch (eSlot) {
@@ -1229,10 +1288,60 @@ public class ItemEditorMenuClick implements MenuClick {
             case "hand" -> header.add(ChatColor.GRAY + "Main Hand " + tag);
             case "off_hand" -> header.add(ChatColor.GRAY + "Off Hand " + tag);
           }
-          header.addAll(activeAbilities.get(eSlot));
+          header.addAll(activeEquipmentAbilities.get(eSlot));
           lore.addAll(header);
         }
       }
+    }
+
+    /**
+     * Sorts edible {@link Key#ACTIVE_EDIBLE_LIST active abilities}
+     * by their {@link RpgEquipmentSlot}.
+     *
+     * @return {@link RpgEquipmentSlot} : {@link Key#ACTIVE_EDIBLE_LIST}
+     */
+    private List<String> sortActiveEdibleAbilities() {
+      List<String> activeAbilities = new ArrayList<>();
+      for (String active : itemTags.get(Key.ACTIVE_EDIBLE_LIST.getNamespacedKey(), PersistentDataType.STRING).split(" ")) {
+        ActiveAbilityType abilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(active));
+        ActiveAbilityType.Effect abilityEffect = abilityType.getEffect();
+
+        String[] abilityData = itemTags.get(new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EDIBLE.getHeader() + active), PersistentDataType.STRING).split(" ");
+        StringBuilder activeLore = new StringBuilder();
+
+        activeLore.append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[0])).append("s) ");
+        switch (abilityEffect) {
+          case BUFF -> {
+            String attributeName = abilityData[1];
+            if (attributeName.startsWith("generic_")) {
+              attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
+            }
+            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (").append(abilityData[2]).append(") ").append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
+          }
+          case CLEAR_STATUS -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName());
+          case DISPLACEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
+          case DISTANCE_DAMAGE -> activeLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
+          case MOVEMENT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+          case POTION_EFFECT -> {
+            int amplifier = Integer.parseInt(abilityData[2]) + 1;
+            activeLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
+          }
+          case PROJECTION -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+          case SHATTER, TELEPORT -> activeLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
+        }
+        activeAbilities.add(activeLore.toString());
+      }
+      return activeAbilities;
+    }
+
+    /**
+     * Adds the edible active ability header to the item's lore.
+     */
+    private void addActiveEdibleHeader() {
+      List<String> header = new ArrayList<>(List.of(""));
+      header.add(ChatColor.GRAY + "Edible " + ChatColor.LIGHT_PURPLE + "Actives");
+      header.addAll(activeEdibleAbilities);
+      lore.addAll(header);
     }
 
     /**

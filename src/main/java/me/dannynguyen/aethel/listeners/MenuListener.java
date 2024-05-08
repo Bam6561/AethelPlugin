@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.24.7
+ * @version 1.25.0
  * @since 1.0.2
  */
 public class MenuListener implements Listener {
@@ -134,9 +134,11 @@ public class MenuListener implements Listener {
           case CHARACTER_SETTINGS -> click.interpretSettingsClick();
         }
       } else {
-        if (menu == Menu.CHARACTER_SHEET && !e.isShiftClick()) {
+        if (!e.isShiftClick()) {
           e.setCancelled(false);
-          click.interpretPlayerInventoryClick();
+          if (menu == Menu.CHARACTER_SHEET) {
+            click.interpretPlayerInventoryClick();
+          }
         }
       }
     }
@@ -189,13 +191,14 @@ public class MenuListener implements Listener {
           case ITEMEDITOR_ENCHANTMENT -> click.interpretEnchantmentClick();
           case ITEMEDITOR_POTION -> click.interpretPotionClick();
           case ITEMEDITOR_PASSIVE -> click.interpretPassiveClick();
-          case ITEMEDITOR_ACTIVE -> click.interpretActiveClick();
+          case ITEMEDITOR_ACTIVE_EQUIPMENT -> click.interpretActiveClick();
+          case ITEMEDITOR_ACTIVE_EDIBLE -> click.interpretEdibleClick();
           case ITEMEDITOR_TAG -> click.interpretTagClick();
         }
       }
     } else {
       if (!e.isShiftClick()) {
-        e.setCancelled(true);
+        e.setCancelled(false);
       }
     }
   }
@@ -393,9 +396,14 @@ public class MenuListener implements Listener {
     ITEMEDITOR_PASSIVE("itemeditor"),
 
     /**
-     * Edit item {@link Key#ACTIVE_LIST}.
+     * Edit item {@link Key#ACTIVE_EQUIPMENT_LIST}.
      */
-    ITEMEDITOR_ACTIVE("itemeditor"),
+    ITEMEDITOR_ACTIVE_EQUIPMENT("itemeditor"),
+
+    /**
+     * Edit item {@link Key#ACTIVE_EDIBLE_LIST}.
+     */
+    ITEMEDITOR_ACTIVE_EDIBLE("itemeditor"),
 
     /**
      * Edit item {@link Key Aethel tags}.
