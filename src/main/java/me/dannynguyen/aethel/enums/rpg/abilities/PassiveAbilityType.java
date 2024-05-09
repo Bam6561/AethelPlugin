@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of passive abilities.
  *
  * @author Danny Nguyen
- * @version 1.25.2
+ * @version 1.25.3
  * @since 1.15.1
  */
 public enum PassiveAbilityType {
@@ -30,6 +30,11 @@ public enum PassiveAbilityType {
    * Minecraft attribute {@link me.dannynguyen.aethel.rpg.Buffs}.
    */
   ATTRIBUTE_2("Attribute 2", "attribute_2", Effect.BUFF),
+
+  /**
+   * Applies stacks of {@link StatusType#BATTER}.
+   */
+  BATTER("Batter", "batter", Effect.STACK_INSTANCE),
 
   /**
    * Applies stacks of {@link StatusType#BLEED}.

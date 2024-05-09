@@ -23,7 +23,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.25.2
+ * @version 1.25.3
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -140,7 +140,7 @@ public class DamageMitigation {
     }
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
     if (statuses != null && statuses.containsKey(StatusType.BRITTLE)) {
-      armor = Math.min(0, armor - statuses.get(StatusType.BRITTLE).getStackAmount());
+      armor = Math.max(0, armor - statuses.get(StatusType.BRITTLE).getStackAmount());
     }
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);
@@ -162,7 +162,7 @@ public class DamageMitigation {
     }
     int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
     if (statuses != null && statuses.containsKey(StatusType.BRITTLE)) {
-      armor = Math.min(0, armor - statuses.get(StatusType.BRITTLE).getStackAmount());
+      armor = Math.max(0, armor - statuses.get(StatusType.BRITTLE).getStackAmount());
     }
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);

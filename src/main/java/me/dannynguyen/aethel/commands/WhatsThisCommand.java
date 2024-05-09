@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  *
  * @author Danny Nguyen
- * @version 1.25.2
+ * @version 1.25.3
  * @since 1.22.1
  */
 public class WhatsThisCommand implements CommandExecutor {
@@ -177,6 +177,7 @@ public class WhatsThisCommand implements CommandExecutor {
         case TELEPORT -> sendKeyWordDescription(user, KeyWord.TELEPORT);
         case BLINK -> sendKeyWordDescription(user, KeyWord.BLINK);
         case PROJECTION -> sendKeyWordDescription(user, KeyWord.PROJECTION);
+        case BATTER -> sendKeyWordDescription(user, KeyWord.BATTER);
         case BLEED -> sendKeyWordDescription(user, KeyWord.BLEED);
         case BRITTLE -> sendKeyWordDescription(user, KeyWord.BRITTLE);
         case CHILL -> sendKeyWordDescription(user, KeyWord.CHILL);
@@ -295,7 +296,7 @@ public class WhatsThisCommand implements CommandExecutor {
       CUMULATIVE(new String[]{
           ChatColor.GREEN + "Cumulative",
           ChatColor.GRAY + "Stacks are represented together.",
-          "Related: " + ChatColor.AQUA + "bleed, chill, electrocute, soak"}),
+          "Related: " + ChatColor.AQUA + "batter, bleed, chill, electrocute, soak"}),
 
       /**
        * {@link me.dannynguyen.aethel.rpg.Status}
@@ -722,7 +723,7 @@ public class WhatsThisCommand implements CommandExecutor {
       STACK_INSTANCE(new String[]{
           ChatColor.GREEN + "Stack Instance",
           ChatColor.GRAY + "Applies stacks of Statuses.",
-          "Related: " + ChatColor.AQUA + "bleed, brittle, chill, electrocute, soak, vulnerable"
+          "Related: " + ChatColor.AQUA + "batter, bleed, brittle, chill, electrocute, soak, vulnerable"
       }),
 
       /**
@@ -931,7 +932,15 @@ public class WhatsThisCommand implements CommandExecutor {
       }),
 
       /**
-       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#BLEED}}
+       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#BATTER}
+       */
+      BATTER(new String[]{
+          ChatColor.GREEN + "Batter",
+          ChatColor.GRAY + "Reduces armor toughness by 1 per stack."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.StatusType#BLEED}
        */
       BLEED(new String[]{
           ChatColor.GREEN + "Bleed",
@@ -943,7 +952,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       BRITTLE(new String[]{
           ChatColor.GREEN + "Brittle",
-          ChatColor.GRAY + "Reduces an entity's effective armor value in damage calculations by 1 per stack."
+          ChatColor.GRAY + "Reduces effective armor by 1 per stack."
       }),
 
       /**
@@ -951,7 +960,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       CHILL(new String[]{
           ChatColor.GREEN + "Chill",
-          ChatColor.GRAY + "Can be triggered by Shatter to deal an instance of damage."
+          ChatColor.GRAY + "Can be consumed by Shatter to deal an instance of damage."
       }),
 
       /**
@@ -975,7 +984,7 @@ public class WhatsThisCommand implements CommandExecutor {
        */
       VULNERABLE(new String[]{
           ChatColor.GREEN + "Vulnerable",
-          ChatColor.GRAY + "Increases the damage taken by the entity by 2.5% per stack."
+          ChatColor.GRAY + "Increases the damage taken by by 2.5% per stack."
       });
 
       /**

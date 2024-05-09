@@ -86,7 +86,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.2
+   * @version 1.25.3
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -228,7 +228,7 @@ public class DamageListener implements Listener {
     }
 
     /**
-     * If the target has {@link StatusType#BRITTLE}, multiply the damage by its number of stacks.
+     * If the target has {@link StatusType#BRITTLE}, reduce the target's effective armor.
      */
     private void ifBrittle() {
       if (defenderStatuses.containsKey(StatusType.BRITTLE)) {
@@ -238,7 +238,7 @@ public class DamageListener implements Listener {
           armorBuff = defenderBuffs.getAethelAttribute(AethelAttribute.ARMOR);
         }
         int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
-        armor = Math.min(0, armor - defenderStatuses.get(StatusType.BRITTLE).getStackAmount());
+        armor = Math.max(0, armor - defenderStatuses.get(StatusType.BRITTLE).getStackAmount());
         double damage = e.getDamage();
         e.setDamage(damage - (damage * Math.min(armor * 0.2, .4)));
       }
@@ -413,6 +413,9 @@ public class DamageListener implements Listener {
         toughnessBuff = defenderBuffs.getAethelAttribute(AethelAttribute.ARMOR_TOUGHNESS);
       }
       double toughness = defender.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + toughnessBase + toughnessBuff;
+      if (defenderStatuses != null && defenderStatuses.containsKey(StatusType.BATTER)) {
+        toughness = Math.max(0, toughness - defenderStatuses.get(StatusType.BATTER).getStackAmount());
+      }
 
       e.setDamage(Math.max(0, e.getDamage() - (toughness / 2)));
       if (e.getDamage() == 0) {
@@ -503,7 +506,7 @@ public class DamageListener implements Listener {
    * Represents environmental damage taken by an entity.
    *
    * @author Danny Nguyen
-   * @version 1.23.13
+   * @version 1.25.3
    * @since 1.23.13
    */
   private class EnvironmentDamage {
@@ -528,6 +531,11 @@ public class DamageListener implements Listener {
     private final PersistentDataContainer defenderEntityTags;
 
     /**
+     * Defending entity's statuses.
+     */
+    private final Map<StatusType, Status> defenderStatuses;
+
+    /**
      * Defending entity's buffs.
      */
     private final Buffs defenderBuffs;
@@ -541,7 +549,9 @@ public class DamageListener implements Listener {
       this.e = e;
       this.defender = (LivingEntity) e.getEntity();
       this.defenderEntityTags = defender.getPersistentDataContainer();
-      this.defenderBuffs = Plugin.getData().getRpgSystem().getBuffs().get(defender.getUniqueId());
+      RpgSystem rpgSystem = Plugin.getData().getRpgSystem();
+      this.defenderStatuses = rpgSystem.getStatuses().get(defender.getUniqueId());
+      this.defenderBuffs = rpgSystem.getBuffs().get(defender.getUniqueId());
     }
 
     /**
@@ -627,6 +637,9 @@ public class DamageListener implements Listener {
         toughnessBuff = defenderBuffs.getAethelAttribute(AethelAttribute.ARMOR_TOUGHNESS);
       }
       double toughness = defender.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue() + toughnessBase + toughnessBuff;
+      if (defenderStatuses != null && defenderStatuses.containsKey(StatusType.BATTER)) {
+        toughness = Math.max(0, toughness - defenderStatuses.get(StatusType.BATTER).getStackAmount());
+      }
 
       e.setDamage(Math.max(0, e.getDamage() - (toughness / 2)));
       if (e.getDamage() == 0) {
