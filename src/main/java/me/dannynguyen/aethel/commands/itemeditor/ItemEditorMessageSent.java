@@ -45,7 +45,7 @@ import java.util.UUID;
  * Called with {@link MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.25.4
  * @since 1.7.0
  */
 public class ItemEditorMessageSent {
@@ -487,7 +487,7 @@ public class ItemEditorMessageSent {
     if (!e.getMessage().equals("-")) {
       new ActiveEdibleChange().interpretKeyToBeSet();
     } else {
-      new KeyChange().removeSlotKeyFromList(KeyHeader.ACTIVE_EDIBLE.getHeader(), Key.ACTIVE_EDIBLE_LIST.getNamespacedKey());
+      new KeyChange().removeNonSlotKeyFromList(KeyHeader.ACTIVE_EDIBLE.getHeader(), Key.ACTIVE_EDIBLE_LIST.getNamespacedKey());
     }
     new MenuChange().returnToEdible();
   }

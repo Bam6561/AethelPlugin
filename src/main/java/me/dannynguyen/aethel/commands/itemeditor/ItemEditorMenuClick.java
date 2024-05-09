@@ -898,7 +898,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * and {@link Key#ACTIVE_EDIBLE_LIST edible active ability} lore generation.
    *
    * @author Danny Nguyen
-   * @version 1.25.1
+   * @version 1.25.4
    * @since 1.17.13
    */
   private class LoreGeneration {
@@ -1092,6 +1092,7 @@ public class ItemEditorMenuClick implements MenuClick {
             }
             switch (attribute) {
               case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> line.append(df3.format(attributeValue)).append("% ").append(TextFormatter.capitalizePhrase(attribute));
+              case "knockback_resistance" -> line.append(df3.format(attributeValue * 10)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
               default -> line.append(df3.format(attributeValue)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
             }
             header.add(line.toString());
@@ -1141,7 +1142,10 @@ public class ItemEditorMenuClick implements MenuClick {
                 if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[3]) >= 0) {
                   abilityLore.append("-");
                 }
-                abilityLore.append(abilityData[4]);
+                switch (attributeName) {
+                  case "knockback_resistance" -> abilityLore.append(Double.parseDouble(abilityData[4]) * 10);
+                  default -> abilityLore.append(abilityData[4]);
+                }
                 switch (attributeName) {
                   case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
                   default -> abilityLore.append(") ");
@@ -1176,7 +1180,10 @@ public class ItemEditorMenuClick implements MenuClick {
                 if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[4]) >= 0) {
                   abilityLore.append("-");
                 }
-                abilityLore.append(abilityData[4]);
+                switch (attributeName) {
+                  case "knockback_resistance" -> abilityLore.append(Double.parseDouble(abilityData[4]) * 10);
+                  default -> abilityLore.append(abilityData[4]);
+                }
                 switch (attributeName) {
                   case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
                   default -> abilityLore.append(") ");
@@ -1208,7 +1215,10 @@ public class ItemEditorMenuClick implements MenuClick {
                 if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[4]) >= 0) {
                   abilityLore.append("-");
                 }
-                abilityLore.append(abilityData[4]);
+                switch (attributeName) {
+                  case "knockback_resistance" -> abilityLore.append(Double.parseDouble(abilityData[4]) * 10);
+                  default -> abilityLore.append(abilityData[4]);
+                }
                 switch (attributeName) {
                   case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
                   default -> abilityLore.append(") ");
@@ -1289,7 +1299,10 @@ public class ItemEditorMenuClick implements MenuClick {
             if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[2]) >= 0) {
               abilityLore.append("-");
             }
-            abilityLore.append(abilityData[2]);
+            switch (attributeName) {
+              case "knockback_resistance" -> abilityLore.append(Double.parseDouble(abilityData[2]) * 10);
+              default -> abilityLore.append(abilityData[2]);
+            }
             switch (attributeName) {
               case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
               default -> abilityLore.append(") ");
@@ -1369,7 +1382,10 @@ public class ItemEditorMenuClick implements MenuClick {
             if (attributeName.equals("item_cooldown") && Double.parseDouble(abilityData[2]) >= 0) {
               abilityLore.append("-");
             }
-            abilityLore.append(abilityData[2]);
+            switch (attributeName) {
+              case "knockback_resistance" -> abilityLore.append(Double.parseDouble(abilityData[2]) * 10);
+              default -> abilityLore.append(abilityData[2]);
+            }
             switch (attributeName) {
               case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
               default -> abilityLore.append(") ");

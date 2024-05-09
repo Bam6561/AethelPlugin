@@ -234,7 +234,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag removal operation.
        *
        * @author Danny Nguyen
-       * @version 1.23.15
+       * @version 1.25.4
        * @since 1.13.9
        */
       private class TagRemove {
@@ -259,6 +259,8 @@ public class ItemTagCommand implements CommandExecutor {
               removePassiveTag();
             } else if (tag.startsWith("active.")) {
               removeActiveTag();
+            } else if (tag.startsWith("edible.")) {
+              removeEdibleTag();
             } else if (tag.startsWith("rpg.")) {
               switch (tag) {
                 case "rpg.durability", "rpg.durability_max" -> {
@@ -335,6 +337,25 @@ public class ItemTagCommand implements CommandExecutor {
         }
 
         /**
+         * Removes an item's {@link Key#ACTIVE_EDIBLE_LIST edible active} tag.
+         */
+        private void removeEdibleTag() {
+          if (!tag.equals("edible.list")) {
+            NamespacedKey listKey = Key.ACTIVE_EDIBLE_LIST.getNamespacedKey();
+            if (itemTags.has(listKey, PersistentDataType.STRING)) {
+              tag = tag.substring(7);
+              removeKeyFromList(listKey);
+            }
+          } else {
+            for (NamespacedKey key : itemTags.getKeys()) {
+              if (key.getKey().startsWith(KeyHeader.ACTIVE_EDIBLE.getHeader())) {
+                itemTags.remove(key);
+              }
+            }
+          }
+        }
+
+        /**
          * Removes a key from the list of keys.
          *
          * @param listKey list key
@@ -359,7 +380,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag set operation.
        *
        * @author Danny Nguyen
-       * @version 1.24.14
+       * @version 1.25.4
        * @since 1.23.12
        */
       private class TagSet {
@@ -393,6 +414,12 @@ public class ItemTagCommand implements CommandExecutor {
               readActive(value);
             } else {
               user.sendMessage(ChatColor.RED + "Cannot set active.list directly.");
+            }
+          } else if (tag.startsWith("edible.")) {
+            if (!tag.equals("edible.list")) {
+              readEdible(value);
+            } else {
+              user.sendMessage(ChatColor.RED + "Cannot set edible.list directly.");
             }
           } else if (tag.startsWith("rpg.")) {
             switch (tag) {
@@ -523,6 +550,37 @@ public class ItemTagCommand implements CommandExecutor {
             case PROJECTION -> setActiveTag(input.projection());
             case SHATTER -> setActiveTag(input.shatter());
             case TELEPORT -> setActiveTag(input.teleport());
+          }
+        }
+
+        /**
+         * Checks whether the {@link ActiveAbility edible active}
+         * tag was formatted correctly before setting its tag and value.
+         *
+         * @param value tag value
+         */
+        private void readEdible(String value) {
+          tag = tag.substring(7);
+          ActiveAbilityType activeAbilityType;
+          try {
+            activeAbilityType = ActiveAbilityType.valueOf(TextFormatter.formatEnum(tag));
+          } catch (IllegalArgumentException ex) {
+            user.sendMessage(ChatColor.RED + "Unrecognized active ability.");
+            return;
+          }
+
+          String[] args = value.split(" ");
+          ActiveAbilityInput input = new ActiveAbilityInput(user, args);
+          switch (activeAbilityType.getEffect()) {
+            case BUFF -> setEdibleTag(input.buff());
+            case CLEAR_STATUS -> setEdibleTag(input.clearStatus());
+            case DISTANCE_DAMAGE -> setEdibleTag(input.distanceDamage());
+            case DISPLACEMENT -> setEdibleTag(input.displacement());
+            case MOVEMENT -> setEdibleTag(input.movement());
+            case POTION_EFFECT -> setEdibleTag(input.potionEffect());
+            case PROJECTION -> setEdibleTag(input.projection());
+            case SHATTER -> setEdibleTag(input.shatter());
+            case TELEPORT -> setEdibleTag(input.teleport());
           }
         }
 
@@ -691,6 +749,23 @@ public class ItemTagCommand implements CommandExecutor {
           NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EQUIPMENT.getHeader() + tag);
           itemTags.set(tagKey, PersistentDataType.STRING, value);
           setKeyToList(Key.ACTIVE_EQUIPMENT_LIST.getNamespacedKey());
+          item.setItemMeta(meta);
+          user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
+        }
+
+        /**
+         * Sets an item's {@link ActiveAbility edible active} tag.
+         *
+         * @param value tag value
+         */
+        private void setEdibleTag(String value) {
+          if (value == null) {
+            return;
+          }
+
+          NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.ACTIVE_EDIBLE.getHeader() + tag);
+          itemTags.set(tagKey, PersistentDataType.STRING, value);
+          setKeyToList(Key.ACTIVE_EDIBLE_LIST.getNamespacedKey());
           item.setItemMeta(meta);
           user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
         }

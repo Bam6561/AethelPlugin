@@ -9,7 +9,6 @@ import me.dannynguyen.aethel.rpg.RpgSystem;
 import me.dannynguyen.aethel.rpg.Status;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
@@ -23,7 +22,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.25.3
+ * @version 1.25.4
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -69,7 +68,7 @@ public class DamageMitigation {
    */
   public double mitigateFall(double damage) {
     int featherFallingBase = entityTags.getOrDefault(Key.ENCHANTMENT_FEATHER_FALLING.getNamespacedKey(), PersistentDataType.INTEGER, 0);
-    return damage - (damage * (featherFallingBase * .2));
+    return damage - (damage * (featherFallingBase * .25));
   }
 
   /**
@@ -91,14 +90,7 @@ public class DamageMitigation {
    */
   public double mitigateExplosion(double damage) {
     int blastProtectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_BLAST_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
-    final double finalDamage = damage - (damage * (blastProtectionBase * .1));
-    if (finalDamage <= 0) {
-      new HealthChange(defender).heal(damage * .2);
-      if (defender instanceof Player player) {
-        player.setFoodLevel(20);
-      }
-    }
-    return finalDamage;
+    return damage - (damage * (blastProtectionBase * .1));
   }
 
   /**
