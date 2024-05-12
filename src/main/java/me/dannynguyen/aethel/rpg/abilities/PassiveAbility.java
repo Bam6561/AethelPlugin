@@ -355,7 +355,7 @@ public class PassiveAbility {
      * Recursively finds new {@link StatusType#SOAK} targets around the source entity.
      *
      * @param entityStatuses entity {@link Status statuses}
-     * @param soakTargets  {@link StatusType#SOAK} targets
+     * @param soakTargets    {@link StatusType#SOAK} targets
      * @param targetUUID     source entity
      * @param meters         distance
      */
@@ -384,6 +384,9 @@ public class PassiveAbility {
 
     /**
      * Puts the ability on cooldown, if any.
+     *
+     * @param cooldown         cooldown
+     * @param cooldownModifier cooldown modifier
      */
     private void cooldownAbility(int cooldown, double cooldownModifier) {
       if (cooldown > 0) {

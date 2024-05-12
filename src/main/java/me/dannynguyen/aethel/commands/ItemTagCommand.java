@@ -234,7 +234,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag removal operation.
        *
        * @author Danny Nguyen
-       * @version 1.25.4
+       * @version 1.25.5
        * @since 1.13.9
        */
       private class TagRemove {
@@ -251,7 +251,7 @@ public class ItemTagCommand implements CommandExecutor {
          */
         private boolean removeTag() {
           NamespacedKey tagKey = new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag);
-          if (itemTags.has(tagKey, PersistentDataType.STRING) || itemTags.has(tagKey, PersistentDataType.DOUBLE) || itemTags.has(tagKey, PersistentDataType.INTEGER)) {
+          if (itemTags.has(tagKey, PersistentDataType.STRING) || itemTags.has(tagKey, PersistentDataType.DOUBLE) || itemTags.has(tagKey, PersistentDataType.INTEGER) || itemTags.has(tagKey, PersistentDataType.BOOLEAN)) {
             itemTags.remove(tagKey);
             if (tag.startsWith("attribute.")) {
               removeAttributeTag();
@@ -380,7 +380,7 @@ public class ItemTagCommand implements CommandExecutor {
        * Represents a tag set operation.
        *
        * @author Danny Nguyen
-       * @version 1.25.4
+       * @version 1.25.5
        * @since 1.23.12
        */
       private class TagSet {
@@ -421,6 +421,17 @@ public class ItemTagCommand implements CommandExecutor {
             } else {
               user.sendMessage(ChatColor.RED + "Cannot set edible.list directly.");
             }
+          } else if (tag.startsWith("item.")) {
+            switch (value) {
+              case "true" -> itemTags.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.BOOLEAN, true);
+              case "false" -> itemTags.set(new NamespacedKey(Plugin.getInstance(), KeyHeader.AETHEL.getHeader() + tag), PersistentDataType.BOOLEAN, false);
+              default -> {
+                user.sendMessage(Message.INVALID_BOOLEAN.getMessage());
+                return;
+              }
+            }
+            item.setItemMeta(meta);
+            user.sendMessage(ChatColor.GREEN + "[Set Tag] " + ChatColor.AQUA + originalTag.toLowerCase() + " " + ChatColor.WHITE + value);
           } else if (tag.startsWith("rpg.")) {
             switch (tag) {
               case "rpg.durability" -> readReinforcement(value);

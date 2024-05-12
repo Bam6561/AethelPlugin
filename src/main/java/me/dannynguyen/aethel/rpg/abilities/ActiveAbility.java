@@ -190,7 +190,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.25.0
+   * @version 1.25.5
    * @since 1.23.13
    */
   private class Effect {
@@ -361,6 +361,18 @@ public class ActiveAbility {
       Set<LivingEntity> targets = new HashSet<>();
 
       switch (type) {
+        case BEAM -> {
+          world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.65f, 0);
+          Vector casterDirection = caster.getLocation().getDirection();
+          new TargetValidation().getBeamTargets(world, targets, caster.getEyeLocation(), casterDirection, distance);
+          targets.remove(caster);
+        }
+        case BULLET -> {
+          world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.65f, 0);
+          Vector casterDirection = caster.getLocation().getDirection();
+          new TargetValidation().getBulletTargets(caster, world, targets, caster.getEyeLocation(), casterDirection, distance);
+          targets.remove(caster);
+        }
         case EXPLODE -> {
           world.playSound(caster.getEyeLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
           world.spawnParticle(Particle.EXPLOSION_LARGE, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
@@ -389,12 +401,6 @@ public class ActiveAbility {
               targets.add(livingEntity);
             }
           }
-        }
-        case BEAM -> {
-          world.playSound(caster.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, SoundCategory.PLAYERS, 0.65f, 0);
-          Vector casterDirection = caster.getLocation().getDirection();
-          new TargetValidation().getForceWaveTargets(world, targets, caster.getEyeLocation(), casterDirection, distance);
-          targets.remove(caster);
         }
         case QUAKE -> {
           world.playSound(caster.getEyeLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.25f, 2);
@@ -624,6 +630,8 @@ public class ActiveAbility {
 
     /**
      * Puts the ability on cooldown, if any.
+     *
+     * @param cooldownModifier cooldown modifier
      */
     private void cooldownAbility(double cooldownModifier) {
       if (baseCooldown > 0) {
@@ -749,7 +757,7 @@ public class ActiveAbility {
        * @param distance  distance in meters to check
        * @return set of forcewave-affected targets
        */
-      private Set<LivingEntity> getForceWaveTargets(World world, Set<LivingEntity> targets, Location location, Vector direction, int distance) {
+      private Set<LivingEntity> getBeamTargets(World world, Set<LivingEntity> targets, Location location, Vector direction, int distance) {
         if (distance <= 0 || location.getBlock().getType().isSolid()) {
           return targets;
         }
@@ -759,182 +767,224 @@ public class ActiveAbility {
             targets.add(livingEntity);
           }
         }
-        return getForceWaveTargets(world, targets, location.add(direction).clone(), direction, distance - 1);
+        return getBeamTargets(world, targets, location.add(direction).clone(), direction, distance - 1);
       }
-    }
-  }
 
-  /**
-   * Represents a {@link ActiveAbilityType.Effect#DISPLACEMENT} effect's entity validation.
-   *
-   * @author Danny Nguyen
-   * @version 1.24.0
-   * @since 1.24.0
-   */
-  private static class TargetDisplacement {
-    /**
-     * Ability caster.
-     */
-    private final Player caster;
-
-    /**
-     * Effect modifier.
-     */
-    private final double modifier;
-
-    /**
-     * Maximum range.
-     */
-    private final double distance;
-
-    /**
-     * Ability cast world.
-     */
-    private final World world;
-
-    /**
-     * Caster's body location.
-     */
-    private final Location casterLocation;
-
-    /**
-     * Caster's facing direction.
-     */
-    private final Vector direction;
-
-    /**
-     * Associates the target displacement operation with its caster and ability parameters.
-     *
-     * @param caster   ability caster
-     * @param modifier effect modifier
-     * @param distance maximum range
-     */
-    TargetDisplacement(Player caster, double modifier, double distance) {
-      this.caster = caster;
-      this.modifier = modifier;
-      this.distance = distance;
-      this.world = caster.getWorld();
-      this.casterLocation = caster.getLocation().add(0, 1, 0);
-      this.direction = caster.getLocation().getDirection();
-    }
-
-    /**
-     * Recursively finds {@link ActiveAbilityType#DRAG} affected targets.
-     *
-     * @param location          current location
-     * @param remainingDistance distance in meters to check
-     */
-    private void getDragTargets(Location location, int remainingDistance) {
-      if (remainingDistance <= 0 || location.getBlock().getType().isSolid()) {
-        return;
-      }
-      world.spawnParticle(Particle.SOUL, location, 1, 0.125, 0.125, 0.125, 0.025);
-      for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
-        if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
-          continue;
+      /**
+       * Recursively finds the {@link ActiveAbilityType#BULLET} targets.
+       *
+       * @param caster    ability caster
+       * @param world     world
+       * @param targets   set of affected targets
+       * @param location  current location
+       * @param direction caster's direction
+       * @param distance  distance in meters to check
+       * @return bullet-affected targets
+       */
+      private Set<LivingEntity> getBulletTargets(Player caster, World world, Set<LivingEntity> targets, Location location, Vector direction, int distance) {
+        if (distance <= 0 || location.getBlock().getType().isSolid()) {
+          Location impactLocation = location.subtract(direction);
+          world.playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
+          world.spawnParticle(Particle.EXPLOSION_LARGE, impactLocation, 1);
+          return targets;
         }
-
-        Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
-        double distanceModifier = (distance - remainingDistance) / distance * modifier;
-        Vector velocity = casterLocation.toVector().subtract(entityLocation.toVector()).normalize().multiply(distanceModifier);
-        livingEntity.setVelocity(velocity);
-      }
-      getDragTargets(location.add(direction).clone(), remainingDistance - 1);
-    }
-
-    /**
-     * Recursively finds {@link ActiveAbilityType#THRUST} affected targets.
-     *
-     * @param location          current location
-     * @param remainingDistance distance in meters to check
-     */
-    private void getThrustTargets(Location location, int remainingDistance) {
-      if (remainingDistance <= 0 || location.getBlock().getType().isSolid()) {
-        return;
-      }
-      world.spawnParticle(Particle.SCULK_SOUL, location, 1, 0.125, 0.125, 0.125, 0.025);
-      for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
-        if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
-          continue;
+        Collection<Entity> entities = world.getNearbyEntities(location, 0.5, 0.5, 0.5);
+        switch (entities.size()) {
+          case 0 -> {
+            return getBulletTargets(caster, world, targets, location.add(direction).clone(), direction, distance - 1);
+          }
+          case 1 -> {
+            if (entities.contains(caster)) {
+              return getBulletTargets(caster, world, targets, location.add(direction).clone(), direction, distance - 1);
+            }
+          }
         }
-
-        Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
-        double distanceModifier = remainingDistance / distance * modifier;
-        Vector velocity = entityLocation.toVector().subtract(casterLocation.toVector()).normalize().multiply(distanceModifier);
-        livingEntity.setVelocity(velocity);
-      }
-      getThrustTargets(location.add(direction).clone(), remainingDistance - 1);
-    }
-  }
-
-  /**
-   * Represents a {@link ActiveAbilityType.Effect#TELEPORT}
-   * effect's target location or entity validation.
-   *
-   * @author Danny Nguyen
-   * @version 1.24.4
-   * @since 1.24.1
-   */
-  private static class TargetTeleport {
-    /**
-     * Ability caster.
-     */
-    private final Player caster;
-
-    /**
-     * Caster's direction.
-     */
-    private final Vector direction;
-
-    /**
-     * Associates the target teleport operation with a caster.
-     *
-     * @param caster ability caster
-     */
-    TargetTeleport(Player caster) {
-      this.caster = caster;
-      this.direction = caster.getLocation().getDirection();
-    }
-
-    /**
-     * Gets if the teleport action can proceed through the next block.
-     *
-     * @param validTeleportLocation valid teleport location
-     * @param location              current location
-     * @param distance              number of meters to check
-     * @return the furthest valid teleport location
-     */
-    private Location ifValidTeleportThroughBlock(Location validTeleportLocation, Location location, int distance) {
-      Material blockType = location.getBlock().getType();
-      if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
-        return validTeleportLocation;
-      }
-      if (!blockType.isSolid()) {
-        validTeleportLocation = location.clone();
-      }
-      return ifValidTeleportThroughBlock(validTeleportLocation, location.add(direction), distance - 1);
-    }
-
-    /**
-     * Recursively finds the teleport affected target.
-     *
-     * @param world    world
-     * @param location current location
-     * @param distance distance in meters to check
-     * @return teleport target
-     */
-    private LivingEntity getTeleportTarget(World world, Location location, int distance) {
-      Material blockType = location.getBlock().getType();
-      if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
-        return null;
-      }
-      for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
-        if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
-          continue;
+        for (Entity entity : entities) {
+          if (entity instanceof LivingEntity livingEntity) {
+            targets.add(livingEntity);
+          }
         }
-        return livingEntity;
+        if (!targets.isEmpty()) {
+          world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
+          world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
+          return targets;
+        }
+        return getBulletTargets(caster, world, targets, location.add(direction).clone(), direction, distance - 1);
       }
-      return getTeleportTarget(world, location.add(direction).clone(), distance - 1);
+    }
+
+    /**
+     * Represents a {@link ActiveAbilityType.Effect#DISPLACEMENT} effect's entity validation.
+     *
+     * @author Danny Nguyen
+     * @version 1.24.0
+     * @since 1.24.0
+     */
+    private class TargetDisplacement {
+      /**
+       * Ability caster.
+       */
+      private final Player caster;
+
+      /**
+       * Effect modifier.
+       */
+      private final double modifier;
+
+      /**
+       * Maximum range.
+       */
+      private final double distance;
+
+      /**
+       * Ability cast world.
+       */
+      private final World world;
+
+      /**
+       * Caster's body location.
+       */
+      private final Location casterLocation;
+
+      /**
+       * Caster's facing direction.
+       */
+      private final Vector direction;
+
+      /**
+       * Associates the target displacement operation with its caster and ability parameters.
+       *
+       * @param caster   ability caster
+       * @param modifier effect modifier
+       * @param distance maximum range
+       */
+      TargetDisplacement(Player caster, double modifier, double distance) {
+        this.caster = caster;
+        this.modifier = modifier;
+        this.distance = distance;
+        this.world = caster.getWorld();
+        this.casterLocation = caster.getLocation().add(0, 1, 0);
+        this.direction = caster.getLocation().getDirection();
+      }
+
+      /**
+       * Recursively finds {@link ActiveAbilityType#DRAG} affected targets.
+       *
+       * @param location          current location
+       * @param remainingDistance distance in meters to check
+       */
+      private void getDragTargets(Location location, int remainingDistance) {
+        if (remainingDistance <= 0 || location.getBlock().getType().isSolid()) {
+          return;
+        }
+        world.spawnParticle(Particle.SOUL, location, 1, 0.125, 0.125, 0.125, 0.025);
+        for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+          if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
+            continue;
+          }
+
+          Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
+          double distanceModifier = (distance - remainingDistance) / distance * modifier;
+          Vector velocity = casterLocation.toVector().subtract(entityLocation.toVector()).normalize().multiply(distanceModifier);
+          livingEntity.setVelocity(velocity);
+        }
+        getDragTargets(location.add(direction).clone(), remainingDistance - 1);
+      }
+
+      /**
+       * Recursively finds {@link ActiveAbilityType#THRUST} affected targets.
+       *
+       * @param location          current location
+       * @param remainingDistance distance in meters to check
+       */
+      private void getThrustTargets(Location location, int remainingDistance) {
+        if (remainingDistance <= 0 || location.getBlock().getType().isSolid()) {
+          return;
+        }
+        world.spawnParticle(Particle.SCULK_SOUL, location, 1, 0.125, 0.125, 0.125, 0.025);
+        for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+          if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
+            continue;
+          }
+
+          Location entityLocation = livingEntity.getLocation().add(0, 1, 0);
+          double distanceModifier = remainingDistance / distance * modifier;
+          Vector velocity = entityLocation.toVector().subtract(casterLocation.toVector()).normalize().multiply(distanceModifier);
+          livingEntity.setVelocity(velocity);
+        }
+        getThrustTargets(location.add(direction).clone(), remainingDistance - 1);
+      }
+    }
+
+    /**
+     * Represents a {@link ActiveAbilityType.Effect#TELEPORT}
+     * effect's target location or entity validation.
+     *
+     * @author Danny Nguyen
+     * @version 1.24.4
+     * @since 1.24.1
+     */
+    private class TargetTeleport {
+      /**
+       * Ability caster.
+       */
+      private final Player caster;
+
+      /**
+       * Caster's direction.
+       */
+      private final Vector direction;
+
+      /**
+       * Associates the target teleport operation with a caster.
+       *
+       * @param caster ability caster
+       */
+      TargetTeleport(Player caster) {
+        this.caster = caster;
+        this.direction = caster.getLocation().getDirection();
+      }
+
+      /**
+       * Gets if the teleport action can proceed through the next block.
+       *
+       * @param validTeleportLocation valid teleport location
+       * @param location              current location
+       * @param distance              number of meters to check
+       * @return the furthest valid teleport location
+       */
+      private Location ifValidTeleportThroughBlock(Location validTeleportLocation, Location location, int distance) {
+        Material blockType = location.getBlock().getType();
+        if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
+          return validTeleportLocation;
+        }
+        if (!blockType.isSolid()) {
+          validTeleportLocation = location.clone();
+        }
+        return ifValidTeleportThroughBlock(validTeleportLocation, location.add(direction), distance - 1);
+      }
+
+      /**
+       * Recursively finds the teleport affected target.
+       *
+       * @param world    world
+       * @param location current location
+       * @param distance distance in meters to check
+       * @return teleport target
+       */
+      private LivingEntity getTeleportTarget(World world, Location location, int distance) {
+        Material blockType = location.getBlock().getType();
+        if (distance <= 0 || blockType == Material.BEDROCK || blockType == Material.BARRIER) {
+          return null;
+        }
+        for (Entity entity : world.getNearbyEntities(location, 1, 1, 1)) {
+          if (!(entity instanceof LivingEntity livingEntity) || livingEntity.equals(caster)) {
+            continue;
+          }
+          return livingEntity;
+        }
+        return getTeleportTarget(world, location.add(direction).clone(), distance - 1);
+      }
     }
   }
 

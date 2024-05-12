@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a menu that allows the user to edit an item's cosmetic metadata.
@@ -30,10 +31,28 @@ import java.util.Objects;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.25.5
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
+  /**
+   * Placeable entities.
+   */
+  private static final Set<Material> placeableEntities = Set.of(
+      Material.ACACIA_BOAT, Material.ACACIA_CHEST_BOAT, Material.ARMOR_STAND, Material.BAMBOO_RAFT,
+      Material.BAMBOO_CHEST_RAFT, Material.BEETROOT_SEEDS, Material.BIRCH_BOAT, Material.BIRCH_CHEST_BOAT,
+      Material.BUCKET, Material.AXOLOTL_BUCKET, Material.COD_BUCKET, Material.PUFFERFISH_BUCKET, Material.SALMON_BUCKET,
+      Material.TADPOLE_BUCKET, Material.TROPICAL_FISH_BUCKET, Material.CARROT, Material.CHERRY_BOAT,
+      Material.CHERRY_CHEST_BOAT, Material.COCOA_BEANS, Material.DARK_OAK_BOAT, Material.DARK_OAK_CHEST_BOAT,
+      Material.END_CRYSTAL, Material.FIRE_CHARGE, Material.FIREWORK_ROCKET, Material.GLOW_BERRIES,
+      Material.GLOW_ITEM_FRAME, Material.ITEM_FRAME, Material.JUNGLE_BOAT, Material.JUNGLE_CHEST_BOAT, Material.KELP,
+      Material.LAVA_BUCKET, Material.LEAD, Material.MANGROVE_BOAT, Material.MANGROVE_CHEST_BOAT, Material.MELON_SEEDS,
+      Material.MINECART, Material.CHEST_MINECART, Material.COMMAND_BLOCK_MINECART, Material.FURNACE_MINECART,
+      Material.HOPPER_MINECART, Material.TNT_MINECART, Material.NETHER_WART, Material.OAK_BOAT, Material.OAK_CHEST_BOAT,
+      Material.PAINTING, Material.PITCHER_POD, Material.POTATO, Material.POWDER_SNOW_BUCKET, Material.PUMPKIN_SEEDS,
+      Material.REDSTONE, Material.SPRUCE_BOAT, Material.SPRUCE_CHEST_BOAT, Material.STRING, Material.SWEET_BERRIES,
+      Material.TORCHFLOWER_SEEDS, Material.WATER_BUCKET, Material.WHEAT_SEEDS);
+
   /**
    * GUI.
    */
@@ -239,7 +258,8 @@ public class CosmeticMenu implements Menu {
   protected static void addNonPlaceable(@NotNull Inventory menu, @NotNull ItemStack item) {
     Objects.requireNonNull(menu, "Null menu");
     Objects.requireNonNull(item, "Null item");
-    if (item.getType().isBlock()) {
+    Material material = item.getType();
+    if (material.isBlock() || placeableEntities.contains(material)) {
       PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
       if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
         menu.setItem(6, ItemCreator.createItem(Material.BARRIER, ChatColor.AQUA + "Placeable", List.of(ChatColor.RED + "False")));

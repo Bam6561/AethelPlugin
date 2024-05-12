@@ -8,23 +8,23 @@ import java.util.Set;
  * Types of statuses.
  *
  * @author Danny Nguyen
- * @version 1.25.3
+ * @version 1.25.5
  * @since 1.14.7
  */
 public enum StatusType {
-  /**
-   * Damage over time.
-   * <p>
-   * Cumulative.
-   */
-  BLEED("Bleed", true),
-
   /**
    * Reduces effective armor toughness.
    * <p>
    * Cumulative.
    */
   BATTER("Batter", true),
+
+  /**
+   * Damage over time.
+   * <p>
+   * Cumulative.
+   */
+  BLEED("Bleed", true),
 
   /**
    * Reduces effective armor.

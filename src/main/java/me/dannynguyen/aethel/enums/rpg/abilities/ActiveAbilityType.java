@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Types of active abilities.
  *
  * @author Danny Nguyen
- * @version 1.25.2
+ * @version 1.25.5
  * @since 1.15.1
  */
 public enum ActiveAbilityType {
@@ -42,6 +42,13 @@ public enum ActiveAbilityType {
    * Unidirectional.
    */
   BEAM("Beam", "beam", Effect.DISTANCE_DAMAGE),
+
+  /**
+   * Forward facing line shaped attack that stops on the first target found and explodes.
+   * <p>
+   * Unidirectional.
+   */
+  BULLET("Bullet", "bullet", Effect.DISTANCE_DAMAGE),
 
   /**
    * Forward facing teleport.

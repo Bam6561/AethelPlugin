@@ -37,6 +37,9 @@ public class ActiveAbilityInput {
 
   /**
    * Associates the active ability input with its user and parameters.
+   *
+   * @param user interacting player
+   * @param args user input parameters
    */
   public ActiveAbilityInput(@NotNull Player user, @NotNull String[] args) {
     this.user = Objects.requireNonNull(user, "Null user");
