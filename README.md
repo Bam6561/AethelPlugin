@@ -55,15 +55,13 @@ See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentat
   <img src="https://i.ibb.co/m43zN8N/aethel-server-banner-background-228x128.jpg" alt="aethel-server-banner-background-228x128">
 </a>
 
-**Survival - RPG - Events - Crossplay**
+**Survival - Events - Crossplay**
 
 ⛏️ Aethel is a Minecraft community with a rich history that dates back to 2020.
 
 **Currently in its fourth season, the SMP offers:**
 * ❤️ An immersive semi-vanilla survival experience
-* 🗺️ RPG aspects such as quests, dungeons, and NPCs
 * 🃏 Co-op minigames and lore-based events
-* 🍰 Playful cosmetics such as furniture, plushies, and pets
 * 🔧 Continuous development based on community feedback
 
 **So what are you waiting for?**
