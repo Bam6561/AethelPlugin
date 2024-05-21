@@ -24,6 +24,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -190,7 +193,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.25.5
+   * @version 1.26.7
    * @since 1.23.13
    */
   private class Effect {
@@ -430,6 +433,12 @@ public class ActiveAbility {
       }
 
       cooldownAbility(cooldownModifier);
+
+      StringBuilder logEntry = new StringBuilder();
+      String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+      Location location = caster.getLocation();
+      logEntry.append(time).append(" ").append(location.getWorld().getName()).append(" ").append(location.getBlockX()).append(" ").append(location.getBlockY()).append(" ").append(location.getBlockZ()).append(" ").append(caster.getName()).append(" ").append(type.name()).append(" ").append(distance);
+      Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
     }
 
     /**

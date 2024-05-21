@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.commands.itemeditor.EditedItemCache;
 import me.dannynguyen.aethel.commands.playerstat.PastStatHistory;
 import me.dannynguyen.aethel.commands.showitem.PastItemHistory;
 import me.dannynguyen.aethel.enums.plugin.Directory;
+import me.dannynguyen.aethel.plugin.PluginLogger;
 import me.dannynguyen.aethel.plugin.PluginSystem;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
@@ -23,10 +24,15 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.24.7
+ * @version 1.25.7
  * @since 1.1.7
  */
 public class PluginData {
+  /**
+   * {@link PluginLogger};
+   */
+  private final PluginLogger pluginLogger = new PluginLogger();
+
   /**
    * Registered {@link ItemRegistry items}.
    */
@@ -75,6 +81,7 @@ public class PluginData {
    *  <li>{@link RecipeRegistry}
    *  <li>{@link Equipment Jewelry}
    *  <li>{@link Settings}
+   *  <li>{@link PluginLogger}
    * </ul>
    */
   public void loadResources() {
@@ -110,6 +117,11 @@ public class PluginData {
     if (!rpgSettingsDirectory.exists()) {
       rpgSettingsDirectory.mkdirs();
     }
+
+    File logDirectory = Directory.LOG.getFile();
+    if (!logDirectory.exists()) {
+      logDirectory.mkdirs();
+    }
   }
 
   /**
@@ -143,6 +155,8 @@ public class PluginData {
     }
     finish = System.nanoTime();
     log.info("[Aethel] Saved RPG Settings: " + longToMs(df2, start, finish));
+
+    pluginLogger.saveEntries();
   }
 
   /**
@@ -225,5 +239,14 @@ public class PluginData {
   @NotNull
   public RpgSystem getRpgSystem() {
     return this.rpgSystem;
+  }
+
+  /**
+   * Gets the plugin's {@link PluginLogger}.
+   *
+   * @return plugin's {@link PluginLogger}
+   */
+  public PluginLogger getPluginLogger() {
+    return this.pluginLogger;
   }
 }

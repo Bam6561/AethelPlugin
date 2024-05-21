@@ -11,7 +11,7 @@ import java.io.File;
  * Plugin directories.
  *
  * @author Danny Nguyen
- * @version 1.22.5
+ * @version 1.25.7
  * @since 1.11.9
  */
 public enum Directory {
@@ -29,6 +29,11 @@ public enum Directory {
    * {@link me.dannynguyen.aethel.commands.forge.RecipeRegistry Forge recipes} directory.
    */
   FORGE(new File(RESOURCES.getFile().getPath() + "/forge")),
+
+  /**
+   * {@link me.dannynguyen.aethel.plugin.PluginLogger Log} directory.
+   */
+  LOG(new File(RESOURCES.getFile().getPath() + "/log/")),
 
   /**
    * {@link LocationCommand Locations} directory.
