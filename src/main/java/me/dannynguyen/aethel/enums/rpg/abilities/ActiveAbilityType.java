@@ -44,7 +44,7 @@ public enum ActiveAbilityType {
   BEAM("Beam", "beam", Effect.DISTANCE_DAMAGE),
 
   /**
-   * Forward facing line shaped attack that stops on the first target found and explodes.
+   * Forward facing line pathed attack that stops on the first target and explodes.
    * <p>
    * Unidirectional.
    */

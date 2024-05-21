@@ -4,13 +4,16 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.plugin.PluginPlayer;
 import me.dannynguyen.aethel.plugin.PluginSystem;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
@@ -20,7 +23,7 @@ import java.util.UUID;
  * Collection of {@link PluginSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.24.12
+ * @version 1.25.6
  * @since 1.10.1
  */
 public class PluginListener implements Listener {
@@ -42,6 +45,24 @@ public class PluginListener implements Listener {
     Map<UUID, PluginPlayer> pluginPlayers = Plugin.getData().getPluginSystem().getPluginPlayers();
     if (!pluginPlayers.containsKey(playerUUID)) {
       pluginPlayers.put(playerUUID, new PluginPlayer(player));
+    }
+  }
+
+  /**
+   * Routes player interactions.
+   *
+   * @param e player interaction event
+   */
+  @EventHandler
+  private void onPlayerInteract(PlayerInteractEvent e) {
+    ItemStack item = e.getItem();
+    if (ItemReader.isNullOrAir(item)) {
+      return;
+    }
+
+    PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+    if (itemTags.has(Key.UNUSABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+      e.setCancelled(true);
     }
   }
 

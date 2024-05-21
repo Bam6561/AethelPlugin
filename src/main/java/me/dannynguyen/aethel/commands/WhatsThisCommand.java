@@ -64,7 +64,7 @@ public class WhatsThisCommand implements CommandExecutor {
    * @param user command user
    * @param args user provided parameters
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.25.6
    * @since 1.23.12
    */
   private record Request(Player user, String[] args) {
@@ -167,6 +167,7 @@ public class WhatsThisCommand implements CommandExecutor {
         case EXPLODE -> sendKeyWordDescription(user, KeyWord.EXPLODE);
         case SWEEP -> sendKeyWordDescription(user, KeyWord.SWEEP);
         case BEAM -> sendKeyWordDescription(user, KeyWord.BEAM);
+        case BULLET -> sendKeyWordDescription(user, KeyWord.BULLET);
         case QUAKE -> sendKeyWordDescription(user, KeyWord.QUAKE);
         case MOVEMENT -> sendKeyWordDescription(user, KeyWord.MOVEMENT);
         case DASH -> sendKeyWordDescription(user, KeyWord.DASH);
@@ -798,7 +799,7 @@ public class WhatsThisCommand implements CommandExecutor {
       DISTANCE_DAMAGE(new String[]{
           ChatColor.GREEN + "Distance Damage",
           ChatColor.GRAY + "Causes damage at a distance",
-          "Related: " + ChatColor.AQUA + "beam, explode, sweep, quake"
+          "Related: " + ChatColor.AQUA + "beam, bullet, explode, sweep, quake"
       }),
 
       /**
@@ -807,6 +808,14 @@ public class WhatsThisCommand implements CommandExecutor {
       BEAM(new String[]{
           ChatColor.GREEN + "Beam",
           ChatColor.GRAY + "Unidirectional forward-facing line-shaped attack."
+      }),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType#BULLET}
+       */
+      BULLET(new String[]{
+          ChatColor.GREEN + "Beam",
+          ChatColor.GRAY + "Unidirectional forward-facing line-pathed attack that stops on the first target and explodes."
       }),
 
       /**

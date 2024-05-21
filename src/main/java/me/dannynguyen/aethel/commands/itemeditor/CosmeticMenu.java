@@ -31,7 +31,7 @@ import java.util.Set;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.25.5
+ * @version 1.25.6
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -110,6 +110,7 @@ public class CosmeticMenu implements Menu {
     addLore();
     addGameplay();
     addItemFlags();
+    addUnusable(menu, item);
     addNonPlaceable(menu, item);
     addNonEdible(menu, item);
     addUnbreakable(menu, meta);
@@ -250,6 +251,23 @@ public class CosmeticMenu implements Menu {
   }
 
   /**
+   * Adds the unusable toggle button.
+   *
+   * @param menu Cosmetic menu
+   * @param item interacting item
+   */
+  protected static void addUnusable(@NotNull Inventory menu, @NotNull ItemStack item) {
+    Objects.requireNonNull(menu, "Null menu");
+    Objects.requireNonNull(item, "Null item");
+    PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
+    if (itemTags.has(Key.UNUSABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
+      menu.setItem(6, ItemCreator.createItem(Material.BARRIER, ChatColor.AQUA + "Unusable", List.of(ChatColor.RED + "False")));
+    } else {
+      menu.setItem(6, ItemCreator.createItem(Material.ENDER_EYE, ChatColor.AQUA + "Unusable", List.of(ChatColor.GREEN + "True")));
+    }
+  }
+
+  /**
    * Adds the non-placeable toggle button.
    *
    * @param menu Cosmetic menu
@@ -262,9 +280,9 @@ public class CosmeticMenu implements Menu {
     if (material.isBlock() || placeableEntities.contains(material)) {
       PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
       if (itemTags.has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
-        menu.setItem(6, ItemCreator.createItem(Material.BARRIER, ChatColor.AQUA + "Placeable", List.of(ChatColor.RED + "False")));
+        menu.setItem(7, ItemCreator.createItem(Material.BARRIER, ChatColor.AQUA + "Non-Placeable", List.of(ChatColor.RED + "False")));
       } else {
-        menu.setItem(6, ItemCreator.createItem(Material.GRASS_BLOCK, ChatColor.AQUA + "Placeable", List.of(ChatColor.GREEN + "True")));
+        menu.setItem(7, ItemCreator.createItem(Material.GRASS_BLOCK, ChatColor.AQUA + "Placeable", List.of(ChatColor.GREEN + "True")));
       }
     }
   }
@@ -281,9 +299,9 @@ public class CosmeticMenu implements Menu {
     if (item.getType().isEdible()) {
       PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
       if (itemTags.has(Key.NON_EDIBLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
-        menu.setItem(7, ItemCreator.createItem(Material.PUFFERFISH, ChatColor.AQUA + "Edible", List.of(ChatColor.RED + "False")));
+        menu.setItem(8, ItemCreator.createItem(Material.BARRIER, ChatColor.AQUA + "Non-Edible", List.of(ChatColor.RED + "False")));
       } else {
-        menu.setItem(7, ItemCreator.createItem(Material.TROPICAL_FISH, ChatColor.AQUA + "Edible", List.of(ChatColor.GREEN + "True")));
+        menu.setItem(8, ItemCreator.createItem(Material.COOKIE, ChatColor.AQUA + "Edible", List.of(ChatColor.GREEN + "True")));
       }
     }
   }

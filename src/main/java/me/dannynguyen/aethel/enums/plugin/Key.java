@@ -11,10 +11,15 @@ import org.jetbrains.annotations.NotNull;
  * Plugin namespaced keys.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.25.6
  * @since 1.11.9
  */
 public enum Key {
+  /**
+   * Unusable item.
+   */
+  UNUSABLE(new NamespacedKey(Plugin.getInstance(), KeyHeader.ITEM.getHeader() + "unusable")),
+
   /**
    * Non-placeable item.
    */
