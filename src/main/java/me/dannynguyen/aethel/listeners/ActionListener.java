@@ -8,7 +8,6 @@ import me.dannynguyen.aethel.enums.rpg.abilities.ActiveAbilityType;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.abilities.ActiveAbility;
 import me.dannynguyen.aethel.utils.TextFormatter;
-import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ import java.util.Set;
  * Collection of player action listeners.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.25.8
  * @since 1.17.3
  */
 public class ActionListener implements Listener {
@@ -35,6 +34,32 @@ public class ActionListener implements Listener {
    * No parameter constructor.
    */
   public ActionListener() {
+  }
+
+  /**
+   * Routes interactions for player interactions.
+   *
+   * @param e player interaction event
+   */
+  @EventHandler
+  private void onCrouch(PlayerInteractEvent e) {
+    Player player = e.getPlayer();
+    if (player.getGameMode() == GameMode.SPECTATOR) {
+      return;
+    }
+    RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
+    Set<RpgEquipmentSlot> eSlots = rpgPlayer.getSettings().getActiveAbilityRightClickBoundHotbar().get(player.getInventory().getHeldItemSlot());
+    if (eSlots == null) {
+      return;
+    }
+
+    for (RpgEquipmentSlot eSlot : eSlots) {
+      for (ActiveAbility ability : rpgPlayer.getEquipment().getAbilities().getTriggerActives().get(eSlot)) {
+        if (!ability.isOnCooldown()) {
+          ability.doEffect(player);
+        }
+      }
+    }
   }
 
   /**
@@ -86,7 +111,7 @@ public class ActionListener implements Listener {
       return;
     }
     RpgPlayer rpgPlayer = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId());
-    Set<RpgEquipmentSlot> eSlots = rpgPlayer.getSettings().getAbilityBoundHotbar().get(player.getInventory().getHeldItemSlot());
+    Set<RpgEquipmentSlot> eSlots = rpgPlayer.getSettings().getActiveAbilityCrouchBoundHotbar().get(player.getInventory().getHeldItemSlot());
     if (eSlots == null) {
       return;
     }

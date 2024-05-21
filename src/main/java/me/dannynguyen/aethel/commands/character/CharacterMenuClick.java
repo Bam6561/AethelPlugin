@@ -36,7 +36,7 @@ import java.util.UUID;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.10
+ * @version 1.25.8
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
@@ -145,17 +145,26 @@ public class CharacterMenuClick implements MenuClick {
         case 4 -> { // Player Head
         }
         case 6 -> new MenuChange().returnToSheet();
-        case 9 -> new SettingsChange().resetActiveAbilityBinds();
-        case 10 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.HAND);
-        case 11 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.OFF_HAND);
-        case 12 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.HEAD);
-        case 13 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.CHEST);
-        case 14 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.LEGS);
-        case 15 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.FEET);
-        case 16 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.NECKLACE);
-        case 17 -> new SettingsChange().setActiveAbilityBind(RpgEquipmentSlot.RING);
-        case 18 -> new SettingsChange().toggleHealthBar();
-        case 19 -> new SettingsChange().toggleHealthAction();
+        case 9 -> new SettingsChange().resetActiveAbilityRightClickBinds();
+        case 10 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.HAND);
+        case 11 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.OFF_HAND);
+        case 12 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.HEAD);
+        case 13 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.CHEST);
+        case 14 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.LEGS);
+        case 15 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.FEET);
+        case 16 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.NECKLACE);
+        case 17 -> new SettingsChange().setActiveAbilityRightClickBind(RpgEquipmentSlot.RING);
+        case 18 -> new SettingsChange().resetActiveAbilityCrouchBinds();
+        case 19 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.HAND);
+        case 20 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.OFF_HAND);
+        case 21 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.HEAD);
+        case 22 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.CHEST);
+        case 23 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.LEGS);
+        case 24 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.FEET);
+        case 25 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.NECKLACE);
+        case 26 -> new SettingsChange().setActiveAbilityCrouchBind(RpgEquipmentSlot.RING);
+        case 27 -> new SettingsChange().toggleHealthBar();
+        case 28 -> new SettingsChange().toggleHealthAction();
       }
     }
   }
@@ -453,7 +462,7 @@ public class CharacterMenuClick implements MenuClick {
    * Represents a settings change operation.
    *
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.25.8
    * @since 1.23.10
    */
   private class SettingsChange {
@@ -464,43 +473,11 @@ public class CharacterMenuClick implements MenuClick {
     }
 
     /**
-     * Toggles the player's {@link Settings#isHealthBarVisible() health bar}.
+     * Resets all {@link Equipment} {@link ActiveAbility} right click binds.
      */
-    private void toggleHealthBar() {
-      Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
-      Inventory menu = e.getInventory();
-      if (settings.isHealthBarVisible()) {
-        menu.setItem(18, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Bar"));
-        user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
-      } else {
-        menu.setItem(18, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Bar"));
-        user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
-      }
-      settings.toggleHealthBarVisibility();
-    }
-
-    /**
-     * Toggles the player's {@link Settings#isHealthActionVisible() health in action bar}.
-     */
-    private void toggleHealthAction() {
-      Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
-      Inventory menu = e.getInventory();
-      if (settings.isHealthActionVisible()) {
-        menu.setItem(19, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
-        user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
-      } else {
-        menu.setItem(19, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
-        user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
-      }
-      settings.toggleHealthActionVisibility();
-    }
-
-    /**
-     * Resets all {@link Equipment} {@link ActiveAbility} binds.
-     */
-    private void resetActiveAbilityBinds() {
-      user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Binds]");
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().resetActiveAbilityBinds();
+    private void resetActiveAbilityRightClickBinds() {
+      user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Right Click Binds]");
+      Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().resetActiveAbilityRightClickBinds();
       Inventory menu = e.getInventory();
       menu.setItem(10, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", ItemFlag.HIDE_ATTRIBUTES));
       menu.setItem(11, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
@@ -513,17 +490,80 @@ public class CharacterMenuClick implements MenuClick {
     }
 
     /**
-     * Sets the bind to activate {@link RpgEquipmentSlot} {@link ActiveAbility abilities}.
+     * Sets the right click bind to activate {@link RpgEquipmentSlot} {@link ActiveAbility abilities}.
      *
      * @param eSlot {@link RpgEquipmentSlot}
      */
-    private void setActiveAbilityBind(RpgEquipmentSlot eSlot) {
+    private void setActiveAbilityRightClickBind(RpgEquipmentSlot eSlot) {
       user.closeInventory();
-      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "Binds:");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "Right Click Binds:");
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Hotbar (Slot #'s)");
       MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-      menuInput.setMessageInput(MessageListener.Type.CHARACTER_BIND_ACTIVE_ABILITY);
+      menuInput.setMessageInput(MessageListener.Type.CHARACTER_RIGHT_CLICK_BIND_ACTIVE_ABILITY);
       menuInput.setSlot(eSlot);
+    }
+
+    /**
+     * Resets all {@link Equipment} {@link ActiveAbility} crouch binds.
+     */
+    private void resetActiveAbilityCrouchBinds() {
+      user.sendMessage(ChatColor.GREEN + "[Reset Active Ability Crouch Binds]");
+      Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings().resetActiveAbilityCrouchBinds();
+      Inventory menu = e.getInventory();
+      menu.setItem(19, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.AQUA + "Main Hand", ItemFlag.HIDE_ATTRIBUTES));
+      menu.setItem(20, ItemCreator.createItem(Material.SHIELD, ChatColor.AQUA + "Off Hand", ItemFlag.HIDE_ATTRIBUTES));
+      menu.setItem(21, ItemCreator.createItem(Material.IRON_HELMET, ChatColor.AQUA + "Head", ItemFlag.HIDE_ATTRIBUTES));
+      menu.setItem(22, ItemCreator.createItem(Material.IRON_CHESTPLATE, ChatColor.AQUA + "Chest", ItemFlag.HIDE_ATTRIBUTES));
+      menu.setItem(23, ItemCreator.createItem(Material.IRON_LEGGINGS, ChatColor.AQUA + "Legs", ItemFlag.HIDE_ATTRIBUTES));
+      menu.setItem(24, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.AQUA + "Feet", ItemFlag.HIDE_ATTRIBUTES));
+      menu.setItem(25, ItemCreator.createItem(Material.IRON_NUGGET, ChatColor.AQUA + "Necklace"));
+      menu.setItem(26, ItemCreator.createItem(Material.GOLD_NUGGET, ChatColor.AQUA + "Ring"));
+    }
+
+    /**
+     * Sets the crouch bind to activate {@link RpgEquipmentSlot} {@link ActiveAbility abilities}.
+     *
+     * @param eSlot {@link RpgEquipmentSlot}
+     */
+    private void setActiveAbilityCrouchBind(RpgEquipmentSlot eSlot) {
+      user.closeInventory();
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input " + ChatColor.AQUA + eSlot.getProperName() + " Active Ability " + ChatColor.WHITE + "Crouch Binds:");
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Hotbar (Slot #'s)");
+      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+      menuInput.setMessageInput(MessageListener.Type.CHARACTER_CROUCH_BIND_ACTIVE_ABILITY);
+      menuInput.setSlot(eSlot);
+    }
+
+    /**
+     * Toggles the player's {@link Settings#isHealthBarVisible() health bar}.
+     */
+    private void toggleHealthBar() {
+      Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
+      Inventory menu = e.getInventory();
+      if (settings.isHealthBarVisible()) {
+        menu.setItem(27, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Bar"));
+        user.sendMessage(ChatColor.RED + "[Display Health Boss Bar]");
+      } else {
+        menu.setItem(27, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Bar"));
+        user.sendMessage(ChatColor.GREEN + "[Display Health Boss Bar]");
+      }
+      settings.toggleHealthBarVisibility();
+    }
+
+    /**
+     * Toggles the player's {@link Settings#isHealthActionVisible() health in action bar}.
+     */
+    private void toggleHealthAction() {
+      Settings settings = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getSettings();
+      Inventory menu = e.getInventory();
+      if (settings.isHealthActionVisible()) {
+        menu.setItem(28, ItemCreator.createItem(Material.RED_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
+        user.sendMessage(ChatColor.RED + "[Display Health Action Bar]");
+      } else {
+        menu.setItem(28, ItemCreator.createItem(Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Display Health Action Bar"));
+        user.sendMessage(ChatColor.GREEN + "[Display Health Action Bar]");
+      }
+      settings.toggleHealthActionVisibility();
     }
   }
 }

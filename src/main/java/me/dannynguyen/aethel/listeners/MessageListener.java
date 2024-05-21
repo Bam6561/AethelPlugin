@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.25.8
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -83,7 +83,8 @@ public class MessageListener implements Listener {
   private void interpretCharacter(AsyncPlayerChatEvent e, Type type) {
     CharacterMessageSent msg = new CharacterMessageSent(e);
     switch (type) {
-      case CHARACTER_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityBind();
+      case CHARACTER_RIGHT_CLICK_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityRightClickBind();
+      case CHARACTER_CROUCH_BIND_ACTIVE_ABILITY -> msg.setActiveAbilityCrouchBind();
     }
   }
 
@@ -157,10 +158,16 @@ public class MessageListener implements Listener {
     AETHELITEM_FOLDER("aethelitem"),
 
     /**
-     * Bind {@link me.dannynguyen.aethel.rpg.Equipment}
+     * Right click bind {@link me.dannynguyen.aethel.rpg.Equipment}
      * {@link me.dannynguyen.aethel.rpg.abilities.ActiveAbility}.
      */
-    CHARACTER_BIND_ACTIVE_ABILITY("character"),
+    CHARACTER_RIGHT_CLICK_BIND_ACTIVE_ABILITY("character"),
+
+    /**
+     * Crouch bind {@link me.dannynguyen.aethel.rpg.Equipment}
+     * {@link me.dannynguyen.aethel.rpg.abilities.ActiveAbility}.
+     */
+    CHARACTER_CROUCH_BIND_ACTIVE_ABILITY("character"),
 
     /**
      * Forge recipe folder.
