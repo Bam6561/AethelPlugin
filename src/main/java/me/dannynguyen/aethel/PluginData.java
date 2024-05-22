@@ -24,14 +24,14 @@ import java.util.logging.Logger;
  * Represents plugin's resources in memory.
  *
  * @author Danny Nguyen
- * @version 1.25.7
+ * @version 1.25.9
  * @since 1.1.7
  */
 public class PluginData {
   /**
    * {@link PluginLogger};
    */
-  private final PluginLogger pluginLogger = new PluginLogger();
+  private PluginLogger pluginLogger;
 
   /**
    * Registered {@link ItemRegistry items}.
@@ -122,6 +122,7 @@ public class PluginData {
     if (!logDirectory.exists()) {
       logDirectory.mkdirs();
     }
+    pluginLogger = new PluginLogger();
   }
 
   /**

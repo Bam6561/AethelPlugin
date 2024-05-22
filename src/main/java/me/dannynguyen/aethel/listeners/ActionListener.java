@@ -13,6 +13,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -26,7 +27,7 @@ import java.util.Set;
  * Collection of player action listeners.
  *
  * @author Danny Nguyen
- * @version 1.25.8
+ * @version 1.25.9
  * @since 1.17.3
  */
 public class ActionListener implements Listener {
@@ -42,8 +43,15 @@ public class ActionListener implements Listener {
    * @param e player interaction event
    */
   @EventHandler
-  private void onCrouch(PlayerInteractEvent e) {
+  private void onInteract(PlayerInteractEvent e) {
     Player player = e.getPlayer();
+    switch (e.getAction()) {
+      case RIGHT_CLICK_AIR, RIGHT_CLICK_BLOCK -> {
+      }
+      default -> {
+        return;
+      }
+    }
     if (player.getGameMode() == GameMode.SPECTATOR) {
       return;
     }

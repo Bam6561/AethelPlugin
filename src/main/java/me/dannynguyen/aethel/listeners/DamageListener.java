@@ -9,6 +9,8 @@ import me.dannynguyen.aethel.rpg.*;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.entity.DamageMitigation;
 import me.dannynguyen.aethel.utils.entity.HealthChange;
+import me.dannynguyen.aethel.utils.item.DurabilityChange;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
@@ -17,12 +19,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.Random;
@@ -86,7 +91,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.3
+   * @version 1.25.9
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -176,6 +181,10 @@ public class DamageListener implements Listener {
         return;
       }
 
+      if (ifBlocked()) {
+        e.setCancelled(true);
+        return;
+      }
       if (ifCountered()) {
         e.setCancelled(true);
         return;
@@ -262,6 +271,10 @@ public class DamageListener implements Listener {
     private boolean mitigateSpecificCauseDamage() {
       switch (e.getCause()) {
         case ENTITY_EXPLOSION -> {
+          if (ifBlocked()) {
+            return true;
+          }
+
           e.setDamage(mitigation.mitigateExplosion(e.getDamage()));
           if (e.getDamage() <= 0) {
             return true;
@@ -279,6 +292,10 @@ public class DamageListener implements Listener {
           return true;
         }
         case PROJECTILE -> {
+          if (ifBlocked()) {
+            return true;
+          }
+
           int projectileProtection = defender.getPersistentDataContainer().getOrDefault(Key.ENCHANTMENT_PROJECTILE_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
           if (projectileProtection > 0) {
             e.setDamage(mitigation.mitigateProjectile(e.getDamage()));
@@ -318,6 +335,44 @@ public class DamageListener implements Listener {
         return true;
       }
       return false;
+    }
+
+    /**
+     * If the player blocked the attack with a shield.
+     *
+     * @return if the player blocked the attack with a shield
+     */
+    private boolean ifBlocked() {
+      if (!(defender instanceof Player defendingPlayer)) {
+        return false;
+      }
+      if (!(defendingPlayer.isBlocking() && getDirectionAngle() <= 90)) {
+        return false;
+      }
+      if (attacker instanceof LivingEntity livingAttacker) {
+        ItemStack hand = livingAttacker.getEquipment().getItemInMainHand();
+        if (ItemReader.isNotNullOrAir(hand)) {
+          switch (hand.getType()) {
+            case WOODEN_AXE, STONE_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE -> {
+              defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BREAK, SoundCategory.PLAYERS, 1, 1);
+              defendingPlayer.setCooldown(Material.SHIELD, 100);
+            }
+          }
+        }
+      }
+      EntityEquipment defenderEquipment = defender.getEquipment();
+      ItemStack offhand = defenderEquipment.getItemInOffHand();
+      ItemStack hand = defenderEquipment.getItemInMainHand();
+      if (offhand.getType() == Material.SHIELD && !offhand.getItemMeta().isUnbreakable()) {
+        DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.OFF_HAND, Math.max(1, (int) e.getDamage() / 4));
+        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        return true;
+      } else if (hand.getType() == Material.SHIELD && !hand.getItemMeta().isUnbreakable()) {
+        DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.HAND, Math.max(1, (int) e.getDamage() / 4));
+        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        return true;
+      }
+      return true;
     }
 
     /**
@@ -500,13 +555,34 @@ public class DamageListener implements Listener {
         }
       }
     }
+
+    /**
+     * Gets an attacker's direction angle from the location of the defender.
+     *
+     * @return attacker's direction angle
+     */
+    private double getDirectionAngle() {
+      Location defenderLocation = defender.getLocation();
+      Vector defenderDirection = defenderLocation.getDirection();
+      Vector entityLocationVector = defenderLocation.toVector();
+      Vector entityDirection = attacker.getLocation().toVector().subtract(entityLocationVector);
+
+      double x1 = defenderDirection.getX();
+      double z1 = defenderDirection.getZ();
+      double x2 = entityDirection.getX();
+      double z2 = entityDirection.getZ();
+
+      double dotProduct = x1 * x2 + z1 * z2;
+      double vectorLengths = Math.sqrt(Math.pow(x1, 2) + Math.pow(z1, 2)) * Math.sqrt(Math.pow(x2, 2) + Math.pow(z2, 2));
+      return Math.acos(dotProduct / vectorLengths) * (180 / Math.PI);
+    }
   }
 
   /**
    * Represents environmental damage taken by an entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.3
+   * @version 1.25.9
    * @since 1.23.13
    */
   private class EnvironmentDamage {
@@ -585,6 +661,10 @@ public class DamageListener implements Listener {
         case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> e.setDamage(mitigation.mitigateProtection(e.getDamage()));
         case FIRE, FIRE_TICK, HOT_FLOOR, LAVA -> e.setDamage(mitigation.mitigateFire(e.getDamage()));
         case BLOCK_EXPLOSION -> {
+          if (ifBlocked()) {
+            return true;
+          }
+
           e.setDamage(mitigation.mitigateExplosion(e.getDamage()));
           if (e.getDamage() <= 0) {
             return true;
@@ -601,6 +681,33 @@ public class DamageListener implements Listener {
       }
       e.setDamage(mitigation.mitigateResistance(e.getDamage()));
       return false;
+    }
+
+    /**
+     * If the player blocked with a shield.
+     *
+     * @return if the player blocked with a shield
+     */
+    private boolean ifBlocked() {
+      if (!(defender instanceof Player defendingPlayer)) {
+        return false;
+      }
+      if (!(defendingPlayer.isBlocking())) {
+        return false;
+      }
+      EntityEquipment defenderEquipment = defender.getEquipment();
+      ItemStack offhand = defenderEquipment.getItemInOffHand();
+      ItemStack hand = defenderEquipment.getItemInMainHand();
+      if (offhand.getType() == Material.SHIELD && !offhand.getItemMeta().isUnbreakable()) {
+        DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.OFF_HAND, Math.max(1, (int) e.getDamage() / 4));
+        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        return true;
+      } else if (hand.getType() == Material.SHIELD && !hand.getItemMeta().isUnbreakable()) {
+        DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.HAND, Math.max(1, (int) e.getDamage() / 4));
+        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        return true;
+      }
+      return true;
     }
 
     /**

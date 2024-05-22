@@ -340,7 +340,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s {@link Equipment} {@link AethelAttribute} values.
    *
    * @author Danny Nguyen
-   * @version 1.22.19
+   * @version 1.25.9
    * @since 1.17.9
    */
   public class AethelAttributes {
@@ -412,7 +412,7 @@ public class Equipment {
           entityTags.remove(entityAttributeKey);
         }
       }
-      slotAttributes.remove(eSlot);
+      slotAttributes.get(eSlot).clear();
     }
 
     /**
@@ -430,7 +430,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment enchantments.
    *
    * @author Danny Nguyen
-   * @version 1.22.19
+   * @version 1.25.9
    * @since 1.17.9
    */
   public class Enchantments {
@@ -495,7 +495,7 @@ public class Equipment {
           entityTags.remove(entityEnchantmentKey);
         }
       }
-      slotEnchantments.remove(eSlot);
+      slotEnchantments.get(eSlot).clear();
 
       readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
       readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
@@ -534,7 +534,7 @@ public class Equipment {
    * {@link PassiveAbility passive} and {@link ActiveAbility active} abilities.
    *
    * @author Danny Nguyen
-   * @version 1.22.19
+   * @version 1.25.9
    * @since 1.17.9
    */
   public class Abilities {
@@ -667,7 +667,7 @@ public class Equipment {
       for (TriggerPassive triggerPassive : slotPassives.get(eSlot)) {
         triggerPassives.get(triggerPassive.trigger()).remove(new SlotPassive(eSlot, triggerPassive.ability()));
       }
-      slotPassives.remove(eSlot);
+      slotPassives.get(eSlot).clear();
     }
 
     /**
