@@ -38,7 +38,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.23.18
+ * @version 1.25.11
  * @since 1.13.4
  */
 public class Equipment {
@@ -127,6 +127,13 @@ public class Equipment {
    * @param player interacting player
    */
   private void loadEquipment(Player player) {
+    // TODO: REMOVE THIS IN FUTURE BUILDS
+    // Fixes incorrect tags set by previous versions
+    PersistentDataContainer entityTags = player.getPersistentDataContainer();
+    for (NamespacedKey key : entityTags.getKeys()) {
+      entityTags.remove(key);
+    }
+
     PlayerInventory pInv = player.getInventory();
     loadSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);
     loadSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST);

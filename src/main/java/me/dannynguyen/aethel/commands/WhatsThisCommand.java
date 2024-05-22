@@ -64,7 +64,7 @@ public class WhatsThisCommand implements CommandExecutor {
    * @param user command user
    * @param args user provided parameters
    * @author Danny Nguyen
-   * @version 1.25.6
+   * @version 1.25.11
    * @since 1.23.12
    */
   private record Request(Player user, String[] args) {
@@ -110,6 +110,7 @@ public class WhatsThisCommand implements CommandExecutor {
         case CUMULATIVE -> sendKeyWordDescription(user, KeyWord.CUMULATIVE);
         case HIGHEST_INSTANCE -> sendKeyWordDescription(user, KeyWord.HIGHEST_INSTANCE);
         case RPG_EQUIPMENT -> sendKeyWordDescription(user, KeyWord.RPG_EQUIPMENT);
+        case REINFORCEMENT -> sendKeyWordDescription(user, KeyWord.REINFORCEMENT);
         case NECKLACES -> sendKeyWordDescription(user, KeyWord.NECKLACES);
         case RINGS -> sendKeyWordDescription(user, KeyWord.RINGS);
         case TRINKETS -> sendKeyWordDescription(user, KeyWord.TRINKETS);
@@ -315,6 +316,13 @@ public class WhatsThisCommand implements CommandExecutor {
           ChatColor.GRAY + "The plugin introduces three additional equipment types: necklaces, rings, and trinkets.",
           ChatColor.GRAY + "All of these new slots can be accessed through the character sheet.",
           "Related: " + ChatColor.AQUA + "necklaces, rings, trinkets, character"}),
+
+      /**
+       * {@link me.dannynguyen.aethel.enums.plugin.Key#RPG_DURABILITY}
+       */
+      REINFORCEMENT(new String[]{
+          ChatColor.GREEN + "Reinforcement",
+          ChatColor.GRAY + "Extra durability. Re-reinforce items by putting them in the first slot of an anvil and taking it out."}),
 
       /**
        * {@link Equipment#getJewelry()}
