@@ -22,7 +22,7 @@ import java.util.*;
  * See {@link StatCategory.StatisticType} and {@link StatCategory.SubstatisticType}.
  *
  * @author Danny Nguyen
- * @version 1.24.3
+ * @version 1.25.12
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -95,8 +95,9 @@ public class StatMenu implements CategoryMenu {
       default -> getStatsPage(category);
     }
     addOwner();
-    addShareToggle();
-    InventoryPages.addBackButton(menu, 6);
+    addLeaderboardToggle();
+    addShareVisibilityToggle();
+    InventoryPages.addBackButton(menu, 7);
     return menu;
   }
 
@@ -129,7 +130,7 @@ public class StatMenu implements CategoryMenu {
    * Adds contextual help.
    */
   private void addContext() {
-    menu.setItem(3, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "Stat Categories")));
+    menu.setItem(1, ItemCreator.createPluginPlayerHead(PlayerHead.QUESTION_MARK_WHITE.getHead(), ChatColor.GREEN + "Help", List.of(ChatColor.WHITE + "Stat Categories")));
   }
 
   /**
@@ -149,10 +150,17 @@ public class StatMenu implements CategoryMenu {
   }
 
   /**
-   * Adds stat sharing mode toggle button.
+   * Adds stat sharing leaderboard toggle button.
    */
-  private void addShareToggle() {
-    menu.setItem(5, ItemCreator.createItem(Material.BOOK, ChatColor.AQUA + "View Stat"));
+  private void addLeaderboardToggle() {
+    menu.setItem(2, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.AQUA + "Personal"));
+  }
+
+  /**
+   * Adds stat sharing visibility toggle button.
+   */
+  private void addShareVisibilityToggle() {
+    menu.setItem(3, ItemCreator.createItem(Material.BOOK, ChatColor.AQUA + "View Stat"));
   }
 
   /**
