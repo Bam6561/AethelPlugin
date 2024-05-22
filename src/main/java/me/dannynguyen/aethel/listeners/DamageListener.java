@@ -91,7 +91,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.9
+   * @version 1.25.10
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -365,11 +365,11 @@ public class DamageListener implements Listener {
       ItemStack hand = defenderEquipment.getItemInMainHand();
       if (offhand.getType() == Material.SHIELD && !offhand.getItemMeta().isUnbreakable()) {
         DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.OFF_HAND, Math.max(1, (int) e.getDamage() / 4));
-        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        defender.getWorld().playSound(defender.getEyeLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
         return true;
       } else if (hand.getType() == Material.SHIELD && !hand.getItemMeta().isUnbreakable()) {
         DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.HAND, Math.max(1, (int) e.getDamage() / 4));
-        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        defender.getWorld().playSound(defender.getEyeLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
         return true;
       }
       return true;
@@ -582,7 +582,7 @@ public class DamageListener implements Listener {
    * Represents environmental damage taken by an entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.9
+   * @version 1.25.10
    * @since 1.23.13
    */
   private class EnvironmentDamage {
@@ -700,11 +700,11 @@ public class DamageListener implements Listener {
       ItemStack hand = defenderEquipment.getItemInMainHand();
       if (offhand.getType() == Material.SHIELD && !offhand.getItemMeta().isUnbreakable()) {
         DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.OFF_HAND, Math.max(1, (int) e.getDamage() / 4));
-        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        defender.getWorld().playSound(defender.getEyeLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
         return true;
       } else if (hand.getType() == Material.SHIELD && !hand.getItemMeta().isUnbreakable()) {
         DurabilityChange.increaseDamage(defender, defender.getEquipment(), EquipmentSlot.HAND, Math.max(1, (int) e.getDamage() / 4));
-        defender.getWorld().playSound(defender.getLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
+        defender.getWorld().playSound(defender.getEyeLocation(), Sound.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1, 1);
         return true;
       }
       return true;

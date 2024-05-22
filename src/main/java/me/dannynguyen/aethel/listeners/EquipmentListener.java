@@ -1,12 +1,12 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
+import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.utils.item.DurabilityChange;
 import me.dannynguyen.aethel.utils.item.ItemReader;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,12 +20,17 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
 
 /**
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.24.8
+ * @version 1.25.10
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -180,6 +185,43 @@ public class EquipmentListener implements Listener {
   @EventHandler
   private void onManipulateArmorStand(PlayerArmorStandManipulateEvent e) {
     readHandSlot(e.getPlayer());
+  }
+
+  /**
+   * Reinforces an item's {@link me.dannynguyen.aethel.enums.plugin.Key#RPG_DURABILITY}.
+   *
+   * @param e inventory click event
+   */
+  @EventHandler
+  private void onItemReinforcement(InventoryClickEvent e) {
+    Inventory clickedInv = e.getClickedInventory();
+    if (clickedInv == null || clickedInv.getType() != InventoryType.ANVIL) {
+      return;
+    }
+    if (e.getSlot() != 0 || ItemReader.isNullOrAir(e.getCurrentItem())) {
+      return;
+    }
+    ItemStack item = e.getInventory().getItem(0);
+    ItemMeta meta = item.getItemMeta();
+    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+    if (!(dataContainer.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER) && dataContainer.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))) {
+      return;
+    }
+
+    int maxReinforcement = dataContainer.get(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
+    dataContainer.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, maxReinforcement);
+
+    List<String> lore = meta.getLore();
+    if (lore.isEmpty()) {
+      lore.add(ChatColor.WHITE + "Reinforcement: " + maxReinforcement + " / " + maxReinforcement);
+    } else {
+      lore.set(lore.size() - 1, ChatColor.WHITE + "Reinforcement: " + maxReinforcement + " / " + maxReinforcement);
+    }
+    meta.setLore(lore);
+    item.setItemMeta(meta);
+
+    Player player = (Player) e.getWhoClicked();
+    player.getWorld().playSound(player.getEyeLocation(), Sound.BLOCK_ANVIL_USE, SoundCategory.PLAYERS, 1, 1);
   }
 
   /**
