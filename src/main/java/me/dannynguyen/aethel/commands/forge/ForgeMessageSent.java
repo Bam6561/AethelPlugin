@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ import java.util.UUID;
  * Called with {@link me.dannynguyen.aethel.listeners.MessageListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.18
+ * @version 1.26.0
  * @since 1.23.8
  */
 public class ForgeMessageSent {
@@ -51,6 +52,31 @@ public class ForgeMessageSent {
     this.e = Objects.requireNonNull(e, "Null message sent event");
     this.user = e.getPlayer();
     this.uuid = user.getUniqueId();
+  }
+
+  /**
+   * Searches for matching recipes by a user input search term.
+   */
+  public void searchRecipe() {
+    if (e.getMessage().split(" ").length > 1) {
+      user.sendMessage(ChatColor.RED + "Provide only one search term. Please try again.");
+      return;
+    }
+
+    List<String> matches = Plugin.getData().getRecipeRegistry().getRecipeSearchTerms().get(e.getMessage().toLowerCase());
+    if (matches == null) {
+      user.sendMessage(ChatColor.RED + "No matches found. Please try again.");
+      return;
+    }
+
+    MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
+    Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> {
+      menuInput.setMode(MenuListener.Mode.RECIPE_DETAILS_MENU_CRAFT);
+      menuInput.setCategory("");
+      user.openInventory(new RecipeMenu(user, RecipeMenu.Action.CRAFT).getMatchesPage(matches));
+      menuInput.setMenu(MenuListener.Menu.FORGE_CRAFT);
+      menuInput.setPage(0);
+    });
   }
 
   /**

@@ -35,7 +35,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.25.14
+ * @version 1.26.0
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -77,9 +77,8 @@ public class ForgeMenuClick implements MenuClick {
    */
   public void interpretMenuClick() {
     switch (slot) {
-      case 2, 4 -> { // Context
-      }
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
+      case 4 -> new MenuChange().viewRecipeSearch();
       default -> new MenuChange().viewRecipeCategory();
     }
   }
@@ -168,7 +167,7 @@ public class ForgeMenuClick implements MenuClick {
    * Represents a menu change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.11
+   * @version 1.26.0
    * @since 1.23.11
    */
   private class MenuChange {
@@ -176,6 +175,15 @@ public class ForgeMenuClick implements MenuClick {
      * No parameter constructor.
      */
     MenuChange() {
+    }
+
+    /**
+     * Searches for matching recipes by name.
+     */
+    private void viewRecipeSearch() {
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input search term.");
+      user.closeInventory();
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMessageInput(MessageListener.Type.FORGE_RECIPE_SEARCH);
     }
 
     /**

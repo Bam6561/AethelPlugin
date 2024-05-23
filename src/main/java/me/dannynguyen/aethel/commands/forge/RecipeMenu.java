@@ -3,27 +3,27 @@ package me.dannynguyen.aethel.commands.forge;
 import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.PlayerHead;
 import me.dannynguyen.aethel.interfaces.CategoryMenu;
+import me.dannynguyen.aethel.listeners.MenuListener;
 import me.dannynguyen.aethel.utils.InventoryPages;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
+import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a menu that supports categorical pagination for
  * crafting, editing, and removing {@link RecipeRegistry.Recipe recipes}.
  *
  * @author Danny Nguyen
- * @version 1.25.13
+ * @version 1.26.0
  * @since 1.0.6
  */
 public class RecipeMenu implements CategoryMenu {
@@ -86,6 +86,8 @@ public class RecipeMenu implements CategoryMenu {
     addCategories();
     if (action != Action.CRAFT) {
       addCreateButton();
+    } else {
+      addSearchButton();
     }
     return menu;
   }
@@ -100,6 +102,11 @@ public class RecipeMenu implements CategoryMenu {
   @NotNull
   public Inventory getCategoryPage(String requestedCategory, int requestedPage) {
     List<Inventory> category = Plugin.getData().getRecipeRegistry().getRecipeCategories().get(requestedCategory);
+    if (category == null) {
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMenu(MenuListener.Menu.FORGE_CATEGORY), 1);
+      return getMainMenu();
+    }
+
     int numberOfPages = category.size();
     int pageViewed = InventoryPages.getPageViewed(numberOfPages, requestedPage);
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
@@ -109,6 +116,30 @@ public class RecipeMenu implements CategoryMenu {
     addContext();
     InventoryPages.addBackButton(menu, 6);
     InventoryPages.addPagination(menu, numberOfPages, pageViewed);
+    return menu;
+  }
+
+  /**
+   * Sets the menu to load {@link RecipeRegistry.Recipe recipe} matches.
+   *
+   * @param matches recipe matches
+   * @return {@link RecipeRegistry.Recipe recipe} matches page
+   */
+  @NotNull
+  protected Inventory getMatchesPage(@NotNull List<String> matches) {
+    Objects.requireNonNull(matches, "Null matches");
+    Map<String, RecipeRegistry.Recipe> recipes = Plugin.getData().getRecipeRegistry().getRecipes();
+    int matchIndex = 0;
+    for (int i = 9; i < 54; i++) {
+      List<ItemStack> recipeResults = recipes.get(matches.get(matchIndex)).getResults();
+      menu.setItem(i, createResultsDisplay(recipeResults.get(0), recipeResults));
+      matchIndex++;
+      if (matchIndex == matches.size()) {
+        break;
+      }
+    }
+    addActions();
+    InventoryPages.addBackButton(menu, 6);
     return menu;
   }
 
@@ -136,6 +167,13 @@ public class RecipeMenu implements CategoryMenu {
    */
   private void addCreateButton() {
     menu.setItem(3, ItemCreator.createPluginPlayerHead(PlayerHead.CRAFTING_TABLE.getHead(), ChatColor.AQUA + "Create"));
+  }
+
+  /**
+   * Adds the search button.
+   */
+  private void addSearchButton() {
+    menu.setItem(4, ItemCreator.createItem(Material.NETHER_STAR, ChatColor.AQUA + "Search Recipes"));
   }
 
   /**
@@ -171,6 +209,36 @@ public class RecipeMenu implements CategoryMenu {
         }
         i++;
       }
+    }
+  }
+
+  /**
+   * Creates an item display for {@link RecipeRegistry.Recipe recipes} with multiple results.
+   * <p>
+   * Format:
+   * <ul>
+   *  <li>xAmount Item
+   *  <li>...
+   * </ul>
+   *
+   * @param displayItem item to be shown
+   * @param results     recipe results
+   * @return display item labeled with its result(s)
+   */
+  private ItemStack createResultsDisplay(ItemStack displayItem, List<ItemStack> results) {
+    if (results.size() > 1) {
+      List<String> lore = new ArrayList<>();
+      for (ItemStack result : results) {
+        lore.add(ChatColor.AQUA + "x" + result.getAmount() + ChatColor.WHITE + " " + ItemReader.readName(result));
+      }
+
+      ItemStack item = displayItem.clone();
+      ItemMeta meta = item.getItemMeta();
+      meta.setLore(lore);
+      item.setItemMeta(meta);
+      return item;
+    } else {
+      return displayItem;
     }
   }
 

@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.25.8
+ * @version 1.26.0
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -99,6 +99,7 @@ public class MessageListener implements Listener {
     ForgeMessageSent msg = new ForgeMessageSent(e);
     switch (type) {
       case FORGE_RECIPE_FOLDER -> msg.saveRecipe();
+      case FORGE_RECIPE_SEARCH -> msg.searchRecipe();
     }
   }
 
@@ -173,6 +174,11 @@ public class MessageListener implements Listener {
      * Forge recipe folder.
      */
     FORGE_RECIPE_FOLDER("forge"),
+
+    /**
+     * Forge recipe search.
+     */
+    FORGE_RECIPE_SEARCH("forge"),
 
     /**
      * Display name.

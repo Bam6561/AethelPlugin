@@ -23,7 +23,7 @@ import java.util.*;
  * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.25.13
+ * @version 1.26.0
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -53,6 +53,11 @@ public class RecipeRegistry implements DataRegistry {
    * {@link Recipe} category icons.
    */
   private final Map<String, ItemStack> recipeCategoryIcons = new HashMap<>();
+
+  /**
+   * {@link Recipe} search terms.
+   */
+  private final Map<String, List<String>> recipeSearchTerms = new HashMap<>();
 
   /**
    * Associates a RecipeRegistry with the provided directory.
@@ -86,6 +91,8 @@ public class RecipeRegistry implements DataRegistry {
     recipes.clear();
     recipeCategories.clear();
     recipeCategoryNames.clear();
+    recipeCategoryIcons.clear();
+    recipeSearchTerms.clear();
 
     if (files.length == 0) {
       return;
@@ -160,6 +167,16 @@ public class RecipeRegistry implements DataRegistry {
       if (!results.isEmpty()) {
         Recipe pRecipe = new Recipe(file, results, materials);
         recipes.put(pRecipe.getName(), pRecipe);
+
+        String recipeName = ChatColor.stripColor(pRecipe.getName());
+        for (String term : recipeName.split(" ")) {
+          term = term.toLowerCase();
+          if (recipeSearchTerms.containsKey(term)) {
+            recipeSearchTerms.get(term).add(pRecipe.getName());
+          } else {
+            recipeSearchTerms.put(term, new ArrayList<>(List.of(pRecipe.getName())));
+          }
+        }
 
         String category = file.getParentFile().getName();
         if (categories.containsKey(category)) {
@@ -323,6 +340,16 @@ public class RecipeRegistry implements DataRegistry {
   @NotNull
   protected Map<String, ItemStack> getRecipeCategoryIcons() {
     return this.recipeCategoryIcons;
+  }
+
+  /**
+   * Gets {@link Recipe} search terms.
+   *
+   * @return {@link Recipe} search terms
+   */
+  @NotNull
+  protected Map<String, List<String>> getRecipeSearchTerms() {
+    return this.recipeSearchTerms;
   }
 
   /**
