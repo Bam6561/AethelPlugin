@@ -53,6 +53,8 @@ public class PluginLogger {
 
   /**
    * Adds a log entry to memory and writes it to the file once it reaches 100 entries.
+   *
+   * @param newEntry new log entry
    */
   public void addEntry(@NotNull String newEntry) {
     entries.add(newEntry);

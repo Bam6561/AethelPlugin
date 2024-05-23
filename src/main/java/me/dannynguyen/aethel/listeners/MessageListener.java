@@ -6,6 +6,7 @@ import me.dannynguyen.aethel.commands.character.CharacterMessageSent;
 import me.dannynguyen.aethel.commands.forge.ForgeMessageSent;
 import me.dannynguyen.aethel.commands.itemeditor.ItemEditorMessageSent;
 import me.dannynguyen.aethel.commands.location.LocationMessageSent;
+import me.dannynguyen.aethel.commands.playerstat.StatMessageSent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * By default, all message inputs are cancelled since they are used for only user inputs.
  *
  * @author Danny Nguyen
- * @version 1.26.0
+ * @version 1.26.1
  * @since 1.6.7
  */
 public class MessageListener implements Listener {
@@ -45,6 +46,7 @@ public class MessageListener implements Listener {
         case "forge" -> interpretForge(e, type);
         case "itemeditor" -> interpretItemEditor(e, type);
         case "location" -> interpretLocation(e, type);
+        case "playerstat" -> interpretPlayerStat(e, type);
       }
     }
   }
@@ -146,6 +148,20 @@ public class MessageListener implements Listener {
     LocationMessageSent msg = new LocationMessageSent(e);
     switch (type) {
       case LOCATION_FOLDER -> msg.saveLocation();
+    }
+  }
+
+  /**
+   * Determines which {@link me.dannynguyen.aethel.commands.playerstat.StatCommand}
+   * input is being interacted with.
+   *
+   * @param e    message event
+   * @param type {@link Type}
+   */
+  private void interpretPlayerStat(AsyncPlayerChatEvent e, Type type) {
+    StatMessageSent msg = new StatMessageSent(e);
+    switch (type) {
+      case STAT_SUBSTATISTIC_SEARCH -> msg.searchSubstat();
     }
   }
 
@@ -278,7 +294,12 @@ public class MessageListener implements Listener {
     /**
      * Saved location folder.
      */
-    LOCATION_FOLDER("location");
+    LOCATION_FOLDER("location"),
+
+    /**
+     * Stat substatistic search.
+     */
+    STAT_SUBSTATISTIC_SEARCH("playerstat");
 
     /**
      * Input ID.

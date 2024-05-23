@@ -78,7 +78,7 @@ public class ForgeMenuClick implements MenuClick {
   public void interpretMenuClick() {
     switch (slot) {
       case 3 -> new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.SAVE).getRecipeDetails();
-      case 4 -> new MenuChange().viewRecipeSearch();
+      case 4 -> new MenuChange().searchRecipe();
       default -> new MenuChange().viewRecipeCategory();
     }
   }
@@ -180,7 +180,7 @@ public class ForgeMenuClick implements MenuClick {
     /**
      * Searches for matching recipes by name.
      */
-    private void viewRecipeSearch() {
+    private void searchRecipe() {
       user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input search term.");
       user.closeInventory();
       Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMessageInput(MessageListener.Type.FORGE_RECIPE_SEARCH);

@@ -4,6 +4,7 @@ import me.dannynguyen.aethel.Plugin;
 import me.dannynguyen.aethel.enums.plugin.Message;
 import me.dannynguyen.aethel.interfaces.MenuClick;
 import me.dannynguyen.aethel.listeners.MenuListener;
+import me.dannynguyen.aethel.listeners.MessageListener;
 import me.dannynguyen.aethel.plugin.MenuInput;
 import me.dannynguyen.aethel.utils.EntityReader;
 import me.dannynguyen.aethel.utils.TextFormatter;
@@ -25,7 +26,7 @@ import java.util.*;
  * Called with {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.25.12
+ * @version 1.26.1
  * @since 1.4.7
  */
 public class StatMenuClick implements MenuClick {
@@ -106,12 +107,13 @@ public class StatMenuClick implements MenuClick {
   public void interpretSubstatClick() {
     switch (slot) {
       case 0 -> new MenuChange().previousPage();
-      case 1, 4 -> { // Player Heads
+      case 4 -> { // Player Head
       }
+      case 1 -> new MenuChange().searchSubstat();
       case 2 -> new MenuToggle().toggleShareLeaderboard();
       case 3 -> new MenuToggle().toggleShareVisibility();
-      case 5 -> new MenuToggle().toggleEntityTypeSubStat();
-      case 6 -> new MenuToggle().toggleMaterialSubStat();
+      case 5 -> new MenuToggle().toggleEntityTypeSubstat();
+      case 6 -> new MenuToggle().toggleMaterialSubstat();
       case 7 -> new MenuChange().returnToMenu();
       case 8 -> new MenuChange().nextPage();
       default -> new StatBroadcast().sendSubstat();
@@ -122,7 +124,7 @@ public class StatMenuClick implements MenuClick {
    * Represents a menu change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.12
+   * @version 1.26.1
    * @since 1.23.12
    */
   private class MenuChange {
@@ -130,6 +132,15 @@ public class StatMenuClick implements MenuClick {
      * No parameter constructor.
      */
     MenuChange() {
+    }
+
+    /**
+     * Searches for matching substats by name.
+     */
+    private void searchSubstat() {
+      user.sendMessage(Message.NOTIFICATION_INPUT.getMessage() + ChatColor.WHITE + "Input search term.");
+      user.closeInventory();
+      Plugin.getData().getPluginSystem().getPluginPlayers().get(user.getUniqueId()).getMenuInput().setMessageInput(MessageListener.Type.STAT_SUBSTATISTIC_SEARCH);
     }
 
     /**
@@ -229,7 +240,7 @@ public class StatMenuClick implements MenuClick {
     /**
      * Toggles type of entity type substat to share.
      */
-    private void toggleEntityTypeSubStat() {
+    private void toggleEntityTypeSubstat() {
       Inventory menu = e.getInventory();
       Material mode = menu.getItem(5).getType();
       switch (mode) {
@@ -241,7 +252,7 @@ public class StatMenuClick implements MenuClick {
     /**
      * Toggles type of material substat to share.
      */
-    private void toggleMaterialSubStat() {
+    private void toggleMaterialSubstat() {
       Inventory menu = e.getInventory();
       Material mode = menu.getItem(6).getType();
       switch (mode) {
@@ -274,7 +285,7 @@ public class StatMenuClick implements MenuClick {
    * Represents the retrieval and broadcast of a player statistic.
    *
    * @author Danny Nguyen
-   * @version 1.25.12
+   * @version 1.26.1
    * @since 1.4.10
    */
   private class StatBroadcast {
@@ -366,6 +377,9 @@ public class StatMenuClick implements MenuClick {
 
       String stat = ChatColor.DARK_PURPLE + ownerName + " " + ChatColor.GOLD + requestedStat;
       List<String> statValues = getSubstatValues(category, substat);
+      if (statValues == null) {
+        return;
+      }
 
       StringBuilder message = new StringBuilder(stat);
       for (String value : statValues) {
@@ -532,6 +546,10 @@ public class StatMenuClick implements MenuClick {
     private List<String> getSubstatValues(String category, String substat) {
       List<String> statValues = new ArrayList<>();
       if (category.equals("Entity Types")) {
+        if (substat.equals("UNKNOWN")) {
+          return null;
+        }
+
         EntityType entityType = EntityType.valueOf(substat);
 
         int kills = owner.getStatistic(Statistic.KILL_ENTITY, entityType);

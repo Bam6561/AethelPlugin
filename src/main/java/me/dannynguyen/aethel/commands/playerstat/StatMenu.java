@@ -10,6 +10,7 @@ import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ import java.util.*;
  * See {@link StatCategory.StatisticType} and {@link StatCategory.SubstatisticType}.
  *
  * @author Danny Nguyen
- * @version 1.25.12
+ * @version 1.26.1
  * @since 1.4.7
  */
 public class StatMenu implements CategoryMenu {
@@ -114,6 +115,7 @@ public class StatMenu implements CategoryMenu {
     Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setPage(pageViewed);
 
     menu.setContents(category.get(pageViewed).getContents());
+    addSubstatisticSearchButton();
     InventoryPages.addPagination(menu, numberOfPages, pageViewed);
   }
 
@@ -150,6 +152,13 @@ public class StatMenu implements CategoryMenu {
   }
 
   /**
+   * Adds the substatistic search button.
+   */
+  private void addSubstatisticSearchButton() {
+    menu.setItem(1, ItemCreator.createItem(Material.NETHER_STAR, ChatColor.AQUA + "Search Substatistics"));
+  }
+
+  /**
    * Adds stat sharing leaderboard toggle button.
    */
   private void addLeaderboardToggle() {
@@ -169,11 +178,21 @@ public class StatMenu implements CategoryMenu {
   private void addCategories() {
     int i = 9;
     for (StatCategory.StatisticType category : StatCategory.StatisticType.values()) {
-      menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category.getProperName()));
+      switch (category) {
+        case ACTIVITIES -> menu.setItem(i, ItemCreator.createItem(Material.WHEAT, ChatColor.WHITE + category.getProperName()));
+        case CONTAINERS -> menu.setItem(i, ItemCreator.createItem(Material.CHEST, ChatColor.WHITE + category.getProperName()));
+        case DAMAGE -> menu.setItem(i, ItemCreator.createItem(Material.IRON_SWORD, ChatColor.WHITE + category.getProperName(), ItemFlag.HIDE_ATTRIBUTES));
+        case INTERACTIONS -> menu.setItem(i, ItemCreator.createItem(Material.BELL, ChatColor.WHITE + category.getProperName()));
+        case GENERAL -> menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category.getProperName()));
+        case MOVEMENT -> menu.setItem(i, ItemCreator.createItem(Material.IRON_BOOTS, ChatColor.WHITE + category.getProperName(), ItemFlag.HIDE_ATTRIBUTES));
+      }
       i++;
     }
     for (StatCategory.SubstatisticType category : StatCategory.SubstatisticType.values()) {
-      menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category.getProperName()));
+      switch (category) {
+        case ENTITY_TYPES -> menu.setItem(i, ItemCreator.createItem(Material.CREEPER_HEAD, ChatColor.WHITE + category.getProperName()));
+        case MATERIALS -> menu.setItem(i, ItemCreator.createItem(Material.IRON_INGOT, ChatColor.WHITE + category.getProperName()));
+      }
       i++;
     }
   }
@@ -182,10 +201,10 @@ public class StatMenu implements CategoryMenu {
    * Represents player statistic categories.
    *
    * @author Danny Nguyen
-   * @version 1.17.14
+   * @version 1.26.1
    * @since 1.4.8
    */
-  private static class StatCategory {
+  protected static class StatCategory {
     /**
      * {@link StatisticType Stat categories} represented by groups of inventories.
      * <p>
@@ -199,6 +218,16 @@ public class StatMenu implements CategoryMenu {
      * An inventory from any of the groups is also referred to as a page.
      */
     private static final Map<SubstatisticType, List<Inventory>> substatCategories = createSubstatCategoryPages();
+
+    /**
+     * Entity type search terms.
+     */
+    private static Map<String, Integer> entityTypeSearchTerms;
+
+    /**
+     * Material search terms.
+     */
+    private static Map<String, Integer> materialSearchTerms;
 
     /**
      * Utility methods only.
@@ -250,6 +279,7 @@ public class StatMenu implements CategoryMenu {
       int startIndex = 0;
       int endIndex = 45;
 
+      materialSearchTerms = new HashMap<>();
       for (int page = 0; page < numberOfPages; page++) {
         Inventory inv = Bukkit.createInventory(null, 54);
 
@@ -259,6 +289,11 @@ public class StatMenu implements CategoryMenu {
           String materialName = TextFormatter.capitalizePhrase(material);
           inv.setItem(invSlot, ItemCreator.createItem(Material.valueOf(material), ChatColor.WHITE + materialName));
           invSlot++;
+
+          String materialTerm = material.split("_")[0].toLowerCase();
+          if (!materialSearchTerms.containsKey(materialTerm)) {
+            materialSearchTerms.put(materialTerm, page);
+          }
         }
         substatCategories.get(SubstatisticType.MATERIALS).add(inv);
 
@@ -281,6 +316,7 @@ public class StatMenu implements CategoryMenu {
       int startIndex = 0;
       int endIndex = 45;
 
+      entityTypeSearchTerms = new HashMap<>();
       for (int page = 0; page < numberOfPages; page++) {
         Inventory inv = Bukkit.createInventory(null, 54);
         // i = stat index
@@ -292,6 +328,11 @@ public class StatMenu implements CategoryMenu {
           String entity = TextFormatter.capitalizePhrase(entityTypes.get(i).name());
           inv.setItem(j, ItemCreator.createItem(Material.PAPER, ChatColor.WHITE + entity));
           j++;
+
+          String entityTerm = entity.split("_")[0].toLowerCase();
+          if (!entityTypeSearchTerms.containsKey(entityTerm)) {
+            entityTypeSearchTerms.put(entityTerm, page);
+          }
         }
         substatCategories.get(SubstatisticType.ENTITY_TYPES).add(inv);
 
@@ -335,7 +376,6 @@ public class StatMenu implements CategoryMenu {
      *
      * @return {@link StatisticType stat categories}
      */
-    @NotNull
     private static Map<StatisticType, Inventory> getStatCategories() {
       return statCategories;
     }
@@ -345,9 +385,28 @@ public class StatMenu implements CategoryMenu {
      *
      * @return {@link SubstatisticType substat categories}
      */
-    @NotNull
     private static Map<SubstatisticType, List<Inventory>> getSubstatCategories() {
       return substatCategories;
+    }
+
+    /**
+     * Gets material search terms.
+     *
+     * @return material search terms
+     */
+    @NotNull
+    protected static Map<String, Integer> getMaterialSearchTerms() {
+      return materialSearchTerms;
+    }
+
+    /**
+     * Gets entity type search terms
+     *
+     * @return entity type search terms
+     */
+    @NotNull
+    protected static Map<String, Integer> getEntityTypeSearchTerms() {
+      return materialSearchTerms;
     }
 
     /**
@@ -441,7 +500,6 @@ public class StatMenu implements CategoryMenu {
        *
        * @return type's proper name
        */
-      @NotNull
       private String getProperName() {
         return this.properName;
       }
@@ -451,7 +509,6 @@ public class StatMenu implements CategoryMenu {
        *
        * @return type's statistics
        */
-      @NotNull
       private org.bukkit.Statistic[] getStatistics() {
         return this.statistics;
       }
@@ -493,7 +550,6 @@ public class StatMenu implements CategoryMenu {
        *
        * @return type's proper name
        */
-      @NotNull
       private String getProperName() {
         return this.properName;
       }

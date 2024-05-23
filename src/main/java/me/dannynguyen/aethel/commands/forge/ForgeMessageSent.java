@@ -44,7 +44,7 @@ public class ForgeMessageSent {
 
   /**
    * Associates a message sent event with its user and encoded data in the context of
-   * saving a recipe in an {@link RecipeDetailsMenu} through {@link ForgeMenuClick}.
+   * searching or saving a recipe in an {@link RecipeDetailsMenu} through {@link ForgeMenuClick}.
    *
    * @param e message sent event
    */

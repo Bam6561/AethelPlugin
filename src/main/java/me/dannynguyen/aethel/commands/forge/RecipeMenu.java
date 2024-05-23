@@ -170,7 +170,7 @@ public class RecipeMenu implements CategoryMenu {
   }
 
   /**
-   * Adds the search button.
+   * Adds the recipe search button.
    */
   private void addSearchButton() {
     menu.setItem(4, ItemCreator.createItem(Material.NETHER_STAR, ChatColor.AQUA + "Search Recipes"));
