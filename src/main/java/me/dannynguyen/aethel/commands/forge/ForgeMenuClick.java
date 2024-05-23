@@ -35,7 +35,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.23.11
+ * @version 1.25.14
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -124,8 +124,16 @@ public class ForgeMenuClick implements MenuClick {
    */
   public void interpretCraftDetailsClick() {
     switch (e.getSlot()) {
+      case 8 -> { // Context
+      }
       case 25 -> new RecipeCraft(e.getClickedInventory().getItem(0)).readRecipeMaterials();
       case 26 -> new MenuChange().openForgeCraft();
+      default -> {
+        ItemStack clickedItem = e.getCurrentItem();
+        if (Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(clickedItem)) != null) {
+          new RecipeDetailsMenu(user, RecipeDetailsMenu.Mode.CRAFT, clickedItem).getRecipeDetails();
+        }
+      }
     }
   }
 
