@@ -7,6 +7,7 @@ import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ import java.util.UUID;
  * Represents a menu containing a {@link RecipeRegistry.Recipe recipe's} details.
  *
  * @author Danny Nguyen
- * @version 1.22.4
+ * @version 1.26.3
  * @since 1.9.15
  */
 class RecipeDetailsMenu {
@@ -106,6 +107,7 @@ class RecipeDetailsMenu {
     switch (mode) {
       case CRAFT -> {
         addRecipeContents();
+        addBatchCraftToggle();
         user.openInventory(menu);
         Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput().setMenu(MenuListener.Menu.FORGE_CRAFT_RECIPE);
       }
@@ -156,6 +158,13 @@ class RecipeDetailsMenu {
     for (int i = 0; i < materials.size(); i++) {
       menu.setItem(i + 9, materials.get(i));
     }
+  }
+
+  /**
+   * Adds the batch craft toggle button.
+   */
+  private void addBatchCraftToggle() {
+    menu.setItem(24, ItemCreator.createItem(Material.COBBLESTONE, ChatColor.AQUA + "x1"));
   }
 
   /**

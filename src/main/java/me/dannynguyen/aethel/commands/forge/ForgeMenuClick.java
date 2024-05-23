@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -35,7 +36,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.26.0
+ * @version 1.26.3
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -125,7 +126,17 @@ public class ForgeMenuClick implements MenuClick {
     switch (e.getSlot()) {
       case 8 -> { // Context
       }
-      case 25 -> new RecipeCraft(e.getClickedInventory().getItem(0)).readRecipeMaterials();
+      case 24 -> new MenuChange().toggleBatchCraft();
+      case 25 -> {
+        int batchCraft;
+        switch (e.getClickedInventory().getItem(24).getType()) {
+          case COBBLESTONE -> batchCraft = 1;
+          case STONE -> batchCraft = 4;
+          case STONE_BRICKS -> batchCraft = 16;
+          default -> batchCraft = 1;
+        }
+        new RecipeCraft(e.getClickedInventory().getItem(0), batchCraft).readRecipeMaterials();
+      }
       case 26 -> new MenuChange().openForgeCraft();
       default -> {
         ItemStack clickedItem = e.getCurrentItem();
@@ -167,7 +178,7 @@ public class ForgeMenuClick implements MenuClick {
    * Represents a menu change operation.
    *
    * @author Danny Nguyen
-   * @version 1.26.0
+   * @version 1.26.3
    * @since 1.23.11
    */
   private class MenuChange {
@@ -283,6 +294,18 @@ public class ForgeMenuClick implements MenuClick {
       user.openInventory(new RecipeMenu(user, action).getCategoryPage(category, requestedPage + 1));
       menuInput.setMenu(MenuListener.Menu.valueOf("FORGE_" + action.name()));
     }
+
+    /**
+     * Toggles the amount of results to craft.
+     */
+    private void toggleBatchCraft() {
+      Inventory menu = e.getClickedInventory();
+      switch (menu.getItem(24).getType()) {
+        case COBBLESTONE -> menu.setItem(24, ItemCreator.createItem(Material.STONE, ChatColor.AQUA + "x4"));
+        case STONE -> menu.setItem(24, ItemCreator.createItem(Material.STONE_BRICKS, ChatColor.AQUA + "x16"));
+        case STONE_BRICKS -> menu.setItem(24, ItemCreator.createItem(Material.COBBLESTONE, ChatColor.AQUA + "x1"));
+      }
+    }
   }
 
   /**
@@ -292,7 +315,7 @@ public class ForgeMenuClick implements MenuClick {
    * enough materials to craft the {@link RecipeRegistry.Recipe recipe}.
    *
    * @author Danny Nguyen
-   * @version 1.24.9
+   * @version 1.26.3
    * @since 1.4.15
    */
   private class RecipeCraft {
@@ -300,6 +323,11 @@ public class ForgeMenuClick implements MenuClick {
      * {@link Key#RECIPE_FORGE_ID}.
      */
     private final NamespacedKey forgeId = Key.RECIPE_FORGE_ID.getNamespacedKey();
+
+    /**
+     * Number of results to craft at once.
+     */
+    private final int batchCraft;
 
     /**
      * {@link RecipeRegistry.Recipe Recipe's} results.
@@ -331,8 +359,9 @@ public class ForgeMenuClick implements MenuClick {
      *
      * @param item representative item of recipe
      */
-    RecipeCraft(@NotNull ItemStack item) {
+    RecipeCraft(@NotNull ItemStack item, int batchCraft) {
       RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
+      this.batchCraft = batchCraft;
       this.results = recipe.getResults();
       this.materials = recipe.getMaterials();
       this.pInv = user.getInventory();
@@ -395,7 +424,7 @@ public class ForgeMenuClick implements MenuClick {
           return false;
         }
 
-        int requiredAmount = item.getAmount();
+        int requiredAmount = item.getAmount() * batchCraft;
         PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
         boolean hasForgeId = itemTags.has(forgeId, PersistentDataType.STRING);
 
@@ -455,11 +484,13 @@ public class ForgeMenuClick implements MenuClick {
      * Otherwise, the results are dropped at the user's feet.
      */
     private void giveResults() {
-      for (ItemStack item : results) {
-        if (user.getInventory().firstEmpty() != -1) {
-          user.getInventory().addItem(item);
-        } else {
-          user.getWorld().dropItem(user.getLocation(), item);
+      for (int i = 0; i < batchCraft; i++) {
+        for (ItemStack item : results) {
+          if (user.getInventory().firstEmpty() != -1) {
+            user.getInventory().addItem(item);
+          } else {
+            user.getWorld().dropItem(user.getLocation(), item);
+          }
         }
       }
     }
@@ -683,7 +714,7 @@ public class ForgeMenuClick implements MenuClick {
    * Represents a recipe save operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.16
+   * @version 1.26.3
    * @since 1.23.8
    */
   private class RecipeSave {
@@ -771,7 +802,7 @@ public class ForgeMenuClick implements MenuClick {
      */
     private boolean encodeRecipe() {
       StringBuilder materials = new StringBuilder();
-      for (int i = 9; i < 24; i++) {
+      for (int i = 9; i < 23; i++) {
         ItemStack item = contents[i];
         if (ItemReader.isNotNullOrAir(item)) {
           materials.append(ItemCreator.encodeItem(item)).append(" ");
