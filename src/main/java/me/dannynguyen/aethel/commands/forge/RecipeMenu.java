@@ -10,9 +10,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -21,7 +23,7 @@ import java.util.UUID;
  * crafting, editing, and removing {@link RecipeRegistry.Recipe recipes}.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.25.13
  * @since 1.0.6
  */
 public class RecipeMenu implements CategoryMenu {
@@ -156,11 +158,17 @@ public class RecipeMenu implements CategoryMenu {
    * Adds {@link RecipeRegistry.Recipe recipe} categories.
    */
   private void addCategories() {
-    List<String> categories = Plugin.getData().getRecipeRegistry().getRecipeCategoryNames();
+    RecipeRegistry recipeRegistry = Plugin.getData().getRecipeRegistry();
+    List<String> categories = recipeRegistry.getRecipeCategoryNames();
     if (!categories.isEmpty()) {
+      Map<String, ItemStack> icons = recipeRegistry.getRecipeCategoryIcons();
       int i = 9;
       for (String category : categories) {
-        menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category));
+        if (icons.get(category) == null) {
+          menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category));
+        } else {
+          menu.setItem(i, icons.get(category));
+        }
         i++;
       }
     }

@@ -5,12 +5,15 @@ import me.dannynguyen.aethel.interfaces.DataRegistry;
 import me.dannynguyen.aethel.utils.InventoryPages;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -20,7 +23,7 @@ import java.util.*;
  * called in order to load {@link Item items} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.23.13
+ * @version 1.25.13
  * @since 1.3.2
  */
 public class ItemRegistry implements DataRegistry {
@@ -45,6 +48,11 @@ public class ItemRegistry implements DataRegistry {
    * Sorted {@link Item} category names.
    */
   private final List<String> itemCategoryNames = new ArrayList<>();
+
+  /**
+   * {@link Item} category icons.
+   */
+  private final Map<String, ItemStack> itemCategoryIcons = new HashMap<>();
 
   /**
    * Associates an ItemRegistry with the provided directory.
@@ -109,6 +117,8 @@ public class ItemRegistry implements DataRegistry {
       if (file.isFile()) {
         if (file.getName().endsWith("_itm.txt")) {
           readFile(file, categories);
+        } else if (file.getName().endsWith("_icon.txt")) {
+          readIcon(file);
         }
       } else {
         File[] subdirectory = file.listFiles();
@@ -150,6 +160,26 @@ public class ItemRegistry implements DataRegistry {
       }
     } catch (FileNotFoundException ex) {
       Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
+    }
+  }
+
+  /**
+   * Deserializes bytes from designated icon file
+   * to set a {@link Item} category's icon.
+   *
+   * @param file icon file
+   */
+  private void readIcon(File file) {
+    try {
+      Scanner scanner = new Scanner(file);
+      ItemStack icon = ItemReader.decodeItem(scanner.nextLine());
+      ItemMeta iconMeta = icon.getItemMeta();
+      String category = file.getParentFile().getName();
+      iconMeta.setDisplayName(ChatColor.WHITE + category);
+      icon.setItemMeta(iconMeta);
+      itemCategoryIcons.put(category, icon);
+    } catch (IOException ex) {
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE + file.getName());
     }
   }
 
@@ -213,6 +243,16 @@ public class ItemRegistry implements DataRegistry {
   @NotNull
   protected List<String> getItemCategoryNames() {
     return this.itemCategoryNames;
+  }
+
+  /**
+   * Gets {@link Item} category icons.
+   *
+   * @return {@link Item} category icons
+   */
+  @NotNull
+  protected Map<String, ItemStack> getItemCategoryIcons() {
+    return this.itemCategoryIcons;
   }
 
   /**

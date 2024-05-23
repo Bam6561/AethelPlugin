@@ -38,7 +38,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.25.11
+ * @version 1.25.13
  * @since 1.13.4
  */
 public class Equipment {
@@ -159,14 +159,16 @@ public class Equipment {
       return;
     }
 
+    // TODO: SET BACK TO TRUE IN FUTURE BUILDS
+    // Fixes incorrect tags set in previous versions
     PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
     if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       attributes.getSlotAttributes().put(eSlot, new HashMap<>());
-      attributes.readAttributes(eSlot, itemTags, true);
+      attributes.readAttributes(eSlot, itemTags, false);
     }
     if (item.getItemMeta().hasEnchants()) {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
-      enchantments.addEnchantments(eSlot, item, true);
+      enchantments.addEnchantments(eSlot, item, false);
     }
     if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());

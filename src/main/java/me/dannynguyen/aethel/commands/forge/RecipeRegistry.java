@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -22,7 +23,7 @@ import java.util.*;
  * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.23.8
+ * @version 1.25.13
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -47,6 +48,11 @@ public class RecipeRegistry implements DataRegistry {
    * Sorted {@link Recipe} category names.
    */
   private final List<String> recipeCategoryNames = new ArrayList<>();
+
+  /**
+   * {@link Recipe} category icons.
+   */
+  private final Map<String, ItemStack> recipeCategoryIcons = new HashMap<>();
 
   /**
    * Associates a RecipeRegistry with the provided directory.
@@ -111,6 +117,8 @@ public class RecipeRegistry implements DataRegistry {
       if (file.isFile()) {
         if (file.getName().endsWith("_rcp.txt")) {
           readFile(file, categories);
+        } else if (file.getName().equals("_icon.txt")) {
+          readIcon(file);
         }
       } else {
         File[] subdirectory = file.listFiles();
@@ -164,6 +172,26 @@ public class RecipeRegistry implements DataRegistry {
       }
     } catch (FileNotFoundException ex) {
       Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE.getMessage() + file.getName());
+    }
+  }
+
+  /**
+   * Deserializes bytes from designated icon file
+   * to set a {@link Recipe} category's icon.
+   *
+   * @param file icon file
+   */
+  private void readIcon(File file) {
+    try {
+      Scanner scanner = new Scanner(file);
+      ItemStack icon = ItemReader.decodeItem(scanner.nextLine());
+      ItemMeta iconMeta = icon.getItemMeta();
+      String category = file.getParentFile().getName();
+      iconMeta.setDisplayName(ChatColor.WHITE + category);
+      icon.setItemMeta(iconMeta);
+      recipeCategoryIcons.put(category, icon);
+    } catch (IOException ex) {
+      Bukkit.getLogger().warning(Message.UNABLE_TO_READ_FILE + file.getName());
     }
   }
 
@@ -285,6 +313,16 @@ public class RecipeRegistry implements DataRegistry {
   @NotNull
   protected List<String> getRecipeCategoryNames() {
     return this.recipeCategoryNames;
+  }
+
+  /**
+   * Gets {@link Recipe} category icons.
+   *
+   * @return {@link Recipe} category icons
+   */
+  @NotNull
+  protected Map<String, ItemStack> getRecipeCategoryIcons() {
+    return this.recipeCategoryIcons;
   }
 
   /**

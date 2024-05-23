@@ -10,9 +10,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -21,7 +23,7 @@ import java.util.UUID;
  * creating, editing, and removing {@link ItemRegistry.Item items}.
  *
  * @author Danny Nguyen
- * @version 1.23.1
+ * @version 1.25.13
  * @since 1.4.0
  */
 public class ItemMenu implements CategoryMenu {
@@ -158,12 +160,17 @@ public class ItemMenu implements CategoryMenu {
    * Adds {@link ItemRegistry.Item item} categories.
    */
   private void addCategories() {
-    List<String> categories = Plugin.getData().getItemRegistry().getItemCategoryNames();
+    ItemRegistry itemRegistry = Plugin.getData().getItemRegistry();
+    List<String> categories = itemRegistry.getItemCategoryNames();
     if (!categories.isEmpty()) {
+      Map<String, ItemStack> icons = itemRegistry.getItemCategoryIcons();
       int i = 9;
       for (String category : categories) {
-        menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category));
-        i++;
+        if (icons.get(category) == null) {
+          menu.setItem(i, ItemCreator.createItem(Material.BOOK, ChatColor.WHITE + category));
+        } else {
+          menu.setItem(i, icons.get(category));
+        }
       }
     }
   }
