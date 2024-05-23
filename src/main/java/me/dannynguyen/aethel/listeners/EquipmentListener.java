@@ -30,7 +30,7 @@ import java.util.List;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.25.10
+ * @version 1.26.4
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -185,43 +185,6 @@ public class EquipmentListener implements Listener {
   @EventHandler
   private void onManipulateArmorStand(PlayerArmorStandManipulateEvent e) {
     readHandSlot(e.getPlayer());
-  }
-
-  /**
-   * Reinforces an item's {@link me.dannynguyen.aethel.enums.plugin.Key#RPG_DURABILITY}.
-   *
-   * @param e inventory click event
-   */
-  @EventHandler
-  private void onItemReinforcement(InventoryClickEvent e) {
-    Inventory clickedInv = e.getClickedInventory();
-    if (clickedInv == null || clickedInv.getType() != InventoryType.ANVIL) {
-      return;
-    }
-    if (e.getSlot() != 0 || ItemReader.isNullOrAir(e.getCurrentItem())) {
-      return;
-    }
-    ItemStack item = e.getInventory().getItem(0);
-    ItemMeta meta = item.getItemMeta();
-    PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-    if (!(dataContainer.has(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER) && dataContainer.has(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER))) {
-      return;
-    }
-
-    int maxReinforcement = dataContainer.get(Key.RPG_MAX_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER);
-    dataContainer.set(Key.RPG_DURABILITY.getNamespacedKey(), PersistentDataType.INTEGER, maxReinforcement);
-
-    List<String> lore = meta.getLore();
-    if (lore.isEmpty()) {
-      lore.add(ChatColor.WHITE + "Reinforcement: " + maxReinforcement + " / " + maxReinforcement);
-    } else {
-      lore.set(lore.size() - 1, ChatColor.WHITE + "Reinforcement: " + maxReinforcement + " / " + maxReinforcement);
-    }
-    meta.setLore(lore);
-    item.setItemMeta(meta);
-
-    Player player = (Player) e.getWhoClicked();
-    player.getWorld().playSound(player.getEyeLocation(), Sound.BLOCK_ANVIL_USE, SoundCategory.PLAYERS, 1, 1);
   }
 
   /**

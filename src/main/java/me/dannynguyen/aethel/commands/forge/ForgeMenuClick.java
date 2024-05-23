@@ -36,7 +36,7 @@ import java.util.*;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.26.3
+ * @version 1.26.4
  * @since 1.0.9
  */
 public class ForgeMenuClick implements MenuClick {
@@ -154,6 +154,8 @@ public class ForgeMenuClick implements MenuClick {
   public void interpretSaveClick() {
     switch (slot) {
       case 8 -> { // Context
+      }
+      case 24 -> { // Slot used by batch craft toggle button
       }
       case 25 -> new RecipeSave().readSaveClick();
       case 26 -> new MenuChange().openForgeEdit();
@@ -325,7 +327,7 @@ public class ForgeMenuClick implements MenuClick {
     private final NamespacedKey forgeId = Key.RECIPE_FORGE_ID.getNamespacedKey();
 
     /**
-     * Number of results to craft at once.
+     * Amount of results to craft at once.
      */
     private final int batchCraft;
 
@@ -357,7 +359,8 @@ public class ForgeMenuClick implements MenuClick {
     /**
      * Associates a user with the {@link RecipeRegistry.Recipe recipe} being crafted.
      *
-     * @param item representative item of recipe
+     * @param item       representative item of recipe
+     * @param batchCraft amount of results to craft at once
      */
     RecipeCraft(@NotNull ItemStack item, int batchCraft) {
       RecipeRegistry.Recipe recipe = Plugin.getData().getRecipeRegistry().getRecipes().get(ItemReader.readName(Objects.requireNonNull(item, "Null item")));
