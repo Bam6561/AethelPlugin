@@ -63,7 +63,7 @@ public class CharacterMessageSent {
   /**
    * Hotbar values as Set.
    */
-  private Set<Integer> hotbarSet = new HashSet<>();
+  private final Set<Integer> hotbarSet = new HashSet<>();
 
   /**
    * Associates a message sent event with its user and current editing

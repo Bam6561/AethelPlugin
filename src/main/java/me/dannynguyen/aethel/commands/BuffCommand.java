@@ -17,7 +17,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Command invocation that allows the user to retrieve or
@@ -182,7 +185,7 @@ public class BuffCommand implements CommandExecutor {
         if (selector.contains("p")) {
           Set<LivingEntity> players = new HashSet<>();
           for (LivingEntity livingEntity : livingEntities) {
-            if (livingEntity instanceof Player player){
+            if (livingEntity instanceof Player player) {
               players.add(player);
             }
           }

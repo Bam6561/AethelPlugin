@@ -6,13 +6,15 @@ import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveAbilityType;
 import me.dannynguyen.aethel.enums.rpg.abilities.PassiveTriggerType;
 import me.dannynguyen.aethel.rpg.Equipment;
-import me.dannynguyen.aethel.utils.entity.HealthChange;
 import me.dannynguyen.aethel.rpg.RpgPlayer;
 import me.dannynguyen.aethel.rpg.RpgSystem;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
+import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityCategory;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,6 +25,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
@@ -34,7 +38,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.24.2
+ * @version 1.26.2
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -155,8 +159,39 @@ public class RpgListener implements Listener {
    */
   @EventHandler
   private void onEntityDeath(EntityDeathEvent e) {
-    if (e.getEntity().getKiller() != null) {
-      triggerOnKillPassives(e.getEntity().getUniqueId(), e.getEntity().getKiller().getUniqueId());
+    LivingEntity killed = e.getEntity();
+    Player killer = killed.getKiller();
+    if (killer == null) {
+      return;
+    }
+
+    triggerRaidCaptainBadOmen(killed, killer);
+    triggerOnKillPassives(killed.getUniqueId(), killer.getUniqueId());
+  }
+
+  /**
+   * Gives the player Bad Omen effect if the killed entity was a raid captain.
+   *
+   * @param killed killed entity
+   * @param killer player
+   */
+  private void triggerRaidCaptainBadOmen(LivingEntity killed, Player killer) {
+    if (killed.getCategory() != EntityCategory.ILLAGER) {
+      return;
+    }
+    ItemStack head = killed.getEquipment().getHelmet();
+    if (head == null || head.getType() != Material.WHITE_BANNER) {
+      return;
+    }
+
+    if (killer.hasPotionEffect(PotionEffectType.BAD_OMEN)) {
+      int amplifier = killer.getPotionEffect(PotionEffectType.BAD_OMEN).getAmplifier();
+      if (amplifier < 5) {
+        killer.removePotionEffect(PotionEffectType.BAD_OMEN);
+        killer.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 120000, amplifier + 1));
+      }
+    } else {
+      killer.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 120000, 0));
     }
   }
 

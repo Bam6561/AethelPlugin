@@ -188,7 +188,7 @@ public class StatusCommand implements CommandExecutor {
         if (selector.contains("p")) {
           Set<LivingEntity> players = new HashSet<>();
           for (LivingEntity livingEntity : livingEntities) {
-            if (livingEntity instanceof Player player){
+            if (livingEntity instanceof Player player) {
               players.add(player);
             }
           }
