@@ -11,12 +11,12 @@ import me.dannynguyen.aethel.rpg.RpgSystem;
 import me.dannynguyen.aethel.rpg.abilities.PassiveAbility;
 import me.dannynguyen.aethel.utils.entity.HealthChange;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityCategory;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Raider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -38,7 +38,7 @@ import java.util.UUID;
  * Collection of {@link RpgSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.26.2
+ * @version 1.26.6
  * @since 1.10.6
  */
 public class RpgListener implements Listener {
@@ -165,8 +165,19 @@ public class RpgListener implements Listener {
       return;
     }
 
+    incrementKillStatistic(killed, killer);
     triggerRaidCaptainBadOmen(killed, killer);
     triggerOnKillPassives(killed.getUniqueId(), killer.getUniqueId());
+  }
+
+  /**
+   * Increments the killed entity statistic for a player.
+   *
+   * @param killed killed entity
+   * @param killer player
+   */
+  private void incrementKillStatistic(LivingEntity killed, Player killer) {
+    killer.incrementStatistic(Statistic.KILL_ENTITY, killed.getType(), 1);
   }
 
   /**
@@ -176,11 +187,10 @@ public class RpgListener implements Listener {
    * @param killer player
    */
   private void triggerRaidCaptainBadOmen(LivingEntity killed, Player killer) {
-    if (killed.getCategory() != EntityCategory.ILLAGER) {
+    if (!(killed instanceof Raider raider)) {
       return;
     }
-    ItemStack head = killed.getEquipment().getHelmet();
-    if (head == null || head.getType() != Material.WHITE_BANNER) {
+    if (!raider.isPatrolLeader()) {
       return;
     }
 

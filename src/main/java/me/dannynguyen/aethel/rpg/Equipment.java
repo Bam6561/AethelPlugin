@@ -38,7 +38,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.26.5
+ * @version 1.26.6
  * @since 1.13.4
  */
 public class Equipment {
@@ -55,17 +55,17 @@ public class Equipment {
   /**
    * {@link AethelAttributes}
    */
-  private final AethelAttributes attributes;
+  private AethelAttributes attributes;
 
   /**
    * {@link Enchantments}
    */
-  private final Enchantments enchantments;
+  private Enchantments enchantments;
 
   /**
    * {@link Abilities}
    */
-  private final Abilities abilities;
+  private Abilities abilities;
 
   /**
    * Jewelry slots.
@@ -93,9 +93,6 @@ public class Equipment {
   public Equipment(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.entityTags = player.getPersistentDataContainer();
-    this.attributes = new AethelAttributes();
-    this.enchantments = new Enchantments();
-    this.abilities = new Abilities();
     this.heldMaterial = player.getInventory().getItemInMainHand().getType();
     loadJewelrySlots();
     loadEquipment(player);
@@ -134,6 +131,10 @@ public class Equipment {
     for (NamespacedKey key : entityTags.getKeys()) {
       entityTags.remove(key);
     }
+
+    this.attributes = new AethelAttributes();
+    this.enchantments = new Enchantments();
+    this.abilities = new Abilities();
 
     PlayerInventory pInv = player.getInventory();
     loadSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);

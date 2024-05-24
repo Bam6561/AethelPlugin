@@ -91,7 +91,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.10
+   * @version 1.26.6
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -270,7 +270,7 @@ public class DamageListener implements Listener {
      */
     private boolean mitigateSpecificCauseDamage() {
       switch (e.getCause()) {
-        case ENTITY_EXPLOSION -> {
+        case BLOCK_EXPLOSION, ENTITY_EXPLOSION -> {
           if (ifBlocked()) {
             return true;
           }

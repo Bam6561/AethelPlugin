@@ -16,6 +16,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -34,7 +35,7 @@ import java.util.UUID;
  * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.24.11
+ * @version 1.26.6
  * @since 1.22.20
  */
 public class HealthChange {
@@ -124,6 +125,12 @@ public class HealthChange {
           defender.addPotionEffects(totemOfUndyingEffects);
           setCurrentHealth(1);
           updateDisplays();
+          return;
+        }
+
+        if (defender instanceof Villager villager) {
+          defender.setHealth(20);
+          villager.zombify();
           return;
         }
 
