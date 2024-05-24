@@ -23,7 +23,7 @@ import java.util.*;
  * in order to load {@link Recipe recipes} from its associated directory.
  *
  * @author Danny Nguyen
- * @version 1.26.0
+ * @version 1.26.5
  * @since 1.1.11
  */
 public class RecipeRegistry implements DataRegistry {
@@ -124,7 +124,7 @@ public class RecipeRegistry implements DataRegistry {
       if (file.isFile()) {
         if (file.getName().endsWith("_rcp.txt")) {
           readFile(file, categories);
-        } else if (file.getName().equals("_icon.txt")) {
+        } else if (file.getName().endsWith("_icon.txt")) {
           readIcon(file);
         }
       } else {

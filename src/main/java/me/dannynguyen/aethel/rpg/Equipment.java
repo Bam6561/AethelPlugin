@@ -38,7 +38,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.25.13
+ * @version 1.26.5
  * @since 1.13.4
  */
 public class Equipment {
@@ -126,9 +126,10 @@ public class Equipment {
    *
    * @param player interacting player
    */
-  private void loadEquipment(Player player) {
+  public void loadEquipment(@NotNull Player player) {
     // TODO: REMOVE THIS IN FUTURE BUILDS
     // Fixes incorrect tags set by previous versions
+    Objects.requireNonNull(player, "Null player");
     PersistentDataContainer entityTags = player.getPersistentDataContainer();
     for (NamespacedKey key : entityTags.getKeys()) {
       entityTags.remove(key);
