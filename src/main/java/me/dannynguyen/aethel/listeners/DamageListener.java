@@ -38,7 +38,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.23.17
+ * @version 1.26.7
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -171,7 +171,6 @@ public class DamageListener implements Listener {
       if (attacker instanceof LivingEntity) {
         ifCriticallyHit();
         if (defenderStatuses != null) {
-          ifBrittle();
           ifVulnerable();
         }
       }
@@ -233,23 +232,6 @@ public class DamageListener implements Listener {
         }
 
         e.setDamage(e.getDamage() * (1.25 + (criticalDamageBase + criticalDamageBuff) / 100));
-      }
-    }
-
-    /**
-     * If the target has {@link StatusType#BRITTLE}, reduce the target's effective armor.
-     */
-    private void ifBrittle() {
-      if (defenderStatuses.containsKey(StatusType.BRITTLE)) {
-        double armorBase = defenderEntityTags.getOrDefault(Key.ATTRIBUTE_ARMOR.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
-        double armorBuff = 0.0;
-        if (defenderBuffs != null) {
-          armorBuff = defenderBuffs.getAethelAttribute(AethelAttribute.ARMOR);
-        }
-        int armor = (int) defender.getAttribute(Attribute.GENERIC_ARMOR).getValue() + (int) armorBase + (int) armorBuff;
-        armor = Math.max(0, armor - defenderStatuses.get(StatusType.BRITTLE).getStackAmount());
-        double damage = e.getDamage();
-        e.setDamage(damage - (damage * Math.min(armor * 0.2, .4)));
       }
     }
 

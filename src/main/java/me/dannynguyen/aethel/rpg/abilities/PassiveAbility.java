@@ -30,7 +30,7 @@ import java.util.*;
  * Represents an item's {@link PassiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.26.7
  * @since 1.16.2
  */
 public class PassiveAbility {
@@ -154,7 +154,11 @@ public class PassiveAbility {
   public void doEffect(@NotNull UUID casterUUID, @NotNull UUID targetUUID) {
     Objects.requireNonNull(casterUUID, "Null caster UUID");
     Objects.requireNonNull(targetUUID, "Null target UUID");
-    PersistentDataContainer entityTags = Bukkit.getPlayer(casterUUID).getPersistentDataContainer();
+    Player caster = Bukkit.getPlayer(casterUUID);
+    if (caster == null) {
+      return;
+    }
+    PersistentDataContainer entityTags = caster.getPersistentDataContainer();
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(casterUUID);
 
     double itemCooldownBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);

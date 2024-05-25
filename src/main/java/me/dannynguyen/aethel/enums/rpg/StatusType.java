@@ -31,7 +31,7 @@ public enum StatusType {
    * <p>
    * Highest instance.
    */
-  BRITTLE("brittle", false),
+  BRITTLE("Brittle", false),
 
   /**
    * Can be consumed by

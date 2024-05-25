@@ -33,7 +33,7 @@ import java.util.*;
  * Represents an item's {@link ActiveAbilityType}.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.26.7
  * @since 1.17.4
  */
 public class ActiveAbility {
@@ -149,7 +149,7 @@ public class ActiveAbility {
    */
   public void doEffect(@NotNull Player caster) {
     UUID uuid = Objects.requireNonNull(caster, "Null caster").getUniqueId();
-    PersistentDataContainer entityTags = Bukkit.getPlayer(uuid).getPersistentDataContainer();
+    PersistentDataContainer entityTags = caster.getPersistentDataContainer();
     Buffs buffs = Plugin.getData().getRpgSystem().getBuffs().get(uuid);
 
     double itemCooldownBase = entityTags.getOrDefault(Key.ATTRIBUTE_ITEM_COOLDOWN.getNamespacedKey(), PersistentDataType.DOUBLE, 0.0);
@@ -422,7 +422,7 @@ public class ActiveAbility {
       }
 
       for (LivingEntity livingEntity : targets) {
-        final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
+        final double finalDamage = new DamageMitigation(livingEntity).mitigateArmorProtectionResistance(damage);
         if (livingEntity instanceof Player player) {
           if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
             new HealthChange(livingEntity).damage(finalDamage);
