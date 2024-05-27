@@ -14,6 +14,7 @@ import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,6 +24,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -180,6 +184,10 @@ public class CharacterMenuClick implements MenuClick {
         e.getInventory().setItem(11, user.getInventory().getItem(e.getSlot()));
         Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
           ItemStack item = user.getInventory().getItem(user.getInventory().getHeldItemSlot());
+          StringBuilder logEntry = new StringBuilder();
+          String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+          logEntry.append(time).append(" ").append(user.getName()).append("CM/IPIC");
+          Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
           Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment().readSlot(item, RpgEquipmentSlot.HAND);
           Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new SheetMenu(user, e.getInventory())::addAttributes, 3);
         }, 1);
@@ -435,6 +443,10 @@ public class CharacterMenuClick implements MenuClick {
       Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
         Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment();
         ItemStack wornItem = user.getInventory().getItem(iSlot);
+        StringBuilder logEntry = new StringBuilder();
+        String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+        logEntry.append(time).append(" ").append(user.getName()).append("CM/UAHA");
+        Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
         switch (iSlot) {
           case 39 -> equipment.readSlot(wornItem, RpgEquipmentSlot.HEAD);
           case 38 -> equipment.readSlot(wornItem, RpgEquipmentSlot.CHEST);
@@ -456,6 +468,10 @@ public class CharacterMenuClick implements MenuClick {
         Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getEquipment();
         Inventory menu = e.getClickedInventory();
         ItemStack wornItem = menu.getItem(slot);
+        StringBuilder logEntry = new StringBuilder();
+        String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+        logEntry.append(time).append(" ").append(user.getName()).append("CM/UJA");
+        Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
         switch (slot) {
           case 20 -> {
             equipment.getJewelry()[0] = wornItem;

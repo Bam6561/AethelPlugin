@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of {@link PluginSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.26.4
+ * @version 1.26.8
  * @since 1.10.1
  */
 public class PluginListener implements Listener {
@@ -84,6 +84,10 @@ public class PluginListener implements Listener {
   @EventHandler
   private void onBlockPlace(BlockPlaceEvent e) {
     ItemStack item = e.getItemInHand();
+    ItemMeta meta = item.getItemMeta();
+    if (meta == null) {
+      return;
+    }
     if (item.getItemMeta().getPersistentDataContainer().has(Key.NON_PLACEABLE.getNamespacedKey(), PersistentDataType.BOOLEAN)) {
       e.setCancelled(true);
     }

@@ -1,12 +1,12 @@
 package me.dannynguyen.aethel.listeners;
 
 import me.dannynguyen.aethel.Plugin;
-import me.dannynguyen.aethel.enums.plugin.Key;
 import me.dannynguyen.aethel.enums.rpg.RpgEquipmentSlot;
 import me.dannynguyen.aethel.rpg.Equipment;
 import me.dannynguyen.aethel.utils.item.DurabilityChange;
 import me.dannynguyen.aethel.utils.item.ItemReader;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,11 +20,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
@@ -106,6 +105,10 @@ public class EquipmentListener implements Listener {
     Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
     ItemStack heldItem = player.getInventory().getItem(e.getNewSlot());
     equipment.setHeldMaterial(heldItem);
+    StringBuilder logEntry = new StringBuilder();
+    String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+    logEntry.append(time).append(" ").append(e.getPlayer().getName()).append("EL/IH");
+    Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
     equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
   }
 
@@ -127,6 +130,10 @@ public class EquipmentListener implements Listener {
     if (material == equipment.getHeldMaterial()) {
       ItemStack heldItem = player.getInventory().getItemInMainHand();
       equipment.setHeldMaterial(heldItem);
+      StringBuilder logEntry = new StringBuilder();
+      String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+      logEntry.append(time).append(" ").append(e.getPlayer().getName()).append("EL/ID");
+      Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
       equipment.readSlot(heldItem, RpgEquipmentSlot.HAND);
     }
   }
@@ -139,6 +146,10 @@ public class EquipmentListener implements Listener {
   @EventHandler
   private void onSwapHandItems(PlayerSwapHandItemsEvent e) {
     Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(e.getPlayer().getUniqueId()).getEquipment();
+    StringBuilder logEntry = new StringBuilder();
+    String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+    logEntry.append(time).append(" ").append(e.getPlayer().getName()).append("EL/SHI");
+    Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
     equipment.readSlot(e.getMainHandItem(), RpgEquipmentSlot.HAND);
     equipment.readSlot(e.getOffHandItem(), RpgEquipmentSlot.OFF_HAND);
   }
@@ -296,6 +307,10 @@ public class EquipmentListener implements Listener {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
       ItemStack wornItem = player.getInventory().getItem(slot);
+      StringBuilder logEntry = new StringBuilder();
+      String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+      logEntry.append(time).append(" ").append(player.getName()).append("EL/RES");
+      Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
       equipment.readSlot(wornItem, eSlot);
     }, 1);
   }
@@ -312,6 +327,10 @@ public class EquipmentListener implements Listener {
     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
       Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
       PlayerInventory pInv = player.getInventory();
+      StringBuilder logEntry = new StringBuilder();
+      String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+      logEntry.append(time).append(" ").append(player.getName()).append("EL/RHS");
+      Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
       equipment.readSlot(pInv.getItemInMainHand(), RpgEquipmentSlot.HAND);
     }, 1);
   }

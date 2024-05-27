@@ -19,6 +19,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -118,6 +121,10 @@ public class DurabilityChange {
       equipment.setItem(eSlot, new ItemStack(Material.AIR));
       defender.getWorld().playSound(defender.getEyeLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1, 1);
       if (defender instanceof Player) {
+        StringBuilder logEntry = new StringBuilder();
+        String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
+        logEntry.append(time).append(" ").append(defender.getName()).append("DC/IC");
+        Plugin.getData().getPluginLogger().addEntry(logEntry.toString());
         Plugin.getData().getRpgSystem().getRpgPlayers().get(defender.getUniqueId()).getEquipment().readSlot(null, RpgEquipmentSlot.valueOf(TextFormatter.formatEnum(eSlot.name())));
       }
       return;

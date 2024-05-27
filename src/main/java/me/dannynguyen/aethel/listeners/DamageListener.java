@@ -91,7 +91,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.26.6
+   * @version 1.26.8
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -168,6 +168,10 @@ public class DamageListener implements Listener {
      * Calculates damage dealt by entity.
      */
     private void calculateDamage() {
+      if (attacker.getType() == EntityType.FROG && defender.getType() == EntityType.MAGMA_CUBE) {
+        return;
+      }
+
       if (attacker instanceof LivingEntity) {
         ifCriticallyHit();
         if (defenderStatuses != null) {
