@@ -40,7 +40,7 @@ import java.util.UUID;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.26.9
+ * @version 1.26.10
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
@@ -91,6 +91,10 @@ public class CharacterMenuClick implements MenuClick {
    * Checks if the user is interacting with an item/button or attempting to wear {@link Equipment}.
    */
   public void interpretMenuClick() {
+    if (e.getAction() == InventoryAction.HOTBAR_SWAP) {
+      return;
+    }
+
     if (ItemReader.isNotNullOrAir(e.getCurrentItem())) {
       switch (slot) {
         case 4, 9, 15, 24, 33, 42 -> { // Player Head & Attributes
@@ -245,7 +249,7 @@ public class CharacterMenuClick implements MenuClick {
    * Represents an equipment change operation.
    *
    * @author Danny Nguyen
-   * @version 1.26.9
+   * @version 1.26.10
    * @since 1.23.10
    */
   private class EquipmentChange {
@@ -315,7 +319,7 @@ public class CharacterMenuClick implements MenuClick {
      */
     private void interpretEquipItem() {
       e.setCancelled(false);
-      if (ItemReader.isNotNullOrAir(e.getCursor()) || e.getAction() == InventoryAction.HOTBAR_SWAP) {
+      if (ItemReader.isNotNullOrAir(e.getCursor())) {
         switch (slot) {
           case 11 -> equipMainHand();
           case 10, 12, 19, 28, 37 -> equipOffHandArmor();

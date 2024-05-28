@@ -37,7 +37,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.26.9
+ * @version 1.26.10
  * @since 1.13.4
  */
 public class Equipment {
@@ -125,6 +125,17 @@ public class Equipment {
   public void loadEquipment(@NotNull Player player) {
     Objects.requireNonNull(player, "Null player");
 
+    // TODO: Temporary fix for old stuck data
+    List<NamespacedKey> tagsToRemove = new ArrayList<>();
+    for (NamespacedKey entityTag : player.getPersistentDataContainer().getKeys()) {
+      if (entityTag.getKey().startsWith("aethel.attribute.") || entityTag.getKey().startsWith("aethel.enchantment.")) {
+        tagsToRemove.add(entityTag);
+      }
+    }
+    for (NamespacedKey entityTag : tagsToRemove) {
+      player.getPersistentDataContainer().remove(entityTag);
+    }
+
     PlayerInventory pInv = player.getInventory();
     loadSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);
     loadSlot(pInv.getChestplate(), RpgEquipmentSlot.CHEST);
@@ -153,11 +164,11 @@ public class Equipment {
     PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
     if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       attributes.getSlotAttributes().put(eSlot, new HashMap<>());
-      attributes.readAttributes(eSlot, itemTags, true);
+      attributes.readAttributes(eSlot, itemTags, false);
     }
     if (item.getItemMeta().hasEnchants()) {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
-      enchantments.addEnchantments(eSlot, item, true);
+      enchantments.addEnchantments(eSlot, item, false);
     }
     if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
