@@ -33,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.26.5
+ * @version 1.26.9
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -127,7 +127,6 @@ public class SheetMenu implements Menu {
    */
   private void addActions() {
     if (user.equals(owner)) {
-      menu.setItem(16, ItemCreator.createItem(Material.REDSTONE_TORCH, ChatColor.AQUA + "Reload Equipment"));
       menu.setItem(25, ItemCreator.createItem(Material.WRITABLE_BOOK, ChatColor.AQUA + "Quests"));
       menu.setItem(34, ItemCreator.createItem(Material.ENDER_CHEST, ChatColor.AQUA + "Collectibles"));
       menu.setItem(43, ItemCreator.createItem(Material.COMMAND_BLOCK, ChatColor.AQUA + "Settings"));

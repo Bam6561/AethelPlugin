@@ -193,7 +193,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.26.7
+   * @version 1.26.9
    * @since 1.23.13
    */
   private class Effect {
@@ -560,7 +560,7 @@ public class ActiveAbility {
 
           Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
           double damage = 0.5 * statuses.get(StatusType.CHILL).getStackAmount();
-          final double finalDamage = new DamageMitigation(livingEntity).mitigateArmorProtectionResistance(damage);
+          final double finalDamage = new DamageMitigation(livingEntity).mitigateProtectionResistance(damage);
 
           if (livingEntity instanceof Player player) {
             if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {

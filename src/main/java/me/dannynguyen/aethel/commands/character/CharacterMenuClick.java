@@ -14,9 +14,9 @@ import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -40,7 +40,7 @@ import java.util.UUID;
  * Called through {@link MenuListener}.
  *
  * @author Danny Nguyen
- * @version 1.26.5
+ * @version 1.26.9
  * @since 1.9.2
  */
 public class CharacterMenuClick implements MenuClick {
@@ -95,7 +95,6 @@ public class CharacterMenuClick implements MenuClick {
       switch (slot) {
         case 4, 9, 15, 24, 33, 42 -> { // Player Head & Attributes
         }
-        case 16 -> new MenuChange().reloadEquipment();
         case 25 -> new MenuChange().openQuests();
         case 34 -> new MenuChange().openCollectibles();
         case 43 -> new MenuChange().openSettings();
@@ -199,7 +198,7 @@ public class CharacterMenuClick implements MenuClick {
    * Represents a menu change operation.
    *
    * @author Danny Nguyen
-   * @version 1.26.5
+   * @version 1.26.9
    * @since 1.23.10
    */
   private class MenuChange {
@@ -207,18 +206,6 @@ public class CharacterMenuClick implements MenuClick {
      * No parameter constructor.
      */
     MenuChange() {
-    }
-
-    /**
-     * Reloads the player's equipment data.
-     */
-    private void reloadEquipment() {
-      Plugin.getData().getRpgSystem().getRpgPlayers().get(user.getUniqueId()).getEquipment().loadEquipment(user);
-      MenuInput menuInput = Plugin.getData().getPluginSystem().getPluginPlayers().get(uuid).getMenuInput();
-      menuInput.setTarget(uuid);
-      user.openInventory(new SheetMenu(user, user).getMainMenu());
-      menuInput.setMenu(MenuListener.Menu.CHARACTER_SHEET);
-      user.sendMessage(ChatColor.GREEN + "[Reloaded Equipment]");
     }
 
     /**
@@ -258,7 +245,7 @@ public class CharacterMenuClick implements MenuClick {
    * Represents an equipment change operation.
    *
    * @author Danny Nguyen
-   * @version 1.24.12
+   * @version 1.26.9
    * @since 1.23.10
    */
   private class EquipmentChange {
@@ -328,7 +315,7 @@ public class CharacterMenuClick implements MenuClick {
      */
     private void interpretEquipItem() {
       e.setCancelled(false);
-      if (ItemReader.isNotNullOrAir(e.getCursor())) {
+      if (ItemReader.isNotNullOrAir(e.getCursor()) || e.getAction() == InventoryAction.HOTBAR_SWAP) {
         switch (slot) {
           case 11 -> equipMainHand();
           case 10, 12, 19, 28, 37 -> equipOffHandArmor();

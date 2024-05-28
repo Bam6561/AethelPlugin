@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
  * Collection of {@link Equipment} held, equipped, and unequipped listeners.
  *
  * @author Danny Nguyen
- * @version 1.26.4
+ * @version 1.26.9
  * @since 1.9.0
  */
 public class EquipmentListener implements Listener {
@@ -104,7 +104,13 @@ public class EquipmentListener implements Listener {
     Player player = e.getPlayer();
     Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
     ItemStack heldItem = player.getInventory().getItem(e.getNewSlot());
-    equipment.setHeldMaterial(heldItem);
+    if (ItemReader.isNullOrAir(heldItem)) {
+      heldItem = new ItemStack(Material.AIR);
+    }
+    if (heldItem.equals(equipment.getHeldItem())) {
+      return;
+    }
+    equipment.setHeldItem(heldItem);
     StringBuilder logEntry = new StringBuilder();
     String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
     logEntry.append(time).append(" ").append(e.getPlayer().getName()).append("EL/IH");
@@ -125,11 +131,11 @@ public class EquipmentListener implements Listener {
     }
 
     Equipment equipment = Plugin.getData().getRpgSystem().getRpgPlayers().get(player.getUniqueId()).getEquipment();
-    Material material = e.getItemDrop().getItemStack().getType();
+    ItemStack droppedItem = e.getItemDrop().getItemStack();
 
-    if (material == equipment.getHeldMaterial()) {
+    if (droppedItem.equals(equipment.getHeldItem())) {
       ItemStack heldItem = player.getInventory().getItemInMainHand();
-      equipment.setHeldMaterial(heldItem);
+      equipment.setHeldItem(heldItem);
       StringBuilder logEntry = new StringBuilder();
       String time = ZonedDateTime.now(ZoneId.of("America/New_York")).format(DateTimeFormatter.ofPattern("hh:mm"));
       logEntry.append(time).append(" ").append(e.getPlayer().getName()).append("EL/ID");

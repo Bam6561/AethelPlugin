@@ -18,7 +18,6 @@ import me.dannynguyen.aethel.utils.entity.HealthChange;
 import me.dannynguyen.aethel.utils.item.ItemCreator;
 import me.dannynguyen.aethel.utils.item.ItemReader;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -38,7 +37,7 @@ import java.util.*;
  * Represents an {@link RpgPlayer}'s equipment.
  *
  * @author Danny Nguyen
- * @version 1.26.6
+ * @version 1.26.9
  * @since 1.13.4
  */
 public class Equipment {
@@ -55,17 +54,17 @@ public class Equipment {
   /**
    * {@link AethelAttributes}
    */
-  private AethelAttributes attributes;
+  private final AethelAttributes attributes = new AethelAttributes();
 
   /**
    * {@link Enchantments}
    */
-  private Enchantments enchantments;
+  private final Enchantments enchantments = new Enchantments();
 
   /**
    * {@link Abilities}
    */
-  private Abilities abilities;
+  private final Abilities abilities = new Abilities();
 
   /**
    * Jewelry slots.
@@ -78,12 +77,12 @@ public class Equipment {
   private final ItemStack[] jewelry = new ItemStack[3];
 
   /**
-   * Held item material.
+   * Held itemstack.
    * <p>
    * Updated when items are held to determine
    * if to update equipment when items are dropped.
    */
-  private Material heldMaterial;
+  private ItemStack heldItem;
 
   /**
    * Associates RPG equipment with a player.
@@ -93,7 +92,7 @@ public class Equipment {
   public Equipment(@NotNull Player player) {
     this.uuid = Objects.requireNonNull(player, "Null player").getUniqueId();
     this.entityTags = player.getPersistentDataContainer();
-    this.heldMaterial = player.getInventory().getItemInMainHand().getType();
+    this.heldItem = player.getInventory().getItemInMainHand();
     loadJewelrySlots();
     loadEquipment(player);
   }
@@ -124,17 +123,7 @@ public class Equipment {
    * @param player interacting player
    */
   public void loadEquipment(@NotNull Player player) {
-    // TODO: REMOVE THIS IN FUTURE BUILDS
-    // Fixes incorrect tags set by previous versions
     Objects.requireNonNull(player, "Null player");
-    PersistentDataContainer entityTags = player.getPersistentDataContainer();
-    for (NamespacedKey key : entityTags.getKeys()) {
-      entityTags.remove(key);
-    }
-
-    this.attributes = new AethelAttributes();
-    this.enchantments = new Enchantments();
-    this.abilities = new Abilities();
 
     PlayerInventory pInv = player.getInventory();
     loadSlot(pInv.getHelmet(), RpgEquipmentSlot.HEAD);
@@ -161,16 +150,14 @@ public class Equipment {
       return;
     }
 
-    // TODO: SET BACK TO TRUE IN FUTURE BUILDS
-    // Fixes incorrect tags set in previous versions
     PersistentDataContainer itemTags = item.getItemMeta().getPersistentDataContainer();
     if (itemTags.has(Key.ATTRIBUTE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       attributes.getSlotAttributes().put(eSlot, new HashMap<>());
-      attributes.readAttributes(eSlot, itemTags, false);
+      attributes.readAttributes(eSlot, itemTags, true);
     }
     if (item.getItemMeta().hasEnchants()) {
       enchantments.getSlotEnchantments().put(eSlot, new HashMap<>());
-      enchantments.addEnchantments(eSlot, item, false);
+      enchantments.addEnchantments(eSlot, item, true);
     }
     if (itemTags.has(Key.PASSIVE_LIST.getNamespacedKey(), PersistentDataType.STRING)) {
       abilities.getSlotPassives().put(eSlot, new ArrayList<>());
@@ -329,22 +316,18 @@ public class Equipment {
    *
    * @return held item material
    */
-  @Nullable
-  public Material getHeldMaterial() {
-    return this.heldMaterial;
+  @NotNull
+  public ItemStack getHeldItem() {
+    return this.heldItem;
   }
 
   /**
-   * Sets the held item material.
+   * Sets the held item.
    *
    * @param item held item
    */
-  public void setHeldMaterial(@Nullable ItemStack item) {
-    if (item == null) {
-      this.heldMaterial = Material.AIR;
-    } else {
-      this.heldMaterial = item.getType();
-    }
+  public void setHeldItem(@NotNull ItemStack item) {
+    this.heldItem = Objects.requireNonNull(item, "Null item");
   }
 
   /**
