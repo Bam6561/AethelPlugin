@@ -17,6 +17,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -35,7 +36,7 @@ import java.util.UUID;
  * Represents an entity health change operation.
  *
  * @author Danny Nguyen
- * @version 1.26.6
+ * @version 1.26.11
  * @since 1.22.20
  */
 public class HealthChange {
@@ -135,6 +136,62 @@ public class HealthChange {
         }
 
         defender.setHealth(0.0);
+        if (defender instanceof Player) {
+          BossBar healthBar = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getDisplays().getBar();
+          if (healthBar.isVisible()) {
+            DecimalFormat df2 = new DecimalFormat();
+            df2.setMaximumFractionDigits(2);
+            healthBar.setProgress(0.0);
+            healthBar.setTitle(currentHealth + " / " + df2.format(maxHealth) + " HP");
+          }
+        }
+      }, 1);
+    }
+  }
+
+  /**
+   * Damages the entity by an amount regarding an entity damage by entity event.
+   *
+   * @param e      entity damage by entity event
+   * @param damage damage amount
+   */
+  public void damage(EntityDamageByEntityEvent e, double damage) {
+    defender.damage(0.1);
+    double remainingHealth = currentHealth - damage;
+
+    if (remainingHealth > 0) {
+      setCurrentHealth(remainingHealth);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), this::updateDisplays, 1);
+    } else {
+      e.setDamage(defender.getHealth() + 10);
+      Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> {
+        EntityEquipment equipment = defender.getEquipment();
+        if (equipment.getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING) {
+          defender.playEffect(EntityEffect.TOTEM_RESURRECT);
+          equipment.setItemInMainHand(new ItemStack(Material.AIR), true);
+          defender.addPotionEffects(totemOfUndyingEffects);
+          e.setDamage(0.01);
+          setCurrentHealth(1);
+          updateDisplays();
+          return;
+        }
+        if (equipment.getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING) {
+          defender.playEffect(EntityEffect.TOTEM_RESURRECT);
+          equipment.setItemInOffHand(new ItemStack(Material.AIR), true);
+          defender.addPotionEffects(totemOfUndyingEffects);
+          e.setDamage(0.01);
+          setCurrentHealth(1);
+          updateDisplays();
+          return;
+        }
+
+        if (defender instanceof Villager villager) {
+          e.setDamage(0.01);
+          defender.setHealth(20);
+          villager.zombify();
+          return;
+        }
+
         if (defender instanceof Player) {
           BossBar healthBar = Plugin.getData().getRpgSystem().getRpgPlayers().get(uuid).getDisplays().getBar();
           if (healthBar.isVisible()) {

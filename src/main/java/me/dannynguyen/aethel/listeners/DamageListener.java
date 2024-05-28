@@ -91,7 +91,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.26.8
+   * @version 1.26.11
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -103,7 +103,7 @@ public class DamageListener implements Listener {
     /**
      * Entity damage by entity event.
      */
-    private final EntityDamageEvent e;
+    private final EntityDamageByEntityEvent e;
 
     /**
      * Attacking entity.
@@ -201,13 +201,12 @@ public class DamageListener implements Listener {
 
       e.setDamage(mitigation.mitigateArmorProtectionResistance(e.getDamage()));
       final double finalDamage = e.getDamage();
-      e.setDamage(0.01);
 
       if (defender instanceof Player defenderPlayer) {
         triggerDamageTakenPassives(defenderPlayer);
       }
 
-      new HealthChange(defender).damage(finalDamage);
+      new HealthChange(defender).damage(e, finalDamage);
 
       if (defender.getHealth() != 0.0 && attacker instanceof Player attackerPlayer) {
         triggerDamageDealtPassives(attackerPlayer);
