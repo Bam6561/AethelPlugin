@@ -584,7 +584,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * Represents an item's {@link AttributeMenu} metadata change operation.
    *
    * @author Danny Nguyen
-   * @version 1.23.11
+   * @version 1.27.1
    * @since 1.23.11
    */
   private class AttributeChange {
@@ -631,7 +631,10 @@ public class ItemEditorMenuClick implements MenuClick {
         case GENERIC_MAX_HEALTH -> {
           return context + "20.0";
         }
-        case GENERIC_ATTACK_DAMAGE -> {
+        case PLAYER_BLOCK_INTERACTION_RANGE, PLAYER_ENTITY_INTERACTION_RANGE -> {
+          return context + "5.0";
+        }
+        case GENERIC_ATTACK_DAMAGE, GENERIC_SCALE -> {
           return context + "1.0";
         }
         case GENERIC_ATTACK_SPEED -> {
@@ -651,6 +654,9 @@ public class ItemEditorMenuClick implements MenuClick {
         }
         case GENERIC_LUCK -> {
           return context + "0.0";
+        }
+        case GENERIC_JUMP_STRENGTH -> {
+          return context + "0.42";
         }
         default -> {
           return null;

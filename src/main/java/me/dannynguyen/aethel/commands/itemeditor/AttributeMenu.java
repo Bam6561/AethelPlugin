@@ -28,7 +28,7 @@ import java.util.Objects;
  * Represents a menu that edits an item's Minecraft attributes.
  *
  * @author Danny Nguyen
- * @version 1.24.9
+ * @version 1.27.1
  * @since 1.7.0
  */
 public class AttributeMenu implements Menu {
@@ -36,9 +36,9 @@ public class AttributeMenu implements Menu {
    * Categorized Minecraft attributes.
    */
   private static final Map<Category, Attribute[]> attributeCategories = Map.of(
-      Category.OFFENSE, new Attribute[]{Attribute.GENERIC_ATTACK_DAMAGE, Attribute.GENERIC_ATTACK_SPEED},
+      Category.OFFENSE, new Attribute[]{Attribute.PLAYER_BLOCK_INTERACTION_RANGE, Attribute.PLAYER_ENTITY_INTERACTION_RANGE, Attribute.GENERIC_ATTACK_DAMAGE, Attribute.GENERIC_ATTACK_SPEED},
       Category.DEFENSE, new Attribute[]{Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ARMOR_TOUGHNESS, Attribute.GENERIC_ARMOR, Attribute.GENERIC_KNOCKBACK_RESISTANCE},
-      Category.MISCELLANEOUS, new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK});
+      Category.MISCELLANEOUS, new Attribute[]{Attribute.GENERIC_MOVEMENT_SPEED, Attribute.GENERIC_LUCK, Attribute.GENERIC_JUMP_STRENGTH, Attribute.GENERIC_SCALE});
 
   /**
    * GUI.

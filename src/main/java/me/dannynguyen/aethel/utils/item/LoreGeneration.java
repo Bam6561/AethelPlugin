@@ -31,7 +31,7 @@ import java.util.*;
  * and {@link Key#ACTIVE_EDIBLE_LIST edible active ability} lore generation.
  *
  * @author Danny Nguyen
- * @version 1.25.6
+ * @version 1.27.1
  * @since 1.17.13
  */
 public class LoreGeneration {
@@ -263,9 +263,13 @@ public class LoreGeneration {
             line.append("+");
           }
           switch (attribute) {
-            case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> line.append(df3.format(attributeValue)).append("% ").append(TextFormatter.capitalizePhrase(attribute));
-            case "knockback_resistance" -> line.append(df3.format(attributeValue * 10)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
-            default -> line.append(df3.format(attributeValue)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
+            case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown",
+                 "tenacity" ->
+                line.append(df3.format(attributeValue)).append("% ").append(TextFormatter.capitalizePhrase(attribute));
+            case "knockback_resistance" ->
+                line.append(df3.format(attributeValue * 10)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
+            default ->
+                line.append(df3.format(attributeValue)).append(" ").append(TextFormatter.capitalizePhrase(attribute));
           }
           header.add(line.toString());
         }
@@ -307,7 +311,7 @@ public class LoreGeneration {
           switch (effect) {
             case BUFF -> {
               String attributeName = abilityData[2];
-              if (attributeName.startsWith("generic_")) {
+              if (attributeName.startsWith("generic_") || attributeName.startsWith("player_")) {
                 attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
               }
               abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
@@ -319,13 +323,16 @@ public class LoreGeneration {
                 default -> abilityLore.append(abilityData[4]);
               }
               switch (attributeName) {
-                case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+                case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage",
+                     "item_cooldown", "tenacity" -> abilityLore.append("%) ");
                 default -> abilityLore.append(") ");
               }
               abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[4])).append("s) [").append(abilityData[1].equals("true") ? "Self]" : "Target]");
             }
-            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[3])).append("s)");
-            case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(abilityData[3]).append("m)");
+            case STACK_INSTANCE ->
+                abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[3])).append("s)");
+            case CHAIN_DAMAGE ->
+                abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[2]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[1].equals("true") ? "Self] (" : "Target] (").append(abilityData[3]).append("m)");
             case POTION_EFFECT -> {
               int amplifier = Integer.parseInt(abilityData[3]) + 1;
               abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[2]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[4])).append("s) [").append(abilityData[1].equals("true") ? "Self]" : "Target]");
@@ -346,7 +353,7 @@ public class LoreGeneration {
           switch (effect) {
             case BUFF -> {
               String attributeName = abilityData[3];
-              if (attributeName.startsWith("generic_")) {
+              if (attributeName.startsWith("generic_") || attributeName.startsWith("player_")) {
                 attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
               }
               abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
@@ -358,13 +365,16 @@ public class LoreGeneration {
                 default -> abilityLore.append(abilityData[4]);
               }
               switch (attributeName) {
-                case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+                case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage",
+                     "item_cooldown", "tenacity" -> abilityLore.append("%) ");
                 default -> abilityLore.append(") ");
               }
               abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
             }
-            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
-            case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+            case STACK_INSTANCE ->
+                abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
+            case CHAIN_DAMAGE ->
+                abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
             case POTION_EFFECT -> {
               int amplifier = Integer.parseInt(abilityData[4]) + 1;
               abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[3]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
@@ -382,7 +392,7 @@ public class LoreGeneration {
           switch (effect) {
             case BUFF -> {
               String attributeName = abilityData[3];
-              if (attributeName.startsWith("generic_")) {
+              if (attributeName.startsWith("generic_") || attributeName.startsWith("player_")) {
                 attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
               }
               abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
@@ -394,13 +404,16 @@ public class LoreGeneration {
                 default -> abilityLore.append(abilityData[4]);
               }
               switch (attributeName) {
-                case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+                case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage",
+                     "item_cooldown", "tenacity" -> abilityLore.append("%) ");
                 default -> abilityLore.append(") ");
               }
               abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
             }
-            case STACK_INSTANCE -> abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
-            case CHAIN_DAMAGE -> abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
+            case STACK_INSTANCE ->
+                abilityLore.append(ChatColor.WHITE).append("Apply ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(ticksToSeconds(abilityData[4])).append("s)");
+            case CHAIN_DAMAGE ->
+                abilityLore.append(ChatColor.WHITE).append("Deal ").append(abilityData[3]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" [").append(abilityData[2].equals("true") ? "Self] (" : "Target] (").append(abilityData[4]).append("m)");
             case POTION_EFFECT -> {
               int amplifier = Integer.parseInt(abilityData[4]) + 1;
               abilityLore.append(ChatColor.WHITE).append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[3]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[5])).append("s) [").append(abilityData[2].equals("true") ? "Self]" : "Target]");
@@ -466,7 +479,7 @@ public class LoreGeneration {
       switch (abilityEffect) {
         case BUFF -> {
           String attributeName = abilityData[1];
-          if (attributeName.startsWith("generic_")) {
+          if (attributeName.startsWith("generic_") || attributeName.startsWith("player_")) {
             attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
           }
           abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
@@ -478,21 +491,27 @@ public class LoreGeneration {
             default -> abilityLore.append(abilityData[2]);
           }
           switch (attributeName) {
-            case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+            case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown",
+                 "tenacity" -> abilityLore.append("%) ");
             default -> abilityLore.append(") ");
           }
           abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
         }
         case CLEAR_STATUS -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName());
-        case DISPLACEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
-        case DISTANCE_DAMAGE -> abilityLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
-        case MOVEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+        case DISPLACEMENT ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
+        case DISTANCE_DAMAGE ->
+            abilityLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
+        case MOVEMENT ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
         case POTION_EFFECT -> {
           int amplifier = Integer.parseInt(abilityData[2]) + 1;
           abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
         }
-        case PROJECTION -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
-        case SHATTER, TELEPORT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
+        case PROJECTION ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+        case SHATTER, TELEPORT ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
       }
       if (activeAbilities.containsKey(slot)) {
         activeAbilities.get(slot).add(abilityLore.toString());
@@ -549,7 +568,7 @@ public class LoreGeneration {
       switch (abilityEffect) {
         case BUFF -> {
           String attributeName = abilityData[1];
-          if (attributeName.startsWith("generic_")) {
+          if (attributeName.startsWith("generic_") || attributeName.startsWith("player_")) {
             attributeName = attributeName.substring(attributeName.indexOf("_") + 1);
           }
           abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(attributeName)).append(" (");
@@ -561,21 +580,27 @@ public class LoreGeneration {
             default -> abilityLore.append(abilityData[2]);
           }
           switch (attributeName) {
-            case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown", "tenacity" -> abilityLore.append("%) ");
+            case "critical_chance", "counter_chance", "dodge_chance", "critical_damage", "item_damage", "item_cooldown",
+                 "tenacity" -> abilityLore.append("%) ");
             default -> abilityLore.append(") ");
           }
           abilityLore.append(ChatColor.AQUA).append("Buff ").append(ChatColor.WHITE).append("(").append(ticksToSeconds(abilityData[3])).append("s)");
         }
         case CLEAR_STATUS -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName());
-        case DISPLACEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
-        case DISTANCE_DAMAGE -> abilityLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
-        case MOVEMENT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
+        case DISPLACEMENT ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" ").append(abilityData[1]).append("% (").append(abilityData[2]).append("m)");
+        case DISTANCE_DAMAGE ->
+            abilityLore.append("Deal ").append(abilityData[1]).append(" ").append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" Damage").append(" (").append(abilityData[2]).append("m)");
+        case MOVEMENT ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("%)");
         case POTION_EFFECT -> {
           int amplifier = Integer.parseInt(abilityData[2]) + 1;
           abilityLore.append("Gain ").append(TextFormatter.capitalizePhrase(getPotionEffectTypeAsId(abilityData[1]))).append(" ").append(amplifier).append(ChatColor.AQUA).append(" Effect").append(ChatColor.WHITE).append(" (").append(ticksToSeconds(abilityData[3])).append("s)");
         }
-        case PROJECTION -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
-        case SHATTER, TELEPORT -> abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
+        case PROJECTION ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m) Return after (").append(ticksToSeconds(abilityData[2])).append("s)");
+        case SHATTER, TELEPORT ->
+            abilityLore.append(ChatColor.AQUA).append(abilityType.getProperName()).append(ChatColor.WHITE).append(" (").append(abilityData[1]).append("m)");
       }
       activeAbilities.add(abilityLore.toString());
     }
