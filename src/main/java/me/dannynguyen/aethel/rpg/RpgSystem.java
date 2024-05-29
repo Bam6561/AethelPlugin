@@ -10,7 +10,7 @@ import java.util.*;
  * Represents RPG metadata in memory.
  *
  * @author Danny Nguyen
- * @version 1.23.14
+ * @version 1.27.0
  * @since 1.8.10
  */
 public class RpgSystem {
@@ -41,7 +41,7 @@ public class RpgSystem {
    * Players with sufficient {@link Equipment.Enchantments} level requirements.
    */
   private final Map<Enchantment, Set<UUID>> sufficientEnchantments = Map.of(
-      Enchantment.PROTECTION_FALL, new HashSet<>(), Enchantment.PROTECTION_FIRE, new HashSet<>());
+      Enchantment.FEATHER_FALLING, new HashSet<>(), Enchantment.FIRE_PROTECTION, new HashSet<>());
 
   /**
    * Players under max health.

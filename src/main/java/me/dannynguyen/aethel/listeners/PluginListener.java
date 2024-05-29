@@ -33,7 +33,7 @@ import java.util.UUID;
  * Collection of {@link PluginSystem} listeners.
  *
  * @author Danny Nguyen
- * @version 1.26.8
+ * @version 1.27.0
  * @since 1.10.1
  */
 public class PluginListener implements Listener {
@@ -137,11 +137,11 @@ public class PluginListener implements Listener {
     }
     ItemStack result = inv.getItem(2);
     ItemMeta componentMeta = component.getItemMeta();
-    if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROTECTION_ENVIRONMENTAL)) {
-    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROTECTION_FIRE)) {
-    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROTECTION_EXPLOSIONS)) {
-    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROTECTION_FALL)) {
-    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROTECTION_PROJECTILE)) {
+    if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROTECTION)) {
+    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.FIRE_PROTECTION)) {
+    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.BLAST_PROTECTION)) {
+    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.FEATHER_FALLING)) {
+    } else if (applyEnvironmentalProtectionV(result, componentMeta, Enchantment.PROJECTILE_PROTECTION)) {
     }
   }
 

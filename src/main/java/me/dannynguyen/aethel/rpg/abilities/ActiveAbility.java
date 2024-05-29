@@ -193,7 +193,7 @@ public class ActiveAbility {
    * Represents an ability's effect.
    *
    * @author Danny Nguyen
-   * @version 1.26.9
+   * @version 1.27.0
    * @since 1.23.13
    */
   private class Effect {
@@ -378,7 +378,7 @@ public class ActiveAbility {
         }
         case EXPLODE -> {
           world.playSound(caster.getEyeLocation(), Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
-          world.spawnParticle(Particle.EXPLOSION_LARGE, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
+          world.spawnParticle(Particle.EXPLOSION, caster.getEyeLocation(), 3, 0.5, 0.5, 0.5);
 
           TargetValidation targetValidation = new TargetValidation();
           for (Entity entity : caster.getNearbyEntities(distance, distance, distance)) {
@@ -407,7 +407,7 @@ public class ActiveAbility {
         }
         case QUAKE -> {
           world.playSound(caster.getEyeLocation(), Sound.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 0.25f, 2);
-          world.spawnParticle(Particle.BLOCK_DUST, caster.getLocation(), 20, 1.5, 0.25, 1.5, Bukkit.createBlockData(Material.DIRT));
+          world.spawnParticle(Particle.BLOCK, caster.getLocation(), 20, 1.5, 0.25, 1.5, Bukkit.createBlockData(Material.DIRT));
 
           TargetValidation targetValidation = new TargetValidation();
           for (Entity entity : caster.getNearbyEntities(distance, 1, distance)) {
@@ -465,12 +465,12 @@ public class ActiveAbility {
         }
         case LEAP -> {
           world.playSound(caster.getLocation(), Sound.ENTITY_SLIME_JUMP, SoundCategory.PLAYERS, 1, 0);
-          world.spawnParticle(Particle.SLIME, caster.getLocation(), 15, 0.75, 0.25, 0.75);
+          world.spawnParticle(Particle.ITEM_SLIME, caster.getLocation(), 15, 0.75, 0.25, 0.75);
           vector = caster.getLocation().getDirection().multiply(modifier);
         }
         case SPRING -> {
           world.playSound(caster.getEyeLocation(), Sound.BLOCK_BEEHIVE_ENTER, SoundCategory.PLAYERS, 1, 2);
-          world.spawnParticle(Particle.SLIME, caster.getLocation(), 15, 0.5, 0.25, 0.25);
+          world.spawnParticle(Particle.ITEM_SLIME, caster.getLocation(), 15, 0.5, 0.25, 0.25);
           vector.setX(0);
           vector.setY(1);
           vector.setZ(0);
@@ -556,7 +556,7 @@ public class ActiveAbility {
 
         UUID livingEntityUUID = livingEntity.getUniqueId();
         if (entityStatuses.containsKey(livingEntityUUID) && entityStatuses.get(livingEntityUUID).containsKey(StatusType.CHILL)) {
-          world.spawnParticle(Particle.ITEM_CRACK, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
+          world.spawnParticle(Particle.ITEM, livingEntity.getLocation().add(0, 1, 0), 10, 0.25, 0.5, 0.25, new ItemStack(Material.LIGHT_BLUE_DYE));
 
           Map<StatusType, Status> statuses = entityStatuses.get(livingEntity.getUniqueId());
           double damage = 0.5 * statuses.get(StatusType.CHILL).getStackAmount();
@@ -678,7 +678,7 @@ public class ActiveAbility {
      * Represents an effect's target location or entity validation.
      *
      * @author Danny Nguyen
-     * @version 1.23.13
+     * @version 1.27.0
      * @since 1.23.13
      */
     private class TargetValidation {
@@ -794,7 +794,7 @@ public class ActiveAbility {
         if (distance <= 0 || location.getBlock().getType().isSolid()) {
           Location impactLocation = location.subtract(direction);
           world.playSound(impactLocation, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
-          world.spawnParticle(Particle.EXPLOSION_LARGE, impactLocation, 1);
+          world.spawnParticle(Particle.EXPLOSION, impactLocation, 1);
           return targets;
         }
         Collection<Entity> entities = world.getNearbyEntities(location, 0.5, 0.5, 0.5);
@@ -815,7 +815,7 @@ public class ActiveAbility {
         }
         if (!targets.isEmpty()) {
           world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 0.85f, 0.5f);
-          world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
+          world.spawnParticle(Particle.EXPLOSION, location, 1);
           return targets;
         }
         return getBulletTargets(caster, world, targets, location.add(direction).clone(), direction, distance - 1);

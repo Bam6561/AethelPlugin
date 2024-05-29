@@ -91,7 +91,7 @@ public class DamageListener implements Listener {
    * Represents an entity damaging another entity.
    *
    * @author Danny Nguyen
-   * @version 1.26.11
+   * @version 1.27.0
    * @since 1.23.13
    */
   private static class EntityDamage {
@@ -291,7 +291,7 @@ public class DamageListener implements Listener {
             switch (attacker.getType()) {
               case ARROW -> {
                 PotionType potionType = ((Arrow) attacker).getBasePotionType();
-                if (potionType == PotionType.UNCRAFTABLE) {
+                if (potionType == null) {
                   pInv.addItem(new ItemStack(Material.ARROW));
                 } else {
                   ItemStack item = new ItemStack(Material.TIPPED_ARROW);
@@ -388,7 +388,7 @@ public class DamageListener implements Listener {
 
       if (counterChanceBase + counterChanceBuff - feintSkillBase - feintSkillBuff > random.nextDouble() * 100) {
         World world = defender.getWorld();
-        world.spawnParticle(Particle.FIREWORKS_SPARK, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+        world.spawnParticle(Particle.FIREWORK, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
         world.playSound(defender.getEyeLocation(), Sound.ENTITY_ALLAY_HURT, SoundCategory.PLAYERS, 0.65f, 0.75f);
 
         int attackSpeed;
@@ -433,7 +433,7 @@ public class DamageListener implements Listener {
 
       if (dodgeChanceBase + dodgeChanceBuff - accuracySkillBase - accuracySkillBuff > random.nextDouble() * 100) {
         World world = defender.getWorld();
-        world.spawnParticle(Particle.EXPLOSION_NORMAL, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+        world.spawnParticle(Particle.EXPLOSION, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
         world.playSound(defender.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
         return true;
       }
@@ -567,7 +567,7 @@ public class DamageListener implements Listener {
    * Represents environmental damage taken by an entity.
    *
    * @author Danny Nguyen
-   * @version 1.25.10
+   * @version 1.27.0
    * @since 1.23.13
    */
   private class EnvironmentDamage {
@@ -709,7 +709,7 @@ public class DamageListener implements Listener {
 
       if (dodgeChanceBase + dodgeChanceBuff > random.nextDouble() * 100) {
         World world = defender.getWorld();
-        world.spawnParticle(Particle.EXPLOSION_NORMAL, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
+        world.spawnParticle(Particle.EXPLOSION, defender.getLocation().add(0, 1, 0), 3, 0.5, 0.5, 0.5, 0.05);
         world.playSound(defender.getEyeLocation(), Sound.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 0.65f, 0);
         return true;
       }

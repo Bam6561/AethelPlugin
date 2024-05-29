@@ -31,7 +31,7 @@ import java.util.Set;
  * From this menu, the user can also navigate to gameplay metadata menus.
  *
  * @author Danny Nguyen
- * @version 1.25.6
+ * @version 1.27.0
  * @since 1.6.7
  */
 public class CosmeticMenu implements Menu {
@@ -226,7 +226,7 @@ public class CosmeticMenu implements Menu {
     menu.setItem(15, ItemCreator.createItem(Material.DIAMOND_HELMET, ChatColor.AQUA + "Aethel Attributes", ItemFlag.HIDE_ATTRIBUTES));
     menu.setItem(16, ItemCreator.createItem(Material.ENCHANTED_BOOK, ChatColor.AQUA + "Enchantments"));
     if (meta instanceof PotionMeta) {
-      menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_POTION_EFFECTS));
+      menu.setItem(17, ItemCreator.createItem(Material.POTION, ChatColor.AQUA + "Potion Effects", ItemFlag.HIDE_ADDITIONAL_TOOLTIP));
     }
     menu.setItem(23, ItemCreator.createItem(Material.REDSTONE, ChatColor.AQUA + "Passive Abilities"));
     menu.setItem(24, ItemCreator.createItem(Material.GLOWSTONE_DUST, ChatColor.AQUA + "Active Abilities"));
@@ -405,7 +405,7 @@ public class CosmeticMenu implements Menu {
    */
   protected static void addHidePotionEffects(@NotNull Inventory menu, @NotNull ItemMeta meta) {
     Objects.requireNonNull(meta, "Null meta");
-    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS);
+    boolean disabled = !meta.hasItemFlag(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
     String potionEffects = disabled ? ChatColor.RED + "False" : ChatColor.GREEN + "True";
     Objects.requireNonNull(menu, "Null menu").setItem(52, ItemCreator.createItem(disabled ? Material.RED_CONCRETE_POWDER : Material.GREEN_CONCRETE_POWDER, ChatColor.AQUA + "Hide Potion Effects", List.of(potionEffects)));
   }

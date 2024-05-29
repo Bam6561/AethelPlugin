@@ -31,7 +31,7 @@ import java.util.Random;
  * Changes damage on existing items' durabilities.
  *
  * @author Danny Nguyen
- * @version 1.24.8
+ * @version 1.27.0
  * @since 1.13.0
  */
 public class DurabilityChange {
@@ -63,7 +63,7 @@ public class DurabilityChange {
       return;
     }
 
-    int unbreaking = item.getEnchantmentLevel(Enchantment.DURABILITY);
+    int unbreaking = item.getEnchantmentLevel(Enchantment.UNBREAKING);
     if (unbreaking > 0) {
       double damageChance = 1.0 / (unbreaking + 1);
       if (damageChance < new Random().nextDouble()) {

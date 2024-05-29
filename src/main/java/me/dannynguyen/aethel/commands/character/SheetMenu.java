@@ -33,7 +33,7 @@ import java.util.*;
  * {@link Equipment.Enchantments enchantments}, and {@link Status statuses}.
  *
  * @author Danny Nguyen
- * @version 1.26.9
+ * @version 1.27.0
  * @since 1.6.3
  */
 public class SheetMenu implements Menu {
@@ -185,7 +185,7 @@ public class SheetMenu implements Menu {
         lore.add(ChatColor.AQUA + statusType.getProperName() + " " + ChatColor.WHITE + status.getStackAmount() + " " + instancesBuilder);
       }
     }
-    menu.setItem(42, ItemCreator.createItem(Material.POTION, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Statuses", lore, ItemFlag.HIDE_POTION_EFFECTS));
+    menu.setItem(42, ItemCreator.createItem(Material.POTION, ChatColor.WHITE + "" + ChatColor.UNDERLINE + "Statuses", lore, ItemFlag.HIDE_ADDITIONAL_TOOLTIP));
   }
 
   /**

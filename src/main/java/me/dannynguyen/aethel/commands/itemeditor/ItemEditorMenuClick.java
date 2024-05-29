@@ -379,7 +379,7 @@ public class ItemEditorMenuClick implements MenuClick {
    * Represents an item's {@link CosmeticMenu} metadata change operation.
    *
    * @author Danny Nguyen
-   * @version 1.25.6
+   * @version 1.27.0
    * @since 1.23.11
    */
   private class CosmeticChange {
@@ -574,7 +574,7 @@ public class ItemEditorMenuClick implements MenuClick {
         case HIDE_DYE -> CosmeticMenu.addHideDye(menu, meta);
         case HIDE_ENCHANTS -> CosmeticMenu.addHideEnchants(menu, meta);
         case HIDE_PLACED_ON -> CosmeticMenu.addHidePlacedOn(menu, meta);
-        case HIDE_POTION_EFFECTS -> CosmeticMenu.addHidePotionEffects(menu, meta);
+        case HIDE_ADDITIONAL_TOOLTIP -> CosmeticMenu.addHidePotionEffects(menu, meta);
         case HIDE_UNBREAKABLE -> CosmeticMenu.addHideUnbreakable(menu, meta);
       }
     }

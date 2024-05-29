@@ -22,7 +22,7 @@ import java.util.UUID;
  * Represents entity damage mitigation.
  *
  * @author Danny Nguyen
- * @version 1.25.4
+ * @version 1.27.0
  * @since 1.16.14
  */
 public class DamageMitigation {
@@ -111,8 +111,8 @@ public class DamageMitigation {
    * @return damage taken
    */
   public double mitigateResistance(double damage) {
-    if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    if (defender.hasPotionEffect(PotionEffectType.RESISTANCE)) {
+      int resistance = defender.getPotionEffect(PotionEffectType.RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));
     }
     return damage;
@@ -159,8 +159,8 @@ public class DamageMitigation {
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     double mitigationValue = Math.min(armor * 0.02, .4) + Math.min(protectionBase * 0.02, .4);
     damage = damage - (damage * mitigationValue);
-    if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    if (defender.hasPotionEffect(PotionEffectType.RESISTANCE)) {
+      int resistance = defender.getPotionEffect(PotionEffectType.RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));
     }
     return damage;
@@ -187,8 +187,8 @@ public class DamageMitigation {
   public double mitigateProtectionResistance(double damage) {
     int protectionBase = entityTags.getOrDefault(Key.ENCHANTMENT_PROTECTION.getNamespacedKey(), PersistentDataType.INTEGER, 0);
     damage = damage - (damage * (Math.min(protectionBase * .04, .8)));
-    if (defender.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-      int resistance = defender.getPotionEffect(PotionEffectType.DAMAGE_RESISTANCE).getAmplifier() + 1;
+    if (defender.hasPotionEffect(PotionEffectType.RESISTANCE)) {
+      int resistance = defender.getPotionEffect(PotionEffectType.RESISTANCE).getAmplifier() + 1;
       damage = damage - (damage * (resistance * 0.05));
     }
     return damage;

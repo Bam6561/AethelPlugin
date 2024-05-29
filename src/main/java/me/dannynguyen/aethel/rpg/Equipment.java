@@ -435,7 +435,7 @@ public class Equipment {
    * Represents an {@link RpgPlayer}'s equipment enchantments.
    *
    * @author Danny Nguyen
-   * @version 1.25.9
+   * @version 1.27.0
    * @since 1.17.9
    */
   public class Enchantments {
@@ -443,8 +443,8 @@ public class Equipment {
      * Tracked enchantments.
      */
     private static final Set<Enchantment> trackedEnchantments = Set.of(
-        Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS,
-        Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
+        Enchantment.PROTECTION, Enchantment.BLAST_PROTECTION,
+        Enchantment.FEATHER_FALLING, Enchantment.FIRE_PROTECTION, Enchantment.PROJECTILE_PROTECTION);
 
     /**
      * Enchantments on {@link RpgEquipmentSlot}.
@@ -479,8 +479,8 @@ public class Equipment {
           entityTags.set(entityEnchantmentKey, PersistentDataType.INTEGER, entityEnchantmentValue + itemEnchantmentValue);
         }
       }
-      readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
-      readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
+      readEnchantmentLevel(Enchantment.FEATHER_FALLING, 5);
+      readEnchantmentLevel(Enchantment.FIRE_PROTECTION, 10);
     }
 
     /**
@@ -502,8 +502,8 @@ public class Equipment {
       }
       slotEnchantments.get(eSlot).clear();
 
-      readEnchantmentLevel(Enchantment.PROTECTION_FALL, 5);
-      readEnchantmentLevel(Enchantment.PROTECTION_FIRE, 10);
+      readEnchantmentLevel(Enchantment.FEATHER_FALLING, 5);
+      readEnchantmentLevel(Enchantment.FIRE_PROTECTION, 10);
     }
 
     /**

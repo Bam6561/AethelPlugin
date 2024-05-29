@@ -28,7 +28,7 @@ import java.util.*;
  * Represents plugin's scheduled repeating tasks.
  *
  * @author Danny Nguyen
- * @version 1.24.12
+ * @version 1.27.0
  * @since 1.22.2
  */
 public class PluginTask {
@@ -59,7 +59,7 @@ public class PluginTask {
         }
 
         if (statuses.containsKey(StatusType.BLEED)) {
-          world.spawnParticle(Particle.BLOCK_DUST, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
+          world.spawnParticle(Particle.BLOCK, bodyLocation, 3, 0.25, 0.5, 0.25, Bukkit.createBlockData(Material.REDSTONE_BLOCK));
           double damage = statuses.get(StatusType.BLEED).getStackAmount() * 0.2;
           final double finalDamage = mitigation.mitigateProtectionResistance(damage);
 
@@ -235,13 +235,13 @@ public class PluginTask {
    */
   public void refreshEnchantmentEffects() {
     Map<Enchantment, Set<UUID>> sufficientEnchantments = Plugin.getData().getRpgSystem().getSufficientEnchantments();
-    for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FALL)) {
+    for (UUID uuid : sufficientEnchantments.get(Enchantment.FEATHER_FALLING)) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 101, 0, true, false));
       }
     }
-    for (UUID uuid : sufficientEnchantments.get(Enchantment.PROTECTION_FIRE)) {
+    for (UUID uuid : sufficientEnchantments.get(Enchantment.FIRE_PROTECTION)) {
       Player player = Bukkit.getPlayer(uuid);
       if (player != null) {
         player.setFireTicks(-20);

@@ -25,7 +25,7 @@ import java.util.*;
  * Represents a menu that edits an item's potion effects.
  *
  * @author Danny Nguyen
- * @version 1.24.11
+ * @version 1.27.0
  * @since 1.14.0
  */
 public class PotionMenu implements Menu {
@@ -125,7 +125,7 @@ public class PotionMenu implements Menu {
         PotionEffect potionEffect = metaPotionEffects.get(potionEffectType);
         String duration = ChatColor.WHITE + String.valueOf(potionEffect.getDuration());
         String amplifier = ChatColor.YELLOW + (potionEffect.getAmplifier() == 0 ? "" : String.valueOf(potionEffect.getAmplifier() + 1));
-        menu.setItem(invSlot, ItemCreator.createItem(Material.POTION, potionEffectTypeName, List.of(duration + " " + amplifier), ItemFlag.HIDE_POTION_EFFECTS));
+        menu.setItem(invSlot, ItemCreator.createItem(Material.POTION, potionEffectTypeName, List.of(duration + " " + amplifier), ItemFlag.HIDE_ADDITIONAL_TOOLTIP));
       }
       invSlot++;
     }
