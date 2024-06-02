@@ -9,6 +9,7 @@ import me.dannynguyen.aethel.utils.item.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.MinecraftExperimental;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -62,7 +63,14 @@ public class EnchantmentMenu implements Menu {
    * @return sorted enchantments
    */
   private static List<Enchantment> sortEnchantments() {
-    List<Enchantment> enchantments = new ArrayList<>(List.of(Enchantment.values()));
+    List<Enchantment> enchantments = new ArrayList<>(List.of(Enchantment.PROTECTION, Enchantment.FIRE_PROTECTION, Enchantment.FEATHER_FALLING,
+        Enchantment.BLAST_PROTECTION, Enchantment.PROJECTILE_PROTECTION, Enchantment.RESPIRATION, Enchantment.AQUA_AFFINITY,
+        Enchantment.THORNS, Enchantment.DEPTH_STRIDER, Enchantment.FROST_WALKER, Enchantment.BINDING_CURSE, Enchantment.SHARPNESS,
+        Enchantment.SMITE, Enchantment.BANE_OF_ARTHROPODS, Enchantment.KNOCKBACK, Enchantment.FIRE_ASPECT, Enchantment.LOOTING,
+        Enchantment.SWEEPING_EDGE, Enchantment.EFFICIENCY, Enchantment.SILK_TOUCH, Enchantment.UNBREAKING, Enchantment.FORTUNE,
+        Enchantment.POWER, Enchantment.PUNCH, Enchantment.FLAME, Enchantment.INFINITY, Enchantment.LUCK_OF_THE_SEA, Enchantment.LURE,
+        Enchantment.LOYALTY, Enchantment.IMPALING, Enchantment.RIPTIDE, Enchantment.CHANNELING, Enchantment.MULTISHOT, Enchantment.QUICK_CHARGE,
+        Enchantment.PIERCING, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.SOUL_SPEED, Enchantment.SWIFT_SNEAK));
     Comparator<Enchantment> enchantmentComparator = Comparator.comparing(e -> e.getKey().getKey());
     enchantments.sort(enchantmentComparator);
     return enchantments;
