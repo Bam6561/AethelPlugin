@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * internal error occurring and the associated methods never reaching their end result.
  *
  * @author Danny Nguyen
- * @version 1.25.0
+ * @version 1.27.3
  * @since 1.0.2
  */
 public class MenuListener implements Listener {
@@ -169,6 +169,9 @@ public class MenuListener implements Listener {
     } else {
       if ((e.isShiftClick() && menu == Menu.FORGE_SAVE) || !e.isShiftClick()) {
         e.setCancelled(false);
+      }
+      if (menu == Menu.FORGE_CRAFT_RECIPE && (e.getAction() == InventoryAction.COLLECT_TO_CURSOR || e.getAction() == InventoryAction.PICKUP_ALL)) {
+        e.setCancelled(true);
       }
     }
   }
