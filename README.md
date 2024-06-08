@@ -26,7 +26,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-Minecraft plugin written for Aethel SMP.
+Minecraft plugin written for Aethel SMP. Discontinued and succeeded by [Aethel Core](https://github.com/Bam6561/AethelCore).
 
 See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentation on its features.
 
@@ -106,6 +106,6 @@ Project Link: https://github.com/Bam6561/AethelPlugin
 
 <!-- SHIELDS -->
 [stars-shield]: https://img.shields.io/github/stars/Bam6561/AethelPlugin
-[stars-url]: https://github.com/Bam6561/AethePlugin/stargazers
+[stars-url]: https://github.com/Bam6561/AethelPlugin/stargazers
 [license-shield]: https://img.shields.io/github/license/Bam6561/AethelPlugin
 [license-url]: https://github.com/Bam6561/AethelPlugin/blob/main/LICENSE
