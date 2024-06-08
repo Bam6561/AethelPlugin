@@ -79,6 +79,7 @@ See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentat
 * [Staff Applications](https://forms.gle/bTF5CqPtEsrutmXD6)
 
 ⚙️ **Related Repositories** 
+* [Aethel Core](https://github.com/Bam6561/AethelCore)
 * [Aethel Resources](https://github.com/Bam6561/AethelResources)
 
 <p align="right"><a href="#top">Back to Top</a></p>
