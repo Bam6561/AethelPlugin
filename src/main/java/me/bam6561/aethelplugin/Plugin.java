@@ -161,7 +161,7 @@ public class Plugin extends JavaPlugin {
   }
 
   /**
-   * Gets the plugin.
+   * Gets the plugin object.
    *
    * @return plugin instance
    */

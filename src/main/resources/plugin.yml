@@ -1,0 +1,65 @@
+name: AethelPlugin
+version: 1.27.3
+api-version: 1.20.6
+author: Bam6561
+main: me.bam6561.aethelplugin.Plugin
+prefix: AethelPlugin
+website: https://linktr.ee/aethelsmp
+description: Plugin for Aethel SMP.
+commands:
+  aethelitem:
+    description: Opens an AethelItem menu.
+    usage: /aethelitem [reload]
+    aliases: [ ai, aitem ]
+  aethelentitytag:
+    description: Edits an entity's Aethel plugin tags.
+    usage: /aethelentitytag [get][set][remove]
+    aliases: [ aet, etag ]
+  aethelitemtag:
+    description: Edits an item's Aethel plugin tags.
+    usage: /aethelitemtag [get][set][remove]
+    aliases: [ ait, itag ]
+  buff:
+    description: Edits an entity's buffs.
+    usage: /buff [get][add][remove]
+    aliases: [ b ]
+  character:
+    description: Opens an RPG character sheet.
+    usage: /character [<playerName>]
+    aliases: [ c, char ]
+  developermode:
+    description: Developer mode.
+    usage: /developermode
+    aliases: [ dm, dev ]
+  forge:
+    description: Opens a Forge menu.
+    usage: /forge [edit][reload]
+    aliases: [ f ]
+  itemeditor:
+    description: Edits an item's metadata.
+    usage: /itemeditor
+    aliases: [ ie, iedit ]
+  location:
+    description: Saves, tracks, and compares locations.
+    usage: /location [get]|[add][remove][track][compares]
+    aliases: [ l, loc ]
+  ping:
+    description: Responds with server latency.
+    usage: /ping
+    aliases: [ p ]
+  playerstat:
+    description: Gets a player's statistics.
+    usage: /stats [<playerName>]
+    aliases: [ ps, stat ]
+  showitem:
+    description: Shows main hand item to chat.
+    usage: /showitem
+    aliases: [ si, show ]
+  status:
+    description: Edits an entity's statuses.
+    usage: /status  [get][add][remove]
+    aliases: [ s ]
+  whatsthisfeature:
+    description: Gets a key word's description.
+    usage: /whatsthisfeature <keyWord>
+    aliases: [ wtf ]
