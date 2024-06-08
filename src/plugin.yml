@@ -2,7 +2,7 @@ name: Aethel
 version: 1.27.3
 api-version: 1.20.6
 author: Bam6561
-main: me.dannynguyen.aethel.Plugin
+main: me.bam6561.aethelplugin.Plugin
 prefix: Aethel
 website: https://linktr.ee/aethelsmp
 description: Plugin for Aethel SMP.
