@@ -28,7 +28,7 @@
 ## About The Project
 Minecraft plugin written for Aethel SMP. 
 
-**Discontinued and succeeded by [AethelCore](https://github.com/Bam6561/AethelCore).**
+**Discontinued and succeeded by [Aethel Core](https://github.com/Bam6561/AethelCore).**
 
 See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentation on its features.
 
@@ -81,7 +81,7 @@ See the [Wiki](https://github.com/Bam6561/AethelPlugin/wiki/Home) for documentat
 * [Staff Applications](https://forms.gle/bTF5CqPtEsrutmXD6)
 
 ⚙️ **Related Repositories** 
-* [AethelCore](https://github.com/Bam6561/AethelCore)
+* [Aethel Core](https://github.com/Bam6561/AethelCore)
 * [Aethel Resources](https://github.com/Bam6561/AethelResources)
 
 <p align="right"><a href="#top">Back to Top</a></p>
