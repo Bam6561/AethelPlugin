@@ -38,7 +38,7 @@ import java.util.UUID;
  * Collection of damage done, taken, and healed listeners.
  *
  * @author Danny Nguyen
- * @version 1.26.7
+ * @version 1.27.4
  * @since 1.9.4
  */
 public class DamageListener implements Listener {
@@ -60,6 +60,10 @@ public class DamageListener implements Listener {
    */
   @EventHandler
   private void onEntityDamage(EntityDamageEvent e) {
+    if (e.getEntity().getType() == EntityType.ARMOR_STAND && e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
+      return;
+    }
+
     if (!(e.getEntity() instanceof LivingEntity)) {
       return;
     }
@@ -643,7 +647,8 @@ public class DamageListener implements Listener {
       DamageMitigation mitigation = new DamageMitigation(defender);
       switch (e.getCause()) {
         case FALL -> e.setDamage(mitigation.mitigateFall(e.getDamage()));
-        case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER -> e.setDamage(mitigation.mitigateProtection(e.getDamage()));
+        case DRAGON_BREATH, FLY_INTO_WALL, MAGIC, POISON, WITHER ->
+            e.setDamage(mitigation.mitigateProtection(e.getDamage()));
         case FIRE, FIRE_TICK, HOT_FLOOR, LAVA -> e.setDamage(mitigation.mitigateFire(e.getDamage()));
         case BLOCK_EXPLOSION -> {
           if (ifBlocked()) {
